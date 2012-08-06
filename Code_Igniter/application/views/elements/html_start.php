@@ -5,7 +5,7 @@
 <html lang="en" <?= (isset($offline) && $offline) ? 'manifest="manifest/html5"' : '' ?> class="no-js">
 	<head>
 		<title>
-			 Rapaide - Faster Collaborative Needs Assessments :: Preview!
+			 Enketo - Faster Collaborative Surveys (Offline)
 		</title>
 		
 		

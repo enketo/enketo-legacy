@@ -108,10 +108,10 @@
 		<p>
 		    Enketo facilitates data collection using an open-source form format (JavaRosa). It is being developed by <a target="_blank" href="http://www.aidwebsolutions.com" title="go to Aid Web Solutions web site"
 		    target=_blank> Aid Web Solutions</a> to demonstrate the potential of offline capable
-		    web applications to cope with intermittent Internet connections. More information is available on the <a target="_blank" href="http://blog.aidwebsolutions.com/tag/rapaide/">Aid Web Solutions Blog</a>. 
+		    web applications to cope with intermittent Internet connections. 
 		</p>
 		<p>
-		   Enketo launch allows survey administrators to test forms and launch them on the (awesomely) offline-capable Enketo entry for efficient entry of collected data. Only the launch component is currently available for a very early preview on Google Chrome. The following are the main items left to do for full JavaRosa compatibility:
+		   The Enketo launch area allows survey administrators to test forms and 'launch' them on a unique URL for efficient data entry of collected data. The entry component will be offline-capable. Only the launch component is currently available for a very early preview on Google Chrome. The following are the main items left to do for full JavaRosa compatibility:
 		</p> 
 		<div class="ui-helper-clearfix">   
 		    <div class="column ui-corner-all">
@@ -136,7 +136,7 @@
 		 	Note that for standard XPath 1.0 functions, Enketo does not deviate from the XPath specification. This means that existing forms may not work properly until they are corrected (they will remain functional in ODK Collect with those corrections). This is particularly relevant to usages described in item 1 and 3 of <a target="_blank" href="https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations">this document</a>.
 		</p>
 		<p>
-			<a href="#contact" title="contact us">Feedback</a> is very welcome. If you discover a bug, it would be great if you could send the xml form to help troubleshoot.
+			More information is available on the <a target="_blank" href="http://blog.aidwebsolutions.com/tag/rapaide/">Aid Web Solutions Blog</a>.<a href="#contact" title="contact us">Feedback</a> is very welcome. If you discover a bug, it would be great if you could send the xml form to help troubleshoot.
 			<!--<a href="http://aidwebsolutions.com/blog" title="go to Aid Web Solutions blog post on Rapaide" target=_blank>
 			 More information</a> about the app.-->
 		</p>

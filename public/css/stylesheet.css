@@ -128,9 +128,9 @@ img.loading{
 	font-weight: bold;
 }
 
-.logo_a{
+/*.logo_a{
 	color:#D15514;
-}
+}*/
 .component{
 	font-size: 12px;
 }
@@ -206,17 +206,17 @@ header.ui-widget-header{
 
 	#logo{
 		position: absolute;
-		top: 17px;
-		left: 30px;	
+		top: 14px;
+		left: 20px;	
 	}
 		#logo img{
-			height: 46px;
+			height: 40px;
 		}
 		
 		#logo #component{
 			position: relative;
 			display: inline-block;
-			bottom: 10px;
+			bottom: 0px;
 			font-size: 0.6em;
 		}
 	

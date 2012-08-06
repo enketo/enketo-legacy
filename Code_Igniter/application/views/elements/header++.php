@@ -3,7 +3,7 @@
 		<div id="overlay"></div>
 		<header class="ui-widget ui-widget-header">
 			<div id="logo">
-				 <img src="images/title.png" alt="rapaide" /><span id="component">.<?= $title_component ?></span>
+				 <img src="images/title.png" alt="rapaide" /><span id="component"><?= $title_component ?></span>
 			</div>
 			<div id="survey-info">provided by Aid Web Solutions</a></div>
 			<div id="status">

@@ -15,14 +15,14 @@
 
 
 //JavaRosa compliant server in case built-in server is not used. (e.g. ODK Aggregate)
-$config['jr_server'] = 'https://rapaide.appspot.com';
+//$config['jr_server'] = 'https://jrosaforms.appspot.com';
 
 //URL of formList (usually not required to set)
 //CHANGE TO: "/xformsList"
-$config['jr_formlist'] = 'https://rapaide.appspot.com/formList';
+//$config['jr_formlist'] = 'https://jrosaforms.appspot.com/formList';
 
 //URL of submission (usually not required to set)
-$config['jr_submission'] = 'https://rapaide.appspot.com/submission';
+//$config['jr_submission'] = 'https://jrosaforms.appspot.com/submission';
 
 
 /*

@@ -12,7 +12,7 @@ class Survey extends CI_Controller {
 		$this->load->model('Survey_model','',TRUE);
 		$this->load->model('Form_model', '', TRUE);
 				
-		if (1>2)//isset($subdomain))
+		if (isset($subdomain))
 		{
 			//if ($this->Survey_model->is_live_survey($subdomain))
 			if ($this->Survey_model->is_existing_survey($subdomain))
@@ -40,11 +40,19 @@ class Survey extends CI_Controller {
 					if (ENVIRONMENT === 'production')
 					{
 						//$this->output->cache(60);
-						$data['scripts'] = array();
+						$data['scripts'] = array(
+							base_url('js-min/survey-all-min.js')
+						);
 					}
 					else
-					{
-
+					{		
+						$data['scripts'] = array(
+							base_url('js-source/__common.js'),
+							base_url('js-source/__storage.js'),
+							base_url('js-source/__form.js'),
+							base_url('js-source/__survey.js'),
+							base_url('js-source/__debug.js')
+						);
 					}
 					$this->load->view('survey_view',$data);
 				}

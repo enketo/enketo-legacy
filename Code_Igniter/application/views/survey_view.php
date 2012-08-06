@@ -23,19 +23,15 @@
 		<script type="text/javascript" src="libraries/xpathjs_javarosa/build/parser.js"></script>-->
 		<!--<script type="text/javascript" src="libraries/xpathjs_javarosa/build/xpathjs.js"></script>-->
 
-
-
-		<script type="text/javascript" src="js-source/common.js"></script>
-		<script type="text/javascript" src="js-source/storage.js"></script>
-		<script type="text/javascript" src="js-source/form.js"></script>
-		<script type="text/javascript" src="js-source/survey.js"></script>
-
-		<?= (ENVIRONMENT != 'production') ? '<script type="text/javascript" src="js-source/debug.js"></script>' : ''?>
-		<!--<script type="text/javascript" src="js/survey.all.compiled.js"></script>-->
+	<? foreach ($scripts as $script): ?>
+		<script type="text/javascript" src="<?= $script; ?>"></script>
+	<? endforeach; ?>
+		
 		<script type="text/javascript">
 			jrDataStr = '<?= $form_data ?>';
 		</script>
-		<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>
+	
+	<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>
 
 	</head>
 

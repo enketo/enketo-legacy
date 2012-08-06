@@ -408,6 +408,7 @@ class Form_model extends CI_Model {
                 {
                     $logo = $result->form->section[0]->addChild('img');
                     $logo->addAttribute('src', $m->downloadUrl);
+                    $logo->addAttribute('alt', 'form logo');
                 }
             }
 

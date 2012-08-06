@@ -111,13 +111,13 @@
 		    web applications to cope with intermittent Internet connections. 
 		</p>
 		<p>
-		   The Enketo launch area allows survey administrators to test forms and 'launch' them on a unique URL for efficient data entry of collected data. The entry component will be offline-capable. Only the launch component is currently available for a very early preview on Google Chrome. The following are the main items left to do for full JavaRosa compatibility:
+		   The Enketo launch area allows survey administrators to test forms and afterwards 'launch' them on a unique URL for actual data entry. The entry component will be offline-capable. Only the launch component is currently available for a very early preview on Google Chrome. The following are the main items left to do for full JavaRosa compatibility:
 		</p> 
 		<div class="ui-helper-clearfix">   
 		    <div class="column ui-corner-all">
 			    <ul style="line-height: 1.5em">
 			    	<li>widgets (grids, slider, geop., auto, select, big-text)</li>
-			    	<li>formhub support for media labels &amp; form logo</li>
+			    	<!--<li>formhub support for media labels &amp; form logo</li>-->
 			    	<li>support for cascading selections</li>
 			    	<li>itext(path/to/node) support</li>
 			    	<li>improved design and usability</li>
@@ -133,10 +133,10 @@
 			</div>
 		</div>
 		<p>
-		 	Note that for standard XPath 1.0 functions, Enketo does not deviate from the XPath specification. This means that existing forms may not work properly until they are corrected (they will remain functional in ODK Collect with those corrections). This is particularly relevant to usages described in item 1 and 3 of <a target="_blank" href="https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations">this document</a>.
+		 	Note that for standard XPath 1.0 functions, Enketo does not deviate from the XPath specification. This means that existing forms may not work properly until they are corrected (they should remain functional in ODK Collect with those corrections). This is particularly relevant to usages described in item 1 and 3 of <a target="_blank" href="https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations">this document</a>.
 		</p>
 		<p>
-			More information is available on the <a target="_blank" href="http://blog.aidwebsolutions.com/tag/rapaide/">Aid Web Solutions Blog</a>. 
+			More information is available <a target="_blank" href="http://blog.aidwebsolutions.com/tag/enketo/">here</a>. 
 		</p>
 		<p>
 			<a href="#contact" title="contact us">Feedback</a> is very welcome. If you discover a bug, it would be great if you could send the xml form to help troubleshoot.

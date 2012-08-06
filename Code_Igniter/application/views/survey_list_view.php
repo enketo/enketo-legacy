@@ -23,7 +23,7 @@
 				<!--<div class="ui-widget">-->
 					<!--<div class="ui-widget-content ui-corner-all">-->
 						
-						<p style="margin-top: 50%; font-size: 12px; text-align: center; font-family: arial;">Just a whole lot of nothingness... read about the progress on the <a href="http://blog.aidwebsolutions.com/tag/rapaide/">Aid Web Solutions Blog</a>.</p>			
+						<p style="margin-top: 50%; font-size: 12px; text-align: center; font-family: arial;">Just a whole lot of nothingness... read about the progress on the <a href="http://blog.aidwebsolutions.com/tag/enketo/">Aid Web Solutions Blog</a>.</p>			
 					<!--</div>-->
 				<!--</div>	-->
 			</article>

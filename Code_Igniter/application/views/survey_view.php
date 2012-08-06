@@ -2,8 +2,6 @@
 
 <?
 	$theme = $this->config->item('survey','themes');
-	$min = (ENVIRONMENT === 'production') ? 'min.' : '';
-	$add = (ENVIRONMENT === 'production') ? '' : '-source';
 ?>
 		<link rel="stylesheet" type="text/css" href="libraries/jquery-ui/css/<?= $theme ?>/jquery-ui.custom.css"/>
 		<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
@@ -13,15 +11,12 @@
 		<script type="text/javascript" src="libraries/jquery-ui/js/jquery-ui.custom.min.js"></script>
 		<script type="text/javascript" src="libraries/jquery-ui-timepicker-addon.js"></script>
 		<script type="text/javascript" src="libraries/jquery.multiselect.min.js"></script>
-
 		<!--<script type="text/javascript" src="libraries/downloadify/swfobject.js"></script>
 		<script type="text/javascript" src="libraries/downloadify/downloadify.min.js"></script>-->
 		<script type="text/javascript" src="libraries/modernizr.min.js"></script>
 		<!--<script type="text/javascript" src="libraries/gears_init.js"></script>-->
 		<script type="text/javascript" src="libraries/xpathjs_javarosa.min.js"></script>
-		<!--<script type="text/javascript" src="libraries/xpathjs_javarosa/src/engine.js"></script>
-		<script type="text/javascript" src="libraries/xpathjs_javarosa/build/parser.js"></script>-->
-		<!--<script type="text/javascript" src="libraries/xpathjs_javarosa/build/xpathjs.js"></script>-->
+
 
 	<? foreach ($scripts as $script): ?>
 		<script type="text/javascript" src="<?= $script; ?>"></script>
@@ -115,14 +110,13 @@
 
 		<article id="about" data-title="about this application" class="page">
 			<p>
-			    This application was developed by <a href="http://www.aidwebsolutions.com" title="go to Aid Web Solutions web site"
+			    Enketo was developed by <a href="http://www.aidwebsolutions.com" title="go to Aid Web Solutions web site"
 			    target=_blank> Aid Web Solutions</a> to demonstrate the potential of offline capable
-			    web applications in humanitarian aid and other situations with intermittent Internet connections. It
+			    web applications in contexts with intermittent Internet connections. It
 			   	provides all the advantages of a modern web app without the dependency on a constant connection.
 			</p>
 			<p>
-			    This component of the application stores survey data locally.
-			    The stored data is <strong>persistent</strong> so it will still be there next time you open the
+			    This core data entry component of the application stores survey data locally in the browser. The stored data is <strong>persistent</strong> so it will still be there next time you open the
 			    browser and the application.
 			    When an internet connection becomes available the application can upload the data to a server and empty the
 			     local storage.
@@ -131,7 +125,7 @@
 			</p>
 			<p>
 			    In all modern browsers this application
-			    will be able to <strong>launch</strong> without an internet connection after once having been loaded online.
+			    will also be able to <strong>launch</strong> without an internet connection after once having been loaded online.
 			    See under <a href="#settings" title="settings">settings</a> whether your browser supports this.
 			</p>
 			<p>

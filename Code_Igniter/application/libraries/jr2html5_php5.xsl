@@ -32,7 +32,7 @@ copyright:  Aid Web Solutions
         </xsl:if>
     </xsl:variable>
     <xsl:variable name="default-lang">
-        <xsl:value-of select="h:html/h:head/xf:model/xf:itext/xf:translation/@default" />
+        <xsl:value-of select="h:html/h:head/xf:model/xf:itext/xf:translation[@default]/@lang" />
     </xsl:variable>
 
     <xsl:template match="/">

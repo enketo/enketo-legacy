@@ -851,7 +851,7 @@ function Form (selector, dataStr){
 		});
 
 
-		this.setLangs();
+		//this.setLangs();
 		//$form.find('.jr-hint, .jr-constraint-msg').hide();
 		//
 		this.repeat.init();
@@ -1128,7 +1128,7 @@ function Form (selector, dataStr){
 		if (!defaultLang || defaultLang==='') {
 			defaultLang = $('#form-languages a:eq(0)').attr('lang');
 		}
-		//console.debug('default language is: '+defaultLang);
+		console.debug('default language is: '+defaultLang);
 
 		if ($('#form-languages a').length < 2 ){
 			$form.find('[lang]').addClass('active');

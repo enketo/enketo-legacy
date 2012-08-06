@@ -26,7 +26,7 @@
     </jscomp>
 
     <jscomp compilationLevel="advanced" warning="quiet" 
-            debug="false" output="public/js-min/surveyfront-all-min.js">
+            debug="false" output="public/js-min/front-all-min.js">
 
       <externs dir="${basedir}/src/js">
         <file name="__extern.js"/>
@@ -34,9 +34,22 @@
 
       <sources dir="${basedir}/src/js">
         <file name="__common.js"/>
-        <!--<file name="__storage.js"/>-->
-        <!--<file name="__form.js"/>-->
-        <!--<file name="__survey.js"/>-->
+      </sources>
+
+    </jscomp>
+
+    <jscomp compilationLevel="advanced" warning="quiet" 
+            debug="false" output="public/js-min/survey-all-min.js">
+
+      <externs dir="${basedir}/src/js">
+        <file name="__extern.js"/>
+      </externs>
+
+      <sources dir="${basedir}/src/js">
+        <file name="__common.js"/>
+        <file name="__storage.js"/>
+        <file name="__form.js"/>
+        <file name="__survey.js"/>
       </sources>
 
     </jscomp>

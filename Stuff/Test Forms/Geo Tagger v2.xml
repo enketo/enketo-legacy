@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+	<h:head>
+		<h:title>Geo Tagger v2</h:title>
+		<model>
+			<instance>
+				<geotagger id="geo_tagger_v2" >
+					<DeviceId/>
+					<Image/>
+					<Location/>
+					<Description/>
+				</geotagger>
+			</instance>
+			<bind nodeset="/geotagger/DeviceId" type="string" jr:preload="property" jr:preloadParams="deviceid"/>
+			<bind nodeset="/geotagger/Image" type="binary"/>
+			<bind nodeset="/geotagger/Location" type="geopoint"/>
+			<bind nodeset="/geotagger/Description" type="string"/>
+		</model>
+	</h:head>
+	<h:body>
+		<upload ref="Image" mediatype="image/*">
+			<label>Capture the image.</label>
+		</upload>
+		<input ref="Location">
+			<label>Capture the location.</label>
+		</input>
+		<input ref="Description">
+			<label>Describe the image and location.</label>
+		</input>
+	</h:body>
+</h:html>

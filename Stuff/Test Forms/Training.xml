@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+	<h:head>
+		<h:title>Training Form</h:title>
+		<model>
+			<itext>
+				<translation lang="Swahili">
+					<text id="name"><value>Jina lako ni nani?</value></text>
+					<text id="name_hint"><value>Andika jina la ukoo na la kwanza.</value></text>
+					<text id="location"><value>Hapo ulipo ni wapi?</value></text>
+					<text id="location_hint"><value>Hakikisha upo nje ya jengo.</value></text>
+					<text id="picture"><value>Piga picha yako?</value></text>
+					<text id="picture_hint"><value>Muombe rafiki yako akupige picha.</value></text>
+				</translation>
+				<translation lang="English">
+					<text id="name"><value>What is your name?</value></text>
+					<text id="name_hint"><value>Please enter first and last names.</value></text>
+					<text id="location"><value>Where are you?</value></text>
+					<text id="location_hint"><value>Make sure you are outside.</value></text>
+					<text id="picture"><value>What do you look like?</value></text>
+					<text id="picture_hint"><value>Ask a friend to take your picture.</value></text>
+				</translation>
+			</itext>
+			<instance>
+				<training id="training">
+					<Device/>
+					<Name/>
+					<Location/>
+					<Picture/>
+				</training>
+			</instance>
+			<bind nodeset="/training/Device" type="string" jr:preload="property" jr:preloadParams="deviceid"/>
+			<bind nodeset="/training/Name" type="string"/>
+			<bind nodeset="/training/Location" type="geopoint"/>
+			<bind nodeset="/training/Picture" type="binary"/>
+			
+		</model>
+	</h:head>
+	<h:body>
+		<input ref="Name">
+			<label ref="jr:itext('name')"/>
+			<hint ref="jr:itext('name_hint')"/>
+		</input>
+		<input ref="Location">
+			<label ref="jr:itext('location')"/>
+			<hint ref="jr:itext('location_hint')"/>
+		</input>
+		<upload ref="Picture" mediatype="image/*">
+			<label ref="jr:itext('picture')"/>
+			<hint ref="jr:itext('picture_hint')"/>	
+		</upload>
+	</h:body>
+</h:html>

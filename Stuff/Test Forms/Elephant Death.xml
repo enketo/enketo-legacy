@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+	<h:head>
+		<h:title>Elephant Death Form</h:title>
+		<model>
+			<itext>
+				<translation lang="English">
+					<text id="ElephantPicture"><value>Take a picture of the elephant.</value></text>
+					<text id="SurveyorLocation"><value>Record your location.</value></text>
+					<text id="ElephantDeathReason"><value>What is the reason for the elephant's death?</value></text>
+					<text id="ElephantTusksRemoved"><value>Were the tusks removed from the elephant carcass?</value></text>
+					<text id="ElephantDeathDate"><value>When is the estimated date of death?</value></text>
+					<text id="ElephantAge"><value>What is the estimated age of the elephant?</value></text>
+					<text id="ElephantCollar"><value>Did the elephant wear a collar?</value></text>
+					<text id="FieldNotes"><value>Field notes.</value></text>
+					<text id="Poaching"><value>Poaching</value></text>
+					<text id="Starvation"><value>Starvation</value></text>
+					<text id="Drought"><value>Drought</value></text>
+					<text id="Entrapment"><value>Entrapment</value></text>
+					<text id="Other"><value>Other</value></text>
+					<text id="Yes"><value>Yes</value></text>
+					<text id="No"><value>No</value></text>
+					<text id="Unknown"><value>Unknown</value></text>
+				</translation>
+			</itext>
+			<instance>
+				<ElephantDeath id="ElephantDeath">
+					<DeviceId/>
+					<StartTime/>
+					<EndTime/>
+					<ElephantPicture/>
+					<SurveyorLocation/>
+					<ElephantDeathReason/>
+					<ElephantTusksRemoved/>
+					<ElephantDeathDate/>
+					<ElephantAge/>
+					<ElephantCollar/>
+					<FieldNotes/>
+				</ElephantDeath>
+			</instance>
+			<bind nodeset="/ElephantDeath/DeviceId" type="string" jr:preload="property" jr:preloadParams="deviceid"/>
+			<bind nodeset="/ElephantDeath/StartTime" type="dateTime" jr:preload="timestamp" jr:preloadParams="start"/>
+			<bind nodeset="/ElephantDeath/EndTime" type="dateTime" jr:preload="timestamp" jr:preloadParams="end"/>
+			<bind nodeset="/ElephantDeath/ElephantPicture" type="binary"/>			
+			<bind nodeset="/ElephantDeath/SurveyorLocation" type="geopoint"/>
+			<bind nodeset="/ElephantDeath/ElephantDeathReason" type="select" />
+			<bind nodeset="/ElephantDeath/ElephantTusksRemoved" type="select1" relevant="selected(/ElephantDeath/ElephantDeathReason, 'Poaching')" />
+			<bind nodeset="/ElephantDeath/ElephantDeathDate" type="string" />
+			<bind nodeset="/ElephantDeath/ElephantAge" type="string" />
+			<bind nodeset="/ElephantDeath/ElephantCollar" type="select1" />
+			<bind nodeset="/ElephantDeath/FieldNotes" type="string" />
+			
+		</model>
+	</h:head>
+	<h:body>
+		<upload ref="ElephantPicture" mediatype="image/*">
+			<label ref="jr:itext('ElephantPicture')"/>
+		</upload>
+		<input ref="SurveyorLocation">
+			<label ref="jr:itext('SurveyorLocation')"/>
+		</input>
+		<select ref="ElephantDeathReason">
+			<label ref="jr:itext('ElephantDeathReason')"/>
+			<item>
+				<label ref="jr:itext('Poaching')"/>
+				<value>Poaching</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Starvation')"/>
+				<value>Starvation</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Drought')"/>
+				<value>Drought</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Entrapment')"/>
+				<hint ref="jr:itext('EntrapmentHint')"/>
+				<value>Entrapment</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Other')"/>
+				<value>Other</value>
+			</item>
+		</select>
+		<select1 ref="ElephantTusksRemoved">
+			<label ref="jr:itext('ElephantTusksRemoved')"/>
+			<item>
+				<label ref="jr:itext('Yes')"/>
+				<value>Yes</value>
+			</item>
+			<item>
+				<label ref="jr:itext('No')"/>
+				<value>No</value>
+			</item>
+		</select1>
+		<input ref="ElephantDeathDate">
+			<label ref="jr:itext('ElephantDeathDate')"/>
+		</input>
+		<input ref="ElephantAge">
+			<label ref="jr:itext('ElephantAge')"/>
+		</input>
+		<select1 ref="ElephantCollar">
+			<label ref="jr:itext('ElephantCollar')"/>
+			<item>
+				<label ref="jr:itext('Yes')"/>
+				<value>Yes</value>
+			</item>
+			<item>
+				<label ref="jr:itext('No')"/>
+				<value>No</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Unknown')"/>
+				<value>Unknown</value>
+			</item>
+		</select1>
+		<input ref="FieldNotes">
+			<label ref="jr:itext('FieldNotes')"/>
+		</input>
+	</h:body>
+</h:html>

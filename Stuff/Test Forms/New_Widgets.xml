@@ -1,0 +1,1068 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>New Widgets</h:title>
+    <model>
+      <itext>
+        <translation default="English" lang="English">
+          <text id="yesnoYes">
+            <value form="long">Yes</value>
+            <value form="short">Yes</value>
+            <value form="image">jr://images/smile.jpg</value>
+          </text>
+          <text id="yesnoNo">
+            <value form="long">No</value>
+            <value form="short">No</value>
+            <value form="image">jr://images/frown.jpg</value>
+          </text>
+          <text id="sixChoicesc1">
+            <value form="long">C1</value>
+            <value form="short">C1</value>
+            <value form="image">jr://images/c1.jpg</value>
+          </text>
+          <text id="sixChoicesc2">
+            <value form="long">C2</value>
+            <value form="short">C2</value>
+            <value form="image">jr://images/c2.jpg</value>
+          </text>
+          <text id="sixChoicesc3">
+            <value form="long">C3</value>
+            <value form="short">C3</value>
+            <value form="image">jr://images/c3.jpg</value>
+          </text>
+          <text id="sixChoicesc4">
+            <value form="long">C4</value>
+            <value form="short">C4</value>
+            <value form="image">jr://images/c4.jpg</value>
+          </text>
+          <text id="sixChoicesc5">
+            <value form="long">C5</value>
+            <value form="short">C5</value>
+            <value form="image">jr://images/c5.jpg</value>
+          </text>
+          <text id="sixChoicesc6">
+            <value form="long">C6</value>
+            <value form="short">C6</value>
+            <value form="image">jr://images/c6.jpg</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <NewWidgets id="NewWidgets">
+          <numberAsString/>
+          <locationMap/>
+          <time/>
+          <dateTime/>
+          <q1/>
+          <q2/>
+          <q0/>
+          <q3/>
+          <q4/>
+          <q4a/>
+          <q5/>
+          <q6/>
+          <q7/>
+          <listGroup>
+            <q8/>
+            <q9/>
+            <q10/>
+            <q11/>
+            <q12/>
+          </listGroup>
+          <multiListGroup>
+            <q13/>
+            <q14/>
+            <q15/>
+          </multiListGroup>
+          <repeatingFieldList jr:template="">
+            <repeat_string/>
+            <repeat_int>123456789</repeat_int>
+          </repeatingFieldList>
+        </NewWidgets>
+      </instance>
+      <bind nodeset="/NewWidgets/numberAsString" type="string"/>
+      <bind nodeset="/NewWidgets/locationMap" type="geopoint"/>
+      <bind nodeset="/NewWidgets/time" type="time"/>
+      <bind nodeset="/NewWidgets/dateTime" type="dateTime"/>
+      <bind nodeset="/NewWidgets/q1" type="select1"/>
+      <bind nodeset="/NewWidgets/q2" type="select"/>
+      <bind nodeset="/NewWidgets/q0" type="select1"/>
+      <bind nodeset="/NewWidgets/q3" type="select1"/>
+      <bind nodeset="/NewWidgets/q4" type="select1"/>
+      <bind nodeset="/NewWidgets/q4a" type="select1"/>
+      <bind nodeset="/NewWidgets/q5" type="select"/>
+      <bind nodeset="/NewWidgets/q6" type="select1"/>
+      <bind nodeset="/NewWidgets/q7" type="select1"/>
+      <bind nodeset="/NewWidgets/listGroup/q8" type="select1"/>
+      <bind nodeset="/NewWidgets/listGroup/q9" type="select1"/>
+      <bind nodeset="/NewWidgets/listGroup/q10" type="select1"/>
+      <bind nodeset="/NewWidgets/listGroup/q11" type="select1"/>
+      <bind nodeset="/NewWidgets/listGroup/q12" type="select1"/>
+      <bind nodeset="/NewWidgets/multiListGroup/q13" type="select"/>
+      <bind nodeset="/NewWidgets/multiListGroup/q14" type="select"/>
+      <bind nodeset="/NewWidgets/multiListGroup/q15" type="select"/>
+      <bind nodeset="/NewWidgets/repeatingFieldList"/>
+      <bind nodeset="/NewWidgets/repeatingFieldList/repeat_string" type="string"/>
+      <bind nodeset="/NewWidgets/repeatingFieldList/repeat_int" type="int"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/NewWidgets/numberAsString" appearance="numbers">
+      <label>String field that uses only numbers (plus a couple extra)</label>
+      <hint>Takes 0-9, -, +, ., space, and comma</hint>
+    </input>
+    <input ref="/NewWidgets/locationMap" appearance="maps">
+      <label>Geopoint with map Widget</label>
+      <hint>Note: this uses DATA and requires a connection</hint>
+    </input>
+    <input ref="/NewWidgets/time">
+      <label>Time Widget</label>
+    </input>
+    <input ref="/NewWidgets/dateTime">
+      <label>Date and Time Widget</label>
+    </input>
+    <select1 appearance="minimal" ref="/NewWidgets/q1">
+      <label>Spinner Widget: Select 1</label>
+      <item>
+        <label>Choice 1</label>
+        <value>c1</value>
+      </item>
+      <item>
+        <label>Choice 2</label>
+        <value>c2</value>
+      </item>
+      <item>
+        <label>Choice 3</label>
+        <value>c3</value>
+      </item>
+      <item>
+        <label>Choice 4</label>
+        <value>c4</value>
+      </item>
+    </select1>
+    <select appearance="minimal" ref="/NewWidgets/q2">
+      <label>Spinner Widget: Multi</label>
+      <item>
+        <label>Choice 1</label>
+        <value>c1</value>
+      </item>
+      <item>
+        <label>Choice 2</label>
+        <value>c2</value>
+      </item>
+      <item>
+        <label>Choice 3</label>
+        <value>c3</value>
+      </item>
+      <item>
+        <label>Choice 4</label>
+        <value>c4</value>
+      </item>
+    </select>
+    <select1 appearance="quick" ref="/NewWidgets/q0">
+      <label>Select Widget - Auto Advance</label>
+      <item>
+        <label>Choice 1</label>
+        <value>c1</value>
+      </item>
+      <item>
+        <label>Choice 2</label>
+        <value>c2</value>
+      </item>
+      <item>
+        <label>Choice 3</label>
+        <value>c3</value>
+      </item>
+      <item>
+        <label>Choice 4</label>
+        <value>c4</value>
+      </item>
+    </select1>
+    <select1 appearance="autocomplete" ref="/NewWidgets/q3">
+      <label>AutoComplete Widget: Countries</label>
+      <hint>Start typing the name of a country</hint>
+      <item>
+        <label>Afghanistan</label>
+        <value>Afghanistan</value>
+      </item>
+      <item>
+        <label>Albania</label>
+        <value>Albania</value>
+      </item>
+      <item>
+        <label>Algeria</label>
+        <value>Algeria</value>
+      </item>
+      <item>
+        <label>Andorra</label>
+        <value>Andorra</value>
+      </item>
+      <item>
+        <label>Angola</label>
+        <value>Angola</value>
+      </item>
+      <item>
+        <label>Anguilla</label>
+        <value>Anguilla</value>
+      </item>
+      <item>
+        <label>Antarctica</label>
+        <value>Antarctica</value>
+      </item>
+      <item>
+        <label>Argentina</label>
+        <value>Argentina</value>
+      </item>
+      <item>
+        <label>Armenia</label>
+        <value>Armenia</value>
+      </item>
+      <item>
+        <label>Aruba</label>
+        <value>Aruba</value>
+      </item>
+      <item>
+        <label>Australia</label>
+        <value>Australia</value>
+      </item>
+      <item>
+        <label>Austria</label>
+        <value>Austria</value>
+      </item>
+      <item>
+        <label>Azerbaijan</label>
+        <value>Azerbaijan</value>
+      </item>
+      <item>
+        <label>Bahamas</label>
+        <value>Bahamas</value>
+      </item>
+      <item>
+        <label>Bahrain</label>
+        <value>Bahrain</value>
+      </item>
+      <item>
+        <label>Bangladesh</label>
+        <value>Bangladesh</value>
+      </item>
+      <item>
+        <label>Barbados</label>
+        <value>Barbados</value>
+      </item>
+      <item>
+        <label>Belarus</label>
+        <value>Belarus</value>
+      </item>
+      <item>
+        <label>Belgium</label>
+        <value>Belgium</value>
+      </item>
+      <item>
+        <label>Belize</label>
+        <value>Belize</value>
+      </item>
+      <item>
+        <label>Benin</label>
+        <value>Benin</value>
+      </item>
+      <item>
+        <label>Bermuda</label>
+        <value>Bermuda</value>
+      </item>
+      <item>
+        <label>Bhutan</label>
+        <value>Bhutan</value>
+      </item>
+      <item>
+        <label>Bolivia</label>
+        <value>Bolivia</value>
+      </item>
+      <item>
+        <label>Botswana</label>
+        <value>Botswana</value>
+      </item>
+      <item>
+        <label>Brazil</label>
+        <value>Brazil</value>
+      </item>
+      <item>
+        <label>Bulgaria</label>
+        <value>Bulgaria</value>
+      </item>
+      <item>
+        <label>Burundi</label>
+        <value>Burundi</value>
+      </item>
+      <item>
+        <label>Cambodia</label>
+        <value>Cambodia</value>
+      </item>
+      <item>
+        <label>Cameroon</label>
+        <value>Cameroon</value>
+      </item>
+      <item>
+        <label>Canada</label>
+        <value>Canada</value>
+      </item>
+      <item>
+        <label>Chad</label>
+        <value>Chad</value>
+      </item>
+      <item>
+        <label>Chile</label>
+        <value>Chile</value>
+      </item>
+      <item>
+        <label>China</label>
+        <value>China</value>
+      </item>
+      <item>
+        <label>Colombia</label>
+        <value>Colombia</value>
+      </item>
+      <item>
+        <label>Comoros</label>
+        <value>Comoros</value>
+      </item>
+      <item>
+        <label>Congo</label>
+        <value>Congo</value>
+      </item>
+      <item>
+        <label>Croatia</label>
+        <value>Croatia</value>
+      </item>
+      <item>
+        <label>Cuba</label>
+        <value>Cuba</value>
+      </item>
+      <item>
+        <label>Cyprus</label>
+        <value>Cyprus</value>
+      </item>
+      <item>
+        <label>Denmark</label>
+        <value>Denmark</value>
+      </item>
+      <item>
+        <label>Djibouti</label>
+        <value>Djibouti</value>
+      </item>
+      <item>
+        <label>Dominica</label>
+        <value>Dominica</value>
+      </item>
+      <item>
+        <label>Ecuador</label>
+        <value>Ecuador</value>
+      </item>
+      <item>
+        <label>Egypt</label>
+        <value>Egypt</value>
+      </item>
+      <item>
+        <label>Eritrea</label>
+        <value>Eritrea</value>
+      </item>
+      <item>
+        <label>Estonia</label>
+        <value>Estonia</value>
+      </item>
+      <item>
+        <label>Ethiopia</label>
+        <value>Ethiopia</value>
+      </item>
+      <item>
+        <label>Fiji</label>
+        <value>Fiji</value>
+      </item>
+      <item>
+        <label>Finland</label>
+        <value>Finland</value>
+      </item>
+      <item>
+        <label>France</label>
+        <value>France</value>
+      </item>
+      <item>
+        <label>Gabon</label>
+        <value>Gabon</value>
+      </item>
+      <item>
+        <label>Gambia</label>
+        <value>Gambia</value>
+      </item>
+      <item>
+        <label>Georgia</label>
+        <value>Georgia</value>
+      </item>
+      <item>
+        <label>Germany</label>
+        <value>Germany</value>
+      </item>
+      <item>
+        <label>Ghana</label>
+        <value>Ghana</value>
+      </item>
+      <item>
+        <label>Gibraltar</label>
+        <value>Gibraltar</value>
+      </item>
+      <item>
+        <label>Greece</label>
+        <value>Greece</value>
+      </item>
+      <item>
+        <label>Greenland</label>
+        <value>Greenland</value>
+      </item>
+      <item>
+        <label>Grenada</label>
+        <value>Grenada</value>
+      </item>
+      <item>
+        <label>Guadeloupe</label>
+        <value>Guadeloupe</value>
+      </item>
+      <item>
+        <label>Guam</label>
+        <value>Guam</value>
+      </item>
+      <item>
+        <label>Guatemala</label>
+        <value>Guatemala</value>
+      </item>
+      <item>
+        <label>Guernsey</label>
+        <value>Guernsey</value>
+      </item>
+      <item>
+        <label>Guinea</label>
+        <value>Guinea</value>
+      </item>
+      <item>
+        <label>Guinea-Bissau</label>
+        <value>Guinea-Bissau</value>
+      </item>
+      <item>
+        <label>Guyana</label>
+        <value>Guyana</value>
+      </item>
+      <item>
+        <label>Haiti</label>
+        <value>Haiti</value>
+      </item>
+      <item>
+        <label>Honduras</label>
+        <value>Honduras</value>
+      </item>
+      <item>
+        <label>Hungary</label>
+        <value>Hungary</value>
+      </item>
+      <item>
+        <label>Iceland</label>
+        <value>Iceland</value>
+      </item>
+      <item>
+        <label>India</label>
+        <value>India</value>
+      </item>
+      <item>
+        <label>Indonesia</label>
+        <value>Indonesia</value>
+      </item>
+      <item>
+        <label>Iraq</label>
+        <value>Iraq</value>
+      </item>
+      <item>
+        <label>Ireland</label>
+        <value>Ireland</value>
+      </item>
+      <item>
+        <label>Israel</label>
+        <value>Israel</value>
+      </item>
+      <item>
+        <label>Italy</label>
+        <value>Italy</value>
+      </item>
+      <item>
+        <label>Jamaica</label>
+        <value>Jamaica</value>
+      </item>
+      <item>
+        <label>Japan</label>
+        <value>Japan</value>
+      </item>
+      <item>
+        <label>Jersey</label>
+        <value>Jersey</value>
+      </item>
+      <item>
+        <label>Jordan</label>
+        <value>Jordan</value>
+      </item>
+      <item>
+        <label>Kazakhstan</label>
+        <value>Kazakhstan</value>
+      </item>
+      <item>
+        <label>Kenya</label>
+        <value>Kenya</value>
+      </item>
+      <item>
+        <label>Kiribati</label>
+        <value>Kiribati</value>
+      </item>
+      <item>
+        <label>Kuwait</label>
+        <value>Kuwait</value>
+      </item>
+      <item>
+        <label>Kyrgyzstan</label>
+        <value>Kyrgyzstan</value>
+      </item>
+      <item>
+        <label>Latvia</label>
+        <value>Latvia</value>
+      </item>
+      <item>
+        <label>Lebanon</label>
+        <value>Lebanon</value>
+      </item>
+      <item>
+        <label>Lesotho</label>
+        <value>Lesotho</value>
+      </item>
+      <item>
+        <label>Liberia</label>
+        <value>Liberia</value>
+      </item>
+      <item>
+        <label>Liechtenstein</label>
+        <value>Liechtenstein</value>
+      </item>
+      <item>
+        <label>Lithuania</label>
+        <value>Lithuania</value>
+      </item>
+      <item>
+        <label>Luxembourg</label>
+        <value>Luxembourg</value>
+      </item>
+      <item>
+        <label>Macao</label>
+        <value>Macao</value>
+      </item>
+      <item>
+        <label>Madagascar</label>
+        <value>Madagascar</value>
+      </item>
+      <item>
+        <label>Malawi</label>
+        <value>Malawi</value>
+      </item>
+      <item>
+        <label>Malaysia</label>
+        <value>Malaysia</value>
+      </item>
+      <item>
+        <label>Maldives</label>
+        <value>Maldives</value>
+      </item>
+      <item>
+        <label>Mali</label>
+        <value>Mali</value>
+      </item>
+      <item>
+        <label>Malta</label>
+        <value>Malta</value>
+      </item>
+      <item>
+        <label>Martinique</label>
+        <value>Martinique</value>
+      </item>
+      <item>
+        <label>Mauritania</label>
+        <value>Mauritania</value>
+      </item>
+      <item>
+        <label>Mauritius</label>
+        <value>Mauritius</value>
+      </item>
+      <item>
+        <label>Mayotte</label>
+        <value>Mayotte</value>
+      </item>
+      <item>
+        <label>Mexico</label>
+        <value>Mexico</value>
+      </item>
+      <item>
+        <label>Monaco</label>
+        <value>Monaco</value>
+      </item>
+      <item>
+        <label>Mongolia</label>
+        <value>Mongolia</value>
+      </item>
+      <item>
+        <label>Montserrat</label>
+        <value>Montserrat</value>
+      </item>
+      <item>
+        <label>Morocco</label>
+        <value>Morocco</value>
+      </item>
+      <item>
+        <label>Mozambique</label>
+        <value>Mozambique</value>
+      </item>
+      <item>
+        <label>Myanmar</label>
+        <value>Myanmar</value>
+      </item>
+      <item>
+        <label>Namibia</label>
+        <value>Namibia</value>
+      </item>
+      <item>
+        <label>Nauru</label>
+        <value>Nauru</value>
+      </item>
+      <item>
+        <label>Nepal</label>
+        <value>Nepal</value>
+      </item>
+      <item>
+        <label>Netherlands</label>
+        <value>Netherlands</value>
+      </item>
+      <item>
+        <label>Nicaragua</label>
+        <value>Nicaragua</value>
+      </item>
+      <item>
+        <label>Niger</label>
+        <value>Niger</value>
+      </item>
+      <item>
+        <label>Nigeria</label>
+        <value>Nigeria</value>
+      </item>
+      <item>
+        <label>Niue</label>
+        <value>Niue</value>
+      </item>
+      <item>
+        <label>Norway</label>
+        <value>Norway</value>
+      </item>
+      <item>
+        <label>Oman</label>
+        <value>Oman</value>
+      </item>
+      <item>
+        <label>Pakistan</label>
+        <value>Pakistan</value>
+      </item>
+      <item>
+        <label>Palau</label>
+        <value>Palau</value>
+      </item>
+      <item>
+        <label>Panama</label>
+        <value>Panama</value>
+      </item>
+      <item>
+        <label>Paraguay</label>
+        <value>Paraguay</value>
+      </item>
+      <item>
+        <label>Peru</label>
+        <value>Peru</value>
+      </item>
+      <item>
+        <label>Philippines</label>
+        <value>Philippines</value>
+      </item>
+      <item>
+        <label>Pitcairn</label>
+        <value>Pitcairn</value>
+      </item>
+      <item>
+        <label>Poland</label>
+        <value>Poland</value>
+      </item>
+      <item>
+        <label>Portugal</label>
+        <value>Portugal</value>
+      </item>
+      <item>
+        <label>Qatar</label>
+        <value>Qatar</value>
+      </item>
+      <item>
+        <label>Reunion</label>
+        <value>Reunion</value>
+      </item>
+      <item>
+        <label>Romania</label>
+        <value>Romania</value>
+      </item>
+      <item>
+        <label>Rwanda</label>
+        <value>Rwanda</value>
+      </item>
+      <item>
+        <label>Samoa</label>
+        <value>Samoa</value>
+      </item>
+      <item>
+        <label>Senegal</label>
+        <value>Senegal</value>
+      </item>
+      <item>
+        <label>Seychelles</label>
+        <value>Seychelles</value>
+      </item>
+      <item>
+        <label>Singapore</label>
+        <value>Singapore</value>
+      </item>
+      <item>
+        <label>Slovakia</label>
+        <value>Slovakia</value>
+      </item>
+      <item>
+        <label>Slovenia</label>
+        <value>Slovenia</value>
+      </item>
+      <item>
+        <label>Somalia</label>
+        <value>Somalia</value>
+      </item>
+      <item>
+        <label>Spain</label>
+        <value>Spain</value>
+      </item>
+      <item>
+        <label>Sudan</label>
+        <value>Sudan</value>
+      </item>
+      <item>
+        <label>Suriname</label>
+        <value>Suriname</value>
+      </item>
+      <item>
+        <label>Swaziland</label>
+        <value>Swaziland</value>
+      </item>
+      <item>
+        <label>Sweden</label>
+        <value>Sweden</value>
+      </item>
+      <item>
+        <label>Switzerland</label>
+        <value>Switzerland</value>
+      </item>
+      <item>
+        <label>Tajikistan</label>
+        <value>Tajikistan</value>
+      </item>
+      <item>
+        <label>Thailand</label>
+        <value>Thailand</value>
+      </item>
+      <item>
+        <label>Timor-Leste</label>
+        <value>Timor-Leste</value>
+      </item>
+      <item>
+        <label>Togo</label>
+        <value>Togo</value>
+      </item>
+      <item>
+        <label>Tokelau</label>
+        <value>Tokelau</value>
+      </item>
+      <item>
+        <label>Tonga</label>
+        <value>Tonga</value>
+      </item>
+      <item>
+        <label>Tunisia</label>
+        <value>Tunisia</value>
+      </item>
+      <item>
+        <label>Turkey</label>
+        <value>Turkey</value>
+      </item>
+      <item>
+        <label>Turkmenistan</label>
+        <value>Turkmenistan</value>
+      </item>
+      <item>
+        <label>Tuvalu</label>
+        <value>Tuvalu</value>
+      </item>
+      <item>
+        <label>Uganda</label>
+        <value>Uganda</value>
+      </item>
+      <item>
+        <label>Ukraine</label>
+        <value>Ukraine</value>
+      </item>
+      <item>
+        <label>Uruguay</label>
+        <value>Uruguay</value>
+      </item>
+      <item>
+        <label>Uzbekistan</label>
+        <value>Uzbekistan</value>
+      </item>
+      <item>
+        <label>Vanuatu</label>
+        <value>Vanuatu</value>
+      </item>
+      <item>
+        <label>Venezuela</label>
+        <value>Venezuela</value>
+      </item>
+      <item>
+        <label>Yemen</label>
+        <value>Yemen</value>
+      </item>
+      <item>
+        <label>Zambia</label>
+        <value>Zambia</value>
+      </item>
+      <item>
+        <label>Zimbabwe</label>
+        <value>Zimbabwe</value>
+      </item>
+    </select1>
+    <select1 appearance="compact" ref="/NewWidgets/q4">
+      <label>Grid Widget</label>
+      <hint>Select an Icon</hint>
+      <item>
+        <label ref="jr:itext('sixChoicesc1')"/>
+        <value>c1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc2')"/>
+        <value>c2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc3')"/>
+        <value>c3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc4')"/>
+        <value>c4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc5')"/>
+        <value>c5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc6')"/>
+        <value>c6</value>
+      </item>
+    </select1>
+    <select1 appearance="quickcompact" ref="/NewWidgets/q4a">
+      <label>Grid Widget - Auto Advance</label>
+      <hint>Select an Icon</hint>
+      <item>
+        <label ref="jr:itext('sixChoicesc1')"/>
+        <value>c1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc2')"/>
+        <value>c2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc3')"/>
+        <value>c3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc4')"/>
+        <value>c4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc5')"/>
+        <value>c5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc6')"/>
+        <value>c6</value>
+      </item>
+    </select1>
+    <select appearance="compact-2" ref="/NewWidgets/q5">
+      <label>Grid Widget Multi-Select</label>
+      <item>
+        <label ref="jr:itext('sixChoicesc1')"/>
+        <value>c1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc2')"/>
+        <value>c2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc3')"/>
+        <value>c3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc4')"/>
+        <value>c4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc5')"/>
+        <value>c5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('sixChoicesc6')"/>
+        <value>c6</value>
+      </item>
+    </select>
+    <select1 appearance="list" ref="/NewWidgets/q6">
+      <label>List Widget</label>
+      <item>
+        <label ref="jr:itext('yesnoYes')"/>
+        <value>Yes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('yesnoNo')"/>
+        <value>No</value>
+      </item>
+    </select1>
+    <select1 appearance="list" ref="/NewWidgets/q7">
+      <label>Longer List Widget</label>
+      <item>
+        <label>Abc</label>
+        <value>c1</value>
+      </item>
+      <item>
+        <label>Efg</label>
+        <value>c2</value>
+      </item>
+      <item>
+        <label>Hij</label>
+        <value>c3</value>
+      </item>
+    </select1>
+    <group appearance="field-list" ref="/NewWidgets/listGroup">
+      <label>List Group</label>
+      <select1 appearance="label" ref="/NewWidgets/listGroup/q8">
+        <label>Labeled Choices</label>
+        <item>
+          <label>Yes</label>
+          <value>yes</value>
+        </item>
+        <item>
+          <label>No</label>
+          <value>no</value>
+        </item>
+      </select1>
+      <select1 appearance="list-nolabel" ref="/NewWidgets/listGroup/q9">
+        <label>Q1</label>
+        <item>
+          <label>Yes</label>
+          <value>yes</value>
+        </item>
+        <item>
+          <label>No</label>
+          <value>no</value>
+        </item>
+      </select1>
+      <select1 appearance="list-nolabel" ref="/NewWidgets/listGroup/q10">
+        <label>Question 2</label>
+        <item>
+          <label>Yes</label>
+          <value>yes</value>
+        </item>
+        <item>
+          <label>No</label>
+          <value>no</value>
+        </item>
+      </select1>
+      <select1 appearance="list-nolabel" ref="/NewWidgets/listGroup/q11">
+        <label>Choice 3</label>
+        <item>
+          <label>Yes</label>
+          <value>yes</value>
+        </item>
+        <item>
+          <label>No</label>
+          <value>no</value>
+        </item>
+      </select1>
+      <select1 appearance="list-nolabel" ref="/NewWidgets/listGroup/q12">
+        <label>Option 4</label>
+        <item>
+          <label>Yes</label>
+          <value>yes</value>
+        </item>
+        <item>
+          <label>No</label>
+          <value>no</value>
+        </item>
+      </select1>
+    </group>
+    <group appearance="field-list" ref="/NewWidgets/multiListGroup">
+      <label>Multi List Group</label>
+      <select appearance="label" ref="/NewWidgets/multiListGroup/q13">
+        <label>Multi Choice List</label>
+        <item>
+          <label ref="jr:itext('yesnoYes')"/>
+          <value>Yes</value>
+        </item>
+        <item>
+          <label ref="jr:itext('yesnoNo')"/>
+          <value>No</value>
+        </item>
+      </select>
+      <select appearance="list-nolabel" ref="/NewWidgets/multiListGroup/q14">
+        <label>Brian</label>
+        <item>
+          <label ref="jr:itext('yesnoYes')"/>
+          <value>Yes</value>
+        </item>
+        <item>
+          <label ref="jr:itext('yesnoNo')"/>
+          <value>No</value>
+        </item>
+      </select>
+      <select appearance="list-nolabel" ref="/NewWidgets/multiListGroup/q15">
+        <label>Michael</label>
+        <item>
+          <label ref="jr:itext('yesnoYes')"/>
+          <value>Yes</value>
+        </item>
+        <item>
+          <label ref="jr:itext('yesnoNo')"/>
+          <value>No</value>
+        </item>
+      </select>
+    </group>
+    <group>
+      <label>Repeating multi-questions per screen</label>
+      <repeat nodeset="/NewWidgets/repeatingFieldList" appearance="field-list">
+        <group appearance="field-list">
+          <input ref="repeat_string">
+            <label>string question</label>
+            <hint>these questions repeat</hint>
+          </input>
+          <input ref="repeat_int">
+            <label>integer question</label>
+            <hint>pre-populated from instance</hint>
+          </input>
+        </group>
+      </repeat>
+    </group>
+  </h:body>
+</h:html>

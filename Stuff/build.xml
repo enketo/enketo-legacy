@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<project basedir="../" default="compile">
+
+  <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
+           classpath="lib/compiler.jar"/>
+
+  <target name="compile">
+    
+    <jscomp compilationLevel="advanced" warning="verbose" 
+            debug="false" output="public/js-min/launch-all-min.js">
+
+      <externs dir="${basedir}/src/js">
+        <file name="__extern.js"/>
+      </externs>
+
+      <sources dir="${basedir}/src/js">
+        <file name="__common.js"/>
+        <file name="__form.js"/>
+        <file name="__launch.js"/>
+      </sources>
+
+      <!--<sources dir="${basedir}/other">
+        <file name="simple3.js"/>
+      </sources>-->
+
+    </jscomp>
+
+    <jscomp compilationLevel="advanced" warning="quiet" 
+            debug="false" output="public/js-min/surveyfront-all-min.js">
+
+      <externs dir="${basedir}/src/js">
+        <file name="__extern.js"/>
+      </externs>
+
+      <sources dir="${basedir}/src/js">
+        <file name="__common.js"/>
+        <!--<file name="__storage.js"/>-->
+        <!--<file name="__form.js"/>-->
+        <!--<file name="__survey.js"/>-->
+      </sources>
+
+    </jscomp>
+    
+  </target>
+
+</project>

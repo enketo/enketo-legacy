@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:jr="http://openrosa.org/javarosa">
+	<head>
+		<title>Hypertension Screening</title>
+		<xf:model>
+			<xf:itext>
+				<translation lang="English">
+					<text id="hello">
+						<value>hello</value>
+					</text>
+				</translation>
+			</xf:itext>
+			<xf:instance>
+				<data id="hypertension">
+					<StartTime/>
+					<EndTime/>
+					<DeviceId/>
+					<SubscriberId/>
+					<FirstName/>
+					<MiddleName/>
+					<FamilyName/>
+					<AgeType/>
+					<BirthDateEstimated/>
+					<BirthDate/>
+					<AgeInYears/>
+					<AgeInMonths/>
+					<ApproximateAge/>
+					<NotEligible/>
+					<Gender/>
+					<AmpathId/>
+					<AmpathIdManual/>
+					<HctId/>
+					<HctIdManual/>
+					<NationalId/>
+					<PhoneNumber/>
+					<HistoryHtn/>
+					<HistoryDiabetes/>
+					<HistoryHeartDisease/>
+					<HistoryKidneyDisease/>
+					<HistoryHiv/>
+					<HistoryPregnancy/>
+					<HistoryOther/>
+					<MedicationsDiabetes/>
+					<MedicationsHypertension/>
+					<MedicationsHeartDisease/>
+					<BloodPressureSystolic/>
+					<BloodPressureDiastolic/>
+					<RandomBloodSugar/>
+					<HighBloodPressureUrgent/>
+					<HighSystolicNoMeds/>
+					<HighDiastolicNoMeds/>
+					<HighSystolicYesMeds/>
+					<HighDiastolicYesMeds/>
+					<HighBloodSugar/>
+					<ReferralMessageUrgent/>
+					<ReferralMessageDiabetes/>
+					<ReferralMessageHypertension/>
+					<ReferralMessagePoorlyControlled/>
+					<HealthCenterAppointment/>
+					<HealthCenterAppointmentDate/>
+					<EncounterProvider/>
+					<EncounterDate/>
+				</data>
+			</xf:instance>
+			<!-- basic tracking information -->
+			<xf:bind nodeset="/data/StartTime" type="dateTime" jr:preload="timestamp" jr:preloadParams="start"/>
+			<xf:bind nodeset="/data/EndTime" type="dateTime" jr:preload="timestamp" jr:preloadParams="end"/>
+			<xf:bind nodeset="/data/DeviceId" type="string" jr:preload="property" jr:preloadParams="deviceid"/>
+			<xf:bind nodeset="/data/SubscriberId" type="string" jr:preload="property" jr:preloadParams="subscriberid"/>
+			<!-- age to determine eligibility (>= 216 months old) -->
+			<xf:bind nodeset="/data/AgeType" type="string"/>
+			<xf:bind nodeset="/data/BirthDateEstimated" type="string"/>
+			<xf:bind nodeset="/data/BirthDate" relevant="/data/AgeType='BirthDate'" constraint=". &lt;= today()" jr:constraintMsg="Birth dates must be before today." type="date"/>
+			<xf:bind nodeset="/data/AgeInYears" constraint=". &gt;= 0 and . &lt;= 110" type="int" relevant="/data/AgeType='AgeInYearsMonths'" jr:constraintMsg="Age must be between 0 and 110."/>
+			<xf:bind nodeset="/data/AgeInMonths" constraint=". &gt;= 0 and . &lt;= 11" type="int" relevant="/data/AgeType='AgeInYearsMonths' and /data/AgeInYears &lt; 5" jr:constraintMsg="Age must be between 0 and 11."/>
+			<xf:bind nodeset="/data/ApproximateAge" readonly="true()" type="int" calculate="if(/data/AgeType='BirthDate', ((now()-/data/BirthDate) div 30.4375), (if(/data/AgeInMonths &gt; 0, ((/data/AgeInYears * 12)+/data/AgeInMonths), (/data/AgeInYears * 12))))"/>
+			<xf:bind nodeset="/data/NotEligible" type="string" readonly="true()" relevant="/data/ApproximateAge = '' or /data/ApproximateAge &lt; 216"/>
+			<!-- demographics -->
+			<xf:bind nodeset="/data/FirstName" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/MiddleName" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/FamilyName" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/Gender" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<!-- identifiers -->
+			<xf:bind nodeset="/data/AmpathId" type="barcode" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/AmpathIdManual" type="string" relevant="selected(/data/AmpathId, '') and /data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/HctId" type="barcode" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/HctIdManual" type="string" relevant="selected(/data/HctId, '') and /data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/NationalId" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/PhoneNumber" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<!-- history -->
+			<xf:bind nodeset="/data/HistoryHtn" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/HistoryDiabetes" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/HistoryHeartDisease" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/HistoryKidneyDisease" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/HistoryHiv" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/HistoryPregnancy" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216 and /data/Gender = 'Female'"/>
+			<xf:bind nodeset="/data/HistoryOther" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<!-- medications -->
+			<xf:bind nodeset="/data/MedicationsDiabetes" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/MedicationsHypertension" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/MedicationsHeartDisease" required="true()" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<!-- clinical measurements -->
+			<xf:bind nodeset="/data/BloodPressureSystolic" required="true()" type="int" relevant="/data/ApproximateAge &gt;= 216" constraint=". &gt; 0 and . &lt; 300" jr:constraintMsg="Systolic blood pressure must be between 0 and 300"/>
+			<xf:bind nodeset="/data/BloodPressureDiastolic" required="true()" type="int" relevant="/data/ApproximateAge &gt;= 216" constraint=". &gt; 0 and . &lt; 200" jr:constraintMsg="Diastolic blood pressure must be between 0 and 200"/>
+			<xf:bind nodeset="/data/RandomBloodSugar" required="true()" type="decimal" relevant="/data/ApproximateAge &gt;= 216" constraint=". &gt; 0 and . &lt; 60 " jr:constraintMsg="Random blood sugar must be between 0 and 60"/>
+			<!-- flags for alerts -->
+			<xf:bind nodeset="/data/HighBloodPressureUrgent" type="string" relevant="/data/ApproximateAge &gt;= 216" calculate="if(/data/BloodPressureSystolic &gt;= 180 or /data/BloodPressureDiastolic &gt;= 110, 'Yes', 'No') "/>
+			<xf:bind nodeset="/data/HighSystolicNoMeds" type="string" relevant="/data/ApproximateAge &gt;= 216" calculate="if(/data/BloodPressureSystolic &gt;= 160 and /data/BloodPressureSystolic &lt; 180, 'Yes', 'No') "/>
+			<xf:bind nodeset="/data/HighDiastolicNoMeds" type="string" relevant="/data/ApproximateAge &gt;= 216" calculate="if(/data/BloodPressureDiastolic &gt;= 100 and /data/BloodPressureDiastolic &lt; 110, 'Yes', 'No') "/>
+			<xf:bind nodeset="/data/HighSystolicYesMeds" type="string" relevant="/data/ApproximateAge &gt;= 216" calculate="if(/data/BloodPressureSystolic &gt;= 140 and /data/BloodPressureSystolic &lt; 180 and /data/MedicationsHypertension = 'Yes', 'Yes', 'No') "/>
+			<xf:bind nodeset="/data/HighDiastolicYesMeds" type="string" relevant="/data/ApproximateAge &gt;= 216" calculate="if(/data/BloodPressureDiastolic &gt; 90 and /data/BloodPressureDiastolic &lt; 110 and /data/MedicationsHypertension = 'Yes', 'Yes', 'No') "/>
+			<xf:bind nodeset="/data/HighBloodSugar" type="string" relevant="/data/ApproximateAge &gt;= 216" calculate="if(/data/RandomBloodSugar &gt; 7.0, 'Yes', 'No') "/>
+			<!-- referral messages -->
+			<xf:bind nodeset="/data/ReferralMessageUrgent" type="string" relevant="/data/ApproximateAge &gt;= 216 and /data/HighBloodPressureUrgent = 'Yes'" readonly="true()"/>
+			<xf:bind nodeset="/data/ReferralMessageHypertension" type="string" relevant="/data/ApproximateAge &gt;= 216 and /data/HighBloodPressureUrgent = 'No' and (/data/HighSystolicNoMeds = 'Yes' or /data/HighDiastolicNoMeds = 'Yes')" readonly="true()"/>
+			<xf:bind nodeset="/data/ReferralMessagePoorlyControlled" type="string" relevant="/data/ApproximateAge &gt;= 216 and /data/HighBloodPressureUrgent = 'No' and (/data/HighSystolicYesMeds = 'Yes' or /data/HighDiastolicYesMeds = 'Yes')" readonly="true()"/>
+			<xf:bind nodeset="/data/ReferralMessageDiabetes" type="string" relevant="/data/ApproximateAge &gt;= 216 and /data/HighBloodPressureUrgent = 'No' and /data/HighBloodSugar = 'Yes'" readonly="true()"/>
+			<!-- referral appointment -->
+			<xf:bind nodeset="/data/HealthCenterAppointment" type="string" relevant="/data/ApproximateAge &gt;= 216 "/>
+			<xf:bind nodeset="/data/HealthCenterAppointmentDate" type="date" relevant="/data/ApproximateAge &gt;= 216 and selected(/data/HealthCenterAppointment, 'Yes')" constraint=". &gt;= today()" jr:constraintMsg="Sorry, only dates in the future are allowed"/>
+			<!-- encounter -->
+			<xf:bind nodeset="/data/EncounterProvider" type="string" relevant="/data/ApproximateAge &gt;= 216"/>
+			<xf:bind nodeset="/data/EncounterDate" type="date" relevant="/data/ApproximateAge &gt;= 216"/>
+		</xf:model>
+	</head>
+	<body>
+		<xf:group>
+			<xf:label>Patient Demographics</xf:label>
+			<xf:select1 ref="AgeType">
+				<xf:label>Age entry mode</xf:label>
+				<xf:item>
+					<xf:label>Enter full birthdate</xf:label>
+					<xf:value>BirthDate</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>Enter age in years</xf:label>
+					<xf:value>AgeInYearsMonths</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:select1 ref="BirthDateEstimated">
+				<xf:label>Age/Birthdate estimated</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:input ref="BirthDate">
+				<xf:label>Birth date</xf:label>
+			</xf:input>
+			<xf:input ref="AgeInYears">
+				<xf:label>Number of years</xf:label>
+			</xf:input>
+			<xf:input ref="AgeInMonths">
+				<xf:label>Number of months</xf:label>
+			</xf:input>
+			<xf:input ref="NotEligible">
+				<xf:label>Patient is under 18 and is not eligible for the study.
+				</xf:label>
+			</xf:input>
+			<xf:input ref="FirstName">
+				<xf:label>First name</xf:label>
+			</xf:input>
+			<xf:input ref="MiddleName">
+				<xf:label>Middle name</xf:label>
+			</xf:input>
+			<xf:input ref="FamilyName">
+				<xf:label>Family name</xf:label>
+			</xf:input>
+			<xf:select1 ref="Gender">
+				<xf:label>Gender</xf:label>
+				<xf:item>
+					<xf:label>Male</xf:label>
+					<xf:value>Male</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>Female</xf:label>
+					<xf:value>Female</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:input ref="AmpathId">
+				<xf:label>AMPATH ID</xf:label>
+				<xf:hint>If no barcode, go to the next question.</xf:hint>
+			</xf:input>
+			<xf:input ref="AmpathIdManual">
+				<xf:label>AMPATH ID</xf:label>
+			</xf:input>
+			<xf:input ref="HctId">
+				<xf:label>HCT ID</xf:label>
+				<xf:hint>If no barcode, go to the next question.</xf:hint>
+			</xf:input>
+			<xf:input ref="HctIdManual">
+				<xf:label>HCT ID</xf:label>
+			</xf:input>
+			<xf:input ref="NationalId">
+				<xf:label>National ID</xf:label>
+			</xf:input>
+			<xf:input ref="PhoneNumber">
+				<xf:label>Contact phone number</xf:label>
+			</xf:input>
+		</xf:group>
+		<xf:group>
+			<xf:label>Patient History</xf:label>
+			<xf:select1 ref="HistoryHtn">
+				<xf:label>History of HTN</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>Unknown</xf:label>
+					<xf:value>Unknown</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:select1 ref="HistoryDiabetes">
+				<xf:label>History of diabetes</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>Unknown</xf:label>
+					<xf:value>Unknown</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:select1 ref="HistoryHeartDisease">
+				<xf:label>History of heart disease</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>Unknown</xf:label>
+					<xf:value>Unknown</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:select1 ref="HistoryKidneyDisease">
+				<xf:label>History of kidney disease</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>Unknown</xf:label>
+					<xf:value>Unknown</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:select1 ref="HistoryHiv">
+				<xf:label>History of HIV</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>Unknown</xf:label>
+					<xf:value>Unknown</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:select1 ref="HistoryPregnancy">
+				<xf:label>History of pregnancy</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>Unknown</xf:label>
+					<xf:value>Unknown</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:input ref="HistoryOther">
+				<xf:label>Any other known diseases</xf:label>
+			</xf:input>
+		</xf:group>
+		<xf:group>
+			<xf:label>Patient Drugs</xf:label>
+			<xf:select1 ref="MedicationsDiabetes">
+				<xf:label>Drugs for diabetes</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:select1 ref="MedicationsHypertension">
+				<xf:label>Drugs for hypertension</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:select1 ref="MedicationsHeartDisease">
+				<xf:label>Drugs for heart disease</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+			</xf:select1>
+		</xf:group>
+		<xf:group>
+			<xf:label>Clinical Elements</xf:label>
+			<xf:input ref="BloodPressureSystolic">
+				<xf:label>Systolic BP (mmHg)</xf:label>
+				<xf:hint>Measure the right arm while seated</xf:hint>
+			</xf:input>
+			<xf:input ref="BloodPressureDiastolic">
+				<xf:label>Diastolic BP (mmHg)</xf:label>
+				<xf:hint>Measure the right arm while seated</xf:hint>
+			</xf:input>
+			<xf:input ref="RandomBloodSugar">
+				<xf:label>Blood sugar (mmol/L)</xf:label>
+			</xf:input>
+		</xf:group>
+		<xf:group>
+			<xf:label>Referral Information</xf:label>
+			<xf:input ref="ReferralMessageUrgent">
+				<xf:label>Blood pressure extremely high. Patient needs immediate medical attention.</xf:label>
+			</xf:input>
+			<xf:input ref="ReferralMessageHypertension">
+				<xf:label>Patient is at risk for hypertension. Please refer to the Health Center.</xf:label>
+			</xf:input>
+			<xf:input ref="ReferralMessagePoorlyControlled">
+				<xf:label>Patient is poorly controlled. Please refer to the Health Center.</xf:label>
+			</xf:input>
+			<xf:input ref="ReferralMessageDiabetes">
+				<xf:label>Patient is at risk for diabetes. Please refer to the Health Center.</xf:label>
+			</xf:input>
+			<xf:select1 ref="HealthCenterAppointment">
+				<xf:label>Health center appointment</xf:label>
+				<xf:item>
+					<xf:label>Yes</xf:label>
+					<xf:value>Yes</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>No</xf:label>
+					<xf:value>No</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:input ref="HealthCenterAppointmentDate">
+				<xf:label>Appointment Date</xf:label>
+			</xf:input>
+		</xf:group>
+		<xf:group>
+			<xf:label>Encounter Information</xf:label>
+			<xf:select1 ref="EncounterProvider">
+				<xf:label>Provider name</xf:label>
+				<xf:item>
+					<xf:label>Bob</xf:label>
+					<xf:value>Sally</xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label>Sally</xf:label>
+					<xf:value>Sally</xf:value>
+				</xf:item>
+			</xf:select1>
+			<xf:input ref="EncounterDate">
+				<xf:label>Encounter date</xf:label>
+			</xf:input>
+		</xf:group>
+	</body>
+</html>

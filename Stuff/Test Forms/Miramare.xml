@@ -1,0 +1,782 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:ev="http://www.w3.org/2001/xml-events"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jr="http://openrosa.org/javarosa"
+        >
+    <h:head>
+        <h:title>Miramare</h:title>
+        <model>
+            <itext>
+                <translation lang="English" default="">
+                                     
+                    <!-- Habitat -->
+                    <text id="hab_dev">
+                        <value form="long">Developed</value>
+                        <value form="short">Developed</value>
+                        <value form="image">jr://images/dev.png</value>
+                    </text>
+                    <text id="hab_wooded">
+                        <value form="long">Wooded area</value>
+                        <value form="short">Wooded area</value>
+                        <value form="image">jr://images/wooded.png</value>
+                    </text>
+                    <text id="hab_path">
+                        <value form="long">Path in park</value>
+                        <value form="short">Path in park</value>
+                        <value form="image">jr://images/path.png</value>
+                    </text>
+                    <text id="hab_garden">
+                        <value form="long">Gardens</value>
+                        <value form="short">Gardens</value>
+                        <value form="image">jr://images/garden.png</value>
+                    </text>
+                    <text id="hab_road">
+                        <value form="long">Near roads</value>
+                        <value form="short">Near roads</value>
+                        <value form="image">jr://images/road.png</value>
+                    </text>
+                    <text id="hab_castle">
+                        <value form="long">Castle</value>
+                        <value form="short">Castle</value>
+                        <value form="image">jr://images/castle.png</value>
+                    </text>
+                    <text id="hab_beach">
+                        <value form="long">Rocky beach and tide pools</value>
+                        <value form="short">Rocky beach and tide pools</value>
+                        <value form="image">jr://images/beach.png</value>
+                    </text>
+                    <text id="hab_marina">
+                        <value form="long">Marina</value>
+                        <value form="short">Marina</value>
+                        <value form="image">jr://images/marina.png</value>
+                    </text>
+                    <text id="hab_pond">
+                        <value form="long">Fresh-water ponds</value>
+                        <value form="short">Fresh-water ponds</value>
+                        <value form="image">jr://images/pond.png</value>
+                    </text>
+                    <text id="hab_water">
+                        <value form="long">Open salt water</value>
+                        <value form="short">Open salt water</value>
+                        <value form="image">jr://images/water.png</value>
+                    </text>
+                                        
+                    <!-- Observe -->
+                    <text id="obs_see">
+                        <value form="long">See</value>
+                        <value form="short">See</value>
+                        <value form="image">jr://images/see.png</value>
+                    </text>
+                    <text id="obs_signs">
+                        <value form="long">Signs</value>
+                        <value form="short">Signs</value>
+                        <value form="image">jr://images/signs.png</value>
+                    </text>
+                    
+                    <!-- See -->
+                    <text id="see_bird">
+                        <value form="long">Bird</value>
+                        <value form="short">Bird</value>
+                        <value form="image">jr://images/bird.jpg</value>
+                    </text>
+                    <text id="see_rept_amph">
+                        <value form="long">Reptile or amphibian</value>
+                        <value form="short">Reptile or amphibian</value>
+                        <value form="image">jr://images/rept_amph.jpg</value>
+                    </text>
+                    <text id="see_rodents">
+                        <value form="long">Rodents and rabbits</value>
+                        <value form="short">Rodents and rabbits</value>
+                        <value form="image">jr://images/rodents.jpg</value>
+                    </text>
+                    <text id="see_shrews">
+                    	<value form="long">Shrews and other small mammals</value>
+                    	<value form="short">Shrews and other small mammals</value>
+                        <value form="image">jr://images/shrews.jpg</value>
+                    </text>
+                    <text id="see_carnivore">
+                        <value form="long">Carnivorous mammal</value>
+                        <value form="short">Carnivorous mammal</value>
+                        <value form="image">jr://images/carnivore.jpg</value>
+                    </text>
+                    <text id="see_ungulate">
+                    	<value form="long">Ungulate</value>
+                    	<value form="short">Ungulate</value>
+                        <value form="image">jr://images/ungulate.jpg</value>
+                    </text>
+                    <text id="see_marine">
+                    	<value form="long">Marine mammals</value>
+                    	<value form="short">Marine mammals</value>
+                        <value form="image">jr://images/marinemammals.jpg</value>
+                    </text>
+<!-- Birds -->                    
+<text id="sparrow">
+	<value form="long">House sparrow</value>
+	<value form="short">House sparrow</value>
+	<value form="image">jr://images/sparrow.png</value>
+</text>
+<text id="pigeon">
+	<value form="long">Rock pigeon</value>
+	<value form="short">Rock pigeon</value>
+	<value form="image">jr://images/pigeon.png</value>
+</text>
+<text id="nuthatch">
+	<value form="long">European nuthatch</value>
+	<value form="short">European nuthatch</value>
+	<value form="image">jr://images/nuthatch.png</value>
+</text>
+<text id="robin">
+	<value form="long">European robin</value>
+	<value form="short">European robin</value>
+	<value form="image">jr://images/robin.png</value>
+</text>
+<text id="tit">
+	<value form="long">Great tit</value>
+	<value form="short">Great tit</value>
+	<value form="image">jr://images/tit.png</value>
+</text>
+<text id="starling">
+	<value form="long">Common starling</value>
+	<value form="short">Common starling</value>
+	<value form="image">jr://images/starling.png</value>
+</text>
+<text id="hawfinch">
+	<value form="long">Hawfinch</value>
+	<value form="short">Hawfinch</value>
+	<value form="image">jr://images/hawfinch.png</value>
+</text>
+<text id="bluethroat">
+	<value form="long">Bluethroat</value>
+	<value form="short">Bluethroat</value>
+	<value form="image">jr://images/bluethroat.png</value>
+</text>
+<text id="wren">
+	<value form="long">Winter wren</value>
+	<value form="short">Winter wren</value>
+	<value form="image">jr://images/wren.png</value>
+</text>
+<text id="knot">
+	<value form="long">Red knot</value>
+	<value form="short">Red knot</value>
+	<value form="image">jr://images/knot.png</value>
+</text>
+<text id="jay">
+	<value form="long">Eurasian jay</value>
+	<value form="short">Eurasian jay</value>
+	<value form="image">jr://images/jay.png</value>
+</text>
+<text id="woodpecker">
+	<value form="long">Great spotted woodpecker</value>
+	<value form="short">Great spotted woodpecker</value>
+	<value form="image">jr://images/woodpecker.png</value>
+</text>
+<text id="eagle">
+	<value form="long">Golden eagle</value>
+	<value form="short">Golden eagle</value>
+	<value form="image">jr://images/eagle.png</value>
+</text>
+<text id="kingfisher">
+	<value form="long">Kingfisher</value>
+	<value form="short">Kingfisher</value>
+	<value form="image">jr://images/kingfisher.png</value>
+</text>
+<text id="blackbird">
+	<value form="long">Blackbird</value>
+	<value form="short">Blackbird</value>
+	<value form="image">jr://images/blackbird.png</value>
+</text>
+<text id="crow">
+	<value form="long">Carrion crow</value>
+	<value form="short">Carrion crow</value>
+	<value form="image">jr://images/crow.png</value>
+</text>
+<text id="gull">
+	<value form="long">Glaucous gull</value>
+	<value form="short">Glaucous gull</value>
+	<value form="image">jr://images/gull.png</value>
+</text>
+<text id="yellowgull">
+	<value form="long">Yellow-legged gull</value>
+	<value form="short">Yellow-legged gull</value>
+	<value form="image">jr://images/yellowgull.png</value>
+</text>
+<text id="shag">
+	<value form="long">European shag</value>
+	<value form="short">European shag</value>
+	<value form="image">jr://images/shag.png</value>
+</text>
+<text id="pelican">
+	<value form="long">Dalmatian pelican</value>
+	<value form="short">Dalmatian pelican</value>
+	<value form="image">jr://images/pelican.png</value>
+</text>
+<text id="heron">
+	<value form="long">Grey heron</value>
+	<value form="short">Grey heron</value>
+	<value form="image">jr://images/heron.png</value>
+</text>
+<text id="egret">
+	<value form="long">Grey egret</value>
+	<value form="short">Grey egret</value>
+	<value form="image">jr://images/egret.png</value>
+</text>
+<text id="goose">
+	<value form="long">Canada goose</value>
+	<value form="short">Canada goose</value>
+	<value form="image">jr://images/goose.png</value>
+</text>
+<text id="otherbird">
+	<value form="long">Other bird</value>
+	<value form="short">Other bird</value>
+</text>
+
+<!-- Reptiles and amphibians -->
+<text id="lizard">
+	<value form="long">Italian wall lizard</value>
+	<value form="short">Italian wall lizard</value>
+	<value form="image">jr://images/lizard.png</value>
+</text>
+<text id="turtle">
+	<value form="long">European pond turtle</value>
+	<value form="short">European pond turtle</value>
+	<value form="image">jr://images/turtle.png</value>
+</text>
+<text id="frog">
+	<value form="long">Common frog</value>
+	<value form="short">Common frog</value>
+	<value form="image">jr://images/frog.png</value>
+</text>
+<text id="agilefrog">
+	<value form="long">Italian agile frog</value>
+	<value form="short">Italian agile frog</value>
+	<value form="image">jr://images/agilefrog.png</value>
+</text>
+<text id="treefrog">
+	<value form="long">Italian tree frog</value>
+	<value form="short">Italian tree frog</value>
+	<value form="image">jr://images/treefrog.png</value>
+</text>
+<text id="salamander">
+	<value form="long">Cave salamander</value>
+	<value form="short">Cave salamander</value>
+	<value form="image">jr://images/salamander.png</value>
+</text>
+<text id="otherreptamph">
+	<value form="long">Other reptile or amphibian</value>
+	<value form="short">Other reptile or amphibian</value>
+</text>
+
+<!-- Rodents -->
+<text id="vole">
+	<value form="long">Common vole</value>
+	<value form="short">Common vole</value>
+	<value form="image">jr://images/vole.png</value>
+</text>
+<text id="squirrel">
+	<value form="long">Eurasian red squirrel</value>
+	<value form="short">Eurasian red squirrel</value>
+	<value form="image">jr://images/squirrel.png</value>
+</text>
+<text id="mouse">
+	<value form="long">Yellow-necked mouse</value>
+	<value form="short">Yellow-necked mouse</value>
+	<value form="image">jr://images/mouse.png</value>
+</text>
+<text id="forestdormouse">
+	<value form="long">Forest dormouse</value>
+	<value form="short">Forest dormouse</value>
+	<value form="image">jr://images/forestdormouse.png</value>
+</text>
+<text id="gardendormouse">
+	<value form="long">Garden dormouse</value>
+	<value form="short">Garden dormouse</value>
+	<value form="image">jr://images/gardendormouse.png</value>
+</text>
+<text id="pinevole">
+	<value form="long">Pine vole</value>
+	<value form="short">Pine vole</value>
+	<value form="image">jr://images/pinevole.png</value>
+</text>
+<text id="rabbit">
+	<value form="long">European rabbit</value>
+	<value form="short">European rabbit</value>
+	<value form="image">jr://images/rabbit.png</value>
+</text>
+<text id="hare">
+	<value form="long">European hare</value>
+	<value form="short">European hare</value>
+	<value form="image">jr://images/hare.png</value>
+</text>
+<text id="mountainhare">
+	<value form="long">Mountain hare</value>
+	<value form="short">Mountain hare</value>
+	<value form="image">jr://images/mountainhare.png</value>
+</text>
+<text id="hedgehog">
+	<value form="long">West European hedgehog</value>
+	<value form="short">West European hedgehog</value>
+	<value form="image">jr://images/hedgehog.png</value>
+</text>
+<text id="porcupine">
+	<value form="long">Crested porcupine</value>
+	<value form="short">Crested porcupine</value>
+	<value form="image">jr://images/porcupine.png</value>
+</text>
+<text id="otherrodent">
+	<value form="long">Other rodent or rabbit</value>
+	<value form="short">Other rodent or rabbit</value>
+</text>
+                    
+<!-- Shrews -->
+<text id="shrew">
+	<value form="long">Common shrew</value>
+	<value form="short">Common shrew</value>
+	<value form="image">jr://images/shrew.png</value>
+</text>
+<text id="watershrew">
+	<value form="long">Mediterranean water shrew</value>
+	<value form="short">Mediterranean water shrew</value>
+	<value form="image">jr://images/watershrew.png</value>
+</text>
+<text id="bicoloredshrew">
+	<value form="long">Bi-colored shrew</value>
+	<value form="short">Bi-colored shrew</value>
+	<value form="image">jr://images/bicoloredshrew.png</value>
+</text>
+<text id="lessershrew">
+	<value form="long">Lesser white-toothed shrew</value>
+	<value form="short">Lesser white-toothed shrew</value>
+	<value form="image">jr://images/lessershrew.png</value>
+</text>
+<text id="etruscanshrew">
+	<value form="long">Etruscan shrew</value>
+	<value form="short">Etruscan shrew</value>
+	<value form="image">jr://images/etruscanshrew.png</value>
+</text>
+<text id="othersmallmammal">
+	<value form="long">Other small mammal</value>
+	<value form="short">Other small mammal</value>
+</text>
+
+<!-- Carnivores -->
+<text id="fox">
+	<value form="long">Red Fox</value>
+	<value form="short">Red Fox</value>
+	<value form="image">jr://images/fox.png</value>
+</text>
+<text id="marten">
+	<value form="long">European pine marten</value>
+	<value form="short">European pine marten</value>
+	<value form="image">jr://images/marten.png</value>
+</text>
+<text id="stoat">
+	<value form="long">Stoat</value>
+	<value form="short">Stoat</value>
+	<value form="image">jr://images/stoat.png</value>
+</text>
+<text id="weasel">
+	<value form="long">Least weasel</value>
+	<value form="short">Least weasel</value>
+	<value form="image">jr://images/weasel.png</value>
+</text>
+<text id="genet">
+	<value form="long">Common genet</value>
+	<value form="short">Common genet</value>
+	<value form="image">jr://images/genet.png</value>
+</text>
+<text id="otter">
+	<value form="long">European river otter</value>
+	<value form="short">European river otter</value>
+	<value form="image">jr://images/otter.png</value>
+</text>
+<text id="lynx">
+	<value form="long">Eurasian lynx</value>
+	<value form="short">Eurasian lynx</value>
+	<value form="image">jr://images/lynx.png</value>
+</text>
+<text id="wolf">
+	<value form="long">Gray wolf</value>
+	<value form="short">Gray wolf</value>
+	<value form="image">jr://images/wolf.png</value>
+</text>
+<text id="badger">
+	<value form="long">European badger</value>
+	<value form="short">European badger</value>
+	<value form="image">jr://images/badger.png</value>
+</text>
+<text id="othercarnivore">
+	<value form="long">Other carnivorous mammal</value>
+	<value form="short">Other carnivorous mammal</value>
+</text>
+                    
+<!-- Ungulates -->
+<text id="deer">
+	<value form="long">Red deer</value>
+	<value form="short">Red deer</value>
+	<value form="image">jr://images/deer.png</value>
+</text>
+<text id="roedeer">
+	<value form="long">Roe deer</value>
+	<value form="short">Roe deer</value>
+	<value form="image">jr://images/roedeer.png</value>
+</text>
+<text id="goat">
+	<value form="long">Wild goat</value>
+	<value form="short">Wild goat</value>
+	<value form="image">jr://images/goat.png</value>
+</text>
+<text id="boar">
+	<value form="long">Boar</value>
+	<value form="short">Boar</value>
+	<value form="image">jr://images/boar.png</value>
+</text>
+<text id="otherungulate">
+	<value form="long">Other ungulate</value>
+	<value form="short">Other ungulate</value>
+</text>
+                    
+<!-- Marine mammals -->
+<text id="dolphin">
+	<value form="long">Risso's dolphin</value>
+	<value form="short">Risso's dolphin</value>
+	<value form="image">jr://images/dolphin.png</value>
+</text>
+<text id="othermarinemammal">
+	<value form="long">Other marine mammal</value>
+	<value form="short">Other marine mammal</value>
+</text>
+
+                    
+                    <!-- Signs-->
+                    <text id="sign_soil">
+                        <value form="long">Disturbed soil or mounds</value>
+                        <value form="short">Disturbed soil or mounds</value>
+                        <value form="image">jr://images/soil.png</value>
+                    </text>
+                    <text id="sign_holes">
+                        <value form="long">Woodpecker holes</value>
+                        <value form="short">Woodpecker holes</value>
+                        <value form="image">jr://images/holes.png</value>
+                    </text>
+                    <text id="sign_tracks">
+                        <value form="long">Tracks</value>
+                        <value form="short">Tracks</value>
+                        <value form="image">jr://images/tracks.png</value>
+                    </text>
+                    <text id="sign_feathers">
+                        <value form="long">Feathers or fur</value>
+                        <value form="short">Feathers or fur</value>
+                        <value form="image">jr://images/feathers.png</value>
+                    </text>
+                    <text id="sign_stems">
+                        <value form="long">Chewed or gnawed stems</value>
+                        <value form="short">Chewed or gnawed stems</value>
+                        <value form="image">jr://images/stems.png</value>
+                    </text>
+                    <text id="sign_scat">
+                        <value form="long">Scat or droppings</value>
+                        <value form="short">Scat or droppings</value>
+                        <value form="image">jr://images/scat.png</value>
+                    </text>
+                                        
+                    <!-- Tracks-->
+                    <text id="tracks_clear">
+                        <value form="long">Clear</value>
+                        <value form="short">Clear</value>
+                        <value form="image">jr://images/tracks_clear.jpg</value>
+                    </text>
+                    <text id="tracks_unclear">
+                        <value form="long">Unclear</value>
+                        <value form="short">Unclear</value>
+                        <value form="image">jr://images/tracks_unclear.jpg</value>
+                    </text>
+                    <text id="tracks_width">
+                        <value form="long">Track Width</value>
+                        <value form="short">Track Width</value>
+                        <value form="image">jr://images/tracks_width.jpg</value>
+                    </text>
+                    <text id="tracks_length">
+                        <value form="long">Track Length</value>
+                        <value form="short">Track Length</value>
+                        <value form="image">jr://images/tracks_length.jpg</value>
+                    </text>
+                    <text id="tracks_stride_length">
+                        <value form="long">Stride Length</value>
+                        <value form="short">Stride Length</value>
+                        <value form="image">jr://images/tracks_stride_length.jpg</value>
+                    </text>
+                    <text id="tracks_stride_width">
+                        <value form="long">Stride Width</value>
+                        <value form="short">Stride Width</value>
+                        <value form="image">jr://images/tracks_stride_width.jpg</value>
+                    </text>
+  
+                </translation>
+            </itext>
+
+            <instance>
+                <nm id="Miramare">
+                    <name />
+                    <nationality />
+                    <temp />
+                    <humidity />
+                    <wind />
+                    <repeat_observation jr:template="">
+                        <habitat />
+                        <observe />
+                        <see />
+                        <bird />
+                        <rept_amph />
+                        <rodents />
+                        <shrews />
+                        <carnivores />
+                        <ungulates />
+                        <marinemammals />
+                        <sign />
+                        <tracks_clear />
+                        <tracks_length />
+                        <tracks_width />
+                        <tracks_stride_length />
+                        <tracks_stride_width />
+                        <location/>
+                        <image/>
+                        <notes/>
+                    </repeat_observation>
+                </nm>
+            </instance>
+        
+            <bind nodeset="/nm/name" type="string" />
+            <bind nodeset="/nm/nationality" type="string" />
+            <bind nodeset="/nm/temp" type="integer"/>
+            <bind nodeset="/nm/humidity" type="select1" />
+            <bind nodeset="/nm/wind" type="select1" />
+            
+            <bind nodeset="/nm/repeat_observation/habitat" type="select1"/>
+            <bind nodeset="/nm/repeat_observation/observe" type="select1"/> 
+            <bind nodeset="/nm/repeat_observation/see" type="select1" relevant="selected(/nm/repeat_observation/observe, 'see')"/>
+            <bind nodeset="/nm/repeat_observation/sign" type="select1" relevant="selected(/nm/repeat_observation/observe, 'signs')"/> 
+            
+            <bind nodeset="/nm/repeat_observation/bird" type="select1" relevant="selected(/nm/repeat_observation/see, 'bird')"/>       
+            <bind nodeset="/nm/repeat_observation/rept_amph" type="select1" relevant="selected(/nm/repeat_observation/see, 'rept_amph')"/> 
+            <bind nodeset="/nm/repeat_observation/rodents" type="select1" relevant="selected(/nm/repeat_observation/see, 'rodents')"/> 
+            <bind nodeset="/nm/repeat_observation/shrews" type="select1" relevant="selected(/nm/repeat_observation/see, 'shrews')"/> 
+            <bind nodeset="/nm/repeat_observation/carnivores" type="select1" relevant="selected(/nm/repeat_observation/see, 'carnivores')"/>
+            <bind nodeset="/nm/repeat_observation/ungulates" type="select1" relevant="selected(/nm/repeat_observation/see, 'ungulates')"/> 
+            <bind nodeset="/nm/repeat_observation/marinemammals" type="select1" relevant="selected(/nm/repeat_observation/see, 'marinemammals')"/>
+            
+            <bind nodeset="/nm/repeat_observation/tracks_clear" type="select1" relevant="selected(/nm/repeat_observation/sign, 'tracks')"/>
+            <bind nodeset="/nm/repeat_observation/tracks_length" type="integer" relevant="selected(/nm/repeat_observation/sign, 'tracks')"/>
+            <bind nodeset="/nm/repeat_observation/tracks_width" type="integer" relevant="selected(/nm/repeat_observation/sign, 'tracks')"/>
+            <bind nodeset="/nm/repeat_observation/tracks_stride_length" type="integer" relevant="selected(/nm/repeat_observation/sign, 'tracks')"/>
+            <bind nodeset="/nm/repeat_observation/tracks_stride_width" type="integer" relevant="selected(/nm/repeat_observation/sign, 'tracks')"/>
+            
+            <bind nodeset="/nm/repeat_observation/location" type="geopoint"/>
+            <bind nodeset="/nm/repeat_observation/image" type="binary"/>
+            <bind nodeset="/nm/repeat_observation/notes" type="string"/>
+              
+        </model>
+    </h:head>
+    <h:body>
+        <group appearance="field-list">
+            <label>Demographic information</label>
+            <input ref="name">
+                <label>Please enter your name(s):</label>
+            </input>
+            <input ref="nationality">
+                <label>Please enter your country (or countries) of origin:</label>
+            </input>
+        </group>
+        <group appearance="field-list">
+            <label>Weather information</label>
+            <input ref="temp">
+                <label>Temperature:</label>
+            </input>
+            <select1 ref="humidity">
+                <label>Humidity:</label>
+                <item><label>Dry or low</label><value>low</value></item>
+                <item><label>Normal or medium</label><value>med</value></item>
+                <item><label>Wet or High</label><value>high</value></item>
+            </select1>
+            <select1 ref="wind">
+                <label>Wind conditions:</label>
+                <item><label>Little or no wind</label><value>low</value></item>
+                <item><label>Breezy or light wind</label><value>med</value></item>
+                <item><label>Strong or very windy</label><value>high</value></item>
+            </select1>
+       </group>
+       <group>
+            <label>observation</label>
+            <repeat nodeset="/nm/repeat_observation">
+                <select1 ref="habitat">
+                    <label>Describe the habitat:</label>
+                    <item><label ref="jr:itext('hab_dev')"/><value>developed</value></item>
+                    <item><label ref="jr:itext('hab_wooded')"/><value>wooded</value></item>
+                    <item><label ref="jr:itext('hab_path')"/><value>path</value></item>
+                    <item><label ref="jr:itext('hab_garden')"/><value>garden</value></item>
+                    <item><label ref="jr:itext('hab_road')"/><value>road</value></item>
+                    <item><label ref="jr:itext('hab_castle')"/><value>castle</value></item>
+                    <item><label ref="jr:itext('hab_beach')"/><value>beach</value></item>
+                    <item><label ref="jr:itext('hab_marina')"/><value>marina</value></item>
+                    <item><label ref="jr:itext('hab_pond')"/><value>pond</value></item>
+                    <item><label ref="jr:itext('hab_water')"/><value>water</value></item>
+                </select1>
+                                
+                <select1 ref="observe">
+                    <label>How did you observe it?</label>
+                    <item><label ref="jr:itext('obs_see')"/><value>see</value></item>
+                    <item><label ref="jr:itext('obs_signs')"/><value>signs</value></item>
+                </select1>
+                
+                <select1 ref="see">
+                    <label>What did you see?</label>
+                    <item><label ref="jr:itext('see_bird')"/><value>bird</value></item>
+                    <item><label ref="jr:itext('see_rept_amph')"/><value>rept_amph</value></item>
+                    <item><label ref="jr:itext('see_rodents')"/><value>rodents</value></item>
+                    <item><label ref="jr:itext('see_shrews')"/><value>shrews</value></item>
+                    <item><label ref="jr:itext('see_carnivore')"/><value>carnivores</value></item>
+                    <item><label ref="jr:itext('see_ungulate')"/><value>ungulates</value></item>
+                    <item><label ref="jr:itext('see_marine')"/><value>marinemammals</value></item>
+                </select1>
+                
+                <select1 ref="bird">
+                    <label>Which bird did you see?</label>
+                    <item><label ref="jr:itext('sparrow')"/><value>sparrow</value></item>
+                    <item><label ref="jr:itext('pigeon')"/><value>pigeon</value></item>
+                    <item><label ref="jr:itext('nuthatch')"/><value>nuthatch</value></item>
+                    <item><label ref="jr:itext('robin')"/><value>robin</value></item>
+                    <item><label ref="jr:itext('tit')"/><value>tit</value></item>
+                    <item><label ref="jr:itext('starling')"/><value>starling</value></item>
+                    <item><label ref="jr:itext('hawfinch')"/><value>hawfinch</value></item>
+                    <item><label ref="jr:itext('bluethroat')"/><value>bluethroat</value></item>
+                    <item><label ref="jr:itext('wren')"/><value>wren</value></item>
+                    <item><label ref="jr:itext('knot')"/><value>knot</value></item>
+                    <item><label ref="jr:itext('jay')"/><value>jay</value></item>
+                    <item><label ref="jr:itext('woodpecker')"/><value>woodpecker</value></item>
+                    <item><label ref="jr:itext('eagle')"/><value>eagle</value></item>
+                    <item><label ref="jr:itext('kingfisher')"/><value>kingfisher</value></item>
+                    <item><label ref="jr:itext('blackbird')"/><value>blackbird</value></item>
+                    <item><label ref="jr:itext('crow')"/><value>crow</value></item>
+                    <item><label ref="jr:itext('gull')"/><value>gull</value></item>
+                    <item><label ref="jr:itext('yellowgull')"/><value>yellowgull</value></item>
+                    <item><label ref="jr:itext('shag')"/><value>shag</value></item>
+                    <item><label ref="jr:itext('pelican')"/><value>pelican</value></item>
+                    <item><label ref="jr:itext('heron')"/><value>heron</value></item>
+                    <item><label ref="jr:itext('egret')"/><value>egret</value></item>
+                    <item><label ref="jr:itext('goose')"/><value>goose</value></item>
+                    <item><label ref="jr:itext('otherbird')"/><value>otherbird</value></item>
+                </select1>
+                
+                <select1 ref="rept_amph">
+                    <label>Which reptile or amphibian did you see?</label>
+                    <item><label ref="jr:itext('lizard')"/><value>lizard</value></item>
+                    <item><label ref="jr:itext('turtle')"/><value>turtle</value></item>
+                    <item><label ref="jr:itext('frog')"/><value>frog</value></item>
+                    <item><label ref="jr:itext('agilefrog')"/><value>agilefrog</value></item>
+                    <item><label ref="jr:itext('treefrog')"/><value>treefrog</value></item>
+                    <item><label ref="jr:itext('salamander')"/><value>salamander</value></item>
+                    <item><label ref="jr:itext('otherreptamph')"/><value>otherreptamph</value></item>
+                </select1>
+                
+                <select1 ref="rodents">
+                    <label>Which rodent or rabbit did you see?</label>
+                    <item><label ref="jr:itext('vole')"/><value>vole</value></item>
+                    <item><label ref="jr:itext('squirrel')"/><value>squirrel</value></item>
+                    <item><label ref="jr:itext('mouse')"/><value>mouse</value></item>
+                    <item><label ref="jr:itext('forestdormouse')"/><value>forestdormouse</value></item>
+                    <item><label ref="jr:itext('gardendormouse')"/><value>gardendormouse</value></item>
+                    <item><label ref="jr:itext('pinevole')"/><value>pinevole</value></item>
+                    <item><label ref="jr:itext('rabbit')"/><value>rabbit</value></item>
+                    <item><label ref="jr:itext('hare')"/><value>hare</value></item>
+                    <item><label ref="jr:itext('mountainhare')"/><value>mountainhare</value></item>
+                    <item><label ref="jr:itext('hedgehog')"/><value>hedgehog</value></item>
+                    <item><label ref="jr:itext('porcupine')"/><value>porcupine</value></item>
+                    <item><label ref="jr:itext('otherrodent')"/><value>otherrodent</value></item>
+                </select1>
+                
+                <select1 ref="shrews">
+                    <label>Which shrew did you see?</label>
+                    <item><label ref="jr:itext('shrew')"/><value>shrew</value></item>
+                    <item><label ref="jr:itext('watershrew')"/><value>watershrew</value></item>
+                    <item><label ref="jr:itext('bicoloredshrew')"/><value>bicoloredshrew</value></item>
+                    <item><label ref="jr:itext('lessershrew')"/><value>lessershrew</value></item>
+                    <item><label ref="jr:itext('etruscanshrew')"/><value>etruscanshrew</value></item>
+                    <item><label ref="jr:itext('othersmallmammal')"/><value>othersmallmammal</value></item>
+              	</select1>
+                
+                <select1 ref="carnivores">
+                    <label>Which carnivorous mammal did you see?</label>
+                    <item><label ref="jr:itext('fox')"/><value>fox</value></item>
+                    <item><label ref="jr:itext('marten')"/><value>marten</value></item>
+                    <item><label ref="jr:itext('stoat')"/><value>stoat</value></item>
+                    <item><label ref="jr:itext('weasel')"/><value>weasel</value></item>
+                    <item><label ref="jr:itext('genet')"/><value>genet</value></item>
+                    <item><label ref="jr:itext('otter')"/><value>otter</value></item>
+                    <item><label ref="jr:itext('lynx')"/><value>lynx</value></item>
+                    <item><label ref="jr:itext('wolf')"/><value>wolf</value></item>
+                    <item><label ref="jr:itext('badger')"/><value>badger</value></item>
+                    <item><label ref="jr:itext('othercarnivore')"/><value>othercarnivore</value></item>
+                </select1>
+                
+                <select1 ref="ungulates">
+                    <label>Which ungulate did you see?</label>
+                    <item><label ref="jr:itext('deer')"/><value>deer</value></item>
+                    <item><label ref="jr:itext('roedeer')"/><value>roedeer</value></item>
+                    <item><label ref="jr:itext('goat')"/><value>goat</value></item>
+                    <item><label ref="jr:itext('boar')"/><value>boar</value></item>
+                    <item><label ref="jr:itext('otherungulate')"/><value>otherungulate</value></item>
+                </select1>
+                
+                <select1 ref="marinemammals">
+                    <label>Which marine mammal did you see?</label>
+                    <item><label ref="jr:itext('dolphin')"/><value>dolphin</value></item>
+                    <item><label ref="jr:itext('othermarinemammal')"/><value>othermarinemammal</value></item>
+                </select1>
+                                
+                <select1 ref="sign">
+                    <label>What sign of an animal did you observe?</label>
+                    <item><label ref="jr:itext('sign_soil')"/><value>soil</value></item>
+                    <item><label ref="jr:itext('sign_holes')"/><value>holes</value></item>
+                    <item><label ref="jr:itext('sign_tracks')"/><value>tracks</value></item>
+                    <item><label ref="jr:itext('sign_feathers')"/><value>feathers</value></item>
+                    <item><label ref="jr:itext('sign_stems')"/><value>stems</value></item>
+                    <item><label ref="jr:itext('sign_scat')"/><value>scat</value></item>
+                </select1>
+                
+               <group appearance="field-list">
+                    <select1 ref="tracks_clear">
+                        <label>How distinct are the tracks?</label>
+                        <item><label ref="jr:itext('tracks_clear')"/><value>clear</value></item>
+                        <item><label ref="jr:itext('tracks_unclear')"/><value>unclear</value></item>
+                    </select1>
+                    <input ref="tracks_length">
+                        <label ref="jr:itext('tracks_length')"/>
+                    </input>
+                    <input ref="tracks_width">
+                        <label ref="jr:itext('tracks_width')"/>
+                    </input>
+                    <input ref="tracks_stride_length">
+                        <label ref="jr:itext('tracks_stride_length')"/>
+                    </input>
+                    <input ref="tracks_stride_width">
+                        <label ref="jr:itext('tracks_stride_width')"/>
+                    </input>
+                </group>
+                
+                
+                <upload ref="image" mediatype="image/*">
+                    <label>If possible, please take a picture of your observation</label>
+                </upload>
+                <input ref="location">
+                    <label>Please record your location</label>
+                </input>
+                <input ref="notes">
+                    <label>Please enter any notes about your observation</label>
+                    <hint>This is optional, of course.</hint>
+                </input>
+                
+            </repeat>
+        </group>
+    </h:body>
+</h:html>

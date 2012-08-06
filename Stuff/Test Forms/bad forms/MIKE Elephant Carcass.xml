@@ -1,0 +1,497 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+	<h:head>
+		<h:title>MIKE Elephant Carcass</h:title>
+		<model>
+			<itext>
+				<translation lang="English">
+				  <text id="SurveyorName"><value>Enter your name.</value></text>
+					<text id="ElephantPicture"><value>Take a picture of the elephant.</value></text>
+					<text id="SurveyorLocation"><value>Record your location.</value></text>
+					<text id="CarcassFoundBy"><value>Carcass first found by what source of information?</value></text>
+					<text id="DescriptionCarcassLocation"><value>Enter the name and description of carcass location:</value></text>
+					<text id="CarcassAge"><value>What is the estimated age of the elephant?</value></text>
+					<text id="ElephantDeathDate"><value>When is the estimated date of death?</value></text>
+					<text id="ElephantDeathReason"><value>What is the reason for the elephant's death?</value></text>
+					<text id="DeathReasonPoaching"><value>Please indicated the motivation for the illegal killing</value></text>	
+					<text id="ElephantTusks"><value>Were the left/right tusks retrieved from the elephant?</value></text>
+					<text id="ElephantTusksRemain"><value>If the left/right tusks were not received, were they:</value></text>
+					<text id="ElephantCollar"><value>Did the elephant wear a collar?</value></text>
+          <text id="ElephantCollarUnknown"><value>Unknown</value></text>
+		      <text id="ElephantGender"><value>What is the sex of the elephant carcass?</value></text>
+          <text id="ElephantGenderUnknown"><value>Unknown</value></text>
+		      <text id="AgeClass"><value>What is the age-class of the elephant?</value></text>
+		      <text id="TuskMeasurementLcircumference"><value>Enter the left tusk circumference</value></text>
+		      <text id="TuskMeasurementRcircumference"><value>Enter the right tusk circumference</value></text>
+		      <text id="TuskMeasurementLlength"><value>Enter the left tusk length (cm) tip to base</value></text>
+		      <text id="TuskMeasurementRlength"><value>Enter the right tusk length (cm) tip to base</value></text>
+		      <text id="TuskMeasurementLweight"><value>Enter the left tusk weight (kg)</value></text>
+		      <text id="TuskMeasurementRweight"><value>Enter the right tusk weight (kg)</value></text>
+		      <text id="TuskMeasurementLnumber"><value>Enter the left tusk Local ref. no. or store code</value></text>
+		      <text id="TuskMeasurementRnumber"><value>Enter the right tusk Local ref. no. or store code</value></text>
+		      <text id="CITEScodeL"><value>CITES code - left tusk</value></text>
+		      <text id="CITEScodeR"><value>CITES code - right tusk</value></text>
+					<text id="FieldNotes"><value>Field notes.</value></text>
+					<!-- question subsets -->
+					<!-- Carcass Found By -->
+					<text id="RoutineAerialPatrol"><value>Routine Aerial Patrol</value></text>
+					<text id="RoutineGroundPatrol"><value>Routine Ground Patrol</value></text>
+					<text id="AerialElephantSurvey"><value>Aerial Elephant Survey</value></text>
+					<text id="GroundElephantSurvey"><value>Ground Elephant Survey</value></text>
+					<text id="AntipoachingAction"><value>Anti-poaching Action</value></text>
+					<text id="Tourists"><value>Tourists</value></text>
+					<text id="Researchers"><value>Researchers</value></text>
+					<text id="IntelligenceOperations"><value>Intelligence Operations</value></text>
+					<text id="LocalCommunities"><value>Local Communities</value></text>
+					<text id="CarcassFoundByOther"><value>Other</value></text>
+					<!-- Carcass Age -->
+					<text id="Fresh1"><value>Fresh - 1 day</value></text>
+					<text id="Fresh2"><value>Fresh - 2-3 days</value></text>
+					<text id="Fresh3"><value>Fresh - 4-7 days</value></text>
+					<text id="Fresh4"><value>Fresh - 1-2 weeks</value></text>
+					<text id="Fresh5"><value>Fresh - 2-4 weeks</value></text>
+					<text id="Recent1"><value>Recent - 1-3 months</value></text>
+					<text id="Recent2"><value>Recent - 4-6 months</value></text>
+					<text id="Recent3"><value>Recent - 7-12 months</value></text>
+					<text id="Old"><value>Old - 1-2 years</value></text>
+					<text id="VeryOld"><value>Very Old - >2 years</value></text>
+					<!-- Elephant Death Reason -->
+				  <text id="DeathReasonUnknown"><value>Unknown</value></text>
+					<text id="NaturalManagementDisease"><value>Natural or Management - Disease</value></text>
+					<text id="NaturalManagementProblem"><value>Natural or Management - Problem Animal Control</value></text>
+					<text id="NaturalManagementDrought"><value>Natural or Management - Drought</value></text>
+					<text id="NaturalManagementAccident"><value>Natural or Management - Accident</value></text>
+					<text id="NaturalManagementPredation"><value>Natural or Management - Predation</value></text>
+					<text id="NaturalManagementOther"><value>Natural or Management - Other</value></text>
+					<text id="IllegallyKilledGunfire"><value>Illegally Killed - Automatic Gunfire</value></text>
+					<text id="IllegallyKilledSingle"><value>Illegally Killed - Single Action</value></text>
+					<text id="IllegallyKilledShotgun"><value>Illegally Killed - Shotgun</value></text>
+					<text id="IllegallyKilledPoisoned"><value>Illegally Killed - Poisoned</value></text>
+					<text id="IllegallyKilledSpeared"><value>Illegally Killed - Speared</value></text>
+					<text id="IllegallyKilledPit"><value>Illegally Killed - Pit Trap</value></text>
+					<text id="IllegallyKilledOther"><value>Illegally Killed - Other</value></text>
+					<!-- Death Reason Poaching -->
+					<text id="Ivory"><value>Ivory</value></text>
+					<text id="Bushmeat"><value>Bushmeat</value></text>
+					<text id="HumanElephantConflict"><value>Human-Elephant Conflict</value></text>
+					<text id="Nonspecific"><value>Non-specific</value></text>
+					<text id="DeathReasonPoachingOther"><value>Other</value></text>
+					<!-- Elephant Tusks -->
+					<text id="YesL"><value>Yes - Left</value></text>
+					<text id="YesR"><value>Yes - Right</value></text>
+					<text id="NoL"><value>No - Left</value></text>
+					<text id="NoR"><value>No - Right</value></text>
+					<!-- Elephant Tusks Remain -->
+					<text id="Lintact"><value>Left - left intact on carcass</value></text>
+					<text id="Lchopped"><value>Left - chopped out</value></text>
+					<text id="Lpulled"><value>Left - pulled out</value></text>
+					<text id="Labsent"><value>Left - naturally absent</value></text>
+					<text id="Rintact"><value>Right - left intact on carcass</value></text>
+					<text id="Rchopped"><value>Right - chopped out</value></text>
+					<text id="Rpulled"><value>Right - pulled out</value></text>
+					<text id="Rabsent"><value>Right - naturally absent</value></text>
+					<!-- Elephant Gender -->
+					<text id="Male"><value>Male</value></text>
+					<text id="Female"><value>Female</value></text>
+					<text id="GenderUnknown"><value>Unknown</value></text>
+					<!-- Elephant Age-Class -->
+					<text id="Juvenile"><value>Juvenile (0-8 years)</value></text>
+					<text id="Subadult"><value>Sub-Adult (8-16 years)</value></text>
+					<text id="Adult"><value>Adult (more than 10 years)</value></text>
+					<text id="AgeClassUnknown"><value>Unknown</value></text>
+					
+					<text id="Yes"><value>Yes</value></text>
+					<text id="No"><value>No</value></text>
+				</translation>
+			</itext>
+			<instance>
+				<ElephantDeath id="ElephantDeath">
+				  <SurveyorName/>
+					<DeviceId/>
+					<StartTime/>
+					<EndTime/>
+					<ElephantPicture/>
+					<SurveyorLocation/>
+					<CarcassFoundBy/>
+					<DescriptionCarcassLocation/>
+					<CarcassAge/>
+					<ElephantDeathDate/>
+					<ElephantDeathReason/>
+					<DeathReasonPoaching/>
+					<ElephantTusks/>
+					<ElephantTusksRemain/>
+					<ElephantCollar/>
+					<ElephantGender/>
+					<AgeClass/>
+					<TuskMeasurementLcircumference/>
+					<TuskMeasurementRcircumference/>
+					<TuskMeasurementLlength/>
+					<TuskMeasurementRlength/>
+					<TuskMeasurementLweight/>
+					<TuskMeasurementRweight/>
+					<TuskMeasurementLnumber/>
+					<TuskMeasurementRnumber/>
+					<CITEScodeL/>
+					<CITEScodeR/>
+					<FieldNotes/>
+				</ElephantDeath>
+			</instance>
+			
+			<bind nodeset="/ElephantDeath/SurveyorName" type="string"/>
+			<bind nodeset="/ElephantDeath/DeviceId" type="string" jr:preload="property" jr:preloadParams="deviceid"/>
+			<bind nodeset="/ElephantDeath/StartTime" type="dateTime" jr:preload="timestamp" jr:preloadParams="start"/>
+			<bind nodeset="/ElephantDeath/EndTime" type="dateTime" jr:preload="timestamp" jr:preloadParams="end"/>
+			<bind nodeset="/ElephantDeath/ElephantPicture" type="binary"/>			
+			<bind nodeset="/ElephantDeath/SurveyorLocation" type="geopoint"/>
+			<bind nodeset="/ElephantDeath/CarcassFoundBy" type="select1" />
+			<bind nodeset="/ElephantDeath/DescriptionCarcassLocation" type="string"/>
+			<bind nodeset="/ElephantDeath/CarcassAge" type="select1" />
+			<bind nodeset="/ElephantDeath/ElephantDeathDate" type="string" />
+			<bind nodeset="/ElephantDeath/ElephantDeathReason" type="select1" />
+			<bind nodeset="/ElephantDeath/DeathReasonPoaching" type="select1" />
+			<bind nodeset="/ElephantDeath/ElephantTusks" type="select1" />
+			<bind nodeset="/ElephantDeath/ElephantTusksRemain" type="select1" />
+			<bind nodeset="/ElephantDeath/ElephantCollar" type="select1" />
+			<bind nodeset="/ElephantDeath/ElephantGender" type="select1" />			
+			<bind nodeset="/ElephantDeath/AgeClass" type="select1" />
+			<bind nodeset="/ElephantDeath/TuskMeasurementLcircumference" type="select1" />
+			<bind nodeset="/ElephantDeath/TuskMeasurementRcircumference" type="select1" />
+			<bind nodeset="/ElephantDeath/TuskMeasurementLlength" type="select1" />
+			<bind nodeset="/ElephantDeath/TuskMeasurementRlength" type="select1" />
+			<bind nodeset="/ElephantDeath/TuskMeasurementLweight" type="select1" />
+			<bind nodeset="/ElephantDeath/TuskMeasurementRweight" type="select1" />
+			<bind nodeset="/ElephantDeath/TuskMeasurementLnumber" type="select1" />
+			<bind nodeset="/ElephantDeath/TuskMeasurementRnumber" type="select1" />
+			<bind nodeset="/ElephantDeath/CITEScodeL" type="string" />
+			<bind nodeset="/ElephantDeath/CITEScodeR" type="string" />
+			<bind nodeset="/ElephantDeath/FieldNotes" type="string" />
+			
+		</model>
+	</h:head>
+	<h:body>
+	  <input ref="SurveyorName">
+      <label ref="jr:itext('SurveyorName')"/>
+    </input>
+		<upload ref="ElephantPicture" mediatype="image/*">
+			<label ref="jr:itext('ElephantPicture')"/>
+		</upload>
+		<input ref="SurveyorLocation">
+			<label ref="jr:itext('SurveyorLocation')"/>
+		</input>
+		<select1 ref="CarcassFoundBy">
+			<label ref="jr:itext('CarcassFoundBy')"/>
+			<item>
+				<label ref="jr:itext('RoutineAerialPatrol')"/>
+				<value>Routine_Aerial_Patrol</value>
+			</item>
+			<item>
+				<label ref="jr:itext('RoutineGroundPatrol')"/>
+				<value>Routine_Ground_Patrol</value>
+			</item>
+			<item>
+				<label ref="jr:itext('AerialElephantSurvey')"/>
+				<value>Aerial_Elephant_Survey</value>
+			</item>
+			<item>
+				<label ref="jr:itext('GroundElephantSurvey')"/>
+				<value>Ground_Elephant_Survey</value>
+			</item>
+			<item>
+  			<label ref="jr:itext('AntipoachingAction')"/>
+  			<value>Anti-poaching_Action</value>
+  		</item>
+			<item>
+    		<label ref="jr:itext('Tourists')"/>
+    		<value>Tourists</value>
+    	</item>
+			<item>
+        <label ref="jr:itext('Researchers')"/>
+        <value>Researchers</value>
+      </item>
+			<item>
+  			<label ref="jr:itext('IntelligenceOperations')"/>
+  			<value>Intelligence_Operations</value>
+  		</item>
+			<item>
+    		<label ref="jr:itext('LocalCommunities')"/>
+    		<value>Local_Communities</value>
+    	</item>
+			<item>
+        <label ref="jr:itext('CarcassFoundByOther')"/>
+        <value>Other</value>
+      </item>
+		</select1>
+		<input ref="DescriptionCarcassLocation">
+			<label ref="jr:itext('DescriptionCarcassLocation')"/>
+		</input>
+		<select1 ref="CarcassAge">
+			<label ref="jr:itext('CarcassAge')"/>
+			<item>
+				<label ref="jr:itext('Fresh1')"/>
+				<value>Fresh - 1 day</value>
+			</item>
+		  <item>
+				<label ref="jr:itext('Fresh2')"/>
+				<value>Fresh - 2-3 days</value>
+			</item> 
+		  <item>
+				<label ref="jr:itext('Fresh3')"/>
+				<value>Fresh - 4-7 days</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Fresh4')"/>
+				<value>Fresh - 1-2 weeks</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Fresh5')"/>
+				<value>Fresh - 2-4 weeks</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Recent1')"/>
+				<value>Recent - 1-3 months</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Recent2')"/>
+				<value>Recent - 4-6 months</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Recent3')"/>
+				<value>Recent - 7-12 months</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Old')"/>
+				<value>Old</value>
+			</item>
+			<item>
+				<label ref="jr:itext('VeryOld')"/>
+				<value>Very Old</value>
+			</item>
+		</select1>
+		
+		<input ref="ElephantDeathDate">
+  			<label ref="jr:itext('ElephantDeathDate')"/>
+  	</input>	
+      <select1 ref="ElephantDeathReason">
+  			<label ref="jr:itext('ElephantDeathReason')"/>
+  			<item>
+  				<label ref="jr:itext('DeathReasonUnknown')"/>
+  				<value>Unknown</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('NaturalManagementDisease')"/>
+  				<value>Natural or Management - Disease</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('NaturalManagementProblem')"/>
+  				<value>Natural or Management - Disease</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('NaturalManagementDrought')"/>
+  				<value>Natural or Management - Drought</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('NaturalManagementAccident')"/>
+  				<value>Natural or Management - Accident</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('NaturalManagementPredation')"/>
+  				<value>Natural or Management - Predation</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('NaturalManagementOther')"/>
+  				<value>Natural or Management - Other</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('IllegallyKilledGunfire')"/>
+  				<value>Illegally Killed - Automatic Gunfire</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('IllegallyKilledSingle')"/>
+  				<value>Illegally Killed - Single Action</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('IllegallyKilledShotgun')"/>
+  				<value>Illegally Killed - Shotgun</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('IllegallyKilledPoisoned')"/>
+  				<value>Illegally Killed - Poisoned</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('IllegallyKilledSpeared')"/>
+  				<value>Illegally Killed - Speared</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('IllegallyKilledPit')"/>
+  				<value>Illegally Killed - Pit Trap</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('IllegallyKilledOther')"/>
+  				<value>Illegally Killed - Other</value>
+  			</item>
+  		</select1>  
+  		<select1 ref="DeathReasonPoaching">
+  			<label ref="jr:itext('DeathReasonPoaching')"/>
+  			<item>
+  				<label ref="jr:itext('Ivory')"/>
+  				<value>Ivory</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('Bushmeat')"/>
+  				<value>Bushmeat</value>
+  			</item>
+  				<item>
+    				<label ref="jr:itext('HumanElephantConflict')"/>
+    				<value>Human Elephant Conflict</value>
+    			</item>
+    			<item>
+    				<label ref="jr:itext('Nonspecific')"/>
+    				<value>Non-specific</value>
+    			</item>
+    			<item>
+    				<label ref="jr:itext('DeathReasonPoachingOther')"/>
+    				<value>Other</value>
+    			</item>
+  		</select1>
+
+		<select1 ref="ElephantTusks">
+			<label ref="jr:itext('ElephantTusks')"/>
+			<item>
+				<label ref="jr:itext('YesL')"/>
+				<value>Yes - Left</value>
+			</item>
+			<item>
+				<label ref="jr:itext('YesR')"/>
+				<value>Yes - Right</value>
+			</item>
+			<item>
+				<label ref="jr:itext('NoL')"/>
+				<value>No - Left</value>
+			</item>
+			<item>
+				<label ref="jr:itext('NoR')"/>
+				<value>No - Right</value>
+			</item>
+		</select1>
+			<select1 ref="ElephantTusksRemain">
+  			<label ref="jr:itext('ElephantTusksRemain')"/>
+  			<item>
+  				<label ref="jr:itext('Lintact')"/>
+  				<value>Left - left intact on carcass</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('Lchopped')"/>
+  				<value>Left - chopped out</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('Lpulled')"/>
+  				<value>Left - pulled out</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('Labsent')"/>
+  				<value>Left - absent</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('Rintact')"/>
+  				<value>Right - left intact on carcass</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('Rchopped')"/>
+  				<value>Right - chopped out</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('Rpulled')"/>
+  				<value>Right - pulled out</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('Rabsent')"/>
+  				<value>Right - absent</value>
+  			</item>
+  		</select1>
+		  <select1 ref="ElephantCollar">
+  			<label ref="jr:itext('ElephantCollar')"/>
+  			<item>
+  				<label ref="jr:itext('Yes')"/>
+  				<value>Yes</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('No')"/>
+  				<value>No</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('ElephantCollarUnknown')"/>
+  				<value>Unknown</value>
+  			</item>
+  		</select1>
+		  <select1 ref="ElephantGender">
+  			<label ref="jr:itext('ElephantGender')"/>
+  			<item>
+  				<label ref="jr:itext('Male')"/>
+  				<value>Male</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('Female')"/>
+  				<value>Female</value>
+  			</item>
+  			<item>
+  				<label ref="jr:itext('ElephantGenderUnknown')"/>
+  				<value>Unknown</value>
+  			</item>
+  		</select1>
+		
+		<select1 ref="AgeClass">
+			<label ref="jr:itext('AgeClass')"/>
+			<item>
+				<label ref="jr:itext('Juvenile')"/>
+				<value>Juvenile (0-8 years)</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Subadult')"/>
+				<value>Subadult (8-16 years)</value>
+			</item>
+			<item>
+				<label ref="jr:itext('Adult')"/>
+				<value>Adult (more than 10 years)</value>
+			</item>
+			<item>
+				<label ref="jr:itext('AgeClassUnknown')"/>
+				<value>Unknown</value>
+			</item>
+		</select1>
+		
+		<input ref="TuskMeasurementLcircumference">
+			<label ref="jr:itext('TuskMeasurementLcircumference')"/>
+		</input>
+		<input ref="TuskMeasurementRcircumference">
+			<label ref="jr:itext('TuskMeasurementRcircumference')"/>
+		</input>
+		<input ref="TuskMeasurementLlength">
+			<label ref="jr:itext('TuskMeasurementLlength')"/>
+		</input>  
+		<input ref="TuskMeasurementRlength">
+  			<label ref="jr:itext('TuskMeasurementRlength')"/>
+  		</input>
+  		<input ref="TuskMeasurementLweight">
+  			<label ref="jr:itext('TuskMeasurementLweight')"/>
+  		</input>
+  		<input ref="TuskMeasurementRweight">
+  			<label ref="jr:itext('TuskMeasurementRweight')"/>
+  		</input>
+  		<input ref="TuskMeasurementLnumber">
+  			<label ref="jr:itext('TuskMeasurementLnumber')"/>
+  		</input>
+  		<input ref="TuskMeasurementRnumber">
+  			<label ref="jr:itext('TuskMeasurementRnumber')"/>
+  		</input>
+  		<input ref="CITEScodeL">
+  			<label ref="jr:itext('CITEScodeL')"/>
+  		</input>
+  		<input ref="CITEScodeR">
+  			<label ref="jr:itext('CITEScodeR')"/>
+  		</input>
+
+		<input ref="FieldNotes">
+			<label ref="jr:itext('FieldNotes')"/>
+		</input>
+	</h:body>
+</h:html>

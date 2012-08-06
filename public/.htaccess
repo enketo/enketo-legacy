@@ -1,0 +1,17 @@
+#AuthUserFile /var/www/rapaide.org/.htpasswd
+#AuthName 'By Invitation Only'
+#AuthType Basic
+
+#Require valid-user
+
+#don't list the directory contents
+IndexIgnore *
+
+RewriteEngine on
+
+RewriteCond $1 !^(index\.php|css|images|js-source|js-min|cache|mintest|testing|libraries|_tryout|robots\.txt|favicon\.ico|checkforconnection\.txt)
+RewriteRule ^(.*)$ /index.php/$1 [L]
+
+#to use proxy for cross-domain ajax request (can't get CURL to work in php…)
+#RewriteRule ^html5validate/(.*)$ http://html5.validator.nu/$1 [P]
+#RewriteRule ^formtranslate(.*)$ http://www.commcarehq.org/formtranslate$1 [P]

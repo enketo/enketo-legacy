@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+	<h:head>
+		<h:title>Elephant Tracking Form</h:title>
+		<model>
+			<itext>
+				<translation lang="English">
+					<text id="ElephantPicture"><value>Take a picture of the elephant.</value></text>
+					<text id="SurveyorLocation"><value>Record your location.</value></text>
+					<text id="ElephantFamily"><value>Identify the elephant family.</value></text>
+					<text id="ElephantFamilyHint"><value>For example, Winns, Royals, or lone bull.</value></text>
+					<text id="FieldNotes"><value>Field notes.</value></text>
+				</translation>
+			</itext>
+			<instance>
+				<ElephantTracking id="ElephantTracking">
+					<DeviceId/>
+					<StartTime/>
+					<EndTime/>
+					<SurveyorLocation/>
+					<ElephantPicture/>
+					<ElephantFamily/>
+					<FieldNotes/>
+				</ElephantTracking>
+			</instance>
+			<bind nodeset="/ElephantTracking/DeviceId" type="string" jr:preload="property" jr:preloadParams="deviceid"/>
+			<bind nodeset="/ElephantTracking/StartTime" type="dateTime" jr:preload="timestamp" jr:preloadParams="start"/>
+			<bind nodeset="/ElephantTracking/EndTime" type="dateTime" jr:preload="timestamp" jr:preloadParams="end"/>
+			<bind nodeset="/ElephantTracking/ElephantPicture" type="binary"/>			
+			<bind nodeset="/ElephantTracking/SurveyorLocation" type="geopoint"/>
+			<bind nodeset="/ElephantTracking/ElephantFamily" type="string"/>
+			<bind nodeset="/ElephantTracking/FieldNotes" type="string"/>
+		</model>
+	</h:head>
+	<h:body>
+		<upload ref="ElephantPicture" mediatype="image/*">
+			<label ref="jr:itext('ElephantPicture')"/>
+		</upload>
+		<input ref="SurveyorLocation">
+			<label ref="jr:itext('SurveyorLocation')"/>
+		</input>
+		<input ref="ElephantFamily">
+			<label ref="jr:itext('ElephantFamily')"/>
+		</input>
+		<input ref="FieldNotes">
+			<label ref="jr:itext('FieldNotes')"/>
+		</input>
+	</h:body>
+</h:html>

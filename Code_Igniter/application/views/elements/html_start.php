@@ -5,7 +5,7 @@
 <html lang="en" <?= (isset($offline) && $offline) ? 'manifest="manifest/html5"' : '' ?> class="no-js">
 	<head>
 		<title>
-			 Enketo - Faster Collaborative Surveys (Offline)
+			 Enketo - Faster Assessments (Offline)
 		</title>
 		
 		

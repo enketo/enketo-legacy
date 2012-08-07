@@ -72,7 +72,25 @@ function Form (selector, dataStr){
 	this.getDataStr = function(incTempl, incNs){
 		return data.getStr(incTempl, incNs);
 	};
-	
+	/**
+     *
+     */
+	this.getKey = function(){
+		return form.getKey();
+	};
+	/**
+     * @param {string} key
+     */
+	this.setKey = function(key){
+		return form.setKey(key);
+	};
+	/**
+	 * @param { boolean } status [description]
+	 */
+	 this.setEditStatus = function(status){
+		return form.setEditStatus(status);
+	 };
+
 /**
  * Function: DataXML
  *
@@ -1255,7 +1273,7 @@ function Form (selector, dataStr){
 	};
 
 	FormHTML.prototype.getKey = function() {
-		return $form.find('form.jr:eq(0)').attr('data-stored-with-key');
+		return $form.find('form.jr:eq(0)').attr('data-stored-with-key') || null;
 	};
 
 	// evaluate the skip logic in data-relevant attributes
@@ -2034,6 +2052,8 @@ function Form (selector, dataStr){
 	};
 
 }
+
+GUI.prototype.setCustomEventHandlers = function(){};
 
 (function($){
 	"use strict";

@@ -36,7 +36,7 @@
 			<div class="ui-helper-clearfix">
 				<div id="records-saved" >
 					<h3>locally stored survey data</h3>
-					<div id="records-saved-pane" class="ui-widget ui-corner-all">
+					<div id="records-saved-pane" class="ui-widget ui-corner-all scrollbar">
 						<div id="records-saved-content">
 							<ol>
 							</ol>

@@ -38,9 +38,27 @@ $(document).ready(function(){
 
 	gui.setup();
 
+	$('#upload-form #input-switcher a#xml_url').click();
+
+	if (url){
+		url = decodeURIComponent(decodeURI(getGetVariable('formurl')));
+		console.log('formurl : '+url);
+		if(isValidUrl(url)){
+			$('#upload-form label, #input-switcher').hide();//css('visibility', 'hidden');
+			$('#upload-form input[name="xml_url"]').val(url);
+			$('#upload-form').submit();
+		}
+		else {
+			gui.alert('not a valid url');
+		}
+	}
+});
+
+GUI.prototype.setCustomEventHandlers = function(){
+	"use strict";
 	$('#upload-form [name="xml_file"]').change(function(){
 		//console.log('file input change event detected');
-		//$(this).find('img.loading').show(); 
+		//$(this).find('img.loading').show();
 		$('#upload-form').submit();
 	});
 
@@ -63,8 +81,6 @@ $(document).ready(function(){
 		$(this).siblings().removeClass('ui-state-active');
 		$(this).addClass('ui-state-active');
 	});
-
-	$('#upload-form #input-switcher a#xml_url').click();
 
 	$('#data-template-show input').change(function(){
 		templateShow = ($(this).is(':checked')) ? true : false;
@@ -104,27 +120,23 @@ $(document).ready(function(){
 					'<span class="ui-icon ui-icon-info"></span>This validation is currently not functional</li></ol>');
 			}
 		});
-
-		
-
 		return false;
 	});
 
-	if (url){
-		url = decodeURIComponent(decodeURI(getGetVariable('formurl')));
-		console.log('formurl : '+url);
-		if(isValidUrl(url)){
-			$('#upload-form label, #input-switcher').hide();//css('visibility', 'hidden');
-			$('#upload-form input[name="xml_url"]').val(url);
-			$('#upload-form').submit();
-		}
-		else {
-			gui.alert('not a valid url');
-		}
-	}
-});
+	$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}}).click(function(){
+		resetForm();
+	});
+	
+	$('button#launch-form').button({'icons': {'primary':"ui-icon-arrowthick-1-e"}}).click(function(){
+		gui.alert('In the future this button will launch the form in Rapaide.survey '+
+			'(now it just triggers validation of the whole form).', 'Not functional');
+		$('form.jr').trigger('beforesave');
+	});
+
+};
 
 function isValidUrl(url){
+	"use strict";
 	return (url.match(/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/));
 }
 
@@ -177,8 +189,8 @@ function processResponse(xml){
 	$('#upload-form img.loading').remove();
 	
 	if(formStr.length > 0){
-		
-		$('#html5-form-source textarea').empty().text(vkbeautify.xml(formStr));	
+
+		$('#html5-form-source textarea').empty().text(vkbeautify.xml(formStr));
 		$('#html5-form-source form').submit();
 		
 		//important to use append with string and not $object for some reason => JQuery bug?
@@ -203,7 +215,7 @@ function processResponse(xml){
 	}
 	
 	if (form && form.getDataStr().length > 0){
-		updateData(); 
+		updateData();
 	}
 	else{
 		$('#data div').text('An error occurred whilst trying to extract the data.');
@@ -269,6 +281,7 @@ function parseMsgList(msgObj, targetEl){
 }
 
 function addJsError(message){
+	"use strict";
 	if ($('#jserrors div ol').length !== 1){
 		$('#jserrors div').append('<ol></ol>');
 	}
@@ -284,7 +297,7 @@ function addJsError(message){
 //content.append('xform', form);
 //$.ajax(url, {
 //type: 'POST',
-//data: content, 
+//data: content,
 //contentType: false,
 //processData: false,
 //password: '',

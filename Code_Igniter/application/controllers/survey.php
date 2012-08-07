@@ -78,7 +78,7 @@ class Survey extends CI_Controller {
 			//log_message ('debug', 'going to load list view with data: '.json_encode($data));
 			if (ENVIRONMENT === 'production')
 			{
-				$data['scripts'] = array();//'js-min/surveyfront-all-min.js');
+				$data['scripts'] = array();//'js-min/front-all-min.js');
 			}
 			else
 			{

@@ -107,7 +107,7 @@ function GUI(){
 	var fbBar, //true if feedbackBar is shown
 		page, //true if page is shown
 		feedbackTimeout,
-		headerEl, feedbackEl, pageEl, pages, confirmEl, alertEl, $form,
+		headerEl, feedbackEl, pageEl, confirmEl, alertEl, $form,
 		browserSupport = {'offline-launch':false, 'local-storage':false, 'fancy-visuals':false},
 		headerHighlightColor, headerBorderColor, headerBackgroundColor, headerNavTextColor, //mainContentBackground,
 		buttonBackgroundColorDefault,buttonBackgroundColorHover, buttonBackgroundColorActive, updateEditStatus,
@@ -132,6 +132,11 @@ function GUI(){
 		
 		// setup eventHandlers
 		setEventHandlers();
+
+		// setup additional 'custom' eventHandlers declared other js file
+		if (typeof this.setCustomEventHandlers === 'function'){
+			this.setCustomEventHandlers();
+		}
 		// the settings are retrieved from storage and applied before the pages are removed from the DOM
 		
 				//tooltips on all elements with a title
@@ -152,6 +157,8 @@ function GUI(){
 		});*/
 		$('footer').detach().appendTo('#container');
 	};
+
+
 	
 	// final setup of GUI object
 	this.setup = function(){
@@ -160,10 +167,10 @@ function GUI(){
 		// set height of scrollable container by calling resize event
 		$(window).trigger('resize');
 
-		pages = $('<pages></pages>');// placeholder 'parent' element for the articles (pages)
+		this.$pages = $('<pages></pages>');// placeholder 'parent' element for the articles (pages)
 		
 		// detaching pages from DOM and storing them in the pages variable
-		$('article.page').detach().appendTo(pages).css('display','block');
+		$('article.page').detach().appendTo(this.$pages).css('display','block');
 	
 	};
 	
@@ -239,24 +246,7 @@ function GUI(){
 	function setEventHandlers(){
 		//var that=this;
 		
-		// survey-form controls
-		$('button#save-form').button({'icons': {'primary':"ui-icon-disk"}})
-			.click(function(){
-				//saveForm(false);
-			});
-		$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}})
-			.click(function(){
-				resetForm();
-			});
-		$('button#delete-form').button({'icons': {'primary':"ui-icon-trash"}})
-			.click(function(){
-				//deleteForm(false);
-			});
-		$('button#launch-form').button({'icons': {'primary':"ui-icon-arrowthick-1-e"}})
-			.click(function(){
-				gui.alert('In the future this button will launch the form in Rapaide.survey (now it just triggers validation of the whole form).', 'Not functional');
-				$('form.jr').trigger('beforesave');
-			});
+		
 		$('#form-controls button').equalWidth();
 		
 		// close 'buttons' on page and feedback bar
@@ -333,43 +323,9 @@ function GUI(){
 				loadForm(name);
 			});*/
 			
-		$('#records-saved li:not(.no-click)')
-			.on('click', 'li', function(event){ // future items matching selection will also get eventHandler
-				event.preventDefault();
-				//loadForm($(this).find('.name').text());
-			})
-			.on('mouseenter', 'li', function(){
-				$(this).addClass('ui-state-hover');
-				$(this).mousedown(function(){
-					$(this).addClass('ui-state-active');
-				});
-			})
-			.on('mouseleave', 'li', function(){
-				$(this).removeClass('ui-state-hover');
-			});
 		
-		$('button#records-force-upload').button({'icons': {primary:"ui-icon-arrowthick-1-n"}})
-			.click(function(){
-				//connection.upload(true);
-			})
-			.hover(function(){
-				$('#records-force-upload-info').show();
-			}, function(){
-				$('#records-force-upload-info').hide();
-			});
-			
-		$('button#records-export').button({'icons': {'primary':"ui-icon-suitcase"}})
-			.click(function(){
-				
-			})
-			.hover(function(){
-				$('#records-export-info').show();
-			}, function(){
-				$('#records-export-info').hide();
-			});
 			
 		$('#export-excel').button({'icons': {'primary':"ui-icon-suitcase"}});
-		
 			
 		$(window).resize(function(){ //move this when feedback bar is shown?
 			
@@ -377,7 +333,7 @@ function GUI(){
 			
 			$('#container').css('top', $('header').outerHeight());
 			
-			// resizing scrollable container
+			// resizing scrollable container\
 			$('body:not(.no-scroll) #container')
 				.height($(window).height()-$('header').outerHeight()-$('#form-controls.bottom').outerHeight());
 			
@@ -467,8 +423,8 @@ function GUI(){
 		if(pg){
 			pageEl.find('#page-content').prepend(getPage(pg));
 			// MOVE THIS:
-			if (pg === 'records'){
-				addScrollBar(); //function should be called each time page loads because record list will change
+			if (pageEl.find('.scrollbar').length > 0){
+				addScrollBar(pageEl.find('.scrollbar')); //function should be called each time page loads because record list will change
 			}
 			//if (pg === 'settings'){
 				//setSettings();
@@ -758,10 +714,10 @@ function GUI(){
 
 	//private function that returns a clone of the hidden article elements in the document
 	getPage = function(name){
-		page = pages.find('article[id="'+name+'"]').clone(true);
+		page = _this.$pages.find('article[id="'+name+'"]').clone(true);
 		switch(name){
 			case 'records':
-				_this.updateRecordList(page); // ?? Why does call with this.up.. not work?
+				//_this.updateRecordList(page); // ?? Why does call with this.up.. not work?
 				break;
 			case 'settings':
 		}
@@ -769,10 +725,10 @@ function GUI(){
 	};
 	
 	//private function to add a scrollbar to the list of records, if necessary
-	addScrollBar = function(){
+	addScrollBar = function($pane){
 		//scrollpane parts
-		var scrollPane = $('#records-saved-pane'),
-			scrollContent = $('#records-saved ol');
+		var scrollPane = $pane, //('#records-saved-pane'),
+			scrollContent = $pane.find('ol');//('#records-saved ol');
 		
 		//change the main div to overflow-hidden as we can use the slider now
 		scrollPane.css('overflow','hidden');
@@ -797,7 +753,7 @@ function GUI(){
 				value: 100,
 				slide: function(event, ui) {
 					var topValue = -((100-ui.value)*difference/100);
-					console.log('new topValue:'+topValue);
+					//console.log('new topValue:'+topValue);
 					scrollContent.css({top:topValue});//move the top up (negative value) by the percentage the slider has been moved times the difference in height
 				}
 			});
@@ -898,59 +854,11 @@ function GUI(){
 		}
 	};
 
-	//private function that retrieves the locally saved survey data and displays the survey forms names in a list
-	this.updateRecordList = function(pageEl) {
-		if(!pageEl){
-			pageEl = pages.find('article[id="records"]');
-		}
-		var name, date, clss, i, formList, icon, listElement;
-		var finishedFormsQty = 0, draftFormsQty = 0;
-		//var selectElement = pageEl.find('#forms-saved-names');
-		listElement = pageEl.find('#records-saved ol');
-		
-		//remove the existing option elements
-		//selectElement.children().remove();
-		listElement.children().remove();
-		//$('<option value="select form">Select Form</option>').appendTo(selectElement);
-		
-		// get form list object (keys + upload) ordered by time last saved
-		//formList = [];//store.getFormList();
-//		if (!formList){
-//			_this.alert('error loading list of saved forms');
-//			return;
-//		}
-//		if (formList.length > 0){
-//			for (i=0; i<formList.length; i++){
-//				name = formList[i].key;
-//				date = new Date(formList[i].lastSaved).toDateString();
-//				if (formList[i].ready === true){
-//					icon = 'check';
-//					finishedFormsQty++;
-//				}
-//				else {
-//					icon = 'pencil';
-//					draftFormsQty++;
-//				}
-//				//$('<option value="'+name+'">'+name+'</option>').addClass(clss).appendTo(selectElement);
-//				//$('<li><span class="ui-icon ui-icon-'+icon+'"></span><span class="name">'+name+
-//				//	'</span><span class="date"> ('+date+')</span></li>')
-//				//	.appendTo(listElement);
-//				var li = $('<li><span class="ui-icon ui-icon-'+icon+'"></span><span class="name">'+
-//					'</span><span class="date"> ('+date+')</span></li>');
-//				li.find('.name').text(name); // encodes string to html
-//				listElement.append(li);
-//			}
-//		}
-//		else $('<li class="no-click">no locally saved records found</li>').appendTo(listElement);
-// *	OLD*	else if (result.field(2) == 2) {
-// *	OLD*		color = 'gray';
-		// update status counters
-		//pageEl.find('#forms-saved-qty').text(formList.length);
-		pageEl.find('#records-draft-qty').text(draftFormsQty);
-		pageEl.find('#records-final-qty').text(finishedFormsQty);
-		
-	};
 }
+
+//GUI.prototype.getPages = function(){
+//	return this.pages;
+//};
 
 function getGetVariable(variable) {
 	"use strict";

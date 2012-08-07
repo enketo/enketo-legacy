@@ -1,22 +1,28 @@
-//
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, StorageLocal, Modernizr*/
+
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
-var form, connection, cache, SURVEY_FORM_ID;
+var form, connection, store, cache, currentOnlineStatus = false;//, SURVEY_FORM_ID;
 var jrDataStr; //initial store of data format
-var FORM_FORMAT_URL = 'survey_format';
+//var FORM_FORMAT_URL = 'survey_format';
 var CONNECTION_URL = 'checkforconnection.txt';
 var DATA_RECEIVER_URL = 'data/upload';
 var MODERN_BROWSERS_URL = 'modern_browsers';
-var GEARS_MANIFEST_URL = 'manifest/gears';
+//var GEARS_MANIFEST_URL = 'manifest/gears';
 
 DEFAULT_SETTINGS = {'settings-auto-upload':true, 'settings-button-location': 'bottom', 'settings-auto-notify-backup':false };
 //var MAX_QTY_SAVED_FORMS = 50;
 //ßvar SURVEY_FORM_ID = 'survey-form';
 var CACHE_CHECK_INTERVAL = 3600*1000;
 var showFormList, checkForOpenForm, updateConnectionStatus, getSettings;//,
-//loadForm, deleteForm, setSettings;initSaveFormsToFile, 
+//loadForm, deleteForm, setSettings;initSaveFormsToFile,
+//
+//tight coupling with Form and Storage class, but loose coupling with GUI
 // !Document.ready()
 /************ Document Ready ****************/
-$(document).ready(function() { 
+$(document).ready(function() {
+	'use strict';
+	var bookmark, message, choices, shown;
+
 	store = new StorageLocal();
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	connection = new Connection();
@@ -28,34 +34,33 @@ $(document).ready(function() {
 		//console.log('redirect attempt because of lack of localStorage support'); // DEBUG
 		window.location = MODERN_BROWSERS_URL;
 	}
-	else{	
+	else{
 		gui.setBrowserSupport({'local-storage':true});
 	}
 	
-	//best to place this after localStorage check, so that IE7 users with Gears 
+	//best to place this after localStorage check, so that IE7 users with Gears
 	//will be re-directed immediately before asking whether they allow Gears to store data
 	cache.init();
 	console.log('cache initialized');
-	var formFormat;
+	//var formFormat;
 	// get form format from json file and build the survey form elements
-	var request;
+	//var request;
 //	if (window.XMLHttpRequest){
-//  			  request=new XMLHttpRequest();
-//  			request.open("GET", FORM_FORMAT_URL, false); //not asynchronous!!
-//  			request.send();
-//  			if (request.responseText === 'error'){
-//  				console.log('This survey does not exist or has not been published yet');
-//  			}
-//  			else if (request.responseText && request.responseText!=''){
-//  				formFormat = JSON.parse(request.responseText);
-//  				//formFormat = request.responseText; //maybe do check to see if responseText is in XML format?
-//  				console.log('loaded form format from the json file:'+JSON.stringify(formFormat));
-//  			}
-//  			else {
-//  				console.log('Error occurred while loading form format');
-//  			}
-//  	}
-//	var formBuiltSuccessfully;
+	//request=new XMLHttpRequest();
+	//request.open("GET", FORM_FORMAT_URL, false); //not asynchronous!!
+	//request.send();
+	//if (request.responseText === 'error'){
+	//	console.log('This survey does not exist or has not been published yet');
+	//}
+	//else if (request.responseText && request.responseText!=''){
+	//	formFormat = JSON.parse(request.responseText);
+	//	//formFormat = request.responseText; //maybe do check to see if responseText is in XML format?
+	//	console.log('loaded form format from the json file:'+JSON.stringify(formFormat));
+	//}
+	//else {
+	//	console.log('Error occurred while loading form format');
+	//}
+	////	var formBuiltSuccessfully;
 //	if (formFormat){
 //		formBuiltSuccessfully = form.init(formFormat);
 //	}
@@ -67,107 +72,113 @@ $(document).ready(function() {
 		
 		//$('header #survey-info').text(form.COUNTRY+' '+form.SECTOR+' '+form.YEAR+' '+form.SURVEY_NAME);
 		
-		// initialize the GUI object
-		gui.init();
-		form.init();
-		connection.init(); //should be called after form format is loaded
-		//initialize file export/backup function
-		//initSaveFormsToFile(); // CHECK SAFARI OS X BUG
+	// initialize the GUI object
+	gui.init();
+	form.init();
+	connection.init(); //should be called after form format is loaded
+	//initialize file export/backup function
+	//initSaveFormsToFile(); // CHECK SAFARI OS X BUG
+	
+	// application cache for launching application offline
+	if (cache.isSupported()){
 		
-		// application cache for launching application offline
-		if (cache.isSupported()){
-			var bookmark, message, choices, shown;
-			gui.setBrowserSupport({'offline-launch':true}); 
-			
-			//reminder to bookmark page will be shown 3 times	
-			bookmark = store.getRecord('bookmark');
-			
-			shown=0;
-			if (bookmark){
-				shown = (bookmark.shown) ? bookmark.shown : 0;
-			}
-			if(shown < 3){
-			    setTimeout(function(){
-			    	gui.showFeedback('Please bookmark this page for easy offline launch. '+
-			    		'(This reminder will be shown '+(2-shown)+' more time(s).)', 20);
-			    	shown++;
-			    	store.setRecord({"recordType":"bookmark", "shown": shown});
-			    }, 5*1000)
-			}
-			
-			//check for updated cache
+		gui.setBrowserSupport({'offline-launch':true});
+		
+		//reminder to bookmark page will be shown 3 times
+		bookmark = store.getRecord('bookmark');
+		
+		shown=0;
+		if (bookmark){
+			shown = (bookmark.shown) ? bookmark.shown : 0;
+		}
+		if(shown < 3){
+			setTimeout(function(){
+				gui.showFeedback('Please bookmark this page for easy offline launch. '+
+					'(This reminder will be shown '+(2-shown)+' more time(s).)', 20);
+				shown++;
+				store.setRecord('__bookmark', {shown: shown}, true);
+			}, 5*1000);
+		}
+		
+		//check for updated cache
+		checkCache();
+		
+		// Check for an updated manifest file regularly and refresh cache if necessary.
+		window.setInterval(function(){
 			checkCache();
+		}, CACHE_CHECK_INTERVAL);
+		
+	}
+	else{ // if applicationCache is not supported
+		message = 'Offline application launch not natively supported by your browser. '+
+				'You can use it without this feature or see options for resolving this';
+		choices = {
+			posButton : 'Show options',
+			negButton : 'Use it',
+			posAction : function(){ window.location = MODERN_BROWSERS_URL; }
+		};
+		gui.confirm(message, choices,'Browser requires plugins');
+	}
+	
+	// ADD / REPLACE If there is sufficient cross-browser support this could be replaced by simply calling window.navigator.onLine which returns false or true
+	//var onlineCheckInterval = window.setInterval(function () {
+		//checking online status
+		//console.log('checking online status'); // DEBUG
+	//	gui.updateConnectionStatus(connection.getStatus());
+	//}, 5*1000);
 			
-			// Check for an updated manifest file regularly and refresh cache if necessary.
-			window.setInterval(function(){
-				checkCache();
-			}, CACHE_CHECK_INTERVAL);
-			
-		}
-		else{ // if applicationCache is not supported
-			message = 'Offline application launch not natively supported by your browser. '+
-					'You can use it without this feature or see options for resolving this';
-			choices = {
-				posButton : 'Show options',
-				negButton : 'Use it',
-				posAction : function(){ window.location = MODERN_BROWSERS_URL; }
-			}
-			gui.confirm(message, choices,'Browser requires plugins'); 
-		}
-		
-		// ADD / REPLACE If there is sufficient cross-browser support this could be replaced by simply calling window.navigator.onLine which returns false or true
-		//var onlineCheckInterval = window.setInterval(function () {
-			//checking online status
-			//console.log('checking online status'); // DEBUG
-		//	gui.updateConnectionStatus(connection.getStatus());
-		//}, 5*1000);
-				
-		
-		
-		///var linkAnalysis = $('#link-analysis').attr('href')+'?name='+connection.getTableName();
-		//$('#link-analysis').attr('href', linkAnalysis);
-		
-		gui.setup();
+	
+	
+	///var linkAnalysis = $('#link-analysis').attr('href')+'?name='+connection.getTableName();
+	//$('#link-analysis').attr('href', linkAnalysis);
+	
+	
+
+	gui.setup();
 //	}
 //	else{
 //	// ADD ERROR PAGE!
 //	console.log('form not built successfully');
 //	}
+	//trigger fake save event to update formlist on data page
+	$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
 });
 
 function checkCache(){
+	'use strict';
 	cache.checkForUpdate();
 	window.setTimeout(function(){
 		console.log('going to provide cache feedback to user. cache.getError='+cache.getError()); // DEBUG
-	    if (cache.updateReady()){
-	    	gui.showFeedback('A new version of this application has been downloaded. '+
-	    		'Please save your work and refresh to update.', 20); //REQUIRES DOUBLE REFRESH IN IE8....
-	    }
-	    else if (cache.getError()){
-	    	if (cache.getError() === 'security'){
-	    		gui.showFeedback ('Please allow site to store data for offline use and refresh.', 60);
-	    	}
-	    	else {
-	    		gui.alert('An error occurred with the application cache. '+
-	    		'You may have a problem launching offline (error: '+cache.getError()+'). '+
-	    		'Please save your work, refresh and check if offline launch works.'); 
-	    	}
-	    }
-	}, 30*1000) //it may take a while for the resources to download
+		if (cache.updateReady()){
+			gui.showFeedback('A new version of this application has been downloaded. '+
+				'Please save your work and refresh to update.', 20); //REQUIRES DOUBLE REFRESH IN IE8....
+		}
+		else if (cache.getError()){
+			if (cache.getError() === 'security'){
+				gui.showFeedback ('Please allow site to store data for offline use and refresh.', 60);
+			}
+			else {
+				gui.alert('An error occurred with the application cache. '+
+				'You may have a problem launching offline (error: '+cache.getError()+'). '+
+				'Please save your work, refresh and check if offline launch works.');
+			}
+		}
+	}, 30*1000); //it may take a while for the resources to download
 }
 
 function loadForm(formName, confirmed){
+	'use strict';
 	var message, choices;
 	//console.log('loadForm called'); // DEBUG
 	if (!confirmed && form.hasBeenEdited()){
 		message = 'Would you like to proceed without saving changes to the form you were working on?';
 		choices = {
 			'posAction': function(){ loadForm("'+formName+'", true); }
-		}
+		};
 		gui.confirm(message, choices);
 	}
 	else {
-		// request a form data object 
+		// request a form data object
 		var data = store.getRecord(formName);
 		//enters that data in the form on the screen
 		// *OLD*checkForOpenForm(true);
@@ -176,7 +187,7 @@ function loadForm(formName, confirmed){
 			//gui.closePage();
 			//console.log('displaying loaded form data succes?: '+success); // DEBUG
 			$('#page-close').click();
-			$('button#delete-form').show();	
+			$('button#delete-form').show();
 			if(!success){
 				gui.alert('Error loading form. Saved data may be corrupted');
 			}
@@ -188,80 +199,82 @@ function loadForm(formName, confirmed){
 	}
 }
 
-function saveForm(overwrite, removeChecked){
+function saveForm(recordName, overwrite){
+	'use strict';
 	//console.log('saveForm called'); // DEBUG
-	var oldKey, result, message, choices;
-	var data = form.getData(SURVEY_FORM_ID);
+	var oldRecordName, result, message, choices, 
+		data = form.getDataStr(true, true);
+	//var data = form.getData(SURVEY_FORM_ID);
 	
-	if(!overwrite){ //necessary??
-		overwrite=false;
-	}
-	if (!removeChecked){ //necessary??
-		removeChecked = false;
-	}
 	//console.log ('data: '+JSON.stringify(data)); //DEBUG
-	if (data !== null){
-		oldKey = form.getKey();
-		console.log('old key is: '+oldKey); // DEBUG
-		console.log('new key is: '+data[form.KEY_NAME]); // DEBUG
+	if (data !== null && data !== '' && recordName && recordName.length > 0){
+		oldRecordName = form.getKey();
+		console.log('old key is: '+oldRecordName); // DEBUG
+		console.log('new key is: '+recordName); // DEBUG
 		
-		if (oldKey && oldKey!='' && oldKey!=data[form.KEY_NAME] && !removeChecked)
+		if (oldRecordName && oldRecordName !== recordName && overwrite !== 'undefined')
 		{
-			message = form.KEY_LABEL+' has changed. Would you like to delete the record saved under the old '+form.KEY_LABEL+'?';
+			message = 'Record name has changed. Would you like to delete the record saved under the old name:'+oldRecordName+'?';
 			choices = {
 				posButton : 'Yes, delete',
 				negButton : 'No, keep',
-				posAction : function(){ saveForm(true, true); },
-				negAction : function(){ saveForm(false, true); }
-			}
+				posAction : function(){ saveForm(recordName, true); },
+				negAction : function(){ saveForm(recordName, false); }
+			};
 			gui.confirm(message, choices, 'Delete old Record?');
-		}	
+		}
 		else {
-			result = store.setRecord(data, oldKey, overwrite);
+			result = store.setRecord(recordName, data, overwrite, oldRecordName);
 		
 			//console.log('result: '+result); // DEBUG
-			if (result === 'success'){			
-			    gui.showFeedback('Form with name "'+data[form.KEY_NAME]+'" has been saved.', 2);	
-			    //set the new custom html5 data attribute stored-with-key
-			    form.setKey(data[form.KEY_NAME]);
-			    form.setEditStatus(false);
-			    $('button#delete-form').show();	
+			if (result === 'success'){
+				gui.showFeedback('Form with name "'+recordName+'" has been saved.', 2);
+				//set the new custom html5 data attribute stored-with-key
+				form.setKey(recordName);
+				form.setEditStatus(false);
+				$('button#delete-form').show();
+				$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
 			}
-			else if (result === 'requireKey'){
-			    gui.alert (form.KEY_LABEL+' is required. Please provide this.');
-			}
-			else if (result === 'existingKey'){
-				message = 'Record with this '+form.KEY_LABEL+' already exists. Would you like to overwrite existing record? ';
+			//else if (result === 'requireKey'){
+			//	gui.alert (form.KEY_LABEL+' is required. Please provide this.');
+			//}
+			else if (result === 'existing'){
+				message = 'Record with this name already exists. Would you like to overwrite existing record? ';
 				choices = {
 					posButton : 'Yes, overwrite',
-					posAction : function(){ saveForm(true); },
+					posAction : function(){ saveForm(recordName, true); },
 					negAction : function(){ gui.showFeedback("Form was not saved."); }
-				}
-			    gui.confirm(message, choices);
+				};
+				gui.confirm(message, choices);
 			}
-			else if (result === 'forbiddenKey'){
-			    gui.alert ('This '+form.KEY_LABEL+' is not allowed. Please change it');
-			    gui.showFeedback ('Form was NOT saved.');
+			else if (result === 'forbidden'){
+				gui.alert ('This name is not allowed. Please change it');
+				gui.showFeedback ('Form was NOT saved.');
 			}
 			else {
-			    gui.showFeedback('Error occurred. Form was NOT saved.');
+				gui.showFeedback('Error occurred. Form was NOT saved.');
 			}
 		}
 	}
-	// code not actually reachable because the data is never null
 	else {
-		gui.showFeedback('Nothing to save.'); //ADD error with getting data from form?
+		if(recordName){
+			gui.showFeedback('Nothing to save.'); //ADD error with getting data from form?
+		}
+		else{
+			console.error('No record name provided.');
+		}
 	}
 	return;
 }
 
 function resetForm(confirmed){
+	'use strict';
 	var message, choices;
 	if (!confirmed && form.hasBeenEdited()){
 		message = 'Would you like to reset without saving changes to the form you were working on?';
 		choices = {
 			posAction : function(){ resetForm(true); }
-		}
+		};
 		gui.confirm(message, choices);
 	}
 	else {
@@ -270,12 +283,13 @@ function resetForm(confirmed){
 }
 
 function deleteForm(confirmed) {
+	'use strict';
 	var message, choices, key = form.getKey();
 	//console.log ('oldkey: '+oldKey ); // DEBUG
 	//console.log ('confirmed: '+confirmed); // DEBUG
-	if (key !== '' && key !== null){	
+	if (key !== '' && key !== null){
 		if (confirmed){
-			var success = store.removeRecord(key); 
+			var success = store.removeRecord(key);
 			if (success){
 				form.reset();
 				gui.showFeedback('Successfully deleted form.');
@@ -289,7 +303,7 @@ function deleteForm(confirmed) {
 			choices = {
 				posButton : 'Delete',
 				posAction : function(){ deleteForm(true); }
-			}
+			};
 			gui.confirm(message, choices);
 		}
 	}
@@ -297,28 +311,29 @@ function deleteForm(confirmed) {
 		gui.showFeedback ('Please first load the form you would like to delete or choose reset if you\'d like to reset the current form.');
 	}
 	//console.log('exiting delete function'); // DEBUG
-	return;	
+	return;
 }
 
 
 // BUG: function causes a crash in Safari on OS X when loaded from appCache in fresh Safari browser window
 function initSaveFormsToFile() {
+	'use strict';
 	$('#downloader').downloadify({
 		filename: function(){
-		  return 'All_Form_Data.json'; //static file -- you could retrieve from form input box
+			return 'All_Form_Data.json'; //static file -- you could retrieve from form input box
 		},
-		data: function(){ 
-		  console.log('getting data for download'); // DEBUG
-		  return JSON.stringify(store.getRecordCollection()); //static content -- you could retrieve from form input box
+		data: function(){
+			console.log('getting data for download'); // DEBUG
+			return JSON.stringify(store.getRecordCollection()); //static content -- you could retrieve from form input box
 		},
-		onComplete: function(){ 
-		  gui.showFeedback('The file has been saved!'); 
+		onComplete: function(){
+			gui.showFeedback('The file has been saved!');
 		},
-		onCancel: function(){ 
-		  // anything?
+		onCancel: function(){
+		// anything?
 		},
-		onError: function(){ 
-		  gui.alert('Error saving file. File not saved!'); 
+		onError: function(){
+			gui.alert('Error saving file. File not saved!');
 		},
 		swf: '/libraries/downloadify/downloadify.swf',
 		downloadImage: '/libraries/downloadify/download.png', // CHANGE THIS IMAGE AND LOCATION
@@ -332,15 +347,16 @@ function initSaveFormsToFile() {
 /**
  * @constructor
  * Function (CLass): Cache
- * 
+ *
  * description
- * 
+ *
  * Returns:
- * 
+ *
  *   return description
  */
 function Cache(){
-	var cacheType, appCache, update, error; 
+	'use strict';
+	var cacheType, appCache, update, error;
 	var loadedVersion; //only used for Gears cache
 		
 	this.init = function(){
@@ -349,11 +365,11 @@ function Cache(){
 			cacheType='html5Cache';
 			appCache = window.applicationCache;
 			//checkForUpdate();
-			appCache.addEventListener('updateready', function(){ 
+			appCache.addEventListener('updateready', function(){
 				// when an updated cache is downloaded and ready to be used
 				// swap to the newest version of the cache, will NOT refresh page only newly called resources
-		    	appCache.swapCache(); 
-		    	update = true;
+			appCache.swapCache();
+			update = true;
 			}, false);
 			appCache.addEventListener('error', function(event){
 				console.log ('HTML5 cache error event'); // DEBUG
@@ -363,40 +379,40 @@ function Cache(){
 				}
 			}, false);
 		}
-		else if (window.google && google.gears){
-			try{
-				var gearsServer = google.gears.factory.create('beta.localserver');
-				appCache = gearsServer.createManagedStore('rapaide_store');
-				appCache.manifestUrl = GEARS_MANIFEST_URL;
-				if (appCache){
-					cacheType='gearsCache';
-				}
-				loadedVersion = appCache.currentVersion;
-				//checkForUpdate();
-				var timerId = window.setInterval(function() {
- 					// When the currentVersion property has a value, all of the resources
- 					// listed in the manifest file for that version are captured. 
- 					if (loadedVersion) {
- 				 		window.clearInterval(timerId);
- 				  		console.log('loaded Gears cache with version:'+loadedVersion);
- 				  		error = null;
- 					} 
- 					else if (appCache.updateStatus == 3) {
- 				  		console.log('Error: ' + appCache.lastErrorMessage); // DEBUG
- 				 	 	error = appCache.lastErrorMessage;
- 				 	 	window.clearInterval(timerId); //TEST this by creating incorrect manifest URL
- 					}
- 				}, 500);  
- 			}
- 			catch(e){
- 				console.log ('Gears does not have permission or other Gears initialization error');
- 			}
-		}
-	}
+//		else if (window.google && google.gears){
+//			try{
+//				var gearsServer = google.gears.factory.create('beta.localserver');
+//				appCache = gearsServer.createManagedStore('rapaide_store');
+//				appCache.manifestUrl = GEARS_MANIFEST_URL;
+//				if (appCache){
+//					cacheType='gearsCache';
+//				}
+//				loadedVersion = appCache.currentVersion;
+//				//checkForUpdate();
+//				var timerId = window.setInterval(function() {
+//					// When the currentVersion property has a value, all of the resources
+//					// listed in the manifest file for that version are captured.
+//					if (loadedVersion) {
+//						window.clearInterval(timerId);
+//						console.log('loaded Gears cache with version:'+loadedVersion);
+//						error = null;
+//					}
+//					else if (appCache.updateStatus == 3) {
+//						console.log('Error: ' + appCache.lastErrorMessage); // DEBUG
+//						error = appCache.lastErrorMessage;
+//						window.clearInterval(timerId); //TEST this by creating incorrect manifest URL
+//					}
+//				}, 500);
+//			}
+//			catch(e){
+//				console.log ('Gears does not have permission or other Gears initialization error');
+//			}
+//		}
+	};
 	
 	this.isSupported = function(){
 		return (cacheType==='html5Cache' || cacheType==='gearsCache') ? true : false;
-	}
+	};
 	
 	this.checkForUpdate = function(){
 		console.log('checking for cache update');
@@ -408,31 +424,31 @@ function Cache(){
 					if (e.name === 'NS_ERROR_DOM_SECURITY_ERR'){ //FF before approving offline use
 						error = 'security';
 					}
-					console.log('error thrown during cache update. error name: '+e.name+'  message: '+e.message)
-				};
+					console.log('error thrown during cache update. error name: '+e.name+'  message: '+e.message);
+				}
 				//event listener will update variable 'update';
 				break;
 			case 'gearsCache' :
 				// Checking for updates will also happen regularly automatically even if not explicitly called
-				appCache.checkForUpdate();				
+				appCache.checkForUpdate();
 				break;
 		}
 		return;
-	}
+	};
 
 	this.updateReady = function(){
 		if (cacheType==='gearsCache'){
 			//console.log ('loadedVersion:'+loadedVersion); //DEBUG
 			//console.log ('currentVersion:'+appCache.currentVersion); //DEBUG
-			update = (loadedVersion != '' && loadedVersion != appCache.currentVersion) ? true : false;
+			update = (loadedVersion !== '' && loadedVersion != appCache.currentVersion) ? true : false;
 		}
 		console.log('updateReady() returns: '+update); //DEBUG
 		return update;
-	}
+	};
 
 	this.getError = function(){
 		return error;
-	}
+	};
 
 }
 
@@ -440,13 +456,13 @@ function Cache(){
 //Class dealing with uploads to server
 /**
  * @constructor
- * 
+ *
  * Function: Connection
- * 
+ *
  * description
- * 
+ *
  * Returns:
- * 
+ *
  *   return description
  */
 function Connection(){
@@ -474,24 +490,24 @@ function Connection(){
 		//	setStatus();
 		//}
 		$(window).on('offline online', function(){
-			//console.log('window network event detected'); 
+			//console.log('window network event detected');
 			checkOnlineStatus();
 		});
 		//since network change events are not properly fired, at least not in Firefox 13 (OS X), this is an temporary fix
 		//that can be removed eventually or set to to 60x1000 (1 min)
 		/*window.setInterval(function(){
-			$(window).trigger('online');	
+			$(window).trigger('online');
 		}, 10*1000);*/
 
 		//setTableVars();
-	}
+	};
 	
 	function setTableVars(){
 		var primaryKey;
 		tableName = form.COUNTRY+'_'+form.SECTOR+'_'+form.YEAR+'_'+form.SURVEY_NAME;
 		
 		//make tableName database friendly
-		tableName = tableName.replace(/\s/g, '_'); 
+		tableName = tableName.replace(/\s/g, '_');
 		//console.log('tableName without whitespace: '+tableName); //DEBUG
 		tableName = tableName.toLowerCase();
 		//console.log('tableName lowercase: '+tableName); //DEBUG
@@ -504,16 +520,16 @@ function Connection(){
 		//}
 		//tableFields += 'lastSaved double, lastUploaded double';
 		//primary key of MySQL table is a combination of two colummns and only the first 20 characters of the second column are used.
-		primaryKey = 'lastUploaded, '+form.KEY_NAME+'(20)'; 
+		primaryKey = 'lastUploaded, '+form.KEY_NAME+'(20)';
 	}
 	
 	this.getStatus = function(){
 		return onlineStatus;
-	}
+	};
 	
 	this.getTableName = function(){
 		return tableName;
-	}
+	};
 	
 	//this.setAutoUpload = function(upload){
 	//	autoUpload = upload;
@@ -525,42 +541,44 @@ function Connection(){
 	// However, this could be the first step. If (true) a request is sent to the server to check for a connection
 	// @online = used to force a status (necessary?)
 	function checkOnlineStatus(online){
-		//console.log('checking connection status, status before check is: '+onlineStatus); // DEBUG	
-		if (typeof online == 'undefined' || (online !== true && online !== false) ){
+		console.log('checking connection status');//, status before check is: '+onlineStatus); // DEBUG
+		if (typeof online !== 'undefined' && ( online === true || online === false ) ){		
+			setStatus(online);
+		}
+		//forced status
+		else {
+			setStatus(navigator.onLine);
 			//navigator.onLine not working properly in Firefox
 			//if (navigator.onLine){
 				//NOTE that GET is not working (by default) in a CodeIgniter setup!!
-				$.ajax({
-				type:'POST',
-				url: CONNECTION_URL, 
-				cache: false,
-				dataType: 'text',
-				timeout: 3000,
-				success: function(){
-					setStatus(true);
-					},		
-				error: function(){
-					setStatus(false)
-					}
-				});
+//				$.ajax({
+//					type:'POST',
+//					url: CONNECTION_URL,
+//					cache: false,
+//					dataType: 'text',
+//					timeout: 3000,
+//					success: function(){
+//						setStatus(true);
+//						},
+//					error: function(){
+//						setStatus(false);
+//						}
+//				});
 			//}
 			//else {
 				//setStatus(false);
 			//}
 		}
-		//forced status
-		else {
-			setStatus(online);
-		}
 	}
 	
-	function setStatus(online){
-		var oldStatus = onlineStatus;
-		onlineStatus = online;
-		if (onlineStatus !== oldStatus){
-			console.log('status changed to: '+onlineStatus+', triggering window.onlinestatuschange');
-			$(window).trigger('onlinestatuschange', onlineStatus);
+	function setStatus(newStatus){
+		//var oldStatus = onlineStatus;
+		//onlineStatus = online;
+		if (newStatus !== currentOnlineStatus){
+			console.log('status changed to: '+newStatus+', triggering window.onlinestatuschange');
+			$(window).trigger('onlinestatuschange', newStatus);
 		}
+		currentOnlineStatus = newStatus;
 	}
 
 	// PROTECTION AGAINST CALLING FUNCTION TWICE to be tested
@@ -572,7 +590,7 @@ function Connection(){
 		// autoUpload is true or it is overriden, proceed
 		if (!uploadOngoing && (autoUpload==='true' || override)){
 			var dataObj={}, insertedStr='';
-			dataObj.surveyForms = store.getRecordCollection('surveyData', true); 
+			dataObj.surveyForms = store.getRecordCollection('surveyData', true);
 			dataObj.tableName = tableName;
 			//dataObj.tableFields = tableFields;
 			//dataObj.primaryKey = primaryKey;
@@ -607,7 +625,7 @@ function Connection(){
 							if (override) {
 								gui.showFeedback('Upload failed on server');
 							}
-						}	
+						}
 					},
 					error: function(){
 						if (override){
@@ -629,7 +647,127 @@ function Connection(){
 				}
 			}
 		}
-	}
-
+	};
 
 }
+
+//Extend GUI
+//setCustomEventHandlers is called automatically by GUI.init();
+GUI.prototype.setCustomEventHandlers = function(){
+	"use strict";
+	var that = this;
+	
+	// survey-form controls
+	$('button#save-form').button({'icons': {'primary':"ui-icon-disk"}})
+		.click(function(){
+			saveForm(false);
+		});
+	$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}})
+		.click(function(){
+			resetForm();
+		});
+	$('button#delete-form').button({'icons': {'primary':"ui-icon-trash"}})
+		.click(function(){
+			deleteForm(false);
+		});
+
+	$(document)
+		.on('click', '#records-saved li:not(.no-click)', function(event){ // future items matching selection will also get eventHandler
+			event.preventDefault();
+			//loadForm($(this).find('.name').text());
+		})
+		.on('mouseenter', '#records-saved li:not(.no-click)', function(){
+			$(this).addClass('ui-state-hover');
+			$(this).mousedown(function(){
+				$(this).addClass('ui-state-active');
+			});
+		})
+		.on('mouseleave', '#records-saved li:not(.no-click)', function(){
+			$(this).removeClass('ui-state-hover');
+		});
+	
+	$('button#records-force-upload').button({'icons': {primary:"ui-icon-arrowthick-1-n"}})
+		.click(function(){
+			//connection.upload(true);
+		})
+		.hover(function(){
+			$('#records-force-upload-info').show();
+		}, function(){
+			$('#records-force-upload-info').hide();
+		});
+		
+	$('button#records-export').button({'icons': {'primary':"ui-icon-suitcase"}})
+		.click(function(){
+			
+		})
+		.hover(function(){
+			$('#records-export-info').show();
+		}, function(){
+			$('#records-export-info').hide();
+		});
+
+	$(document).on('save', 'form.jr', function(e, formList){
+		console.debug('save event detected with new formlist: '+formList);
+		that.updateRecordList(JSON.parse(formList));
+	});
+
+};
+
+//update the survey forms names list
+GUI.prototype.updateRecordList = function(recordList, pageEl) {
+	"use strict";
+	var name, date, clss, i, icon, listElement,
+		finishedFormsQty = 0,
+		draftFormsQty = 0;
+
+	if(!pageEl){
+		pageEl = this.$pages.find('article[id="records"]');
+	}
+	
+	//var selectElement = pageEl.find('#forms-saved-names');
+	listElement = pageEl.find('#records-saved ol');
+	
+	//remove the existing option elements
+	//selectElement.children().remove();
+	listElement.children().remove();
+	//$('<option value="select form">Select Form</option>').appendTo(selectElement);
+	
+	// get form list object (keys + upload) ordered by time last saved
+	recordList = recordList || [];//store.getFormList();
+//		if (!formList){
+//			_this.alert('error loading list of saved forms');
+//			return;
+//		}
+	if (recordList.length > 0){
+		for (i=0; i<recordList.length; i++){
+			name = recordList[i].key;
+			date = new Date(recordList[i].lastSaved).toDateString();
+			if (recordList[i].ready === true){
+				icon = 'check';
+				finishedFormsQty++;
+			}
+			else {
+				icon = 'pencil';
+				draftFormsQty++;
+			}
+			//$('<option value="'+name+'">'+name+'</option>').addClass(clss).appendTo(selectElement);
+			//$('<li><span class="ui-icon ui-icon-'+icon+'"></span><span class="name">'+name+
+			//	'</span><span class="date"> ('+date+')</span></li>')
+			//	.appendTo(listElement);
+			var li = $('<li><span class="ui-icon ui-icon-'+icon+'"></span><span class="name">'+
+				'</span><span class="date"> ('+date+')</span></li>');
+			li.find('.name').text(name); // encodes string to html
+			listElement.append(li);
+		}
+	}
+	else{
+		$('<li class="no-click">no locally saved records found</li>').appendTo(listElement);
+	}
+// *	OLD*	else if (result.field(2) == 2) {
+// *	OLD*		color = 'gray';
+	// update status counters
+	//pageEl.find('#forms-saved-qty').text(recordList.length);
+	pageEl.find('#records-draft-qty').text(draftFormsQty);
+	pageEl.find('#records-final-qty').text(finishedFormsQty);
+};
+

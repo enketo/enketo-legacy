@@ -25,7 +25,7 @@
 
     </jscomp>
 
-    <jscomp compilationLevel="advanced" warning="quiet" 
+    <jscomp compilationLevel="advanced" warning="verbose" 
             debug="false" output="public/js-min/front-all-min.js">
 
       <externs dir="${basedir}/src/js">
@@ -38,7 +38,7 @@
 
     </jscomp>
 
-    <jscomp compilationLevel="advanced" warning="quiet" 
+    <jscomp compilationLevel="advanced" warning="verbose" 
             debug="false" output="public/js-min/survey-all-min.js">
 
       <externs dir="${basedir}/src/js">

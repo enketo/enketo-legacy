@@ -1,7 +1,7 @@
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, StorageLocal, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, store, StorageLocal, Modernizr*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
-var  /**@type {Form}*/form,  /**@type {Connection}*/connection, /**@type {Storage}*/store,  /**@type {Cache}*/cache,  /**@type {Settings}*/settings,
+var  /**@type {Form}*/form,  /**@type {Connection}*/connection, /**@type {Cache}*/cache,  /**@type {Settings}*/settings,
 	currentOnlineStatus = false;//, SURVEY_FORM_ID;
 var jrDataStr; //initial store of data format, value set in survey_view.php
 //var FORM_FORMAT_URL = 'survey_format';
@@ -506,34 +506,34 @@ function Connection(){
 		//setTableVars();
 	};
 	
-	function setTableVars(){
-		var primaryKey;
-		tableName = form.COUNTRY+'_'+form.SECTOR+'_'+form.YEAR+'_'+form.SURVEY_NAME;
-		
-		//make tableName database friendly
-		tableName = tableName.replace(/\s/g, '_');
-		//console.log('tableName without whitespace: '+tableName); //DEBUG
-		tableName = tableName.toLowerCase();
-		//console.log('tableName lowercase: '+tableName); //DEBUG
-		
-		version = form.VERSION;
-		
-		//tableFields = '';
-		//for (var i=0; i<form.QUESTIONS.length; i++){
-		//	tableFields += form.QUESTIONS[i].id + ' ' + form.QUESTIONS[i].type + ', ';
-		//}
-		//tableFields += 'lastSaved double, lastUploaded double';
-		//primary key of MySQL table is a combination of two colummns and only the first 20 characters of the second column are used.
-		primaryKey = 'lastUploaded, '+form.KEY_NAME+'(20)';
-	}
-	
-	this.getStatus = function(){
-		return onlineStatus;
-	};
-	
-	this.getTableName = function(){
-		return tableName;
-	};
+//	function setTableVars(){
+//		var primaryKey;
+//		tableName = form.COUNTRY+'_'+form.SECTOR+'_'+form.YEAR+'_'+form.SURVEY_NAME;
+//		
+//		//make tableName database friendly
+//		tableName = tableName.replace(/\s/g, '_');
+//		//console.log('tableName without whitespace: '+tableName); //DEBUG
+//		tableName = tableName.toLowerCase();
+//		//console.log('tableName lowercase: '+tableName); //DEBUG
+//		
+//		version = form.VERSION;
+//		
+//		//tableFields = '';
+//		//for (var i=0; i<form.QUESTIONS.length; i++){
+//		//	tableFields += form.QUESTIONS[i].id + ' ' + form.QUESTIONS[i].type + ', ';
+//		//}
+//		//tableFields += 'lastSaved double, lastUploaded double';
+//		//primary key of MySQL table is a combination of two colummns and only the first 20 characters of the second column are used.
+//		primaryKey = 'lastUploaded, '+form.KEY_NAME+'(20)';
+//	}
+//	
+//	this.getStatus = function(){
+//		return onlineStatus;
+//	};
+//	
+//	this.getTableName = function(){
+//		return tableName;
+//	};
 	
 	//this.setAutoUpload = function(upload){
 	//	autoUpload = upload;

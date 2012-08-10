@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project basedir="../" default="compile">
+<project basedir="" default="compile">
 
   <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
            classpath="lib/compiler.jar"/>

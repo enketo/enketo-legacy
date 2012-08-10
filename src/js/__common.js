@@ -3,10 +3,9 @@
 //
 // Copyright 2012 Martijn van de Rijdt
 /************ Global variables ***************/
-/**@type {GUI}*/
-var gui;
 
-//var	store;
+var /**@type {GUI}*/ gui, /**@type {StorageLocal}*/ store;
+
 //form = null,
 var DEFAULT_SETTINGS = {};
 //var	_$pages; //getPage, addScrollBar, display, buttonArray, setSettings;

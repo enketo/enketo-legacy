@@ -127,7 +127,7 @@
 			    When an internet connection becomes available the application can upload the data to a server and empty the
 			     local storage.
 			    It is meant to be used as a collaboration tool for situations where multiple actors use the same survey
-			    to collect data such is in inter- or intra-cluster needs assessments.
+			    to collect data.
 			</p>
 			<p>
 			    In all modern browsers this application

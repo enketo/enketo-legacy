@@ -1,5 +1,3 @@
-/* Main stylesheet for the offline survey application */
-/* by Martijn van de Rijdt, Aid Web Solutions  */
 /* line 17, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -65,10 +63,22 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   display: block;
 }
 
+/******* COLORS **********/
+/*dark yellow*/
+/*very light yellow*/
+/*brown*/
+/*dark brown*/
+/*white*/
+/*yellow*/
+/*lighter brown but similar to header-brdr*/
+/*red*/
+/*darker gray */
+/*light gray*/
+/*very dark brown*/
 /***************************
  ****BASIC GUI ELEMENTS ****
  ***************************/
-/* line 10, ../../src/scss/stylesheet.scss */
+/* line 21, ../../src/scss/screen.scss */
 p {
   text-align: left;
   margin-top: .9em;
@@ -76,7 +86,7 @@ p {
   line-height: 1.4em;
 }
 
-/* line 17, ../../src/scss/stylesheet.scss */
+/* line 28, ../../src/scss/screen.scss */
 h2, h3, h4 {
   text-align: center;
   font-weight: bolder;
@@ -84,117 +94,102 @@ h2, h3, h4 {
   padding: 0 5px;
 }
 
-/* line 23, ../../src/scss/stylesheet.scss */
+/* line 34, ../../src/scss/screen.scss */
 ul {
   list-style: disc;
   margin-left: 20px;
 }
 
-/* line 27, ../../src/scss/stylesheet.scss */
+/* line 38, ../../src/scss/screen.scss */
 strong {
   font-weight: bold;
 }
 
-/* line 30, ../../src/scss/stylesheet.scss */
+/* line 41, ../../src/scss/screen.scss */
 button.close {
   background: none;
   border: none;
 }
 
-/* line 34, ../../src/scss/stylesheet.scss */
+/* line 45, ../../src/scss/screen.scss */
 .center {
   text-align: center;
 }
 
-/* line 37, ../../src/scss/stylesheet.scss */
+/* line 48, ../../src/scss/screen.scss */
 div[id^="dialog"] p span.ui-icon {
   float: left;
   margin: .3em .7em 3em 0;
 }
 
-/* line 41, ../../src/scss/stylesheet.scss */
+/* line 52, ../../src/scss/screen.scss */
 #dialog-confirm, #dialog-alert {
   display: none;
   line-height: 1.5em;
 }
 
-/* line 45, ../../src/scss/stylesheet.scss */
+/* line 56, ../../src/scss/screen.scss */
 .capitalize {
   text-transform: capitalize;
 }
 
-/* line 48, ../../src/scss/stylesheet.scss */
+/* line 59, ../../src/scss/screen.scss */
 img.loading {
   display: block;
   margin: 15px 0 25px 48%;
 }
 
-/* line 52, ../../src/scss/stylesheet.scss */
+/* line 63, ../../src/scss/screen.scss */
 #upload-form img.loading {
   margin-top: 130px;
 }
 
-/* line 55, ../../src/scss/stylesheet.scss */
+/* line 66, ../../src/scss/screen.scss */
 .level-0, .level-1, .info, .success {
-  color: #666;
+  color: #5c5c5c;
 }
 
-/*
-.level-1, .warning{
-	color: #FF8C00;
-}
-*/
-/* line 64, ../../src/scss/stylesheet.scss */
+/*.level-1, .warning{}*/
+/* line 71, ../../src/scss/screen.scss */
 .level-2, .level-3, .error {
   color: #d34d17;
-  /*should actually be done dynamically based on theme error background color*/
 }
 
-/* line 68, ../../src/scss/stylesheet.scss */
+/* line 74, ../../src/scss/screen.scss */
 .level-3 {
   font-weight: bold;
 }
 
-/*.logo_a{
-	color:#D15514;
-}*/
-/* line 75, ../../src/scss/stylesheet.scss */
+/* line 77, ../../src/scss/screen.scss */
 .component {
   font-size: 12px;
 }
 
-/*#tooltip{
-	position: absolute;
-	z-index: 15;
-	background-color: black;
-	color: white;
-	padding: 5px;
-}*/
 /* Tooltip CAN/SHOULD BE REMOVED AFTER JQUERY UI 1.9 PROBABLY
 ----------------------------------*/
-/* line 89, ../../src/scss/stylesheet.scss */
+/* line 83, ../../src/scss/screen.scss */
 .ui-tooltip {
   padding: 8px;
   position: absolute;
   z-index: 9999;
-  -o-box-shadow: 0 0 5px #aaa;
-  -moz-box-shadow: 0 0 5px #aaa;
-  -webkit-box-shadow: 0 0 5px #aaa;
-  box-shadow: 0 0 5px #aaa;
+  -o-box-shadow: 0 0 5px #cccccc;
+  -moz-box-shadow: 0 0 5px #cccccc;
+  -webkit-box-shadow: 0 0 5px #cccccc;
+  box-shadow: 0 0 5px #cccccc;
 }
 
 /* Fades and background-images don't work well together in IE6, drop the image */
-/* line 100, ../../src/scss/stylesheet.scss */
+/* line 94, ../../src/scss/screen.scss */
 * html .ui-tooltip {
   background-image: none;
 }
 
-/* line 103, ../../src/scss/stylesheet.scss */
+/* line 97, ../../src/scss/screen.scss */
 body .ui-tooltip {
   border-width: 2px;
 }
 
-/* line 106, ../../src/scss/stylesheet.scss */
+/* line 100, ../../src/scss/screen.scss */
 .custom-button {
   height: 18px;
   width: 19px;
@@ -202,17 +197,17 @@ body .ui-tooltip {
   background: none;
 }
 
-/* line 112, ../../src/scss/stylesheet.scss */
+/* line 106, ../../src/scss/screen.scss */
 .ui-widget {
   /*font-size: 90%;*/
 }
 
-/* line 115, ../../src/scss/stylesheet.scss */
+/* line 109, ../../src/scss/screen.scss */
 .custom-button .ui-icon {
   margin: 1px;
 }
 
-/* line 118, ../../src/scss/stylesheet.scss */
+/* line 112, ../../src/scss/screen.scss */
 article.page {
   display: none;
 }
@@ -220,12 +215,13 @@ article.page {
 /***************************
  ****      LAYOUT       ****
  ***************************/
-/* line 125, ../../src/scss/stylesheet.scss */
+/* line 119, ../../src/scss/screen.scss */
 body {
+  background-color: #cccccc;
   /*overflow: hidden;*/
 }
 
-/* line 128, ../../src/scss/stylesheet.scss */
+/* line 123, ../../src/scss/screen.scss */
 #overlay {
   display: none;
   position: absolute;
@@ -235,7 +231,7 @@ body {
   opacity: 0.8;
 }
 
-/* line 136, ../../src/scss/stylesheet.scss */
+/* line 131, ../../src/scss/screen.scss */
 header.ui-widget-header {
   position: absolute;
   z-index: 14;
@@ -246,17 +242,17 @@ header.ui-widget-header {
   border-right: none;
 }
 
-/* line 145, ../../src/scss/stylesheet.scss */
+/* line 140, ../../src/scss/screen.scss */
 #logo {
   position: absolute;
   top: 14px;
   left: 20px;
 }
-/* line 149, ../../src/scss/stylesheet.scss */
+/* line 144, ../../src/scss/screen.scss */
 #logo img {
   height: 40px;
 }
-/* line 151, ../../src/scss/stylesheet.scss */
+/* line 146, ../../src/scss/screen.scss */
 #logo #component {
   position: relative;
   display: inline-block;
@@ -264,8 +260,8 @@ header.ui-widget-header {
   font-size: 0.6em;
 }
 
-/* line 157, ../../src/scss/stylesheet.scss */
-nav {
+/* line 152, ../../src/scss/screen.scss */
+.ui-widget-header nav {
   position: absolute;
   top: 17px;
   right: 20px;
@@ -273,13 +269,13 @@ nav {
   padding: 0.2em;
   zoom: 1;
 }
-/* line 164, ../../src/scss/stylesheet.scss */
-nav ul {
+/* line 159, ../../src/scss/screen.scss */
+.ui-widget-header nav ul {
   margin: 0;
   padding: 0.2em 0.2em 0;
 }
-/* line 167, ../../src/scss/stylesheet.scss */
-nav ul li {
+/* line 162, ../../src/scss/screen.scss */
+.ui-widget-header nav ul li {
   background: none;
   float: left;
   list-style: none;
@@ -290,45 +286,48 @@ nav ul li {
   white-space: nowrap;
   border-width: 1px;
   border-style: solid;
+  border-color: #494437;
   border-bottom: none;
 }
-/* line 179, ../../src/scss/stylesheet.scss */
-nav ul li a {
+/* line 175, ../../src/scss/screen.scss */
+.ui-widget-header nav ul li a {
+  cursor: pointer;
+  float: left;
+  color: #fece2f;
+  padding: 0.5em 1em;
+  text-decoration: none;
+}
+/* line 181, ../../src/scss/screen.scss */
+.ui-widget-header nav ul li a:link, .ui-widget-header nav ul li a:visited {
   cursor: pointer;
   float: left;
   padding: 0.5em 1em;
   text-decoration: none;
 }
-/* line 184, ../../src/scss/stylesheet.scss */
-nav ul li a:link, nav ul li a:visited {
-  cursor: pointer;
-  float: left;
-  padding: 0.5em 1em;
-  text-decoration: none;
+/* line 186, ../../src/scss/screen.scss */
+.ui-widget-header nav ul li:hover {
+  border-color: #fff9e5;
 }
-/* line 189, ../../src/scss/stylesheet.scss */
-nav ul li:hover {
-  border-color: white;
-}
-/* line 194, ../../src/scss/stylesheet.scss */
-nav ul li.nav-state-active a {
-  color: white;
+/* line 188, ../../src/scss/screen.scss */
+.ui-widget-header nav ul li.nav-state-active a {
+  color: #fff9e5;
 }
 
-/* line 198, ../../src/scss/stylesheet.scss */
+/* line 192, ../../src/scss/screen.scss */
 header #status {
   position: absolute;
   top: 55px;
   left: 50%;
   margin-left: -10px;
 }
-/* line 203, ../../src/scss/stylesheet.scss */
+/* line 197, ../../src/scss/screen.scss */
 header #status .ui-icon {
   zoom: 125%;
   float: left;
 }
-/* line 206, ../../src/scss/stylesheet.scss */
+/* line 200, ../../src/scss/screen.scss */
 header #survey-info {
+  color: #494437;
   margin-top: 5px;
   font-weight: 200;
   font-size: 0.6em;
@@ -336,37 +335,54 @@ header #survey-info {
   letter-spacing: .4em;
 }
 
-/* line 213, ../../src/scss/stylesheet.scss */
+/* line 208, ../../src/scss/screen.scss */
 .tabs-nohdr {
   padding: 0;
-  background: none;
+  background-image: none;
   border-width: 0;
+  z-index: 5;
 }
-/* line 217, ../../src/scss/stylesheet.scss */
+/* line 213, ../../src/scss/screen.scss */
 .tabs-nohdr .ui-tabs-nav {
   padding-left: 0;
-  background: transparent;
-  border-width: 0 0 1px 0;
+  background: #cccccc;
+  margin-bottom: -1px;
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
   border-radius: 0;
 }
-/* line 224, ../../src/scss/stylesheet.scss */
+/* line 220, ../../src/scss/screen.scss */
+.tabs-nohdr .ui-tabs-nav .ui-state-default {
+  background: none;
+  border: solid 1px #cccccc;
+}
+/* line 223, ../../src/scss/screen.scss */
+.tabs-nohdr .ui-tabs-nav .ui-state-hover {
+  background: none;
+  border: solid 1px #494437;
+}
+/* line 226, ../../src/scss/screen.scss */
+.tabs-nohdr .ui-tabs-nav .ui-state-active {
+  background: #feeebd none;
+  border: solid 1px #817865;
+  border-bottom-color: #feeebd;
+}
+/* line 230, ../../src/scss/screen.scss */
 .tabs-nohdr .ui-tabs-panel {
-  /*background: url(images/ui-bg_highlight-hard_100_f5f3e5_1x100.png) repeat-x scroll 50% top #f5f3e5;*/
   border-width: 1px 1px 1px 1px;
 }
 
-/* line 228, ../../src/scss/stylesheet.scss */
-#form-controls {
+/* line 233, ../../src/scss/screen.scss */
+#form-controls.ui-widget-header {
   position: absolute;
   z-index: 1;
   text-align: center;
   border-left: none;
   border-right: none;
+  background-image: none;
 }
-/* line 234, ../../src/scss/stylesheet.scss */
-#form-controls.right {
+/* line 240, ../../src/scss/screen.scss */
+#form-controls.ui-widget-header.right {
   bottom: 35%;
   right: 3%;
   height: auto;
@@ -375,18 +391,18 @@ header #survey-info {
   border-radius: 8px;
   /* consistent with theme? */
 }
-/* line 242, ../../src/scss/stylesheet.scss */
-#form-controls.bottom, #form-controls.mobile {
+/* line 248, ../../src/scss/screen.scss */
+#form-controls.ui-widget-header.bottom, #form-controls.ui-widget-header.mobile {
   bottom: 0px;
   width: 100%;
   padding: 10px 0;
 }
-/* line 247, ../../src/scss/stylesheet.scss */
-#form-controls.right button {
+/* line 253, ../../src/scss/screen.scss */
+#form-controls.ui-widget-header.right button {
   display: block;
 }
 
-/* line 250, ../../src/scss/stylesheet.scss */
+/* line 256, ../../src/scss/screen.scss */
 #container {
   position: absolute;
   top: 80px;
@@ -394,7 +410,7 @@ header #survey-info {
   overflow: auto;
 }
 
-/* line 256, ../../src/scss/stylesheet.scss */
+/* line 262, ../../src/scss/screen.scss */
 .main {
   padding: 20px;
   margin-left: auto;
@@ -410,41 +426,41 @@ header #survey-info {
   /* counter the body center */
 }
 
-/* line 270, ../../src/scss/stylesheet.scss */
+/* line 276, ../../src/scss/screen.scss */
 article.main .jr {
   padding: 1.5em;
   min-height: 300px;
 }
 
-/* line 274, ../../src/scss/stylesheet.scss */
+/* line 280, ../../src/scss/screen.scss */
 .main {
   max-width: 600px;
 }
-/* line 275, ../../src/scss/stylesheet.scss */
+/* line 281, ../../src/scss/screen.scss */
 .main article {
   padding: 1.5em;
   min-height: 300px;
 }
-/* line 279, ../../src/scss/stylesheet.scss */
+/* line 285, ../../src/scss/screen.scss */
 .main#wrap-collation, .main#wrap-charts {
   max-width: 95%;
 }
-/* line 281, ../../src/scss/stylesheet.scss */
+/* line 287, ../../src/scss/screen.scss */
 .main ul, .main ol {
   /*list-style: disc;*/
   margin-left: 30px;
   margin-bottom: 25px;
 }
-/* line 285, ../../src/scss/stylesheet.scss */
+/* line 291, ../../src/scss/screen.scss */
 .main ul li, .main ol li {
   margin: 10px 0;
 }
-/* line 287, ../../src/scss/stylesheet.scss */
+/* line 293, ../../src/scss/screen.scss */
 .main ul li span.ui-icon, .main ol li span.ui-icon {
   float: left;
   margin-left: -25px;
 }
-/* line 290, ../../src/scss/stylesheet.scss */
+/* line 296, ../../src/scss/screen.scss */
 .main textarea.source {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -455,44 +471,44 @@ article.main .jr {
   font-size: .8em;
   padding: 5px;
 }
-/* line 299, ../../src/scss/stylesheet.scss */
+/* line 305, ../../src/scss/screen.scss */
 .main label#data-template-show {
   font-size: .8em;
   float: right;
   margin: -15px 0 5px 0;
 }
-/* line 303, ../../src/scss/stylesheet.scss */
+/* line 309, ../../src/scss/screen.scss */
 .main label#data-template-show input {
   float: left;
   margin-right: 8px;
 }
-/* line 306, ../../src/scss/stylesheet.scss */
+/* line 312, ../../src/scss/screen.scss */
 .main .ui-tabs-nav li.ui-state-active {
   /*background: blue;*/
 }
-/* line 308, ../../src/scss/stylesheet.scss */
+/* line 314, ../../src/scss/screen.scss */
 .main .ui-widget-header {
   padding-top: 10px;
   padding-bottom: 10px;
   margin: 3px 3px 30px 3px;
 }
 
-/* line 313, ../../src/scss/stylesheet.scss */
+/* line 319, ../../src/scss/screen.scss */
 footer {
   margin-top: 15px;
   margin-bottom: 20px;
-  color: #5c5c5c;
+  color: #cccccc;
 }
-/* line 316, ../../src/scss/stylesheet.scss */
+/* line 322, ../../src/scss/screen.scss */
 footer a {
   text-decoration: none;
-  color: #5c5c5c;
+  color: #cccccc;
 }
 
 /***************************
  ** FEEDBACK BAR & PAGE **
  ***************************/
-/* line 325, ../../src/scss/stylesheet.scss */
+/* line 331, ../../src/scss/screen.scss */
 #feedback-bar {
   position: absolute;
   z-index: 13;
@@ -505,7 +521,7 @@ footer a {
   border-left: none;
   border-right: none;
 }
-/* line 336, ../../src/scss/stylesheet.scss */
+/* line 342, ../../src/scss/screen.scss */
 #feedback-bar p {
   position: relative;
   margin: 0 50px;
@@ -514,15 +530,15 @@ footer a {
   font-size: 0.9em;
   border-top: 1px #ddd dashed;
 }
-/* line 343, ../../src/scss/stylesheet.scss */
+/* line 349, ../../src/scss/screen.scss */
 #feedback-bar p:first-child {
   border-top: none;
 }
-/* line 345, ../../src/scss/stylesheet.scss */
+/* line 351, ../../src/scss/screen.scss */
 #feedback-bar p .ui-icon {
   display: inline-block;
 }
-/* line 347, ../../src/scss/stylesheet.scss */
+/* line 353, ../../src/scss/screen.scss */
 #feedback-bar .ui-icon.ui-icon-info {
   position: absolute;
   left: 20px;
@@ -530,7 +546,7 @@ footer a {
   margin-top: -8px;
 }
 
-/* line 353, ../../src/scss/stylesheet.scss */
+/* line 359, ../../src/scss/screen.scss */
 #feedback-bar-close {
   position: absolute;
   right: 20px;
@@ -538,104 +554,117 @@ footer a {
   margin-top: -8px;
 }
 
-/* line 359, ../../src/scss/stylesheet.scss */
-#page {
+/* line 365, ../../src/scss/screen.scss */
+#page.ui-widget-header {
   position: absolute;
   z-index: 12;
   top: -320px;
   /* invisible initially (header top: 80 - #page height: 340 - #page paddingx2)*/
   min-height: 250px;
   width: 100%;
+  background-image: none;
   /*opacity: 0.8;*/
   /* causes problem in opera with input form elements */
   border-left: none;
   border-right: none;
 }
 
-/* line 371, ../../src/scss/stylesheet.scss */
-#page-content {
+/* line 378, ../../src/scss/screen.scss */
+.ui-widget-header #page-content {
   margin: 2em;
   padding: 3em;
-  border: solid 1px;
+  border: solid 1px #fff9e5;
   font-weight: normal;
+  color: #fff9e5;
+  background-color: #5c5c5c;
   -webkit-box-shadow: inset 0 0 8px #817865;
-  /* CHANGE: set color with javascript */
   -moz-box-shadow: inset 0 0 5px #817865;
   -o-box-shadow: inset 0 0 5px #817865;
   box-shadow: inner 0 0 5px #817865;
 }
-/* line 382, ../../src/scss/stylesheet.scss */
-#page-content p:first-child {
+/* line 390, ../../src/scss/screen.scss */
+.ui-widget-header #page-content p:first-child {
   margin-top: 0;
 }
-/* line 384, ../../src/scss/stylesheet.scss */
-#page-content p:last-child {
+/* line 392, ../../src/scss/screen.scss */
+.ui-widget-header #page-content p:last-child {
   margin-bottom: 0;
 }
 
-/* line 388, ../../src/scss/stylesheet.scss */
+/* line 396, ../../src/scss/screen.scss */
 #page a {
+  color: #fece2f;
   text-decoration: none;
 }
-/* line 390, ../../src/scss/stylesheet.scss */
-#page a:link, #page a:hover, #page a:focus, #page a:active {
+/* line 399, ../../src/scss/screen.scss */
+#page a:link {
+  color: #fece2f;
+}
+/* line 401, ../../src/scss/screen.scss */
+#page a:hover, #page a:focus {
+  text-decoration: underline;
+  color: #fff9e5;
+}
+/* line 404, ../../src/scss/screen.scss */
+#page a:active {
+  color: white;
   text-decoration: none;
 }
-/* line 392, ../../src/scss/stylesheet.scss */
+/* line 407, ../../src/scss/screen.scss */
 #page .ui-icon {
   float: left;
   margin-right: 10px;
 }
 
-/* line 396, ../../src/scss/stylesheet.scss */
+/* line 411, ../../src/scss/screen.scss */
 #page-close {
   position: absolute;
   right: 20px;
   bottom: 20px;
 }
 
-/* line 401, ../../src/scss/stylesheet.scss */
+/* line 416, ../../src/scss/screen.scss */
 #page .column {
   width: 50%;
   float: left;
   height: 100%;
 }
 
-/* line 407, ../../src/scss/stylesheet.scss */
+/* line 422, ../../src/scss/screen.scss */
 #settings h3 {
   text-align: left;
 }
-/* line 409, ../../src/scss/stylesheet.scss */
+/* line 424, ../../src/scss/screen.scss */
 #settings input {
   display: block;
   float: left;
   margin-right: 10px;
   margin-left: 0;
 }
-/* line 414, ../../src/scss/stylesheet.scss */
+/* line 429, ../../src/scss/screen.scss */
 #settings label {
   display: block;
   margin-bottom: 5px;
 }
-/* line 417, ../../src/scss/stylesheet.scss */
+/* line 432, ../../src/scss/screen.scss */
 #settings ul {
   margin-left: 0;
   list-style: none;
 }
 
-/* line 421, ../../src/scss/stylesheet.scss */
+/* line 436, ../../src/scss/screen.scss */
 #records-saved {
   width: 45%;
   float: left;
   /*display: inline;*/
   /* doesn't make sense right? with float*/
 }
-/* line 426, ../../src/scss/stylesheet.scss */
+/* line 441, ../../src/scss/screen.scss */
 #records-saved h3 {
   /*margin-left: 30px;*/
 }
 
-/* line 429, ../../src/scss/stylesheet.scss */
+/* line 444, ../../src/scss/screen.scss */
 #records-saved-pane {
   position: relative;
   border: 1px solid white;
@@ -649,14 +678,14 @@ footer a {
   max-height: 300px;
 }
 
-/* line 441, ../../src/scss/stylesheet.scss */
+/* line 456, ../../src/scss/screen.scss */
 #records-saved-content {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-/* line 447, ../../src/scss/stylesheet.scss */
+/* line 462, ../../src/scss/screen.scss */
 #records-saved ol {
   position: relative;
   top: 0;
@@ -666,7 +695,7 @@ footer a {
   padding: 0;
   width: 100%;
 }
-/* line 455, ../../src/scss/stylesheet.scss */
+/* line 470, ../../src/scss/screen.scss */
 #records-saved li {
   list-style: none;
   margin: 3px;
@@ -677,19 +706,19 @@ footer a {
   overflow: hidden;
   /* for very long names */
 }
-/* line 464, ../../src/scss/stylesheet.scss */
+/* line 479, ../../src/scss/screen.scss */
 #records-saved li .date {
   font-size: .6em;
   float: right;
 }
-/* line 468, ../../src/scss/stylesheet.scss */
+/* line 483, ../../src/scss/screen.scss */
 #records-saved li.no-click {
   font-style: italic;
   text-align: center;
   margin: 40px;
 }
 
-/* line 473, ../../src/scss/stylesheet.scss */
+/* line 488, ../../src/scss/screen.scss */
 #records-summary {
   margin: 0;
   margin-top: 5px;
@@ -698,22 +727,22 @@ footer a {
   font-size: 0.6em;
   text-align: center;
 }
-/* line 480, ../../src/scss/stylesheet.scss */
+/* line 495, ../../src/scss/screen.scss */
 #records-summary .ui-icon {
   display: inline-block;
   float: none;
 }
-/* line 483, ../../src/scss/stylesheet.scss */
+/* line 498, ../../src/scss/screen.scss */
 #records-summary .ui-icon-pencil {
   margin-left: 3em;
 }
 
-/* line 487, ../../src/scss/stylesheet.scss */
+/* line 502, ../../src/scss/screen.scss */
 #records .column.middle {
   width: 10%;
   height: 100%;
 }
-/* line 490, ../../src/scss/stylesheet.scss */
+/* line 505, ../../src/scss/screen.scss */
 #records .column.right {
   /*right column of records page*/
   width: 45%;
@@ -723,23 +752,23 @@ footer a {
   margin-right: -10px;
   /*visual correction due to absence of border, stricly speaking not correct*/
 }
-/* line 498, ../../src/scss/stylesheet.scss */
+/* line 513, ../../src/scss/screen.scss */
 #records .column .ui-icon {
   display: inline-block;
   float: none;
 }
 
-/* line 502, ../../src/scss/stylesheet.scss */
+/* line 517, ../../src/scss/screen.scss */
 #records-buttons {
   /*width: auto;*/
   margin: 20% auto 5% auto;
 }
-/* line 505, ../../src/scss/stylesheet.scss */
+/* line 520, ../../src/scss/screen.scss */
 #records-buttons button {
   /*float: left;*/
 }
 
-/* line 508, ../../src/scss/stylesheet.scss */
+/* line 523, ../../src/scss/screen.scss */
 #records-force-upload-info, #records-export-info {
   display: none;
   font-size: .8em;
@@ -747,7 +776,7 @@ footer a {
   line-height: 1.5em;
 }
 
-/* line 514, ../../src/scss/stylesheet.scss */
+/* line 529, ../../src/scss/screen.scss */
 #slider-wrap {
   /*float:left;*/
   width: 25px;
@@ -755,25 +784,25 @@ footer a {
   margin: 0 auto;
 }
 
-/* line 520, ../../src/scss/stylesheet.scss */
+/* line 535, ../../src/scss/screen.scss */
 #slider-vertical {
   position: relative;
   height: 100%;
   background: none;
 }
 
-/* line 525, ../../src/scss/stylesheet.scss */
+/* line 540, ../../src/scss/screen.scss */
 .ui-slider-vertical {
   width: 100%;
   border: none;
 }
-/* line 528, ../../src/scss/stylesheet.scss */
+/* line 543, ../../src/scss/screen.scss */
 .ui-slider-vertical .ui-slider-range {
   background: none;
   position: absolute;
   width: 100%;
 }
-/* line 532, ../../src/scss/stylesheet.scss */
+/* line 547, ../../src/scss/screen.scss */
 .ui-slider-vertical .ui-slider-handle {
   /*left: 1px; */
   left: 0px;
@@ -786,12 +815,12 @@ footer a {
   position: absolute;
 }
 
-/* line 543, ../../src/scss/stylesheet.scss */
+/* line 558, ../../src/scss/screen.scss */
 .ui-slider .ui-slider-handle {
   width: 23px;
 }
 
-/* line 546, ../../src/scss/stylesheet.scss */
+/* line 561, ../../src/scss/screen.scss */
 .ui-slider-handle .ui-state-default {
   background-image: none;
 }
@@ -805,7 +834,7 @@ footer a {
 	.scroll-bar-wrap .ui-slider-handle .ui-icon { margin: -8px auto 0; position: relative; top: 50%; }
 */
 /* these transitions should match */
-/* line 560, ../../src/scss/stylesheet.scss */
+/* line 575, ../../src/scss/screen.scss */
 #feedback-bar, #main, #page {
   -webkit-transition: all 1s ease-out;
   -moz-transition: all 1s ease-out;
@@ -816,13 +845,13 @@ footer a {
 /**************************
 ****    SURVEY FORM    ****
 **************************/
-/* line 570, ../../src/scss/stylesheet.scss */
+/* line 585, ../../src/scss/screen.scss */
 .jr {
   /*padding: 1.5em;*/
   line-height: 1.1em;
 }
 
-/* line 574, ../../src/scss/stylesheet.scss */
+/* line 589, ../../src/scss/screen.scss */
 .form-logo img {
   position: relative;
   left: 50%;
@@ -832,77 +861,53 @@ footer a {
   margin-bottom: 10px;
 }
 
-/* line 582, ../../src/scss/stylesheet.scss */
+/* line 597, ../../src/scss/screen.scss */
 .jr [lang]:not(.active), .jr-hint {
   display: none;
 }
 
-/* line 586, ../../src/scss/stylesheet.scss */
+/* line 601, ../../src/scss/screen.scss */
 .jr-constraint-msg.active {
   display: block;
   visibility: hidden;
   min-height: 1em;
 }
-/* line 590, ../../src/scss/stylesheet.scss */
+/* line 605, ../../src/scss/screen.scss */
 .jr-constraint-msg:not(.active) {
   display: none;
 }
 
-/* line 593, ../../src/scss/stylesheet.scss */
+/* line 608, ../../src/scss/screen.scss */
 .invalid .jr-constraint-msg.active {
   visibility: visible;
   font-weight: bold;
   font-style: italic;
-  /*color: red;*/
 }
 
-	/*.jr label.invalid,
-    .jr fieldset.invalid{
-    	border-right: 5px solid red;
-    }
-
-    .jr .invalid input,
-    .jr .invalid select,
-    .jr .invalid textarea{
-    	color:red;
-    }*/
-/* line 610, ../../src/scss/stylesheet.scss */
+/* line 613, ../../src/scss/screen.scss */
 .jr-option-translations {
   display: none;
 }
 
-/* line 613, ../../src/scss/stylesheet.scss */
+/* line 616, ../../src/scss/screen.scss */
 .jr h2 {
   margin: 0;
 }
 
-/* line 616, ../../src/scss/stylesheet.scss */
+/* line 619, ../../src/scss/screen.scss */
 .question-icons {
   float: right;
   margin: -5px -10px 0 0;
   /*line-height: 15px;*/
 }
-/* line 620, ../../src/scss/stylesheet.scss */
+/* line 623, ../../src/scss/screen.scss */
 .question-icons span {
   display: inline-block;
   text-align: right;
   width: 18px;
 }
 
-/*.required{
-    font-size: 25px;
-    height:20px;
-    vertical-align: bottom;
-    }
-.invalid .required{
-	color: red;
-}
-.hint{
-    font-size: 14px;
-   	height: 24px;
-    vertical-align: top;
-}*/
-/* line 639, ../../src/scss/stylesheet.scss */
+/* line 628, ../../src/scss/screen.scss */
 #form-languages {
   margin-top: -18px;
   margin-bottom: 18px;
@@ -911,34 +916,35 @@ footer a {
 }
 
 /* correction for when tabs are present */
-/* line 647, ../../src/scss/stylesheet.scss */
+/* line 636, ../../src/scss/screen.scss */
 .ui-tabs-panel #form-languages {
   margin-top: -35px;
   margin-bottom: 45px;
   margin-right: -15px;
 }
 
-/* line 652, ../../src/scss/stylesheet.scss */
-#form-languages a {
+/* line 642, ../../src/scss/screen.scss */
+#form-languages a:link {
   float: right;
   padding-left: 10px;
   border: none;
   background: none;
   font-weight: normal;
   font-size: .8em;
-  color: #444;
+  color: #5c5c5c;
 }
-/* line 660, ../../src/scss/stylesheet.scss */
+/* line 650, ../../src/scss/screen.scss */
 #form-languages a:not(.active):hover {
-  color: blue;
+  color: #381f00;
+  text-decoration: underline;
 }
-/* line 662, ../../src/scss/stylesheet.scss */
+/* line 653, ../../src/scss/screen.scss */
 #form-languages a.active {
+  color: #381f00;
   text-decoration: none;
 }
 
-/* FIND WAY TO INSTEAD USE JQUERY UI-NICELY ON GREY BACKGROUND */
-/* line 668, ../../src/scss/stylesheet.scss */
+/* line 659, ../../src/scss/screen.scss */
 .jr label, .jr fieldset {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -948,118 +954,60 @@ footer a {
   width: 100%;
   padding: 14px 14px;
 }
-/* line 676, ../../src/scss/stylesheet.scss */
+/* line 667, ../../src/scss/screen.scss */
 .jr label + label {
-  border-top: 1px solid #bbb;
+  border-top: 1px solid #cccccc;
 }
-/* line 679, ../../src/scss/stylesheet.scss */
+/* line 670, ../../src/scss/screen.scss */
 .jr fieldset:not(#jr-preload-items):not(.jr-group) + label, .jr fieldset:not(#jr-preload-items):not(.jr-group) + fieldset:not(.jr-group) {
-  border-top: 1px solid #bbb;
+  border-top: 1px solid #cccccc;
 }
-/* line 681, ../../src/scss/stylesheet.scss */
+/* line 672, ../../src/scss/screen.scss */
 .jr label + fieldset:not(.jr-group) {
-  border-top: 1px solid #bbb;
+  border-top: 1px solid #cccccc;
 }
-/* line 683, ../../src/scss/stylesheet.scss */
-.jr fieldset {
-  position: relative;
-  /*legend fix*/
-}
-/* line 686, ../../src/scss/stylesheet.scss */
+/* line 674, ../../src/scss/screen.scss */
 .jr span.repeat-number {
   height: 2em;
   display: block;
   float: right;
   margin-right: -8px;
   margin-top: -8px;
-  color: #ccc;
-  /* SET DYNAMICALLY IN GUI */
+  color: #cccccc;
 }
-/* line 694, ../../src/scss/stylesheet.scss */
-.jr fieldset.alt-bg {
-  background-color: green;
+/* line 681, ../../src/scss/screen.scss */
+.jr legend {
+  position: absolute;
+  top: 1.5em;
 }
-/* line 697, ../../src/scss/stylesheet.scss */
+/* line 684, ../../src/scss/screen.scss */
 .jr legend ~ label {
   border-top: none;
   padding: .5em 0 .5em 0;
   margin-left: 25px;
 }
-/* line 701, ../../src/scss/stylesheet.scss */
+/* line 688, ../../src/scss/screen.scss */
 .jr legend + label {
   margin-top: 25px;
 }
-/* line 704, ../../src/scss/stylesheet.scss */
+/* line 690, ../../src/scss/screen.scss */
+.jr fieldset {
+  position: relative;
+}
+/* line 692, ../../src/scss/screen.scss */
 .jr fieldset.jr-group {
-  border: 1px solid #bbb;
+  border: 1px solid #cccccc;
   margin: .5em 0;
 }
-/* line 707, ../../src/scss/stylesheet.scss */
+/* line 695, ../../src/scss/screen.scss */
 .jr fieldset.jr-repeat {
-  border: 1px dotted #bbb;
-  /*change color dynamically in GUI class?*/
+  border: 1px dotted #cccccc;
 }
-/* line 710, ../../src/scss/stylesheet.scss */
+/* line 697, ../../src/scss/screen.scss */
 .jr label, .jr legend, .jr .trigger {
   font-size: .8em;
 }
-
-/*excludes first label or fieldset in each fieldset or root of form*/
-/*first label of a set of radio buttons or checkboxes */
-/* line 717, ../../src/scss/stylesheet.scss */
-label.with-media {
-  margin-top: 5px;
-}
-
-/* line 720, ../../src/scss/stylesheet.scss */
-.with-media > span.active {
-  display: block;
-  width: 100%;
-}
-
-/* line 725, ../../src/scss/stylesheet.scss */
-label.with-media img, label.with-media video, label.with-media audio {
-  max-width: 45%;
-  padding-right: 5%;
-  display: block;
-  float: right;
-}
-
-/* line 731, ../../src/scss/stylesheet.scss */
-.with-media input {
-  float: left;
-  width: 5%;
-  margin-top: -17px;
-}
-
-/* line 736, ../../src/scss/stylesheet.scss */
-.jr legend {
-  position: absolute;
-  /*legend fix*/
-  top: 1.5em;
-  /*legend fix*/
-  /*margin-top: 2.5em; */
-  /* no idea why */
-}
-
-/*.jr p{
-	margin-top: .4em;
-	margin-bottom: .8em;
-}*/
-/*.jr legend{
-	margin-top: .4em;
-	padding-bottom: 1em;
-	display: block;
-	font-weight: bold;
-}*/
-/* line 756, ../../src/scss/stylesheet.scss */
-input, .fakefileinput {
-  background-color: white;
-  border: 2px solid #BBB;
-  min-height: 30px;
-}
-
-/* line 762, ../../src/scss/stylesheet.scss */
+/* line 699, ../../src/scss/screen.scss */
 .jr input {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -1069,16 +1017,16 @@ input, .fakefileinput {
   margin: .2em;
   font-size: .9em;
 }
-/* line 770, ../../src/scss/stylesheet.scss */
+/* line 707, ../../src/scss/screen.scss */
 .jr input[type="text"] {
   width: 100%;
 }
-/* line 772, ../../src/scss/stylesheet.scss */
+/* line 709, ../../src/scss/screen.scss */
 .jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password] {
   width: 10em;
   text-align: right;
 }
-/* line 775, ../../src/scss/stylesheet.scss */
+/* line 712, ../../src/scss/screen.scss */
 .jr input[type=radio], .jr input[type=checkbox] {
   display: block;
   /*****/
@@ -1089,44 +1037,75 @@ input, .fakefileinput {
   /*compensates for the label margin, fixes multi-line labels */
   margin-left: -25px;
 }
-/* line 784, ../../src/scss/stylesheet.scss */
+/* line 721, ../../src/scss/screen.scss */
 .jr select {
   display: block;
 }
-/* line 787, ../../src/scss/stylesheet.scss */
+/* line 724, ../../src/scss/screen.scss */
 .jr fieldset .ui-button {
   width: 27px;
   height: 27px;
   margin-top: 6px;
 }
-/* line 791, ../../src/scss/stylesheet.scss */
+/* line 728, ../../src/scss/screen.scss */
 .jr fieldset .one-more {
   margin: 0 -34px -5px 10px;
 }
-/* line 793, ../../src/scss/stylesheet.scss */
+/* line 730, ../../src/scss/screen.scss */
 .jr fieldset .remove {
   float: right;
   margin-right: 0;
 }
-/* line 796, ../../src/scss/stylesheet.scss */
+/* line 733, ../../src/scss/screen.scss */
 .jr .trigger {
   padding: 7px 12px;
   margin: 1em 0;
 }
 
-/*.jr legend+label>input[type="checkbox"],
-.jr legend+label>input[type="radio"]{
-	margin-top: 10px;
-}*/
-/* line 805, ../../src/scss/stylesheet.scss */
+/*excludes first label or fieldset in each fieldset or root of form*/
+/*first label of a set of radio buttons or checkboxes */
+/* line 741, ../../src/scss/screen.scss */
+label.with-media {
+  margin-top: 5px;
+}
+
+/* line 744, ../../src/scss/screen.scss */
+.with-media > span.active {
+  display: block;
+  width: 100%;
+}
+
+/* line 749, ../../src/scss/screen.scss */
+label.with-media img, label.with-media video, label.with-media audio {
+  max-width: 45%;
+  padding-right: 5%;
+  display: block;
+  float: right;
+}
+
+/* line 755, ../../src/scss/screen.scss */
+.with-media input {
+  float: left;
+  width: 5%;
+  margin-top: -17px;
+}
+
+/* line 761, ../../src/scss/screen.scss */
+input, .fakefileinput {
+  background-color: white;
+  border: 2px solid #cccccc;
+  min-height: 30px;
+}
+
+/* line 766, ../../src/scss/screen.scss */
 .jr-appearance-compact label {
   display: inline;
 }
-/* line 807, ../../src/scss/stylesheet.scss */
+/* line 768, ../../src/scss/screen.scss */
 .jr-appearance-compact label span {
   display: none;
 }
-/* line 809, ../../src/scss/stylesheet.scss */
+/* line 770, ../../src/scss/screen.scss */
 .jr-appearance-compact label img {
   float: left;
   width: 120px;
@@ -1134,35 +1113,35 @@ input, .fakefileinput {
   padding: 5px;
   margin-top: 25px;
 }
-/* line 816, ../../src/scss/stylesheet.scss */
+/* line 777, ../../src/scss/screen.scss */
 .jr-appearance-compact label input[type=radio], .jr-appearance-compact label input[type=checkbox] {
   /*display: none;*/
   margin-top: 35px;
 }
 
-/* line 820, ../../src/scss/stylesheet.scss */
+/* line 781, ../../src/scss/screen.scss */
 .jr-branch {
-  border-top: 1px solid #bbb;
-  border-bottom: 1px solid #bbb;
-  background-color: #ccc;
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+  background-color: #cccccc;
   height: 8px;
   text-align: center;
   margin: 10px 0;
   opacity: 0.5;
 }
 
-/* line 829, ../../src/scss/stylesheet.scss */
+/* line 790, ../../src/scss/screen.scss */
 .disabled {
-  /*color: #ccc;*/
+  /*color: $shadow*/
   opacity: 0.5;
 }
 
-/* line 834, ../../src/scss/stylesheet.scss */
+/* line 795, ../../src/scss/screen.scss */
 #upload-form form {
   position: relative;
   width: 100%;
 }
-/* line 837, ../../src/scss/stylesheet.scss */
+/* line 798, ../../src/scss/screen.scss */
 #upload-form label {
   position: absolute;
   top: 120px;
@@ -1174,11 +1153,11 @@ input, .fakefileinput {
   z-index: 0;
   width: 80%;
 }
-/* line 847, ../../src/scss/stylesheet.scss */
+/* line 808, ../../src/scss/screen.scss */
 #upload-form label > span {
   display: block;
 }
-/* line 849, ../../src/scss/stylesheet.scss */
+/* line 810, ../../src/scss/screen.scss */
 #upload-form input, #upload-form .fakefileinput {
   position: absolute;
   top: 20px;
@@ -1191,7 +1170,7 @@ input, .fakefileinput {
   font-size: .9em;
   text-align: center;
 }
-/* line 860, ../../src/scss/stylesheet.scss */
+/* line 821, ../../src/scss/screen.scss */
 #upload-form input[type=file] {
   /*height: 0px;
   width: 0px;
@@ -1200,20 +1179,35 @@ input, .fakefileinput {
   opacity: 0;
 }
 
-/* line 867, ../../src/scss/stylesheet.scss */
+/* line 828, ../../src/scss/screen.scss */
 #input-switcher {
   text-align: center;
 }
-/* line 869, ../../src/scss/stylesheet.scss */
-#input-switcher a {
+/* line 831, ../../src/scss/screen.scss */
+#input-switcher a:link {
   padding: 0 10px;
   font-size: 13px;
   background: none;
   border: none;
   text-decoration: none;
+  color: #5c5c5c;
+}
+/* line 838, ../../src/scss/screen.scss */
+#input-switcher a:hover {
+  font-weight: normal;
+}
+/* line 840, ../../src/scss/screen.scss */
+#input-switcher a:not(.active):hover {
+  color: #381f00;
+  text-decoration: underline;
+}
+/* line 843, ../../src/scss/screen.scss */
+#input-switcher a.active {
+  color: #381f00;
+  text-decoration: none;
 }
 
-/* line 876, ../../src/scss/stylesheet.scss */
+/* line 849, ../../src/scss/screen.scss */
 .ui-datepicker {
   margin-left: -270px;
   margin-top: -100px;
@@ -1221,66 +1215,66 @@ input, .fakefileinput {
 }
 
 /* css for multi-select addon */
-/* line 883, ../../src/scss/stylesheet.scss */
+/* line 856, ../../src/scss/screen.scss */
 button.ui-multiselect {
   display: block;
 }
 
-/* line 886, ../../src/scss/stylesheet.scss */
+/* line 859, ../../src/scss/screen.scss */
 .ui-multiselect {
   padding: 2px 0 2px 4px;
   text-align: left;
 }
-/* line 889, ../../src/scss/stylesheet.scss */
+/* line 862, ../../src/scss/screen.scss */
 .ui-multiselect span.ui-icon {
   float: right;
 }
 
-/* line 893, ../../src/scss/stylesheet.scss */
+/* line 866, ../../src/scss/screen.scss */
 .ui-multiselect-single .ui-multiselect-checkboxes input {
   position: absolute !important;
   top: auto !important;
   left: -9999px;
 }
-/* line 897, ../../src/scss/stylesheet.scss */
+/* line 870, ../../src/scss/screen.scss */
 .ui-multiselect-single .ui-multiselect-checkboxes label {
   padding: 5px !important;
 }
 
-/* line 900, ../../src/scss/stylesheet.scss */
+/* line 873, ../../src/scss/screen.scss */
 .ui-multiselect-header {
   margin-bottom: 3px;
   padding: 3px 0 3px 4px;
 }
-/* line 903, ../../src/scss/stylesheet.scss */
+/* line 876, ../../src/scss/screen.scss */
 .ui-multiselect-header ul {
   font-size: 0.9em;
 }
-/* line 905, ../../src/scss/stylesheet.scss */
+/* line 878, ../../src/scss/screen.scss */
 .ui-multiselect-header ul li {
   float: left;
   padding: 0 10px 0 0;
 }
-/* line 908, ../../src/scss/stylesheet.scss */
+/* line 881, ../../src/scss/screen.scss */
 .ui-multiselect-header a {
   text-decoration: none;
 }
-/* line 910, ../../src/scss/stylesheet.scss */
+/* line 883, ../../src/scss/screen.scss */
 .ui-multiselect-header a:hover {
   text-decoration: underline;
 }
-/* line 912, ../../src/scss/stylesheet.scss */
+/* line 885, ../../src/scss/screen.scss */
 .ui-multiselect-header span.ui-icon {
   float: left;
 }
-/* line 914, ../../src/scss/stylesheet.scss */
+/* line 887, ../../src/scss/screen.scss */
 .ui-multiselect-header li.ui-multiselect-close {
   float: right;
   text-align: right;
   padding-right: 0;
 }
 
-/* line 919, ../../src/scss/stylesheet.scss */
+/* line 892, ../../src/scss/screen.scss */
 .ui-multiselect-menu {
   display: none;
   padding: 3px;
@@ -1288,36 +1282,36 @@ button.ui-multiselect {
   z-index: 10000;
 }
 
-/* line 925, ../../src/scss/stylesheet.scss */
+/* line 898, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes {
   position: relative;
   overflow-y: scroll;
 }
-/* line 928, ../../src/scss/stylesheet.scss */
+/* line 901, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes label {
   cursor: default;
   display: block;
   border: 1px solid transparent;
   padding: 3px 1px;
 }
-/* line 933, ../../src/scss/stylesheet.scss */
+/* line 906, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes label input {
   position: relative;
   top: 1px;
 }
-/* line 936, ../../src/scss/stylesheet.scss */
+/* line 909, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li {
   clear: both;
   font-size: 0.9em;
   padding-right: 3px;
 }
-/* line 940, ../../src/scss/stylesheet.scss */
+/* line 913, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li.ui-multiselect-optgroup-label {
   text-align: center;
   font-weight: bold;
   border-bottom: 1px solid;
 }
-/* line 944, ../../src/scss/stylesheet.scss */
+/* line 917, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li.ui-multiselect-optgroup-label a {
   display: block;
   padding: 3px;
@@ -1326,40 +1320,38 @@ button.ui-multiselect {
 }
 
 /* remove label borders in IE6 because IE6 does not support transparency */
-/* line 952, ../../src/scss/stylesheet.scss */
+/* line 925, ../../src/scss/screen.scss */
 * html .ui-multiselect-checkboxes label {
   border: none;
 }
 
 /* css for timepicker */
-/* line 958, ../../src/scss/stylesheet.scss */
+/* line 931, ../../src/scss/screen.scss */
 .ui-timepicker-div .ui-widget-header {
   margin-bottom: 8px;
 }
-/* line 960, ../../src/scss/stylesheet.scss */
+/* line 933, ../../src/scss/screen.scss */
 .ui-timepicker-div dl {
   text-align: left;
 }
-/* line 962, ../../src/scss/stylesheet.scss */
+/* line 935, ../../src/scss/screen.scss */
 .ui-timepicker-div dl dt {
   height: 25px;
   margin-bottom: -25px;
 }
-/* line 965, ../../src/scss/stylesheet.scss */
+/* line 938, ../../src/scss/screen.scss */
 .ui-timepicker-div dl dd {
   margin: 0 10px 10px 65px;
 }
-/* line 967, ../../src/scss/stylesheet.scss */
+/* line 940, ../../src/scss/screen.scss */
 .ui-timepicker-div td {
   font-size: 90%;
 }
 
-/* line 970, ../../src/scss/stylesheet.scss */
+/* line 943, ../../src/scss/screen.scss */
 .ui-tpicker-grid-label {
   background: none;
   border: none;
   margin: 0;
   padding: 0;
 }
-
-/************************************************************************/

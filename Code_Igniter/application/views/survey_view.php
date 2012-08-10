@@ -4,7 +4,7 @@
 	$theme = $this->config->item('survey','themes');
 ?>
 		<link rel="stylesheet" type="text/css" href="libraries/jquery-ui/css/<?= $theme ?>/jquery-ui.custom.css"/>
-		<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+		<link rel="stylesheet" type="text/css" href="css/screen.css" />
 
 		<script type="text/javascript" src="libraries/jquery.min.js"></script>
 		<script type="text/javascript" src="libraries/jquery.mousewheel.min.js"></script>
@@ -61,7 +61,7 @@
 						upload all finished survey records (bypass automatic uploads)
 					</div>
 					<div id="records-export-info">
-						export / backup all locally stored records and save to a file [NOT FINISHED]
+						export all locally stored records marked as 'final'
 					</div>
 				</div>
 			</div>
@@ -81,27 +81,33 @@
 
 					<h3>uploading data</h3>
 					<p>
-						<input name="settings-auto-upload" id="settings-auto-upload" type="checkbox" value="true" />
-						<label for="settings-auto-upload">automatic</label>
+						<label>
+							automatic
+							<input name="autoUpload" type="checkbox" value="true" />
+						</label>
 					</p>
 
 					<h3>location of buttons</h3>
-					<input name="settings-button-location" id="settings-button-location-1" type="radio" value="bottom" />
-					<label for="settings-button-location-1">bottom</label>
-
-					<input name="settings-button-location" id="settings-button-location-2" type="radio" value="right" />
-					<label for="settings-button-location-2">right</label>
-
-					<input name="settings-button-location" id="settings-button-location-3" type="radio" value="mobile" disabled="disabled"/>
-					<label for="settings-button-location-2">mobile (future)</label>
+					<label>
+						bottom
+						<input name="buttonLocation" type="radio" value="bottom" />
+					</label>
+					<label>
+						right
+						<input name="buttonLocation" type="radio" value="right" />
+					</label>
+					<label>
+						mobile (future)
+						<input name="buttonLocation" type="radio" value="mobile" disabled="disabled"/>
+					</label>
 				</form>
 			</div>
 			<div class="column ui-corner-all">
 				<h3>your browser supports:</h3>
 				<ul>
-				    <li id="settings-browserSupport-offline-launch"><span class="ui-icon"></span><span >offline launch</span></li>
-				    <li id="settings-browserSupport-local-storage"><span class="ui-icon"></span><span >offline data storage</span></li>
-				    <li id="settings-browserSupport-fancy-visuals"><span class="ui-icon"></span><span >visual candy</span></li>
+				    <li id="settings-browserSupport-offline-launch"><span class="ui-icon ui-icon-close"></span><span >offline launch</span></li>
+				    <li id="settings-browserSupport-local-storage"><span class="ui-icon ui-icon-close"></span><span >offline data storage</span></li>
+				    <li id="settings-browserSupport-fancy-visuals"><span class="ui-icon ui-icon-close"></span><span >visual candy</span></li>
 				</ul>
 			</div>
 		</article>

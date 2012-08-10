@@ -1,19 +1,21 @@
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, StorageLocal, Modernizr*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
-var form, connection, store, cache, currentOnlineStatus = false;//, SURVEY_FORM_ID;
-var jrDataStr; //initial store of data format
+var  /**@type {Form}*/form,  /**@type {Connection}*/connection, /**@type {Storage}*/store,  /**@type {Cache}*/cache,  /**@type {Settings}*/settings,
+	currentOnlineStatus = false;//, SURVEY_FORM_ID;
+var jrDataStr; //initial store of data format, value set in survey_view.php
 //var FORM_FORMAT_URL = 'survey_format';
-var CONNECTION_URL = 'checkforconnection.txt';
-var DATA_RECEIVER_URL = 'data/upload';
+//var CONNECTION_URL = 'checkforconnection.txt';
+//var DATA_RECEIVER_URL = 'data/upload';
 var MODERN_BROWSERS_URL = 'modern_browsers';
+
+DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBackup':false };
 //var GEARS_MANIFEST_URL = 'manifest/gears';
 
-DEFAULT_SETTINGS = {'settings-auto-upload':true, 'settings-button-location': 'bottom', 'settings-auto-notify-backup':false };
 //var MAX_QTY_SAVED_FORMS = 50;
 //ßvar SURVEY_FORM_ID = 'survey-form';
 var CACHE_CHECK_INTERVAL = 3600*1000;
-var showFormList, checkForOpenForm, updateConnectionStatus, getSettings;//,
+//var showFormList, checkForOpenForm;//,
 //loadForm, deleteForm, setSettings;initSaveFormsToFile,
 //
 //tight coupling with Form and Storage class, but loose coupling with GUI
@@ -25,6 +27,8 @@ $(document).ready(function() {
 
 	store = new StorageLocal();
 	form = new Form('form.jr:eq(0)', jrDataStr);
+	settings = new Settings();
+	settings.init();
 	connection = new Connection();
 	cache = new Cache();
 	
@@ -35,7 +39,7 @@ $(document).ready(function() {
 		window.location = MODERN_BROWSERS_URL;
 	}
 	else{
-		gui.setBrowserSupport({'local-storage':true});
+		$(document).trigger('browsersupport', 'local-storage');
 	}
 	
 	//best to place this after localStorage check, so that IE7 users with Gears
@@ -73,7 +77,7 @@ $(document).ready(function() {
 		//$('header #survey-info').text(form.COUNTRY+' '+form.SECTOR+' '+form.YEAR+' '+form.SURVEY_NAME);
 		
 	// initialize the GUI object
-	gui.init();
+	//gui.init();
 	form.init();
 	connection.init(); //should be called after form format is loaded
 	//initialize file export/backup function
@@ -82,7 +86,7 @@ $(document).ready(function() {
 	// application cache for launching application offline
 	if (cache.isSupported()){
 		
-		gui.setBrowserSupport({'offline-launch':true});
+		$(document).trigger('browsersupport', 'offline-launch');
 		
 		//reminder to bookmark page will be shown 3 times
 		bookmark = store.getRecord('bookmark');
@@ -110,14 +114,14 @@ $(document).ready(function() {
 		
 	}
 	else{ // if applicationCache is not supported
-		message = 'Offline application launch not natively supported by your browser. '+
+		message = 'Offline application launch not supported by your browser. '+
 				'You can use it without this feature or see options for resolving this';
 		choices = {
 			posButton : 'Show options',
 			negButton : 'Use it',
 			posAction : function(){ window.location = MODERN_BROWSERS_URL; }
 		};
-		gui.confirm(message, choices,'Browser requires plugins');
+		gui.confirm(message, choices,'Application cannot launch offline');
 	}
 	
 	// ADD / REPLACE If there is sufficient cross-browser support this could be replaced by simply calling window.navigator.onLine which returns false or true
@@ -202,7 +206,7 @@ function loadForm(formName, confirmed){
 function saveForm(recordName, overwrite){
 	'use strict';
 	//console.log('saveForm called'); // DEBUG
-	var oldRecordName, result, message, choices, 
+	var oldRecordName, result, message, choices,
 		data = form.getDataStr(true, true);
 	//var data = form.getData(SURVEY_FORM_ID);
 	
@@ -542,7 +546,7 @@ function Connection(){
 	// @online = used to force a status (necessary?)
 	function checkOnlineStatus(online){
 		console.log('checking connection status');//, status before check is: '+onlineStatus); // DEBUG
-		if (typeof online !== 'undefined' && ( online === true || online === false ) ){		
+		if (typeof online !== 'undefined' && ( online === true || online === false ) ){
 			setStatus(online);
 		}
 		//forced status
@@ -597,65 +601,123 @@ function Connection(){
 			dataObj.version = version;
 			//ADD build array of forms beingUploaded and prevent user from opening these
 			//if there is anything to send, send it
-			if (dataObj.surveyForms.length>0){
-				console.log('attempting upload with override: '+override+' Changing uploadOngoing to true'); // DEBUG
-				uploadOngoing = true;
-				console.log('data to be send: '+JSON.stringify(dataObj)); // DEBUG
-				$.ajax({
-					type: 'POST',
-					url: DATA_RECEIVER_URL,
-					data: dataObj,
-					success: function(result){
-						console.log('upload, received back from server: '+JSON.stringify(result)); // DEBUG
-						// ADD some kind of feedback to user if it fails but this would mean setting interval outside of Connection class?
-						if (result.inserted){
-							for (var i=0 ; i<result.inserted.length ; i++){
-								store.removeRecord(result.inserted[i]);
-								insertedStr += result.inserted[i];
-								if (i<result.inserted.length-1){
-									insertedStr += ', ';
-								}
-								//console.log('tried to remove record with key: '+result.inserted[i]);
-							}
-							// CHANGE?
-							gui.showFeedback('Succesfully uploaded forms: '+insertedStr+'.');
-							gui.updateRecordList($('article[id="records"]'));
-						}
-						else {
-							if (override) {
-								gui.showFeedback('Upload failed on server');
-							}
-						}
-					},
-					error: function(){
-						if (override){
-							gui.showFeedback('Upload failed. Server may be unavailable or client may be offline.');
-						}
-					},
-					complete: function(){
-						console.log('completed ajax call, changing uploadOngoing variable to false'); // DEBUG
-						uploadOngoing = false;
-					},
-					dataType: 'json'
-				});
-			}
-			else { //nothing to send
-				//console.log('nothing to upload, (uploadOngoing: '+uploadOngoing+')');
-				//if the function was called with override, inform user
-				if (override) {
-					gui.showFeedback('Nothing marked "final" to upload (or record is currently open).');
-				}
-			}
+			//if (dataObj.surveyForms.length>0){
+//				console.log('attempting upload with override: '+override+' Changing uploadOngoing to true'); // DEBUG
+//				uploadOngoing = true;
+//				console.log('data to be send: '+JSON.stringify(dataObj)); // DEBUG
+//				$.ajax({
+//					type: 'POST',
+//					url: DATA_RECEIVER_URL,
+//					data: dataObj,
+//					success: function(result){
+//						console.log('upload, received back from server: '+JSON.stringify(result)); // DEBUG
+//						// ADD some kind of feedback to user if it fails but this would mean setting interval outside of Connection class?
+//						if (result.inserted){
+//							for (var i=0 ; i<result.inserted.length ; i++){
+//								store.removeRecord(result.inserted[i]);
+//								insertedStr += result.inserted[i];
+//								if (i<result.inserted.length-1){
+//									insertedStr += ', ';
+//								}
+//								//console.log('tried to remove record with key: '+result.inserted[i]);
+//							}
+//							// CHANGE?
+//							gui.showFeedback('Succesfully uploaded forms: '+insertedStr+'.');
+//							gui.updateRecordList($('article[id="records"]'));
+//						}
+//						else {
+//							if (override) {
+//								gui.showFeedback('Upload failed on server');
+//							}
+//						}
+//					},
+//					error: function(){
+//						if (override){
+//							gui.showFeedback('Upload failed. Server may be unavailable or client may be offline.');
+//						}
+//					},
+//					complete: function(){
+//						console.log('completed ajax call, changing uploadOngoing variable to false'); // DEBUG
+//						uploadOngoing = false;
+//					},
+//					dataType: 'json'
+//				});
+//			}
+//			else { //nothing to send
+//				//console.log('nothing to upload, (uploadOngoing: '+uploadOngoing+')');
+//				//if the function was called with override, inform user
+//				if (override) {
+//					gui.showFeedback('Nothing marked "final" to upload (or record is currently open).');
+//				}
+//			}
 		}
 	};
 
 }
 
+
+
+
+
+//avoid Google Closure Compiler renaming:
+Settings.prototype['autoUpload'] = Settings.prototype.autoUpload;
+Settings.prototype['buttonLocation'] = Settings.prototype.buttonLocation;
+
+Settings.prototype.autoUpload = function(val){
+
+};
+
+Settings.prototype.buttonLocation = function(val){
+	"use strict";
+	//if ($(this).checked === true) {
+	//console.log('found radio input with required value'); // DEBUG
+	$('#form-controls').removeClass('bottom right mobile').addClass(val);
+//						if (el[i].value==='mobile'){
+//							$('body').addClass('no-scroll');
+//						}
+//						else {
+//							$('body').removeClass('no-scroll');
+//						}
+	$(window).trigger('resize');
+};
+
+//function to update the settings record
+///function updateSettings(){
+//"use strict";
+//console.log('updateSettings fired, with parameter settingsForm:'); //DEBUG
+//
+//// the intro message might also contain a setting: 'never show this message again'
+//	//if(!settingsForm){
+//		settingsForm = 'settings-form';
+//	//}
+//
+//	//detect change
+//	console.log('triggered by :'+$(this).attr('name')); // DEBUG
+//
+//	//save settings to localStorage
+//	var data = form.getData(settingsForm);
+//	//console.log('data scraped from '+settingsForm+': '+JSON.stringify(data)); // DEBUG
+//	if (data !== null){ // CHECK IF AN EMPTY FORM REALLY RETURNS NULL!
+//		var result = store.setRecord(data);
+//		//console.log('result of attempt to save settings: '+result);
+//		if (result !== 'success'){
+//			gui.showFeedback('Error occurred when trying to save the settings.');
+//		}
+//	}
+//	//make changes
+//	updateSetting($(this));
+//
+/// perform action according to the (changed) settings
+//function updateSetting(el){
+//	"use strict";
+//}
+
+
 //Extend GUI
 //setCustomEventHandlers is called automatically by GUI.init();
 GUI.prototype.setCustomEventHandlers = function(){
 	"use strict";
-	var that = this;
+	var settingsForm, that = this;
 	
 	// survey-form controls
 	$('button#save-form').button({'icons': {'primary':"ui-icon-disk"}})
@@ -686,8 +748,9 @@ GUI.prototype.setCustomEventHandlers = function(){
 			$(this).removeClass('ui-state-hover');
 		});
 	
-	$('button#records-force-upload').button({'icons': {primary:"ui-icon-arrowthick-1-n"}})
+	this.pages().get('records').find('button#records-force-upload').button({'icons': {primary:"ui-icon-arrowthick-1-n"}})
 		.click(function(){
+			gui.alert('Sorry, this button is not working yet.')
 			//connection.upload(true);
 		})
 		.hover(function(){
@@ -695,10 +758,9 @@ GUI.prototype.setCustomEventHandlers = function(){
 		}, function(){
 			$('#records-force-upload-info').hide();
 		});
-		
-	$('button#records-export').button({'icons': {'primary':"ui-icon-suitcase"}})
+	this.pages().get('records').find('button#records-export').button({'icons': {'primary':"ui-icon-suitcase"}})
 		.click(function(){
-			
+			gui.alert('Sorry, this button is not working yet.')
 		})
 		.hover(function(){
 			$('#records-export-info').show();
@@ -711,25 +773,55 @@ GUI.prototype.setCustomEventHandlers = function(){
 		that.updateRecordList(JSON.parse(formList));
 	});
 
+	$(document).on('setsettings', function(e, settings){
+		console.debug('settingschange detected, GUI will be updated with settings:');
+		console.debug(settings);
+		that.setSettings(settings);
+	});
+
+	// handlers for application settings [settings page]
+	this.pages().get('settings').on('change', 'input', function(){
+		var name, value;
+		console.debug('settings change by user detected');
+		name = $(this).attr('name');
+		value = ($(this).is(':checked')) ? $(this).val() : '';
+		settings.set(name, value);
+		//actions resulting from settings change
+		//if (that.hasOwnProperty(name)){
+		//	that[name](value);
+		//}
+//		switch(name){
+//			case 'settings-auto-upload':
+//				break;
+//			case 'settings-button-location':
+//				//var value = $(this).val();
+//				//$('#form-controls').removeClass().addClass(el.val());
+//				//console.log('found '+el.length+' radio elements with this name');
+//				//for (var i = 0; i < el.length; i++) {
+//
+//			break;
+//		}
+	});
+
 };
 
 //update the survey forms names list
-GUI.prototype.updateRecordList = function(recordList, pageEl) {
+GUI.prototype.updateRecordList = function(recordList, $page) {
 	"use strict";
-	var name, date, clss, i, icon, listElement,
+	var name, date, clss, i, icon, $list, $li,
 		finishedFormsQty = 0,
 		draftFormsQty = 0;
 
-	if(!pageEl){
-		pageEl = this.$pages.find('article[id="records"]');
+	if(!$page){
+		$page = this.pages().get('records');//this.$pages.find('article[id="records"]');
 	}
 	
 	//var selectElement = pageEl.find('#forms-saved-names');
-	listElement = pageEl.find('#records-saved ol');
+	$list = $page.find('#records-saved ol');
 	
 	//remove the existing option elements
 	//selectElement.children().remove();
-	listElement.children().remove();
+	$list.children().remove();
 	//$('<option value="select form">Select Form</option>').appendTo(selectElement);
 	
 	// get form list object (keys + upload) ordered by time last saved
@@ -754,20 +846,22 @@ GUI.prototype.updateRecordList = function(recordList, pageEl) {
 			//$('<li><span class="ui-icon ui-icon-'+icon+'"></span><span class="name">'+name+
 			//	'</span><span class="date"> ('+date+')</span></li>')
 			//	.appendTo(listElement);
-			var li = $('<li><span class="ui-icon ui-icon-'+icon+'"></span><span class="name">'+
+			$li = $('<li><span class="ui-icon ui-icon-'+icon+'"></span><span class="name">'+
 				'</span><span class="date"> ('+date+')</span></li>');
-			li.find('.name').text(name); // encodes string to html
-			listElement.append(li);
+			$li.find('.name').text(name); // encodes string to html
+			$list.append($li);
 		}
 	}
 	else{
-		$('<li class="no-click">no locally saved records found</li>').appendTo(listElement);
+		$('<li class="no-click">no locally saved records found</li>').appendTo($list);
 	}
 // *	OLD*	else if (result.field(2) == 2) {
 // *	OLD*		color = 'gray';
 	// update status counters
 	//pageEl.find('#forms-saved-qty').text(recordList.length);
-	pageEl.find('#records-draft-qty').text(draftFormsQty);
-	pageEl.find('#records-final-qty').text(finishedFormsQty);
+	$page.find('#records-draft-qty').text(draftFormsQty);
+	$page.find('#records-final-qty').text(finishedFormsQty);
 };
+
+
 

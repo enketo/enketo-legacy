@@ -1,22 +1,22 @@
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global XPathJS, Modernizr, resetForm, connection*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, store*/
 // CHANGE: it would be better to remove references to store and form in common.js
 //
 // Copyright 2012 Martijn van de Rijdt
 /************ Global variables ***************/
 /**@type {GUI}*/
-var gui ;
-/**@type {Storage}*/
-var	store;
-//form = null,
-var	DEFAULT_SETTINGS = /**@type {Object} */ null;
+var gui;
 
-var	getPage, addScrollBar, display, buttonArray, setSettings;
+//var	store;
+//form = null,
+var DEFAULT_SETTINGS = {};
+//var	_$pages; //getPage, addScrollBar, display, buttonArray, setSettings;
 	//resetForm, setSettings, loadForm, deleteForm, saveForm,
 // !Document.ready()
 /************ Document Ready ****************/
 $(document).ready(function(){
 	"use strict";
 	gui = new GUI();
+	gui.init();
 	// avoid windows console errors
 	if (typeof console == "undefined") {console = {log: function(){}};}
 	if (typeof (window.console.debug) == "undefined") {console.debug = console.log;}
@@ -32,61 +32,7 @@ $(document).ready(function(){
 // !Global Functions
 /************ Global Functions ***************/
 
-//function to update the settings record
-function updateSettings(){
-"use strict";
-//console.log('updateSettings fired, with parameter settingsForm:'); //DEBUG
-//
-//// the intro message might also contain a setting: 'never show this message again'
-//	//if(!settingsForm){
-//		settingsForm = 'settings-form';
-//	//}
-//
-//	//detect change
-//	console.log('triggered by :'+$(this).attr('name')); // DEBUG
-//
-//	//save settings to localStorage
-//	var data = form.getData(settingsForm);
-//	//console.log('data scraped from '+settingsForm+': '+JSON.stringify(data)); // DEBUG
-//	if (data !== null){ // CHECK IF AN EMPTY FORM REALLY RETURNS NULL!
-//		var result = store.setRecord(data);
-//		//console.log('result of attempt to save settings: '+result);
-//		if (result !== 'success'){
-//			gui.showFeedback('Error occurred when trying to save the settings.');
-//		}
-//	}
-//	//make changes
-//	updateSetting($(this));
-}
 
-// perform action according to the (changed) settings
-function updateSetting(el){
-	"use strict";
-	var name = el.attr('name');
-	//console.log('name of setting to update: '+name); // DEBUG
-	switch(name){
-		case 'settings-auto-upload':
-			break;
-		case 'settings-button-location':
-			//var value = $(this).val();
-			//$('#form-controls').removeClass().addClass(el.val());
-			//console.log('found '+el.length+' radio elements with this name');
-			for (var i = 0; i < el.length; i++) {
-				if (el[i].checked === true) {
-					//console.log('found radio input with required value'); // DEBUG
-					$('#form-controls').removeClass('bottom right mobile').addClass(el[i].value);
-					if (el[i].value==='mobile'){
-						$('body').addClass('no-scroll');
-					}
-					else {
-						$('body').removeClass('no-scroll');
-					}
-					$(window).trigger('resize');
-				}
-			}
-			break;
-	}
-}
 
 /* !GUI Class */
 //The GUI object deals with the main GUI elements (but not the survey form elements)
@@ -104,258 +50,257 @@ function updateSetting(el){
  */
 function GUI(){
 	"use strict";
-	var fbBar, //true if feedbackBar is shown
-		page, //true if page is shown
-		feedbackTimeout,
-		headerEl, feedbackEl, pageEl, confirmEl, alertEl, $form,
-		browserSupport = {'offline-launch':false, 'local-storage':false, 'fancy-visuals':false},
-		headerHighlightColor, headerBorderColor, headerBackgroundColor, headerNavTextColor, //mainContentBackground,
-		buttonBackgroundColorDefault,buttonBackgroundColorHover, buttonBackgroundColorActive, updateEditStatus,
-		_this=this;
+	//var fbBar, //true if feedbackBar is shown
+	//	page, //true if page is shown
+	//	feedbackTimeout,
+		//headerEl, feedbackEl, pageEl, confirmEl, alertEl, $form,
+		//browserSupport = {'offline-launch':false, 'local-storage':false, 'fancy-visuals':false},
+		//updateEditStatus,
+		//_this=this;
+		//$form = $('form.jr:eq(0)');
+}
+
+GUI.prototype.init = function(){
+	"use strict";
+	// setting up UI elements
 	
-	this.init = function(){
-		// setting up UI elements
-		headerEl = $('header');
-		feedbackEl = $('#feedback-bar');
-		pageEl = $('#page');
-		confirmEl = $('#dialog-confirm');
-		alertEl = $('#dialog-alert');
-		$form = $('form.jr:eq(0)');
-		// checking for support for specific fancy css3 visual stuff
-		if (Modernizr.borderradius && Modernizr.boxshadow && Modernizr.csstransitions && Modernizr.opacity){
-			this.setBrowserSupport({'fancy-visuals':true});
-		}
-		setNav();
-		//setTabs();
-		// setting consistent theme colors using a JQuery UI theme
-		setConsistentColors();
-		
-		// setup eventHandlers
-		setEventHandlers();
-
-		// setup additional 'custom' eventHandlers declared other js file
-		if (typeof this.setCustomEventHandlers === 'function'){
-			this.setCustomEventHandlers();
-		}
-		// the settings are retrieved from storage and applied before the pages are removed from the DOM
-		
-				//tooltips on all elements with a title
-		//$('[title]').tooltip();
-		//$("[title]").tipTip();
-		//$("[title]").tipsy({gravity: $.fn.tipsy.autoNS});
-		
-		//transform comboboxes
-		//$('#forms-saved-names').combobox();
-		/*$('#forms-saved ol').selectable({
-			stop: function() {
-				var recordName;
-				alert ($( ".ui-selected").text());
-				$('ui-selected').removeClass('ui-selected');
-				$(this).selectable('destroy');
-
-			}
-		});*/
-		$('footer').detach().appendTo('#container');
-	};
-
-
 	
+	
+	this.nav.setup();
+	//setTabs();
+	// setting consistent theme colors using a JQuery UI theme
+	//this.setConsistentColors();
+	this.pages().init();
+	
+	// setup eventHandlers
+	this.setEventHandlers();
+	// setup additional 'custom' eventHandlers declared other js file
+	if (typeof this.setCustomEventHandlers === 'function'){
+		this.setCustomEventHandlers();
+	}
+	$('#form-controls button').equalWidth();
+	// the settings are retrieved from storage and applied before the pages are removed from the DOM
+	
+			//tooltips on all elements with a title
+	//$('[title]').tooltip();
+	//$("[title]").tipTip();
+	//$("[title]").tipsy({gravity: $.fn.tipsy.autoNS});
+	
+	//transform comboboxes
+	//$('#forms-saved-names').combobox();
+	/*$('#forms-saved ol').selectable({
+		stop: function() {
+			var recordName;
+			alert ($( ".ui-selected").text());
+			$('ui-selected').removeClass('ui-selected');
+			$(this).selectable('destroy');
+
+		}
+	});*/
+
+	// checking for support for specific fancy css3 visual stuff
+	if (Modernizr.borderradius && Modernizr.boxshadow && Modernizr.csstransitions && Modernizr.opacity){
+		$(document).trigger('browsersupport', 'fancy-visuals');
+	}
+
+	$('footer').detach().appendTo('#container');
+	//this.nav.reset();
+};
+
+GUI.prototype.setup = function(){
+	"use strict";
 	// final setup of GUI object
-	this.setup = function(){
 		//setSettings();
-		
 		// set height of scrollable container by calling resize event
 		$(window).trigger('resize');
+};
 
-		this.$pages = $('<pages></pages>');// placeholder 'parent' element for the articles (pages)
-		
-		// detaching pages from DOM and storing them in the pages variable
-		$('article.page').detach().appendTo(this.$pages).css('display','block');
+
 	
-	};
-	
-	this.setBrowserSupport = function(propObj){
-		for (var propName in propObj){
-			browserSupport[propName] = propObj[propName];
-			//console.log('just set browser support property: '+propName+' to:'+propObj[propName]); // DEBUG
-		}
-	};
+//	this.setBrowserSupport = function(propObj){
+//		for (var propName in propObj){
+//			browserSupport[propName] = propObj[propName];
+//			//console.log('just set browser support property: '+propName+' to:'+propObj[propName]); // DEBUG
+//		}
+//	};
 	
 	
 	// setting consistent theme colors, the purpose of using this function (instead of css stylesheet adjustments)
 	// is to be able to easily switch to another jQuery UI theme
-	function setConsistentColors(){
-		var bodyBackgroundColor, pageBackgroundColor;
-		//colors used for different states in nav menu (see setEventHandlers())
-		headerHighlightColor = /** @type {string} */ $('#feedback-bar').css('background-color');
-		headerBorderColor =  /** @type {string} */ $('header').css('border-top-color');
-		headerBackgroundColor =  /** @type {string} */ $('header').css('background-color');
-		//mainContentBackground = $('body').addClass('ui-widget-content').css('background');
-		$('body').removeClass('ui-widget-content');
-		
-		$('nav').addClass('ui-state-default'); //trick
-		headerNavTextColor =  /** @type {string} */ $('nav').css('color');
-		buttonBackgroundColorDefault =  /** @type {string} */ $('nav').css('background-color');
-		$('nav').addClass('ui-state-hover');
-		buttonBackgroundColorHover =  /** @type {string} */ $('nav').css('background-color');
-		$('nav').addClass('ui-state-active');
-		buttonBackgroundColorActive =  /** @type {string} */ $('nav').css('background-color');
-		$('nav').removeClass();
-				
-		//$('#logo').css('color', headerHighlightColor);
-		
-		$('#page, #form-controls').css('background-image','none'); //CHANGE: DO THIS IN CSS STYLESHEET INSTEAD
-		
-		$('#page, #component').css('color', headerHighlightColor);
-		$('#survey-info').css('color',headerBorderColor);
-		
-		bodyBackgroundColor = /** @type {string} */ $('body').addClass('ui-widget-shadow').css('background-color');
-		$('body').css('background-color', bodyBackgroundColor).removeClass('ui-widget-shadow');
-		//$('body').addClass('ui-widget-shadow') //trick
-		//	.css('background-color', $('body').css('background-color'))
-		//	.removeClass('ui-widget-shadow');
-		//$('.question').css('border-color', $('body').css('background-color'));
-		pageBackgroundColor = /** @type {string} */ $('#page-content').addClass('ui-widget-overlay').css('background-color');
-		$('#page-content, #overlay').css('background-color', pageBackgroundColor).removeClass('ui-widget-overlay');
-		//$('#page-content, #overlay').addClass('ui-widget-overlay') // trick
-		//	.css('background-color', $('#page-content').css('background-color'))
-		//	.removeClass('ui-widget-overlay');
-		
-		//all links in articles .page
-		$('.page a, .page a:link, .page a:visited').css('color', buttonBackgroundColorDefault)
-			.hover(function(){
-				$(this).css('color', buttonBackgroundColorHover);
-			}, function(){
-				$(this).css('color', buttonBackgroundColorDefault);
-			})
-			.mousedown(function(){
-				$(this).css('color', buttonBackgroundColorActive);
-			})
-			.mouseup(function(){
-				$(this).css('color', buttonBackgroundColorDefault);
-			});
+GUI.prototype.setConsistentColors = function(){
+	"use strict";
+	//$('body').removeClass('ui-widget-content'); //???????
 
-		//form background on page with tabs
-		$('.tabs-nohdr .ui-tabs-panel').css('background-color', '#FEEEBD');
+
+	//var bodyBackgroundColor, pageBackgroundColor, headerHighlightColor, headerBorderColor, headerBackgroundColor, headerNavTextColor, //mainContentBackground,
+//		buttonBackgroundColorDefault,buttonBackgroundColorHover, buttonBackgroundColorActive;
+//	//colors used for different states in nav menu (see setEventHandlers())
+//	headerHighlightColor = /** @type {string} */ $('#feedback-bar').css('background-color');
+//	headerBorderColor =  /** @type {string} */ $('header').css('border-top-color');
+//	headerBackgroundColor =  /** @type {string} */ $('header').css('background-color');
+//	//mainContentBackground = $('body').addClass('ui-widget-content').css('background');
 	
 
-		//set navigation menu colors;
-		resetNav();
-	}
+//	$('nav').addClass('ui-state-default'); //trick
+//	headerNavTextColor =  /** @type {string} */ $('nav').css('color');
+//	buttonBackgroundColorDefault =  /** @type {string} */ $('nav').css('background-color');
+//	$('nav').addClass('ui-state-hover');
+//	buttonBackgroundColorHover =  /** @type {string} */ $('nav').css('background-color');
+//	$('nav').addClass('ui-state-active');
+//	buttonBackgroundColorActive =  /** @type {string} */ $('nav').css('background-color');
+//	$('nav').removeClass();
+			
+	//$('#logo').css('color', headerHighlightColor);
+
+	//$('#page, #form-controls').css('background-image','none'); //CHANGE: DO THIS IN CSS STYLESHEET INSTEAD
+
+	//$('#page, #component').css('color', headerHighlightColor);
+	//$('#survey-info').css('color',headerBorderColor);
+
+	//bodyBackgroundColor = /** @type {string} */ $('body').addClass('ui-widget-shadow').css('background-color');
+	//$('body').css('background-color', bodyBackgroundColor).removeClass('ui-widget-shadow');
+	//$('body').addClass('ui-widget-shadow') //trick
+	//	.css('background-color', $('body').css('background-color'))
+	//	.removeClass('ui-widget-shadow');
+	//$('.question').css('border-color', $('body').css('background-color'));
+	//pageBackgroundColor = /** @type {string} */ $('#page-content').addClass('ui-widget-overlay').css('background-color');
+	//$('#page-content, #overlay').css('background-color', pageBackgroundColor).removeClass('ui-widget-overlay');
+	//$('#page-content, #overlay').addClass('ui-widget-overlay') // trick
+	//	.css('background-color', $('#page-content').css('background-color'))
+	//	.removeClass('ui-widget-overlay');
+
+	//all links in articles .page
+	//$('.page a, .page a:link, .page a:visited').css('color', buttonBackgroundColorDefault)
+//		.hover(function(){
+//			$(this).css('color', buttonBackgroundColorHover);
+//		}, function(){
+//			$(this).css('color', buttonBackgroundColorDefault);
+//		})
+//		.mousedown(function(){
+//			$(this).css('color', buttonBackgroundColorActive);
+//		})
+//		.mouseup(function(){
+//			$(this).css('color', buttonBackgroundColorDefault);
+//		});
+
+	//form background on page with tabs
+	//$('.tabs-nohdr .ui-tabs-panel').css('background-color', '#FEEEBD');
+
+	//$('#export-excel').button({'icons': {'primary':"ui-icon-suitcase"}});
+
+	//set navigation menu colors;
 	
-	function setEventHandlers(){
-		//var that=this;
-		
-		
-		$('#form-controls button').equalWidth();
-		
-		// close 'buttons' on page and feedback bar
-		$('#feedback-bar-close').button({'icons':{'primary': "ui-icon-closethick"}, 'text': false})
-			.click(function(event){
-				event.preventDefault();
-				_this.hideFeedback();
-			});
-		$('#page-close').button({'icons':{'primary': "ui-icon-closethick"}, 'text': false})
-			.click(function(event){
-				event.preventDefault();
-				_this.closePage();
-			});
-		// override style of some buttons and give them a 'custom-button class'
-		$('#feedback-bar-close, #page-close').removeClass().addClass('custom-button ui-widget-header ui-corner-all');
-		
-		
-		// capture all internal links to navigation menu items (except the links in the navigation menu itself)
-		$('a[href^="#"]:not(nav ul li a)').click(function(event){
-			console.log('captured click to internal link that is not in nav');
-			
-			var href = $(this).attr('href');
-			//if href is not just an empty anchor it is an internal link and will trigger a navigation menu click
-			if (href !== '#'){
-				event.preventDefault();
-				$('nav li a[href="'+href+'"]').click();
-			}
-		});
-		
-		// event handlers for navigation menu
-		$('nav ul li a[href^="#"]')
-			.click(function(event){
-				event.preventDefault();
-				var targetPage = $(this).attr('href').substr(1);
-				_this.openPage(targetPage);
-				$(this).closest('li').addClass('active').css('border-color', headerBorderColor);
-				$(this).css('color', headerHighlightColor);
-			})
-			.hover(function(){
-				//$(this).css('color', buttonBackgroundColorHover);
-				$('nav ul li:not(.active)').css('border-color', headerBackgroundColor);
-				$(this).closest('li:not(.active)').css('border-color', headerHighlightColor)
-					.find('a').css('color', buttonBackgroundColorHover);
-			}, function(){
-				$('nav ul li:not(.active)').css('border-color', headerBackgroundColor)
-					.find('a').css('color', buttonBackgroundColorDefault);
-			});
-		
-		// handlers for status icons in header
-		$(window).on('onlinestatuschange', function(e,online){
-			_this.updateConnectionStatus(online);
-			});
-		$(document).on('edit', 'form.jr', function(){
-			//console.log('gui updating edit status icon');
-			updateEditStatus(true);
-		});
-				
-		// more info on connection status after clicking icon
-		$('header #status-connection')
-			.click(function(event){
-				_this.showFeedback($(this).attr('title'));
-				event.stopPropagation(); //prevent closing of simultaneously shown page when clicking icon
-				//event.cancelBubble(); //IE
-			});
-		
-		// handlers for application settings [settings page]
-		$('#settings input')
-			.change(updateSettings);
-				
-		// handlers for input fields of forms page
-		/*$('#forms-saved-names')
-			.change(function(){
-				var name = $(this).find('option:selected').val();
-				loadForm(name);
-			});*/
-			
-		
-			
-		$('#export-excel').button({'icons': {'primary':"ui-icon-suitcase"}});
-			
-		$(window).resize(function(){ //move this when feedback bar is shown?
-			
-			//console.log('resize event called, window width is '+$(window).width()); //DEBUG
-			
-			$('#container').css('top', $('header').outerHeight());
-			
-			// resizing scrollable container\
-			$('body:not(.no-scroll) #container')
-				.height($(window).height()-$('header').outerHeight()-$('#form-controls.bottom').outerHeight());
-			
-			// replacing form controls in mobile setting // REPLACE: SHOULD MOVE WITH CSS
-			//$('body.no-scroll #form-controls')
-			//	.css('height',$('#form-controls').height()).css('top', $('header').outerHeight()+$('#container').outerHeight());
-			
-			// hide logo if the navigation menu starts overlapping
-			var navLeft = $('nav').offset().left;
-			var logoRight = $('#logo').offset().left+$('#logo').outerWidth();
-			//console.log('nav left:'+navLeft+' logo right:'+logoRight); // DEBUG
-			if (navLeft < logoRight){
-				$('#logo').css('visibility', 'hidden');
-			}
-			else {
-				$('#logo').css('visibility', 'visible');
-			}
-						
-		});
-	}
+};
 	
-	function setNav(){
+GUI.prototype.setEventHandlers = function(){
+	"use strict";
+	var that=this;
+	
+	
+	// close 'buttons' on page and feedback bar
+	$('#feedback-bar-close').button({'icons':{'primary': "ui-icon-closethick"}, 'text': false})
+		.click(function(event){
+			event.preventDefault();
+			that.hideFeedback();
+		});
+	$('#page-close').button({'icons':{'primary': "ui-icon-closethick"}, 'text': false})
+		.click(function(event){
+			event.preventDefault();
+			that.pages().close();
+		});
+	// override style of some buttons and give them a 'custom-button class'
+	$('#feedback-bar-close, #page-close').removeClass().addClass('custom-button ui-widget-header ui-corner-all');
+	
+	
+	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
+	$('a[href^="#"]:not(nav ul li a)').click(function(event){
+		//console.log('captured click to internal link that is not in nav');
+		var href = $(this).attr('href');
+		//if href is not just an empty anchor it is an internal link and will trigger a navigation menu click
+		if (href !== '#'){
+			event.preventDefault();
+			$('nav li a[href="'+href+'"]').click();
+		}
+	});
+	
+	// event handlers for navigation menu
+	$('nav ul li a[href^="#"]')
+		.click(function(event){
+			event.preventDefault();
+			var targetPage = $(this).attr('href').substr(1);
+			that.pages().open(targetPage);
+			$(this).closest('li').addClass('nav-state-active');//.css('border-color', headerBorderColor);
+			//$(this).css('color', headerHighlightColor);
+		});
+		//.hover(function(){
+//;			$(this).closest('li').addClass('nav-state-hover');
+//;			//$(this).css('color', buttonBackgroundColorHover);
+//;			//$('nav ul li:not(.active)').css('border-color', headerBackgroundColor);
+//;			//$(this).closest('li:not(.active)').css('border-color', headerHighlightColor)
+//;				//.find('a').css('color', buttonBackgroundColorHover);
+//;		}, function(){
+//;			$(this).closest('li').removeClass('nav-state-hover');
+//;			//$('nav ul li:not(.active)').css('border-color', headerBackgroundColor)
+//;			//	.find('a').css('color', buttonBackgroundColorDefault);
+//		});
+	
+	// handlers for status icons in header
+	$(window).on('onlinestatuschange', function(e,online){
+		that.updateStatus.connection(online);
+		});
+
+	$(document).on('edit', 'form.jr', function(){
+		//console.log('gui updating edit status icon');
+		that.updateStatus.edit(true);
+	});
+
+	$(document).on('browsersupport', function(e, supported){
+		that.updateStatus.support(supported);
+	});
+
+	$('#page, #feedback-bar').on('change', function(){
+		that.display();
+	});
+			
+	// more info on connection status after clicking icon
+	$('header #status-connection')
+		.click(function(event){
+			that.showFeedback($(this).attr('title'));
+			event.stopPropagation(); //prevent closing of simultaneously shown page when clicking icon
+			//event.cancelBubble(); //IE
+		});
+		
+	$(window).resize(function(){ //move this when feedback bar is shown?
+		
+		//console.log('resize event called, window width is '+$(window).width()); //DEBUG
+		
+		$('#container').css('top', $('header').outerHeight());
+		
+		// resizing scrollable container\
+		$('body:not(.no-scroll) #container')
+			.height($(window).height()-$('header').outerHeight()-$('#form-controls.bottom').outerHeight());
+		
+		// replacing form controls in mobile setting // REPLACE: SHOULD MOVE WITH CSS
+		//$('body.no-scroll #form-controls')
+		//	.css('height',$('#form-controls').height()).css('top', $('header').outerHeight()+$('#container').outerHeight());
+		
+		// hide logo if the navigation menu starts overlapping
+		var navLeft = $('nav').offset().left;
+		var logoRight = $('#logo').offset().left+$('#logo').outerWidth();
+		//console.log('nav left:'+navLeft+' logo right:'+logoRight); // DEBUG
+		if (navLeft < logoRight){
+			$('#logo').css('visibility', 'hidden');
+		}
+		else {
+			$('#logo').css('visibility', 'visible');
+		}
+					
+	});
+};
+	
+GUI.prototype.nav = {
+	setup : function(){
+		"use strict";
 		$('article.page').each(function(){
 			var display, title='', id, link;
 			id=$(this).attr('id');
@@ -375,7 +320,13 @@ function GUI(){
 				.appendTo($('nav ul'));
 		
 		});
+	},
+	reset : function(){
+		"use strict";
+		$('nav ul li').removeClass('nav-state-active');//.css('border-color', headerBackgroundColor);
+		//$('nav ul li a').css('color', buttonBackgroundColorDefault);
 	}
+};
 	
 	//function setTabs(){
 	//	$('.main article').each(function(){
@@ -398,168 +349,153 @@ function GUI(){
 	//	});
 	//}
 	//
-	
-	
-	function resetNav(){
-		$('nav ul li').removeClass('active').css('border-color', headerBackgroundColor);
-		$('nav ul li a').css('color', buttonBackgroundColorDefault);
-	}
-	
-	this.isFeedbackVisible = function(){
-		return fbBar;
+
+GUI.prototype.pages = function(){
+	"use strict";
+
+	this.init = function(){
+
+		//this.showing = false;
+		this.$pages = $('<pages></pages>');// placeholder 'parent' element for the articles (pages)
+		// detaching pages from DOM and storing them in the pages variable
+		$('article.page').detach().appendTo(this.$pages);//.css('display','block');
 	};
-	
-	this.isPageVisible = function(){
-		return page;
+
+	this.get = function(name){
+
+		var $page = this.$pages.find('article[id="'+name+'"]');//.clone(true);
+		//switch(name){
+		//	case 'records':
+			//_this.updateRecordList(page); // ?? Why does call with this.up.. not work?
+		//		break;
+		//	case 'settings':
+		//}
+		return $page ;
+		//}
 	};
-	
-	this.openPage = function(pg){
-		var outsidePage;
 		
-		if(page){
-			this.closePage();
+	this.showingPage = function(){
+		return ( $('#page article.page').length > 0 );
+	};
+		
+	this.open = function(pg){
+		var $page = this.get(pg);//outsidePage;
+		//console.debug('opening page '+pg);
+		
+		if ($page.length !== 1){
+			return console.error('page not found');
 		}
-		page = true;
-		if(pg){
-			pageEl.find('#page-content').prepend(getPage(pg));
-			// MOVE THIS:
-			if (pageEl.find('.scrollbar').length > 0){
-				addScrollBar(pageEl.find('.scrollbar')); //function should be called each time page loads because record list will change
-			}
-			//if (pg === 'settings'){
-				//setSettings();
-			//}
-							
+
+		if(this.showingPage()){
+			this.close();
 		}
-		display();
+		
+		$page.find('.scrollbar').addScrollBar(); //function should be called each time page loads because record list will change
+			
+		$('#page-content').prepend(this.get(pg).show()).trigger('change');
 		
 		$('#overlay').show();
-		
-		//var that = this;
-		
-		//add temporary eventhandler for clicks outside the page
-		/*$('#page').bind('mouseenter.hide', function(){
-			////console.log('mouse entered'); // DEBUG
-			outsidePage = false;
-		});
-		
-		$('#page').bind('mouseleave.hide', function(){
-			////console.log('mouse left'); // DEBUG
-			outsidePage = true;
-		
-		});*/
-		
-		setTimeout(function(){ $('#overlay, header').bind('click.pageEvents', function(){
-			//if (outsidePage){
-				//that.closePage();
-				////console.log('fired temporary handler');// DEBUG
+
+		setTimeout(function(){
+			$('#overlay, header').bind('click.pageEvents', function(){
 				//triggers a click of the page close button
 				$('#page-close').trigger('click');
-			//}
-		});
-		}, 50); // prevent from firing immediately and not show page
+			});
+		}, 50); // prevent from firing immediately (why does it fire?) and not show page (bubbling?)
 		
-
-		////console.log('page:'+pg); // DEBUG
-		
-		// if the page is visible as well as the feedbackbar the display() method should be called
-		// to adjust the position in case the feedbackbar height changes (e.g. by going from single line to double line).
+		// if the page is visible as well as the feedbackbar the display() method should be called if the window is resized
 		$(window).bind('resize.pageEvents', function(){
-			display();
+			$('#page').trigger('change');
 		});
 	};
-	
-	this.closePage = function(){
-		//console.log('closePage() triggered'); //DEBUG
-		page = false;
-		//var oldPage = pageEl.find('article.page')
-		pageEl.find('.page').detach(); //don't use remove, problem with buttons on data page (?)
-		//pages.append(oldPage);
-		display();
-		resetNav();
-		$('#overlay').hide();
 		
-		//$('#page').unbind('.hide');
+	this.close = function(){
+		var $page;
+		//console.log('closePage() triggered');
+		$page = $('#page .page').detach();
+		this.$pages.append($page);
+		$('#page').trigger('change');
+		this.nav.reset();
+		$('#overlay').hide();
 		$('#overlay, header').unbind('.pageEvents');
 		$(window).unbind('.pageEvents');
 	};
-	/**
-	 * @param {string=} message
-	 * @param {number=} duration
-	 */
-	this.showFeedback = function(message, duration){ // duration in seconds
-		// This function can be improved by keeping original timeouts intact of multiple messages.
-		// When a timeout expires of a particular only that message is removed
-		
-		if (!duration){
-			duration =  10 * 1000;// 10 seconds
-		}
-		else {
-			duration = duration*1000; // convert to milliseconds
-		}
-		
-		//var that = this; //to give setTimeout access to hideFeedback
-		
-		clearTimeout(feedbackTimeout); // remove existing timeOut
-		
-		// automatically remove feedback after a period
-		feedbackTimeout = setTimeout(function(){
-			_this.hideFeedback();
-		}, duration);
-		
-		fbBar = true;
-		
-		// max 2 messages displayed
-		if(feedbackEl.find('p').length > 1){
-			feedbackEl.find('p:eq(1)').remove(); //remove the first
-		}
-		// if an already shown message isn't exactly the same
-		//console.log('html = '+feedbackEl.find('p').html()); // DEBUG
-		//console.log('new msg = '+message); // DEBUG
-		if(feedbackEl.find('p').html() !== message || feedbackEl.find('p').length === 0){
-			var msg = $('<p></p>');
-			msg.text(message); // encodes special characters
-			feedbackEl.prepend(msg);
-		}
-		
-		display();
-		
-	};
+
+	return this;
+};
+
+
+/**
+ * @param {string=} message
+ * @param {number=} duration
+ */
+GUI.prototype.showFeedback = function(message, duration){
+	"use strict"; // duration in seconds
+	var $msg,
+		that = this;
 	
-	this.hideFeedback = function(){
-		//console.log('hideFeedback called'); //DEBUG
-		fbBar = false;
-		feedbackEl.find('p').remove(); //find('#feedback-bar-message').empty();
-		display();
+	if (!duration){
+		duration =  10 * 1000;// 10 seconds
+	}
+	else {
+		duration = duration*1000; // convert to milliseconds
+	}
+	
+	// max 2 messages displayed
+	$('#feedback-bar p').eq(1).remove();
+	
+	// if an already shown message isn't exactly the same
+	if($('#feedback-bar p').html() !== message){//} || feedbackEl.find('p').length === 0){
+		$msg = $('<p></p>');
+		$msg.text(message); // encodes special characters
+		$('#feedback-bar').prepend($msg);
+	}
+	$('#feedback-bar').trigger('change');
+
+	// automatically remove feedback after a period
+	setTimeout(function(){
+		$msg.remove(); //find('#feedback-bar-message').empty();
+		$('#feedback-bar').trigger('change');
+	}, duration);
+};
+	
+GUI.prototype.hideFeedback = function(){
+	"use strict";
+	$('#feedback-bar p').remove();
+	$('#feedback-bar').trigger('change'); //find('#feedback-bar-message').empty();
+};
+
+/**
+ * @param {string=} message
+ * @param {string=} heading
+ */
+GUI.prototype.alert = function(message, heading){
+	"use strict";
+	var closeFn,
+		$alert = $('#dialog-alert');
+
+	heading = heading || 'Alert';
+
+	//to call when dialog closes
+	closeFn = function(){
+		$alert.dialog('destroy');
+		$alert.find('#dialog-alert-msg').text('');
+		//console.log('alert dialog destroyed');
 	};
-	/**
-	 * @param {string=} message
-	 * @param {string=} heading
-	 */
-	this.alert = function(message, heading){
-		var closeFn;
-		heading = heading || 'Alert';
 
-		//to call when dialog closes
-		closeFn = function(){
-			alertEl.dialog('destroy');
-			alertEl.find('#dialog-alert-msg').text('');
-			//console.log('alert dialog destroyed');
-		};
+	//write content into alert dialog
+	$alert.find('#dialog-alert-msg').text(message).capitalizeStart();
 
-		//write content into alert dialog
-		alertEl.find('#dialog-alert-msg').text(message).capitalizeStart();
-
-		alertEl.dialog({
-			'title': heading,
-			'modal': true,
-			'resizable': false,
-			'buttons': {
-				"Ok": closeFn
-			},
-			'beforeClose': closeFn
-		});
-	};
+	$alert.dialog({
+		'title': heading,
+		'modal': true,
+		'resizable': false,
+		'buttons': {
+			"Ok": closeFn
+		},
+		'beforeClose': closeFn
+	});
+};
 	
 	/**
 	 * Function: confirm
@@ -576,90 +512,58 @@ function GUI(){
 	 *
 	 *   return description
 	 */
-	this.confirm = function(message, choices, heading){
-		var posFn, negFn, closeFn;
-		message = message || 'Please confirm action';
-		heading = heading || 'Are you sure?';
-		choices = (typeof choices == 'undefined') ? {posButton: 'Confirm', negButton: 'Cancel'} : choices;
-		choices.posButton = choices.posButton || 'Confirm';
-		choices.negButton = choices.negButton || 'Cancel';
-		choices.posAction = choices.posAction || function(){};
-		choices.negAction = choices.negAction || function(){};
-		posFn = choices.posAction;
-		negFn = choices.negAction;
-		//closing methods to call when user has selected an option // AND WHEN X or ESC is CLICKED!! ADD
-		closeFn = function(){
-			confirmEl.dialog('destroy');
-			confirmEl.find('#dialog-confirm-msg').text('');
-			//console.log('confirmation dialog destroyed');
-		};
-		
-		//write content into confirmation dialog
-		confirmEl.find('#dialog-confirm-msg').text(message).capitalizeStart();
-
-		//instantiate dialog
-		confirmEl.dialog({
-			'title': heading,
-			'resizable': false,
-			'modal': true,
-			'buttons': [
-				{
-					text: choices.posButton,
-					click: function(){
-						posFn.call();
-						closeFn.call();
-					}
-				},
-				{
-					text: choices.negButton,
-					click: function(){
-						negFn.call();
-						closeFn.call();
-					}
-				}
-			],
-			'beforeClose': closeFn
-		});
-		//console.log('leaving gui.confirm');
-		//		if (!message){
-//			message = 'Please confirm action';
-//		}
-//		if (!heading){
-//			heading = 'Are you sure?';
-//		}
-//		if (!choices.posButton){
-//			choices.posButton = 'Confirm';
-//		}
-//		if (!choices.negButton){
-//			choices.negButton = 'Cancel';
-//		}
-//		if (!choices.posAction){
-//			choices.posAction = '';
-//		}
-//		if (!choices.negAction){
-//			choices.negAction = '';
-//		}
-//		buttonArray = {};
-//		buttonArray[choices.posButton] = function(){
-//				$(this).dialog("close");
-//				if(choices.posAction) eval(choices.posAction); // if action is provided in function call
-//		};
-//		buttonArray[choices.negButton] = function(){
-//				$(this).dialog("close");
-//				if(choices.negAction) eval(choices.negAction); // if action is proved in function call
-//		};
-//
-//		confirmEl.find('#dialog-confirm-msg').text(message).capitalizeStart();
-//		confirmEl.dialog({
-//			title: heading,
-//			resizable: false,
-//			modal: true,
-//			buttons: buttonArray
-//		});
+GUI.prototype.confirm = function(message, choices, heading){
+	"use strict";
+	var posFn, negFn, closeFn,
+		$confirm = $('#dialog-confirm');
+	message = message || 'Please confirm action';
+	heading = heading || 'Are you sure?';
+	choices = (typeof choices == 'undefined') ? {posButton: 'Confirm', negButton: 'Cancel'} : choices;
+	choices.posButton = choices.posButton || 'Confirm';
+	choices.negButton = choices.negButton || 'Cancel';
+	choices.posAction = choices.posAction || function(){};
+	choices.negAction = choices.negAction || function(){};
+	posFn = choices.posAction;
+	negFn = choices.negAction;
+	//closing methods to call when user has selected an option // AND WHEN X or ESC is CLICKED!! ADD
+	closeFn = function(){
+		$confirm.dialog('destroy');
+		$confirm.find('#dialog-confirm-msg').text('');
+		//console.log('confirmation dialog destroyed');
 	};
 	
-	//update connection status - this information is not used by other functions
-	this.updateConnectionStatus = function(online) {
+	//write content into confirmation dialog
+	$confirm.find('#dialog-confirm-msg').text(message).capitalizeStart();
+
+	//instantiate dialog
+	$confirm.dialog({
+		'title': heading,
+		'resizable': false,
+		'modal': true,
+		'buttons': [
+			{
+				text: choices.posButton,
+				click: function(){
+					posFn.call();
+					closeFn.call();
+				}
+			},
+			{
+				text: choices.negButton,
+				click: function(){
+					negFn.call();
+					closeFn.call();
+				}
+			}
+		],
+		'beforeClose': closeFn
+	});
+
+};
+	
+GUI.prototype.updateStatus = {
+	connection : function(online) {
+		"use strict";
 		console.log('updating online status in menu bar to:');
 		console.log(online);
 		if (online) {
@@ -670,10 +574,9 @@ function GUI(){
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-cancel')
 				.attr('title', 'It appears there is currently no Internet connection');
 		}
-	};
-
-	//update editing status
-	updateEditStatus = function(editing){
+	},
+	edit : function(editing){
+		"use strict";
 		if (editing) {
 			$('header #status-editing').removeClass().addClass('ui-icon ui-icon-pencil')
 				.attr('title', 'Form is being edited.');
@@ -681,184 +584,79 @@ function GUI(){
 		else {
 			$('header #status-editing').removeClass().attr('title', '');
 		}
-	};
-	
-	//private function to operate the sliders that reveal the feedback bar and page by changing their css 'top' property
-	display = function(){
-		////console.log('display() called');
-		var feedbackTop; //top feedback bar
-		var pageTop; //top page
-		if (fbBar){
-			feedbackTop = headerEl.outerHeight(); // shows feedback-bar
-			if (page){
-				pageTop = headerEl.outerHeight() + feedbackEl.outerHeight(); // shows page
-			}
-			else{
-				pageTop = headerEl.outerHeight() + feedbackEl.outerHeight() - pageEl.outerHeight(); // hides page
-			}
+	},
+	support : function(supported){
+		"use strict";
+		//console.debug('"this" in updateStatus.supported:');
+		//console.debug(this);
+		//BAD BAD BAD to refer to gui here!!
+		var $page = gui.pages().get('settings');// : $('#settings');
+		if ($page.length > 0){
+			console.debug('updating browser support for '+supported);
+			$page.find('#settings-browserSupport-'+supported+' span.ui-icon').addClass('ui-icon-check');
+		}
+	}
+};
+
+
+//function to operate the sliders that reveal the feedback bar and page by changing their css 'top' property
+GUI.prototype.display = function(){
+	"use strict";
+	////console.log('display() called');
+	var feedbackTop, pageTop,
+		$header = $('header'),
+		$feedback = $('#feedback-bar'),
+		$page = $('#page');
+	//the below can probably be simplified, is the this.page().isVisible check necessary at all?
+	if ($feedback.find('p').length > 0){
+		feedbackTop = $header.outerHeight(); // shows feedback-bar
+		if (this.pages().showingPage()){
+			pageTop = $header.outerHeight() + $feedback.outerHeight(); // shows page
 		}
 		else{
-			feedbackTop = headerEl.outerHeight() - feedbackEl.outerHeight();
-			if (page){
-				pageTop = headerEl.outerHeight(); // shows page
-			}
-			else{
-				pageTop = headerEl.outerHeight() - pageEl.outerHeight();
-			}
+			pageTop = $header.outerHeight() + $feedback.outerHeight() - $page.outerHeight(); // hides page
 		}
-		////console.log ('top feedback: '+feedbackTop); //DEBUG
-		////console.log ('top page: '+pageTop); //DEBUG
-		feedbackEl.css('top', feedbackTop);
-		pageEl.css('top', pageTop);
-	};
+	}
+	else{
+		feedbackTop = $header.outerHeight() - $feedback.outerHeight();
+		if (this.pages().showingPage()){
+			pageTop = $header.outerHeight(); // shows page
+		}
+		else{
+			pageTop = $header.outerHeight() - $page.outerHeight();
+		}
+	}
+	////console.log ('top feedback: '+feedbackTop); //DEBUG
+	////console.log ('top page: '+pageTop); //DEBUG
+	$feedback.css('top', feedbackTop);
+	$page.css('top', pageTop);
+};
 
-	//private function that returns a clone of the hidden article elements in the document
-	getPage = function(name){
-		page = _this.$pages.find('article[id="'+name+'"]').clone(true);
-		switch(name){
-			case 'records':
-				//_this.updateRecordList(page); // ?? Why does call with this.up.. not work?
-				break;
-			case 'settings':
-		}
-		return page;
-	};
-	
-	//private function to add a scrollbar to the list of records, if necessary
-	addScrollBar = function($pane){
-		//scrollpane parts
-		var scrollPane = $pane, //('#records-saved-pane'),
-			scrollContent = $pane.find('ol');//('#records-saved ol');
-		
-		//change the main div to overflow-hidden as we can use the slider now
-		scrollPane.css('overflow','hidden');
-		
-		//compare the height of the scroll content to the scroll pane to see if we need a scrollbar
-		var difference = scrollContent.height()-scrollPane.height();//eg it's 200px longer
-		
-		if(difference>0){//if the scrollbar is needed, set it up...
-			var proportion = difference / scrollContent.height();//eg 200px/500px
-			var handleHeight = Math.round((1-proportion)*scrollPane.height());//set the proportional height - round it to make sure everything adds up correctly later on
-			handleHeight -= handleHeight%2; //ensure the handle height is exactly divisible by two
-			
-			$('#records .column.middle').html('<div id="slider-wrap" class="ui-corner-all"><div id="slider-vertical"></div></div>');//append the necessary divs so they're only there if needed
-			$("#slider-wrap").height(scrollPane.outerHeight());//set the height of the slider bar to that of the scroll pane
-			
-			//set up the slider
-			$('#slider-vertical').slider({
-				orientation: 'vertical',
-				range: 'max',
-				min: 0,
-				max: 100,
-				value: 100,
-				slide: function(event, ui) {
-					var topValue = -((100-ui.value)*difference/100);
-					//console.log('new topValue:'+topValue);
-					scrollContent.css({top:topValue});//move the top up (negative value) by the percentage the slider has been moved times the difference in height
-				}
-			});
-
-			// align the slider with the top of the scroll pane
-			$('#slider-wrap').css('margin-top', $('#records-saved h3').outerHeight(true));
-			//set the handle height and bottom margin so the middle of the handle is in line with the slider
-			$(".ui-slider-handle").css({height:handleHeight,'margin-bottom':-0.5*handleHeight});
- 
-			var origSliderHeight = $("#slider-vertical").height();//read the original slider height
-			var sliderHeight = origSliderHeight - handleHeight ;//the height through which the handle can move needs to be the original height minus the handle height
-			var sliderMargin =  (origSliderHeight - sliderHeight)*0.5;//so the slider needs to have both top and bottom margins equal to half the difference
-			$(".ui-slider").css({height:sliderHeight,'margin-top':sliderMargin});//set the slider height and margins
-			
-			//position the slider range div at the top of the slider wrap - this ensures clicks above the area through which the handle moves are OK
-			$(".ui-slider-range").css({top:-sliderMargin});
-			
-			//add a click function to ensure clicks below the area through which the handle moves are OK
-			$("#slider-wrap").click(function(){//this means the bottom of the slider beyond the slider range is clicked, so move the slider right down
-				$("#slider-vertical").slider("value", 0);
-				scrollContent.css({top:-difference});
-			});
-			
-			//additional code for mousewheel
-			$("#records-saved-pane,#slider-wrap").mousewheel(function(event, delta){
-				var speed = 5;
-				var sliderVal = $("#slider-vertical").slider("value");//read current value of the slider
-				
-				sliderVal += (delta*speed);//increment the current value
-				$("#slider-vertical").slider("value", sliderVal);//and set the new value of the slider
-				
-				var topValue = -((100-sliderVal)*difference/100);//calculate the content top from the slider position
-				
-				if (topValue>0) topValue = 0;//stop the content scrolling down too much
-				if (Math.abs(topValue)>difference) topValue = (-1)*difference;//stop the content scrolling up too much
-				
-				scrollContent.css({top:topValue});//move the content to the new position
-				event.preventDefault();//stop any default behaviour
-			});
-			
-		}
-		
-	};
-	
-	
-	//display the settings on the settings page
 /**
- * Function: setSettings
- *
- * description
- *
- * Returns:
- *
- *   return description
+ * [updateSettings description] Updates the settings in the GUI and triggers change events (used when app launches) that are handled in customEventHandlers.
+ * It is generic and could be used for any kind of radio or checkbox settings.
+ * 
+ * @param  {object} settings [description]
+ * @return {[type]}          [description]
  */
-	setSettings = function(){
-		var settings={}, inputElement;
-		//console.log('gui setSettings() fired'); //DEBUG
-		
-		//a bit ugly hack to reset checkboxes (pages are cloned and revert back to state on the first load)
-		// a setting for unchecked checkbox is empty which means it is not changed, so if the page is loaded
-		// with a checkbox checked, then the user unchecks it, the next time settings page is shown it will checked without this hack
-		$('form#settings-form input[type="checkbox"]').each(function(){
-			//form.setInputElement($(this), false);
-		});
-		
-		
-		//if (store){
-			//settings = store.getSettings();
-		//}
-		//else
-		if (DEFAULT_SETTINGS){
-			settings = DEFAULT_SETTINGS;
-		}
-		//console.log('settings received:'+settings);// DEBUG
-		
-		$.each(settings, function(key, value){ //iterate through each item in object
-			//console.log('key:'+key+' value:'+value);// DEBUG
-			inputElement = $('form#settings-form input[name="'+key+'"]');
-			//form.setInputElement(inputElement, value);
-			//updateSetting(inputElement);
-			// ADD reference to setSelectElement() for select elements
-		});
-		
-		if ($('[id^="settings-browserSupport"]').length>0){ //if there is such a 'setting'
-			// display browser support
-			for (var prop in browserSupport){
-				var icon;
-				if (browserSupport[prop]){
-					icon = 'ui-icon-check';
-				}
-				else{
-					icon = 'ui-icon-close';
-				}
-				//console.log(prop+' icon: '+icon)
-				$('#settings-browserSupport-'+prop+' span.ui-icon').addClass(icon);
-			}
-		}
-	};
+GUI.prototype.setSettings = function(settings){
+	"use strict";
+	var $input,
+		that = this;
+	console.log('gui updateSettings() started'); //DEBUG
+	
+	$.each(settings, function(key, value){ //iterate through each item in object
+		//console.log('key:'+key+' value:'+value);// DEBUG
+		$input = (value) ? that.pages().get('settings').find('input[name="'+key+'"][value="'+value+'"]') :
+			that.pages().get('settings').find('input[name="'+key+'"]');
 
-}
-
-//GUI.prototype.getPages = function(){
-//	return this.pages;
-//};
+		value = (value) ? true : false;
+		if ($input.length > 0){
+			//could change this to only trigger change event if value is changed but not so important
+			$input.attr('checked', value).trigger('change');
+		}
+	});
+};
 
 function getGetVariable(variable) {
 	"use strict";
@@ -872,6 +670,51 @@ function getGetVariable(variable) {
 	}
 	return false;
 }
+
+
+/**
+ * Settings class depends on Store Class
+ *
+ * @constructor
+ */
+function Settings(){
+	"use strict";
+}
+
+Settings.prototype.init = function(){
+	"use strict";
+	var i, value, name,
+		settings = this.get(),
+		that = this;
+	
+	//set settings (loose coupling with GUI)
+	$(document).trigger('setsettings', settings);
+	//perform actions based on settings at launch
+	//for (var prop in settings){
+		
+	//}
+};
+
+//communicates with local storage
+Settings.prototype.get = function(setting){
+	"use strict";
+	return store.getRecord('__settings') || DEFAULT_SETTINGS;
+};
+//communicates with local storage and perform action linked with setting
+//called by eventhandler in GUI.
+Settings.prototype.set = function(setting, value){
+	"use strict";
+	var result,
+		settings = this.get();
+	console.debug('going to store setting: '+setting+' with value:'+value);
+	settings[setting] = value;
+	result = store.setRecord('__settings', settings, true);
+	//perform action linked to setting
+	if (typeof this[setting] !== 'undefined'){
+		this[setting](value);
+	}
+	return (result === 'success' ) ? true : console.error('error storing settings');
+};
 
 /*
  *
@@ -1053,6 +896,84 @@ function getGetVariable(variable) {
 	
 		node[0].nodeValue = text.slice(first.length);
 		node.before('<span class="capitalize">' + first + '</span>');
+	};
+
+
+	//function to add a scrollbar to the list of records, if necessary
+	$.fn.addScrollBar = function(){
+		
+		return this.each(function(){
+			//scrollpane parts
+			var scrollPane = $(this), //('#records-saved-pane'),
+				scrollContent = $(this).find('ol');//('#records-saved ol');
+			
+			//change the main div to overflow-hidden as we can use the slider now
+			scrollPane.css('overflow','hidden');
+			
+			//compare the height of the scroll content to the scroll pane to see if we need a scrollbar
+			var difference = scrollContent.height()-scrollPane.height();//eg it's 200px longer
+			
+			if(difference>0){//if the scrollbar is needed, set it up...
+				var proportion = difference / scrollContent.height();//eg 200px/500px
+				var handleHeight = Math.round((1-proportion)*scrollPane.height());//set the proportional height - round it to make sure everything adds up correctly later on
+				handleHeight -= handleHeight%2; //ensure the handle height is exactly divisible by two
+				
+				$('#records .column.middle').html('<div id="slider-wrap" class="ui-corner-all"><div id="slider-vertical"></div></div>');//append the necessary divs so they're only there if needed
+				$("#slider-wrap").height(scrollPane.outerHeight());//set the height of the slider bar to that of the scroll pane
+				
+				//set up the slider
+				$('#slider-vertical').slider({
+					orientation: 'vertical',
+					range: 'max',
+					min: 0,
+					max: 100,
+					value: 100,
+					slide: function(event, ui) {
+						var topValue = -((100-ui.value)*difference/100);
+						//console.log('new topValue:'+topValue);
+						scrollContent.css({top:topValue});//move the top up (negative value) by the percentage the slider has been moved times the difference in height
+					}
+				});
+
+				// align the slider with the top of the scroll pane
+				$('#slider-wrap').css('margin-top', $('#records-saved h3').outerHeight(true));
+				//set the handle height and bottom margin so the middle of the handle is in line with the slider
+				$(".ui-slider-handle").css({height:handleHeight,'margin-bottom':-0.5*handleHeight});
+
+				var origSliderHeight = $("#slider-vertical").height();//read the original slider height
+				var sliderHeight = origSliderHeight - handleHeight ;//the height through which the handle can move needs to be the original height minus the handle height
+				var sliderMargin =  (origSliderHeight - sliderHeight)*0.5;//so the slider needs to have both top and bottom margins equal to half the difference
+				$(".ui-slider").css({height:sliderHeight,'margin-top':sliderMargin});//set the slider height and margins
+				
+				//position the slider range div at the top of the slider wrap - this ensures clicks above the area through which the handle moves are OK
+				$(".ui-slider-range").css({top:-sliderMargin});
+				
+				//add a click function to ensure clicks below the area through which the handle moves are OK
+				$("#slider-wrap").click(function(){//this means the bottom of the slider beyond the slider range is clicked, so move the slider right down
+					$("#slider-vertical").slider("value", 0);
+					scrollContent.css({top:-difference});
+				});
+				
+				//additional code for mousewheel
+				$("#records-saved-pane,#slider-wrap").mousewheel(function(event, delta){
+					var speed = 5;
+					var sliderVal = $("#slider-vertical").slider("value");//read current value of the slider
+					
+					sliderVal += (delta*speed);//increment the current value
+					$("#slider-vertical").slider("value", sliderVal);//and set the new value of the slider
+					
+					var topValue = -((100-sliderVal)*difference/100);//calculate the content top from the slider position
+					
+					if (topValue>0) topValue = 0;//stop the content scrolling down too much
+					if (Math.abs(topValue)>difference) topValue = (-1)*difference;//stop the content scrolling up too much
+					
+					scrollContent.css({top:topValue});//move the content to the new position
+					event.preventDefault();//stop any default behaviour
+				});
+				
+			}
+		});
+
 	};
 
 })(jQuery);

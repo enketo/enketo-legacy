@@ -8,7 +8,7 @@
 		<!--[if IE]><script type="text/javascript">window.location.href = 'modern_browsers';</script><![endif]-->
 
 		<link rel="stylesheet" type="text/css" href="libraries/jquery-ui/css/<?= $theme ?>/jquery-ui.custom.css"/>
-		<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+		<link rel="stylesheet" type="text/css" href="css/screen.css" />
 
 		<script type="text/javascript" src="libraries/jquery.min.js"></script>
 		<script type="text/javascript" src="libraries/jquery-ui/js/jquery-ui.custom.min.js"></script>

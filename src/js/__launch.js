@@ -27,35 +27,17 @@ $(document).ready(function(){
 	$tabs = $('ul.ui-tabs-nav');
 	$tabs.hide();
 	
-	gui.init();
+	//gui.init();
 	gui.showFeedback('This is an incomplete pre-alpha preview to test the JavaRosa form functionality in Google Chrome. '+
 		'It is not ready for actual use.', 3);
 	//$('#form-controls #launch-form').button('disable');
 	$('.main .ui-tabs-nav').removeClass('ui-widget-header');
 	//$('.main .ui-tabs-nav li').width('141px');
 	$('.main h2').addClass('ui-widget-header ui-corner-all');
-	$('article').addClass('ui-corner-tr');
+	//$('article').addClass('ui-corner-tr');
 
 	gui.setup();
 
-	$('#upload-form #input-switcher a#xml_url').click();
-
-	if (url){
-		url = decodeURIComponent(decodeURI(getGetVariable('formurl')));
-		console.log('formurl : '+url);
-		if(isValidUrl(url)){
-			$('#upload-form label, #input-switcher').hide();//css('visibility', 'hidden');
-			$('#upload-form input[name="xml_url"]').val(url);
-			$('#upload-form').submit();
-		}
-		else {
-			gui.alert('not a valid url');
-		}
-	}
-});
-
-GUI.prototype.setCustomEventHandlers = function(){
-	"use strict";
 	$('#upload-form [name="xml_file"]').change(function(){
 		//console.log('file input change event detected');
 		//$(this).find('img.loading').show();
@@ -78,8 +60,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 	$('#upload-form #input-switcher a').click(function(e){
 		e.preventDefault();
 		$('#upload-form label').hide().find('input[name="'+$(this).attr('id')+'"]').parents('label').show();
-		$(this).siblings().removeClass('ui-state-active');
-		$(this).addClass('ui-state-active');
+		$(this).siblings().removeClass('active');
+		$(this).addClass('active');
 	});
 
 	$('#data-template-show input').change(function(){
@@ -122,6 +104,26 @@ GUI.prototype.setCustomEventHandlers = function(){
 		});
 		return false;
 	});
+	
+	$('#upload-form #input-switcher a#xml_url').click();
+
+	if (url){
+		url = decodeURIComponent(decodeURI(getGetVariable('formurl')));
+		console.log('formurl : '+url);
+		if(isValidUrl(url)){
+			$('#upload-form label, #input-switcher').hide();//css('visibility', 'hidden');
+			$('#upload-form input[name="xml_url"]').val(url);
+			$('#upload-form').submit();
+		}
+		else {
+			gui.alert('not a valid url');
+		}
+	}
+});
+
+GUI.prototype.setCustomEventHandlers = function(){
+	"use strict";
+	
 
 	$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}}).click(function(){
 		resetForm();

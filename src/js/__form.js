@@ -959,7 +959,7 @@ function Form (selector, dataStr){
 	};
 
 	//this may not be the most efficient. Could also be implemented like Data.Nodeset;
-	//also use for fieldset nodes (to evaluate branch logic)
+	//also use for fieldset nodes (to evaluate branch logic) and also used to get and set form data of the app settings
 	FormHTML.prototype.input = {
 		//multiple nodes are limited to ones of the same input type (better implemented as JQuery plugin actually)
 		getWrapNodes: function($inputNodes){

@@ -122,6 +122,7 @@ body {
 
 #overlay {
   display: none;
+  background-color: $overlay-bg;
   position: absolute;
   z-index: 10;
   width: 100%;
@@ -170,7 +171,7 @@ header.ui-widget-header {
       white-space: nowrap;
       border-width: 1px;
       border-style: solid;
-      border-color: $header-brdr;
+      border-color: $header-bg;
       border-bottom: none;
       a {
         cursor: pointer;
@@ -183,9 +184,10 @@ header.ui-widget-header {
           float: left;
           padding: 0.5em 1em;
           text-decoration: none; } }
-      &:hover {
+      &:hover:not(.nav-state-active) {
         border-color: $highlight-bg; }
       &.nav-state-active a {
+        border-color: $header-bg;
         color: $highlight-bg; } } } }
 
 header {
@@ -315,6 +317,15 @@ article.main .jr {
     padding-top: 10px;
     padding-bottom: 10px;
     margin: 3px 3px 30px 3px; } }
+
+#dialog-save{
+  #dialog-save-msg{
+    display: block;}
+  input[type="text"]{
+    display: block;
+    width: 100%;}  
+}
+
 
 footer {
   margin-top: 15px;
@@ -613,8 +624,14 @@ footer {
 .jr-option-translations {
   display: none; }
 
-.jr h2 {
-  margin: 0; }
+.jr h2.ui-widget-header {
+  margin: 0;
+  span{ 
+    display: block;
+    color: $header-brdr;
+    font-size: 10px;
+    line-height: 10px;
+    text-align: right;} }
 
 .question-icons {
   float: right;

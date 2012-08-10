@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"header-",
+				"header-brdr"
+			],
+			[
 				"overla",
 				"overlay-bg"
 			],
@@ -63,7 +67,7 @@
 			"file": "Code_Igniter/application/views/survey_view.php",
 			"settings":
 			{
-				"buffer_size": 6678,
+				"buffer_size": 6600,
 				"line_ending": "Unix"
 			}
 		},
@@ -79,7 +83,7 @@
 			"file": "src/scss/screen.scss",
 			"settings":
 			{
-				"buffer_size": 18809,
+				"buffer_size": 19417,
 				"line_ending": "Unix"
 			}
 		},
@@ -98,9 +102,49 @@
 				"buffer_size": 81749,
 				"line_ending": "Unix"
 			}
+		},
+		{
+			"file": "src/js/__common.js",
+			"settings":
+			{
+				"buffer_size": 30291,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/__survey.js",
+			"settings":
+			{
+				"buffer_size": 28221,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/js/__launch.js",
+			"settings":
+			{
+				"buffer_size": 10666,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "build.xml",
+			"settings":
+			{
+				"buffer_size": 1501,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Code_Igniter/application/controllers/survey.php",
+			"settings":
+			{
+				"buffer_size": 2914,
+				"line_ending": "Unix"
+			}
 		}
 	],
-	"build_system": "",
+	"build_system": "Packages/Java/Ant.sublime-build",
 	"command_palette":
 	{
 		"height": 47.0,
@@ -193,6 +237,7 @@
 	"file_history":
 	[
 		"/Users/martijnvanderijdt/Library/Application Support/Sublime Text 2/Packages/User/SFTP.errors.log",
+		"/Users/martijnvanderijdt/Code/enketo/public/index.php",
 		"/Users/martijnvanderijdt/Code/enketo/src/js/__survey.js",
 		"/Users/martijnvanderijdt/Code/enketo/config.rb",
 		"/Users/martijnvanderijdt/Code/enketo/src/scss/screen.scss",
@@ -214,7 +259,6 @@
 		"/Users/martijnvanderijdt/Code/enketo/Code_Igniter/application/controllers/launch.php",
 		"/Users/martijnvanderijdt/Code/enketo/Code_Igniter/application/views/survey_list_view.php",
 		"/Users/martijnvanderijdt/Code/enketo/Stuff/build.xml",
-		"/Users/martijnvanderijdt/Code/enketo/public/index.php",
 		"/Users/martijnvanderijdt/Code/enketo/Code_Igniter/application/models/form_model.php",
 		"/Users/martijnvanderijdt/Code/enketo/Code_Igniter/application/libraries/jr2html5_php5.xsl",
 		"/Users/martijnvanderijdt/Code/enketo/Stuff/Test Forms/WRC_04.xml",
@@ -338,6 +382,16 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"table",
+			"ui-corner",
+			"beautif",
+			"input-switcher",
+			"hover",
+			"ui-tabs",
+			"records-export",
+			"#page",
+			"page",
+			"#page",
 			"$form",
 			"#",
 			"tooltip",
@@ -455,17 +509,7 @@
 			"/imci/preamble/main_symptoms",
 			"constraint=\"",
 			"/imci/vitals/age_unit",
-			"constraint=\"",
-			"/imci/vitals/temperature",
-			"constraint=\"",
-			"/imci/cough/breath_rate",
-			"preamble/info/child_in_danger",
-			"/imci/preamble/info/child_in_danger",
-			"/imci/followup",
-			"<bind nodeset=\"",
-			"count",
-			"outputU",
-			"dataupdate"
+			"constraint=\""
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -483,7 +527,7 @@
 	"groups":
 	[
 		{
-			"selected": 4,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -491,15 +535,15 @@
 					"file": "Code_Igniter/application/views/survey_view.php",
 					"settings":
 					{
-						"buffer_size": 6678,
+						"buffer_size": 6600,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								116,
-								116
+								5342,
+								5342
 							]
 						],
 						"settings":
@@ -593,7 +637,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 738.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -715,15 +759,15 @@
 					"file": "src/scss/screen.scss",
 					"settings":
 					{
-						"buffer_size": 18809,
+						"buffer_size": 19417,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								365,
-								365
+								4299,
+								4299
 							]
 						],
 						"settings":
@@ -818,7 +862,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 2262.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -835,8 +879,8 @@
 						"selection":
 						[
 							[
-								1035,
-								1034
+								4377,
+								4384
 							]
 						],
 						"settings":
@@ -929,7 +973,7 @@
 							"syntax": "Packages/CSS/CSS.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 27.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -946,8 +990,8 @@
 						"selection":
 						[
 							[
-								1422,
-								1422
+								54591,
+								54598
 							]
 						],
 						"settings":
@@ -956,6 +1000,157 @@
 							"remote_loading": false,
 							"synced": false,
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 21649.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/js/__common.js",
+					"settings":
+					{
+						"buffer_size": 30291,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								313,
+								313
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/js/__survey.js",
+					"settings":
+					{
+						"buffer_size": 28221,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								15827,
+								15827
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 6524.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/js/__launch.js",
+					"settings":
+					{
+						"buffer_size": 10666,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1434,
+								1434
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 327.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "build.xml",
+					"settings":
+					{
+						"buffer_size": 1501,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								40,
+								40
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "Code_Igniter/application/controllers/survey.php",
+					"settings":
+					{
+						"buffer_size": 2914,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2580,
+								2580
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/HTML5/Syntaxes/HTML 5.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,

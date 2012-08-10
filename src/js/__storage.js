@@ -13,7 +13,7 @@
  */
 function StorageLocal(){
 	"use strict";
-	var RESERVED_KEYS = ['__settings', 'null','__history', 'Firebug', 'undefined', '__bookmark'];
+	var RESERVED_KEYS = ['__settings', 'null','__history', 'Firebug', 'undefined', '__bookmark', '__counter'];
 
 	var localStorage = window.localStorage;
 	// Could be replaced by Modernizr function if Modernizr remains used in final version
@@ -36,63 +36,51 @@ function StorageLocal(){
 	 * [setRecord description]
 	 * @param {string} newKey    [description]
 	 * @param {(string|object)} data      [description]
-	 * @param {boolean=} overwrite [description]
+	 * @param {boolean=} del [description] used to change name of existing record and delete old record
+	 * @param {boolean=} overwrite [description] overwrite is only used when there is *another* record with the same new name (not when simply updating current form)
 	 * @param {string=} oldKey    [description]
 	 */
-	this.setRecord = function(newKey, data, overwrite, oldKey) {
-		var record, timestamp;
-		//var key;
-		//var recordType = data['recordType'] || 'surveyData'; // ''surveyData' or 'settings' or [future type]
-		//console.log('recordType detected: '+recordType); // DEBUG
-		
-		//if (recordType === 'surveyData'){
-		//	key = data[form.KEY_NAME];
-		//}
-		//else {
-		//	key = recordType;
-		//}
+	this.setRecord = function(newKey, record, del, overwrite, oldKey) {
 		if (!newKey || newKey.length < 1){
 			console.error('no key provided for record');
 			return 'require';
 		}
 		newKey = newKey.trim();
 		oldKey = (typeof oldKey === 'string') ? oldKey.trim() : null;
-		
-		//console.log('key set to: '+key); // DEBUG
-		//console.log('old key was: '+oldKey); // DEBUG
-		
 		overwrite = (typeof overwrite !== 'undefined' && overwrite === true) ? true : false;
-
-		//console.log('overwrite:'+overwrite); // DEBUG
 		
 		// ADD: CATCH ERROR WHEN LOCALSTORAGE SPACE IS FULL
 		
-		//if (typeof data == 'string' && !key){
-		//	return 'require'; // ADD: require this key to be alphanumeric?
-		//}
-		//using the knowledge that only survey data is provided as a string (other types as array)
-		if (typeof data === 'string' && isReservedKey(newKey)){
+		//using the knowledge that only survey data is provided as a "data" property (and is  a string)
+		if (typeof record.data === 'string' && isReservedKey(newKey)){
 			return 'forbidden';
 		}
 		// if the record has an existing key, but was not loaded from the store with this key, do not overwrite
-		if (typeof data === 'string' && oldKey !== newKey && isExistingKey(newKey) && overwrite !== true) {
+		if (typeof record.data === 'string' && oldKey !== newKey && isExistingKey(newKey) && overwrite !== true) {
 			
 			//if (oldKey !== newKey && overwrite === false) {
-				return 'existing';
+			return 'existing';
 			//}
 		}
 		try {
-			record = (typeof data === 'string') ? {data: data} : data;
-			//add timestamp
-			record.lastSaved = (new Date()).getTime();
+			//add timestamp to survey data
+			if (typeof record.data === 'string'){
+				record.lastSaved = (new Date()).getTime();
+			}
 			//console.log('lastSaved: '+data['lastSaved']);
 			localStorage.setItem(newKey, JSON.stringify(record));
-			//if the record was loaded from the store (oldKey != null) and the key's value was changed during editing, delete the old record
+			
+			console.debug('saved: '+newKey+', old key was: '+oldKey);
+			//if the record was loaded from the store (oldKey != null) and the key's value was changed during editing
+			//delete the old record if del=true
 			if (oldKey !== null && oldKey!=='' && oldKey !== newKey){
-				//console.log('going to remove old record with key:' + oldKey);
-				if(overwrite){
+				if(del){
+					console.log('going to remove old record with key:' + oldKey);
 					this.removeRecord(oldKey);
 				}
+			}
+			if (newKey == this.getCounterValue() ){
+				localStorage.setItem('__counter', JSON.stringify({counter: newKey}));
 			}
 			return 'success';
 		}
@@ -108,7 +96,7 @@ function StorageLocal(){
 		try{
 			record = JSON.parse(localStorage.getItem(key));
 			//console.log('found data:'+JSON.stringify(data)); //DEBUG
-			return record;// returns null if item cannot be found?
+			return record;// returns null if item cannot be found
 		}
 		catch(e){
 			console.log('error with loading data from store: '+e.message);
@@ -138,7 +126,7 @@ function StorageLocal(){
 		for (i=0 ; i<records.length ; i++){
 			record = records[i];
 			record.ready = (record.ready === 'true' || record.ready === true) ? true : false;
-			formList.push({key: record.key, 'final': ready, lastSaved: record.lastSaved});
+			formList.push({key: record.key, ready: record.ready, lastSaved: record.lastSaved});
 		}
 		//console.debug('formList returned with '+formList.length+' items'); //DEBUG
 		//order formList by lastSaved timestamp
@@ -158,11 +146,11 @@ function StorageLocal(){
 			//console.log(localStorage.length+' records found'); // DEBUG
 			for (i=0; i<localStorage.length; i++) {
 				key = localStorage.key(i);
-				console.debug('found record with with key:'+key);
+				//console.debug('found record with with key:'+key);
 				record = localStorage.getItem(key);
 				// get record - all non-reserved keys contain survey data
 				if (!isReservedKey(key)){
-					console.debug('record with key: '+key+' is survey data');
+					//console.debug('record with key: '+key+' is survey data');
 					try{
 						record = JSON.parse(record);
 						/* although the key is also available as one of the record parameters
@@ -192,22 +180,22 @@ function StorageLocal(){
 	
 	// MOVE TO STORE?
 	//function to get settings from the store - all settings or one particular setting
-	this.getSettings = function(name){
-		var settings={};
-		var settingsRec = this.getRecord('settings');
-		//console.log('settings record:'+settingsRec);
-		if (settingsRec){
-			settings = settingsRec;
-		}
-		else {
-			settings = DEFAULT_SETTINGS;
-		}
-		if (name){
-			settings = settings[name]; // still to be tested
-		}
-		// console.log('returning settings: '+settings); //DEBUG
-		return settings;
-	};
+	//this.getSettings = function(name){
+//		var settings={};
+//		var settingsRec = this.getRecord('settings');
+//		//console.log('settings record:'+settingsRec);
+//		if (settingsRec){
+//			settings = settingsRec;
+//		}
+//		else {
+//			settings = DEFAULT_SETTINGS;
+//		}
+//		if (name){
+//			settings = settings[name]; // still to be tested
+//		}
+//		// console.log('returning settings: '+settings); //DEBUG
+//		return settings;
+//	};
 
 	// private function to check if key is forbidden
 	function isReservedKey(k) {
@@ -230,6 +218,12 @@ function StorageLocal(){
 		return false;
 	}
 	
-
+	this.getCounterValue = function(){
+		var record = this.getRecord('__counter'),
+			number = (record) ? Number(record.counter) : 0,
+			numberStr = (number+1).toString().pad(4);
+		//this.setRecord('__counter', numberStr);
+		return numberStr;
+	};
 
 }

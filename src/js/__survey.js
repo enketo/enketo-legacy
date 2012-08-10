@@ -1,4 +1,4 @@
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, store, StorageLocal, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, store:true, StorageLocal:true, Settings, Modernizr*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var  /**@type {Form}*/form,  /**@type {Connection}*/connection, /**@type {Cache}*/cache,  /**@type {Settings}*/settings,
@@ -23,14 +23,14 @@ var CACHE_CHECK_INTERVAL = 3600*1000;
 /************ Document Ready ****************/
 $(document).ready(function() {
 	'use strict';
-	var bookmark, message, choices, shown;
+	var bookmark, message, choices, shown, time;
 
 	store = new StorageLocal();
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	settings = new Settings();
 	settings.init();
 	connection = new Connection();
-	cache = new Cache();
+	
 	
 	// check if localStorage is supported and if not re-direct to browser download page
 	if (!store.isSupported()){
@@ -41,11 +41,59 @@ $(document).ready(function() {
 	else{
 		$(document).trigger('browsersupport', 'local-storage');
 	}
+
+	//reminder to bookmark page will be shown 3 times
+	bookmark = store.getRecord('__bookmark');
+	
+	//shown=0;
+	//if (bookmark){
+	//	shown = (bookmark.shown) ? bookmark.shown : 0;
+	//}
+
+	shown = (bookmark) ? bookmark.shown : 0;
+	if(shown < 3){
+		setTimeout(function(){
+			time = (shown === 1) ? 'time' : 'times';
+			gui.showFeedback('Please bookmark this page for easy offline launch. '+
+				'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
+			shown++;
+			store.setRecord('__bookmark', {shown: shown});
+		}, 5*1000);
+	}
 	
 	//best to place this after localStorage check, so that IE7 users with Gears
 	//will be re-directed immediately before asking whether they allow Gears to store data
-	cache.init();
-	console.log('cache initialized');
+	if ($('html').attr('manifest')){
+		cache = new Cache();
+		cache.init();
+		// application cache for launching application offline
+		if (cache.isSupported()){
+			
+			$(document).trigger('browsersupport', 'offline-launch');
+			
+			
+			
+			//check for updated cache
+			checkCache();
+			
+			// Check for an updated manifest file regularly and refresh cache if necessary.
+			window.setInterval(function(){
+				checkCache();
+			}, CACHE_CHECK_INTERVAL);
+			
+		}
+		else{ // if applicationCache is not supported
+			message = 'Offline application launch not supported by your browser. '+
+					'You can use it without this feature or see options for resolving this';
+			choices = {
+				posButton : 'Show options',
+				negButton : 'Use it',
+				posAction : function(){ window.location = MODERN_BROWSERS_URL; }
+			};
+			gui.confirm(message, choices,'Application cannot launch offline');
+		}
+		console.log('cache initialized');
+	}
 	//var formFormat;
 	// get form format from json file and build the survey form elements
 	//var request;
@@ -83,46 +131,7 @@ $(document).ready(function() {
 	//initialize file export/backup function
 	//initSaveFormsToFile(); // CHECK SAFARI OS X BUG
 	
-	// application cache for launching application offline
-	if (cache.isSupported()){
-		
-		$(document).trigger('browsersupport', 'offline-launch');
-		
-		//reminder to bookmark page will be shown 3 times
-		bookmark = store.getRecord('bookmark');
-		
-		shown=0;
-		if (bookmark){
-			shown = (bookmark.shown) ? bookmark.shown : 0;
-		}
-		if(shown < 3){
-			setTimeout(function(){
-				gui.showFeedback('Please bookmark this page for easy offline launch. '+
-					'(This reminder will be shown '+(2-shown)+' more time(s).)', 20);
-				shown++;
-				store.setRecord('__bookmark', {shown: shown}, true);
-			}, 5*1000);
-		}
-		
-		//check for updated cache
-		checkCache();
-		
-		// Check for an updated manifest file regularly and refresh cache if necessary.
-		window.setInterval(function(){
-			checkCache();
-		}, CACHE_CHECK_INTERVAL);
-		
-	}
-	else{ // if applicationCache is not supported
-		message = 'Offline application launch not supported by your browser. '+
-				'You can use it without this feature or see options for resolving this';
-		choices = {
-			posButton : 'Show options',
-			negButton : 'Use it',
-			posAction : function(){ window.location = MODERN_BROWSERS_URL; }
-		};
-		gui.confirm(message, choices,'Application cannot launch offline');
-	}
+	
 	
 	// ADD / REPLACE If there is sufficient cross-browser support this could be replaced by simply calling window.navigator.onLine which returns false or true
 	//var onlineCheckInterval = window.setInterval(function () {
@@ -203,72 +212,72 @@ function loadForm(formName, confirmed){
 	}
 }
 
-function saveForm(recordName, overwrite){
+function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, overwriteExisting){
 	'use strict';
-	//console.log('saveForm called'); // DEBUG
-	var oldRecordName, result, message, choices,
-		data = form.getDataStr(true, true);
-	//var data = form.getData(SURVEY_FORM_ID);
-	
-	//console.log ('data: '+JSON.stringify(data)); //DEBUG
-	if (data !== null && data !== '' && recordName && recordName.length > 0){
-		oldRecordName = form.getKey();
-		console.log('old key is: '+oldRecordName); // DEBUG
-		console.log('new key is: '+recordName); // DEBUG
+	var result, message, choices,
+		curRecordName = form.getRecordName(),
+		curRecordFinal = form.getRecordStatus(),
+		record = {};
+	record.data = form.getDataStr(true, true);
+	record.ready = confirmedFinalStatus;
+	console.debug('new name: '+confirmedRecordName+', before: '+curRecordName+', delOld: '+deleteOldName+', overwr: '+overwriteExisting);
+	if (record.data === null || record.data === ''){
+		return gui.showFeedback('Nothing to save.'); //ADD error with getting data from form?
+	}
+
+	if (typeof confirmedRecordName == 'undefined' || confirmedRecordName.length === 0){
+		curRecordName = curRecordName || store.getCounterValue();
+		$('#dialog-save input[name="record-name"]').val(curRecordName);
+		$('#dialog-save input[name="record-final"]').attr('checked', curRecordFinal);
+		return gui.saveConfirm();
+		//console.debug('new Record Props: '+JSON.stringify(newRecord));
+		//return saveForm(newRecord.name, newRecord.markedFinal);
+	}
+
+	if (curRecordName && curRecordName !== confirmedRecordName && typeof deleteOldName == 'undefined'){
+		message = 'Record name has changed. Would you like to delete the record saved under the old name:'+curRecordName+'?';
+		choices = {
+			posButton : 'Yes, delete',
+			negButton : 'No, keep',
+			posAction : function(){ saveForm(confirmedRecordName, confirmedFinalStatus, true); },
+			negAction : function(){ saveForm(confirmedRecordName, confirmedFinalStatus, false); }
+		};
+		return gui.confirm(message, choices, 'Delete old Record?');
+	}
+
+	result = store.setRecord(confirmedRecordName, record, deleteOldName, overwriteExisting, curRecordName);
 		
-		if (oldRecordName && oldRecordName !== recordName && overwrite !== 'undefined')
-		{
-			message = 'Record name has changed. Would you like to delete the record saved under the old name:'+oldRecordName+'?';
-			choices = {
-				posButton : 'Yes, delete',
-				negButton : 'No, keep',
-				posAction : function(){ saveForm(recordName, true); },
-				negAction : function(){ saveForm(recordName, false); }
-			};
-			gui.confirm(message, choices, 'Delete old Record?');
-		}
-		else {
-			result = store.setRecord(recordName, data, overwrite, oldRecordName);
+	console.log('result of save: '+result); // DEBUG
+	if (result === 'success'){
+		gui.showFeedback('Form with name "'+confirmedRecordName+'" has been saved.', 2);
 		
-			//console.log('result: '+result); // DEBUG
-			if (result === 'success'){
-				gui.showFeedback('Form with name "'+recordName+'" has been saved.', 2);
-				//set the new custom html5 data attribute stored-with-key
-				form.setKey(recordName);
-				form.setEditStatus(false);
-				$('button#delete-form').show();
-				$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
-			}
-			//else if (result === 'requireKey'){
-			//	gui.alert (form.KEY_LABEL+' is required. Please provide this.');
-			//}
-			else if (result === 'existing'){
-				message = 'Record with this name already exists. Would you like to overwrite existing record? ';
-				choices = {
-					posButton : 'Yes, overwrite',
-					posAction : function(){ saveForm(recordName, true); },
-					negAction : function(){ gui.showFeedback("Form was not saved."); }
-				};
-				gui.confirm(message, choices);
-			}
-			else if (result === 'forbidden'){
-				gui.alert ('This name is not allowed. Please change it');
-				gui.showFeedback ('Form was NOT saved.');
-			}
-			else {
-				gui.showFeedback('Error occurred. Form was NOT saved.');
-			}
-		}
+		//set the new custom html5 data attribute stored-with-key
+		form.setRecordName(confirmedRecordName);
+		form.setRecordStatus(confirmedFinalStatus);
+		form.setEditStatus(false);
+		$('button#delete-form').show();
+		//update records in GUI
+		$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
+	}
+	//else if (result === 'require'){
+	//	gui.alert (form.KEY_LABEL+' is required. Please provide this.');
+	//}
+	else if (result === 'existing'){
+		message = 'Record with name '+confirmedRecordName+' already exists. Would you like to overwrite existing record? ';
+		choices = {
+			posButton : 'Yes, overwrite',
+			posAction : function(){ saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, true); },
+			negAction : function(){ gui.showFeedback("Form was not saved.");}
+		};
+		gui.confirm(message, choices);
+	}
+	else if (result === 'forbidden'){
+		gui.alert ('This name is not allowed. Please change it');
+		gui.showFeedback ('Form was NOT saved.');
 	}
 	else {
-		if(recordName){
-			gui.showFeedback('Nothing to save.'); //ADD error with getting data from form?
-		}
-		else{
-			console.error('No record name provided.');
-		}
+		gui.showFeedback('Error occurred. Form was NOT saved.');
 	}
-	return;
 }
 
 function resetForm(confirmed){
@@ -509,15 +518,15 @@ function Connection(){
 //	function setTableVars(){
 //		var primaryKey;
 //		tableName = form.COUNTRY+'_'+form.SECTOR+'_'+form.YEAR+'_'+form.SURVEY_NAME;
-//		
+//
 //		//make tableName database friendly
 //		tableName = tableName.replace(/\s/g, '_');
 //		//console.log('tableName without whitespace: '+tableName); //DEBUG
 //		tableName = tableName.toLowerCase();
 //		//console.log('tableName lowercase: '+tableName); //DEBUG
-//		
+//
 //		version = form.VERSION;
-//		
+//
 //		//tableFields = '';
 //		//for (var i=0; i<form.QUESTIONS.length; i++){
 //		//	tableFields += form.QUESTIONS[i].id + ' ' + form.QUESTIONS[i].type + ', ';
@@ -526,11 +535,11 @@ function Connection(){
 //		//primary key of MySQL table is a combination of two colummns and only the first 20 characters of the second column are used.
 //		primaryKey = 'lastUploaded, '+form.KEY_NAME+'(20)';
 //	}
-//	
+//
 //	this.getStatus = function(){
 //		return onlineStatus;
 //	};
-//	
+//
 //	this.getTableName = function(){
 //		return tableName;
 //	};
@@ -722,7 +731,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	// survey-form controls
 	$('button#save-form').button({'icons': {'primary':"ui-icon-disk"}})
 		.click(function(){
-			saveForm(false);
+			saveForm();
 		});
 	$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}})
 		.click(function(){
@@ -750,7 +759,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	
 	this.pages().get('records').find('button#records-force-upload').button({'icons': {primary:"ui-icon-arrowthick-1-n"}})
 		.click(function(){
-			gui.alert('Sorry, this button is not working yet.')
+			gui.alert('Sorry, this button is not working yet.');
 			//connection.upload(true);
 		})
 		.hover(function(){
@@ -760,7 +769,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 		});
 	this.pages().get('records').find('button#records-export').button({'icons': {'primary':"ui-icon-suitcase"}})
 		.click(function(){
-			gui.alert('Sorry, this button is not working yet.')
+			gui.alert('Sorry, this button is not working yet.');
 		})
 		.hover(function(){
 			$('#records-export-info').show();
@@ -802,6 +811,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 //			break;
 //		}
 	});
+
+	$('#dialog-save').hide();
 
 };
 
@@ -863,5 +874,55 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 	$page.find('#records-final-qty').text(finishedFormsQty);
 };
 
+GUI.prototype.saveConfirm = function(message, choices, heading){
+	"use strict";
+	var posFn, negFn, closeFn, rec,
+		$saveConfirm = $('#dialog-save');
+	message = message || '';
+	heading = heading || 'Record Details';
+	choices = (typeof choices == 'undefined') ? {} : choices;
+	choices.posButton = choices.posButton || 'Ok';
+	choices.negButton = choices.negButton || 'Cancel';
+	posFn = choices.posAction || function(){
+		return saveForm($saveConfirm.find('[name="record-name"]').val(), Boolean($saveConfirm.find('[name="record-final"]:checked').val()));
+	};
+	negFn = choices.negAction || function(){
+		return false;
+	};
 
+	//closing methods to call when user has selected an option // AND WHEN X or ESC is CLICKED!! ADD
+	closeFn = function(){
+		$saveConfirm.dialog('destroy');
+		$saveConfirm.find('#dialog-save-msg').text('');
+		//console.log('confirmation dialog destroyed');
+	};
+
+	//write content into confirmation dialog
+	$saveConfirm.find('#dialog-save-msg').text(message).capitalizeStart();
+
+	//instantiate dialog
+	$saveConfirm.dialog({
+		'title': heading,
+		'resizable': false,
+		'modal': true,
+		'buttons': [
+			{
+				text: choices.posButton,
+				click: function(){
+					posFn.call();
+					closeFn.call();
+				}
+			},
+			{
+				text: choices.negButton,
+				click: function(){
+					negFn.call();
+					closeFn.call();
+				}
+			}
+		],
+		'beforeClose': closeFn
+	});
+
+};
 

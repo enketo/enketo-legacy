@@ -1,4 +1,4 @@
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, store*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, console:true*/
 // CHANGE: it would be better to remove references to store and form in common.js
 //
 // Copyright 2012 Martijn van de Rijdt
@@ -24,8 +24,6 @@ $(document).ready(function(){
 		window.console.log = function(){};
 		window.console.debug = function(){};
 	}
-
-
 });
 
 // !Global Functions
@@ -248,9 +246,9 @@ GUI.prototype.setEventHandlers = function(){
 		that.updateStatus.connection(online);
 		});
 
-	$(document).on('edit', 'form.jr', function(){
+	$(document).on('edit', 'form.jr', function(event, status){
 		//console.log('gui updating edit status icon');
-		that.updateStatus.edit(true);
+		that.updateStatus.edit(status);
 	});
 
 	$(document).on('browsersupport', function(e, supported){
@@ -373,12 +371,19 @@ GUI.prototype.pages = function(){
 		//}
 	};
 		
-	this.showingPage = function(){
-		return ( $('#page article.page').length > 0 );
+	this.showingPage = function(name){
+		//no name means any page
+		var idSelector = (typeof name !== 'undefined') ? '[id="'+name+'"]' : '';
+		return ( $('#page article.page'+idSelector).length > 0 );
 	};
 		
 	this.open = function(pg){
-		var $page = this.get(pg);//outsidePage;
+		var $page;
+		if (this.showingPage(pg)){
+			return;
+		}
+
+		$page = this.get(pg);//outsidePage;
 		//console.debug('opening page '+pg);
 		
 		if ($page.length !== 1){
@@ -634,7 +639,7 @@ GUI.prototype.display = function(){
 /**
  * [updateSettings description] Updates the settings in the GUI and triggers change events (used when app launches) that are handled in customEventHandlers.
  * It is generic and could be used for any kind of radio or checkbox settings.
- * 
+ *
  * @param  {object} settings [description]
  * @return {[type]}          [description]
  */
@@ -707,7 +712,7 @@ Settings.prototype.set = function(setting, value){
 		settings = this.get();
 	console.debug('going to store setting: '+setting+' with value:'+value);
 	settings[setting] = value;
-	result = store.setRecord('__settings', settings, true);
+	result = store.setRecord('__settings', settings);
 	//perform action linked to setting
 	if (typeof this[setting] !== 'undefined'){
 		this[setting](value);
@@ -715,6 +720,13 @@ Settings.prototype.set = function(setting, value){
 	return (result === 'success' ) ? true : console.error('error storing settings');
 };
 
+String.prototype.pad = function(digits){
+		var x = this;
+		while (x.length < digits){
+			x = '0'+x;
+		}
+		return x;
+};
 /*
  *
  *  Provides a central switch for application reporting
@@ -900,12 +912,12 @@ Settings.prototype.set = function(setting, value){
 
 	//function to add a scrollbar to the list of records, if necessary
 	$.fn.addScrollBar = function(){
-		
+
 		return this.each(function(){
 			//scrollpane parts
 			var scrollPane = $(this), //('#records-saved-pane'),
 				scrollContent = $(this).find('ol');//('#records-saved ol');
-			
+
 			//change the main div to overflow-hidden as we can use the slider now
 			scrollPane.css('overflow','hidden');
 			

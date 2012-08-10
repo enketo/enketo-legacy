@@ -32,6 +32,16 @@
 
 	<? require 'elements/header++.php'; ?>
 
+		<div id="dialog-save">
+			<p>
+				<form onsubmit="return false;">
+					<span id="dialog-save-msg" class="ui-state-error"></span>
+					<label>name:<input name="record-name" type="text"/></label>
+					<label><input name="record-final" type="checkbox" value="true"/>final</label>
+				</form>
+			</p>
+		</div>
+
 		<article id="records" data-title="locally saved survey data" data-display="data" class="page">
 			<div class="ui-helper-clearfix">
 				<div id="records-saved" >

@@ -75,14 +75,23 @@ function Form (selector, dataStr){
 	/**
      *
      */
-	this.getKey = function(){
-		return form.getKey();
+	this.getRecordName = function(){
+		return form.recordName.get();
 	};
 	/**
-     * @param {string} key
+     * @param {string} name
      */
-	this.setKey = function(key){
-		return form.setKey(key);
+	this.setRecordName = function(name){
+		return form.recordName.set(name);
+	};
+	this.getRecordStatus = function(){
+		return form.recordStatus.get();
+	};
+	/**
+     * @param {boolean} markedFinal
+     */
+	this.setRecordStatus = function(markedFinal){
+		return form.recordStatus.set(markedFinal);
 	};
 	/**
 	 * @param { boolean } status [description]
@@ -689,6 +698,9 @@ function Form (selector, dataStr){
 		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE NAMESPACE FROM STRING (AGAIN), BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
 		dataStr = dataStr.replace(/xmlns\=\"[A-z0-9\:\/\.\-\%\_\?&amp;]*\"/gi,' ');
 
+		//remove tabs
+		dataStr = dataStr.replace(/\t/g, '');
+
 		return dataStr;
 	};
 
@@ -868,6 +880,7 @@ function Form (selector, dataStr){
 			$(this).attr('data-name', name);
 		});
 
+		$form.find('h2').first().append('<span/>');
 
 		//this.setLangs();
 		//$form.find('.jr-hint, .jr-constraint-msg').hide();
@@ -883,6 +896,7 @@ function Form (selector, dataStr){
 		this.preloads.init(); //after event handlers!
 		//$form.fixLegends();
 		this.setLangs();
+		this.setEditStatus(false);
 	};
 
 	FormHTML.prototype.checkForErrors = function(){
@@ -1255,25 +1269,38 @@ function Form (selector, dataStr){
 
 	FormHTML.prototype.setEditStatus = function(status){
 		$form.attr('data-edited',status.toString());
-		$form.trigger('edit');
+		$form.trigger('edit', status);
 	};
 
 	FormHTML.prototype.getEditStatus = function(){
-		if ($form.first().attr('data-edited') === 'true'){
-			return true;
-		}
-		else {
-			return false;
+		return ($form.attr('data-edited') === 'true') ? true : false;
+	};
+
+	FormHTML.prototype.recordName = {
+		set : function(key){
+			$form.attr('data-stored-with-key', key);
+			$('#record-name').text(key);
+			$form.find('h2 span').text(key);
+		},
+		get : function() {
+			return $form.attr('data-stored-with-key') || null;
+		},
+		remove : function(){
+			$form.removeAttr('data-stored-with-key');
 		}
 	};
 
-	FormHTML.prototype.setKey = function(key){
-		$form.find('form.jr:eq(0)').attr('data-stored-with-key', key);
-		$('#survey-title').text(key);
-	};
 
-	FormHTML.prototype.getKey = function() {
-		return $form.find('form.jr:eq(0)').attr('data-stored-with-key') || null;
+	FormHTML.prototype.recordStatus = {
+		set : function(markedFinal){
+			$form.attr('data-stored-final', markedFinal.toString());
+		},
+		get : function() {
+			return ($form.attr('data-stored-final') === 'true') ? true : false;
+		},
+		remove : function(){
+			$form.removeAttr('data-stored-final');
+		}
 	};
 
 	// evaluate the skip logic in data-relevant attributes
@@ -1424,7 +1451,7 @@ function Form (selector, dataStr){
 		for (i=0 ; i<namesArr.length ; i++){
 			cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
 		}
-		console.debug('the clever selector created: '+cleverSelector.join());
+		//console.debug('the clever selector created: '+cleverSelector.join());
 		
 		$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
 			try{
@@ -1959,7 +1986,8 @@ function Form (selector, dataStr){
 		//edit is fired when the form changes due to user input or repeats added/removed
 		//branch update doesn't require detection as it always happens as a result of an event that triggers change or changrepeat.
 		$form.on('change changerepeat', function(event){
-			////console.debug('detected event to trigger editstatus');
+			console.debug('detected event to trigger editstatus: ');
+			console.debug(event);
 			that.setEditStatus(true);
 		});
 
@@ -2043,13 +2071,7 @@ function Form (selector, dataStr){
 		$form.find('input, select, textarea').trigger('validate');
 	};
 
-	String.prototype.pad = function(digits){
-		var x = this;
-		while (x.length < digits){
-			x = '0'+x;
-		}
-		return x;
-	};
+	
 
 }
 

@@ -371,7 +371,7 @@ GUI.prototype.pages = function(){
 		//}
 	};
 		
-	this.showingPage = function(name){
+	this.isShowing = function(name){
 		//no name means any page
 		var idSelector = (typeof name !== 'undefined') ? '[id="'+name+'"]' : '';
 		return ( $('#page article.page'+idSelector).length > 0 );
@@ -379,7 +379,7 @@ GUI.prototype.pages = function(){
 		
 	this.open = function(pg){
 		var $page;
-		if (this.showingPage(pg)){
+		if (this.isShowing(pg)){
 			return;
 		}
 
@@ -390,22 +390,25 @@ GUI.prototype.pages = function(){
 			return console.error('page not found');
 		}
 
-		if(this.showingPage()){
+		if(this.isShowing()){
 			this.close();
 		}
 		
-		$page.find('.scrollbar').addScrollBar(); //function should be called each time page loads because record list will change
-			
-		$('#page-content').prepend(this.get(pg).show()).trigger('change');
 		
+			
+		$('#page-content').prepend($page.show()).trigger('change');
 		$('#overlay').show();
 
+		//for some reason, the scrollbar needs to be added after a short delay (default duration of show() maybe)
+		//similarly adding the event handler needs to be done a delay otherwise it picks up an even(?) instantly
+		//addScrollBar should be called each time page loads because record list will change
 		setTimeout(function(){
+			$page.find('.scrollbar').addScrollBar();
 			$('#overlay, header').bind('click.pageEvents', function(){
 				//triggers a click of the page close button
 				$('#page-close').trigger('click');
 			});
-		}, 50); // prevent from firing immediately (why does it fire?) and not show page (bubbling?)
+		}, 50);
 		
 		// if the page is visible as well as the feedbackbar the display() method should be called if the window is resized
 		$(window).bind('resize.pageEvents', function(){
@@ -614,7 +617,7 @@ GUI.prototype.display = function(){
 	//the below can probably be simplified, is the this.page().isVisible check necessary at all?
 	if ($feedback.find('p').length > 0){
 		feedbackTop = $header.outerHeight(); // shows feedback-bar
-		if (this.pages().showingPage()){
+		if (this.pages().isShowing()){
 			pageTop = $header.outerHeight() + $feedback.outerHeight(); // shows page
 		}
 		else{
@@ -623,7 +626,7 @@ GUI.prototype.display = function(){
 	}
 	else{
 		feedbackTop = $header.outerHeight() - $feedback.outerHeight();
-		if (this.pages().showingPage()){
+		if (this.pages().isShowing()){
 			pageTop = $header.outerHeight(); // shows page
 		}
 		else{

@@ -1,0 +1,32 @@
+INSTALLATION INSTRUCTIONS
+
+Prerequisites:
+- LAMP stack (enabled: mode_rewrite, php5-xsl, curl)
+- Code Igniter (latest)
+- XPathJS_javarosa (buid/xpathjs_javarosa.js is only file that is required)
+- (JQuery & JQuery UI)?
+
+Installation:
+1. Install Code Igniter e.g. with the following structure:
+	enketo____ Code_Igniter
+		|			|______ application
+		|			|______ system
+		|
+		|_____ public (this is the webroot that contains index.php)
+
+2. Fix two paths in index.php, test if installation works, application/logs and application/cache should be writeable
+3. Copy enketo files in application/controllers, application/config, application/views, application models, to the same folder
+4. Copy enketo files in public
+5. Create wildcard subdomain that points to public
+6. Import database structure into MYSQL database
+7. Set up config/database.php with appropriate db user name and password
+
+
+
+ADDITIONAL INFO FOR DEVELOPERS:
+
+Prerequisites:
+- SASS/SCSS compiler to compile css (e.g. Compass)
+- Apache ANT to compile javascript 
+- (Google Closure Compiler)?
+- symlink public/js-source to src/js

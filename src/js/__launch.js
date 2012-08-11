@@ -206,10 +206,8 @@ function processResponse(xml){
 		$('#tabs li a[href="#survey-form"]').click();
 		
 		//set event handlers for changes in form input fields
-		$('form.jr').on( {
-			'change': updateData,
-			'dataupdate': updateData
-		});
+		$(document).on('change dataupdate', 'form.jr', updateData);
+
 	}
 	else {
 		$('#survey-form div').empty();

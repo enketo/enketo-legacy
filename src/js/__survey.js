@@ -71,8 +71,6 @@ $(document).ready(function() {
 			
 			$(document).trigger('browsersupport', 'offline-launch');
 			
-			
-			
 			//check for updated cache
 			checkCache();
 			
@@ -283,7 +281,10 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 function resetForm(confirmed){
 	'use strict';
 	var message, choices;
-	if (!confirmed && form.hasBeenEdited()){
+//value1st = /**@type {string} */$('#saved-forms option:first').val();
+//		$('#saved-forms').val(value1st);
+
+	if (!confirmed && form.getEditStatus()){
 		message = 'Would you like to reset without saving changes to the form you were working on?';
 		choices = {
 			posAction : function(){ resetForm(true); }

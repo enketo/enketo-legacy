@@ -1,9 +1,9 @@
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr*/
 //Copyright 2012 Martijn van de Rijdt
 //
 //
 
-	window['XMLSerializer'] = XMLSerializer;
+//	window['XMLSerializer'] = XMLSerializer;
 /**
  * Class: Form
  *
@@ -24,9 +24,9 @@
  *
  * @constructor
  */
-function Form (selector, dataStr){
+function Form (formSelector, dataStr){
 	"use strict";
-	var data, form, $form;
+	var data, form, $form, $formClone;
  
 	//*** FOR DEBUGGING and TESTING, OTHERWISE DISABLE***
 	this.ex = function(expr, type, selector, index){return data.evaluate(expr, type, selector, index);};
@@ -39,11 +39,10 @@ function Form (selector, dataStr){
 	this.validateAll = function(){return form.validateAll();};
 	//***************************************
 
-	// initializes HTML Form object
 /**
  * Function: init
  *
- * Initializes the Form instance.
+ * Initializes the Form instance (XML data and HTML form).
  * 
  *
  *
@@ -55,13 +54,17 @@ function Form (selector, dataStr){
 		//if (typeof console== 'undefined'){
 	///		report &= window.console;
 	//	}
+		//cloning children to keep any event handlers on 'form.jr' intact upon resetting
+		$formClone = $(formSelector).clone().appendTo('<original></original>');
 
 		data = new DataXML(dataStr);
 		data.init();
 		
-		form = new FormHTML(selector);
+		form = new FormHTML(formSelector);
 		form.init();
 		
+		
+
 		return;
 	};
 
@@ -97,7 +100,22 @@ function Form (selector, dataStr){
 	 * @param { boolean } status [description]
 	 */
 	 this.setEditStatus = function(status){
-		return form.setEditStatus(status);
+		return form.editStatus.set(status);
+	 };
+	 this.getEditStatus = function(status){
+		return form.editStatus.get();
+	 };
+
+	this.reset = function(){
+		//form language selector was moved outside of <form> so has to be separately removed
+		$('#form-languages').remove();
+		$form.replaceWith($formClone);
+
+		//now just re-initiate instance
+		this.init();
+
+		//to update data tab launch, trigger a dataupdate
+		$form.trigger('dataupdate');
 	 };
 
 /**
@@ -896,7 +914,7 @@ function Form (selector, dataStr){
 		this.preloads.init(); //after event handlers!
 		//$form.fixLegends();
 		this.setLangs();
-		this.setEditStatus(false);
+		this.editStatus.set(false);
 	};
 
 	FormHTML.prototype.checkForErrors = function(){
@@ -1247,33 +1265,30 @@ function Form (selector, dataStr){
 		$form.tooltip(); //  use refresh() ??
 	};
 
-	FormHTML.prototype.reset = function(){
-		var value1st;
-		//ADD ?? checkForOpenForm(false);
-		$form.find('form.jr:eq(0)')[0].reset();
-		//setting custom html5 data-attribute "stored-with-key" on form element (value is either '' or a string)
-		this.setKey('');
-		////setting custom html5 data-attribute "changed" to false
-		//$('#'+SURVEY_FORM_ID).attr('data-changed','false');
-		//gui.updateEditingStatus(false);
-		form.setEditStatus(false);
+	//FormHTML.prototype.reset = function(){
+//		//var value1st;
+//		//ADD ?? checkForOpenForm(false);
+//		$form.reset();
+//		this.recordName.reset();
+//		this.recordStatus.reset();
+//		form.editStatus.set(false);//
 
-		$('#survey-title').text('New Survey');
+//		//$('#survey-title').text('New Survey');//
 
-		$('button#delete-form').hide();
+//		//$('button#delete-form').hide();//
 
-		//set the combobox with the list of files back to the first item
-		value1st = /**@type {string} */$('#saved-forms option:first').val();
-		$('#saved-forms').val(value1st);
-	};
+//		//set the combobox with the list of files back to the first item
+//		
+//	};
 
-	FormHTML.prototype.setEditStatus = function(status){
-		$form.attr('data-edited',status.toString());
-		$form.trigger('edit', status);
-	};
-
-	FormHTML.prototype.getEditStatus = function(){
-		return ($form.attr('data-edited') === 'true') ? true : false;
+	FormHTML.prototype.editStatus = {
+			set : function(status){
+				$form.attr('data-edited',status.toString());
+				$form.trigger('edit', status);
+			},
+			get : function(){
+				return ($form.attr('data-edited') === 'true') ? true : false;
+			}
 	};
 
 	FormHTML.prototype.recordName = {
@@ -1285,7 +1300,7 @@ function Form (selector, dataStr){
 		get : function() {
 			return $form.attr('data-stored-with-key') || null;
 		},
-		remove : function(){
+		reset : function(){
 			$form.removeAttr('data-stored-with-key');
 		}
 	};
@@ -1298,7 +1313,7 @@ function Form (selector, dataStr){
 		get : function() {
 			return ($form.attr('data-stored-final') === 'true') ? true : false;
 		},
-		remove : function(){
+		reset : function(){
 			$form.removeAttr('data-stored-final');
 		}
 	};
@@ -1988,7 +2003,7 @@ function Form (selector, dataStr){
 		$form.on('change changerepeat', function(event){
 			console.debug('detected event to trigger editstatus: ');
 			console.debug(event);
-			that.setEditStatus(true);
+			that.editStatus.set(true);
 		});
 
 		$form.on('changerepeat', function(event){
@@ -1999,6 +2014,7 @@ function Form (selector, dataStr){
 		});
 
 		$form.on('beforesave', function(event){
+			console.debug('beforesave event detected');
 			that.validateAll();
 		});
 

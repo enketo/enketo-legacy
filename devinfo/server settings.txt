@@ -13,4 +13,4 @@ in config.php set log_threshold to level to 1 or 2?
 if used (in Transform controller e.g.), enable curl in php
 call survey/update_list to populate the survey list from ODK Aggregate
 make sure public folders are not listing files e.g. go to rapaide.com/js !!
-enable apache mod_proxy and mod_proxy_http (for html5 and odk validation services)
+#enable apache mod_proxy and mod_proxy_http (for html5 and odk validation services)

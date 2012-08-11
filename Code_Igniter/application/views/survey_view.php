@@ -106,10 +106,10 @@
 						right
 						<input name="buttonLocation" type="radio" value="right" />
 					</label>
-					<label>
+					<!--<label>
 						mobile (future)
 						<input name="buttonLocation" type="radio" value="mobile" disabled="disabled"/>
-					</label>
+					</label>-->
 				</form>
 			</div>
 			<div class="column ui-corner-all">

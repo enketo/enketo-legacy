@@ -63,7 +63,8 @@ function Form (formSelector, dataStr){
 		form = new FormHTML(formSelector);
 		form.init();
 		
-		
+		//to update data tab launch, trigger a dataupdate (required after )
+		//$form.trigger('dataupdate');
 
 		return;
 	};
@@ -106,16 +107,11 @@ function Form (formSelector, dataStr){
 		return form.editStatus.get();
 	 };
 
+	//restores form instance to pre-initialized state
 	this.reset = function(){
 		//form language selector was moved outside of <form> so has to be separately removed
 		$('#form-languages').remove();
 		$form.replaceWith($formClone);
-
-		//now just re-initiate instance
-		this.init();
-
-		//to update data tab launch, trigger a dataupdate
-		$form.trigger('dataupdate');
 	 };
 
 /**
@@ -1294,7 +1290,7 @@ function Form (formSelector, dataStr){
 	FormHTML.prototype.recordName = {
 		set : function(key){
 			$form.attr('data-stored-with-key', key);
-			$('#record-name').text(key);
+			//$('#record-name').text(key);
 			$form.find('h2 span').text(key);
 		},
 		get : function() {

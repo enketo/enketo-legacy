@@ -461,7 +461,9 @@ GUI.prototype.showFeedback = function(message, duration){
 
 	// automatically remove feedback after a period
 	setTimeout(function(){
-		$msg.remove(); //find('#feedback-bar-message').empty();
+		if(typeof $msg !== 'undefined'){
+			$msg.remove(); //find('#feedback-bar-message').empty();
+		}
 		$('#feedback-bar').trigger('change');
 	}, duration);
 };

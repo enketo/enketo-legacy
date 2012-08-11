@@ -121,7 +121,7 @@ function StorageLocal(){
 	this.getFormList = function(){
 		var i, ready, record,
 			formList=[],
-			records = this.getSurveyRecords();
+			records = this.getSurveyRecords(false);
 		//console.log('data received:'+JSON.stringify(data)); // DEBUG
 		for (i=0 ; i<records.length ; i++){
 			record = records[i];
@@ -138,8 +138,8 @@ function StorageLocal(){
 	
 	// retrieves all survey data
 	this.getSurveyRecords = function(finalOnly){
-		var i, message, choices, key,
-			records    = [],
+		var i, key,
+			records = [],
 			record  = {};
 		finalOnly = finalOnly || false;
 		//try{
@@ -173,8 +173,20 @@ function StorageLocal(){
 		//	console.log('error with retrieving all survey data data from storage');
 		//	data = [];
 		//}
-		//console.debug('getRecordCollection() returns: '+JSON.stringify(records)); // DEBUG
+		//console.debug('getSurveyRecords() returns: '+JSON.stringify(records)); // DEBUG
 		return records;
+	};
+
+	this.getSurveyData = function(finalOnly){
+		var i, records,
+			dataArr = [];
+		finalOnly = finalOnly || true;
+		records = this.getSurveyRecords(finalOnly);
+		for (i=0 ; i<records.length ; i++){
+			dataArr.push(records[i].data);
+		}
+		console.debug('return data array: '+JSON.stringify(dataArr));
+		return dataArr;
 	};
 	
 	

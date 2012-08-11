@@ -181,7 +181,7 @@ function loadForm(formName, confirmed){
 	'use strict';
 	var message, choices;
 	//console.log('loadForm called'); // DEBUG
-	if (!confirmed && form.hasBeenEdited()){
+	if (!confirmed && form.getEditStatus()){
 		message = 'Would you like to proceed without saving changes to the form you were working on?';
 		choices = {
 			'posAction': function(){ loadForm("'+formName+'", true); }
@@ -190,21 +190,28 @@ function loadForm(formName, confirmed){
 	}
 	else {
 		// request a form data object
-		var data = store.getRecord(formName);
+		var record = store.getRecord(formName);
 		//enters that data in the form on the screen
 		// *OLD*checkForOpenForm(true);
-		if (data !== null){
-			var success = form.setData(data);
+		if (record.data !== null){
+			//var success = form.setData(data);
+			form.reset();
 			//gui.closePage();
+			form = new Form('form.jr:eq(0)', record.data);
+			form.init();
+			form.setRecordStatus(record.ready);
+			form.setRecordName(formName);
 			//console.log('displaying loaded form data succes?: '+success); // DEBUG
 			$('#page-close').click();
-			$('button#delete-form').show();
-			if(!success){
-				gui.alert('Error loading form. Saved data may be corrupted');
-			}
-			else gui.showFeedback('"'+formName +'" has been loaded', 2);
+			$('button#delete-form').button('enable');
+			//if(!success){
+				//gui.alert('Error loading form. Saved data may be corrupted');
+			//}
+			//else
+			gui.showFeedback('"'+formName +'" has been loaded', 2);
 		}
 		else{
+			gui.alert('Record contained no data');
 			// ADD something went wrong with loading data from storage
 		}
 	}
@@ -253,7 +260,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 		form.setRecordName(confirmedRecordName);
 		form.setRecordStatus(confirmedFinalStatus);
 		form.setEditStatus(false);
-		$('button#delete-form').show();
+		$('button#delete-form').button('enable');
 		//update records in GUI
 		$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
 	}
@@ -281,11 +288,12 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 function resetForm(confirmed){
 	'use strict';
 	var message, choices;
-//value1st = /**@type {string} */$('#saved-forms option:first').val();
-//		$('#saved-forms').val(value1st);
+		//valueFirst = /**@type {string} */$('#saved-forms option:first').val();
+	//console.debug('first form is '+valueFirst);
+	//gui.pages().get('records').find('#records-saved').val(valueFirst);
 
 	if (!confirmed && form.getEditStatus()){
-		message = 'Would you like to reset without saving changes to the form you were working on?';
+		message = 'There are unsaved changes, would you like to reset without saving those?';
 		choices = {
 			posAction : function(){ resetForm(true); }
 		};
@@ -293,20 +301,22 @@ function resetForm(confirmed){
 	}
 	else {
 		form.reset();
+		form.init();
+		$('button#delete-form').button('disable');
 	}
 }
 
 function deleteForm(confirmed) {
 	'use strict';
-	var message, choices, key = form.getKey();
-	//console.log ('oldkey: '+oldKey ); // DEBUG
-	//console.log ('confirmed: '+confirmed); // DEBUG
+	var message, choices, key = form.getRecordName();
+
 	if (key !== '' && key !== null){
 		if (confirmed){
 			var success = store.removeRecord(key);
 			if (success){
-				form.reset();
+				resetForm(true);
 				gui.showFeedback('Successfully deleted form.');
+				$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
 			}
 			else {
 				gui.showFeedback('An error occurred when trying to delete this form.');
@@ -324,39 +334,48 @@ function deleteForm(confirmed) {
 	else {
 		gui.showFeedback ('Please first load the form you would like to delete or choose reset if you\'d like to reset the current form.');
 	}
-	//console.log('exiting delete function'); // DEBUG
 	return;
 }
 
+function exportData(finalOnly){
+	var data, uriContent;
+	finalOnly = finalOnly || true;
+
+	data = store.getSurveyData(finalOnly).join('');
+	console.debug(data);
+	uriContent = "data:text/xml," + encodeURIComponent(data); /*data:application/octet-stream*/
+	newWindow=window.open(uriContent, 'exportedData');
+	//window.location.href = uriContent;
+}
 
 // BUG: function causes a crash in Safari on OS X when loaded from appCache in fresh Safari browser window
-function initSaveFormsToFile() {
-	'use strict';
-	$('#downloader').downloadify({
-		filename: function(){
-			return 'All_Form_Data.json'; //static file -- you could retrieve from form input box
-		},
-		data: function(){
-			console.log('getting data for download'); // DEBUG
-			return JSON.stringify(store.getRecordCollection()); //static content -- you could retrieve from form input box
-		},
-		onComplete: function(){
-			gui.showFeedback('The file has been saved!');
-		},
-		onCancel: function(){
-		// anything?
-		},
-		onError: function(){
-			gui.alert('Error saving file. File not saved!');
-		},
-		swf: '/libraries/downloadify/downloadify.swf',
-		downloadImage: '/libraries/downloadify/download.png', // CHANGE THIS IMAGE AND LOCATION
-		width: 210,
-		height: 55,
-		transparent: true,
-		append: false
-	});
-}
+//function initSaveFormsToFile() {
+//	'use strict';
+//	$('#downloader').downloadify({
+//		filename: function(){
+//			return 'All_Form_Data.json'; //static file -- you could retrieve from form input box
+//		},
+//		data: function(){
+//			console.log('getting data for download'); // DEBUG
+//			return JSON.stringify(store.getRecordCollection()); //static content -- you could retrieve from form input box
+//		},
+//		onComplete: function(){
+//			gui.showFeedback('The file has been saved!');
+//		},
+//		onCancel: function(){
+//		// anything?
+//		},
+//		onError: function(){
+//			gui.alert('Error saving file. File not saved!');
+//		},
+//		swf: '/libraries/downloadify/downloadify.swf',
+//		downloadImage: '/libraries/downloadify/download.png', // CHANGE THIS IMAGE AND LOCATION
+//		width: 210,
+//		height: 55,
+//		transparent: true,
+//		append: false
+//	});
+//}
 
 /**
  * @constructor
@@ -738,7 +757,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 		.click(function(){
 			resetForm();
 		});
-	$('button#delete-form').button({'icons': {'primary':"ui-icon-trash"}})
+	$('button#delete-form').button({'icons': {'primary':"ui-icon-trash"}, disabled:true})
 		.click(function(){
 			deleteForm(false);
 		});
@@ -746,13 +765,17 @@ GUI.prototype.setCustomEventHandlers = function(){
 	$(document)
 		.on('click', '#records-saved li:not(.no-click)', function(event){ // future items matching selection will also get eventHandler
 			event.preventDefault();
-			//loadForm($(this).find('.name').text());
+			loadForm($(this).find('.name').text());
+			$(this).siblings().removeClass('ui-state-active');
+			$(this).addClass('ui-state-active');
 		})
 		.on('mouseenter', '#records-saved li:not(.no-click)', function(){
 			$(this).addClass('ui-state-hover');
-			$(this).mousedown(function(){
-				$(this).addClass('ui-state-active');
-			});
+			//$(this).mousedown(function(){
+//				$(this).addClass('ui-state-active');
+//			}).mouseup(function(){
+//				$(this).removeClass('ui-state-active');
+//			});
 		})
 		.on('mouseleave', '#records-saved li:not(.no-click)', function(){
 			$(this).removeClass('ui-state-hover');
@@ -770,7 +793,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 		});
 	this.pages().get('records').find('button#records-export').button({'icons': {'primary':"ui-icon-suitcase"}})
 		.click(function(){
-			gui.alert('Sorry, this button is not working yet.');
+			exportData();
+			//gui.alert('Sorry, this button is not working yet.');
 		})
 		.hover(function(){
 			$('#records-export-info').show();
@@ -778,8 +802,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 			$('#records-export-info').hide();
 		});
 
-	$(document).on('save', 'form.jr', function(e, formList){
-		console.debug('save event detected with new formlist: '+formList);
+	$(document).on('save delete', 'form.jr', function(e, formList){
+		console.debug('save or delete event detected with new formlist: '+formList);
 		that.updateRecordList(JSON.parse(formList));
 	});
 

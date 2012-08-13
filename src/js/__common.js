@@ -208,11 +208,10 @@ GUI.prototype.setEventHandlers = function(){
 	// override style of some buttons and give them a 'custom-button class'
 	$('#feedback-bar-close, #page-close').removeClass().addClass('custom-button ui-widget-header ui-corner-all');
 	
-	
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
-	$('a[href^="#"]:not(nav ul li a)').click(function(event){
-		//console.log('captured click to internal link that is not in nav');
+	$(document).on('click', 'a[href^="#"]:not(nav ul li a)', function(event){
 		var href = $(this).attr('href');
+		//console.log('captured click to internal link that is not in nav, href='+href);
 		//if href is not just an empty anchor it is an internal link and will trigger a navigation menu click
 		if (href !== '#'){
 			event.preventDefault();
@@ -707,7 +706,11 @@ Settings.prototype.init = function(){
 //communicates with local storage
 Settings.prototype.get = function(setting){
 	"use strict";
-	return store.getRecord('__settings') || DEFAULT_SETTINGS;
+	var settings = store.getRecord('__settings') || DEFAULT_SETTINGS;
+	if (typeof setting !== 'undefined'){
+		return settings[setting] || null;
+	}
+	return settings;
 };
 //communicates with local storage and perform action linked with setting
 //called by eventhandler in GUI.

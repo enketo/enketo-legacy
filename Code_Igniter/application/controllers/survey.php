@@ -15,7 +15,7 @@ class Survey extends CI_Controller {
 		if (isset($subdomain))
 		{
 			//if ($this->Survey_model->is_live_survey($subdomain))
-			if ($this->Survey_model->is_existing_survey($subdomain))
+			if ($this->Survey_model->is_launched_survey($subdomain))
 			{
 				$offline = $this ->config->item('application_cache'); //can be overridden here
 				$form_url= $this->Survey_model->get_form_url($subdomain);

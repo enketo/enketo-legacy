@@ -19,11 +19,12 @@ class Form_model extends CI_Model {
     
     function transform($xml_url, $feedback = FALSE)
     {
+        log_message('debug', 'Starting transform');
     	$xml = $this->_load_xml($xml_url);    	
     	$xsl_form = $this->_load_xml($this->file_path_to_jr2HTML5_XSL);
     	$xsl_data = $this->_load_xml($this->file_path_to_jr2Data_XSL);
 
-        //get manifest if exists
+        //get manifest with media urls if exists
         if ($xml['type'] == 'url')
         {
             $manifest_url = $this->_get_manifest_url($xml_url);

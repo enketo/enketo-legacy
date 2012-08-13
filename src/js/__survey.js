@@ -6,7 +6,7 @@ var  /**@type {Form}*/form,  /**@type {Connection}*/connection, /**@type {Cache}
 var jrDataStr; //initial store of data format, value set in survey_view.php
 //var FORM_FORMAT_URL = 'survey_format';
 //var CONNECTION_URL = 'checkforconnection.txt';
-//var DATA_RECEIVER_URL = 'data/upload';
+var DATA_RECEIVER_URL = 'http//formhub.org/martijnr/submission';
 var MODERN_BROWSERS_URL = 'modern_browsers';
 
 DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBackup':false };
@@ -341,8 +341,8 @@ function exportData(finalOnly){
 	var data, uriContent;
 	finalOnly = finalOnly || true;
 
-	data = store.getSurveyData(finalOnly).join('');
-	console.debug(data);
+	data = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
+	//console.debug(data);
 	uriContent = "data:text/xml," + encodeURIComponent(data); /*data:application/octet-stream*/
 	newWindow=window.open(uriContent, 'exportedData');
 	//window.location.href = uriContent;
@@ -486,7 +486,7 @@ function Cache(){
 }
 
 
-//Class dealing with uploads to server
+//Class dealing with communication to the server ADD HTML5 VALIDATION and FILE/URL UPLOAD from launch.js
 /**
  * @constructor
  *
@@ -500,15 +500,15 @@ function Cache(){
  */
 function Connection(){
 	"use strict";
-	var onlineStatus;
+	//var onlineStatus;
 	//var tableFields, primaryKey;
-	var tableName, version;
-	var uploadOngoing;
-	var _this=this;
+	//var tableName, version;
+	var that=this;
+	this.uploadOngoing = false;
 	
 	this.init = function(){
 		//console.log('initializing Connection object');
-		checkOnlineStatus();
+		//checkOnlineStatus();
 		//window.setInterval(function(){
 		//	//console.log('setting status'); //DEBUG
 		//	setStatus();
@@ -524,16 +524,17 @@ function Connection(){
 		//}
 		$(window).on('offline online', function(){
 			//console.log('window network event detected');
-			checkOnlineStatus();
+			that.setOnlineStatus(that.getOnlineStatus());
 		});
 		//since network change events are not properly fired, at least not in Firefox 13 (OS X), this is an temporary fix
 		//that can be removed eventually or set to to 60x1000 (1 min)
 		/*window.setInterval(function(){
 			$(window).trigger('online');
 		}, 10*1000);*/
-
+		$(window).trigger('online');
 		//setTableVars();
 	};
+}
 	
 //	function setTableVars(){
 //		var primaryKey;
@@ -573,17 +574,17 @@ function Connection(){
 	// return true when connected to a local network that is not connected to the Internet.
 	// However, this could be the first step. If (true) a request is sent to the server to check for a connection
 	// @online = used to force a status (necessary?)
-	function checkOnlineStatus(online){
-		console.log('checking connection status');//, status before check is: '+onlineStatus); // DEBUG
-		if (typeof online !== 'undefined' && ( online === true || online === false ) ){
-			setStatus(online);
-		}
-		//forced status
-		else {
-			setStatus(navigator.onLine);
-			//navigator.onLine not working properly in Firefox
-			//if (navigator.onLine){
-				//NOTE that GET is not working (by default) in a CodeIgniter setup!!
+Connection.prototype.getOnlineStatus = function(){
+	console.log('checking connection status');//, status before check is: '+onlineStatus); // DEBUG
+	//if (typeof online !== 'undefined' && ( online === true || online === false ) ){
+		//setStatus(online);
+	//}
+	//forced status
+	//else {
+	return navigator.onLine;
+		//navigator.onLine not working properly in Firefox
+		//if (navigator.onLine){
+			//NOTE that GET is not working (by default) in a CodeIgniter setup!!
 //				$.ajax({
 //					type:'POST',
 //					url: CONNECTION_URL,
@@ -597,95 +598,99 @@ function Connection(){
 //						setStatus(false);
 //						}
 //				});
-			//}
-			//else {
-				//setStatus(false);
-			//}
-		}
-	}
+		//}
+		//else {
+			//setStatus(false);
+		//}
+//	}
+};
 	
-	function setStatus(newStatus){
-		//var oldStatus = onlineStatus;
-		//onlineStatus = online;
-		if (newStatus !== currentOnlineStatus){
-			console.log('status changed to: '+newStatus+', triggering window.onlinestatuschange');
-			$(window).trigger('onlinestatuschange', newStatus);
-		}
-		currentOnlineStatus = newStatus;
+Connection.prototype.setOnlineStatus = function(newStatus){
+	//var oldStatus = onlineStatus;
+	//onlineStatus = online;
+	if (newStatus !== this.currentOnlineStatus){
+		console.log('status changed to: '+newStatus+', triggering window.onlinestatuschange');
+		$(window).trigger('onlinestatuschange', newStatus);
 	}
+	this.currentOnlineStatus = newStatus;
+};
 
 	// PROTECTION AGAINST CALLING FUNCTION TWICE to be tested
 	// attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
-	this.upload = function(override) {
-		var autoUpload = store.getSettings('settings-auto-upload');
-		//console.log('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
+Connection.prototype.upload = function(override) {
+	var i, content, date,
+		dataArr = [],
+		autoUpload = (settings.get('autoUpload') === 'true' || settings.get('autoUpload') === true) ? true : false;
+	//console.log('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
 
-		// autoUpload is true or it is overriden, proceed
-		if (!uploadOngoing && (autoUpload==='true' || override)){
-			var dataObj={}, insertedStr='';
-			dataObj.surveyForms = store.getRecordCollection('surveyData', true);
-			dataObj.tableName = tableName;
-			//dataObj.tableFields = tableFields;
-			//dataObj.primaryKey = primaryKey;
-			dataObj.version = version;
-			//ADD build array of forms beingUploaded and prevent user from opening these
-			//if there is anything to send, send it
-			//if (dataObj.surveyForms.length>0){
+	// autoUpload is true or it is overridden, proceed
+	if (!this.uploadOngoing && ( autoUpload === true || override ) ){
+		//var dataArr=[];//, insertedStr='';
+
+		dataArr = store.getSurveyDataArr(true);
+		//dataObj.tableName = tableName;
+		//dataObj.tableFields = tableFields;
+		//dataObj.primaryKey = primaryKey;
+		//dataObj.version = version;
+		//ADD build array of forms beingUploaded and prevent user from opening these
+		//if there is anything to send, send it
+		//if (dataObj.surveyForms.length>0){
+		for (i=0 ; i<dataArr.length ; i++){
+			content = new FormData();
+			content.append('xml_submission_data', dataArr[i]);
+			content.append('Date', new Date().getUTCDate());
+			//content.append('content', c);
 //				console.log('attempting upload with override: '+override+' Changing uploadOngoing to true'); // DEBUG
-//				uploadOngoing = true;
-//				console.log('data to be send: '+JSON.stringify(dataObj)); // DEBUG
-//				$.ajax({
-//					type: 'POST',
-//					url: DATA_RECEIVER_URL,
-//					data: dataObj,
-//					success: function(result){
-//						console.log('upload, received back from server: '+JSON.stringify(result)); // DEBUG
-//						// ADD some kind of feedback to user if it fails but this would mean setting interval outside of Connection class?
-//						if (result.inserted){
-//							for (var i=0 ; i<result.inserted.length ; i++){
-//								store.removeRecord(result.inserted[i]);
-//								insertedStr += result.inserted[i];
-//								if (i<result.inserted.length-1){
-//									insertedStr += ', ';
-//								}
-//								//console.log('tried to remove record with key: '+result.inserted[i]);
-//							}
-//							// CHANGE?
-//							gui.showFeedback('Succesfully uploaded forms: '+insertedStr+'.');
-//							gui.updateRecordList($('article[id="records"]'));
-//						}
-//						else {
-//							if (override) {
-//								gui.showFeedback('Upload failed on server');
-//							}
-//						}
-//					},
-//					error: function(){
-//						if (override){
-//							gui.showFeedback('Upload failed. Server may be unavailable or client may be offline.');
-//						}
-//					},
-//					complete: function(){
-//						console.log('completed ajax call, changing uploadOngoing variable to false'); // DEBUG
-//						uploadOngoing = false;
-//					},
-//					dataType: 'json'
-//				});
+			this.uploadOngoing = true;
+			//console.log('data to be send: '+JSON.stringify(dataObj)); // DEBUG
+			$.ajax('data/submission',{
+				type: 'POST',
+				data: content,
+				cache: false,
+				contentType: false,
+				processData: false
+//				success: function(result){
+//					console.log('upload, received back from server: '+JSON.stringify(result)); // DEBUG
+////					// ADD some kind of feedback to user if it fails but this would mean setting interval outside of Connection class?
+////					if (result.inserted){
+////						for (var i=0 ; i<result.inserted.length ; i++){
+////							store.removeRecord(result.inserted[i]);
+////								insertedStr += result.inserted[i];
+////								if (i<result.inserted.length-1){
+////									insertedStr += ', ';
+////								}
+////								//console.log('tried to remove record with key: '+result.inserted[i]);
+////							}
+////							// CHANGE?
+////							gui.showFeedback('Succesfully uploaded forms: '+insertedStr+'.');
+////							gui.updateRecordList($('article[id="records"]'));
+////						}
+////						else {
+////							if (override) {
+////								gui.showFeedback('Upload failed on server');
+////							}
+////						}
+//				},
+//				error: function(){
+////						if (override){
+////							gui.showFeedback('Upload failed. Server may be unavailable or client may be offline.');
+////						}
+//				},
+//				complete: function(){
+////						console.log('completed ajax call, changing uploadOngoing variable to false'); // DEBUG
+//						this.uploadOngoing = false;
+//				}
+				//dataType: 'json'
+			});
 //			}
 //			else { //nothing to send
 //				//console.log('nothing to upload, (uploadOngoing: '+uploadOngoing+')');
 //				//if the function was called with override, inform user
 //				if (override) {
 //					gui.showFeedback('Nothing marked "final" to upload (or record is currently open).');
-//				}
-//			}
 		}
-	};
-
-}
-
-
-
+	}
+};
 
 
 //avoid Google Closure Compiler renaming:
@@ -783,18 +788,22 @@ GUI.prototype.setCustomEventHandlers = function(){
 	
 	this.pages().get('records').find('button#records-force-upload').button({'icons': {primary:"ui-icon-arrowthick-1-n"}})
 		.click(function(){
-			gui.alert('Sorry, this button is not working yet.');
-			//connection.upload(true);
+			//gui.alert('Sorry, this button is not working yet.');
+			connection.upload(true);
 		})
 		.hover(function(){
 			$('#records-force-upload-info').show();
 		}, function(){
 			$('#records-force-upload-info').hide();
 		});
+
+	//export/backup locally stored data
 	this.pages().get('records').find('button#records-export').button({'icons': {'primary':"ui-icon-suitcase"}})
 		.click(function(){
-			exportData();
-			//gui.alert('Sorry, this button is not working yet.');
+			//false means also non-final records are exported. Add selectmenu with both options.
+			gui.alert('hey');
+			exportData(false);
+
 		})
 		.hover(function(){
 			$('#records-export-info').show();

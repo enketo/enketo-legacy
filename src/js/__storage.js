@@ -177,7 +177,7 @@ function StorageLocal(){
 		return records;
 	};
 
-	this.getSurveyData = function(finalOnly){
+	this.getSurveyDataArr = function(finalOnly){
 		var i, records,
 			dataArr = [];
 		finalOnly = finalOnly || true;
@@ -187,6 +187,10 @@ function StorageLocal(){
 		}
 		console.debug('return data array: '+JSON.stringify(dataArr));
 		return dataArr;
+	};
+
+	this.getSurveyDataXMLStr = function(finalOnly){
+		return '<exported>'+this.getSurveyDataArr(finalOnly).join('')+'</exported>';
 	};
 	
 	

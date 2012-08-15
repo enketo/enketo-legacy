@@ -68,6 +68,7 @@ $(document).ready(function(){
 		templateShow = ($(this).is(':checked')) ? true : false;
 		updateData();
 	});
+
 	$('#html5-form-source form').submit(function(){
 		var cls, $form = $(this);
 		var url = $form.attr('action');
@@ -124,7 +125,6 @@ $(document).ready(function(){
 GUI.prototype.setCustomEventHandlers = function(){
 	"use strict";
 	
-
 	$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}}).click(function(){
 		resetForm();
 	});
@@ -139,7 +139,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 
 function isValidUrl(url){
 	"use strict";
-	return (url.match(/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/));
+	return (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/).test(url);
+	//(url.match(/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/));
 }
 
 function resetForm(){
@@ -287,6 +288,58 @@ function addJsError(message){
 	}
 	$('#jserrors div ol').append('<li class="error"><span class="ui-icon ui-icon-alert"></span>'+message+'</li>');
 }
+
+GUI.prototype.launchConfirm = function(message, choices, heading){
+	"use strict";
+	var posFn, negFn, closeFn, rec,
+		$launchConfirm = $('#dialog-launch');
+	message = message || '';
+	heading = heading || 'Launch Details';
+	choices = (typeof choices == 'undefined') ? {} : choices;
+	choices.posButton = choices.posButton || 'Ok';
+	choices.negButton = choices.negButton || 'Cancel';
+	posFn = choices.posAction || function(){
+		//return saveForm($saveConfirm.find('[name="record-name"]').val(), Boolean($saveConfirm.find('[name="record-final"]:checked').val()));
+	};
+	negFn = choices.negAction || function(){
+		return false;
+	};
+
+	//closing methods to call when user has selected an option // AND WHEN X or ESC is CLICKED!! ADD
+	closeFn = function(){
+		$launchConfirm.dialog('destroy');
+		$launchConfirm.find('#dialog-msg').text('');
+		//console.log('confirmation dialog destroyed');
+	};
+
+	//write content into confirmation dialog
+	$launchConfirm.find('#dialog-msg').text(message).capitalizeStart();
+
+	//instantiate dialog
+	$launchConfirm.dialog({
+		'title': heading,
+		'resizable': false,
+		'modal': true,
+		'buttons': [
+			{
+				text: choices.posButton,
+				click: function(){
+					posFn.call();
+					closeFn.call();
+				}
+			},
+			{
+				text: choices.negButton,
+				click: function(){
+					negFn.call();
+					closeFn.call();
+				}
+			}
+		],
+		'beforeClose': closeFn
+	});
+
+};
 
 // function odkValidate(){
 //"use strict";

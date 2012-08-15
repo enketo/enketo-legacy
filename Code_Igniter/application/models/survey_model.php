@@ -22,7 +22,7 @@ class Survey_model extends CI_Model {
     	//$query = $this->db->get_where('surveys',array('subdomain'=>$survey_subdomain, 'survey_live'=>TRUE), 1);
     	//return ($query->num_rows() === 1) ? TRUE : FALSE;
         //since management of surveys is done at the OpenRosa-compliant server, all we could do here is see
-        //if the url contains an xml file. However, this is very inefficient and needs to be done only once (not also in the form model before transformation)
+        //if the url contains an xml file. However, this is very inefficient and needs to be done only once (not also in the form model before transformation). ALSO THE FORM URL REMAINS ACCESSIBLE WHEN DISABLED IN AGGREGATE SO ONE WOULD HAVE TO CHECK THE FORMLIST
         
         
     }

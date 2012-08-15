@@ -112,6 +112,7 @@ function Form (formSelector, dataStr){
 		//form language selector was moved outside of <form> so has to be separately removed
 		$('#form-languages').remove();
 		$form.replaceWith($formClone);
+
 	 };
 
 /**
@@ -1997,8 +1998,8 @@ function Form (formSelector, dataStr){
 		//edit is fired when the form changes due to user input or repeats added/removed
 		//branch update doesn't require detection as it always happens as a result of an event that triggers change or changrepeat.
 		$form.on('change changerepeat', function(event){
-			console.debug('detected event to trigger editstatus: ');
-			console.debug(event);
+			//console.debug('detected event to trigger editstatus: ');
+			//console.debug(event);
 			that.editStatus.set(true);
 		});
 

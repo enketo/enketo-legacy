@@ -7,7 +7,7 @@
 		<link rel="stylesheet" type="text/css" href="css/screen.css" />
 
 		<script type="text/javascript" src="libraries/jquery.min.js"></script>
-		<script type="text/javascript" src="libraries/jquery.mousewheel.min.js"></script>
+		<!--<script type="text/javascript" src="libraries/jquery.mousewheel.min.js"></script>-->
 		<script type="text/javascript" src="libraries/jquery-ui/js/jquery-ui.custom.min.js"></script>
 		<script type="text/javascript" src="libraries/jquery-ui-timepicker-addon.js"></script>
 		<script type="text/javascript" src="libraries/jquery.multiselect.min.js"></script>
@@ -68,10 +68,10 @@
 						<button id="records-export">Export</button>
 					</div>
 					<div id="records-force-upload-info">
-						upload all finished survey records (bypass automatic uploads)
+						Upload all "final" survey records (bypass automatic uploads).
 					</div>
 					<div id="records-export-info">
-						export all locally stored records marked as 'final'
+						Export all locally stored records marked as 'final'. 
 					</div>
 				</div>
 			</div>

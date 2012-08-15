@@ -79,9 +79,9 @@ function StorageLocal(){
 					this.removeRecord(oldKey);
 				}
 			}
-			if (newKey == this.getCounterValue() ){
-				localStorage.setItem('__counter', JSON.stringify({counter: newKey}));
-			}
+			//if (newKey == this.getCounterValue() ){
+			localStorage.setItem('__counter', JSON.stringify({counter: this.getCounterValue()}));
+			//}
 			return 'success';
 		}
 		catch(e){
@@ -116,6 +116,12 @@ function StorageLocal(){
 			return false;
 		}
 	};
+
+//	this.setRecordStatus = function (key, status){
+//		var record = this.getRecord(key);
+//		record.ready = status;
+//		this.setRecord(key, record, false, true, key);
+//	};
 	
 	//returns an ordered array of objects with form keys and final variables {{"key": "name1", "final": true},{"key": "name2", etc.
 	this.getFormList = function(){
@@ -137,11 +143,12 @@ function StorageLocal(){
 	};
 	
 	// retrieves all survey data
-	this.getSurveyRecords = function(finalOnly){
+	this.getSurveyRecords = function(finalOnly, excludeName){
 		var i, key,
 			records = [],
 			record  = {};
 		finalOnly = finalOnly || false;
+		excludeName = excludeName || null;
 		//try{
 			//console.log(localStorage.length+' records found'); // DEBUG
 			for (i=0; i<localStorage.length; i++) {
@@ -158,7 +165,7 @@ function StorageLocal(){
 						record.key = key;
 						//if (record.recordType === recordType){
 							//console.log('this record is surveyData: '+JSON.stringify(record)); // DEBUG
-						if (!finalOnly || record.ready === 'true' || record.ready === true){//} && (record.key !== form.getKey()) ){
+						if (key !== excludeName && (!finalOnly || record.ready === 'true' || record.ready === true )){//} && (record.key !== form.getKey()) ){
 							records.push(record);
 						}
 					}
@@ -177,20 +184,26 @@ function StorageLocal(){
 		return records;
 	};
 
-	this.getSurveyDataArr = function(finalOnly){
+	this.getSurveyDataArr = function(finalOnly, excludeName){
 		var i, records,
 			dataArr = [];
 		finalOnly = finalOnly || true;
-		records = this.getSurveyRecords(finalOnly);
+		records = this.getSurveyRecords(finalOnly, excludeName);
 		for (i=0 ; i<records.length ; i++){
-			dataArr.push(records[i].data);
+			dataArr.push({name: records[i].key, data: records[i].data});//[records[i].key, records[i].data]
 		}
-		console.debug('return data array: '+JSON.stringify(dataArr));
+		//console.debug('returning data array: '+JSON.stringify(dataArr));
 		return dataArr;
 	};
 
 	this.getSurveyDataXMLStr = function(finalOnly){
-		return '<exported>'+this.getSurveyDataArr(finalOnly).join('')+'</exported>';
+		var i,
+			dataObjArr = this.getSurveyDataArr(finalOnly),
+			dataOnlyArr =[];
+		for (i=0 ; i<dataObjArr.length ; i++){
+			dataOnlyArr.push(dataObjArr[i].data);
+		}
+		return '<exported>'+dataOnlyArr.join('')+'</exported>';
 	};
 	
 	

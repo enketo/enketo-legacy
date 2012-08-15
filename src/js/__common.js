@@ -366,6 +366,8 @@ GUI.prototype.pages = function(){
 		//		break;
 		//	case 'settings':
 		//}
+		$page = ($page.length > 0) ? $page : $('article[id="'+name+'"]');
+		
 		return $page ;
 		//}
 	};
@@ -492,7 +494,7 @@ GUI.prototype.alert = function(message, heading){
 	};
 
 	//write content into alert dialog
-	$alert.find('#dialog-alert-msg').text(message).capitalizeStart();
+	$alert.find('#dialog-alert-msg').html(message).capitalizeStart();
 
 	$alert.dialog({
 		'title': heading,
@@ -501,7 +503,8 @@ GUI.prototype.alert = function(message, heading){
 		'buttons': {
 			"Ok": closeFn
 		},
-		'beforeClose': closeFn
+		'beforeClose': closeFn,
+		'width': 500
 	});
 };
 	

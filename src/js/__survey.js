@@ -199,7 +199,9 @@ function loadForm(formName, confirmed){
 			//gui.closePage();
 			form = new Form('form.jr:eq(0)', record.data);
 			form.init();
-			form.setRecordStatus(record.ready);
+			//form.setRecordStatus(record.ready);
+			//Avoid uploading of currently open form by setting edit status in STORE to false. To be re-considered if this is best approach.
+			//store.setRecordStatus(formName, false);
 			form.setRecordName(formName);
 			//console.log('displaying loaded form data succes?: '+success); // DEBUG
 			$('#page-close').click();
@@ -301,6 +303,7 @@ function resetForm(confirmed){
 	}
 	else {
 		form.reset();
+		form = new Form('form.jr:eq(0)', jrDataStr);
 		form.init();
 		$('button#delete-form').button('disable');
 	}
@@ -615,81 +618,137 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 	this.currentOnlineStatus = newStatus;
 };
 
-	// PROTECTION AGAINST CALLING FUNCTION TWICE to be tested
-	// attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
-Connection.prototype.upload = function(override) {
-	var i, content, date,
-		dataArr = [],
+// PROTECTION AGAINST CALLING FUNCTION TWICE to be tested
+// attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
+Connection.prototype.upload = function(force, excludeName) {
+	var i, name, result,// last,
+		//uploadQueue = [],
 		autoUpload = (settings.get('autoUpload') === 'true' || settings.get('autoUpload') === true) ? true : false;
 	//console.log('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
 
 	// autoUpload is true or it is overridden, proceed
-	if (!this.uploadOngoing && ( autoUpload === true || override ) ){
+	if ( ( typeof this.uploadQueue == 'undefined' || this.uploadQueue.length === 0 ) && ( autoUpload === true || force ) ){
 		//var dataArr=[];//, insertedStr='';
+		this.uploadResult = {win:[], fail:[], force: force};
+		this.uploadQueue = store.getSurveyDataArr(true, excludeName);
 
-		dataArr = store.getSurveyDataArr(true);
-		//dataObj.tableName = tableName;
-		//dataObj.tableFields = tableFields;
-		//dataObj.primaryKey = primaryKey;
-		//dataObj.version = version;
-		//ADD build array of forms beingUploaded and prevent user from opening these
-		//if there is anything to send, send it
-		//if (dataObj.surveyForms.length>0){
-		for (i=0 ; i<dataArr.length ; i++){
-			content = new FormData();
-			content.append('xml_submission_data', dataArr[i]);
-			content.append('Date', new Date().getUTCDate());
-			//content.append('content', c);
-//				console.log('attempting upload with override: '+override+' Changing uploadOngoing to true'); // DEBUG
-			this.uploadOngoing = true;
-			//console.log('data to be send: '+JSON.stringify(dataObj)); // DEBUG
-			$.ajax('data/submission',{
-				type: 'POST',
-				data: content,
-				cache: false,
-				contentType: false,
-				processData: false
-//				success: function(result){
-//					console.log('upload, received back from server: '+JSON.stringify(result)); // DEBUG
-////					// ADD some kind of feedback to user if it fails but this would mean setting interval outside of Connection class?
-////					if (result.inserted){
-////						for (var i=0 ; i<result.inserted.length ; i++){
-////							store.removeRecord(result.inserted[i]);
-////								insertedStr += result.inserted[i];
-////								if (i<result.inserted.length-1){
-////									insertedStr += ', ';
-////								}
-////								//console.log('tried to remove record with key: '+result.inserted[i]);
-////							}
-////							// CHANGE?
-////							gui.showFeedback('Succesfully uploaded forms: '+insertedStr+'.');
-////							gui.updateRecordList($('article[id="records"]'));
-////						}
-////						else {
-////							if (override) {
-////								gui.showFeedback('Upload failed on server');
-////							}
-////						}
-//				},
-//				error: function(){
-////						if (override){
-////							gui.showFeedback('Upload failed. Server may be unavailable or client may be offline.');
-////						}
-//				},
-//				complete: function(){
-////						console.log('completed ajax call, changing uploadOngoing variable to false'); // DEBUG
-//						this.uploadOngoing = false;
-//				}
-				//dataType: 'json'
-			});
-//			}
-//			else { //nothing to send
-//				//console.log('nothing to upload, (uploadOngoing: '+uploadOngoing+')');
-//				//if the function was called with override, inform user
-//				if (override) {
-//					gui.showFeedback('Nothing marked "final" to upload (or record is currently open).');
+		if (this.uploadQueue.length === 0 ){
+			return (force) ? gui.showFeedback('Nothing marked "final" to upload (or record is currently open).') : false;
+		}
+		//for (i=0 ; i<dataArr.length ; i++){
+			//last = (i == dataArr.length-1) ? true : false;
+		//name = dataArr[i].name;
+		this.uploadOne();
+		//this.uploadOne(dataArr[i].data, name, last);
+		//}
+	}
+};
+
+Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
+	var record, content, last,
+		that = this;
+	if (this.uploadQueue.length > 0){
+		record = this.uploadQueue.pop();
+		content = new FormData();
+		content.append('xml_submission_data', record.data);//dataXMLStr);
+		content.append('Date', new Date().getUTCDate());
+		last = (this.uploadQueue.length === 0) ? true : false;
+		//console.log('attempting upload with override: '+override+' Changing uploadOngoing to true'); // DEBUG
+		//this.uploadOngoing = true;
+		//console.log('data to be send: '+JSON.stringify(dataObj)); // DEBUG
+		$.ajax('data/submission',{
+			type: 'POST',
+			data: content,
+			cache: false,
+			//async: false, //THIS NEEDS TO BE CHANGED, BUT AJAX SUBMISSIONS NEED TO TAke place sequentially
+			contentType: false,
+			processData: false,
+			complete: function(jqXHR, response){
+				that.processOpenRosaResponse(jqXHR.status, record.name, last);
+				//ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
+				//as it duplicates 1 entry and omits the other but returns 201 for both...
+				//so we wait until previous POST is finished.
+				that.uploadOne();
+			}
+		});
+	}
+	
+};
+
+
+Connection.prototype.processOpenRosaResponse = function(status, name, last){
+	var waswere, namesStr,
+		msg = '',
+		names=[],
+		statusMap = {
+		200: {success:false, msg: "Data server did not accept data for "+name+". Contact Enketo helpdesk please."},
+		201: {success:true, msg: ""},
+		202: {success:true, msg: name+" may have had errors. Contact survey administrator please."},
+		'2xx': {success:false, msg: "Unknown error occurred when submitting data for "+name+". Contact Enketo helpdesk please"},
+		400: {success:false, msg: "Data server did not accept data for "+name+" Contact survey administrator please."},
+		403: {success:false, msg: "You are not allowed to post data to this data server. Contact survey administrator please."},
+		404: {success:false, msg: "Server not found. It may be down or you may be offline."},
+		'4xx': {success:false, msg: "Server not found. It may be down or you may be offline."},
+		413: {success:false, msg: "Data for "+name+" is too large. Please export the data and contact the Enketo helpdesk please."},
+		500: {success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."},
+		503: {success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."},
+		'5xx':{success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."}
+	};
+	console.debug('name: '+name);
+	console.debug(status);
+	
+	if (statusMap[status].success === true){
+		store.removeRecord(name);
+		$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
+		console.log('tried to remove record with key: '+name);
+		this.uploadResult.win.push([name, statusMap[status].msg]);
+	}
+	else if (statusMap[status].success === false){
+		this.uploadResult.fail.push([name, statusMap[status].msg]);
+	}
+	//unforeseen statuscodes
+	else if (status > 500){
+		report.error ('error during uploading, received unexpected statuscode: '+status);
+		this.uploadResult.fail.push([name, statusMap['5xx'].msg]);
+	}
+	else if (status > 400){
+		report.error ('error during uploading, received unexpected statuscode: '+status);
+		this.uploadResult.fail.push([name, statusMap['4xx'].msg]);
+	}
+	else if (status > 200){
+		report.error ('error during uploading, received unexpected statuscode: '+status);
+		this.uploadResult.fail.push([name, statusMap['2xx'].msg]);
+	}
+	
+	if (last !== true){
+		return;
+	}
+
+	if (this.uploadResult.win.length > 0){
+		for (i = 0 ; i<this.uploadResult.win.length ; i++){
+			names.push(this.uploadResult.win[i][0]);
+			msg = (typeof this.uploadResult.win[i][2] !== 'undefined') ? msg + (this.uploadResult.win[i][1])+' ' : '';
+		}
+		waswere = (i>1) ? ' were' : ' was';
+		namesStr = names.join(', ');
+		gui.showFeedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
+	}
+	//else{
+	// not sure if there should be a notification if forms fail automatic submission
+	if (this.uploadResult.fail.length > 0){
+		if (this.uploadResult.force === true){
+			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
+				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
+			}
+			gui.alert(msg, 'Failed data submission');
+		}
+		else{
+
 		}
 	}
+
+	this.uploadOngoing = false;
+
 };
 
 
@@ -789,7 +848,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	this.pages().get('records').find('button#records-force-upload').button({'icons': {primary:"ui-icon-arrowthick-1-n"}})
 		.click(function(){
 			//gui.alert('Sorry, this button is not working yet.');
-			connection.upload(true);
+			connection.upload(true, form.getRecordName());
 		})
 		.hover(function(){
 			$('#records-force-upload-info').show();
@@ -801,7 +860,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	this.pages().get('records').find('button#records-export').button({'icons': {'primary':"ui-icon-suitcase"}})
 		.click(function(){
 			//false means also non-final records are exported. Add selectmenu with both options.
-			gui.alert('hey');
+			//gui.alert('hey');
 			exportData(false);
 
 		})
@@ -856,7 +915,7 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 	var name, date, clss, i, icon, $list, $li,
 		finishedFormsQty = 0,
 		draftFormsQty = 0;
-
+	console.debug('updating recordlist in GUI');
 	if(!$page){
 		$page = this.pages().get('records');//this.$pages.find('article[id="records"]');
 	}

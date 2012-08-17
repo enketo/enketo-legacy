@@ -458,13 +458,15 @@ footer {
     overflow: auto;
   } }
 
-#form-list.scroll-list{
-  li {
-    display: block;
-    width: 100%;
-    text-align: center;
-    a:hover{
-      text-decoration: underline; } } }
+#form-list{
+  ol{
+    margin: 0px;
+    li {
+      display: block;
+      text-align: center;
+      a{
+        font-size: 12px;
+        width: 100%; } } } }
 
 .scroll-list {
   position: relative;

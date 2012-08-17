@@ -91,7 +91,7 @@ class Form_model extends CI_Model {
             foreach ($full_list_sxe->xpath('/forms/form') as $form)
             {
                 $li = $formlist->addChild('li');
-                $li->addAttribute('class', 'ui-corner-all');
+                //$li->addAttribute('class', 'ui-corner-all');
                 $anchor = $li->addChild('a', $form);
                 $anchor -> addAttribute('href', $form["url"]);
             }   
@@ -138,10 +138,10 @@ class Form_model extends CI_Model {
     		$type = 'file';
     		log_message('debug', 'file exists!');
     	}
-    	else if  (url_exists($resource))
+    	else //if  (url_exists($resource))
     	{ 
     		$type = 'url';
-    		log_message('debug', 'url exists!');
+    		//log_message('debug', 'url exists!');
     	}
     	if (isset($type))
     	{

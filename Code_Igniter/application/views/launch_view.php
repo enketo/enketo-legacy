@@ -62,23 +62,23 @@
 						<div id="input-switcher">
 							<a href="#" id="xml_file">file</a>|<a href="#" id="server_url">url</a></div>
 						<label>
-							<span>Select XML File</span>
+							<span>Select XML Form File (or drag it)</span>
 							<div class="fakefileinput"></div>
 							<div><input type="file" name="xml_file" /></div>
 						</label>
 						<label>
 							<span>Enter full URL to Server</span>
-							<input type="text" name="server_url" placeholder="e.g. https://jrosaforms.appspot.com  or  http://www.formhub.org/MartijnR"/>
+							<!-- add hint: Note that uploading a file is a good way to test forms, but in order to launch the
+							survey for data entry in Enketo, it has to be provided as a url-->
+							<input type="text" name="server_url" placeholder="e.g. https://jrosaforms.appspot.com  or  http://formhub.org/MartijnR"/>
 						</label>
 						<input type="hidden" name="xml_url"/>
 						<!--<input type="submit">Transform and Test!</button>-->
 						<img style="display: none;" class="loading" src="images/ajax-loader.gif" />
 					</form>
-					<div id="form-list" class="ui-widget ui-corner-all scroll-list" style="display:none;">
-						<div>
-							<ol>
-							</ol>
-						</div>
+					<div id="form-list" class="" style="display:none;">
+						<ol>
+						</ol>
 					</div>
 				</article>
 				<article id="survey-form">

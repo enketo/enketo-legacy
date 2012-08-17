@@ -59,7 +59,6 @@ class Data extends CI_Controller {
 		if(!isset($xml_submission_data) || $xml_submission_data == '')
 		{
 			echo "Did not receive data (Enketo server)";
-			
 		}
 
 		$xml_submission_filepath = /* "/tmp/".random_string(alpha, 10).".xml";//*/"/tmp/data_submission.xml";

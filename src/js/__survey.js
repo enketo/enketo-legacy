@@ -6,7 +6,7 @@ var  /**@type {Form}*/form,  /**@type {Connection}*/connection, /**@type {Cache}
 var jrDataStr; //initial store of data format, value set in survey_view.php
 //var FORM_FORMAT_URL = 'survey_format';
 //var CONNECTION_URL = 'checkforconnection.txt';
-var DATA_RECEIVER_URL = 'http//formhub.org/martijnr/submission';
+//var DATA_RECEIVER_URL = 'http//formhub.org/martijnr/submission';
 var MODERN_BROWSERS_URL = 'modern_browsers';
 
 DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBackup':false };

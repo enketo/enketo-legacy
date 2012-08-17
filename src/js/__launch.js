@@ -1,4 +1,4 @@
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, Modernizr, getGetVariable, vkbeautify*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global GUI, gui, Form, Modernizr, getGetVariable, vkbeautify*/
 
 var form, source, url, $tabs, $upload, _error, state,
 	error_msg = 'There were errors. Please see the "report" tab for details.',
@@ -7,8 +7,8 @@ var form, source, url, $tabs, $upload, _error, state,
 $(document).ready(function(){
 	"use strict";
 	state = new State();
-
-	state.setUrl();
+	state.init();
+	//state.setUrl();
 
 	_error = console.error;
 	console.error = function(){
@@ -49,14 +49,38 @@ $(document).ready(function(){
 
 	$('#upload-form').ajaxForm({
 		'dataType': 'xml',
-		'beforeSubmit': function(){
+		'beforeSubmit': function(data, $form){
+			//console.debug(data);\
+			var serverUrl = $form.find('input[name="server_url"]').val() || '',
+				xmlUrl = $form.find('input[name="xml_url"]').val() || '';
+			// validate server url
+			if ( serverUrl !== '' ){
+				if (isValidUrl(serverUrl)){
+					state.server = serverUrl;
+					state.setUrl();
+				}
+				else{
+					gui.alert('Not a valid server url');
+					resetForm();
+					//cancel submission
+					return false;
+				}
+			}
+			// validate form url
+			if ( xmlUrl !== '' ){
+				if (isValidUrl(xmlUrl)){
+					state.setIdFromUrl(xmlUrl);
+					state.setUrl();
+				}
+				else{
+					gui.alert('Sorry, the xml form url is not valid');
+					resetForm();
+					//cancel submissin
+					return false;
+				}
+			}
 			$('#upload-form label, #input-switcher, #form-list').hide();
 			$('#upload-form img.loading').show();
-			//ADD URL VALIDATION AND FEEDBACK
-			if ($('#upload-form input[name="server_url"]').val() !== '' && isValidUrl($('#upload-form input[name="server_url"]').val()) ){
-				state.server = $('#upload-form input[name="server_url"]').val();
-				state.setUrl();
-			}
 		},
 		'success': processResponse,
 		'error': function(){
@@ -64,6 +88,68 @@ $(document).ready(function(){
 			resetForm();
 		}
 	});
+
+//	$('#upload-form').submit(function(){
+//		var content,
+//			$form = $(this),
+//			url = $form.attr('action'),
+//			xmlFile = $form.find('input[name="xml_file"]').val() || '',
+//			serverUrl = $form.find('input[name="server_url"]').val() || '',
+//			xmlUrl = $form.find('input[name="xml_url"]').val() || '';//
+
+//		console.debug('submitting');
+//		//content.append('server_url', serverUrl);
+//		//content.append('xml_url', xmlUrl);//
+
+//		//if ( xmlFile !== ''){
+//		//	content.append('xml_file', xmlFile);
+//		//}
+//		//else
+//		if ( serverUrl !== ''){
+//			if (isValidUrl(serverUrl)){
+//				state.server = serverUrl;
+//				state.setUrl();
+//			}
+//			else{
+//				gui.alert('Not a valid server url');
+//				return resetForm();
+//			}
+//		}
+//		if (xmlUrl !== ''){
+//			if (isValidUrl(xmlUrl)){
+//				state.setIdFromUrl(xmlUrl);
+//				state.setUrl();
+//			}
+//			else{
+//				gui.alert('Sorry, the xml form url is not valid');
+//				return resetForm();
+//			}
+//		}
+//		content = new FormData($(this)[0]);
+//		
+//		$.ajax(url, {
+//			type: 'POST',
+//			data: content,
+//			cache: false,
+//			contentType: false,
+//			processData: false,
+//			//dataType: 'text',
+//			'beforeSubmit': function(){
+//				$('#upload-form label, #input-switcher, #form-list').hide();
+//				$('#upload-form img.loading').show();
+//			},
+//			complete: processResponse,
+//			error: function(jqXHR, textStatus, errorThrown){
+//				return;
+//				//console.debug(jqXHR);
+//				//console.debug('status: '+textStatus);
+//				//console.debug('error: '+errorThrown);
+//				//alert('error');
+//				gui.showFeedback('Sorry, an error occured while communicating with the Enketo server.');
+//				resetForm();
+//			}
+//		});
+//	});
 
 	$('#upload-form #input-switcher a')
 		.hover(function(){
@@ -85,8 +171,6 @@ $(document).ready(function(){
 	$(document).on('click', '#form-list a', function(event){
 		event.preventDefault();
 		//console.debug('form clicked');
-		state.setIdFromUrl($(this).attr('href'));
-		state.setUrl();
 		$('#upload-form input[name="xml_url"]').val($(this).attr('href'));
 		$('#upload-form').submit();
 	});
@@ -131,13 +215,13 @@ $(document).ready(function(){
 	$('#upload-form #input-switcher a#server_url').click();
 
 	if (state.server){
-		if (!isValidUrl(state.server)){
-			gui.alert('Server url is not valid. Resetting.');
-			resetForm();
-			state.reset();
-			return;
-		}
-		$('#upload-form label, #input-switcher, #form-list').hide();
+//		if (!isValidUrl(state.server)){
+//			gui.alert('Server url is not valid. Resetting.');
+//			resetForm();
+//			state.reset();
+//			return;
+//		}
+//		$('#upload-form label, #input-switcher, #form-list').hide();
 		$('#upload-form input[name="server_url"]').val(state.server);
 		if (state.id){
 			url = state.server;
@@ -155,6 +239,11 @@ $(document).ready(function(){
 		}
 		$('#upload-form').submit();
 	}
+	//var popped = ('state' in window.history),
+		//initialUrl = location.href;
+
+	
+	
 });
 
 function State(){
@@ -164,6 +253,25 @@ function State(){
 	this.source = getGetVariable('source') || false;
 	this.debug = getGetVariable('debug') || false;
 }
+
+State.prototype.init = function (){
+	//var initialUrl,
+//		popped = ('state' in window.history);
+//	console.debug('popped = '+popped);
+	state.setUrl();
+	//initialUrl = location.href;
+//	$(window).on('popstate', function(){
+//		var initialPop = (!popped && location.href == initialUrl);
+//		console.debug('initialUrl: '+initialUrl);
+//		popped = true;
+//		console.debug('popstate fired');
+//		if ( initialPop ){//} window.history.state === null || location.href == initialUrl ) {
+//			return console.debug('and ignored');
+//		}
+//		alert('going to refresh!');
+//		//window.location = location.href;
+//	});
+};
 
 State.prototype.setUrl = function(){
 	var stateProps = {server: this.server, id: this.id, source: this.source, debug: this.debug},
@@ -197,8 +305,6 @@ State.prototype.reset = function(){
 };
 
 GUI.prototype.setCustomEventHandlers = function(){
-	"use strict";
-	
 	$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}}).click(function(){
 		resetForm();
 	});
@@ -221,7 +327,7 @@ function resetForm(){
 	"use strict";
 	//$content.hide();
 	//$upload.show();
-
+	state.reset();
 	$('#upload-form')[0].reset();
 	$('#upload-form img.loading').hide();
 	$('#input-switcher').show().find('a#server_url').click();
@@ -235,7 +341,6 @@ function resetForm(){
 function processResponse(xml){
 	"use strict";
 	var $response = $(xml);
-
 	if ($response.find('formlist').length > 0){
 		processFormlist($response);
 	}
@@ -317,11 +422,16 @@ function processForm($response)
 function processFormlist($response)
 {
 	"use strict";
+	var formlistStr='';
 	if ($response.find('formlist>li').length === 0){
-		gui.showFeedback('Formlist at server '+state.server+' was found to be empty.');
+		gui.showFeedback('Formlist at server '+state.server+' was found to be empty or the server is asleep.');
 		return resetForm();
 	}
-	$('#form-list ol').empty().append($response.find('li'));
+	$response.find('formlist>li').each(function(){
+		formlistStr += new XMLSerializer().serializeToString($(this)[0]);
+	});
+	$('#form-list ol').empty().append(formlistStr);//html($response.find('li'));
+	$('#form-list ol li a').button();
 	$('#upload-form img.loading').hide();
 	$('#form-list').show();//.addScrollbar();
 }

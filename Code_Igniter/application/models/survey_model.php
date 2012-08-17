@@ -57,18 +57,38 @@ class Survey_model extends CI_Model {
     	{
     		$subdomain = $this->subdomain;
     	}
-    	$this->db->select('url');
+    	$this->db->select('form_url');
     	$this->db->where('subdomain', $subdomain);
     	$query = $this->db->get('surveys', 1); 
     	if ($query->num_rows() === 1) 
     	{
     		$row = $query->row();
-			return $row->url;
+			return $row->form_url;
     	}
     	else 
     	{
     		return FALSE;	
     	}
+    }
+
+    public function get_data_url($subdomain=NULL)
+    {
+        if (!isset($subdomain))
+        {
+            $subdomain = $this->subdomain;
+        }
+        $this->db->select('data_url');
+        $this->db->where('subdomain', $subdomain);
+        $query = $this->db->get('surveys', 1); 
+        if ($query->num_rows() === 1) 
+        {
+            $row = $query->row();
+            return $row->url;
+        }
+        else 
+        {
+            return FALSE;   
+        }
     }
 
     public function get_form_submission_url($subdomain=NULL)
@@ -91,39 +111,40 @@ class Survey_model extends CI_Model {
         }
     }
     
- 	public function update_formlist()
- 	{
-        //EXPAND THIS USING xformsList and detect presence of ManifestUrl
- 		$formlist = simplexml_load_file($this->config->item('jr_formlist'));
- 		
- 		if(isset($formlist))
- 		{
-	 		foreach ($formlist->form as $form)
-	 		{
-	 			$url = (string) $form['url'];
-	 			log_message('debug', 'url: '.$url);
-	 			$title = (string) $form;
-	 			log_message('debug', 'title: '.$title);
-	 			$query = $this->db->get_where('surveys', array ('url' => $url));
-	 			if ($query->num_rows() > 0)
-	 			{
-	 				$this->db->where('url', $url);
-	 				$this->db->update('surveys', array('title'=> $title)); // STILL NEEDS TO BE TESTED
-	 			}
-	 			else
-	 			{
-	 				$this->db->insert('surveys', array('subdomain' => $this->_generate_subdomain(), 'url' => $url, 'title' => $title));
-	 			}
-			}		
- 		log_message('debug', 'formlist: '.$formlist->asXML());
- 		return TRUE;
- 		}
- 		else
- 		{
- 			log_message('error', 'error loading formlist');
- 			return FALSE;
- 		}
- 	}
+// 	public function update_formlist()
+// 	{
+//        $formlist_url = 
+//        //EXPAND THIS USING xformsList and detect presence of ManifestUrl
+// 		$formlist = simplexml_load_file($formlist_url);//$this->config->item('jr_formlist'));
+// 		
+// 		if(isset($formlist))
+// 		{
+//	 		foreach ($formlist->form as $form)
+//	 		{
+//	 			$url = (string) $form['url'];
+//	 			log_message('debug', 'url: '.$url);
+//	 			$title = (string) $form;
+//	 			log_message('debug', 'title: '.$title);
+//	 			$query = $this->db->get_where('surveys', array ('url' => $url));
+//	 			if ($query->num_rows() > 0)
+//	 			{
+//	 				$this->db->where('url', $url);
+//	 				$this->db->update('surveys', array('title'=> $title)); // STILL NEEDS TO BE TESTED
+//	 			}
+//	 			else
+//	 			{
+//	 				$this->db->insert('surveys', array('subdomain' => $this->_generate_subdomain(), 'form_url' => $url, 'title' => $title));
+//	 			}
+//			}		
+// 		log_message('debug', 'formlist: '.$formlist->asXML());
+// 		return TRUE;
+// 		}
+// 		else
+// 		{
+// 			log_message('error', 'error loading formlist');
+// 			return FALSE;
+// 		}
+// 	}
     
     public function get_survey_list()
     {

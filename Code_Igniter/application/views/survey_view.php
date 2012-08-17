@@ -59,7 +59,7 @@
 				</div>
 				<div class="column middle"></div>
 				<div class="column right">
-					<a id="link-analysis" href="analyze" title="go to collated data page (online)" target="_blank">
+					<a id="link-analysis" href="data/view" title="go to collated data page (online)" target="_blank">
 						<span>collated data (online) </span><span class="ui-icon ui-icon-extlink"></span>
 					</a>
 

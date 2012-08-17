@@ -923,7 +923,6 @@ String.prototype.pad = function(digits){
 
 	//function to add a scrollbar to the list of records, if necessary
 	$.fn.addScrollBar = function(){
-
 		return this.each(function(){
 			//scrollpane parts
 			var scrollPane = $(this), //('#records-saved-pane'),
@@ -977,26 +976,25 @@ String.prototype.pad = function(digits){
 				});
 				
 				//additional code for mousewheel
-				$(".scrollist, #slider-wrap").mousewheel(function(event, delta){
-					var speed = 5;
-					var sliderVal = $("#slider-vertical").slider("value");//read current value of the slider
-					
-					sliderVal += (delta*speed);//increment the current value
-					$("#slider-vertical").slider("value", sliderVal);//and set the new value of the slider
-					
-					var topValue = -((100-sliderVal)*difference/100);//calculate the content top from the slider position
-					
-					if (topValue>0) topValue = 0;//stop the content scrolling down too much
-					if (Math.abs(topValue)>difference) topValue = (-1)*difference;//stop the content scrolling up too much
-					
-					scrollContent.css({top:topValue});//move the content to the new position
-					event.preventDefault();//stop any default behaviour
-				});
-				
+				//$(".scrol-list, #slider-wrap").mousewheel(function(event, delta){
+				//	var speed = 5;
+				//	var sliderVal = $("#slider-vertical").slider("value");//read current value of the slider
+				//
+				//	sliderVal += (delta*speed);//increment the current value
+				//	$("#slider-vertical").slider("value", sliderVal);//and set the new value of the slider
+				//
+				//	var topValue = -((100-sliderVal)*difference/100);//calculate the content top from the slider position
+				//
+				//	if (topValue>0) topValue = 0;//stop the content scrolling down too much
+				//	if (Math.abs(topValue)>difference) topValue = (-1)*difference;//stop the content scrolling up too much
+				//
+				//	scrollContent.css({top:topValue});//move the content to the new position
+				//	event.preventDefault();//stop any default behaviour
+				//});
 			}
 		});
-
 	};
 
 })(jQuery);
+
 

@@ -152,7 +152,7 @@ class Form_model extends CI_Model {
 			libxml_clear_errors();
 			//load the XML resource into a DOMDocument 
     		$doc = new DOMDocument;
-    		$doc->load($resource);
+    		$success = $doc->load($resource);
     
     		$errors = libxml_get_errors();
     		
@@ -161,30 +161,30 @@ class Form_model extends CI_Model {
 			//restore CI error handler
 			set_error_handler('_exception_handler');
    		
-   			if(!empty($errors))
-    			{
+   			if(!$success)//empty($errors))
+    		{
     				log_message('error', 'XML/XSL doc load errors: '.json_encode($errors));
 
     				//see if fatal errors occurred. Return FALSE for doc if one occurred
-    				foreach ($errors as $error)// (array_search(LIBXML_ERR_FATAL, (array) $errors) === 'level')
-    				{
-    				  if ($error->level === 3)
-    				  {	
-    				  	return array('doc' => FALSE, 'errors' => $errors);
-    				  }
-    				}
-    			}	  			
-    		if($doc)
-    		{
-    			log_message('debug', 'loaded doc!');// xml:'.$doc->saveXML());
+    				//foreach ($errors as $error)// (array_search(LIBXML_ERR_FATAL, (array) $errors) === 'level')
+    				//{
+    				 // if ($error->level === 3)
+    				  //{	
+    			return array('doc' => FALSE, 'errors' => $errors);
+    				  //}
+    				//}
+    		}	  			
+    		//if($success)
+    		//{
+    		log_message('debug', 'loaded doc!');// xml:'.$doc->saveXML());
     			
-                return array('doc' => $doc, 'errors' => $errors, 'type' => $type);     			
-    		}
-    		else
-    		{
-    			log_message('error', 'loading XML/XSL doc, errors: '.json_encode($errors)); //xml:'.$xml->saveXML());
-    			return FALSE;
-    		}
+            return array('doc' => $doc, 'errors' => $errors, 'type' => $type);     			
+    		//}
+    		//else
+    		//{
+    		//	log_message('error', 'loading XML/XSL doc, errors: '.json_encode($errors)); //xml:'.$xml->saveXML());
+    		//	return FALSE;
+    		//}
     	}
     	else 
     	{

@@ -255,12 +255,16 @@ function State(){
 }
 
 State.prototype.init = function (){
+	var first = true;
 	//var initialUrl,
 //		popped = ('state' in window.history);
 //	console.debug('popped = '+popped);
 	state.setUrl();
+
 	//initialUrl = location.href;
-//	$(window).on('popstate', function(){
+	//temporary hack around popstate-firing-upon-launch issue
+	//function(){
+		$(window).on('popstate', function(){
 //		var initialPop = (!popped && location.href == initialUrl);
 //		console.debug('initialUrl: '+initialUrl);
 //		popped = true;
@@ -268,9 +272,15 @@ State.prototype.init = function (){
 //		if ( initialPop ){//} window.history.state === null || location.href == initialUrl ) {
 //			return console.debug('and ignored');
 //		}
+			if (!first){
 //		alert('going to refresh!');
-//		//window.location = location.href;
-//	});
+				window.location = location.href;
+			}
+			first = false;
+		});
+	// really not elegant....
+	setTimeout(function(){first=false;}, 5000);
+	//}, 3000);
 };
 
 State.prototype.setUrl = function(){
@@ -283,7 +293,12 @@ State.prototype.setUrl = function(){
 	urlAppend = (this.debug == 'true' || this.debug === true ) ? urlAppend+'&debug='+encodeURIComponent(this.debug) : urlAppend;
 	urlAppend = (urlAppend.substring(0,1) == '&') ? urlAppend.substring(1) : urlAppend;
 	url = (urlAppend.length > 0) ? url+'?'+urlAppend : url;
-	history.pushState( stateProps, 'Enketo Launch', url);
+	if (location.href !== location.protocol+'//'+location.hostname+'/'+url ){
+		console.debug('pushing history state ');
+		console.debug(location.href);
+		console.debug(location.hostname+'/'+url);
+		history.pushState( stateProps, 'Enketo Launch', url);
+	}
 };
 
 State.prototype.setIdFromUrl = function(url){

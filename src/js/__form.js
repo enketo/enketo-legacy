@@ -1629,8 +1629,11 @@ function Form (formSelector, dataStr){
 		readonlyWidget : function(){
 			$form.find('input[readonly]').parent('label').each(function(){
 				//var $spans = $(this).find('span').not('.question-icons span').detach(); 
-				var html = $(this).html(); 
-				$('<fieldset class="trigger ui-state-highlight ui-corner-all"></fieldset>')
+				var html = $(this).html(),
+					relevant = $(this).find('input').attr('data-relevant'),
+					name = 'name="'+$(this).find('input').attr('name')+'"',
+					attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name;
+				$('<fieldset class="trigger ui-state-highlight ui-corner-all" '+attributes+'></fieldset>')
 					.insertBefore($(this)).append(html).find('input').remove(); 
 				$(this).remove();
 			});

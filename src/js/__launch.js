@@ -1,11 +1,14 @@
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, Modernizr, getGetVariable, vkbeautify*/
 
-var form, source, url, $tabs, $upload, _error,
+var form, source, url, $tabs, $upload, _error, state,
 	error_msg = 'There were errors. Please see the "report" tab for details.',
 	templateShow = false;
 
 $(document).ready(function(){
 	"use strict";
+	state = new State();
+
+	state.setUrl();
 
 	_error = console.error;
 	console.error = function(){
@@ -14,10 +17,10 @@ $(document).ready(function(){
 		return _error.apply(console, arguments);
 	};
 
-	source = getGetVariable('source') || false;
-	url = getGetVariable('formurl') || false;
+	//source = getGetVariable('source') || false;
+	//url = getGetVariable('formurl') || false;
 
-	if (!source){
+	if (!state.source){
 		$('#html5-form-source').hide();
 		$('li a[href="#html5-form-source"]').parent('li').remove();
 	}
@@ -47,26 +50,45 @@ $(document).ready(function(){
 	$('#upload-form').ajaxForm({
 		'dataType': 'xml',
 		'beforeSubmit': function(){
-			$('#upload-form label, #input-switcher').hide();
+			$('#upload-form label, #input-switcher, #form-list').hide();
 			$('#upload-form img.loading').show();
+			//ADD URL VALIDATION AND FEEDBACK
+			if ($('#upload-form input[name="server_url"]').val() !== '' && isValidUrl($('#upload-form input[name="server_url"]').val()) ){
+				state.server = $('#upload-form input[name="server_url"]').val();
+				state.setUrl();
+			}
 		},
-		'success': processResponse
+		'success': processResponse,
+		'error': function(){
+			gui.showFeedback('Sorry, an error occured while communicating with the Enketo server.');
+			resetForm();
+		}
 	});
 
-	$('#upload-form #input-switcher a').hover(function(){
-		$(this).toggleClass('ui-state-hover');
-	});
-
-	$('#upload-form #input-switcher a').click(function(e){
-		e.preventDefault();
-		$('#upload-form label').hide().find('input[name="'+$(this).attr('id')+'"]').parents('label').show();
-		$(this).siblings().removeClass('active');
-		$(this).addClass('active');
-	});
+	$('#upload-form #input-switcher a')
+		.hover(function(){
+			$(this).toggleClass('ui-state-hover');
+		})
+		.click(function(e){
+			console.debug('input switcher link clicked');
+			e.preventDefault();
+			$('#upload-form label').hide().find('input[name="'+$(this).attr('id')+'"]').parents('label').show();
+			$(this).siblings().removeClass('active');
+			$(this).addClass('active');
+		});
 
 	$('#data-template-show input').change(function(){
 		templateShow = ($(this).is(':checked')) ? true : false;
 		updateData();
+	});
+
+	$(document).on('click', '#form-list a', function(event){
+		event.preventDefault();
+		//console.debug('form clicked');
+		state.setIdFromUrl($(this).attr('href'));
+		state.setUrl();
+		$('#upload-form input[name="xml_url"]').val($(this).attr('href'));
+		$('#upload-form').submit();
 	});
 
 	$('#html5-form-source form').submit(function(){
@@ -106,21 +128,73 @@ $(document).ready(function(){
 		return false;
 	});
 	
-	$('#upload-form #input-switcher a#xml_url').click();
+	$('#upload-form #input-switcher a#server_url').click();
 
-	if (url){
-		url = decodeURIComponent(decodeURI(getGetVariable('formurl')));
-		console.log('formurl : '+url);
-		if(isValidUrl(url)){
-			$('#upload-form label, #input-switcher').hide();//css('visibility', 'hidden');
-			$('#upload-form input[name="xml_url"]').val(url);
-			$('#upload-form').submit();
+	if (state.server){
+		if (!isValidUrl(state.server)){
+			gui.alert('Server url is not valid. Resetting.');
+			resetForm();
+			state.reset();
+			return;
 		}
-		else {
-			gui.alert('not a valid url');
+		$('#upload-form label, #input-switcher, #form-list').hide();
+		$('#upload-form input[name="server_url"]').val(state.server);
+		if (state.id){
+			url = state.server;
+			url = (url.substring(url.length-1) == '/') ? url : url+'/';
+			url = ((/formhub.org\//).test(url)) ? url+'forms/'+state.id+'/form.xml' : url+'formXml?formId='+state.id;
+			console.log('guessed form url from server+id: '+url);
+			if(isValidUrl(url)){
+				$('#upload-form input[name="xml_url"]').val(url);
+			}
+			else {
+				gui.alert('Could not craft a valid url from the server and id provided. Ignoring id.');
+				state.id = null;
+				state.setUrl();
+			}
 		}
+		$('#upload-form').submit();
 	}
 });
+
+function State(){
+	var serverGetVar = decodeURIComponent(decodeURI(getGetVariable('server')));
+	this.server = ( serverGetVar && isValidUrl(serverGetVar) ) ? serverGetVar : null;
+	this.id = getGetVariable('id') || null;
+	this.source = getGetVariable('source') || false;
+	this.debug = getGetVariable('debug') || false;
+}
+
+State.prototype.setUrl = function(){
+	var stateProps = {server: this.server, id: this.id, source: this.source, debug: this.debug},
+		urlAppend = '',
+		url = 'launch';
+	urlAppend = (this.server !== null && isValidUrl(this.server)) ? urlAppend+'server='+encodeURIComponent(this.server) : urlAppend;
+	urlAppend = (this.id !== null) ? urlAppend+'&id='+encodeURIComponent(this.id) : urlAppend;
+	urlAppend = (this.source == 'true' || this.source === true ) ? urlAppend+'&source='+encodeURIComponent(this.source) : urlAppend;
+	urlAppend = (this.debug == 'true' || this.debug === true ) ? urlAppend+'&debug='+encodeURIComponent(this.debug) : urlAppend;
+	urlAppend = (urlAppend.substring(0,1) == '&') ? urlAppend.substring(1) : urlAppend;
+	url = (urlAppend.length > 0) ? url+'?'+urlAppend : url;
+	history.pushState( stateProps, 'Enketo Launch', url);
+};
+
+State.prototype.setIdFromUrl = function(url){
+	var id;
+	if (!isValidUrl(url)){
+		this.id = null;
+	}
+	id = url.match(/formhub\.org\/[A-z\_0-9\-]*\/forms\/([A-z\_0-9\-]*)\/form\.xml/i);
+	if (!id){
+		id = url.match(/formXml\?formId=([A-z\_0-9\-]*)/i);
+	}
+	return (id) ? this.id = id[1] : console.error('could not extract id from url: '+url);
+};
+
+State.prototype.reset = function(){
+	this.server = null;
+	this.id = null;
+	this.setUrl();
+};
 
 GUI.prototype.setCustomEventHandlers = function(){
 	"use strict";
@@ -150,7 +224,7 @@ function resetForm(){
 
 	$('#upload-form')[0].reset();
 	$('#upload-form img.loading').hide();
-	$('#input-switcher').show().find('a#xml_file').click();
+	$('#input-switcher').show().find('a#server_url').click();
 	$('#form-languages').remove();
 	$('#survey-form div, #xsltmessages div, #html5validationmessages div, #jrvalidationmessages div, #xmlerrors div, #xslerrors div, #html5-form-source textarea, #data textarea').empty();
 	form = null;
@@ -160,23 +234,18 @@ function resetForm(){
 
 function processResponse(xml){
 	"use strict";
-	//console.log('response:' + response);
 	var $response = $(xml);
-	//form as string (best to use this instead of JQuery clone solution to avoid closing tags mess-ups)
-	
-	//***JUST A TEST****
-	//	$response.find('form').find('img, video, audio').each(function(){
-//			var src = $(this).attr('src');
-//			src = src.replace(/\/\/images/, 'Birds-media');
-//			src = src.replace(/\/\/audio/, 'Birds-media');
-//			src = src.replace(/\/\/video/, 'Birds-media');
-//			$(this).attr('src',src );
-//		});
-		
-	//*****************
-	
-	//$upload.hide();
-	//$content.show();
+
+	if ($response.find('formlist').length > 0){
+		processFormlist($response);
+	}
+	else{
+		processForm($response);
+	}
+}
+
+function processForm($response)
+{
 	$tabs.show();
 	
 	var formStr = new XMLSerializer().serializeToString($response.find('form')[0]);
@@ -189,10 +258,9 @@ function processResponse(xml){
 	var $xmlMsg = $response.find('xmlerrors message');
 	var $xslMsg = $response.find('xslformerrors message, xsldataerrors message');
 
-	$('#upload-form img.loading').remove();
+	$('#upload-form img.loading').hide();
 	
 	if(formStr.length > 0){
-
 		$('#html5-form-source textarea').empty().text(vkbeautify.xml(formStr));
 		$('#html5-form-source form').submit();
 		
@@ -201,14 +269,11 @@ function processResponse(xml){
 		
 		form = new Form('form.jr:eq(0)', jrDataStr);
 		form.init();
-		
-		
-		
+			
 		$('#tabs li a[href="#survey-form"]').click();
 		
 		//set event handlers for changes in form input fields
 		$(document).on('change dataupdate', 'form.jr', updateData);
-
 	}
 	else {
 		$('#survey-form div').empty();
@@ -247,6 +312,18 @@ function processResponse(xml){
 	if (form && form.getDataStr().length > 0 && $('#report .level-2, #report .level-3').length > 0){
 		gui.showFeedback(error_msg);
 	}
+}
+
+function processFormlist($response)
+{
+	"use strict";
+	if ($response.find('formlist>li').length === 0){
+		gui.showFeedback('Formlist at server '+state.server+' was found to be empty.');
+		return resetForm();
+	}
+	$('#form-list ol').empty().append($response.find('li'));
+	$('#upload-form img.loading').hide();
+	$('#form-list').show();//.addScrollbar();
 }
 
 function updateData(){

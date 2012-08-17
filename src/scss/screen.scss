@@ -332,8 +332,8 @@ footer {
   margin-bottom: 20px;
   a {
     text-decoration: none;
-    color: $shadow; }
-  color: $shadow; }
+    color: $overlay-bg; }
+  color: $overlay-bg; }
 
 /***************************
  ** FEEDBACK BAR & PAGE **
@@ -450,51 +450,59 @@ footer {
   /*display: inline;*/
   /* doesn't make sense right? with float*/
   h3 {
-    /*margin-left: 30px;*/ } }
+    /*margin-left: 30px;*/ }
+  .scroll-list{
+    border-color: white;
+    min-height: 150px;
+    max-height: 300px; 
+    overflow: auto;
+  } }
 
-#records-saved-pane {
+#form-list.scroll-list{
+  li {
+    display: block;
+    width: 100%;
+    text-align: center;
+    a:hover{
+      text-decoration: underline; } } }
+
+.scroll-list {
   position: relative;
-  border: 1px solid white;
+  border: 1px solid; /* white;*/
   /*width: 100%;
   height: 100%; */
   margin: 0;
   padding: 15px;
-  /*height: 300px;*/
-  overflow: auto;
-  min-height: 150px;
-  max-height: 300px; }
-
-#records-saved-content {
-  position: relative;
-  width: 100%;
-  height: 100%; }
-
-#records-saved {
-  ol {
+  /*height: 300px;*/ 
+  >div {
     position: relative;
-    top: 0;
-    left: 0;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    width: 100%; }
-  li {
-    list-style: none;
-    margin: 3px;
-    padding: 0.5em;
-    line-height: 1.3em;
-    height: 1em;
-    font-size: 0.8em;
-    overflow: hidden;
-    /* for very long names */
-    .date {
-      font-size: .6em;
-      float: right; }
-    .name {}
-    &.no-click {
-      font-style: italic;
-      text-align: center;
-      margin: 40px; } } }
+    width: 100%;
+    height: 100%; 
+    ol {
+      position: relative;
+      top: 0;
+      left: 0;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      li {
+        list-style: none;
+        margin: 3px;
+        padding: 0.5em;
+        line-height: 1.3em;
+        height: 1em;
+        font-size: 0.8em;
+        overflow: hidden;
+        /* for very long names */
+        .date {
+          font-size: .6em;
+          float: right; }
+        .name {}
+        &.no-click {
+          font-style: italic;
+          text-align: center;
+          margin: 40px; } } } } }
 
 #records-summary {
   margin: 0;

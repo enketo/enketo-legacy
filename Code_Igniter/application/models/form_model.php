@@ -78,6 +78,32 @@ class Form_model extends CI_Model {
     	return $result;
     }
    	
+    function getFormList($server_url)
+    {
+        $formlist_url = $this->_get_formlist_url($server_url);
+        $full_list = $this->_load_xml($formlist_url);
+        $result = new SimpleXMLElement('<root></root>');
+        $formlist = $result->addChild('formlist');
+
+        if($full_list['doc'])
+        {
+            $full_list_sxe = simplexml_import_dom($full_list['doc']);    
+            foreach ($full_list_sxe->xpath('/forms/form') as $form)
+            {
+                $li = $formlist->addChild('li');
+                $li->addAttribute('class', 'ui-corner-all');
+                $anchor = $li->addChild('a', $form);
+                $anchor -> addAttribute('href', $form["url"]);
+            }   
+        }
+        $result = $this->_add_errors($full_list['errors'], 'xmlerrors', $result);
+        return $result;
+    }
+
+    private function _get_formlist_url($server_url)
+    {
+        return ( strrpos($server_url, '/') == strlen($server_url-1) ) ? $server_url.'formList' : $server_url.'/formList';
+    }
 
     //private function to guess the manifest url for ODK Aggregate-hosted forms (ADD: Formhub)
     private function _get_manifest_url($xml_url)

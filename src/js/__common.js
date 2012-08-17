@@ -211,7 +211,7 @@ GUI.prototype.setEventHandlers = function(){
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
 	$(document).on('click', 'a[href^="#"]:not(nav ul li a)', function(event){
 		var href = $(this).attr('href');
-		//console.log('captured click to internal link that is not in nav, href='+href);
+		console.log('captured click to internal link that is not in nav, href='+href);
 		//if href is not just an empty anchor it is an internal link and will trigger a navigation menu click
 		if (href !== '#'){
 			event.preventDefault();
@@ -404,7 +404,7 @@ GUI.prototype.pages = function(){
 		//similarly adding the event handler needs to be done a delay otherwise it picks up an even(?) instantly
 		//addScrollBar should be called each time page loads because record list will change
 		setTimeout(function(){
-			$page.find('.scrollbar').addScrollBar();
+			$page.find('.scroll-list').addScrollBar();
 			$('#overlay, header').bind('click.pageEvents', function(){
 				//triggers a click of the page close button
 				$('#page-close').trigger('click');
@@ -977,7 +977,7 @@ String.prototype.pad = function(digits){
 				});
 				
 				//additional code for mousewheel
-				$("#records-saved-pane,#slider-wrap").mousewheel(function(event, delta){
+				$(".scrollist, #slider-wrap").mousewheel(function(event, delta){
 					var speed = 5;
 					var sliderVal = $("#slider-vertical").slider("value");//read current value of the slider
 					

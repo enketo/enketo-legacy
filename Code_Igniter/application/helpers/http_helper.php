@@ -42,15 +42,39 @@ if ( ! function_exists('url_exists'))
 {
 	function url_exists($url)
 	{		
-		$file_headers = @get_headers($url);
-		if ($file_headers[0] == 'HTTP/1.1 404 Not Found') 
+//		$file_headers = @get_headers($url);
+//		if ($file_headers[0] == 'HTTP/1.1 404 Not Found') 
+//		{
+//    		$exists = false;
+//		}
+//		else
+//		{
+//	    	$exists = true;
+//		}	
+//		return $exists;
+//	}
+
+	//returns true, if domain is availible, false if not
+	   //check if URL is valid
+		if(!filter_var($url, FILTER_VALIDATE_URL))
 		{
-    		$exists = false;
+			return false;
 		}
-		else
-		{
-	    	$exists = true;
-		}	
-		return $exists;
+
+		$agent = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
+		$ch = curl_init();
+		curl_setopt ($ch, CURLOPT_URL, $url);
+		curl_setopt ($ch, CURLOPT_USERAGENT, $agent);
+		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt ($ch,CURLOPT_VERBOSE, FALSE);
+		curl_setopt ($ch, CURLOPT_TIMEOUT, 10);
+		curl_setopt ($ch,CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt ($ch,CURLOPT_SSLVERSION, 3);
+		curl_setopt ($ch,CURLOPT_SSL_VERIFYHOST, FALSE);
+		$page=curl_exec($ch);
+		//echo curl_error($ch);
+		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		return ($httpcode >= 200 && $httpcode < 300) ? TRUE : FALSE;
 	}
 }

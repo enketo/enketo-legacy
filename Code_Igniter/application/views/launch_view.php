@@ -60,19 +60,26 @@
 
 					<form id="upload-form" action="transform/transform_post_jr_form" method="post" enctype="multipart/form-data" accept-charset="utf-8">
 						<div id="input-switcher">
-							<a href="#" id="xml_file">file</a>|<a href="#" id="xml_url">url</a></div>
+							<a href="#" id="xml_file">file</a>|<a href="#" id="server_url">url</a></div>
 						<label>
 							<span>Select XML File</span>
 							<div class="fakefileinput"></div>
 							<div><input type="file" name="xml_file" /></div>
 						</label>
 						<label>
-							<span>Enter full URL to XML File</span>
-							<input type="text" name="xml_url" placeholder="e.g. https://jrosaforms.appspot.com/formXml?formId=ElephantDeath"/>
+							<span>Enter full URL to Server</span>
+							<input type="text" name="server_url" placeholder="e.g. https://jrosaforms.appspot.com  or  http://www.formhub.org/MartijnR"/>
 						</label>
+						<input type="hidden" name="xml_url"/>
 						<!--<input type="submit">Transform and Test!</button>-->
 						<img style="display: none;" class="loading" src="images/ajax-loader.gif" />
 					</form>
+					<div id="form-list" class="ui-widget ui-corner-all scroll-list" style="display:none;">
+						<div>
+							<ol>
+							</ol>
+						</div>
+					</div>
 				</article>
 				<article id="survey-form">
 						<div></div>

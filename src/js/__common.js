@@ -4,8 +4,8 @@
 // Copyright 2012 Martijn van de Rijdt
 /************ Global variables ***************/
 
-var /**@type {GUI}*/ gui, /**@type {StorageLocal}*/ store;
-
+var /**@type {GUI}*/ gui;
+  
 //form = null,
 var DEFAULT_SETTINGS = {};
 //var	_$pages; //getPage, addScrollBar, display, buttonArray, setSettings;
@@ -647,8 +647,8 @@ GUI.prototype.display = function(){
  * [updateSettings description] Updates the settings in the GUI and triggers change events (used when app launches) that are handled in customEventHandlers.
  * It is generic and could be used for any kind of radio or checkbox settings.
  *
- * @param  {object} settings [description]
- * @return {[type]}          [description]
+ * @param  {Object.<string, (boolean|string)>} settings [description]
+ *
  */
 GUI.prototype.setSettings = function(settings){
 	"use strict";
@@ -683,54 +683,13 @@ function getGetVariable(variable) {
 }
 
 
+
+
 /**
- * Settings class depends on Store Class
- *
- * @constructor
+ * Pads a string with prefixed zeros until the requested string length is achieved.
+ * @param  {number} digits [description]
+ * @return {String|string}        [description]
  */
-function Settings(){
-	"use strict";
-}
-
-Settings.prototype.init = function(){
-	"use strict";
-	var i, value, name,
-		settings = this.get(),
-		that = this;
-	
-	//set settings (loose coupling with GUI)
-	$(document).trigger('setsettings', settings);
-	//perform actions based on settings at launch
-	//for (var prop in settings){
-		
-	//}
-};
-
-//communicates with local storage
-Settings.prototype.get = function(setting){
-	"use strict";
-	var settings = store.getRecord('__settings') || DEFAULT_SETTINGS;
-	if (typeof setting !== 'undefined'){
-		return settings[setting] || null;
-	}
-	return settings;
-};
-//communicates with local storage and perform action linked with setting
-//called by eventhandler in GUI.
-Settings.prototype.set = function(setting, value){
-	"use strict";
-	var result,
-		settings = this.get();
-	console.debug('going to store setting: '+setting+' with value:'+value);
-	settings[setting] = value;
-	result = store.setRecord('__settings', settings);
-	//perform action linked to setting
-	if (typeof this[setting] !== 'undefined'){
-		this[setting](value);
-	}
-	return (result === 'success' ) ? true : console.error('error storing settings');
-};
-
 String.prototype.pad = function(digits){
 		var x = this;
 		while (x.length < digits){

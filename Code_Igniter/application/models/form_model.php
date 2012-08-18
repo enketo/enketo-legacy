@@ -1,5 +1,6 @@
 <?php
-
+//THIS WHOLE CLASS HAS TO BE RE-WRITTEN USING OOP. Maintaining a Form object (.xml, .html, .manifest_url, .xml_url, .server_url)
+//a Formlist object and an Error object and merging these before returning seems a better way.
 class Form_model extends CI_Model {
 	
 	// TURN INTO CONSTANTS / CONFIG ITEMS?
@@ -17,28 +18,30 @@ class Form_model extends CI_Model {
         log_message('debug', 'Form Model loaded');
     }
     
-    function transform($xml_url, $feedback = FALSE)
+    function transform($server_url=NULL, $form_id = NULL, $file_path = NULL, $feedback = FALSE)
     {
         log_message('debug', 'Starting transform');
-    	$xml = $this->_load_xml($xml_url);    	
+        
     	$xsl_form = $this->_load_xml($this->file_path_to_jr2HTML5_XSL);
     	$xsl_data = $this->_load_xml($this->file_path_to_jr2Data_XSL);
 
+        $url = ($file_path) ? array('xml'=> $file_path) : $this->_get_form_urls($server_url, $form_id);
+        $xml = $this->_load_xml($url['xml']);
         //get manifest with media urls if exists
-        if ($xml['type'] == 'url')
+       // else // ($xml['type'] == 'url')
+        //{
+            //$manifest_url = $this->_get_manifest_url($xml_url);
+            
+        if (isset($url['manifest']))//$manifest_url !== FALSE)
         {
-            $manifest_url = $this->_get_manifest_url($xml_url);
-            log_message('debug', 'received: '.$manifest_url);
-            if ($manifest_url !== FALSE)
-            {
-                $manifest_o = $this->_load_xml($manifest_url);
-                $manifest_sxe = simplexml_import_dom($manifest_o['doc']);
-                log_message('debug', $manifest_sxe->asXML()); 
-            }
+            log_message('debug', 'received: '.$url['manifest']);
+            $manifest = $this->_load_xml($url['manifest']);
+            $manifest_sxe = simplexml_import_dom($manifest['doc']);
+            log_message('debug', $manifest_sxe->asXML()); 
         }
         else 
         {
-            $manifest_sxe = FALSE;
+            $manifest_sxe = NULL;
         }
 
 		$result = new SimpleXMLElement('<root></root>');
@@ -57,7 +60,7 @@ class Form_model extends CI_Model {
 				$this->_fix_lang($result);
                 
                 //fix media urls
-                if (isset($manifest_sxe))
+                if (isset($manifest_sxe) && $manifest_sxe)
                 {
                     $this->_fix_media_urls($manifest_sxe, $result);
                 }
@@ -78,55 +81,88 @@ class Form_model extends CI_Model {
     	return $result;
     }
    	
-    function getFormList($server_url)
+    function getFormListHTML($server_url)
     {
-        $formlist_url = $this->_get_formlist_url($server_url);
-        $full_list = $this->_load_xml($formlist_url);
         $result = new SimpleXMLElement('<root></root>');
         $formlist = $result->addChild('formlist');
+        $xforms_sxe = $this->_get_formlist($server_url);
 
-        if($full_list['doc'])
-        {
-            $full_list_sxe = simplexml_import_dom($full_list['doc']);    
-            foreach ($full_list_sxe->xpath('/forms/form') as $form)
+        if($xforms_sxe)
+        {    
+            foreach ($xforms_sxe->xform as $form)   //xpath('/forms/form') as $form)
             {
                 $li = $formlist->addChild('li');
                 //$li->addAttribute('class', 'ui-corner-all');
-                $anchor = $li->addChild('a', $form);
-                $anchor -> addAttribute('href', $form["url"]);
+                $anchor = $li->addChild('a', $form->name); //$form);
+                $anchor -> addAttribute('id', $form->formID);
+                $anchor -> addAttribute('title', $form->descirptionText);
+                //$anchor -> addAttribute('data-manifest', $form->manifestUrl);
+                $anchor -> addAttribute('href', $form->downloadUrl);//$form["url"]);
             }   
         }
-        $result = $this->_add_errors($full_list['errors'], 'xmlerrors', $result);
+        //$result = $this->_add_errors($full_list['errors'], 'xmlerrors', $result);
         return $result;
+    }
+
+    private function _get_formlist($server_url)
+    {
+        $formlist_url = $this->_get_formlist_url($server_url);
+        $full_list = $this->_load_xml($formlist_url);
+        
+        return ($full_list['doc']) ? simplexml_import_dom($full_list['doc']) : NULL;
+    }
+
+    private function _get_form_urls($server_url, $form_id)
+    {
+        $xforms_sxe = $this->_get_formlist($server_url);
+        if ($xforms_sxe)
+        {
+            //rather inefficient but am trying to avoid using xpath() because of default namespace in xformslist
+            foreach ($xforms_sxe->xform as $form)
+            {
+                if ($form->formID == $form_id){
+                    $urls = array('xml' => $form->downloadUrl);
+                    if (isset($form->manifestUrl))
+                    {
+                        $urls['manifest'] = $form->manifestUrl;
+                    }
+                    return $urls;
+                }
+            }
+        }
+        return NULL;
     }
 
     private function _get_formlist_url($server_url)
     {
-        return ( strrpos($server_url, '/') == strlen($server_url-1) ) ? $server_url.'formList' : $server_url.'/formList';
+        $server_url = ( strrpos($server_url, '/') == strlen($server_url)-1 ) ? $server_url : $server_url.'/';
+        $list_url = ( strpos($server_url, 'formhub.org/') === false ) ? $server_url.'xformsList' : $server_url.'formList';
+        return $list_url;
     }
 
     //private function to guess the manifest url for ODK Aggregate-hosted forms (ADD: Formhub)
     private function _get_manifest_url($xml_url)
     {
-        //check if there is a manifest using ODK Aggregate's url convention 
-        if (strrpos($xml_url, '/formXml?') > 0)
-        {
-            $manifest_url = str_replace('/formXml?', '/xformsManifest?', $xml_url);
-            log_message('debug', 'guessed manifest url: '.$manifest_url);
-            //$manifest = new DomDocument;
-            //$manifest->load($manifest_url);
-        }
-        //if (!isset($manifest) || !$manifest)
-        else
-        {
-            $manifest_url = FALSE;
-        }
-        return $manifest_url;
-        //else 
-        //{
-        //    $manifest = simplexml_import_dom($manifest);
-            //log_message('debug', 'manifest: '.$manifest->asXML());
-        //}
+        return false;
+//        //check if there is a manifest using ODK Aggregate's url convention 
+//        if (strrpos($xml_url, '/formXml?') > 0)
+//        {
+//            $manifest_url = str_replace('/formXml?', '/xformsManifest?', $xml_url);
+//            log_message('debug', 'guessed manifest url: '.$manifest_url);
+//            //$manifest = new DomDocument;
+//            //$manifest->load($manifest_url);
+//        }
+//        //if (!isset($manifest) || !$manifest)
+//        else
+//        {
+//            $manifest_url = FALSE;
+//        }
+//        return $manifest_url;
+//        //else 
+//        //{
+//        //    $manifest = simplexml_import_dom($manifest);
+//            //log_message('debug', 'manifest: '.$manifest->asXML());
+//        //}
     }
 
     //loads xml resource into DOMDocument object 

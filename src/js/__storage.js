@@ -1,8 +1,9 @@
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, store, Form, DEFAULT_SETTINGS, Modernizr*/
 
 /* !Storage Class */
 /**
- * @constructor
+ *
+ *
  * Function (Class): Storage
  *
  * description
@@ -10,6 +11,8 @@
  * Returns:
  *
  *   return description
+ *
+ * @constructor
  */
 function StorageLocal(){
 	"use strict";
@@ -35,10 +38,10 @@ function StorageLocal(){
 	/**
 	 * [setRecord description]
 	 * @param {string} newKey    [description]
-	 * @param {(string|object)} data      [description]
+	 * @param {Object.<(string|number), (string|boolean)>} record     [description]
 	 * @param {boolean=} del [description] used to change name of existing record and delete old record
 	 * @param {boolean=} overwrite [description] overwrite is only used when there is *another* record with the same new name (not when simply updating current form)
-	 * @param {string=} oldKey    [description]
+	 * @param {?string=} oldKey    [description]
 	 */
 	this.setRecord = function(newKey, record, del, overwrite, oldKey) {
 		if (!newKey || newKey.length < 1){
@@ -142,7 +145,12 @@ function StorageLocal(){
 		return formList;//returns empty object if no form data in storage or error was thrown
 	};
 	
-	// retrieves all survey data
+	/**
+	 * retrieves all survey data
+	 * @param  {boolean=} finalOnly   [description]
+	 * @param  {?string=} excludeName [description]
+	 * @return {Array.<Object.<(string|number), (string|boolean)>>}             [description]
+	 */
 	this.getSurveyRecords = function(finalOnly, excludeName){
 		var i, key,
 			records = [],
@@ -184,6 +192,12 @@ function StorageLocal(){
 		return records;
 	};
 
+	/**
+	 * [getSurveyDataArr description]
+	 * @param  {boolean=} finalOnly   [description]
+	 * @param  {?string=} excludeName [description]
+	 * @return {Array.<Object.<string, string>>}             [description]
+	 */
 	this.getSurveyDataArr = function(finalOnly, excludeName){
 		var i, records,
 			dataArr = [];
@@ -196,6 +210,11 @@ function StorageLocal(){
 		return dataArr;
 	};
 
+	/**
+	 * [getSurveyDataXMLStr description]
+	 * @param  {boolean=} finalOnly [description]
+	 * @return {string}           [description]
+	 */
 	this.getSurveyDataXMLStr = function(finalOnly){
 		var i,
 			dataObjArr = this.getSurveyDataArr(finalOnly),
@@ -256,3 +275,61 @@ function StorageLocal(){
 	};
 
 }
+
+/**
+ * Settings class depends on Store Class
+ *
+ * @constructor
+ */
+function Settings(){
+	"use strict";
+}
+
+Settings.prototype.init = function(){
+	"use strict";
+	var i, value, name,
+		settings = this.get(),
+		that = this;
+	
+	//set settings (loose coupling with GUI)
+	$(document).trigger('setsettings', settings);
+	//perform actions based on settings at launch
+	//for (var prop in settings){
+		
+	//}
+};
+
+//communicates with local storage
+/**
+ * [get description]
+ * @param  {string=} setting [description]
+ * @return {(string|boolean|Object.<string, (boolean|string)>)}         [description]
+ */
+Settings.prototype.get = function(setting){
+	"use strict";
+	var settings = store.getRecord('__settings') || DEFAULT_SETTINGS;
+	if (typeof setting !== 'undefined'){
+		return settings[setting];
+	}
+	return settings;
+};
+
+/**
+ * Communicates with local storage and perform action linked with setting. Called by eventhandler in GUI.
+ *
+ * @param {string} setting [description]
+ * @param {string|boolean} value   [description]
+ */
+Settings.prototype.set = function(setting, value){
+	"use strict";
+	var result,
+		settings = this.get();
+	console.debug('going to store setting: '+setting+' with value:'+value);
+	settings[setting] = value;
+	result = store.setRecord('__settings', settings);
+	//perform action linked to setting
+	if (typeof this[setting] !== 'undefined'){
+		this[setting](value);
+	}
+	return (result === 'success' ) ? true : console.error('error storing settings');
+};

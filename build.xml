@@ -2,7 +2,9 @@
 <project basedir="" default="compile">
 
   <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
-           classpath="lib/compiler.jar"/>
+           classpath="lib/closure/compiler.jar"/>
+
+ <!-- <taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit" classpath="/lib/jsdoctoolkit/jsdoc-toolkit-ant.jar;/path/to/js.jar"/>-->
 
   <target name="compile">
     
@@ -55,5 +57,10 @@
     </jscomp>
     
   </target>
+
+ <!-- <jsdoctoolkit jsdochome="/path/to/jsdoc_toolkit-1.4.0/" template="sunny" outputdir="/output/dir/">
+    <source file="/a/js/soucefile.js" />
+    <source file="/another/js/soucefile.js" />
+  </jsdoctoolkit>-->
 
 </project>

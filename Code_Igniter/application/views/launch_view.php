@@ -70,9 +70,10 @@
 							<span>Enter full URL to Server</span>
 							<!-- add hint: Note that uploading a file is a good way to test forms, but in order to launch the
 							survey for data entry in Enketo, it has to be provided as a url-->
-							<input type="text" name="server_url" placeholder="e.g. https://jrosaforms.appspot.com  or  http://formhub.org/MartijnR"/>
+							<input type="text" name="server_url" placeholder="e.g. https://jrosaforms.appspot.com  or  http://formhub.org/formhub_u"/>
 						</label>
-						<input type="hidden" name="xml_url"/>
+						<!--<input type="hidden" name="xml_url"/>-->
+						<input type="hidden" name="form_id"/>
 						<!--<input type="submit">Transform and Test!</button>-->
 						<img style="display: none;" class="loading" src="images/ajax-loader.gif" />
 					</form>

@@ -52,7 +52,8 @@ $(document).ready(function(){
 		'beforeSubmit': function(data, $form){
 			//console.debug(data);\
 			var serverUrl = $form.find('input[name="server_url"]').val() || '',
-				xmlUrl = $form.find('input[name="xml_url"]').val() || '';
+				formId = $form.find('input[name="form_id"]').val() || '';
+				//xmlUrl = $form.find('input[name="xml_url"]').val() || '';
 			// validate server url
 			if ( serverUrl !== '' ){
 				if (isValidUrl(serverUrl)){
@@ -66,19 +67,23 @@ $(document).ready(function(){
 					return false;
 				}
 			}
-			// validate form url
-			if ( xmlUrl !== '' ){
-				if (isValidUrl(xmlUrl)){
-					state.setIdFromUrl(xmlUrl);
-					state.setUrl();
-				}
-				else{
-					gui.alert('Sorry, the xml form url is not valid');
-					resetForm();
-					//cancel submissin
-					return false;
-				}
+			if ( formId !== '' ){
+				state.id = formId;
+				state.setUrl();
 			}
+			// validate form url
+//			if ( xmlUrl !== '' ){
+//				if (isValidUrl(xmlUrl)){
+//					state.setIdFromUrl(xmlUrl);
+//					state.setUrl();
+//				}
+//				else{
+//					gui.alert('Sorry, the xml form url is not valid');
+//					resetForm();
+//					//cancel submissin
+//					return false;
+//				}
+//			}
 			$('#upload-form label, #input-switcher, #form-list').hide();
 			$('#upload-form img.loading').show();
 		},
@@ -126,7 +131,7 @@ $(document).ready(function(){
 //			}
 //		}
 //		content = new FormData($(this)[0]);
-//		
+//
 //		$.ajax(url, {
 //			type: 'POST',
 //			data: content,
@@ -169,9 +174,11 @@ $(document).ready(function(){
 	});
 
 	$(document).on('click', '#form-list a', function(event){
+		var id = /** @type {string} */ $(this).attr('id');
 		event.preventDefault();
 		//console.debug('form clicked');
-		$('#upload-form input[name="xml_url"]').val($(this).attr('href'));
+		//$('#upload-form input[name="xml_url"]').val($(this).attr('href'));
+		$('#upload-form input[name="form_id"]').val(id);
 		$('#upload-form').submit();
 	});
 
@@ -224,18 +231,19 @@ $(document).ready(function(){
 //		$('#upload-form label, #input-switcher, #form-list').hide();
 		$('#upload-form input[name="server_url"]').val(state.server);
 		if (state.id){
-			url = state.server;
-			url = (url.substring(url.length-1) == '/') ? url : url+'/';
-			url = ((/formhub.org\//).test(url)) ? url+'forms/'+state.id+'/form.xml' : url+'formXml?formId='+state.id;
-			console.log('guessed form url from server+id: '+url);
-			if(isValidUrl(url)){
-				$('#upload-form input[name="xml_url"]').val(url);
-			}
-			else {
-				gui.alert('Could not craft a valid url from the server and id provided. Ignoring id.');
-				state.id = null;
-				state.setUrl();
-			}
+//			url = state.server;
+//			url = (url.substring(url.length-1) == '/') ? url : url+'/';
+//			url = ((/formhub.org\//).test(url)) ? url+'forms/'+state.id+'/form.xml' : url+'formXml?formId='+state.id;
+//			console.log('guessed form url from server+id: '+url);
+//			if(isValidUrl(url)){
+//				$('#upload-form input[name="xml_url"]').val(url);
+//			}
+//			else {
+//				gui.alert('Could not craft a valid url from the server and id provided. Ignoring id.');
+//				state.id = null;
+//				state.setUrl();
+//			}
+			$('#upload-form input[name="form_id"]').val(state.id);
 		}
 		$('#upload-form').submit();
 	}
@@ -246,16 +254,24 @@ $(document).ready(function(){
 	
 });
 
+/**
+ * State class maintains 'fake' state using url GET variables
+ *
+ * @constructor
+ */
 function State(){
-	var serverGetVar = decodeURIComponent(decodeURI(getGetVariable('server')));
-	this.server = ( serverGetVar && isValidUrl(serverGetVar) ) ? serverGetVar : null;
-	this.id = getGetVariable('id') || null;
-	this.source = getGetVariable('source') || false;
-	this.debug = getGetVariable('debug') || false;
+	
 }
 
 State.prototype.init = function (){
-	var first = true;
+	var first = true,
+		serverGetVar = decodeURIComponent(decodeURI(getGetVariable('server')));
+
+	this.server = ( serverGetVar && isValidUrl(serverGetVar) ) ? serverGetVar : null;
+	this.id = getGetVariable('id') || null; //CHECK THIS FOR 'VALIDITY'
+	this.source = getGetVariable('source') || false;
+	this.debug = getGetVariable('debug') || false;
+
 	//var initialUrl,
 //		popped = ('state' in window.history);
 //	console.debug('popped = '+popped);
@@ -297,7 +313,7 @@ State.prototype.setUrl = function(){
 		console.debug('pushing history state ');
 		console.debug(location.href);
 		console.debug(location.hostname+'/'+url);
-		history.pushState( stateProps, 'Enketo Launch', url);
+		document.history.pushState( stateProps, 'Enketo Launch', url);
 	}
 };
 

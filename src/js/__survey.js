@@ -1,8 +1,12 @@
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
-var  /**@type {Form}*/form,  /**@type {Connection}*/connection, /**@type {Cache}*/cache,  /**@type {Settings}*/settings,
+var  /**@type {Form}*/form;
+var /**@type {Connection}*/connection;
+var /**@type {Cache}*/cache;
+var /**@type {Settings}*/settings,
 	currentOnlineStatus = false;//, SURVEY_FORM_ID;
+var /**@type {StorageLocal}*/ store;
 var jrDataStr; //initial store of data format, value set in survey_view.php
 //var FORM_FORMAT_URL = 'survey_format';
 //var CONNECTION_URL = 'checkforconnection.txt';
@@ -177,6 +181,11 @@ function checkCache(){
 	}, 30*1000); //it may take a while for the resources to download
 }
 
+/**
+ * [loadForm description]
+ * @param  {string} formName  [description]
+ * @param  {boolean=} confirmed [description]
+ */
 function loadForm(formName, confirmed){
 	'use strict';
 	var message, choices;
@@ -218,7 +227,13 @@ function loadForm(formName, confirmed){
 		}
 	}
 }
-
+/**
+ * [saveForm description]
+ * @param  {string=} confirmedRecordName  [description]
+ * @param  {string|boolean=} confirmedFinalStatus [description]
+ * @param  {boolean=} deleteOldName        [description]
+ * @param  {boolean=} overwriteExisting    [description]                   [description]
+ */
 function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, overwriteExisting){
 	'use strict';
 	var result, message, choices,
@@ -287,6 +302,10 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	}
 }
 
+/**
+ * [resetForm description]
+ * @param  {boolean=} confirmed [description]
+ */
 function resetForm(confirmed){
 	'use strict';
 	var message, choices;
@@ -341,13 +360,14 @@ function deleteForm(confirmed) {
 }
 
 function exportData(finalOnly){
-	var data, uriContent;
+	"use strict";
+	var data, uriContent, newWindow;
 	finalOnly = finalOnly || true;
 
 	data = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
 	//console.debug(data);
 	uriContent = "data:text/xml," + encodeURIComponent(data); /*data:application/octet-stream*/
-	newWindow=window.open(uriContent, 'exportedData');
+	newWindow = window.open(uriContent, 'exportedData');
 	//window.location.href = uriContent;
 }
 
@@ -409,7 +429,7 @@ function Cache(){
 			}, false);
 			appCache.addEventListener('error', function(event){
 				console.log ('HTML5 cache error event'); // DEBUG
-				if (connection.getStatus()) {//error event always triggered when offline
+				if (connection.getOnlineStatus()) {//error event always triggered when offline
 					console.log ('noticed online status'); //DEBUG
 					error = "error downloading application"; // Possible to trigger cache problem for testing?
 				}
@@ -452,8 +472,8 @@ function Cache(){
 	
 	this.checkForUpdate = function(){
 		console.log('checking for cache update');
-		switch(cacheType){
-			case 'html5Cache':
+		//switch(cacheType){
+			//case 'html5Cache':
 				try{appCache.update();}
 				//Opera throws mysterious INVALID_STATE_ERR
 				catch(e){
@@ -463,21 +483,21 @@ function Cache(){
 					console.log('error thrown during cache update. error name: '+e.name+'  message: '+e.message);
 				}
 				//event listener will update variable 'update';
-				break;
-			case 'gearsCache' :
-				// Checking for updates will also happen regularly automatically even if not explicitly called
-				appCache.checkForUpdate();
-				break;
-		}
+		//		break;
+//			case 'gearsCache' :
+//				// Checking for updates will also happen regularly automatically even if not explicitly called
+//				appCache.checkForUpdate();
+//				break;
+//		}
 		return;
 	};
 
 	this.updateReady = function(){
-		if (cacheType==='gearsCache'){
-			//console.log ('loadedVersion:'+loadedVersion); //DEBUG
-			//console.log ('currentVersion:'+appCache.currentVersion); //DEBUG
-			update = (loadedVersion !== '' && loadedVersion != appCache.currentVersion) ? true : false;
-		}
+//		if (cacheType==='gearsCache'){
+//			//console.log ('loadedVersion:'+loadedVersion); //DEBUG
+//			//console.log ('currentVersion:'+appCache.currentVersion); //DEBUG
+//			update = (loadedVersion !== '' && loadedVersion != appCache.currentVersion) ? true : false;
+//		}
 		console.log('updateReady() returns: '+update); //DEBUG
 		return update;
 	};
@@ -651,7 +671,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 		record = this.uploadQueue.pop();
 		content = new FormData();
 		content.append('xml_submission_data', record.data);//dataXMLStr);
-		content.append('Date', new Date().getUTCDate());
+		content.append('Date', new Date().toUTCString());
 		last = (this.uploadQueue.length === 0) ? true : false;
 		//console.log('attempting upload with override: '+override+' Changing uploadOngoing to true'); // DEBUG
 		//this.uploadOngoing = true;
@@ -677,7 +697,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 
 
 Connection.prototype.processOpenRosaResponse = function(status, name, last){
-	var waswere, namesStr,
+	var i, waswere, namesStr,
 		msg = '',
 		names=[],
 		statusMap = {
@@ -708,15 +728,15 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	}
 	//unforeseen statuscodes
 	else if (status > 500){
-		report.error ('error during uploading, received unexpected statuscode: '+status);
+		console.error ('error during uploading, received unexpected statuscode: '+status);
 		this.uploadResult.fail.push([name, statusMap['5xx'].msg]);
 	}
 	else if (status > 400){
-		report.error ('error during uploading, received unexpected statuscode: '+status);
+		console.error ('error during uploading, received unexpected statuscode: '+status);
 		this.uploadResult.fail.push([name, statusMap['4xx'].msg]);
 	}
 	else if (status > 200){
-		report.error ('error during uploading, received unexpected statuscode: '+status);
+		console.error ('error during uploading, received unexpected statuscode: '+status);
 		this.uploadResult.fail.push([name, statusMap['2xx'].msg]);
 	}
 	
@@ -829,7 +849,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 	$(document)
 		.on('click', '#records-saved li:not(.no-click)', function(event){ // future items matching selection will also get eventHandler
 			event.preventDefault();
-			loadForm($(this).find('.name').text());
+			var name = /** @type {string} */$(this).find('.name').text();
+			loadForm(name);
 			$(this).siblings().removeClass('ui-state-active');
 			$(this).addClass('ui-state-active');
 		})
@@ -883,10 +904,10 @@ GUI.prototype.setCustomEventHandlers = function(){
 
 	// handlers for application settings [settings page]
 	this.pages().get('settings').on('change', 'input', function(){
-		var name, value;
+		var name =  /** @type {string} */  $(this).attr('name');
+		var value = ($(this).is(':checked')) ? /** @type {string} */ $(this).val() : '';
 		console.debug('settings change by user detected');
-		name = $(this).attr('name');
-		value = ($(this).is(':checked')) ? $(this).val() : '';
+		
 		settings.set(name, value);
 		//actions resulting from settings change
 		//if (that.hasOwnProperty(name)){

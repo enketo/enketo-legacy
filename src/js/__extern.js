@@ -7,6 +7,14 @@ function vkbeautify(){}
  */
 vkbeautify.xml = function(str){};
 
+document.history = function(){};
+/**
+ * [pushState description]
+ * @param  {Object.<string, (boolean|string)>} obj   [description]
+ * @param  {string} title [description]
+ * @param  {string} path  [description]
+ */
+document.history.pushState = function(obj, title, path){};
 
 
 var XPathJS = (function(){})();
@@ -2477,8 +2485,9 @@ jQuery.prototype.show = function(effect, arg2, duration, callback) {};
  */
 jQuery.prototype.hide = function(effect, arg2, duration, callback) {};
 
+//@param {{disabled: boolean, autoOpen: boolean, buttons, closeOnEscape: boolean, dialogClass: string, draggable: boolean, height: number, hide: object, maxHeight: number, maxWidth: number, minHeight: number, minWidth: number, modal: boolean, resizable: boolean, show: string, stack: boolean, title: string, width: number, zindex:number, beforeClose, close, open}=} arg
 /** THIS DOESN"T WORK => HAVE CHANGED ALL PARAMETERS TO STRING IN SOURCE TO DEAL WITH THIS
- * @param {{disabled: boolean, autoOpen: boolean, buttons, closeOnEscape: boolean, dialogClass: string, draggable: boolean, height: number, hide: object, maxHeight: number, maxWidth: number, minHeight: number, minWidth: number, modal: boolean, resizable: boolean, show: string, stack: boolean, title: string, width: number, zindex:number, beforeClose, close, open}=} arg
+ * @param { Object.<string, (boolean|number|Object.<string, (boolean, number, Object)>)>=} arg [description]
  * @return {!jQuery}
  */
 jQuery.prototype.dialog = function(arg){};

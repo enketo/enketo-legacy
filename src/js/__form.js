@@ -92,7 +92,7 @@ function Form (formSelector, dataStr){
 		return form.recordStatus.get();
 	};
 	/**
-     * @param {boolean} markedFinal
+     * @param {(boolean|string)=} markedFinal
      */
 	this.setRecordStatus = function(markedFinal){
 		return form.recordStatus.set(markedFinal);
@@ -103,7 +103,7 @@ function Form (formSelector, dataStr){
 	 this.setEditStatus = function(status){
 		return form.editStatus.set(status);
 	 };
-	 this.getEditStatus = function(status){
+	 this.getEditStatus = function(){
 		return form.editStatus.get();
 	 };
 
@@ -1279,13 +1279,13 @@ function Form (formSelector, dataStr){
 //	};
 
 	FormHTML.prototype.editStatus = {
-			set : function(status){
-				$form.attr('data-edited',status.toString());
-				$form.trigger('edit', status);
-			},
-			get : function(){
-				return ($form.attr('data-edited') === 'true') ? true : false;
-			}
+		set : function(status){
+			$form.attr('data-edited',status.toString());
+			$form.trigger('edit', status);
+		},
+		get : function(){
+			return ($form.attr('data-edited') === 'true') ? true : false;
+		}
 	};
 
 	FormHTML.prototype.recordName = {
@@ -1530,11 +1530,11 @@ function Form (formSelector, dataStr){
 			dataType = $(this).attr('data-type-xml');
 			constraint = $(this).attr('data-constraint'); //obsolete?
 			result = data.evaluate(expr, 'string', name, null); //not sure if using 'string' is always correct
-			////console.debug('evaluated calculation: '+expr+' with result: '+result);
+			//console.debug('evaluated calculation: '+expr+' with result: '+result);
 			valid = data.node(name, null).setVal(result, constraint, dataType);
-			if(valid !== 'undefined' && valid === false){
+			//if(valid !== 'undefined' && valid === false){
 				//console.log('Calculated item with name: '+name+' value was set but does not have a valid value!');
-			}
+			//}
 		});
 		//}
 		//updatingCalcs = false;

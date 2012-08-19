@@ -15,51 +15,62 @@ class Survey extends CI_Controller {
 		if (isset($subdomain))
 		{
 			//if ($this->Survey_model->is_live_survey($subdomain))
-			if ($this->Survey_model->is_launched_survey($subdomain))
+			if ($this->Survey_model->is_launched_survey())
 			{
 				$offline = $this ->config->item('application_cache'); //can be overridden here
-				$form_url= $this->Survey_model->get_form_url($subdomain);
-				
-				$transf_result = $this->Form_model->transform($form_url);
-				//var_dump($transf_result);
-				//log_message('debug', 'transform result: '.$transf_result->asXML());
-				$form = $transf_result->form->asXML();
-				$form_data = $transf_result->instance->asXML();
-				//remove line breaks
-				$form_data = str_replace(array("\r", "\r\n", "\n"), '', $form_data);
-				//$form_data = preg_replace("\>/s*",">", $form_data);
-				if (isset($form))
+				$server_url= $this->Survey_model->get_server_url();
+				$form_id = $this->Survey_model->get_form_id();
+
+				if ($form_id && $server_url)
 				{
-					$data = array(
-						'offline'=>$offline, 
-						'title_component'=>'survey', 
-						'form'=> $form,
-						'form_data'=> $form_data
-						);
-					//log_message('debug', 'form string: '.$form->asXML());
-					if (ENVIRONMENT === 'production')
+					$transf_result = $this->Form_model->transform($server_url, $form_id, FALSE);
+					//log_message('debug', $transf_result->asXML());
+					//var_dump($transf_result);
+					//log_message('debug', 'transform result: '.$transf_result->asXML());
+					$form = $transf_result->form->asXML();
+					//log_message('debug', $form);
+					$form_data = $transf_result->instance->asXML();
+					//log_message('debug', $form_data);
+					//remove line breaks and tabs
+					$form_data = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form_data);
+					//$form_data = preg_replace("\>/s*",">", $form_data);
+					if (strlen($form)>0 && strlen($form_data)>0)
 					{
-						//$this->output->cache(60);
-						$data['scripts'] = array(
-							base_url('js-min/survey-all-min.js')
-						);
+						$data = array(
+							'offline'=>$offline, 
+							'title_component'=>'survey', 
+							'form'=> $form,
+							'form_data'=> $form_data
+							);
+						//log_message('debug', 'form string: '.$form->asXML());
+						if (ENVIRONMENT === 'production')
+						{
+							//$this->output->cache(60);
+							$data['scripts'] = array(
+								base_url('js-min/survey-all-min.js')
+							);
+						}
+						else
+						{		
+							$data['scripts'] = array(
+								base_url('js-source/__common.js'),
+								base_url('js-source/__storage.js'),
+								base_url('js-source/__form.js'),
+								base_url('js-source/__survey.js'),
+								base_url('js-source/__debug.js')
+							);
+						}
+						$this->load->view('survey_view',$data);
 					}
 					else
-					{		
-						$data['scripts'] = array(
-							base_url('js-source/__common.js'),
-							base_url('js-source/__storage.js'),
-							base_url('js-source/__form.js'),
-							base_url('js-source/__survey.js'),
-							base_url('js-source/__debug.js')
-						);
-					}
-					$this->load->view('survey_view',$data);
+					{
+						show_error('Error loading form.', 404);
+					}				
 				}
-				else
+				else 
 				{
-					show_error('Error loading form.', 404);
-				}				
+					show_error('Survey not properly launched, missing info in database', 404);
+				}
 			}
 			else
 			{

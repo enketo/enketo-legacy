@@ -2,7 +2,7 @@
 
 class Survey_model extends CI_Model {
 
-	private $subdomain;
+	//private $subdomain;
 
     function __construct()
     {
@@ -15,16 +15,11 @@ class Survey_model extends CI_Model {
     // returns true if a requested survey form is live / published, used for manifest
     public function is_live_survey($survey_subdomain = NULL)
     {
-    	if (!isset($survey_subdomain))
-    	{
-    		$survey_subdomain = $this->subdomain;
-    	}
+
     	//$query = $this->db->get_where('surveys',array('subdomain'=>$survey_subdomain, 'survey_live'=>TRUE), 1);
     	//return ($query->num_rows() === 1) ? TRUE : FALSE;
         //since management of surveys is done at the OpenRosa-compliant server, all we could do here is see
-        //if the url contains an xml file. However, this is very inefficient and needs to be done only once (not also in the form model before transformation). ALSO THE FORM URL REMAINS ACCESSIBLE WHEN DISABLED IN AGGREGATE SO ONE WOULD HAVE TO CHECK THE FORMLIST
-        
-        
+        //if the url contains an xml file. However, this is very inefficient and needs to be done only once (not also in the form model before transformation). ALSO THE FORM URL REMAINS ACCESSIBLE WHEN DISABLED IN AGGREGATE SO ONE WOULD HAVE TO CHECK THE FORMLIST        
     }
     
 //    // returns true if the data of a particular survey is live / published
@@ -39,76 +34,32 @@ class Survey_model extends CI_Model {
 //    }
     
     //returns true if a requested survey or template exists
-    public function is_launched_survey($survey_id = NULL)
-    {
-    	if (!isset($survey_id))
-    	{
-    		$survey_id = $this->subdomain;
-    	}
-    
-    	$this->db->where('subdomain', $survey_id);
+    public function is_launched_survey()
+    {    
+    	$this->db->where('subdomain', $this->subdomain);
     	$query = $this->db->get('surveys', 1); 
     	return ($query->num_rows() === 1) ? TRUE : FALSE;	
     }
     
-    public function get_form_url($subdomain=NULL)
+    public function get_server_url()
     {
-    	if (!isset($subdomain))
-    	{
-    		$subdomain = $this->subdomain;
-    	}
-    	$this->db->select('form_url');
-    	$this->db->where('subdomain', $subdomain);
-    	$query = $this->db->get('surveys', 1); 
-    	if ($query->num_rows() === 1) 
-    	{
-    		$row = $query->row();
-			return $row->form_url;
-    	}
-    	else 
-    	{
-    		return FALSE;	
-    	}
+        return $this->_get_item('server_url');
     }
 
-    public function get_data_url($subdomain=NULL)
-    {
-        if (!isset($subdomain))
-        {
-            $subdomain = $this->subdomain;
-        }
-        $this->db->select('data_url');
-        $this->db->where('subdomain', $subdomain);
-        $query = $this->db->get('surveys', 1); 
-        if ($query->num_rows() === 1) 
-        {
-            $row = $query->row();
-            return $row->url;
-        }
-        else 
-        {
-            return FALSE;   
-        }
+    public function get_form_id()
+    {        
+        return $this->_get_item('form_id');
     }
 
-    public function get_form_submission_url($subdomain=NULL)
+
+    public function get_data_url()
     {
-        if (!isset($subdomain))
-        {
-            $subdomain = $this->subdomain;
-        }
-        $this->db->select('submission_url');
-        $this->db->where('subdomain', $subdomain);
-        $query = $this->db->get('surveys', 1); 
-        if ($query->num_rows() === 1) 
-        {
-            $row = $query->row();
-            return ($row->submission_url) ? $row->submission_url : FALSE;
-        }
-        else 
-        {
-            return FALSE; 
-        }
+        return $this->_get_item('data_url');
+    }
+
+    public function get_form_submission_url()
+    {
+        return $this->_get_item('submission_url');
     }
     
 // 	public function update_formlist()
@@ -184,6 +135,21 @@ class Survey_model extends CI_Model {
     	return $subdomain;
     }
     
+    private function _get_item($field)
+    {
+        $this->db->select($field);
+        $this->db->where('subdomain', $this->subdomain);
+        $query = $this->db->get('surveys', 1); 
+        if ($query->num_rows() === 1) 
+        {
+            $row = $query->row_array();
+            return $row[$field];
+        }
+        else 
+        {
+            return NULL;   
+        }
+    }
 
     
 //    //returns the form format as an object   NOT USED ANYMORE! 

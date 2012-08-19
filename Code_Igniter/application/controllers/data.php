@@ -43,7 +43,7 @@ class Data extends CI_Controller {
 		$message = '';
 		$http_code = 0;
 		$subdomain = get_subdomain();
-		$submission_url = $this->Survey_model->get_form_submission_url($subdomain);
+		$submission_url = $this->Survey_model->get_form_submission_url();
 
 		//extract data from the post
 		extract($_POST);
@@ -61,7 +61,7 @@ class Data extends CI_Controller {
 			echo "Did not receive data (Enketo server)";
 		}
 
-		$xml_submission_filepath = /* "/tmp/".random_string(alpha, 10).".xml";//*/"/tmp/data_submission.xml";
+		$xml_submission_filepath = "/tmp/".random_string('alpha', 10).".xml";//*/"/tmp/data_submission.xml";
 		$xml_submission_file = fopen($xml_submission_filepath, 'w');
 			
 		if (!$xml_submission_file)
@@ -102,21 +102,17 @@ class Data extends CI_Controller {
 		//echo $result;
 		
 		//debugging:
-		//$response = '';
-		//foreach (curl_getinfo($ch) as $property=>$value) { 
-		//	$response .= $property . " : " . $value . "<br />"; 
-		//}	  
+		$response = '';
+		foreach (curl_getinfo($ch) as $property=>$value) { 
+			$response .= $property . " : " . $value . "<br />"; 
+		}	  
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		//close connection
 		curl_close($ch);
 
 		$this->output->set_status_header($http_code);
-		//echo $response;
-
+		echo $response;
 	}
-
 }
-
-
 ?>
 

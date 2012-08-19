@@ -42,9 +42,9 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'aidwebso_rapaide';
+$db['default']['username'] = 'aidwebso_enketo';
 $db['default']['password'] = 'EF3d!de45';
-$db['default']['database'] = 'aidwebso_rapaide';
+$db['default']['database'] = 'aidwebso_enketo';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

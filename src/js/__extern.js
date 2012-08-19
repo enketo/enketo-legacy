@@ -7,14 +7,14 @@ function vkbeautify(){}
  */
 vkbeautify.xml = function(str){};
 
-document.history = function(){};
+function history(){}
 /**
  * [pushState description]
  * @param  {Object.<string, (boolean|string)>} obj   [description]
  * @param  {string} title [description]
  * @param  {string} path  [description]
  */
-document.history.pushState = function(obj, title, path){};
+history.pushState = function(obj, title, path){};
 
 
 var XPathJS = (function(){})();

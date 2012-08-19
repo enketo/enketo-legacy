@@ -67,20 +67,22 @@
 							<div><input type="file" name="xml_file" /></div>
 						</label>
 						<label>
-							<span>Enter full URL to Server</span>
+							<span>Enter full web address to server</span>
 							<!-- add hint: Note that uploading a file is a good way to test forms, but in order to launch the
 							survey for data entry in Enketo, it has to be provided as a url-->
-							<input type="text" name="server_url" placeholder="e.g. https://jrosaforms.appspot.com  or  http://formhub.org/formhub_u"/>
+							<input type="text" name="server_url" placeholder="e.g. http://formhub.org/formhub_u"/>
 						</label>
 						<!--<input type="hidden" name="xml_url"/>-->
 						<input type="hidden" name="form_id"/>
 						<!--<input type="submit">Transform and Test!</button>-->
 						<img style="display: none;" class="loading" src="images/ajax-loader.gif" />
+						<div class="hurry"><a href="launch?server=http%3A%2F%2Fformhub.org%2Fformhub_u" title="Check forms on http://formhub.org/formhub_u">Pssst, in a hurry?</a></div>
 					</form>
 					<div id="form-list" class="" style="display:none;">
 						<ol>
 						</ol>
 					</div>
+
 				</article>
 				<article id="survey-form">
 						<div></div>
@@ -125,29 +127,26 @@
 
 	<article id="about" data-title="about this application" class="page">
 		<p>
-		    Enketo facilitates data collection using an open-source form format (JavaRosa). It is being developed by <a target="_blank" href="http://www.aidwebsolutions.com" title="go to Aid Web Solutions web site"
+		    Enketo facilitates data collection and entry using an open-source form format (JavaRosa). It is being developed by <a target="_blank" href="http://www.aidwebsolutions.com" title="go to Aid Web Solutions web site"
 		    target=_blank> Aid Web Solutions</a> to demonstrate the potential of offline capable
 		    web applications to cope with intermittent Internet connections. 
 		</p>
 		<p>
-		   The Enketo launch area allows survey administrators to test forms and afterwards 'launch' them on a unique URL for actual data entry. The entry component will be offline-capable. Only the launch component is currently available for a very early preview on Google Chrome. The following are the main items left to do for full JavaRosa compatibility:
+		   The Enketo launch area allows survey administrators to test forms and afterwards 'launch' them on a unique URL for actual data entry. The entry component will be offline-capable. Only the launch component is currently available for an early preview on Google Chrome. The following are the main items left to do for full JavaRosa compatibility:
 		</p> 
 		<div class="ui-helper-clearfix">   
 		    <div class="column ui-corner-all">
 			    <ul style="line-height: 1.5em">
 			    	<li>widgets (grids, slider, geop., auto, select, big-text)</li>
-			    	<!--<li>formhub support for media labels &amp; form logo</li>-->
 			    	<li>support for cascading selections</li>
 			    	<li>itext(path/to/node) support</li>
-			    	<li>improved design and usability</li>
 			    	<li>complete data type validation</li>
-			    	<li>performance improvement</li>
 			    </ul>
 			</div>
 			<div class="column ui-corner-all ui-helper-clearfix">
 				Use the links below to relaunch this app in a developer mode:<br/><br/>
 				<!--<a style="display: block; text-align: center;" href="?debug=true" title="click to relaunch">debug mode</a><br/>-->
-				<a style="display: block; text-align: center;" href="?debug=true&source=true" title="click to relaunch">debug + source-view mode</a><br/>
+				<a style="display: block; text-align: center;" href="?source=true" title="click to relaunch with an add 'source' tab that shows html5 source of the transformed form">source-view mode</a><br/>
 				<a style="display: block; text-align: center;" href="#" title="click to relaunch">normal mode</a>
 			</div>
 		</div>

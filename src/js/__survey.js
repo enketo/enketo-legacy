@@ -643,7 +643,7 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 Connection.prototype.upload = function(force, excludeName) {
 	var i, name, result,// last,
 		//uploadQueue = [],
-		autoUpload = (settings.get('autoUpload') === 'true' || settings.get('autoUpload') === true) ? true : false;
+		autoUpload = (settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ? true : false;
 	//console.log('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
 
 	// autoUpload is true or it is overridden, proceed
@@ -905,7 +905,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	// handlers for application settings [settings page]
 	this.pages().get('settings').on('change', 'input', function(){
 		var name =  /** @type {string} */  $(this).attr('name');
-		var value = ($(this).is(':checked')) ? /** @type {string} */ $(this).val() : '';
+		var value = ($(this).is(':checked')) ?  /** @type {string} */ $(this).val().toString() : '';
 		console.debug('settings change by user detected');
 		
 		settings.set(name, value);

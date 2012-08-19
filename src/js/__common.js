@@ -5,7 +5,7 @@
 /************ Global variables ***************/
 
 var /**@type {GUI}*/ gui;
-  
+
 //form = null,
 var DEFAULT_SETTINGS = {};
 //var	_$pages; //getPage, addScrollBar, display, buttonArray, setSettings;

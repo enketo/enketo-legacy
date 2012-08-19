@@ -302,16 +302,21 @@ Settings.prototype.init = function(){
 //communicates with local storage
 /**
  * [get description]
- * @param  {string=} setting [description]
- * @return {(string|boolean|Object.<string, (boolean|string)>)}         [description]
+ * @return {Object.<string, (boolean|string)>}         [description]
  */
-Settings.prototype.get = function(setting){
+Settings.prototype.get = function(){
 	"use strict";
+	return store.getRecord('__settings') || DEFAULT_SETTINGS;
+};
+
+/**
+ * [getOne description]
+ * @param  {string} setting [description]
+ * @return {?(string|boolean)}         [description]
+ */
+Settings.prototype.getOne = function(setting){
 	var settings = store.getRecord('__settings') || DEFAULT_SETTINGS;
-	if (typeof setting !== 'undefined'){
-		return settings[setting];
-	}
-	return settings;
+	return (typeof setting !== 'undefined' && typeof settings[setting] !== 'undefined') ? settings[setting] : null;
 };
 
 /**

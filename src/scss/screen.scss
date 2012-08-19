@@ -818,10 +818,8 @@ input, .fakefileinput {
   /*color: $shadow*/
   opacity: 0.5; }
 
-#upload-form {
-  form {
-    position: relative;
-    width: 100%; }
+#upload form{
+  text-align: center;
   label {
     position: absolute;
     top: 120px;
@@ -850,11 +848,11 @@ input, .fakefileinput {
     width: 0px;
     overflow: hidden;*/
     z-index: 5;
-    opacity: 0; } }
-
-#input-switcher {
-  text-align: center;
-  a {
+    opacity: 0; }
+  .hurry{
+    margin-top: 180px;
+    }
+  :not(#form-list) a {
     &:link{
     padding: 0 10px;
     font-size: 13px;
@@ -868,7 +866,7 @@ input, .fakefileinput {
       color: $a-hvr;
       text-decoration: underline; }
     &.active {
-      color: $a-hvr;
+      color: $header-bg;
       text-decoration: none; } } }
 
 

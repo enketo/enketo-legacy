@@ -84,7 +84,7 @@ $(document).ready(function(){
 //					return false;
 //				}
 //			}
-			$('#upload-form label, #input-switcher, #form-list').hide();
+			$('#upload-form label, #input-switcher, #form-list, #upload .hurry').hide();
 			$('#upload-form img.loading').show();
 		},
 		'success': processResponse,
@@ -313,7 +313,8 @@ State.prototype.setUrl = function(){
 		console.debug('pushing history state ');
 		console.debug(location.href);
 		console.debug(location.hostname+'/'+url);
-		document.history.pushState( stateProps, 'Enketo Launch', url);
+		console.debug(stateProps);
+		history.pushState( stateProps, 'Enketo Launch', url);
 	}
 };
 
@@ -360,9 +361,10 @@ function resetForm(){
 	//$upload.show();
 	state.reset();
 	$('#upload-form')[0].reset();
-	$('#upload-form img.loading').hide();
-	$('#input-switcher').show().find('a#server_url').click();
+	$('#upload-form img.loading, #form-list').hide();
+	$('#input-switcher, #upload .hurry').show().find('a#server_url').click();
 	$('#form-languages').remove();
+	gui.updateStatus.edit(false);
 	$('#survey-form div, #xsltmessages div, #html5validationmessages div, #jrvalidationmessages div, #xmlerrors div, #xslerrors div, #html5-form-source textarea, #data textarea').empty();
 	form = null;
 	$('#tabs li a[href="#upload"]').click();

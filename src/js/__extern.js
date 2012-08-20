@@ -1,4 +1,4 @@
-
+var jrDataStr;
 
 function vkbeautify(){}
 

@@ -1,4 +1,4 @@
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, jrDataStr, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var  /**@type {Form}*/form;
@@ -7,10 +7,6 @@ var /**@type {Cache}*/cache;
 var /**@type {Settings}*/settings,
 	currentOnlineStatus = false;//, SURVEY_FORM_ID;
 var /**@type {StorageLocal}*/ store;
-var jrDataStr; //initial store of data format, value set in survey_view.php
-//var FORM_FORMAT_URL = 'survey_format';
-//var CONNECTION_URL = 'checkforconnection.txt';
-//var DATA_RECEIVER_URL = 'http//formhub.org/martijnr/submission';
 var MODERN_BROWSERS_URL = 'modern_browsers';
 
 DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBackup':false };
@@ -19,6 +15,8 @@ DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBa
 //var MAX_QTY_SAVED_FORMS = 50;
 //ßvar SURVEY_FORM_ID = 'survey-form';
 var CACHE_CHECK_INTERVAL = 3600*1000;
+
+
 //var showFormList, checkForOpenForm;//,
 //loadForm, deleteForm, setSettings;initSaveFormsToFile,
 //
@@ -30,6 +28,7 @@ $(document).ready(function() {
 	var bookmark, message, choices, shown, time;
 
 	store = new StorageLocal();
+	console.debug('sending dataStr: '+jrDataStr);
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	settings = new Settings();
 	settings.init();
@@ -54,14 +53,14 @@ $(document).ready(function() {
 	//	shown = (bookmark.shown) ? bookmark.shown : 0;
 	//}
 
-	shown = (bookmark) ? bookmark.shown : 0;
+	shown = (bookmark) ? bookmark['shown'] : 0;
 	if(shown < 3){
 		setTimeout(function(){
 			time = (shown === 1) ? 'time' : 'times';
 			gui.showFeedback('Please bookmark this page for easy offline launch. '+
 				'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
 			shown++;
-			store.setRecord('__bookmark', {shown: shown});
+			store.setRecord('__bookmark', {'shown': shown});
 		}, 5*1000);
 	}
 	
@@ -96,6 +95,7 @@ $(document).ready(function() {
 		}
 		console.log('cache initialized');
 	}
+
 	//var formFormat;
 	// get form format from json file and build the survey form elements
 	//var request;
@@ -128,7 +128,9 @@ $(document).ready(function() {
 		
 	// initialize the GUI object
 	//gui.init();
+	
 	form.init();
+	
 	connection.init(); //should be called after form format is loaded
 	//initialize file export/backup function
 	//initSaveFormsToFile(); // CHECK SAFARI OS X BUG
@@ -155,6 +157,7 @@ $(document).ready(function() {
 //	// ADD ERROR PAGE!
 //	console.log('form not built successfully');
 //	}
+
 	//trigger fake save event to update formlist on data page
 	$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
 });
@@ -366,9 +369,14 @@ function exportData(finalOnly){
 
 	data = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
 	//console.debug(data);
-	uriContent = "data:text/xml," + encodeURIComponent(data); /*data:application/octet-stream*/
-	newWindow = window.open(uriContent, 'exportedData');
+	if (!data){
+		gui.alert('No data marked "final" to export.');
+	}
+	else{
+		uriContent = "data:text/xml," + encodeURIComponent(data); /*data:application/octet-stream*/
+		newWindow = window.open(uriContent, 'exportedData');
 	//window.location.href = uriContent;
+	}
 }
 
 // BUG: function causes a crash in Safari on OS X when loaded from appCache in fresh Safari browser window
@@ -701,14 +709,15 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		msg = '',
 		names=[],
 		statusMap = {
+		0: {success: false, msg: "Uploading of data failed (probably offline)"},
 		200: {success:false, msg: "Data server did not accept data for "+name+". Contact Enketo helpdesk please."},
 		201: {success:true, msg: ""},
 		202: {success:true, msg: name+" may have had errors. Contact survey administrator please."},
 		'2xx': {success:false, msg: "Unknown error occurred when submitting data for "+name+". Contact Enketo helpdesk please"},
 		400: {success:false, msg: "Data server did not accept data for "+name+" Contact survey administrator please."},
 		403: {success:false, msg: "You are not allowed to post data to this data server. Contact survey administrator please."},
-		404: {success:false, msg: "Server not found. It may be down or you may be offline."},
-		'4xx': {success:false, msg: "Server not found. It may be down or you may be offline."},
+		404: {success:false, msg: "Submission area on data server not found or not properly configured."},
+		'4xx': {success:false, msg: "Unknown submission problem on data server."},
 		413: {success:false, msg: "Data for "+name+" is too large. Please export the data and contact the Enketo helpdesk please."},
 		500: {success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."},
 		503: {success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."},
@@ -717,14 +726,16 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	console.debug('name: '+name);
 	console.debug(status);
 	
-	if (statusMap[status].success === true){
-		store.removeRecord(name);
-		$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
-		console.log('tried to remove record with key: '+name);
-		this.uploadResult.win.push([name, statusMap[status].msg]);
-	}
-	else if (statusMap[status].success === false){
-		this.uploadResult.fail.push([name, statusMap[status].msg]);
+	if (typeof statusMap[status] !== 'undefined'){
+		if ( statusMap[status].success === true){
+			store.removeRecord(name);
+			$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
+			console.log('tried to remove record with key: '+name);
+			this.uploadResult.win.push([name, statusMap[status].msg]);
+		}
+		else if (statusMap[status].success === false){
+			this.uploadResult.fail.push([name, statusMap[status].msg]);
+		}
 	}
 	//unforeseen statuscodes
 	else if (status > 500){
@@ -768,7 +779,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	}
 
 	this.uploadOngoing = false;
-
+	//re-enable upload button
 };
 
 

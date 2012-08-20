@@ -23,7 +23,7 @@
 	<? endforeach; ?>
 		
 		<script type="text/javascript">
-			jrDataStr = '<?= $form_data ?>';
+			var jrDataStr = '<?= $form_data ?>';
 		</script>
 	
 	<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>

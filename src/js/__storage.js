@@ -24,7 +24,7 @@ function StorageLocal(){
 		try {
 			return 'localStorage' in window && window['localStorage'] !== null;
 		} catch (e) {
-		return false;
+			return false;
 		}
 	};
 	
@@ -69,6 +69,9 @@ function StorageLocal(){
 			//add timestamp to survey data
 			if (typeof record.data === 'string'){
 				record.lastSaved = (new Date()).getTime();
+				//if (newKey == this.getCounterValue() ){
+				localStorage.setItem('__counter', JSON.stringify({'counter': this.getCounterValue()}));
+				//}
 			}
 			//console.log('lastSaved: '+data['lastSaved']);
 			localStorage.setItem(newKey, JSON.stringify(record));
@@ -82,9 +85,7 @@ function StorageLocal(){
 					this.removeRecord(oldKey);
 				}
 			}
-			//if (newKey == this.getCounterValue() ){
-			localStorage.setItem('__counter', JSON.stringify({counter: this.getCounterValue()}));
-			//}
+			
 			return 'success';
 		}
 		catch(e){
@@ -213,7 +214,7 @@ function StorageLocal(){
 	/**
 	 * [getSurveyDataXMLStr description]
 	 * @param  {boolean=} finalOnly [description]
-	 * @return {string}           [description]
+	 * @return {?string}           [description]
 	 */
 	this.getSurveyDataXMLStr = function(finalOnly){
 		var i,
@@ -222,7 +223,7 @@ function StorageLocal(){
 		for (i=0 ; i<dataObjArr.length ; i++){
 			dataOnlyArr.push(dataObjArr[i].data);
 		}
-		return '<exported>'+dataOnlyArr.join('')+'</exported>';
+		return (dataOnlyArr.length>0) ? '<exported>'+dataOnlyArr.join('')+'</exported>' : null;
 	};
 	
 	
@@ -268,12 +269,16 @@ function StorageLocal(){
 	
 	this.getCounterValue = function(){
 		var record = this.getRecord('__counter'),
-			number = (record) ? Number(record.counter) : 0,
+			number = (record && typeof record['counter'] !== 'undefined' && isNumber(record['counter'])) ? Number(record['counter']) : 0,
 			numberStr = (number+1).toString().pad(4);
 		//this.setRecord('__counter', numberStr);
 		return numberStr;
 	};
 
+}
+
+function isNumber(n){
+	return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 /**

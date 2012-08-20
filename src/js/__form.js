@@ -59,9 +59,10 @@ function Form (formSelector, dataStr){
 
 		data = new DataXML(dataStr);
 		data.init();
-		
+		console.debug('form data obj initialized');	
 		form = new FormHTML(formSelector);
 		form.init();
+		console.debug('form html obj initialized');
 		
 		//to update data tab launch, trigger a dataupdate (required after )
 		//$form.trigger('dataupdate');
@@ -134,7 +135,7 @@ function Form (formSelector, dataStr){
 	
 		var $data, 
 			that=this;
-		////console.debug(dataStr);
+		console.debug('dataStr:'+dataStr); 
 		//seems wrong but using regular expression on string avoids persistant xmlns behaviour
 		dataStr = dataStr.replace(/<[\/]?instance(>|\s+[^>]*>)/gi, '');
 		////console.debug(dataStr);

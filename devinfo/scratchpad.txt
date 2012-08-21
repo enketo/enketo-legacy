@@ -25,11 +25,9 @@ What's the catch?
 My form doesn't work properly. Any help?
 It could be a bug. Please email the form and describe the problem.
 
-Note that if your problem relates to a formula that checks whether a node is empty, that boolean(path/to/node) is not supposed to do this, and neither does if(path/to/node, 'a', 'b'), even though both have currently have this incorrect behaviour in ODK Collect. What these formulae evaluate is whether the node exists, regardless of whether it is empty or not (so it will always return true). See also here: ... Instead use something like "string-length(path/to/node) > 0", which works correctly in both ODK Collect and Enketo.
-
-If you WANT to check whether a node exists (and not whether it is empty), you could use "count(path/to/node) = 1", which will work in ODK Collect.
+Note that if your problem relates to a formula that checks whether a node is empty, that boolean(path/to/node) is not supposed to do this, and neither does if(path/to/node, 'a', 'b'), even though both currently work this way in ODK Collect. What these formulae should evaluate is whether the node exists, regardless of whether it is empty or not (so it will basically always return true). See also here: ... Instead use something like: "string-length(path/to/node) > 0", which works correctly in both ODK Collect and Enketo.
 
 
-Does enketo provide support for any additional form features 
-As few as possible, but support for a new appearance attribute 'big-text' will be added for text input fields. This will show a multi-line input field (though it is still limited to 255 characters).
-A few additional preloads will be available as well browser and os (params: name and version);
+Does Enketo provide support for any additional form features?
+We'd like to introduce as little as possible and certainly nothing that will break compatibility with ODK Collect, but support for a new appearance attribute 'big-text' will be added for text input fields. This will show a multi-line input field (though it is still limited to 255 characters).
+A few additional preloads will be available as well, namely  browser and os (both with parameters: name and version).

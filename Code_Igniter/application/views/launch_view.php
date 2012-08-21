@@ -151,7 +151,7 @@
 			</div>
 		</div>
 		<!--<p>
-		 	Note that for standard XPath 1.0 functions, Enketo does not deviate from the XPath specification. This means that existing forms may not work properly until they are corrected. This is particularly relevant to usages described in item 1 and 3 of <a target="_blank" href="https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations">this document</a>.
+		 	Note that for standard XPath 1.0 functions, Enketo does not deviate from the XPath specification. This means that existing forms may not work properly until they are corrected. This is particularly relevant to usages described in item 1 of <a target="_blank" href="https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations">this document</a>.
 		</p>-->
 		<p>
 			More information is available <a target="_blank" href="http://blog.aidwebsolutions.com/tag/enketo/">here</a>. 

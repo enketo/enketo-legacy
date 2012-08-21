@@ -720,6 +720,41 @@ function Form (formSelector, dataStr){
 		return dataStr;
 	};
 
+	/**
+	 * There is a bug in JavaRosa that has resulted in the usage of incorrect formulae on nodes inside repeat nodes. 
+	 * Those formulae use absolute path when relative paths should have been used. See more here:
+	 * https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations (point 3). 
+	 * Tools such as pyxform (and xls form?) also build forms in this incorrect manner. It will take time to 
+	 * correct this way of making forms so makeBugCompliant() aims to mimic the incorrect 
+	 * behaviour by injection the [position] of repeats into the XPath expressions. The resulting expression
+	 * will then be evaluated in a way users expect (as if the paths were relative) without having to mess up
+	 * the XPath Evaluator. E.g. '/data/rep_a/node_a' could become '/data/rep_a[2]/node_a' if the context is inside 
+	 * the second rep_a repeat.
+	 * 
+	 * This function should be removed as soon as JavaRosa (or maybe just pyxform) fixes the way those formulae
+	 * are created (or evaluated).
+	 * 
+	 * @param  {string} expr  the XPath expression
+	 * @param  {jQuery} $repParents jQuery collection of repeat parents of the context input node
+	 * @return {string} modified expression with injected positions (1-based) 
+	 */
+	DataXML.prototype.makeBugCompliant = function(expr, $repParents){
+		var i, repSelector, repIndex,
+			bcExpr = expr;
+		//console.debug('received expression: '+expr+' inside repeat: '+repSelector+' with 0-based index: '+repIndex);
+		for (i=0 ; i<$repParents.length ; i++){
+			repSelector = /** @type {string} */$repParents.eq(i).attr('name');
+			//console.log(repSelector);
+			repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').andSelf().index($repParents.eq(i)); 
+			//console.log(repIndex);
+			bcExpr = bcExpr.replace(repSelector, repSelector+'['+(repIndex+1)+']');
+		}
+		//if (expr !== bcExpr){
+			//console.debug('expr inside repeat made bug compliant, new expression: '+bcExpr);
+		//}
+		return bcExpr;
+	};
+
 	/*
 	 * Evaluates an XPath Expression using the browser's native XPath 1.0 engine
 	 * $context parameter is a jQuery object!
@@ -729,11 +764,14 @@ function Form (formSelector, dataStr){
 	 * THIS FUNCTION DOESN'T SEEM TO WORK PROPERLY FOR NODE RESULTTYPES! (and only used for booleans
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
-		var context, dataCleanClone, resTypeNum, resultTypes, result;
+		var context, dataCleanClone, resTypeNum, resultTypes, result, $repParents;//, repSelector, repIndex;//, repDataNodeName;
+		
 		//$context = $context || this.get().find('instance>*');
 		//console.debug('evaluating expression: '+expr);
 		resTypeStr = resTypeStr || 'any';
-		//index = index || 0;
+		index = index || 0;
+		//console.debug('selector of context: '+selector);
+		//console.debug('index of context node: '+index);
 		//var context = $.parseXML((new window.XMLSerializer()).serializeToString($context[0]));
 		//create a clone so that the template nodes can be removed (not tried detach() and attach()
 		
@@ -755,7 +793,13 @@ function Form (formSelector, dataStr){
 			//dataCleanClone.node(selector, index, {}).get().attr('id','getme');
 			//context = dataCleanClone.get()[0].getElementById('getme');
 			context = dataCleanClone.node(selector, index, {}).get()[0];
-			
+			/**
+			 * If the expressions is bound to a node that is inside a repeat.... see makeBugCompliant()
+			 */
+			if ($form.find('[name="'+selector+'"]').parents('.jr-repeat').length > 0 ){
+				$repParents = $form.find('[name="'+selector+'"]').eq(index).parents('.jr-repeat');
+				expr = this.makeBugCompliant(expr, $repParents);
+			}
 		}
 		else context = dataCleanClone.getXML();//dataCleanClone.get()[0];//.documentElement;
 		
@@ -794,7 +838,6 @@ function Form (formSelector, dataStr){
 		expr = expr.replace( /&quot;/g, '"');
 
 		////console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
-
 		//result = evaluator.evaluate(expr, context.documentElement, null, resultType, null);
 		try{
 				result = document.evaluate(expr, context, null, resTypeNum, null);
@@ -1358,8 +1401,7 @@ function Form (formSelector, dataStr){
 
 			$form.find(cleverSelector.join()).each(function(){
 				//VERY WRONG TO USE form HERE!!!! FIX THIS
-				//one could argue that I should not use the input object here as a branch is not always an input (sometimes a group)
-		
+				//one could argue that I should not use the input object here as a branch is not always an input (sometimes a group)		
 				p = form.input.getProps($(this));
 				branchNode = form.input.getWrapNodes($(this));
 				

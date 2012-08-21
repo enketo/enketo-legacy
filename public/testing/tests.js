@@ -429,6 +429,7 @@ $(document).ready(function(){
 			//SOMETHING WRONG WITH TEST LOOP
 			//['/thedata/repeatGroup[3]/nodeC', 'string', null, 0, 'c3'],
 			//['/thedata/repeatGroup[position()=3]/nodeC', 'string', null, 0, 'c3']
+			// add test case where formula with absolute path is evaluated inside a repeat (ie. [x] position gets injected)
 		];
 		expect(t.length);
 

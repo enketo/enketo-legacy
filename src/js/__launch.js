@@ -361,6 +361,7 @@ function resetForm(){
 	//$upload.show();
 	state.reset();
 	$('#upload-form')[0].reset();
+	$('#upload-form input[type="hidden"]').val('');
 	$('#upload-form img.loading, #form-list').hide();
 	$('#input-switcher, #upload .hurry').show().find('a#server_url').click();
 	$('#form-languages').remove();

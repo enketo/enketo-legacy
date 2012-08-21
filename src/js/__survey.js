@@ -28,7 +28,6 @@ $(document).ready(function() {
 	var bookmark, message, choices, shown, time;
 
 	store = new StorageLocal();
-	console.debug('sending dataStr: '+jrDataStr);
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	settings = new Settings();
 	settings.init();
@@ -877,7 +876,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 			$(this).removeClass('ui-state-hover');
 		});
 	
-	this.pages().get('records').find('button#records-force-upload').button({'icons': {primary:"ui-icon-arrowthick-1-n"}})
+	this.pages().get('records').find('button#records-force-upload').button({'icons': {'primary':"ui-icon-arrowthick-1-n"}})
 		.click(function(){
 			//gui.alert('Sorry, this button is not working yet.');
 			connection.upload(true, form.getRecordName());

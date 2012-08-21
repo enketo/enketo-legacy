@@ -64,7 +64,7 @@ class Survey extends CI_Controller {
 					}
 					else
 					{
-						show_error('Error loading form.', 404);
+						show_error('Form not available (or an error occurred) ', 404);
 					}				
 				}
 				else 

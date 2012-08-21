@@ -11,6 +11,9 @@
 	<!--<script type="text/javascript" src="https://github.com/appendto/jquery-mockjax/raw/master/jquery.mockjax.js"></script>-->
 	<script type="text/javascript" src="../libraries/xpathjs_javarosa.min.js"></script>
 	
+	<script>
+		function GUI(){}
+	</script>
 	<!-- Your project file goes here -->
 	<script type="text/javascript" src="../js-source/__storage.js"></script>
 	<script type="text/javascript" src="../js-source/__debug.js"></script>

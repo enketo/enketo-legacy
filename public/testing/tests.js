@@ -21,6 +21,7 @@ test applicationCache:
 
 //var form = {}; //mock
 //var $form = $('body');
+
 //form.KEY_NAME = 'some kind of key name'; 
 //var FORM_FORMAT_URL = '../survey_format';
 
@@ -425,7 +426,7 @@ $(document).ready(function(){
 			["../nodeB", "string", "/thedata/nodeB", 0, "b"],
 			["/thedata/nodeB", "boolean", null, 0, true],
 			["/thedata/notexist", "boolean", null, 0, false]//, IF UNCOMMENT NEXT, SOME KIND OF INFINITE LOOP HAPPENS
-			//SOMETHING WRONG ABOUT TEST LOOP
+			//SOMETHING WRONG WITH TEST LOOP
 			//['/thedata/repeatGroup[3]/nodeC', 'string', null, 0, 'c3'],
 			//['/thedata/repeatGroup[position()=3]/nodeC', 'string', null, 0, 'c3']
 		];

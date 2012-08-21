@@ -51,7 +51,6 @@ class Survey_model extends CI_Model {
         return $this->_get_item('form_id');
     }
 
-
     public function get_data_url()
     {
         return $this->_get_item('data_url');

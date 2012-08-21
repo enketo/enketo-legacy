@@ -845,6 +845,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	// survey-form controls
 	$('button#save-form').button({'icons': {'primary':"ui-icon-disk"}})
 		.click(function(){
+			form.validate();
 			saveForm();
 		});
 	$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}})
@@ -855,6 +856,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 		.click(function(){
 			deleteForm(false);
 		});
+
+	$('#form-controls button').equalWidth();
 
 	$(document)
 		.on('click', '#records-saved li:not(.no-click)', function(event){ // future items matching selection will also get eventHandler
@@ -1001,7 +1004,16 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 GUI.prototype.saveConfirm = function(message, choices, heading){
 	"use strict";
 	var posFn, negFn, closeFn, rec,
+		valid = form.isValid(),
 		$saveConfirm = $('#dialog-save');
+
+	if (!valid){
+		$saveConfirm.find('[name="record-final"]').attr('disabled', 'disabled');
+	}
+	else{
+		$saveConfirm.find('[name="record-final"]').removeAttr('disabled');
+	}
+
 	message = message || '';
 	heading = heading || 'Record Details';
 	choices = (typeof choices == 'undefined') ? {} : choices;

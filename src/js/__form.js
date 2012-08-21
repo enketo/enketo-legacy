@@ -113,8 +113,21 @@ function Form (formSelector, dataStr){
 		//form language selector was moved outside of <form> so has to be separately removed
 		$('#form-languages').remove();
 		$form.replaceWith($formClone);
-
 	 };
+	 /**
+	 * Validates the whole form and returns true or false
+	 * @return {Boolean} 
+	 */ 
+	this.validate = function(){
+		return form.validateAll();
+	};
+	/**
+	 * Returns wether form has validated as true or false. Needs to be called AFTER calling validate()!
+	 * @return {Boolean} 
+	 */ 
+	this.isValid = function(){
+		return form.isValid();
+	};
 
 /**
  * Function: DataXML
@@ -2009,20 +2022,10 @@ function Form (formSelector, dataStr){
 				valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
 			}
 			
-
 			//console.log('data.set validation returned valid: '+valid);
 			//additional check for 'required'
 			valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
-			//console.log('after check for requiredness, valid: '+valid);
-			//only call evalSkipLogic if triggerelement is enabled.
-			//this avoids an endless loop when an element with skiplogic becomes disabled and the input is cleared
-			////console.debug('event namespace: '+event.namespace);
-			//if (typeof $(this).attr('disabled') == 'undefined'){
-			//that.calcUpdate();
-			//that.outputUpdate();
-			//if (event.namespace !== 'branch'){
-			//that.branch.update();
-			//}
+
 			if (typeof valid !== 'undefined' && valid !== null){
 				return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
 			}
@@ -2032,17 +2035,17 @@ function Form (formSelector, dataStr){
 		$form.on('dataupdate', function(event, nodeNames){
 			//nodeNames = nodeNames.split(',');
 			//console.debug('dataupdate detected on: '+nodeNames);
-			////console.debug(event);
+			//console.debug(event);
 			
 			that.calcUpdate(nodeNames); //EACH CALCUPDATE THAT CHANGES A VALUE TRIGGERS ANOTHER CALCUPDATE => VERY INEFFICIENT
 			that.branch.update(nodeNames);
 			that.outputUpdate(nodeNames);
-				//it is possible that a changed data value validates question that were previously invalidated
-				//that.validateInvalids();
+			//it is possible that a changed data value validates question that were previously invalidated
+			//that.validateInvalids();
 		});
 
 		//edit is fired when the form changes due to user input or repeats added/removed
-		//branch update doesn't require detection as it always happens as a result of an event that triggers change or changrepeat.
+		//branch update doesn't require detection as it always happens as a result of an event that triggers change or changerepeat.
 		$form.on('change changerepeat', function(event){
 			//console.debug('detected event to trigger editstatus: ');
 			//console.debug(event);
@@ -2119,6 +2122,10 @@ function Form (formSelector, dataStr){
 		return '/'+steps.reverse().join('/');
 	};
 
+	/**
+	 * Validates all enabled input fields after first resetting everything as valid.
+	 * @return {boolean} whether the form contains any errors
+	 */
 	FormHTML.prototype.validateAll = function(){
 		var that = this;
 		//can't fire custom events on disabled elements therefore we set them all as valid
@@ -2128,10 +2135,16 @@ function Form (formSelector, dataStr){
 		//the above still leaves out elements that are not disabled directly but have disabled parents
 		//this is dealt with in the validate event handler
 		$form.find('input, select, textarea').trigger('validate');
+		return this.isValid();
 	};
 
-	
-
+	/**
+	 * Returns true is form is valid and false if not. Needs to be called AFTER (or by) validateAll()
+	 * @return {boolean} whether the form is valid
+	 */
+	FormHTML.prototype.isValid = function(){
+		return ($form.find('.invalid').length > 0) ? false : true;
+	};
 }
 
 GUI.prototype.setCustomEventHandlers = function(){};

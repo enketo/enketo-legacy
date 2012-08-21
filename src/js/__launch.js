@@ -341,12 +341,16 @@ GUI.prototype.setCustomEventHandlers = function(){
 		resetForm();
 	});
 	
-	$('button#launch-form').button({'icons': {'primary':"ui-icon-arrowthick-1-e"}}).click(function(){
-		gui.alert('In the future this button will launch the form in Rapaide.survey '+
-			'(now it just triggers validation of the whole form).', 'Not functional');
+	$('button#validate-form').button({'disabled':true, 'text': false, 'icons': {'primary':"ui-icon-check"}}).click(function(){
+		//could be replaced by form.validate() perhaps but form would need to be instantiated
 		$('form.jr').trigger('beforesave');
 	});
 
+	$('button#launch-form').button({'disabled': true, 'icons': {'primary':"ui-icon-arrowthick-1-e"}}).click(function(){
+		gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
+	});
+
+	$('#form-controls button:not(#validate-form)').equalWidth();
 };
 
 function isValidUrl(url){
@@ -368,6 +372,7 @@ function resetForm(){
 	gui.updateStatus.edit(false);
 	$('#survey-form div, #xsltmessages div, #html5validationmessages div, #jrvalidationmessages div, #xmlerrors div, #xslerrors div, #html5-form-source textarea, #data textarea').empty();
 	form = null;
+	$('#validate-form, #launch-form').button('disable');
 	$('#tabs li a[href="#upload"]').click();
 	$tabs.hide();
 }
@@ -413,6 +418,9 @@ function processForm($response)
 		
 		//set event handlers for changes in form input fields
 		$(document).on('change dataupdate', 'form.jr', updateData);
+
+		//enable buttons
+		$('#validate-form, #launch-form').button('enable');
 	}
 	else {
 		$('#survey-form div').empty();

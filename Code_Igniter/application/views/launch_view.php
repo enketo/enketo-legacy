@@ -170,6 +170,7 @@
 
 	<div id="form-controls" class="bottom ui-widget ui-widget-header">
 		<button id="reset-form" >Reset</button>
+		<button id="validate-form">Validate</button>
 		<button id="launch-form">Launch</button>
 	</div>
 

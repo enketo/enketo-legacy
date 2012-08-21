@@ -75,7 +75,7 @@ GUI.prototype.init = function(){
 	if (typeof this.setCustomEventHandlers === 'function'){
 		this.setCustomEventHandlers();
 	}
-	$('#form-controls button').equalWidth();
+	
 	// the settings are retrieved from storage and applied before the pages are removed from the DOM
 	
 			//tooltips on all elements with a title

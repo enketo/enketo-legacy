@@ -137,10 +137,10 @@
 		<div class="ui-helper-clearfix">   
 		    <div class="column ui-corner-all">
 			    <ul style="line-height: 1.5em">
-			    	<li>widgets (grids, slider, geop., auto, select, big-text)</li>
 			    	<li>support for cascading selections</li>
 			    	<li>itext(path/to/node) support</li>
 			    	<li>complete data type validation</li>
+			    	<li>widgets (grids, slider, geop., auto, select, big-text)</li>
 			    </ul>
 			</div>
 			<div class="column ui-corner-all ui-helper-clearfix">
@@ -150,9 +150,9 @@
 				<a style="display: block; text-align: center;" href="#" title="click to relaunch">normal mode</a>
 			</div>
 		</div>
-		<p>
+		<!--<p>
 		 	Note that for standard XPath 1.0 functions, Enketo does not deviate from the XPath specification. This means that existing forms may not work properly until they are corrected. This is particularly relevant to usages described in item 1 and 3 of <a target="_blank" href="https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations">this document</a>.
-		</p>
+		</p>-->
 		<p>
 			More information is available <a target="_blank" href="http://blog.aidwebsolutions.com/tag/enketo/">here</a>. 
 		</p>

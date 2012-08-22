@@ -193,7 +193,6 @@ GUI.prototype.setEventHandlers = function(){
 	"use strict";
 	var that=this;
 	
-	
 	// close 'buttons' on page and feedback bar
 	$('#feedback-bar-close').button({'icons':{'primary': "ui-icon-closethick"}, 'text': false})
 		.click(function(event){
@@ -209,9 +208,9 @@ GUI.prototype.setEventHandlers = function(){
 	$('#feedback-bar-close, #page-close').removeClass().addClass('custom-button ui-widget-header ui-corner-all');
 	
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
-	$(document).on('click', 'a[href^="#"]:not(nav ul li a)', function(event){
+	$(document).on('click', 'a[href^="#"]:not([href="#"]):not(nav ul li a)', function(event){
 		var href = $(this).attr('href');
-		console.log('captured click to internal link that is not in nav, href='+href);
+		//console.log('captured click to nav page, href='+href);
 		//if href is not just an empty anchor it is an internal link and will trigger a navigation menu click
 		if (href !== '#'){
 			event.preventDefault();
@@ -219,6 +218,11 @@ GUI.prototype.setEventHandlers = function(){
 		}
 	});
 	
+	//particularly relevant in launch component where popstate is triggered when # is added to url
+//	$(document).on('click', $('a[href="#"]'), function(event){
+//		event.preventDefault();
+//	});
+
 	// event handlers for navigation menu
 	$('nav ul li a[href^="#"]')
 		.click(function(event){
@@ -394,8 +398,6 @@ GUI.prototype.pages = function(){
 		if(this.isShowing()){
 			this.close();
 		}
-		
-		
 			
 		$('#page-content').prepend($page.show()).trigger('change');
 		$('#overlay').show();
@@ -500,6 +502,7 @@ GUI.prototype.alert = function(message, heading){
 		'title': heading,
 		'modal': true,
 		'resizable': false,
+		'closeOnEscape': true,
 		'buttons': {
 			"Ok": closeFn
 		},
@@ -513,60 +516,69 @@ GUI.prototype.alert = function(message, heading){
 	 *
 	 * description
 	 *
-	 * Parameters:
-	 *
-	 *   @param {string=} message - [type/description]
+	 *   @param {?(Object.<string, string>|string)=} text - In its simplest form this is just a string but it can
+	 *                                               also an object with parameters msg, heading and errorMsg.
 	 *   @param {Object=} choices - [type/description]
-	 *   @param {string=} heading - [type/description]
-	 *
-	 * Returns:
-	 *
-	 *   return description
 	 */
-GUI.prototype.confirm = function(message, choices, heading){
+GUI.prototype.confirm = function(text, choices){
 	"use strict";
-	var posFn, negFn, closeFn,
-		$confirm = $('#dialog-confirm');
-	message = message || 'Please confirm action';
-	heading = heading || 'Are you sure?';
-	choices = (typeof choices == 'undefined') ? {posButton: 'Confirm', negButton: 'Cancel'} : choices;
+	var msg, heading, errorMsg, closeFn, dialogName, $dialog;
+	
+	if (typeof text === 'string'){
+		msg = text;
+	}
+	else if (typeof text.msg === 'string'){
+		msg = text.msg;
+	}
+
+	msg = (typeof msg !== 'undefined') ? msg : 'Please confirm action';
+	heading = (typeof text.heading !== 'undefined') ? text.heading : 'Are you sure?';
+	errorMsg = (typeof text.errorMsg !== 'undefined') ? text.errorMsg : '';
+	dialogName = (typeof text.dialog !== 'undefined') ? text.dialog : 'confirm';
+	choices = (typeof choices !== 'undefined') ? choices : {};
 	choices.posButton = choices.posButton || 'Confirm';
 	choices.negButton = choices.negButton || 'Cancel';
-	choices.posAction = choices.posAction || function(){};
-	choices.negAction = choices.negAction || function(){};
-	posFn = choices.posAction;
-	negFn = choices.negAction;
-	//closing methods to call when user has selected an option // AND WHEN X or ESC is CLICKED!! ADD
+	choices.posAction = choices.posAction || function(){return false;};
+	choices.negAction = choices.negAction || function(){return false;};
+	choices.beforeAction = choices.beforeAction || function(){};
+	//choices.afterAction = choices.afterAction || function(){};
 	closeFn = function(){
-		$confirm.dialog('destroy');
-		$confirm.find('#dialog-confirm-msg').text('');
-		//console.log('confirmation dialog destroyed');
+		$dialog.dialog('destroy');
+		$dialog.find('.dialog-msg, .dialog-error').text('');
+		console.debug('dialog destroyed');
+		//choices.afterAction.call();
 	};
+
+	$dialog = $('#dialog-'+dialogName);
 	
 	//write content into confirmation dialog
-	$confirm.find('#dialog-confirm-msg').text(message).capitalizeStart();
+	$dialog.find('.dialog-msg').text(msg).capitalizeStart();
+	$dialog.find('.dialog-error').text(errorMsg).capitalizeStart();
 
 	//instantiate dialog
-	$confirm.dialog({
+	$dialog.dialog({
+		'open': choices.beforeAction,
 		'title': heading,
 		'resizable': false,
 		'modal': true,
+		'closeOnEscape': true,
 		'buttons': [
 			{
 				text: choices.posButton,
 				click: function(){
-					posFn.call();
-					closeFn.call();
+					choices.posAction.call();
+					//closeFn.call();
 				}
 			},
 			{
 				text: choices.negButton,
 				click: function(){
-					negFn.call();
+					choices.negAction.call();
 					closeFn.call();
 				}
 			}
 		],
+		'width': 500,
 		'beforeClose': closeFn
 	});
 

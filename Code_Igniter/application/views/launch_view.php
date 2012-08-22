@@ -31,13 +31,31 @@
 	</head>
 
 	<? require 'elements/header++.php'; ?>
-	<div id="dialog-launch">
+	<div class="dialog" id="dialog-launch" style="display: none;">
 		<p>
 			<form onsubmit="return false;">
-				<span id="dialog-msg"></span>
-				<label>formList url<input name="formlist-url" type="text"/></label>
-				<label>submission url<input name="submission-url" type="text"/></label>
-				<label><input name="publicize" type="checkbox" value="true"/>final</label>
+				<span class="dialog-msg"></span>
+				<span class="dialog-error ui-state-error"></span>
+				<input name="server_url" type="hidden"/>
+				<input name="form_id" type="hidden"/>
+				<label>email
+					<span class="jr-hint">
+						In the future your email address will serve to authenticate yourself to change the settings you are now entering.
+					</span>
+					<input name="email" type="text" placeholder="optional" />
+				</label>
+				<!--<label>
+					<span class="jr-hint">If you would like to publicize your
+					<input name="publicize" type="checkbox" value="true"/>make survey visible
+				</label>-->
+				<a class="advanced" href="#" title="advanced options">show advanced options</a>
+				<fieldset class="advanced">
+					<label>publication url
+						<span class="jr-hint">You can provide an in-app link to where the collated data or reports will be published.(optional)</span>
+						<input name="data_url" type="text" placeholder="optional"/>
+					</label>
+					<!--<label>submission url<span class="jr-hint">Normally this does not need to and should not be changed.</span><input name="submission_url" type="text"/></label>-->
+				</fieldset>
 			</form>
 		</p>
 	</div>

@@ -14,14 +14,12 @@
 			
 			<nav>
 			    <ul>
-
 			    </ul>
 			</nav>
 								
 		</header> 
 			
-		<div id="feedback-bar" class="ui-widget ui-widget-content ui-state-highlight">
-			
+		<div id="feedback-bar" class="ui-widget ui-widget-content ui-state-highlight">			
 			<span class="ui-icon ui-icon-info" ></span>
 			<a href="#" id="feedback-bar-close" class="custom-button" ></a>
 		</div>
@@ -32,5 +30,15 @@
 			</div>
 		</div>
 		
-		<div id="dialog-confirm"><p><span class="ui-icon ui-icon-alert"></span><span id="dialog-confirm-msg"></span></p></div>
-		<div id="dialog-alert"><p><span class="ui-icon ui-icon-alert"></span><span id="dialog-alert-msg"></span></p></div>
+		<div class="dialog" id="dialog-confirm" style="display: none;">
+			<p>
+				<span class="ui-icon ui-icon-alert"></span>
+				<span class="dialog-msg"></span>
+			</p>
+		</div>
+		<div class="dialog" id="dialog-alert" style="display: none;">
+			<p>
+				<span class="ui-icon ui-icon-alert"></span>
+				<span id="dialog-alert-msg"></span>
+			</p>
+		</div>

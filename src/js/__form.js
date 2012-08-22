@@ -2059,10 +2059,10 @@ function Form (formSelector, dataStr){
 			//that.validateInvalids();
 		});
 
-		$form.on('beforesave', function(event){
-			console.debug('beforesave event detected');
-			that.validateAll();
-		});
+//		$form.on('beforesave', function(event){
+//			console.debug('beforesave event detected');
+//			that.validateAll();
+//		});
 
 		//hacks for legends
 		//it would be much better to replace these two handlers with a handler that detects the resize event of the form

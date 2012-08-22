@@ -32,10 +32,11 @@
 
 	<? require 'elements/header++.php'; ?>
 
-		<div id="dialog-save">
+		<div class="dialog" id="dialog-save" style="display: none;">
 			<p>
 				<form onsubmit="return false;">
-					<span id="dialog-save-msg" class="ui-state-error"></span>
+					<span class="dialog-msg"></span>
+					<span class="dialog-error ui-state-error"></span>
 					<label>name:<input name="record-name" type="text"/></label>
 					<label><input name="record-final" type="checkbox" value="true"/>final</label>
 				</form>

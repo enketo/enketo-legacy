@@ -351,6 +351,17 @@ GUI.prototype.setCustomEventHandlers = function(){
 	});
 
 	$('#form-controls button:not(#validate-form)').equalWidth();
+
+	$('#dialog-launch a.advanced').click(function(event){
+		event.preventDefault();
+		if ($(this).hasClass('active')){
+			$(this).text('show advanced options').removeClass('active').siblings('fieldset.advanced').hide();
+		}
+		else{
+			$(this).text('hide advanced options').addClass('active').siblings('fieldset.advanced').show();
+		}
+	});
+
 };
 
 function isValidUrl(url){
@@ -518,57 +529,51 @@ function addJsError(message){
 	$('#jserrors div ol').append('<li class="error"><span class="ui-icon ui-icon-alert"></span>'+message+'</li>');
 }
 
-GUI.prototype.launchConfirm = function(message, choices, heading){
+GUI.prototype.launchConfirm = function(errorMsg){
 	"use strict";
-	var posFn, negFn, closeFn, rec,
-		$launchConfirm = $('#dialog-launch');
-	message = message || '';
-	heading = heading || 'Launch Details';
-	choices = (typeof choices == 'undefined') ? {} : choices;
-	choices.posButton = choices.posButton || 'Ok';
-	choices.negButton = choices.negButton || 'Cancel';
-	posFn = choices.posAction || function(){
-		//return saveForm($saveConfirm.find('[name="record-name"]').val(), Boolean($saveConfirm.find('[name="record-final"]:checked').val()));
-	};
-	negFn = choices.negAction || function(){
-		return false;
-	};
+	var //afterFn,
+		$launchDialog = $('#dialog-launch'),
+		that = this;
+	errorMsg = errorMsg || '';
+	this.confirm(
+		{
+			'dialog': 'launch',
+			'msg':'Please provide the relevant details below to launch your survey.',
+			'heading':'Launch Parameters',
+			'errorMsg': errorMsg
+		},
+		{
+			'posButton': 'Ok',
+			'negButton': 'Cancel',
+			'posAction': function(){
+				var //email = $launchDialog.find('[name="email"]').val(),
+					//serverUrl = $launchDialog.find('[name="server_url"]').val(),
+					dataUrl = $launchDialog.find('[name="data_url"]').val();
+				if (dataUrl.length > 0 && !isValidUrl(dataUrl)){
+					errorMsg = 'not a valid data url';
+					console.log('not a valid url');
+					that.launchConfirm(errorMsg);
 
-	//closing methods to call when user has selected an option // AND WHEN X or ESC is CLICKED!! ADD
-	closeFn = function(){
-		$launchConfirm.dialog('destroy');
-		$launchConfirm.find('#dialog-msg').text('');
-		//console.log('confirmation dialog destroyed');
-	};
-
-	//write content into confirmation dialog
-	$launchConfirm.find('#dialog-msg').text(message).capitalizeStart();
-
-	//instantiate dialog
-	$launchConfirm.dialog({
-		'title': heading,
-		'resizable': false,
-		'modal': true,
-		'buttons': [
-			{
-				text: choices.posButton,
-				click: function(){
-					posFn.call();
-					closeFn.call();
+				}
+				else{
+					$launchDialog.find('form').submit();
+					console.log('submitted form');
 				}
 			},
-			{
-				text: choices.negButton,
-				click: function(){
-					negFn.call();
-					closeFn.call();
-				}
-			}
-		],
-		'beforeClose': closeFn
-	});
-
+			'negAction': function(){
+				return false;
+			},
+			'beforeAction': function(){
+				$launchDialog.find('fieldset.advanced').hide().siblings('a.advanced').removeClass('active');
+				$launchDialog.find('[name="server_url"]').val(state.server);
+				$launchDialog.find('[name="form_id"]').val(state.id);
+			}//,
+			//only to be used in case launchConfirm itself has to be called again
+			//'afterAction': afterFn
+		}
+	);
 };
+
 
 // function odkValidate(){
 //"use strict";

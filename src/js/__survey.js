@@ -90,7 +90,7 @@ $(document).ready(function() {
 				negButton : 'Use it',
 				posAction : function(){ window.location = MODERN_BROWSERS_URL; }
 			};
-			gui.confirm(message, choices,'Application cannot launch offline');
+			gui.confirm({'msg': message, 'heading':'Application cannot launch offline'}, choices);
 		}
 		console.log('cache initialized');
 	}
@@ -266,8 +266,11 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 			posAction : function(){ saveForm(confirmedRecordName, confirmedFinalStatus, true); },
 			negAction : function(){ saveForm(confirmedRecordName, confirmedFinalStatus, false); }
 		};
-		return gui.confirm(message, choices, 'Delete old Record?');
+		return gui.confirm({'msg': message, 'heading': 'Delete old Record?'}, choices);
 	}
+
+	//trigger beforesave event which is used e.g. to update timestamp preload item.
+	$('form.jr').trigger('beforesave');
 
 	result = store.setRecord(confirmedRecordName, record, deleteOldName, overwriteExisting, curRecordName);
 		
@@ -1001,64 +1004,38 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 	$page.find('#records-final-qty').text(finishedFormsQty);
 };
 
-GUI.prototype.saveConfirm = function(message, choices, heading){
+GUI.prototype.saveConfirm = function(){
 	"use strict";
-	var posFn, negFn, closeFn, rec,
-		valid = form.isValid(),
-		$saveConfirm = $('#dialog-save');
-
-	if (!valid){
-		$saveConfirm.find('[name="record-final"]').attr('disabled', 'disabled');
-	}
-	else{
-		$saveConfirm.find('[name="record-final"]').removeAttr('disabled');
-	}
-
-	message = message || '';
-	heading = heading || 'Record Details';
-	choices = (typeof choices == 'undefined') ? {} : choices;
-	choices.posButton = choices.posButton || 'Ok';
-	choices.negButton = choices.negButton || 'Cancel';
-	posFn = choices.posAction || function(){
-		return saveForm($saveConfirm.find('[name="record-name"]').val(), Boolean($saveConfirm.find('[name="record-final"]:checked').val()));
-	};
-	negFn = choices.negAction || function(){
-		return false;
-	};
-
-	//closing methods to call when user has selected an option // AND WHEN X or ESC is CLICKED!! ADD
-	closeFn = function(){
-		$saveConfirm.dialog('destroy');
-		$saveConfirm.find('#dialog-save-msg').text('');
-		//console.log('confirmation dialog destroyed');
-	};
-
-	//write content into confirmation dialog
-	$saveConfirm.find('#dialog-save-msg').text(message).capitalizeStart();
-
-	//instantiate dialog
-	$saveConfirm.dialog({
-		'title': heading,
-		'resizable': false,
-		'modal': true,
-		'buttons': [
-			{
-				text: choices.posButton,
-				click: function(){
-					posFn.call();
-					closeFn.call();
-				}
+	var $saveConfirm = $('#dialog-save');
+	this.confirm(
+		{
+			'dialog': 'save',
+			'msg':'',
+			'heading':'Record Details'
+		},
+		{
+			'posButton': 'Ok',
+			'negButton': 'Cancel',
+			'posAction': function(){
+					return saveForm(
+						$saveConfirm.find('[name="record-name"]').val(),
+						Boolean($saveConfirm.find('[name="record-final"]:checked').val())
+					);
 			},
-			{
-				text: choices.negButton,
-				click: function(){
-					negFn.call();
-					closeFn.call();
+			'negAction': function(){
+				return false;
+			},
+			'beforeAction': function(){
+				if (!form.isValid()){
+					console.log('form invalid');
+					$saveConfirm.find('[name="record-final"]').attr('disabled', 'disabled');
+				}
+				else{
+					console.log('form valid');
+					$saveConfirm.find('[name="record-final"]').removeAttr('disabled');
 				}
 			}
-		],
-		'beforeClose': closeFn
-	});
-
+		}
+	);
 };
 

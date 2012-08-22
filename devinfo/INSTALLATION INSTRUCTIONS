@@ -20,6 +20,7 @@ Installation:
 5. Create wildcard subdomain that points to public
 6. Import database structure into MYSQL database
 7. Set up config/database.php with appropriate db user name and password
+8. Check if environment in index.php is set to 'production'
 
 
 

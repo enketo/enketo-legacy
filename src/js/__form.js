@@ -1683,7 +1683,7 @@ function Form (formSelector, dataStr){
 		},
 		//transforms readonly inputs into triggers
 		readonlyWidget : function(){
-			$form.find('input[readonly]').parent('label').each(function(){
+			$form.find('input[readonly]:not([data-type-xml="geopoint"])').parent('label').each(function(){
 				//var $spans = $(this).find('span').not('.question-icons span').detach(); 
 				var html = $(this).html(),
 					relevant = $(this).find('input').attr('data-relevant'),

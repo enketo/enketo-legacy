@@ -40,6 +40,11 @@
  */
 if ( ! function_exists('url_exists'))
 {
+	function url_exists_and_valid($url)
+	{
+		return url_exists($url) && url_valid($url);
+	}
+
 	function url_exists($url)
 	{		
 //		$file_headers = @get_headers($url);
@@ -77,4 +82,21 @@ if ( ! function_exists('url_exists'))
 		curl_close($ch);
 		return ($httpcode >= 200 && $httpcode < 300) ? TRUE : FALSE;
 	}
+
+	//function not used yet
+	function makeValid()
+	{
+		$url = trim($url);
+		$url = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) ? $url : 'http://'.$url;
+		return (url_valid($url)) ? $url : FALSE;
+	}
+
+	function url_valid($url)
+	{
+		log_message('debug', 'result of url check on '.$url.filter_var($url, FILTER_VALIDATE_URL));
+		return (filter_var($url, FILTER_VALIDATE_URL)) ? TRUE : FALSE;
+	}
+
+
+
 }

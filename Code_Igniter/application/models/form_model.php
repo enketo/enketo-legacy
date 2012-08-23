@@ -1,6 +1,8 @@
 <?php
 //THIS WHOLE CLASS HAS TO BE RE-WRITTEN USING OOP. Maintaining a Form object (.xml, .html, .manifest_url, .xml_url, .server_url)
 //a Formlist object and an Error object and merging these before returning seems a better way.
+//
+
 class Form_model extends CI_Model {
 	
 	// TURN INTO CONSTANTS / CONFIG ITEMS?
@@ -474,8 +476,6 @@ class Form_model extends CI_Model {
                     $logo->addAttribute('alt', 'form logo');
                 }
             }
-
-
         }
         //return $result;
     }

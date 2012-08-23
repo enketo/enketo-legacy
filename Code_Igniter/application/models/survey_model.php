@@ -8,8 +8,9 @@ class Survey_model extends CI_Model {
     {
         parent::__construct();
         log_message('debug', 'Survey Model loaded');
-        $this->load->helper('subdomain', 'url');
+        $this->load->helper(array('subdomain', 'url', 'string', 'http'));
     	$this->subdomain = get_subdomain();
+        date_default_timezone_set('UTC');
     }
     
     // returns true if a requested survey form is live / published, used for manifest
@@ -61,6 +62,30 @@ class Survey_model extends CI_Model {
         return $this->_get_item('submission_url');
     }
     
+    public function launch_survey($server_url, $form_id, $submission_url, $data_url, $email)
+    {  
+        $subdomain = $this->_generate_subdomain();
+        log_message('debug', 'subdomain generated:'.$subdomain);
+        if (url_valid($server_url) && url_valid($submission_url) && (url_valid($data_url) || $data_url===NULL) && $subdomain)
+        {
+            //ADD: CHECK URLS FOR LIVENESS?
+            //if we can ensure only requests from enketo.net are processed, it is pretty sure that $server_url is live       
+            $data = array(
+                'subdomain' => $subdomain,
+                'server_url' => $server_url,
+                'form_id' => $form_id,
+                'submission_url' => $submission_url,
+                'data_url' => $data_url,
+                'email' => $email,
+                'launch_date' => date( 'Y-m-d H:i:s', time())
+            );
+            $result = $this->db->insert('surveys', $data); 
+            log_message('debug', 'result of insert into surveys table: '.$result);
+            return ($result != FALSE) ? $subdomain : FALSE;
+        }
+        return FALSE;
+    }
+
 // 	public function update_formlist()
 // 	{
 //        $formlist_url = 
@@ -122,14 +147,17 @@ class Survey_model extends CI_Model {
 
     private function _generate_subdomain()
     {
-    	$result_num = 1;
+    	//$result_num = 1;
+        $counter = 0;
     	$subdomain = NULL;
-    	
-    	while ($result_num !== 0)
+    	//this could be an infinite loop without a counter
+    	while (!$subdomain && $counter < 1000)
     	{
-    		$subdomain = 'a'.rand(0,999);
+            $subdomain = strtolower(random_string('alnum', 5));
     		$query = $this->db->get_where('surveys', array('subdomain' => $subdomain));
-    		$result_num =  $query->num_rows();
+    		$result_num = $query->num_rows();
+            $subdomain = ($result_num !== 0) ? NULL : $subdomain;
+            $counter++;
     	}
     	return $subdomain;
     }

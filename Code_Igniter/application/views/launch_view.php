@@ -39,9 +39,7 @@
 				<input name="server_url" type="hidden"/>
 				<input name="form_id" type="hidden"/>
 				<label>email
-					<span class="jr-hint">
-						In the future your email address will serve to authenticate yourself to change the settings you are now entering.
-					</span>
+					<span class="hint ui-icon ui-icon-help" title="In the future your email address will serve to authenticate yourself to change the settings you are now entering."></span>
 					<input name="email" type="text" placeholder="optional" />
 				</label>
 				<!--<label>
@@ -51,7 +49,7 @@
 				<a class="advanced" href="#" title="advanced options">show advanced options</a>
 				<fieldset class="advanced">
 					<label>publication url
-						<span class="jr-hint">You can provide an in-app link to where the collated data or reports will be published.(optional)</span>
+						<span class="hint ui-icon ui-icon-help" title="You can provide an in-app link to where the collated data or reports will be published."></span>
 						<input name="data_url" type="text" placeholder="optional"/>
 					</label>
 					<!--<label>submission url<span class="jr-hint">Normally this does not need to and should not be changed.</span><input name="submission_url" type="text"/></label>-->

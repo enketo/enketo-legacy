@@ -221,6 +221,21 @@ $(document).ready(function(){
 	
 	$('#upload-form #input-switcher a#server_url').click();
 
+	$('#dialog-launch form').submit(function(event){
+		event.preventDefault();
+		console.debug('in ajax submit');
+		$.ajax('launch/launchSurvey', {
+			type: 'POST',
+			data: $(this).serialize(),
+			error: function(response){
+				console.error('an error occurred when sending survey launch data');
+			},
+			complete: function(){
+				console.log('form submission complete');
+			}
+		});
+	});
+
 	if (state.server){
 //		if (!isValidUrl(state.server)){
 //			gui.alert('Server url is not valid. Resetting.');
@@ -347,7 +362,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 	});
 
 	$('button#launch-form').button({'disabled': true, 'icons': {'primary':"ui-icon-arrowthick-1-e"}}).click(function(){
-		gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
+		gui.launchConfirm();
+		//gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
 	});
 
 	$('#form-controls button:not(#validate-form)').equalWidth();
@@ -529,47 +545,46 @@ function addJsError(message){
 	$('#jserrors div ol').append('<li class="error"><span class="ui-icon ui-icon-alert"></span>'+message+'</li>');
 }
 
-GUI.prototype.launchConfirm = function(errorMsg){
+GUI.prototype.launchConfirm = function(){
 	"use strict";
 	var //afterFn,
 		$launchDialog = $('#dialog-launch'),
 		that = this;
-	errorMsg = errorMsg || '';
+	//errorMsg = errorMsg || '';
 	this.confirm(
 		{
 			'dialog': 'launch',
 			'msg':'Please provide the relevant details below to launch your survey.',
-			'heading':'Launch Parameters',
-			'errorMsg': errorMsg
+			'heading':'Launch Parameters'//,
+			//'errorMsg': errorMsg
 		},
 		{
 			'posButton': 'Ok',
 			'negButton': 'Cancel',
-			'posAction': function(){
+			posAction: function(){
 				var //email = $launchDialog.find('[name="email"]').val(),
 					//serverUrl = $launchDialog.find('[name="server_url"]').val(),
 					dataUrl = $launchDialog.find('[name="data_url"]').val();
 				if (dataUrl.length > 0 && !isValidUrl(dataUrl)){
-					errorMsg = 'not a valid data url';
-					console.log('not a valid url');
-					that.launchConfirm(errorMsg);
-
+					console.log('not a valid data url');
+					$launchDialog.find('.dialog-error').text('not a valid data url');
+					//that.launchConfirm(errorMsg);
 				}
 				else{
+					$launchDialog.find('.dialog-error').text('');
 					$launchDialog.find('form').submit();
-					console.log('submitted form');
+					//$launchDialog.find('a.ui-dialog-titlebar-close').click();
 				}
 			},
-			'negAction': function(){
+			negAction: function(){
 				return false;
 			},
-			'beforeAction': function(){
-				$launchDialog.find('fieldset.advanced').hide().siblings('a.advanced').removeClass('active');
+			beforeAction: function(){
+				//$launchDialog.find('fieldset.advanced').hide().siblings('a.advanced').removeClass('active');
 				$launchDialog.find('[name="server_url"]').val(state.server);
 				$launchDialog.find('[name="form_id"]').val(state.id);
 			}//,
-			//only to be used in case launchConfirm itself has to be called again
-			//'afterAction': afterFn
+			//posDestroyAfter: false
 		}
 	);
 };

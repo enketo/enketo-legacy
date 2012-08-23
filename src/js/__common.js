@@ -82,7 +82,7 @@ GUI.prototype.init = function(){
 	//$('[title]').tooltip();
 	//$("[title]").tipTip();
 	//$("[title]").tipsy({gravity: $.fn.tipsy.autoNS});
-	
+	$('.dialog [title]').tooltip();
 	//transform comboboxes
 	//$('#forms-saved-names').combobox();
 	/*$('#forms-saved ol').selectable({
@@ -516,8 +516,8 @@ GUI.prototype.alert = function(message, heading){
 	 *
 	 * description
 	 *
-	 *   @param {?(Object.<string, string>|string)=} text - In its simplest form this is just a string but it can
-	 *                                               also an object with parameters msg, heading and errorMsg.
+	 *   @param {?(Object.<string, (string|boolean)>|string)=} text - In its simplest form this is just a string but it can
+	 *                                                         also an object with parameters msg, heading and errorMsg.
 	 *   @param {Object=} choices - [type/description]
 	 */
 GUI.prototype.confirm = function(text, choices){
@@ -530,10 +530,10 @@ GUI.prototype.confirm = function(text, choices){
 	else if (typeof text.msg === 'string'){
 		msg = text.msg;
 	}
-
+	
 	msg = (typeof msg !== 'undefined') ? msg : 'Please confirm action';
 	heading = (typeof text.heading !== 'undefined') ? text.heading : 'Are you sure?';
-	errorMsg = (typeof text.errorMsg !== 'undefined') ? text.errorMsg : '';
+	//errorMsg = (typeof text.errorMsg !== 'undefined') ? text.errorMsg : '';
 	dialogName = (typeof text.dialog !== 'undefined') ? text.dialog : 'confirm';
 	choices = (typeof choices !== 'undefined') ? choices : {};
 	choices.posButton = choices.posButton || 'Confirm';
@@ -541,7 +541,8 @@ GUI.prototype.confirm = function(text, choices){
 	choices.posAction = choices.posAction || function(){return false;};
 	choices.negAction = choices.negAction || function(){return false;};
 	choices.beforeAction = choices.beforeAction || function(){};
-	//choices.afterAction = choices.afterAction || function(){};
+
+
 	closeFn = function(){
 		$dialog.dialog('destroy');
 		$dialog.find('.dialog-msg, .dialog-error').text('');
@@ -553,7 +554,7 @@ GUI.prototype.confirm = function(text, choices){
 	
 	//write content into confirmation dialog
 	$dialog.find('.dialog-msg').text(msg).capitalizeStart();
-	$dialog.find('.dialog-error').text(errorMsg).capitalizeStart();
+	//$dialog.find('.dialog-error').text(errorMsg).capitalizeStart();
 
 	//instantiate dialog
 	$dialog.dialog({
@@ -567,7 +568,10 @@ GUI.prototype.confirm = function(text, choices){
 				text: choices.posButton,
 				click: function(){
 					choices.posAction.call();
-					//closeFn.call();
+					//console.log('error text: '+$dialog.find('.dialog-error').text());
+					if ($dialog.find('.dialog-error').text().length === 0){
+						closeFn.call();
+					}
 				}
 			},
 			{

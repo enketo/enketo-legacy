@@ -786,14 +786,14 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 
 
 //avoid Google Closure Compiler renaming:
-Settings.prototype['autoUpload'] = Settings.prototype.autoUpload;
-Settings.prototype['buttonLocation'] = Settings.prototype.buttonLocation;
+//Settings.prototype['autoUpload'] = Settings.prototype.autoUpload;
+//Settings.prototype['buttonLocation'] = Settings.prototype.buttonLocation;
 
-Settings.prototype.autoUpload = function(val){
+Settings.prototype['autoUpload'] = function(val){
 
 };
 
-Settings.prototype.buttonLocation = function(val){
+Settings.prototype['buttonLocation'] = function(val){
 	"use strict";
 	//if ($(this).checked === true) {
 	//console.log('found radio input with required value'); // DEBUG

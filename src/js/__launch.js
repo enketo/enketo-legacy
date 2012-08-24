@@ -358,12 +358,13 @@ GUI.prototype.setCustomEventHandlers = function(){
 	
 	$('button#validate-form').button({'disabled':true, 'text': false, 'icons': {'primary':"ui-icon-check"}}).click(function(){
 		//could be replaced by form.validate() perhaps but form would need to be instantiated
-		$('form.jr').trigger('beforesave');
+		//$('form.jr').trigger('beforesave');
+		form.validate();
 	});
 
 	$('button#launch-form').button({'disabled': true, 'icons': {'primary':"ui-icon-arrowthick-1-e"}}).click(function(){
-		gui.launchConfirm();
-		//gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
+		//gui.launchConfirm();
+		gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
 	});
 
 	$('#form-controls button:not(#validate-form)').equalWidth();
@@ -561,7 +562,7 @@ GUI.prototype.launchConfirm = function(){
 		{
 			'posButton': 'Ok',
 			'negButton': 'Cancel',
-			posAction: function(){
+			'posAction': function(){
 				var //email = $launchDialog.find('[name="email"]').val(),
 					//serverUrl = $launchDialog.find('[name="server_url"]').val(),
 					dataUrl = $launchDialog.find('[name="data_url"]').val();
@@ -576,10 +577,10 @@ GUI.prototype.launchConfirm = function(){
 					//$launchDialog.find('a.ui-dialog-titlebar-close').click();
 				}
 			},
-			negAction: function(){
+			'negAction': function(){
 				return false;
 			},
-			beforeAction: function(){
+			'beforeAction': function(){
 				//$launchDialog.find('fieldset.advanced').hide().siblings('a.advanced').removeClass('active');
 				$launchDialog.find('[name="server_url"]').val(state.server);
 				$launchDialog.find('[name="form_id"]').val(state.id);

@@ -118,7 +118,7 @@ function Form (formSelector, dataStr){
 	 * Validates the whole form and returns true or false
 	 * @return {Boolean} 
 	 */ 
-	this.validate = function(){
+	this.validateForm = function(){
 		return form.validateAll();
 	};
 	/**

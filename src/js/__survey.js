@@ -90,7 +90,7 @@ $(document).ready(function() {
 				negButton : 'Use it',
 				posAction : function(){ window.location = MODERN_BROWSERS_URL; }
 			};
-			gui.confirm({'msg': message, 'heading':'Application cannot launch offline'}, choices);
+			gui.confirm({msg: message, heading:'Application cannot launch offline'}, choices);
 		}
 		console.log('cache initialized');
 	}
@@ -195,7 +195,7 @@ function loadForm(formName, confirmed){
 	if (!confirmed && form.getEditStatus()){
 		message = 'Would you like to proceed without saving changes to the form you were working on?';
 		choices = {
-			'posAction': function(){ loadForm("'+formName+'", true); }
+			posAction: function(){ loadForm("'+formName+'", true); }
 		};
 		gui.confirm(message, choices);
 	}
@@ -266,7 +266,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 			posAction : function(){ saveForm(confirmedRecordName, confirmedFinalStatus, true); },
 			negAction : function(){ saveForm(confirmedRecordName, confirmedFinalStatus, false); }
 		};
-		return gui.confirm({'msg': message, 'heading': 'Delete old Record?'}, choices);
+		return gui.confirm({msg: message, heading: 'Delete old Record?'}, choices);
 	}
 
 	//trigger beforesave event which is used e.g. to update timestamp preload item.
@@ -372,7 +372,7 @@ function exportData(finalOnly){
 	data = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
 	//console.debug(data);
 	if (!data){
-		gui.alert('No data marked "final" to export.');
+		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
 		uriContent = "data:text/xml," + encodeURIComponent(data); /*data:application/octet-stream*/
@@ -848,7 +848,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	// survey-form controls
 	$('button#save-form').button({'icons': {'primary':"ui-icon-disk"}})
 		.click(function(){
-			form.validate();
+			form.validateForm();
 			saveForm();
 		});
 	$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}})
@@ -1009,23 +1009,23 @@ GUI.prototype.saveConfirm = function(){
 	var $saveConfirm = $('#dialog-save');
 	this.confirm(
 		{
-			'dialog': 'save',
-			'msg':'',
-			'heading':'Record Details'
+			dialog: 'save',
+			msg:'',
+			heading:'Record Details'
 		},
 		{
-			'posButton': 'Ok',
-			'negButton': 'Cancel',
-			'posAction': function(){
+			posButton: 'Ok',
+			negButton: 'Cancel',
+			posAction: function(){
 					return saveForm(
 						$saveConfirm.find('[name="record-name"]').val(),
 						Boolean($saveConfirm.find('[name="record-final"]:checked').val())
 					);
 			},
-			'negAction': function(){
+			negAction: function(){
 				return false;
 			},
-			'beforeAction': function(){
+			beforeAction: function(){
 				if (!form.isValid()){
 					console.log('form invalid');
 					$saveConfirm.find('[name="record-final"]').attr('disabled', 'disabled');

@@ -228,7 +228,7 @@ $(document).ready(function(){
 			type: 'POST',
 			data: $(this).serialize(),
 			error: function(response){
-				console.error('an error occurred when sending survey launch data');
+				console.debug('an error occurred when sending survey launch data');
 			},
 			complete: function(){
 				console.log('form submission complete');
@@ -357,14 +357,15 @@ GUI.prototype.setCustomEventHandlers = function(){
 	});
 	
 	$('button#validate-form').button({'disabled':true, 'text': false, 'icons': {'primary':"ui-icon-check"}}).click(function(){
-		//could be replaced by form.validate() perhaps but form would need to be instantiated
 		//$('form.jr').trigger('beforesave');
-		form.validate();
+		if (typeof form !== 'undefined'){
+			form.validateForm();
+		}
 	});
 
 	$('button#launch-form').button({'disabled': true, 'icons': {'primary':"ui-icon-arrowthick-1-e"}}).click(function(){
-		//gui.launchConfirm();
-		gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
+		gui.launchConfirm();
+		//gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
 	});
 
 	$('#form-controls button:not(#validate-form)').equalWidth();

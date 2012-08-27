@@ -38,7 +38,7 @@
 					<span class="dialog-msg"></span>
 					<span class="dialog-error ui-state-error"></span>
 					<label>name:<input name="record-name" type="text"/></label>
-					<label><input name="record-final" type="checkbox" value="true"/>final</label>
+					<label><input name="record-final" type="checkbox" value="true"/><span>final</span></label>
 				</form>
 			</p>
 		</div>

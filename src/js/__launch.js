@@ -230,8 +230,15 @@ $(document).ready(function(){
 			error: function(response){
 				console.debug('an error occurred when sending survey launch data');
 			},
-			complete: function(){
+			success: function(response){
 				console.log('form submission complete');
+				if (isValidUrl(response)){
+					gui.alert('Form was launched succesfully at this address: '+
+						'<a href="'+response+'">'+response+'</a>', 'Success!');
+				}
+				else{
+					gui.alert('There was a problem with launching the survey. (Server reponse: '+response+')');
+				}
 			}
 		});
 	});
@@ -364,8 +371,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 	});
 
 	$('button#launch-form').button({'disabled': true, 'icons': {'primary':"ui-icon-arrowthick-1-e"}}).click(function(){
-		gui.launchConfirm();
-		//gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
+		//gui.launchConfirm();
+		gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
 	});
 
 	$('#form-controls button:not(#validate-form)').equalWidth();
@@ -555,20 +562,20 @@ GUI.prototype.launchConfirm = function(){
 	//errorMsg = errorMsg || '';
 	this.confirm(
 		{
-			'dialog': 'launch',
-			'msg':'Please provide the relevant details below to launch your survey.',
-			'heading':'Launch Parameters'//,
+			dialog: 'launch',
+			msg:'Please provide the relevant details below to launch your survey.',
+			heading:'Launch Parameters'//,
 			//'errorMsg': errorMsg
 		},
 		{
-			'posButton': 'Ok',
-			'negButton': 'Cancel',
-			'posAction': function(){
+			posButton: 'Ok',
+			negButton: 'Cancel',
+			posAction: function(){
 				var //email = $launchDialog.find('[name="email"]').val(),
 					//serverUrl = $launchDialog.find('[name="server_url"]').val(),
 					dataUrl = $launchDialog.find('[name="data_url"]').val();
 				if (dataUrl.length > 0 && !isValidUrl(dataUrl)){
-					console.log('not a valid data url');
+					console.log('not a valid publication link');
 					$launchDialog.find('.dialog-error').text('not a valid data url');
 					//that.launchConfirm(errorMsg);
 				}
@@ -578,10 +585,10 @@ GUI.prototype.launchConfirm = function(){
 					//$launchDialog.find('a.ui-dialog-titlebar-close').click();
 				}
 			},
-			'negAction': function(){
+			negAction: function(){
 				return false;
 			},
-			'beforeAction': function(){
+			beforeAction: function(){
 				//$launchDialog.find('fieldset.advanced').hide().siblings('a.advanced').removeClass('active');
 				$launchDialog.find('[name="server_url"]').val(state.server);
 				$launchDialog.find('[name="form_id"]').val(state.id);

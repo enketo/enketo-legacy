@@ -81,7 +81,10 @@ class Survey_model extends CI_Model {
             );
             $result = $this->db->insert('surveys', $data); 
             log_message('debug', 'result of insert into surveys table: '.$result);
-            return ($result != FALSE) ? $subdomain : FALSE;
+            //CHANGE detect url or extract from base_url() (url helper)
+            $domain = $_SERVER['SERVER_NAME'];
+            $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
+            return ($result != FALSE) ? 'http://'.$subdomain.'.'.$domain : FALSE;
         }
         return FALSE;
     }

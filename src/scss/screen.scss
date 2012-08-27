@@ -49,9 +49,6 @@ div[id^="dialog"] p span.ui-icon {
   float: left;
   margin: .3em .7em 3em 0; }
 
-#dialog-confirm, #dialog-alert {
-  display: none;
-  line-height: 1.5em; }
 
 .capitalize {
   text-transform: capitalize; }
@@ -320,13 +317,48 @@ article.main .jr {
     padding-bottom: 10px;
     margin: 3px 3px 30px 3px; } }
 
-#dialog-save{
+/*#dialog-save{
   #dialog-save-msg{
     display: block;}
   input[type="text"]{
     display: block;
     width: 100%;}  
-}
+}*/
+
+.dialog {
+  display: none;
+  line-height: 1.5em;
+  .dialog-msg{
+    display: block;
+    margin-bottom: 5px;}
+  .dialog-error.ui-state-error{
+    display: block;
+    margin-bottom: 15px;}
+  input{
+    width: 100%;
+    display:block;
+    margin-bottom: 20px;}
+  input[type=checkbox]{
+    width: 1em;
+    float: left;
+    &+span{
+      display: block;
+    }
+    &:disabled+span{
+      opacity: 0.5; }}
+  label{
+    display:block;}
+  a.advanced{
+    font-size: 10px;
+    display:block;
+    margin: 10px 0 10px 0;}
+  fieldset.advanced{
+    display:none; }
+  .hint{
+    display: inline-block;
+    }}
+
+
 
 
 footer {

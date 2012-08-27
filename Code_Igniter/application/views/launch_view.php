@@ -38,8 +38,9 @@
 				<span class="dialog-error ui-state-error"></span>
 				<input name="server_url" type="hidden"/>
 				<input name="form_id" type="hidden"/>
-				<label>email
-					<span class="hint ui-icon ui-icon-help" title="In the future your email address will serve to authenticate yourself to change the settings you are now entering."></span>
+				<label>
+					<span>email</span>
+					<span class="hint ui-icon ui-icon-help" title="You will receive a confirmation email with the direct link to the survey. In the future your email address will also be used for authentication if you would like to change the settings you are now entering."></span>
 					<input name="email" type="text" placeholder="optional" />
 				</label>
 				<!--<label>
@@ -48,7 +49,8 @@
 				</label>-->
 				<a class="advanced" href="#" title="advanced options">show advanced options</a>
 				<fieldset class="advanced">
-					<label>publication url
+					<label>
+						<span>data or report publication link</span>
 						<span class="hint ui-icon ui-icon-help" title="You can provide an in-app link to where the collated data or reports will be published."></span>
 						<input name="data_url" type="text" placeholder="optional"/>
 					</label>

@@ -3,7 +3,7 @@ INSTALLATION INSTRUCTIONS
 Prerequisites:
 - LAMP stack (enabled: mode_rewrite, php5-xsl, curl)
 - Code Igniter (latest)
-- XPathJS_javarosa (buid/xpathjs_javarosa.js is only file that is required)
+- XPathJS_javarosa (build/xpathjs_javarosa.js is only file that is required)
 - (JQuery & JQuery UI)?
 
 Installation:
@@ -15,13 +15,12 @@ Installation:
 		|_____ public (this is the webroot that contains index.php)
 
 2. Fix two paths in index.php, test if installation works, application/logs and application/cache should be writeable
-3. Copy enketo files in application/controllers, application/config, application/views, application models, to the same folder
-4. Copy enketo files in public
-5. Create wildcard subdomain that points to public
-6. Import database structure into MYSQL database
+3. Replace application directory 
+4. Copy enketo files in /public (overwrite index.php)
+5. Create wildcard subdomain that points to /public
+6. Import database structure into MYSQL database (most queries are done with the Active Record Class so any supported db should do with minimal fixes)
 7. Set up config/database.php with appropriate db user name and password
-8. Check if environment in index.php is set to 'production'
-
+8. Set environment in index.php to 'production'
 
 
 ADDITIONAL INFO FOR DEVELOPERS:

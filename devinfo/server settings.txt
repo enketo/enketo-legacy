@@ -1,16 +1,7 @@
-set INDEX.PHP to 'production'
-delete js-source on server (not so important)
-set up database
-set up database user
-set up database settings in config/database.php
-set up database tables
-make application/logs folder writeable
-make application/cache folder writeable
 route all traffic (in Turnkey Linux by routing all traffic on port 80 to webroot (rapaide/public/) by editing existing virtual host)
 enable MOD_REWRITE (!!!!!! in Turnkey Linux go to: https://IP-ADDRESS:12321/apache/edit_mods.cgi) 
 instal php5-xsl (sudo apt-get install php5-xsl) if required
 in config.php set log_threshold to level to 1 or 2?
 if used (in Transform controller e.g.), enable curl in php
 call survey/update_list to populate the survey list from ODK Aggregate
-make sure public folders are not listing files e.g. go to rapaide.com/js !!
 #enable apache mod_proxy and mod_proxy_http (for html5 and odk validation services)

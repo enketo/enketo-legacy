@@ -1,3 +1,18 @@
+/*
+ Copyright 2012 Martijn van de Rijdt
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
 var i=!0,j=null,k=!1;function l(){return function(){}}function m(a){return function(){return a}}var p,q,r={};$(document).ready(function(){q=new s;q.a();"undefined"==typeof console&&(console={log:l()});"undefined"==typeof window.console.debug&&(console.debug=console.log);var a;a:{a=window.location.search.substring(1).split("&");for(var b=0;b<a.length;b++){var d=a[b].split("=");if("debug"==d[0]){a=encodeURI(d[1]);break a}}a=k}"true"!==a&&(window.console.log=l(),window.console.debug=l())});
 function s(){}p=s.prototype;p.a=function(){this.na.W();t(this).a();this.S();"function"===typeof this.R&&this.R();$(".dialog [title]").tooltip();Modernizr.borderradius&&(Modernizr.boxshadow&&Modernizr.csstransitions&&Modernizr.opacity)&&$(document).trigger("browsersupport","fancy-visuals");$("footer").detach().appendTo("#container")};p.W=function(){$(window).trigger("resize")};
 p.S=function(){var a=this;$("#feedback-bar-close").button({icons:{primary:"ui-icon-closethick"},text:k}).click(function(a){a.preventDefault();$("#feedback-bar p").remove();$("#feedback-bar").trigger("change")});$("#page-close").button({icons:{primary:"ui-icon-closethick"},text:k}).click(function(b){b.preventDefault();t(a).close()});$("#feedback-bar-close, #page-close").removeClass().addClass("custom-button ui-widget-header ui-corner-all");$(document).on("click",'a[href^="#"]:not([href="#"]):not(nav ul li a)',
@@ -18,12 +33,42 @@ z.fn.Z=function(a){a=z.extend({la:"!@#$%^&*()+=[]\\';,/{}|\":<>?~`.- ",i:"",J:""
 a.preventDefault()});z(this).bind("contextmenu",m(k))})};z.fn.kb=function(a){var b="abcdefghijklmnopqrstuvwxyz",b=b+b.toUpperCase(),a=z.extend({i:b},a);return this.each(function(){z(this).Z(a)})};z.fn.alpha=function(a){a=z.extend({i:"1234567890"},a);return this.each(function(){z(this).Z(a)})};
 z.fn.ba=function(){var a;a||(a=1);var b=this.contents().filter(function(){return 3==this.nodeType}).first(),d=b.text();a=d.split(" ",a).join(" ");b.length&&(b[0].nodeValue=d.slice(a.length),b.before('<span class="capitalize">'+a+"</span>"))};
 z.fn.ua=function(){this.each(function(){var a=z(this),b=z(this).find("ol");a.css("overflow","hidden");var d=b.height()-a.height();if(0<d){var f=d/b.height(),f=Math.round((1-f)*a.height()),f=f-f%2;z("#records .column.middle").html('<div id="slider-wrap" class="ui-corner-all"><div id="slider-vertical"></div></div>');z("#slider-wrap").height(a.outerHeight());z("#slider-vertical").slider({orientation:"vertical",lb:"max",min:0,max:100,value:100,pb:function(a,e){b.css({top:-((100-e.value)*d/100)})}});z("#slider-wrap").css("margin-top",
-z("#records-saved h3").outerHeight(i));z(".ui-slider-handle").css({height:f,"margin-bottom":-0.5*f});a=z("#slider-vertical").height();f=a-f;a=0.5*(a-f);z(".ui-slider").css({height:f,"margin-top":a});z(".ui-slider-range").css({top:-a});z("#slider-wrap").click(function(){z("#slider-vertical").slider("value",0);b.css({top:-d})})}})};function aa(){function a(a){var d;for(d=0;d<b.length;d++)if(a===b[d])return i;return k}var b="__settings null __history Firebug undefined __bookmark __counter".split(" "),d=window.localStorage;this.isSupported=function(){try{return"localStorage"in window&&window.localStorage!==j}catch(a){return k}};this.hb=function(){return b};this.U=function(b,h,e,g,c){if(!b||1>b.length)return console.error("no key provided for record"),"require";b=b.trim();c="string"===typeof c?c.trim():j;g="undefined"!==typeof g&&
+z("#records-saved h3").outerHeight(i));z(".ui-slider-handle").css({height:f,"margin-bottom":-0.5*f});a=z("#slider-vertical").height();f=a-f;a=0.5*(a-f);z(".ui-slider").css({height:f,"margin-top":a});z(".ui-slider-range").css({top:-a});z("#slider-wrap").click(function(){z("#slider-vertical").slider("value",0);b.css({top:-d})})}})};/*
+ Copyright 2012 Martijn van de Rijdt
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+function aa(){function a(a){var d;for(d=0;d<b.length;d++)if(a===b[d])return i;return k}var b="__settings null __history Firebug undefined __bookmark __counter".split(" "),d=window.localStorage;this.isSupported=function(){try{return"localStorage"in window&&window.localStorage!==j}catch(a){return k}};this.hb=function(){return b};this.U=function(b,h,e,g,c){if(!b||1>b.length)return console.error("no key provided for record"),"require";b=b.trim();c="string"===typeof c?c.trim():j;g="undefined"!==typeof g&&
 g===i?i:k;if("string"===typeof h.data&&a(b))return"forbidden";if("string"===typeof h.data&&c!==b&&d.getItem(b)&&g!==i)return"existing";try{return"string"===typeof h.data&&(h.s=(new Date).getTime(),d.setItem("__counter",JSON.stringify({counter:this.getCounterValue()}))),d.setItem(b,JSON.stringify(h)),console.debug("saved: "+b+", old key was: "+c),c!==j&&(""!==c&&c!==b)&&e&&(console.log("going to remove old record with key:"+c),this.P(c)),"success"}catch(n){return console.log("error in store.setRecord:"+
 n.message),"error"}};this.r=function(a){var b;try{return b=JSON.parse(d.getItem(a))}catch(e){return console.log("error with loading data from store: "+e.message),j}};this.P=function(a){try{return d.removeItem(a),i}catch(b){return console.log("error with removing data from store: "+b.message),k}};this.A=function(){var a,b,d=[],g=this.ja(k);for(a=0;a<g.length;a++)b=g[a],b.ready="true"===b.ready||b.ready===i?i:k,d.push({key:b.key,ready:b.ready,s:b.s});d.sort(function(c,a){return a.s-c.s});return d};
 this.ja=function(b,h){var e,g,c=[],n={},b=b||k,h=h||j;for(e=0;e<d.length;e++)if(g=d.key(e),n=d.getItem(g),!a(g))try{n=JSON.parse(n),n.key=g,g!==h&&(!b||"true"===n.ready||n.ready===i)&&c.push(n)}catch(C){console.log("record found that was probably not in the correct JSON format (e.g. Firebug settings or corrupt record) (error: "+C.message+"), record was ignored")}return c};this.ia=function(a,b){var d,g,c=[];g=this.ja(a||i,b);for(d=0;d<g.length;d++)c.push({name:g[d].key,data:g[d].data});return c};this.Ma=
 function(a){for(var b=this.ia(a),d=[],a=0;a<b.length;a++)d.push(b[a].data);return 0<d.length?"<exported>"+d.join("")+"</exported>":j};this.getCounterValue=function(){var a=this.r("__counter");return y(((a&&"undefined"!==typeof a.counter&&!isNaN(parseFloat(a.counter))&&isFinite(a.counter)?Number(a.counter):0)+1).toString(),4)}}function A(){}A.prototype.a=function(){var a=this.get();$(document).trigger("setsettings",a)};A.prototype.get=function(){return B.r("__settings")||r};
-function D(){var a=B.r("__settings")||r;return"undefined"!==typeof a.autoUpload?a.autoUpload:j}A.prototype.set=function(a,b){var d;d=this.get();console.debug("going to store setting: "+a+" with value:"+b);d[a]=b;d=B.U("__settings",d);if("undefined"!==typeof this[a])this[a](b);return"success"===d?i:console.error("error storing settings")};function E(a){function b(c){function a(c,b,d){this.m="undefined"!==typeof c&&c?c:"*";this.filter=d="undefined"!==typeof d&&d!==j?d:{};this.filter.F="undefined"!==typeof d.F?d.F:i;this.filter.N="undefined"!==typeof d.N?d.N:k;this.filter.G="undefined"!==typeof d.G?d.G:k;this.filter.v="undefined"!==typeof d.v?d.v:k;this.index=b}var b,d=this,c=c.replace(/<[\/]?instance(>|\s+[^>]*>)/gi,"");this.xml=$.parseXML(c);this.H=b=$(this.xml);XPathJS.bindDomLevel3XPath();this.c=function(c,b,d){return new a(c,b,
+function D(){var a=B.r("__settings")||r;return"undefined"!==typeof a.autoUpload?a.autoUpload:j}A.prototype.set=function(a,b){var d;d=this.get();console.debug("going to store setting: "+a+" with value:"+b);d[a]=b;d=B.U("__settings",d);if("undefined"!==typeof this[a])this[a](b);return"success"===d?i:console.error("error storing settings")};/*
+ Copyright 2012 Martijn van de Rijdt
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+function E(a){function b(c){function a(c,b,d){this.m="undefined"!==typeof c&&c?c:"*";this.filter=d="undefined"!==typeof d&&d!==j?d:{};this.filter.F="undefined"!==typeof d.F?d.F:i;this.filter.N="undefined"!==typeof d.N?d.N:k;this.filter.G="undefined"!==typeof d.G?d.G:k;this.filter.v="undefined"!==typeof d.v?d.v:k;this.index=b}var b,d=this,c=c.replace(/<[\/]?instance(>|\s+[^>]*>)/gi,"");this.xml=$.parseXML(c);this.H=b=$(this.xml);XPathJS.bindDomLevel3XPath();this.c=function(c,b,d){return new a(c,b,
 d)};a.prototype.get=function(){var c,a;c=this.filter.G===i?b.Y(this.m).filter("[template]"):this.filter.F===i?b.Y(this.m).not("[template], [template] *"):b.Y(this.m);this.filter.v===i?c=c.filter(function(){a=$(this).text();return 0===$(this).children().length&&0<a.trim().length}):this.filter.N===i&&(c=c.filter(function(){return 0===$(this).children().length}));return c="undefined"!==typeof this.index&&this.index!==j?c.eq(this.index):c};a.prototype.k=function(c,a,b){var d,n;n=this.l().join(" ");c=
 "undefined"!==typeof c?$.isArray(c)?c.join(" "):c:"";c=this.p(c,b);d=this.get();if(1===d.length&&c.toString().trim()!==n.toString().trim())return d.text(c),c=this.e(a,b),e.trigger("dataupdate",d.prop("nodeName")),c;if(1<d.length)return console.error("nodeset.setVal expected nodeset with one node, but received multiple"),j;0===d.length&&console.error("Data node: "+this.m+" with null-based index: "+this.index+" not found!");return j};a.prototype.l=function(){var c=[];this.get().each(function(){c.push($(this).text())});
 return c};a.prototype.clone=function(c){var a,b;a=this.get();c=c||a;1===a.length&&1===c.length?(a.clone().insertAfter(c).find("*").andSelf().removeAttr("template"),b=[a.prop("nodeName")],a.find("*").each(function(){b.push($(this).prop("nodeName"))}),e.trigger("dataupdate",b.join())):console.error("node.clone() function did not receive origin and target nodes")};a.prototype.remove=function(){var c=this.get();0<c.length?(c.remove(),e.trigger("dataupdate",c.prop("nodeName"))):console.error("could not find node "+
@@ -74,7 +119,22 @@ a=a.parent();return"/"+b.reverse().join("/")};d.prototype.X=function(){var a=thi
 F.fn.oa=function(){this.each(function(){F(this).find("fieldset.jr-repeat").each(function(){var a,b,d;0===F(this).prev("fieldset.jr-repeat").length&&(a=F(this).siblings("fieldset.jr-repeat"),b=a.length+1,1<b?(F(this).find("span.repeat-number").text("1"),d=2,a.each(function(){F(this).find("span.repeat-number").text(d);d++})):F(this).find("span.repeat-number").empty())})})};
 F.fn.ca=function(a){a=a||"edit";this.each(function(){F(this).find("input, select, textarea").each(function(){var b=F(this).attr("type");"SELECT"===F(this).prop("nodeName").toUpperCase()&&(b="select");"TEXTAREA"===F(this).prop("nodeName").toUpperCase()&&(b="textarea");switch(b){case "date":case "number":case "search":case "color":case "range":case "url":case "email":case "password":case "text":case "file":case "hidden":case "textarea":F(this).val("").trigger(a);break;case "radio":case "checkbox":F(this).prop("checked")&&
 (F(this).prop("checked",k),F(this).trigger(a));break;case "select":F(this)[0].selectedIndex=-1;F(this).trigger(a);break;default:console.error("Unrecognized input type found when trying to reset: "+b)}})})};F.fn.z=function(){var a;this.each(function(){F(this).find("legend + label").each(function(){a=0<F(this).prev().find(".jr-constraint-msg.active").length&&36>F(this).prev().height()?36:19>F(this).prev().height()?19:F(this).prev().height();F(this).animate({"margin-top":a+6+"px"},600)})})};
-F.fn.Y=function(a){var b,d,a=a.replace(/\/\//g," "),a=a.replace(/^\//,""),a=a.replace(/\/\.$/,""),a=a.replace(/\//g,">"),a=a.replace(/\[([^@].*?)\]/g,function(a,b){return":has("+b+")"});if(0<=a.indexOf(">..")){a=a.split(/>\.\.>?/g);b=jQuery(a[0],this);for(d=1;d<a.length;d++)b=b.parent(a[d]);return b.get()}return this.find(a)};var G,H,K,L,B,r={autoUpload:i,buttonLocation:"bottom",autoNotifyBackup:k};
+F.fn.Y=function(a){var b,d,a=a.replace(/\/\//g," "),a=a.replace(/^\//,""),a=a.replace(/\/\.$/,""),a=a.replace(/\//g,">"),a=a.replace(/\[([^@].*?)\]/g,function(a,b){return":has("+b+")"});if(0<=a.indexOf(">..")){a=a.split(/>\.\.>?/g);b=jQuery(a[0],this);for(d=1;d<a.length;d++)b=b.parent(a[d]);return b.get()}return this.find(a)};/*
+ Copyright 2012 Martijn van de Rijdt
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+var G,H,K,L,B,r={autoUpload:i,buttonLocation:"bottom",autoNotifyBackup:k};
 $(document).ready(function(){var a,b,d;B=new aa;G=new E(jrDataStr);L=new A;L.a();H=new M;B.isSupported()?$(document).trigger("browsersupport","local-storage"):window.location="modern_browsers";b=(a=B.r("__bookmark"))?a.shown:0;3>b&&setTimeout(function(){d=1===b?"time":"times";x("Please bookmark this page for easy offline launch. This reminder will be shown "+(2-b)+" more "+d+".",20);b++;B.U("__bookmark",{shown:b})},5E3);$("html").attr("manifest")&&(K=new ba,K.a(),K.isSupported()?($(document).trigger("browsersupport",
 "offline-launch"),ca(),window.setInterval(function(){ca()},36E5)):(a={j:"Show options",u:"Use it",g:function(){window.location="modern_browsers"}},q.confirm({b:"Offline application launch not supported by your browser. You can use it without this feature or see options for resolving this",heading:"Application cannot launch offline"},a)),console.log("cache initialized"));G.a();H.a();q.W();$("form.jr").trigger("save",JSON.stringify(B.A()))});
 function ca(){K.checkForUpdate();window.setTimeout(function(){console.log("going to provide cache feedback to user. cache.getError="+K.getError());K.Xa()?x("A new version of this application has been downloaded. Please save your work and refresh to update.",20):K.getError()&&("security"===K.getError()?x("Please allow site to store data for offline use and refresh.",60):q.alert("An error occurred with the application cache. You may have a problem launching offline (error: "+K.getError()+"). Please save your work, refresh and check if offline launch works."))},

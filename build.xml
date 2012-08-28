@@ -4,8 +4,6 @@
   <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
            classpath="lib/closure/compiler.jar"/>
 
- <!-- <taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit" classpath="/lib/jsdoctoolkit/jsdoc-toolkit-ant.jar;/path/to/js.jar"/>-->
-
   <target name="compile">
     
     <jscomp compilationLevel="advanced" warning="verbose" 
@@ -20,10 +18,6 @@
         <file name="__form.js"/>
         <file name="__launch.js"/>
       </sources>
-
-      <!--<sources dir="${basedir}/other">
-        <file name="simple3.js"/>
-      </sources>-->
 
     </jscomp>
 
@@ -62,5 +56,12 @@
     <source file="/a/js/soucefile.js" />
     <source file="/another/js/soucefile.js" />
   </jsdoctoolkit>-->
+ <!-- <property name="jsdoc.home" location="lib/jsdoc3"/>
+  <property name="jsdoc3-task-jar" location="lib/jsdoc3-ANT/jsdoc3-ant-task-1.0.jar"/>
+  <property name="rhino-jar" location="${jsdoc.home}/lib/js.jar"/>
+
+  <taskdef name="jsdoc" classname="net.jannon.ant.tasks.JsDoc3" classpath="${jsdoc3-task-jar}:${rhino-jar}"/>
+  
+  <jsdoc jsdochome="${jsdoc.home}" to="${basedir}/devinfo/documentation" dir="${basedir}/src/js" />-->
 
 </project>

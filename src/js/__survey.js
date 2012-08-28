@@ -1,7 +1,23 @@
+/**
+ * @preserve Copyright 2012 Martijn van de Rijdt
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, jrDataStr, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
-var  /**@type {Form}*/form;
+var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var /**@type {Cache}*/cache;
 var /**@type {Settings}*/settings,
@@ -13,13 +29,8 @@ DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBa
 //var GEARS_MANIFEST_URL = 'manifest/gears';
 
 //var MAX_QTY_SAVED_FORMS = 50;
-//ßvar SURVEY_FORM_ID = 'survey-form';
 var CACHE_CHECK_INTERVAL = 3600*1000;
 
-
-//var showFormList, checkForOpenForm;//,
-//loadForm, deleteForm, setSettings;initSaveFormsToFile,
-//
 //tight coupling with Form and Storage class, but loose coupling with GUI
 // !Document.ready()
 /************ Document Ready ****************/

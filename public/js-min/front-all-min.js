@@ -1,3 +1,18 @@
+/*
+ Copyright 2012 Martijn van de Rijdt
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
 var d;$(document).ready(function(){d=new f;d.e();"undefined"==typeof console&&(console={log:function(){}});"undefined"==typeof window.console.debug&&(console.debug=console.log);var a;a:{a=window.location.search.substring(1).split("&");for(var c=0;c<a.length;c++){var b=a[c].split("=");if("debug"==b[0]){a=encodeURI(b[1]);break a}}a=!1}"true"!==a&&(window.console.log=function(){},window.console.debug=function(){})});function f(){}
 f.prototype.e=function(){this.h.i();g(this).e();var a=this;$("#feedback-bar-close").button({icons:{primary:"ui-icon-closethick"},text:!1}).click(function(a){a.preventDefault();$("#feedback-bar p").remove();$("#feedback-bar").trigger("change")});$("#page-close").button({icons:{primary:"ui-icon-closethick"},text:!1}).click(function(c){c.preventDefault();g(a).close()});$("#feedback-bar-close, #page-close").removeClass().addClass("custom-button ui-widget-header ui-corner-all");$(document).on("click",
 'a[href^="#"]:not([href="#"]):not(nav ul li a)',function(a){var b=$(this).attr("href");"#"!==b&&(a.preventDefault(),$('nav li a[href="'+b+'"]').click())});$('nav ul li a[href^="#"]').click(function(c){c.preventDefault();c=$(this).attr("href").substr(1);g(a).open(c);$(this).closest("li").addClass("nav-state-active")});$(window).on("onlinestatuschange",function(c,b){a.updateStatus.k(b)});$(document).on("edit","form.jr",function(c,b){a.updateStatus.l(b)});$(document).on("browsersupport",function(c,b){a.updateStatus.support(b)});

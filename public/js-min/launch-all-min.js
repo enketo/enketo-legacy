@@ -1,3 +1,18 @@
+/*
+ Copyright 2012 Martijn van de Rijdt
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
 var h=!0,i=null,k=!1;function l(){return function(){}}function m(a){return function(){return a}}var q,s;$(document).ready(function(){s=new t;s.a();"undefined"==typeof console&&(console={log:l()});"undefined"==typeof window.console.debug&&(console.debug=console.log);"true"!==u("debug")&&(window.console.log=l(),window.console.debug=l())});function t(){}q=t.prototype;
 q.a=function(){this.Y.J();v(this).a();this.G();"function"===typeof this.F&&this.F();$(".dialog [title]").tooltip();Modernizr.borderradius&&(Modernizr.boxshadow&&Modernizr.csstransitions&&Modernizr.opacity)&&$(document).trigger("browsersupport","fancy-visuals");$("footer").detach().appendTo("#container")};q.J=function(){$(window).trigger("resize")};
 q.G=function(){var a=this;$("#feedback-bar-close").button({icons:{primary:"ui-icon-closethick"},text:k}).click(function(a){a.preventDefault();$("#feedback-bar p").remove();$("#feedback-bar").trigger("change")});$("#page-close").button({icons:{primary:"ui-icon-closethick"},text:k}).click(function(d){d.preventDefault();v(a).close()});$("#feedback-bar-close, #page-close").removeClass().addClass("custom-button ui-widget-header ui-corner-all");$(document).on("click",'a[href^="#"]:not([href="#"]):not(nav ul li a)',
@@ -16,7 +31,22 @@ y.fn.M=function(a){a=y.extend({W:"!@#$%^&*()+=[]\\';,/{}|\":<>?~`.- ",g:"",w:""}
 y(this).bind("contextmenu",m(k))})};y.fn.La=function(a){var d="abcdefghijklmnopqrstuvwxyz",d=d+d.toUpperCase(),a=y.extend({g:d},a);return this.each(function(){y(this).M(a)})};y.fn.alpha=function(a){a=y.extend({g:"1234567890"},a);return this.each(function(){y(this).M(a)})};
 y.fn.ga=function(){var a;a||(a=1);var d=this.contents().filter(function(){return 3==this.nodeType}).first(),c=d.text();a=c.split(" ",a).join(" ");d.length&&(d[0].nodeValue=c.slice(a.length),d.before('<span class="capitalize">'+a+"</span>"))};
 y.fn.da=function(){this.each(function(){var a=y(this),d=y(this).find("ol");a.css("overflow","hidden");var c=d.height()-a.height();if(0<c){var f=c/d.height(),f=Math.round((1-f)*a.height()),f=f-f%2;y("#records .column.middle").html('<div id="slider-wrap" class="ui-corner-all"><div id="slider-vertical"></div></div>');y("#slider-wrap").height(a.outerHeight());y("#slider-vertical").slider({orientation:"vertical",Ma:"max",min:0,max:100,value:100,Ta:function(a,e){d.css({top:-((100-e.value)*c/100)})}});y("#slider-wrap").css("margin-top",
-y("#records-saved h3").outerHeight(h));y(".ui-slider-handle").css({height:f,"margin-bottom":-0.5*f});a=y("#slider-vertical").height();f=a-f;a=0.5*(a-f);y(".ui-slider").css({height:f,"margin-top":a});y(".ui-slider-range").css({top:-a});y("#slider-wrap").click(function(){y("#slider-vertical").slider("value",0);d.css({top:-c})})}})};function z(a){function d(b){function a(b,c,d){this.j="undefined"!==typeof b&&b?b:"*";this.filter=d="undefined"!==typeof d&&d!==i?d:{};this.filter.s="undefined"!==typeof d.s?d.s:h;this.filter.B="undefined"!==typeof d.B?d.B:k;this.filter.t="undefined"!==typeof d.t?d.t:k;this.filter.m="undefined"!==typeof d.m?d.m:k;this.index=c}var c,d=this,b=b.replace(/<[\/]?instance(>|\s+[^>]*>)/gi,"");this.xml=$.parseXML(b);this.u=c=$(this.xml);XPathJS.bindDomLevel3XPath();this.b=function(b,c,d){return new a(b,c,
+y("#records-saved h3").outerHeight(h));y(".ui-slider-handle").css({height:f,"margin-bottom":-0.5*f});a=y("#slider-vertical").height();f=a-f;a=0.5*(a-f);y(".ui-slider").css({height:f,"margin-top":a});y(".ui-slider-range").css({top:-a});y("#slider-wrap").click(function(){y("#slider-vertical").slider("value",0);d.css({top:-c})})}})};/*
+ Copyright 2012 Martijn van de Rijdt
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+function z(a){function d(b){function a(b,c,d){this.j="undefined"!==typeof b&&b?b:"*";this.filter=d="undefined"!==typeof d&&d!==i?d:{};this.filter.s="undefined"!==typeof d.s?d.s:h;this.filter.B="undefined"!==typeof d.B?d.B:k;this.filter.t="undefined"!==typeof d.t?d.t:k;this.filter.m="undefined"!==typeof d.m?d.m:k;this.index=c}var c,d=this,b=b.replace(/<[\/]?instance(>|\s+[^>]*>)/gi,"");this.xml=$.parseXML(b);this.u=c=$(this.xml);XPathJS.bindDomLevel3XPath();this.b=function(b,c,d){return new a(b,c,
 d)};a.prototype.get=function(){var b,a;b=this.filter.t===h?c.L(this.j).filter("[template]"):this.filter.s===h?c.L(this.j).not("[template], [template] *"):c.L(this.j);this.filter.m===h?b=b.filter(function(){a=$(this).text();return 0===$(this).children().length&&0<a.trim().length}):this.filter.B===h&&(b=b.filter(function(){return 0===$(this).children().length}));return b="undefined"!==typeof this.index&&this.index!==i?b.eq(this.index):b};a.prototype.h=function(b,a,c){var d,B;B=this.i().join(" ");b=
 "undefined"!==typeof b?$.isArray(b)?b.join(" "):b:"";b=this.k(b,c);d=this.get();if(1===d.length&&b.toString().trim()!==B.toString().trim())return d.text(b),b=this.c(a,c),e.trigger("dataupdate",d.prop("nodeName")),b;if(1<d.length)return console.error("nodeset.setVal expected nodeset with one node, but received multiple"),i;0===d.length&&console.error("Data node: "+this.j+" with null-based index: "+this.index+" not found!");return i};a.prototype.i=function(){var b=[];this.get().each(function(){b.push($(this).text())});
 return b};a.prototype.clone=function(b){var a,c;a=this.get();b=b||a;1===a.length&&1===b.length?(a.clone().insertAfter(b).find("*").andSelf().removeAttr("template"),c=[a.prop("nodeName")],a.find("*").each(function(){c.push($(this).prop("nodeName"))}),e.trigger("dataupdate",c.join())):console.error("node.clone() function did not receive origin and target nodes")};a.prototype.remove=function(){var b=this.get();0<b.length?(b.remove(),e.trigger("dataupdate",b.prop("nodeName"))):console.error("could not find node "+
@@ -67,7 +97,22 @@ b=b.parent();return"/"+a.reverse().join("/")};c.prototype.K=function(){var b=thi
 A.fn.Z=function(){this.each(function(){A(this).find("fieldset.jr-repeat").each(function(){var a,d,c;0===A(this).prev("fieldset.jr-repeat").length&&(a=A(this).siblings("fieldset.jr-repeat"),d=a.length+1,1<d?(A(this).find("span.repeat-number").text("1"),c=2,a.each(function(){A(this).find("span.repeat-number").text(c);c++})):A(this).find("span.repeat-number").empty())})})};
 A.fn.P=function(a){a=a||"edit";this.each(function(){A(this).find("input, select, textarea").each(function(){var d=A(this).attr("type");"SELECT"===A(this).prop("nodeName").toUpperCase()&&(d="select");"TEXTAREA"===A(this).prop("nodeName").toUpperCase()&&(d="textarea");switch(d){case "date":case "number":case "search":case "color":case "range":case "url":case "email":case "password":case "text":case "file":case "hidden":case "textarea":A(this).val("").trigger(a);break;case "radio":case "checkbox":A(this).prop("checked")&&
 (A(this).prop("checked",k),A(this).trigger(a));break;case "select":A(this)[0].selectedIndex=-1;A(this).trigger(a);break;default:console.error("Unrecognized input type found when trying to reset: "+d)}})})};A.fn.o=function(){var a;this.each(function(){A(this).find("legend + label").each(function(){a=0<A(this).prev().find(".jr-constraint-msg.active").length&&36>A(this).prev().height()?36:19>A(this).prev().height()?19:A(this).prev().height();A(this).animate({"margin-top":a+6+"px"},600)})})};
-A.fn.L=function(a){var d,c,a=a.replace(/\/\//g," "),a=a.replace(/^\//,""),a=a.replace(/\/\.$/,""),a=a.replace(/\//g,">"),a=a.replace(/\[([^@].*?)\]/g,function(a,c){return":has("+c+")"});if(0<=a.indexOf(">..")){a=a.split(/>\.\.>?/g);d=jQuery(a[0],this);for(c=1;c<a.length;c++)d=d.parent(a[c]);return d.get()}return this.find(a)};var C,D,E,F,G='There were errors. Please see the "report" tab for details.',H=k;
+A.fn.L=function(a){var d,c,a=a.replace(/\/\//g," "),a=a.replace(/^\//,""),a=a.replace(/\/\.$/,""),a=a.replace(/\//g,">"),a=a.replace(/\[([^@].*?)\]/g,function(a,c){return":has("+c+")"});if(0<=a.indexOf(">..")){a=a.split(/>\.\.>?/g);d=jQuery(a[0],this);for(c=1;c<a.length;c++)d=d.parent(a[c]);return d.get()}return this.find(a)};/*
+ Copyright 2012 Martijn van de Rijdt
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+var C,D,E,F,G='There were errors. Please see the "report" tab for details.',H=k;
 $(document).ready(function(){F=new K;F.a();E=console.error;console.error=function(){var a=arguments[0];1!==$("#jserrors div ol").length&&$("#jserrors div").append("<ol></ol>");$("#jserrors div ol").append('<li class="error"><span class="ui-icon ui-icon-alert"></span>'+a+"</li>");w(G);return E.apply(console,arguments)};F.source||($("#html5-form-source").hide(),$('li a[href="#html5-form-source"]').parent("li").remove());$("#tabs").tabs();$('li a[href="#upload"]').parent("li").hide();D=$("ul.ui-tabs-nav");
 D.hide();w("This is an incomplete pre-alpha preview to test the JavaRosa form functionality in Google Chrome. It is not ready for actual use.",3);$(".main .ui-tabs-nav").removeClass("ui-widget-header");$(".main h2").addClass("ui-widget-header ui-corner-all");s.J();$('#upload-form [name="xml_file"]').change(function(){$("#upload-form").submit()});$("#upload-form").ajaxForm({dataType:"xml",beforeSubmit:function(a,d){var c=d.find('input[name="server_url"]').val()||"",f=d.find('input[name="form_id"]').val()||
 "";if(c!=="")if(L(c)){F.e=c;U(F)}else{s.alert("Not a valid server url");V();return k}if(f!==""){F.id=f;U(F)}$("#upload-form label, #input-switcher, #form-list, #upload .hurry").hide();$("#upload-form img.loading").show()},success:W,error:function(){w("Sorry, an error occured while communicating with the Enketo server.");V()}});$("#upload-form #input-switcher a").hover(function(){$(this).toggleClass("ui-state-hover")}).click(function(a){console.debug("input switcher link clicked");a.preventDefault();

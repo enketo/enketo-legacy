@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ * Copyright 2012 Martijn van de Rijdt
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+<!--
+*****************************************************************************************************
+XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK into valid HTMl5 forms
+(exception: when non-IANA lang attributes are used the form will not validate (not serious))
+*****************************************************************************************************
+-->
+
 <xsl:stylesheet
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xf="http://www.w3.org/2002/xforms"
@@ -11,16 +34,7 @@
     extension-element-prefixes="exsl str"
     version="1.0"
     >
-<!--
-*****************************************************************************************************
-XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK into valid HTMl5 forms
-(exception: when non-IANA lang attributes are used the form will not validate (not serious))
-version:    0.1
-author:     Martijn van de Rijdt (Aid Web Solutions)
-thanks to:  OpenRosa Consortium, Kobo Project and Open Data Kit
-copyright:  Aid Web Solutions
-*****************************************************************************************************
--->
+
     <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/><!-- for xml: version="1.0" -->
 
     <xsl:variable name="undefined">undefined</xsl:variable>

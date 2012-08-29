@@ -11,26 +11,22 @@ Browser support
 Prerequisites
 -----------
 - LAMP stack (enabled: mode_rewrite, php5-xsl, curl)
-- Code Igniter (latest)
-- XPathJS_javarosa (build/xpathjs_javarosa.js is only file that is required)
-- (JQuery & JQuery UI)?
+- XPathJS_javarosa (build/xpathjs_javarosa.min.js is the only file that is required)
 
 Installation
 -----------
-1. Install Code Igniter e.g. with the following structure:
+1. Clone the repository. It has the following structure:
 	enketo____ Code_Igniter
 		|			|______ application
 		|			|______ system
 		|
 		|_____ public (this is the webroot that contains index.php)
-2. Edit two paths in index.php, test if installation works, application/logs and application/cache should be writeable
-3. Replace application directory 
-4. Copy enketo files in /public (except index.php)
-5. Add XPathJS_javarosa to the /public/libraries folder
-5. Create wildcard subdomain that points to /public
-6. Import database structure into MYSQL database (most queries are done with the Active Record Class so any supported db should do with minimal fixes)
-7. Set up config/database.php with appropriate db user name and password
-8. Set environment in index.php to 'production'
+2. Make application/logs and application/cache writeable
+3. Add XPathJS_javarosa.min.js to the /public/libraries folder
+4. Create wildcard subdomain that points to /public
+5. Import database structure into MYSQL database (most queries are done with the Active Record Class so any supported db should do with minimal fixes)
+6. Set up config/database.php with correct db user name and password
+7. Set environment in index.php to 'production'
 
 //Frequently Asked Questions
 ---------------------------
@@ -42,15 +38,14 @@ Development
 * [Issue Tracker](https://github.com/MartijnR/enketo/issues)
 * [Documentation] still to be generated
 
-Prerequisites for developers:
+Tools required:
 - SASS/SCSS compiler to compile css (e.g. Compass)
 - Apache ANT to compile javascript 
-- (Google Closure Compiler)?
 
 Instructions for developers:
 - create a symlink at public/js-source to src/js
 
-Contributions are very welcome!
+Code contributions are very welcome!
 
 License
 -------

@@ -1,0 +1,10 @@
+*/config/development
+*/logs/log-*.php
+*/logs/!index.html
+*/cache/*
+*/cache/!index.html
+*.sublime-project
+xpathjs_javarosa.min.js
+sftp-config.json
+.sass-cache
+*/public/js-source

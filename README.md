@@ -1,7 +1,7 @@
 Enketo
 ======
 
-Enketo is a lightweigth web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). _THE CORE FEATURES OF ENKETO ARE NOT YET COMPLETE._ More info: [blog](http://blog.aidwebsolutions.com)
+Enketo is a lightweight web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). _THE CORE FEATURES OF ENKETO ARE NOT YET COMPLETE._ More info: [blog](http://blog.aidwebsolutions.com)
 
 Browser support
 ---------------
@@ -16,11 +16,11 @@ Prerequisites
 Installation
 -----------
 1. Clone the repository. It has the following structure:
-	enketo____ Code_Igniter
-		|			|______ application
-		|			|______ system
-		|
-		|_____ public (this is the webroot that contains index.php)
+> enketo
+>> Code_Igniter
+>>> application
+>>> system
+>> public (this is the webroot that contains index.php)
 2. Make application/logs and application/cache writeable
 3. Add XPathJS_javarosa.min.js to the /public/libraries folder
 4. Create wildcard subdomain that points to /public
@@ -28,9 +28,9 @@ Installation
 6. Set up config/database.php with correct db user name and password
 7. Set environment in index.php to 'production'
 
-//Frequently Asked Questions
+Frequently Asked Questions
 ---------------------------
-
+to follow
 
 Development
 -----------
@@ -49,18 +49,18 @@ Code contributions are very welcome!
 
 License
 -------
-To promote further adoption of the JavaRosa/OpenRosa XForm-derived form format, Enketo is made available under the Apache 2.0 license. See [LICENSE.TXT](https://github.com/MartijnR/LICENSE.TXT). 
+To promote further adoption of the JavaRosa/OpenRosa XForm-derived form format, Enketo is made available under the Apache 2.0 license. See [LICENSE.TXT](https://github.com/MartijnR/enketo/blob/master/LICENSE.TXT). 
 
 Related Projects
 ----------------
-*[XPathJS_javarosa](https://github.com/MartijnR/xpathjs_javarosa)
-*[Manifest Builder](https://github.com/MartijnR/Manifest-Builder)
+* [XPathJS_javarosa](https://github.com/MartijnR/xpathjs_javarosa)
+* [Manifest Builder](https://github.com/MartijnR/Manifest-Builder)
 
 Acknowledgements
 ----------------
 I would like to acknowledge and thank the indirect contribution by the creators of the excellent works that were used in the project:
-* [Code Igniter]()
-* [XPathJS]()
-* [JQuery & JQuery UI]()
-* []()
-* []()
+* [Code Igniter by EllisLab](http://codeigniter.com)
+* [XPathJS by Andrej Pavlovic](https://github.com/andrejpavlovic/xpathjs)
+* [JQuery & JQuery UI](http://jquery.com)
+* [Modernizr](http://modernizr.com)
+* [vkbeautify by Vadim Kiryukhin](https://github.com/vkiryukhin/vkBeautify)

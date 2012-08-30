@@ -27,6 +27,7 @@ Installation
 5. Import database structure into MYSQL database (most queries are done with the Active Record Class so any supported db should do with minimal fixes)
 6. Set up config/database.php with correct db user name and password
 7. Set environment in index.php to 'production'
+8. Replace Code_Igniter/application/views/elements/tracking.php with your own tracking code
 
 Frequently Asked Questions
 ---------------------------
@@ -58,7 +59,7 @@ Related Projects
 
 Acknowledgements
 ----------------
-I would like to acknowledge and thank the indirect contribution by the creators of the excellent works that were used in the project:
+I would like to acknowledge and thank the indirect contribution by the creators of the following excellent works that were used in the project:
 * [Code Igniter by EllisLab](http://codeigniter.com)
 * [XPathJS by Andrej Pavlovic](https://github.com/andrejpavlovic/xpathjs)
 * [JQuery & JQuery UI](http://jquery.com)

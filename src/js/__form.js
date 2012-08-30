@@ -128,14 +128,14 @@ function Form (formSelector, dataStr){
 	 };
 	 /**
 	 * Validates the whole form and returns true or false
-	 * @return {Boolean} 
+	 * @return {boolean} 
 	 */ 
 	this.validateForm = function(){
 		return form.validateAll();
 	};
 	/**
 	 * Returns wether form has validated as true or false. Needs to be called AFTER calling validate()!
-	 * @return {Boolean} 
+	 * @return {!boolean} 
 	 */ 
 	this.isValid = function(){
 		return form.isValid();
@@ -2152,7 +2152,7 @@ function Form (formSelector, dataStr){
 
 	/**
 	 * Returns true is form is valid and false if not. Needs to be called AFTER (or by) validateAll()
-	 * @return {boolean} whether the form is valid
+	 * @return {!boolean} whether the form is valid
 	 */
 	FormHTML.prototype.isValid = function(){
 		return ($form.find('.invalid').length > 0) ? false : true;

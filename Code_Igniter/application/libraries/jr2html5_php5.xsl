@@ -170,8 +170,8 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
     <xsl:template match="xf:group">
         <fieldset>
             <xsl:attribute name="class">
-                <!-- only add jr-group if label is present -->
-                <xsl:if test="string(xf:label/@ref) or string(xf:label)">
+                <!-- only add jr-group if label is present or if it has a repeat as child-->
+                <xsl:if test="string(xf:label/@ref) or string(xf:label) or boolean(./xf:repeat)">
                     <xsl:value-of select="string('jr-group')" />
                     <xsl:text> </xsl:text>
                 </xsl:if>

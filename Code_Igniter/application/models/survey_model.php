@@ -82,10 +82,19 @@ class Survey_model extends CI_Model {
     {  
         $subdomain = $this->_generate_subdomain();
         log_message('debug', 'subdomain generated:'.$subdomain);
+
         if (url_valid($server_url) && url_valid($submission_url) && (url_valid($data_url) || $data_url===NULL) && $subdomain)
         {
             //ADD: CHECK URLS FOR LIVENESS?
-            //if we can ensure only requests from enketo.net are processed, it is pretty sure that $server_url is live       
+            
+            $existing = $this->db->get_where('surveys', array('server_url'=>$server_url, 'form_id'=>$form_id), 1);
+
+            if ( $existing->num_rows() > 0 )
+            {
+                return array('success'=>FALSE, 'reason'=>'existing', 
+                    'url'=> $this->_get_full_survey_url($existing->row()->subdomain));
+            }    
+            //if we can ensure only requests from enketo.org are processed, it is pretty certain that $server_url is live       
             $data = array(
                 'subdomain' => $subdomain,
                 'server_url' => $server_url,
@@ -96,13 +105,20 @@ class Survey_model extends CI_Model {
                 'launch_date' => date( 'Y-m-d H:i:s', time())
             );
             $result = $this->db->insert('surveys', $data); 
+            $survey_url = $this->_get_full_survey_url($subdomain);
             log_message('debug', 'result of insert into surveys table: '.$result);
-            //CHANGE detect url or extract from base_url() (url helper)
-            $domain = $_SERVER['SERVER_NAME'];
-            $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
-            return ($result != FALSE) ? 'http://'.$subdomain.'.'.$domain : FALSE;
+            return ($result != FALSE) ? 
+                array('success'=>TRUE, 'url'=> $survey_url): array('success'=>FALSE, 'reason'=>'database');
         }
-        return FALSE;
+        return array('success'=>FALSE, 'reason'=>'');
+    }
+
+    private function _get_full_survey_url($subdomain)
+    {
+        $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
+        $domain = $_SERVER['SERVER_NAME'];
+        $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
+        return $protocol.$subdomain.'.'.$domain;
     }
 
 // 	public function update_formlist()

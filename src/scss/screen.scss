@@ -355,11 +355,16 @@ article.main .jr {
   fieldset.advanced{
     display:none; }
   .hint{
-    display: inline-block;
-    }}
-
-
-
+    display: inline-block;}
+  .launch-link{
+    margin: 25px 0 0 0;
+    text-align: center;
+    display: block;
+    font-weight: bold;
+    color: $overlay-bg;
+    font-size: 1.2em;
+    &:hover{
+      color: $header-brdr;}}}
 
 footer {
   margin-top: 15px;

@@ -78,11 +78,11 @@ class Launch extends CI_Controller {
 
 				$result = $this->Survey_model->launch_survey($server_url, $form_id, $submission_url, $data_url, $email);
 
-				echo $result;
+				echo json_encode($result);
 			}	
 			else
 			{
-				echo 'Surver url or form ID were empty';
+				echo json_encode(array('success'=>FALSE, 'reason'=>'empty'));
 			}
 
 		}

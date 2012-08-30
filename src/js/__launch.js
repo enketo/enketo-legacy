@@ -212,7 +212,6 @@ $(document).ready(function(){
 			processData: false,
 			success: function(response){
 				//console.log('html5 validation result'+response);
-
 				//strip <script> elements
 				var $response = $('<div></div>');
 				$response.append(response.replace(/<script[A-z =".]*><\/script>/gi, ''));
@@ -246,13 +245,32 @@ $(document).ready(function(){
 				console.debug('an error occurred when sending survey launch data');
 			},
 			success: function(response){
+				response = JSON.parse(response);
+				//{success: true, url: .......}
+				//{success: false, reason: 'existing', url: ....}
+				//{success: false, reason: 'empty'} empty form fields sent in POST
+				//{success: false, reason: 'database'} error inserting record into database
+				//{succces: false, reason: ''} unknown, could be invalid url(s)
 				console.log('form submission complete');
-				if (isValidUrl(response)){
+				if (response['success']){
 					gui.alert('Form was launched succesfully at this address: '+
-						'<a href="'+response+'">'+response+'</a>', 'Success!');
+						'<a class="launch-link" href="'+response['url']+'">'+response['url']+'</a>', 'Success!', 'ui-icon-check');
 				}
 				else{
-					gui.alert('There was a problem with launching the survey. (Server reponse: '+response+')');
+					switch(response['reason']){
+						case 'existing':
+							gui.alert('This survey was launched before at this address: '+
+								'<a class="launch-link" href="'+response['url']+'">'+response['url']+'</a>', 'Exists already!', 'ui-icon-lightbulb');
+							break;
+						case 'empty':
+							gui.alert('Server url and/or form id submitted to the server found to be empty.', 'Failed');
+							break;
+						case 'database':
+							gui.alert('Problem occurred trying to add survey details to Enketo database to launch.', 'Failed');
+							break;
+						default:
+							gui.alert('Unknown error', 'Failed');
+					}
 				}
 			}
 		});
@@ -386,8 +404,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 	});
 
 	$('button#launch-form').button({'disabled': true, 'icons': {'primary':"ui-icon-arrowthick-1-e"}}).click(function(){
-		//gui.launchConfirm();
-		gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
+		gui.launchConfirm();
+		//gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
 	});
 
 	$('#form-controls button:not(#validate-form)').equalWidth();

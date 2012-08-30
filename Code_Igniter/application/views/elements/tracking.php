@@ -1,8 +1,8 @@
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6765789-9']);
-  _gaq.push(['_setDomainName', 'enketo.net']);
+  _gaq.push(['_setAccount', 'UA-6765789-10']);
+  _gaq.push(['_setDomainName', 'enketo.org']);
   _gaq.push(['_trackPageview']);
 
   (function() {

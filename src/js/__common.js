@@ -497,13 +497,15 @@ GUI.prototype.hideFeedback = function(){
  * @param {string=} message
  * @param {string=} heading
  */
-GUI.prototype.alert = function(message, heading){
+GUI.prototype.alert = function(message, heading, icon){
 	"use strict";
 	var closeFn,
 		$alert = $('#dialog-alert');
 
 	heading = heading || 'Alert';
+	icon = icon || 'ui-icon-alert';
 
+	$alert.find('p .ui-icon:eq(0)').removeClass().addClass('ui-icon '+icon);
 	//to call when dialog closes
 	closeFn = function(){
 		$alert.dialog('destroy');

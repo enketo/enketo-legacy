@@ -253,7 +253,7 @@ $(document).ready(function(){
 				//{succces: false, reason: ''} unknown, could be invalid url(s)
 				console.log('form submission complete');
 				if (response['success']){
-					gui.alert('Form was launched succesfully at this address: '+
+					gui.alert('Form was succesfully launched at this address: '+
 						'<a class="launch-link" href="'+response['url']+'">'+response['url']+'</a>', 'Success!', 'ui-icon-check');
 				}
 				else{

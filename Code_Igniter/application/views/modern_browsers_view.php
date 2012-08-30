@@ -30,7 +30,7 @@
 <body>
 	<h1>Modern Browsers</h1>
 	<p>
-		Enketo uses several state-of-the-art technologies that are not yet supported sub-standard browsers such as all versions of Internet Explorer<span id="not-supported"></span>.
+		Enketo uses several state-of-the-art technologies that are not yet supported by sub-standard browsers such as all versions of Internet Explorer<span id="not-supported"></span>.
 	</p>
 	<p>
 	 	We <strong>recommend</strong> using a recent version of one of the following excellent modern browsers:	

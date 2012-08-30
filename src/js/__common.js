@@ -494,8 +494,9 @@ GUI.prototype.hideFeedback = function(){
 };
 
 /**
- * @param {string=} message
+ * @param {string} message
  * @param {string=} heading
+ * @param {string=} icon css class of icon
  */
 GUI.prototype.alert = function(message, heading, icon){
 	"use strict";

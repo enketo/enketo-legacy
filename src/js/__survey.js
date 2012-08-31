@@ -386,7 +386,7 @@ function exportData(finalOnly){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
-		uriContent = "data:text/xml," + encodeURIComponent(data); /*data:application/octet-stream*/
+		uriContent = "data:application/octet-stream," + encodeURIComponent(data); /*data:application/octet-stream*/
 		newWindow = window.open(uriContent, 'exportedData');
 	//window.location.href = uriContent;
 	}

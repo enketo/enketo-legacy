@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, jrDataStr, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global gui, jrDataStr, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var /**@type {Form}*/form;
@@ -43,7 +43,6 @@ $(document).ready(function() {
 	settings = new Settings();
 	settings.init();
 	connection = new Connection();
-	
 	
 	// check if localStorage is supported and if not re-direct to browser download page
 	if (!store.isSupported()){
@@ -201,18 +200,18 @@ function checkCache(){
  */
 function loadForm(formName, confirmed){
 	'use strict';
-	var message, choices;
+	var message, choices, record;
 	//console.log('loadForm called'); // DEBUG
 	if (!confirmed && form.getEditStatus()){
 		message = 'Would you like to proceed without saving changes to the form you were working on?';
 		choices = {
-			posAction: function(){ loadForm("'+formName+'", true); }
+			posAction: function(){ loadForm(formName, true); }
 		};
 		gui.confirm(message, choices);
 	}
 	else {
 		// request a form data object
-		var record = store.getRecord(formName);
+		record = store.getRecord(formName);
 		//enters that data in the form on the screen
 		// *OLD*checkForOpenForm(true);
 		if (record.data !== null){
@@ -252,11 +251,11 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	var result, message, choices,
 		curRecordName = form.getRecordName(),
 		curRecordFinal = form.getRecordStatus(),
-		record = {};
-	record.data = form.getDataStr(true, true);
-	record.ready = confirmedFinalStatus;
+		rec = {};
+		//record = { 'data': form.getDataStr(true, true), 'ready': confirmedFinalStatus};
+	//record['ready'] = confirmedFinalStatus;
 	console.debug('new name: '+confirmedRecordName+', before: '+curRecordName+', delOld: '+deleteOldName+', overwr: '+overwriteExisting);
-	if (record.data === null || record.data === ''){
+	if (form.getDataStr(true, true) === null || form.getDataStr(true, true) === ''){
 		return gui.showFeedback('Nothing to save.'); //ADD error with getting data from form?
 	}
 
@@ -282,8 +281,12 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 
 	//trigger beforesave event which is used e.g. to update timestamp preload item.
 	$('form.jr').trigger('beforesave');
-
-	result = store.setRecord(confirmedRecordName, record, deleteOldName, overwriteExisting, curRecordName);
+	rec = { 'data': form.getDataStr(true, true), 'ready': confirmedFinalStatus};
+	// HOW THE HELL DOES REC GET A LASTSAVED PROPERTY HERE??? SOMETHING VERY WRONG
+	console.debug('sending following record to store.setRecord():');
+	console.debug(rec);
+	//alert('hey');
+	result = store.setRecord(confirmedRecordName, rec, deleteOldName, overwriteExisting, curRecordName);
 		
 	console.log('result of save: '+result); // DEBUG
 	if (result === 'success'){
@@ -328,9 +331,9 @@ function resetForm(confirmed){
 		//valueFirst = /**@type {string} */$('#saved-forms option:first').val();
 	//console.debug('first form is '+valueFirst);
 	//gui.pages().get('records').find('#records-saved').val(valueFirst);
-
+	console.debug('editstatus: '+ form.getEditStatus());
 	if (!confirmed && form.getEditStatus()){
-		message = 'There are unsaved changes, would you like to reset without saving those?';
+		message = 'There are unsaved changes, would you like to continue <strong>without</strong> saving those?';
 		choices = {
 			posAction : function(){ resetForm(true); }
 		};
@@ -919,13 +922,13 @@ GUI.prototype.setCustomEventHandlers = function(){
 		});
 
 	$(document).on('save delete', 'form.jr', function(e, formList){
-		console.debug('save or delete event detected with new formlist: '+formList);
+		//console.debug('save or delete event detected with new formlist: '+formList);
 		that.updateRecordList(JSON.parse(formList));
 	});
 
 	$(document).on('setsettings', function(e, settings){
 		console.debug('settingschange detected, GUI will be updated with settings:');
-		console.debug(settings);
+		//console.debug(settings);
 		that.setSettings(settings);
 	});
 
@@ -985,8 +988,8 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 	if (recordList.length > 0){
 		for (i=0; i<recordList.length; i++){
 			name = recordList[i].key;
-			date = new Date(recordList[i].lastSaved).toDateString();
-			if (recordList[i].ready === true){
+			date = new Date(recordList[i]['lastSaved']).toDateString();
+			if (recordList[i]['ready']){// === true){//} || recordList[i]['ready'] == 'true'){
 				icon = 'check';
 				finishedFormsQty++;
 			}
@@ -1028,9 +1031,12 @@ GUI.prototype.saveConfirm = function(){
 			posButton: 'Ok',
 			negButton: 'Cancel',
 			posAction: function(){
+					console.debug('value of final in confirm dialog: '+Boolean($saveConfirm.find('[name="record-final"]:checked').val()));
+					//console.debug($saveConfirm.find('[name="record-final"]'));
 					return saveForm(
 						$saveConfirm.find('[name="record-name"]').val(),
 						Boolean($saveConfirm.find('[name="record-final"]:checked').val())
+						//$saveConfirm.find('[name="record-final"]:checked').val()
 					);
 			},
 			negAction: function(){

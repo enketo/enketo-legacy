@@ -561,7 +561,6 @@ GUI.prototype.confirm = function(text, choices){
 	choices.negAction = choices.negAction || function(){return false;};
 	choices.beforeAction = choices.beforeAction || function(){};
 
-
 	closeFn = function(){
 		$dialog.dialog('destroy');
 		$dialog.find('.dialog-msg, .dialog-error').text('');
@@ -572,7 +571,7 @@ GUI.prototype.confirm = function(text, choices){
 	$dialog = $('#dialog-'+dialogName);
 	
 	//write content into confirmation dialog
-	$dialog.find('.dialog-msg').text(msg).capitalizeStart();
+	$dialog.find('.dialog-msg').html(msg).capitalizeStart();
 	//$dialog.find('.dialog-error').text(errorMsg).capitalizeStart();
 
 	//instantiate dialog

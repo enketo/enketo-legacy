@@ -1349,7 +1349,7 @@ function Form (formSelector, dataStr){
 
 	FormHTML.prototype.editStatus = {
 		set : function(status){
-			$form.attr('data-edited',status.toString());
+			$form.attr('data-edited',Boolean(status));//.toString());
 			$form.trigger('edit', status);
 		},
 		get : function(){

@@ -168,7 +168,7 @@
 
 		<div id="form-controls" class="bottom ui-widget ui-widget-header">
 			<button id="save-form" >Save</button>
-			<button id="reset-form" >Reset</button>
+			<button id="reset-form" >New</button>
 			<button id="delete-form" >Delete</button>
 		</div>
 

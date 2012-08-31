@@ -150,7 +150,7 @@
 		    web applications to cope with intermittent Internet connections. 
 		</p>
 		<p>
-		   The Enketo launch area allows survey administrators to test forms and afterwards 'launch' them on a unique URL for actual data entry. The entry component will be offline-capable. Only the launch component is currently available for an early preview on Google Chrome. The following are the main items left to do for full JavaRosa compatibility:
+		   The Enketo launch area allows survey administrators to test forms and afterwards 'launch' them on a unique URL for actual data entry. The entry component will be offline-capable. The following are the main items left to do for full JavaRosa compatibility:
 		</p> 
 		<div class="ui-helper-clearfix">   
 		    <div class="column ui-corner-all">

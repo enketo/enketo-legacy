@@ -367,9 +367,10 @@ article.main .jr {
     &:hover{
       color: $header-brdr;}}}
 
-footer {
+footer.ui-widget {
   margin-top: 15px;
   margin-bottom: 20px;
+  font-size: 10px;
   a {
     text-decoration: none;
     color: $overlay-bg; }

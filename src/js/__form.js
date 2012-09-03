@@ -783,10 +783,24 @@ function Form (formSelector, dataStr){
 	/*
 	 * Evaluates an XPath Expression using the browser's native XPath 1.0 engine
 	 * $context parameter is a jQuery object!
-	 * type boolean, string, number, nodes (always choose this if you want the value of a node)
+	 * type 
+	 *  (and only used for booleans
+	 *
+	 *
+	 * 
+	 */
+	/**
+	 * Evaluates an XPath Expression using XPathJS_javarosa (not native XPath 1.0 evaluator)
+	 * 
+	 * THIS FUNCTION DOESN'T SEEM TO WORK PROPERLY FOR NODE RESULTTYPES! otherwise:
 	 * nodes can be accessed by returned node.snapshotItem(i)(.textContent)
 	 * node can be accessed by returned node(.textContent)
-	 * THIS FUNCTION DOESN'T SEEM TO WORK PROPERLY FOR NODE RESULTTYPES! (and only used for booleans
+	 * 
+	 * @param  {string} expr       [description]
+	 * @param  {string=} resTypeStr boolean, string, number, nodes (best to always supply this)
+	 * @param  {string=} selector   jQuery selector which will be use to provide the context to the evaluator
+	 * @param  {number=} index      index of selector in document
+	 * @return {?(number|string|boolean)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var context, dataCleanClone, resTypeNum, resultTypes, result, $repParents;//, repSelector, repIndex;//, repDataNodeName;
@@ -804,8 +818,6 @@ function Form (formSelector, dataStr){
 		//$clonedDoc = this.get().find('instance>*').clone().appendTo($('<root></root>'));
 		//$clonedContext.find('[template]').remove();
 		
-		//really, it would be better to remove instance from DataXML completely so this is not necessary....
-		//selector = (typeof selector !== 'undefined') ? selector.replace(/^instance\//, "") : selector;
 		////console.log('creating clean clone from string:'+this.getStr(false, false));
 		dataCleanClone = new DataXML(this.getStr(false, false));
 		////console.log('clean clone:');
@@ -828,11 +840,6 @@ function Form (formSelector, dataStr){
 		}
 		else context = dataCleanClone.getXML();//dataCleanClone.get()[0];//.documentElement;
 		
-		//context = $.parseXML((new window.XMLSerializer()).serializeToString($clonedContext[0]));
-		////console.debug('context:');
-		////console.debug(context);
-		
-		//var context = $context[0];
 		resultTypes = { //REMOVE VALUES? NOT USED
 			0 : ['any', 'ANY_TYPE'], //works
 			1 : ['number', 'NUMBER_TYPE', 'numberValue'], //works, e.g. evalXpression('number(true())', 'number')
@@ -878,8 +885,8 @@ function Form (formSelector, dataStr){
 						return result;
 					}
 					//resultTypeValProp = resultTypes[type][1];
-					////console.log('checking type with value property:'+resultTypeValProp);
-					//// WHEN PROBLEMS USE ITERATENEXT().textContent for resultType = 4
+					//console.log('checking type with value property:'+resultTypeValProp);
+					// WHEN PROBLEMS USE ITERATENEXT().textContent for resultType = 4
 					//try{
 					//	if (typeof result[resultTypeValProp] !== 'undefined'){
 					//		//console.log('result type detected: '+type);
@@ -1411,17 +1418,24 @@ function Form (formSelector, dataStr){
 			});
 			this.update();
 		},
+		/**
+		 * updates branches based on changed input fields
+		 * @param  {string=} changedNodeNames [description]
+		 * @return {boolean}                  [description]
+		 */
 		update: function(changedNodeNames){
 			var i, p, branchNode, result, namesArr, cleverSelector,			
 				alreadyCovered = {},
 				that=this;
+			
 			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 			cleverSelector = (namesArr.length > 0) ? [] : ['[data-relevant]'];
+			
 			for (i=0 ; i<namesArr.length ; i++){
 				cleverSelector.push('[data-relevant*="'+namesArr[i]+'"]');
 			}
 
-			//console.debug('evaluating skip/branch logic for expressions that contain: '+namesArr.join());
+			console.debug('Updating branches for expressions that contain: '+namesArr.join());
 			//console.debug('the clever selector created: '+cleverSelector.join());
 
 			$form.find(cleverSelector.join()).each(function(){
@@ -1433,7 +1447,7 @@ function Form (formSelector, dataStr){
 				//name = $(this).attr('name');
 				
 				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[p.path]){
-					return;
+					return false;
 				}
 				////console.debug(p);
 				////console.debug(branchNode);
@@ -1453,21 +1467,36 @@ function Form (formSelector, dataStr){
 				try{
 					//var result = evaluator.evaluate(expr, context.documentElement, null, XPathResult.BOOLEAN_TYPE, null);
 					result = data.evaluate(p.relevant, 'boolean', p.path, p.ind);
-					////console.debug('evaluated to: '+result);
+					//console.debug('evaluated branch logic to: '+result+' (type: '+(typeof result)+')');
 				}
 				catch(e){
 					console.error('Serious error occurred trying to evaluate skip logic '+
 					'for node with name: "'+p.path+'" (message: '+e.message+')');
 					return false;
 				}
-
-				
+			
 				alreadyCovered[p.path] = true;
-				return (result === true) ? that.enable(branchNode) : that.disable(branchNode);
+
+				//for mysterious reasons '===' operator fails after Advanced Compilation even though result has value true 
+				//and type boolean
+				if (result == true){
+					that.enable(branchNode);
+				}
+				else {
+					that.disable(branchNode);
+				}
 			});
+			return true;
 		},
+		/**
+		 * Enables and reveals a branch node/group
+		 * @param  {jQuery} branchNode [description]
+		 * @return {jQuery}            [description]
+		 */
 		enable : function(branchNode){
 			var type;
+			console.debug('enabling branch');
+
 			branchNode.prev('.jr-branch').hide('slow', function(){$(this).remove();});
 			
 			//branchNode.removeAttr('disabled');
@@ -1481,6 +1510,8 @@ function Form (formSelector, dataStr){
 		disable : function(branchNode){
 			var type, 
 				branchClue = '<div class="jr-branch ui-corner-all"></div>';
+
+			console.debug('disabling branch');
 			//add disabled class (to style) and hide
 			branchNode.addClass('disabled').hide(); //HUH??? Hide() DOESN"T WORK WITH PARAMETERS!
 			//NOTE: DATA IS NOT REMOVED WHICH IS WRONG!

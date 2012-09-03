@@ -670,11 +670,13 @@ Connection.prototype.upload = function(force, excludeName) {
 		autoUpload = (settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ? true : false;
 	//console.log('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
 
-	// autoUpload is true or it is overridden, proceed
+	// proceed if autoUpload is true or it is overridden, and if there is currently no queue for submissions
 	if ( ( typeof this.uploadQueue == 'undefined' || this.uploadQueue.length === 0 ) && ( autoUpload === true || force ) ){
 		//var dataArr=[];//, insertedStr='';
 		this.uploadResult = {win:[], fail:[], force: force};
 		this.uploadQueue = store.getSurveyDataArr(true, excludeName);
+
+		console.debug('upload queue: '+this.uploadQueue);
 
 		if (this.uploadQueue.length === 0 ){
 			return (force) ? gui.showFeedback('Nothing marked "final" to upload (or record is currently open).') : false;

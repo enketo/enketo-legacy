@@ -75,7 +75,7 @@ class Survey_model extends CI_Model {
 
     public function get_form_submission_url()
     {
-        return $this->_get_item('submission_url');
+        return strtolower($this->_get_item('submission_url'));
     }
     
     public function launch_survey($server_url, $form_id, $submission_url, $data_url, $email)
@@ -97,10 +97,10 @@ class Survey_model extends CI_Model {
             //if we can ensure only requests from enketo.org are processed, it is pretty certain that $server_url is live       
             $data = array(
                 'subdomain' => $subdomain,
-                'server_url' => $server_url,
+                'server_url' => strtolower($server_url),
                 'form_id' => $form_id,
-                'submission_url' => $submission_url,
-                'data_url' => $data_url,
+                'submission_url' => strtolower($submission_url),
+                'data_url' => strtolower($data_url),
                 'email' => $email,
                 'launch_date' => date( 'Y-m-d H:i:s', time())
             );
@@ -113,6 +113,11 @@ class Survey_model extends CI_Model {
         return array('success'=>FALSE, 'reason'=>'');
     }
 
+    /**
+     * @method _get_full_survey_url turns a subdomain into the full url where the survey is available
+     * 
+     * @param $subdomain subdomain
+     */
     private function _get_full_survey_url($subdomain)
     {
         $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';

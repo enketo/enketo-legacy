@@ -68,13 +68,12 @@ class Data extends CI_Controller {
 		//$url = 'https://jrosaforms.appspot.com/submission';
 
 		if (!$submission_url){
-			echo 'OpenRosa server submission url not set';
-			return $this->output->set_status_header(500);
+			return $this->output->set_status_header(500, 'OpenRosa server submission url not set');
 		}
 
 		if(!isset($xml_submission_data) || $xml_submission_data == '')
 		{
-			echo "Did not receive data (Enketo server)";
+			return $this->output->set_status_header(500, 'Did not receive data (Enketo server)');
 		}
 
 		$xml_submission_filepath = "/tmp/".random_string('alpha', 10).".xml";//*/"/tmp/data_submission.xml";
@@ -82,8 +81,7 @@ class Data extends CI_Controller {
 			
 		if (!$xml_submission_file)
 		{
-			echo "Issue creating file from uploaded XML data (Enketo server)";
-			return $this->output->set_status_header(500);
+			return $this->output->set_status_header(500, "Issue creating file from uploaded XML data (Enketo server)");
 		}
 
 		fwrite($xml_submission_file, $xml_submission_data);
@@ -115,8 +113,6 @@ class Data extends CI_Controller {
 		//execute post
 		$result = curl_exec($ch);
 		
-		//echo $result;
-		
 		//debugging:
 		$response = '';
 		foreach (curl_getinfo($ch) as $property=>$value) { 
@@ -126,8 +122,7 @@ class Data extends CI_Controller {
 		//close connection
 		curl_close($ch);
 
-		$this->output->set_status_header($http_code);
-		echo $response;
+		$this->output->set_status_header($http_code, $response);
 	}
 }
 ?>

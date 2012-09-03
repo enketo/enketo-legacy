@@ -57,7 +57,7 @@ class Form_model extends CI_Model {
             log_message('debug', 'received: '.$url['manifest']);
             $manifest = $this->_load_xml($url['manifest']);
             $manifest_sxe = simplexml_import_dom($manifest['doc']);
-            log_message('debug', $manifest_sxe->asXML()); 
+            //log_message('debug', $manifest_sxe->asXML()); 
         }
         else 
         {

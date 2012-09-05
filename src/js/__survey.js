@@ -566,10 +566,11 @@ function Connection(){
 	this.init = function(){
 		//console.log('initializing Connection object');
 		//checkOnlineStatus();
+		that = this;
 		window.setInterval(function(){
 			//console.log('setting status'); //DEBUG
 			//setStatus();
-			this.upload();
+			that.upload();
 		}, 10*1000);
 		//window.addEventListener("offline", function(e){
 		//	console.log('offline event detected');
@@ -706,7 +707,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 	if (this.uploadQueue.length > 0){
 		record = this.uploadQueue.pop();
 		content = new FormData();
-		content.append('xml_submission_data', record.data);//dataXMLStr);
+		content.append('xml_submission_data', form.prepareForSubmission(record.data));//dataXMLStr);
 		content.append('Date', new Date().toUTCString());
 		last = (this.uploadQueue.length === 0) ? true : false;
 		//console.log('attempting upload with override: '+override+' Changing uploadOngoing to true'); // DEBUG
@@ -1043,13 +1044,13 @@ GUI.prototype.saveConfirm = function(){
 			posButton: 'Ok',
 			negButton: 'Cancel',
 			posAction: function(){
-					console.debug('value of final in confirm dialog: '+Boolean($saveConfirm.find('[name="record-final"]:checked').val()));
-					//console.debug($saveConfirm.find('[name="record-final"]'));
-					return saveForm(
-						$saveConfirm.find('[name="record-name"]').val(),
-						Boolean($saveConfirm.find('[name="record-final"]:checked').val())
-						//$saveConfirm.find('[name="record-final"]:checked').val()
-					);
+				console.debug('value of final in confirm dialog: '+Boolean($saveConfirm.find('[name="record-final"]:checked').val()));
+				//console.debug($saveConfirm.find('[name="record-final"]'));
+				return saveForm(
+					$saveConfirm.find('[name="record-name"]').val(),
+					Boolean($saveConfirm.find('[name="record-final"]:checked').val())
+					//$saveConfirm.find('[name="record-final"]:checked').val()
+				);
 			},
 			negAction: function(){
 				return false;

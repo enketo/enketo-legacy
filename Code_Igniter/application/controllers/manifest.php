@@ -26,7 +26,6 @@
 
 
 class Manifest extends CI_Controller {
-	
 	/*
 	|--------------------------------------------------------------------------
 	| MANIFEST BUILDER
@@ -176,7 +175,6 @@ class Manifest extends CI_Controller {
 			    // resources in a css file are assumed to be relative (to the css file) and may have
 			    // a base different from the webroot
 			    $base_url = substr($resource_in_html, 0, strrpos($resource_in_html, '/')+1);
-			    			    
 			    // extract the resources from the css file
 			    $resources = array_merge($resources, $this->_get_resources_from_css($resource_in_html, $base_url));
 			}

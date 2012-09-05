@@ -126,6 +126,7 @@ function Form (formSelector, dataStr){
 		$('#form-languages').remove();
 		$form.replaceWith($formClone);
 	 };
+
 	 /**
 	 * Validates the whole form and returns true or false
 	 * @return {boolean} 
@@ -520,6 +521,9 @@ function Form (formSelector, dataStr){
 			'datetime' : {
 				validate : function(x){
 					return ( new Date(x).toString() !== 'Invalid Date');
+				},
+			'convert' : function(x){
+					return ( new Date(x).toUTCString() );
 				}
 			},
 			'time' : {
@@ -668,6 +672,35 @@ function Form (formSelector, dataStr){
 		});
 		return;
 	};
+
+	//odd function to modify date strings (et. al.?) just before they are submitted or exported
+	Form.prototype.prepareForSubmission = function(dataStr){
+		var name, value,
+			$formdata = $(dataStr);
+		$form.find('[type="date"]').each(function(){
+			name = $(this).attr('name');
+			$formdata.xfind(name).each(function(){
+				value = $(this).text().trim();
+				if (value.length > 0){
+					console.debug('converting date string: '+value);
+					value = new Date(value).toJrString;
+					console.debug('jrDateString: '+value);
+					$(this).text(value);
+				}
+			});
+		});
+
+		$form.find('[type="datetime]').each(function(){
+
+		});
+
+		$form.find('[type="time]').each(function(){
+
+		});
+		return dataStr;
+	};
+
+	
 
 	/**
 	 * Function: get
@@ -2191,6 +2224,27 @@ function Form (formSelector, dataStr){
 }
 
 GUI.prototype.setCustomEventHandlers = function(){};
+
+/**
+ * Converts a native Date UTC String to a JavaRosa style date string
+ * @return {string} a date or datetime string formatted according to JavaRosa
+ */
+Date.prototype.toJrString = function(){
+	//2012-09-05T12:57:00.000-04 (ODK)
+	//2012-09-01 (ODK)
+	var timezone,
+		date=this,
+		jrDate = date.getUTCFullYear().toString().pad(4)+'-'+(date.getUTCMonth()+1).toString().pad(2)+'-'+date.getUTCDate().toString().pad(2);
+	console.log('date: '+date.toString());
+	if (date.getUTCMilliseconds() > 0){
+		jrDate += 'T'+date.getHours().toString().pad(2)+':'+date.getMinutes().toString().pad(2)+':'+date.getSeconds().toString().pad(2)+
+			'.'+date.getMilliseconds().toString().pad(2);
+		timezone = date.getTimezoneOffset()/60;
+		jrDate += (timezone < 0) ? '+'+(-timezone).toString().pad(2) : '-'+timezone.toString().pad(2);
+		//(-date.getTimezoneOffset()/60);
+	}
+	return jrDate;
+};
 
 (function($){
 	"use strict";

@@ -6,7 +6,7 @@
 
   <target name="compile">
     
-    <jscomp compilationLevel="advanced" warning="verbose" 
+    <jscomp compilationLevel="simple" warning="verbose" 
             debug="false" output="public/js-min/launch-all-min.js">
 
       <externs dir="${basedir}/src/js">

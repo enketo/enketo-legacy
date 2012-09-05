@@ -194,9 +194,9 @@ function checkCache(){
 }
 
 /**
- * [loadForm description]
- * @param  {string} formName  [description]
- * @param  {boolean=} confirmed [description]
+ * Controller function to load a form from local storage. Checks whether there is any unsaved data in the current form first.
+ * @param  {string} formName  The name of the form to load (key of local db).
+ * @param  {boolean=} confirmed Whether unsaved data can be discarded and lost forever.
  */
 function loadForm(formName, confirmed){
 	'use strict';
@@ -322,8 +322,8 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 }
 
 /**
- * [resetForm description]
- * @param  {boolean=} confirmed [description]
+ * Controller function to reset to a blank form. Checks whether all changes have been saved first
+ * @param  {boolean=} confirmed Whether unsaved changes can be discarded and lost forever
  */
 function resetForm(confirmed){
 	'use strict';
@@ -347,6 +347,10 @@ function resetForm(confirmed){
 	}
 }
 
+/**
+ * Controller function to delete a record of form data.
+ * @param  {boolean=} confirmed whether the user has confirmed that he/she wants to delete the data
+ */
 function deleteForm(confirmed) {
 	'use strict';
 	var message, choices, key = form.getRecordName();
@@ -378,6 +382,12 @@ function deleteForm(confirmed) {
 	return;
 }
 
+/**
+ * function to export or backup data. It depends on the browser whether this data is shown in a new browser window/tab
+ * or is downloaded automatically. It is not possible to provide a file name.
+ *
+ * @param  {boolean=} finalOnly [description]
+ */
 function exportData(finalOnly){
 	"use strict";
 	var data, uriContent, newWindow;
@@ -446,8 +456,8 @@ function Cache(){
 			appCache = window.applicationCache;
 			//checkForUpdate();
 			appCache.addEventListener('updateready', function(){
-				// when an updated cache is downloaded and ready to be used
-				// swap to the newest version of the cache, will NOT refresh page only newly called resources
+			// when an updated cache is downloaded and ready to be used
+			// swap to the newest version of the cache, will NOT refresh page only newly called resources
 			appCache.swapCache();
 			update = true;
 			}, false);
@@ -556,11 +566,11 @@ function Connection(){
 	this.init = function(){
 		//console.log('initializing Connection object');
 		//checkOnlineStatus();
-		//window.setInterval(function(){
-		//	//console.log('setting status'); //DEBUG
-		//	setStatus();
-		//	_this.upload();
-		//}, 10*1000);
+		window.setInterval(function(){
+			//console.log('setting status'); //DEBUG
+			//setStatus();
+			this.upload();
+		}, 10*1000);
 		//window.addEventListener("offline", function(e){
 		//	console.log('offline event detected');
 		//	setStatus();

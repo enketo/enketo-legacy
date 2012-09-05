@@ -214,8 +214,9 @@ function StorageLocal(){
 						console.debug('this record is surveyData: '+record.key); // DEBUG
 						console.debug('excludename: '+excludeName);
 						console.debug('record.ready: '+record['ready']+' type:'+typeof record['ready']);
-						//=== comparison breaks in Google Closure compiler. Should probably be called with --output_wrapper to prevent this (but not possible in ANT?)
-						if (key !== excludeName && (!finalOnly || record['ready'] === 'true' || record['ready'] == true )){//} && (record.key !== form.getKey()) ){
+						//=== true comparison breaks in Google Closure compiler. Should probably be called with --output_wrapper to prevent this (but not possible in ANT?)
+						//alternatively, the complete code could perhaps be wrapped in an anonymous function (except declaration of globals?)
+						if (key !== excludeName && (!finalOnly || record['ready'] === 'true' || record['ready'] === true )){//} && (record.key !== form.getKey()) ){
 							records.push(record);
 						}
 					}

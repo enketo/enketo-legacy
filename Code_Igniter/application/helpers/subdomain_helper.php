@@ -42,14 +42,18 @@ if ( ! function_exists('get_subdomain'))
 {
 	function get_subdomain($default = NULL)
 	{
-		//if there is a subdomain e.g. sub.example.com
-		if(strpos($_SERVER['SERVER_NAME'], '.') != strrpos($_SERVER['SERVER_NAME'], "."))
+		$full_name = $_SERVER['SERVER_NAME'];
+		//if there is a subdomain e.g. sub.example.com, i.e. > dots
+		if(strpos($full_name, '.') != strrpos($full_name, "."))
 		{
 			// extract it => e.g. result = 'sub' 
 			// NOTE: does not work for multiple-level subdomains e.g.: sub1.sub2.example.com
-			// nor for domains such as co.uk
-			$subdomain_arr = explode('.',$_SERVER['SERVER_NAME'], 2);
-			$subdomain_name = $subdomain_arr[0];
+			// nor for domains such as co.uks
+			//$subdomain_arr = explode('.', $full_name, 2);
+			//$subdomain_name = $subdomain_arr[0];
+			log_message('debug', 'going to extract subdomain');
+			$subdomain_name = substr($full_name, 0, strrpos($full_name, '.', -5));
+			log_message('debug', 'subdomain extracted: '.$subdomain_name);
 		}
 	
 		if ( !isset($subdomain_name) OR $subdomain_name == 'www')

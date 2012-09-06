@@ -287,7 +287,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	console.debug(rec);
 	//alert('hey');
 	result = store.setRecord(confirmedRecordName, rec, deleteOldName, overwriteExisting, curRecordName);
-		
+
 	console.log('result of save: '+result); // DEBUG
 	if (result === 'success'){
 		gui.showFeedback('Form with name "'+confirmedRecordName+'" has been saved.', 2);
@@ -381,6 +381,37 @@ function deleteForm(confirmed) {
 	}
 	return;
 }
+
+
+/**
+ * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a backup, without saved data loading
+ * functionality. It only allows validated forms to be submitted. 'Submitted' in this case actually still means it is saved to localStorage first
+ * and then forced to upload. If uploading fails the user can continue working on a blank form. Uploading will be attempted at intervals until it
+ * succeeds.
+ *
+ */
+function submitForm() {
+	var record, saveResult;
+	if (!form.isValid()){
+		gui.alert('Form contains errors (please see fields marked in red)');
+		return;
+	}
+	record = { 'data': form.getDataStr(true, true), 'ready': true};
+	saveResult = store.setRecord($('form.jr #form-title').text()+' - '+store.getCounterValue(), record, false, false);
+	
+	console.log('result of save: '+saveResult); // DEBUG
+	if (saveResult === 'success'){
+		//attempt uploading the data (all data in localStorage)
+		connection.upload(true);
+		resetForm(true);
+		$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
+		//gui.showFeedback('Form with name "'+confirmedRecordName+'" has been saved.', 2);
+	}
+	else{
+		gui.alert('Error trying to save data locally before submit');
+	}
+}
+
 
 /**
  * function to export or backup data. It depends on the browser whether this data is shown in a new browser window/tab
@@ -673,8 +704,11 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 	this.currentOnlineStatus = newStatus;
 };
 
-// PROTECTION AGAINST CALLING FUNCTION TWICE to be tested
-// attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
+/**
+ * PROTECTION AGAINST CALLING FUNCTION TWICE to be tested, attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
+ * @param  {boolean=} force       [description]
+ * @param  {string=} excludeName [description]
+ */
 Connection.prototype.upload = function(force, excludeName) {
 	var i, name, result,// last,
 		//uploadQueue = [],
@@ -729,9 +763,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 			}
 		});
 	}
-	
 };
-
 
 Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	var i, waswere, namesStr,
@@ -885,6 +917,11 @@ GUI.prototype.setCustomEventHandlers = function(){
 	$('button#delete-form').button({'icons': {'primary':"ui-icon-trash"}, disabled:true})
 		.click(function(){
 			deleteForm(false);
+		});
+	$('button#submit-form').button({'icons': {'primary':"ui-icon-check"}})
+		.click(function(){
+			form.validateForm();
+			submitForm();
 		});
 
 	$('#form-controls button').equalWidth();

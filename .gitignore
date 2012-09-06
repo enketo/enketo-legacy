@@ -9,3 +9,4 @@
 sftp-config.json
 .sass-cache
 */public/js-source
+*/config/database.php

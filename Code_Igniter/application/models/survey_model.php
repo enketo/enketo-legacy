@@ -36,7 +36,9 @@ class Survey_model extends CI_Model {
     	//$query = $this->db->get_where('surveys',array('subdomain'=>$survey_subdomain, 'survey_live'=>TRUE), 1);
     	//return ($query->num_rows() === 1) ? TRUE : FALSE;
         //since management of surveys is done at the OpenRosa-compliant server, all we could do here is see
-        //if the url contains an xml file. However, this is very inefficient and needs to be done only once (not also in the form model before transformation). ALSO THE FORM URL REMAINS ACCESSIBLE WHEN DISABLED IN AGGREGATE SO ONE WOULD HAVE TO CHECK THE FORMLIST        
+        //if the url contains an xml file. However, this is very inefficient and needs to be done only once (not also in the form model before transformation). ALSO THE FORM URL REMAINS ACCESSIBLE WHEN DISABLED IN AGGREGATE SO ONE WOULD HAVE TO CHECK THE FORMLIST  
+        //
+        return TRUE;      
     }
     
 //    // returns true if the data of a particular survey is live / published
@@ -75,7 +77,7 @@ class Survey_model extends CI_Model {
 
     public function get_form_submission_url()
     {
-        return $this->_get_item('submission_url');
+        return strtolower($this->_get_item('submission_url'));
     }
     
     public function launch_survey($server_url, $form_id, $submission_url, $data_url, $email)
@@ -97,10 +99,10 @@ class Survey_model extends CI_Model {
             //if we can ensure only requests from enketo.org are processed, it is pretty certain that $server_url is live       
             $data = array(
                 'subdomain' => $subdomain,
-                'server_url' => $server_url,
+                'server_url' => strtolower($server_url),
                 'form_id' => $form_id,
-                'submission_url' => $submission_url,
-                'data_url' => $data_url,
+                'submission_url' => strtolower($submission_url),
+                'data_url' => strtolower($data_url),
                 'email' => $email,
                 'launch_date' => date( 'Y-m-d H:i:s', time())
             );
@@ -113,6 +115,11 @@ class Survey_model extends CI_Model {
         return array('success'=>FALSE, 'reason'=>'');
     }
 
+    /**
+     * @method _get_full_survey_url turns a subdomain into the full url where the survey is available
+     * 
+     * @param $subdomain subdomain
+     */
     private function _get_full_survey_url($subdomain)
     {
         $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';

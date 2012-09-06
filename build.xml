@@ -6,7 +6,7 @@
 
   <target name="compile">
     
-    <jscomp compilationLevel="advanced" warning="verbose" 
+    <jscomp compilationLevel="simple" warning="verbose" 
             debug="false" output="public/js-min/launch-all-min.js">
 
       <externs dir="${basedir}/src/js">
@@ -20,8 +20,8 @@
       </sources>
 
     </jscomp>
-
-    <jscomp compilationLevel="advanced" warning="verbose" 
+ 
+    <jscomp compilationLevel="simple" warning="verbose" 
             debug="false" output="public/js-min/front-all-min.js">
 
       <externs dir="${basedir}/src/js">
@@ -34,7 +34,7 @@
 
     </jscomp>
 
-    <jscomp compilationLevel="advanced" warning="verbose" 
+    <jscomp compilationLevel="simple" warning="verbose" 
             debug="false" output="public/js-min/survey-all-min.js">
 
       <externs dir="${basedir}/src/js">

@@ -51,6 +51,7 @@ function Form (formSelector, dataStr){
 	this.validateAll = function(){return form.validateAll();};
 	//***************************************
 
+
 /**
  * Function: init
  *
@@ -126,6 +127,7 @@ function Form (formSelector, dataStr){
 		$('#form-languages').remove();
 		$form.replaceWith($formClone);
 	 };
+
 	 /**
 	 * Validates the whole form and returns true or false
 	 * @return {boolean} 
@@ -141,6 +143,32 @@ function Form (formSelector, dataStr){
 		return form.isValid();
 	};
 
+	//odd function to modify date strings (et. al.?) just before they are submitted or exported
+	this.prepareForSubmission = function(dataStr){
+		var name, value,
+			formData = new DataXML(dataStr); //$($.parseXML(dataStr));
+		//console.debug(formData.);
+		$form.find('[data-type-xml="date"], [data-type-xml="dateTime"]').each(function(){
+			name = $(this).attr('name');
+			//console.debug('found date element with name: '+name);
+			formData.node(name).get().each(function(){
+				console.debug('found date DATA node with name: '+name);
+				value = $(this).text().trim();
+				if (value.length > 0){
+					console.debug('converting date string: '+value);
+					value = new Date(value).toJrString();
+					console.debug('jrDateString: '+value);
+					//bypassing validation & conversion of Nodeset sub-class
+					$(this).text(value);
+				}
+			});
+		});
+
+		$form.find('[type="time"]').each(function(){
+
+		});
+		return formData.getStr(true, true);
+	};
 /**
  * Function: DataXML
  *
@@ -520,6 +548,9 @@ function Form (formSelector, dataStr){
 			'datetime' : {
 				validate : function(x){
 					return ( new Date(x).toString() !== 'Invalid Date');
+				},
+			'convert' : function(x){
+					return ( new Date(x).toUTCString() );
 				}
 			},
 			'time' : {
@@ -668,6 +699,10 @@ function Form (formSelector, dataStr){
 		});
 		return;
 	};
+
+	
+
+	
 
 	/**
 	 * Function: get
@@ -1479,7 +1514,7 @@ function Form (formSelector, dataStr){
 
 				//for mysterious reasons '===' operator fails after Advanced Compilation even though result has value true 
 				//and type boolean
-				if (result == true){
+				if (result === true){
 					that.enable(branchNode);
 				}
 				else {
@@ -1658,8 +1693,8 @@ function Form (formSelector, dataStr){
 			this.dateWidget();
 			this.timeWidget();
 			this.dateTimeWidget();
-			//this.selectOneWidget();
-			//this.selectMultiWidget();
+			this.selectOneWidget();
+			this.selectMultiWidget();
 			this.readonlyWidget();
 			this.gridWidget();
 			this.spinnerWidget();
@@ -2191,6 +2226,27 @@ function Form (formSelector, dataStr){
 }
 
 GUI.prototype.setCustomEventHandlers = function(){};
+
+/**
+ * Converts a native Date UTC String to a JavaRosa style date string
+ * @return {string} a date or datetime string formatted according to JavaRosa
+ */
+Date.prototype.toJrString = function(){
+	//2012-09-05T12:57:00.000-04 (ODK)
+	//2012-09-01 (ODK)
+	var timezone,
+		date=this,
+		jrDate = date.getUTCFullYear().toString().pad(4)+'-'+(date.getUTCMonth()+1).toString().pad(2)+'-'+date.getUTCDate().toString().pad(2);
+	//console.log('date: '+date.toString());
+	if ( date.getUTCMilliseconds() > 0 || date.getUTCSeconds() > 0 || date.getUTCMinutes() > 0 || date.getUTCHours()>0 ){
+		jrDate += 'T'+date.getHours().toString().pad(2)+':'+date.getMinutes().toString().pad(2)+':'+date.getSeconds().toString().pad(2)+
+			'.'+date.getMilliseconds().toString().pad(3);
+		timezone = date.getTimezoneOffset()/60;
+		jrDate += (timezone < 0) ? '+'+(-timezone).toString().pad(2) : '-'+timezone.toString().pad(2);
+		//(-date.getTimezoneOffset()/60);
+	}
+	return jrDate;
+};
 
 (function($){
 	"use strict";

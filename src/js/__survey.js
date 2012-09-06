@@ -194,9 +194,9 @@ function checkCache(){
 }
 
 /**
- * [loadForm description]
- * @param  {string} formName  [description]
- * @param  {boolean=} confirmed [description]
+ * Controller function to load a form from local storage. Checks whether there is any unsaved data in the current form first.
+ * @param  {string} formName  The name of the form to load (key of local db).
+ * @param  {boolean=} confirmed Whether unsaved data can be discarded and lost forever.
  */
 function loadForm(formName, confirmed){
 	'use strict';
@@ -322,8 +322,8 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 }
 
 /**
- * [resetForm description]
- * @param  {boolean=} confirmed [description]
+ * Controller function to reset to a blank form. Checks whether all changes have been saved first
+ * @param  {boolean=} confirmed Whether unsaved changes can be discarded and lost forever
  */
 function resetForm(confirmed){
 	'use strict';
@@ -347,6 +347,10 @@ function resetForm(confirmed){
 	}
 }
 
+/**
+ * Controller function to delete a record of form data.
+ * @param  {boolean=} confirmed whether the user has confirmed that he/she wants to delete the data
+ */
 function deleteForm(confirmed) {
 	'use strict';
 	var message, choices, key = form.getRecordName();
@@ -378,6 +382,12 @@ function deleteForm(confirmed) {
 	return;
 }
 
+/**
+ * function to export or backup data. It depends on the browser whether this data is shown in a new browser window/tab
+ * or is downloaded automatically. It is not possible to provide a file name.
+ *
+ * @param  {boolean=} finalOnly [description]
+ */
 function exportData(finalOnly){
 	"use strict";
 	var data, uriContent, newWindow;
@@ -446,8 +456,8 @@ function Cache(){
 			appCache = window.applicationCache;
 			//checkForUpdate();
 			appCache.addEventListener('updateready', function(){
-				// when an updated cache is downloaded and ready to be used
-				// swap to the newest version of the cache, will NOT refresh page only newly called resources
+			// when an updated cache is downloaded and ready to be used
+			// swap to the newest version of the cache, will NOT refresh page only newly called resources
 			appCache.swapCache();
 			update = true;
 			}, false);
@@ -556,11 +566,12 @@ function Connection(){
 	this.init = function(){
 		//console.log('initializing Connection object');
 		//checkOnlineStatus();
-		//window.setInterval(function(){
-		//	//console.log('setting status'); //DEBUG
-		//	setStatus();
-		//	_this.upload();
-		//}, 10*1000);
+		that = this;
+		window.setInterval(function(){
+			//console.log('setting status'); //DEBUG
+			//setStatus();
+			that.upload();
+		}, 10*1000);
 		//window.addEventListener("offline", function(e){
 		//	console.log('offline event detected');
 		//	setStatus();
@@ -670,11 +681,13 @@ Connection.prototype.upload = function(force, excludeName) {
 		autoUpload = (settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ? true : false;
 	//console.log('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
 
-	// autoUpload is true or it is overridden, proceed
+	// proceed if autoUpload is true or it is overridden, and if there is currently no queue for submissions
 	if ( ( typeof this.uploadQueue == 'undefined' || this.uploadQueue.length === 0 ) && ( autoUpload === true || force ) ){
 		//var dataArr=[];//, insertedStr='';
 		this.uploadResult = {win:[], fail:[], force: force};
 		this.uploadQueue = store.getSurveyDataArr(true, excludeName);
+
+		console.debug('upload queue: '+this.uploadQueue);
 
 		if (this.uploadQueue.length === 0 ){
 			return (force) ? gui.showFeedback('Nothing marked "final" to upload (or record is currently open).') : false;
@@ -694,7 +707,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 	if (this.uploadQueue.length > 0){
 		record = this.uploadQueue.pop();
 		content = new FormData();
-		content.append('xml_submission_data', record.data);//dataXMLStr);
+		content.append('xml_submission_data', form.prepareForSubmission(record.data));//dataXMLStr);
 		content.append('Date', new Date().toUTCString());
 		last = (this.uploadQueue.length === 0) ? true : false;
 		//console.log('attempting upload with override: '+override+' Changing uploadOngoing to true'); // DEBUG
@@ -726,15 +739,15 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		names=[],
 		statusMap = {
 		0: {success: false, msg: "Uploading of data failed (probably offline)"},
-		200: {success:false, msg: "Data server did not accept data for "+name+". Contact Enketo helpdesk please."},
+		200: {success:false, msg: "Data server did not accept data. Contact Enketo helpdesk please."},
 		201: {success:true, msg: ""},
 		202: {success:true, msg: name+" may have had errors. Contact survey administrator please."},
-		'2xx': {success:false, msg: "Unknown error occurred when submitting data for "+name+". Contact Enketo helpdesk please"},
-		400: {success:false, msg: "Data server did not accept data for "+name+" Contact survey administrator please."},
+		'2xx': {success:false, msg: "Unknown error occurred when submitting data. Contact Enketo helpdesk please"},
+		400: {success:false, msg: "Data server did not accept data. Contact survey administrator please."},
 		403: {success:false, msg: "You are not allowed to post data to this data server. Contact survey administrator please."},
 		404: {success:false, msg: "Submission area on data server not found or not properly configured."},
 		'4xx': {success:false, msg: "Unknown submission problem on data server."},
-		413: {success:false, msg: "Data for "+name+" is too large. Please export the data and contact the Enketo helpdesk please."},
+		413: {success:false, msg: "Data is too large. Please export the data and contact the Enketo helpdesk please."},
 		500: {success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."},
 		503: {success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."},
 		'5xx':{success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."}
@@ -1031,13 +1044,13 @@ GUI.prototype.saveConfirm = function(){
 			posButton: 'Ok',
 			negButton: 'Cancel',
 			posAction: function(){
-					console.debug('value of final in confirm dialog: '+Boolean($saveConfirm.find('[name="record-final"]:checked').val()));
-					//console.debug($saveConfirm.find('[name="record-final"]'));
-					return saveForm(
-						$saveConfirm.find('[name="record-name"]').val(),
-						Boolean($saveConfirm.find('[name="record-final"]:checked').val())
-						//$saveConfirm.find('[name="record-final"]:checked').val()
-					);
+				console.debug('value of final in confirm dialog: '+Boolean($saveConfirm.find('[name="record-final"]:checked').val()));
+				//console.debug($saveConfirm.find('[name="record-final"]'));
+				return saveForm(
+					$saveConfirm.find('[name="record-name"]').val(),
+					Boolean($saveConfirm.find('[name="record-final"]:checked').val())
+					//$saveConfirm.find('[name="record-final"]:checked').val()
+				);
 			},
 			negAction: function(){
 				return false;

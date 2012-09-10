@@ -125,7 +125,7 @@ class Survey_model extends CI_Model {
         $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
         $domain = $_SERVER['SERVER_NAME'];
         $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
-        return $protocol.$subdomain.'.'.$domain;
+        return $protocol.$subdomain.'.'.$domain.'/webform';
     }
 
 // 	public function update_formlist()

@@ -1043,7 +1043,7 @@ footer.ui-widget a {
   text-decoration: none;
 }
 
-/* line 727, ../../src/scss/screen.scss */
+/* line 726, ../../src/scss/screen.scss */
 .jr label, .jr fieldset {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -1053,19 +1053,41 @@ footer.ui-widget a {
   width: 100%;
   padding: 14px 14px;
 }
-/* line 735, ../../src/scss/screen.scss */
+/* line 734, ../../src/scss/screen.scss */
 .jr label + label {
   border-top: 1px solid #cccccc;
 }
+/* line 736, ../../src/scss/screen.scss */
+.jr .geopoint {
+  height: 350px;
+}
 /* line 738, ../../src/scss/screen.scss */
+.jr .geopoint .map-canvas {
+  width: 340px;
+  height: 275px;
+  margin-top: 10px;
+  float: right;
+  border: 1px solid #cccccc;
+}
+/* line 744, ../../src/scss/screen.scss */
+.jr .geopoint label {
+  border: none;
+  padding: 5px 0;
+}
+/* line 747, ../../src/scss/screen.scss */
+.jr .geopoint button {
+  width: 130px;
+  margin-top: 10px;
+}
+/* line 751, ../../src/scss/screen.scss */
 .jr fieldset:not(#jr-preload-items):not(.jr-group) + label, .jr fieldset:not(#jr-preload-items):not(.jr-group) + fieldset:not(.jr-group) {
   border-top: 1px solid #cccccc;
 }
-/* line 740, ../../src/scss/screen.scss */
+/* line 753, ../../src/scss/screen.scss */
 .jr label + fieldset:not(.jr-group) {
   border-top: 1px solid #cccccc;
 }
-/* line 742, ../../src/scss/screen.scss */
+/* line 755, ../../src/scss/screen.scss */
 .jr span.repeat-number {
   height: 2em;
   display: block;
@@ -1074,39 +1096,39 @@ footer.ui-widget a {
   margin-top: -8px;
   color: #cccccc;
 }
-/* line 749, ../../src/scss/screen.scss */
+/* line 762, ../../src/scss/screen.scss */
 .jr legend {
   position: absolute;
   top: 1.5em;
 }
-/* line 752, ../../src/scss/screen.scss */
+/* line 765, ../../src/scss/screen.scss */
 .jr legend ~ label {
   border-top: none;
   padding: .5em 0 .5em 0;
   margin-left: 25px;
 }
-/* line 756, ../../src/scss/screen.scss */
+/* line 769, ../../src/scss/screen.scss */
 .jr legend + label {
   margin-top: 25px;
 }
-/* line 758, ../../src/scss/screen.scss */
+/* line 771, ../../src/scss/screen.scss */
 .jr fieldset {
   position: relative;
 }
-/* line 760, ../../src/scss/screen.scss */
+/* line 773, ../../src/scss/screen.scss */
 .jr fieldset.jr-group {
   border: 1px solid #cccccc;
   margin: .5em 0;
 }
-/* line 763, ../../src/scss/screen.scss */
+/* line 776, ../../src/scss/screen.scss */
 .jr fieldset.jr-repeat {
   border: 1px dotted #cccccc;
 }
-/* line 765, ../../src/scss/screen.scss */
+/* line 778, ../../src/scss/screen.scss */
 .jr label, .jr legend, .jr .trigger {
   font-size: .8em;
 }
-/* line 767, ../../src/scss/screen.scss */
+/* line 780, ../../src/scss/screen.scss */
 .jr input {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -1116,16 +1138,16 @@ footer.ui-widget a {
   margin: .2em;
   font-size: .9em;
 }
-/* line 775, ../../src/scss/screen.scss */
+/* line 788, ../../src/scss/screen.scss */
 .jr input[type="text"] {
   width: 100%;
 }
-/* line 777, ../../src/scss/screen.scss */
+/* line 790, ../../src/scss/screen.scss */
 .jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password] {
-  width: 10em;
+  width: 130px;
   text-align: right;
 }
-/* line 780, ../../src/scss/screen.scss */
+/* line 793, ../../src/scss/screen.scss */
 .jr input[type=radio], .jr input[type=checkbox] {
   display: block;
   /*****/
@@ -1136,26 +1158,26 @@ footer.ui-widget a {
   /*compensates for the label margin, fixes multi-line labels */
   margin-left: -25px;
 }
-/* line 789, ../../src/scss/screen.scss */
+/* line 802, ../../src/scss/screen.scss */
 .jr select {
   display: block;
 }
-/* line 792, ../../src/scss/screen.scss */
+/* line 805, ../../src/scss/screen.scss */
 .jr fieldset .ui-button {
   width: 27px;
   height: 27px;
   margin-top: 6px;
 }
-/* line 796, ../../src/scss/screen.scss */
+/* line 809, ../../src/scss/screen.scss */
 .jr fieldset .one-more {
   margin: 0 -34px -5px 10px;
 }
-/* line 798, ../../src/scss/screen.scss */
+/* line 811, ../../src/scss/screen.scss */
 .jr fieldset .remove {
   float: right;
   margin-right: 0;
 }
-/* line 801, ../../src/scss/screen.scss */
+/* line 814, ../../src/scss/screen.scss */
 .jr .trigger {
   padding: 7px 12px;
   margin: 1em 0;
@@ -1163,18 +1185,18 @@ footer.ui-widget a {
 
 /*excludes first label or fieldset in each fieldset or root of form*/
 /*first label of a set of radio buttons or checkboxes */
-/* line 809, ../../src/scss/screen.scss */
+/* line 822, ../../src/scss/screen.scss */
 label.with-media {
   margin-top: 5px;
 }
 
-/* line 812, ../../src/scss/screen.scss */
+/* line 825, ../../src/scss/screen.scss */
 .with-media > span.active {
   display: block;
   width: 100%;
 }
 
-/* line 817, ../../src/scss/screen.scss */
+/* line 830, ../../src/scss/screen.scss */
 label.with-media img, label.with-media video, label.with-media audio {
   max-width: 45%;
   padding-right: 5%;
@@ -1182,29 +1204,29 @@ label.with-media img, label.with-media video, label.with-media audio {
   float: right;
 }
 
-/* line 823, ../../src/scss/screen.scss */
+/* line 836, ../../src/scss/screen.scss */
 .with-media input {
   float: left;
   width: 5%;
   margin-top: -17px;
 }
 
-/* line 829, ../../src/scss/screen.scss */
+/* line 842, ../../src/scss/screen.scss */
 input, .fakefileinput {
   background-color: white;
   border: 2px solid #cccccc;
   min-height: 30px;
 }
 
-/* line 834, ../../src/scss/screen.scss */
+/* line 847, ../../src/scss/screen.scss */
 .jr-appearance-compact label {
   display: inline;
 }
-/* line 836, ../../src/scss/screen.scss */
+/* line 849, ../../src/scss/screen.scss */
 .jr-appearance-compact label span {
   display: none;
 }
-/* line 838, ../../src/scss/screen.scss */
+/* line 851, ../../src/scss/screen.scss */
 .jr-appearance-compact label img {
   float: left;
   width: 120px;
@@ -1212,13 +1234,13 @@ input, .fakefileinput {
   padding: 5px;
   margin-top: 25px;
 }
-/* line 845, ../../src/scss/screen.scss */
+/* line 858, ../../src/scss/screen.scss */
 .jr-appearance-compact label input[type=radio], .jr-appearance-compact label input[type=checkbox] {
   /*display: none;*/
   margin-top: 35px;
 }
 
-/* line 849, ../../src/scss/screen.scss */
+/* line 862, ../../src/scss/screen.scss */
 .jr-branch {
   border-top: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
@@ -1229,17 +1251,17 @@ input, .fakefileinput {
   opacity: 0.5;
 }
 
-/* line 858, ../../src/scss/screen.scss */
+/* line 871, ../../src/scss/screen.scss */
 .disabled {
   /*color: $shadow*/
   opacity: 0.5;
 }
 
-/* line 862, ../../src/scss/screen.scss */
+/* line 875, ../../src/scss/screen.scss */
 #upload form {
   text-align: center;
 }
-/* line 864, ../../src/scss/screen.scss */
+/* line 877, ../../src/scss/screen.scss */
 #upload form label {
   position: absolute;
   top: 120px;
@@ -1251,11 +1273,11 @@ input, .fakefileinput {
   z-index: 0;
   width: 80%;
 }
-/* line 874, ../../src/scss/screen.scss */
+/* line 887, ../../src/scss/screen.scss */
 #upload form label > span {
   display: block;
 }
-/* line 876, ../../src/scss/screen.scss */
+/* line 889, ../../src/scss/screen.scss */
 #upload form input, #upload form .fakefileinput {
   position: absolute;
   top: 20px;
@@ -1268,7 +1290,7 @@ input, .fakefileinput {
   font-size: .9em;
   text-align: center;
 }
-/* line 887, ../../src/scss/screen.scss */
+/* line 900, ../../src/scss/screen.scss */
 #upload form input[type=file] {
   /*height: 0px;
   width: 0px;
@@ -1276,11 +1298,11 @@ input, .fakefileinput {
   z-index: 5;
   opacity: 0;
 }
-/* line 893, ../../src/scss/screen.scss */
+/* line 906, ../../src/scss/screen.scss */
 #upload form .hurry {
   margin-top: 180px;
 }
-/* line 897, ../../src/scss/screen.scss */
+/* line 910, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:link {
   padding: 0 10px;
   font-size: 13px;
@@ -1289,34 +1311,22 @@ input, .fakefileinput {
   text-decoration: none;
   color: #5c5c5c;
 }
-/* line 904, ../../src/scss/screen.scss */
+/* line 917, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:hover {
   font-weight: normal;
 }
-/* line 906, ../../src/scss/screen.scss */
+/* line 919, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:not(.active):hover {
   color: #381f00;
   text-decoration: underline;
 }
-/* line 909, ../../src/scss/screen.scss */
+/* line 922, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a.active {
   color: #817865;
   text-decoration: none;
 }
 
-/* line 913, ../../src/scss/screen.scss */
-label.geopoint {
-  height: 350px;
-}
-/* line 915, ../../src/scss/screen.scss */
-label.geopoint .map-canvas {
-  width: 300px;
-  height: 300px;
-  float: right;
-  border: 1px solid #cccccc;
-}
-
-/* line 921, ../../src/scss/screen.scss */
+/* line 926, ../../src/scss/screen.scss */
 .ui-datepicker {
   margin-left: -270px;
   margin-top: -100px;
@@ -1324,66 +1334,66 @@ label.geopoint .map-canvas {
 }
 
 /* css for multi-select addon */
-/* line 928, ../../src/scss/screen.scss */
+/* line 933, ../../src/scss/screen.scss */
 button.ui-multiselect {
   display: block;
 }
 
-/* line 931, ../../src/scss/screen.scss */
+/* line 936, ../../src/scss/screen.scss */
 .ui-multiselect {
   padding: 2px 0 2px 4px;
   text-align: left;
 }
-/* line 934, ../../src/scss/screen.scss */
+/* line 939, ../../src/scss/screen.scss */
 .ui-multiselect span.ui-icon {
   float: right;
 }
 
-/* line 938, ../../src/scss/screen.scss */
+/* line 943, ../../src/scss/screen.scss */
 .ui-multiselect-single .ui-multiselect-checkboxes input {
   position: absolute !important;
   top: auto !important;
   left: -9999px;
 }
-/* line 942, ../../src/scss/screen.scss */
+/* line 947, ../../src/scss/screen.scss */
 .ui-multiselect-single .ui-multiselect-checkboxes label {
   padding: 5px !important;
 }
 
-/* line 945, ../../src/scss/screen.scss */
+/* line 950, ../../src/scss/screen.scss */
 .ui-multiselect-header {
   margin-bottom: 3px;
   padding: 3px 0 3px 4px;
 }
-/* line 948, ../../src/scss/screen.scss */
+/* line 953, ../../src/scss/screen.scss */
 .ui-multiselect-header ul {
   font-size: 0.9em;
 }
-/* line 950, ../../src/scss/screen.scss */
+/* line 955, ../../src/scss/screen.scss */
 .ui-multiselect-header ul li {
   float: left;
   padding: 0 10px 0 0;
 }
-/* line 953, ../../src/scss/screen.scss */
+/* line 958, ../../src/scss/screen.scss */
 .ui-multiselect-header a {
   text-decoration: none;
 }
-/* line 955, ../../src/scss/screen.scss */
+/* line 960, ../../src/scss/screen.scss */
 .ui-multiselect-header a:hover {
   text-decoration: underline;
 }
-/* line 957, ../../src/scss/screen.scss */
+/* line 962, ../../src/scss/screen.scss */
 .ui-multiselect-header span.ui-icon {
   float: left;
 }
-/* line 959, ../../src/scss/screen.scss */
+/* line 964, ../../src/scss/screen.scss */
 .ui-multiselect-header li.ui-multiselect-close {
   float: right;
   text-align: right;
   padding-right: 0;
 }
 
-/* line 964, ../../src/scss/screen.scss */
+/* line 969, ../../src/scss/screen.scss */
 .ui-multiselect-menu {
   display: none;
   padding: 3px;
@@ -1391,36 +1401,36 @@ button.ui-multiselect {
   z-index: 10000;
 }
 
-/* line 970, ../../src/scss/screen.scss */
+/* line 975, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes {
   position: relative;
   overflow-y: scroll;
 }
-/* line 973, ../../src/scss/screen.scss */
+/* line 978, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes label {
   cursor: default;
   display: block;
   border: 1px solid transparent;
   padding: 3px 1px;
 }
-/* line 978, ../../src/scss/screen.scss */
+/* line 983, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes label input {
   position: relative;
   top: 1px;
 }
-/* line 981, ../../src/scss/screen.scss */
+/* line 986, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li {
   clear: both;
   font-size: 0.9em;
   padding-right: 3px;
 }
-/* line 985, ../../src/scss/screen.scss */
+/* line 990, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li.ui-multiselect-optgroup-label {
   text-align: center;
   font-weight: bold;
   border-bottom: 1px solid;
 }
-/* line 989, ../../src/scss/screen.scss */
+/* line 994, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li.ui-multiselect-optgroup-label a {
   display: block;
   padding: 3px;
@@ -1429,35 +1439,35 @@ button.ui-multiselect {
 }
 
 /* remove label borders in IE6 because IE6 does not support transparency */
-/* line 997, ../../src/scss/screen.scss */
+/* line 1002, ../../src/scss/screen.scss */
 * html .ui-multiselect-checkboxes label {
   border: none;
 }
 
 /* css for timepicker */
-/* line 1003, ../../src/scss/screen.scss */
+/* line 1008, ../../src/scss/screen.scss */
 .ui-timepicker-div .ui-widget-header {
   margin-bottom: 8px;
 }
-/* line 1005, ../../src/scss/screen.scss */
+/* line 1010, ../../src/scss/screen.scss */
 .ui-timepicker-div dl {
   text-align: left;
 }
-/* line 1007, ../../src/scss/screen.scss */
+/* line 1012, ../../src/scss/screen.scss */
 .ui-timepicker-div dl dt {
   height: 25px;
   margin-bottom: -25px;
 }
-/* line 1010, ../../src/scss/screen.scss */
+/* line 1015, ../../src/scss/screen.scss */
 .ui-timepicker-div dl dd {
   margin: 0 10px 10px 65px;
 }
-/* line 1012, ../../src/scss/screen.scss */
+/* line 1017, ../../src/scss/screen.scss */
 .ui-timepicker-div td {
   font-size: 90%;
 }
 
-/* line 1015, ../../src/scss/screen.scss */
+/* line 1020, ../../src/scss/screen.scss */
 .ui-tpicker-grid-label {
   background: none;
   border: none;

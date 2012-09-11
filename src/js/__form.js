@@ -1798,26 +1798,31 @@ function Form (formSelector, dataStr){
 			//function update(){alert('updating')}
 			$form.find('input[data-type-xml="geopoint"]').each(function(){ //.attr('placeholder', 'Awesome geopoint widget will follow in the future!');
 				var $lat, $lng, $alt, $acc, $button, $map, mapOptions, map, marker,
-					$inputOrigin = $(this);
-				$inputOrigin.hide().parent('label').addClass('geopoint');
+					$inputOrigin = $(this),
+					$geoWrap = $(this).parent('label');
+				$geoWrap.addClass('geopoint');
 				
-				$map = $('<div class="map-canvas" style="width: 300px; height: 300px;"></div>').insertAfter($inputOrigin);
-				$lat = $('<input name="lat" type="number" step="0.0001" placeholder="latitude (x.y &deg;)" />').insertAfter($map);
-				$lng = $('<input name="long" type="number" step="0.0001" placeholder="longitude (x.y &deg;)" />').insertAfter($lat);
-				$alt = $('<input name="alt" type="number" step="0.1" placeholder="altitude (m)" />').insertAfter($lng);
-				$acc = $('<input name="acc" type="number" step="0.1" placeholder="accuracy (m)" />').insertAfter($alt); 
-				$button = $('<button name="geodetect">detect</button>').insertAfter($acc);
-
+				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
+					'<label>latitude (x.y &deg;)<input name="lat" type="number" step="0.0001" /></label>'+
+					'<label>longitude (x.y &deg;)<input name="long" type="number" step="0.0001" /></label>'+
+					'<label>altitude (m)<input name="alt" type="number" step="0.1" /></label>'+
+					'<label>accuracy (m)<input name="acc" type="number" step="0.1" /></label>'+
+					'<button name="geodetect">detect</button>');
+				$map = $geoWrap.find('.map-canvas');
+				$lat = $geoWrap.find('[name="lat"]');
+				$lng = $geoWrap.find('[name="long"]');
+				$alt = $geoWrap.find('[name="alt"]');
+				$acc = $geoWrap.find('[name="acc"]');
+				$button = $geoWrap.find('button');
 				
-				//updateMapFromInput();
-
-				$inputOrigin.siblings('input').on('change change.bymap', function(event){
+				$geoWrap.find('input').not($inputOrigin).on('change change.bymap', function(event){
+					//console.debug('change event dected');
 					var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
 						lng = ($lng.val() !== '') ? $lng.val() : 0.0, 
 						alt = ($alt.val() !== '') ? $alt.val() : 0.0, 
 						acc = $acc.val();
 					$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
-					console.log(event);
+					//console.log(event);
 					if (event.namespace !== 'bymap'){
 						updateMap(lat, lng);
 					}
@@ -1827,23 +1832,32 @@ function Form (formSelector, dataStr){
 				if (!navigator.geolocation){
 					$button.attr('disabled', 'disabled');
 				}
+				//default map view
+				if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
+					updateMap(0,0,1);
+				}
 
 				$button.click(function(event){
 					navigator.geolocation.getCurrentPosition(function(position){	
 						updateMap(position.coords.latitude, position.coords.longitude);
 						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	
 					});
-
 					return false;
 				}).click();
-				
-				function updateMap(lat, lng){
+				/**
+				 * [updateMap description]
+				 * @param  {number} lat  [description]
+				 * @param  {number} lng  [description]
+				 * @param  {number=} zoom [description]
+				 */
+				function updateMap(lat, lng, zoom){
+					zoom = zoom || 15;
 					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
 						mapOptions = {
-								zoom: 15,
-								center: new google.maps.LatLng(lat, lng),
-								mapTypeId: google.maps.MapTypeId.ROADMAP,
-								streetViewControl: false
+							zoom: zoom,
+							center: new google.maps.LatLng(lat, lng),
+							mapTypeId: google.maps.MapTypeId.ROADMAP,
+							streetViewControl: false
 						};
 						map = new google.maps.Map($map[0], mapOptions);
 						centerMarker();
@@ -1864,7 +1878,14 @@ function Form (formSelector, dataStr){
 						map: map
 					});
 				}
-
+				/**
+				 * [updateInputs description]
+				 * @param  {number} lat [description]
+				 * @param  {number} lng [description]
+				 * @param  {(string|number)} alt [description]
+				 * @param  {(string|number)} acc [description]
+				 * @param  {string=} ev  [description]
+				 */
 				function updateInputs(lat, lng, alt, acc, ev){
 					alt = alt || '';
 					acc = acc || '';

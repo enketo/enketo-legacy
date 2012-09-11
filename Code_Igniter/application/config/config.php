@@ -22,7 +22,7 @@ if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on"){
 else{
 	$ssl_set = "";
 }  
-$config['base_url'] = 'http'.$ssl_set.'://enketo.formhub.org/';//$_SERVER['HTTP_HOST'];  
+$config['base_url'] = 'http'.$ssl_set.'://enketo.formhub.net/';//$_SERVER['HTTP_HOST'];  
 //strip wwww (code added by Martijn)
 //$config['base_url'] = str_replace('://www.', '://', $config['base_url']);
 

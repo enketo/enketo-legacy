@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google*/
 
 /**
  * Class: Form
@@ -169,6 +169,7 @@ function Form (formSelector, dataStr){
 		});
 		return formData.getStr(true, true);
 	};
+	
 /**
  * Function: DataXML
  *
@@ -1689,6 +1690,15 @@ function Form (formSelector, dataStr){
 	FormHTML.prototype.widgets = {
 		init : function(){
 			//console.log('initializing widgets');
+			//
+			
+			//var script = document.createElement("script");
+			//script.type = "text/javascript";
+			//script.id = "maps-script";
+			//script.src = "http://maps.googleapis.com/maps/api/js?key=AIzaSyDF5xYZfxN7r5SsNPGstjAeTzwa6dVU4Ik&sensor=false";
+			//document.body.appendChild(script);
+			
+			
 			this.compactWidget();
 			this.dateWidget();
 			this.timeWidget();
@@ -1699,7 +1709,7 @@ function Form (formSelector, dataStr){
 			this.gridWidget();
 			this.spinnerWidget();
 			this.sliderWidget();
-			this.geoPointWidget();
+			this.geopointWidget();
 			this.barcodeWidget();
 		},
 		compactWidget: function(){
@@ -1782,12 +1792,111 @@ function Form (formSelector, dataStr){
 			//detect max and min with algorithm that evaluates expressions multiple times
 			//algortithm could guess likely border values by using a regular expression search...
 		},
-		geoPointWidget : function(){
-			//add current location automatically
-			//provide edit button to change manually
-			//in edit mode, the button switches to an Auto button that 
-			//automatically detects
-			$form.find('input[data-type-xml="geopoint"]').attr('placeholder', 'Awesome geopoint widget will follow in the future!');
+		geopointWidget : function(){
+			console.log('initializing geopoint widget');
+
+			//function update(){alert('updating')}
+			$form.find('input[data-type-xml="geopoint"]').each(function(){ //.attr('placeholder', 'Awesome geopoint widget will follow in the future!');
+				var $lat, $lng, $alt, $acc, $button, $map, mapOptions, map, marker,
+					$inputOrigin = $(this),
+					$geoWrap = $(this).parent('label');
+				$geoWrap.addClass('geopoint');
+				
+				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
+					'<label>latitude (x.y &deg;)<input name="lat" type="number" step="0.0001" /></label>'+
+					'<label>longitude (x.y &deg;)<input name="long" type="number" step="0.0001" /></label>'+
+					'<label>altitude (m)<input name="alt" type="number" step="0.1" /></label>'+
+					'<label>accuracy (m)<input name="acc" type="number" step="0.1" /></label>'+
+					'<button name="geodetect">detect</button>');
+				$map = $geoWrap.find('.map-canvas');
+				$lat = $geoWrap.find('[name="lat"]');
+				$lng = $geoWrap.find('[name="long"]');
+				$alt = $geoWrap.find('[name="alt"]');
+				$acc = $geoWrap.find('[name="acc"]');
+				$button = $geoWrap.find('button');
+				
+				$geoWrap.find('input').not($inputOrigin).on('change change.bymap', function(event){
+					//console.debug('change event dected');
+					var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
+						lng = ($lng.val() !== '') ? $lng.val() : 0.0, 
+						alt = ($alt.val() !== '') ? $alt.val() : 0.0, 
+						acc = $acc.val();
+					$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
+					//console.log(event);
+					if (event.namespace !== 'bymap'){
+						updateMap(lat, lng);
+					}
+					return false;
+				});
+
+				if (!navigator.geolocation){
+					$button.attr('disabled', 'disabled');
+				}
+				//default map view
+				if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
+					updateMap(0,0,1);
+				}
+
+				$button.click(function(event){
+					navigator.geolocation.getCurrentPosition(function(position){	
+						updateMap(position.coords.latitude, position.coords.longitude);
+						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	
+					});
+					return false;
+				}).click();
+				/**
+				 * [updateMap description]
+				 * @param  {number} lat  [description]
+				 * @param  {number} lng  [description]
+				 * @param  {number=} zoom [description]
+				 */
+				function updateMap(lat, lng, zoom){
+					zoom = zoom || 15;
+					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
+						mapOptions = {
+							zoom: zoom,
+							center: new google.maps.LatLng(lat, lng),
+							mapTypeId: google.maps.MapTypeId.ROADMAP,
+							streetViewControl: false
+						};
+						map = new google.maps.Map($map[0], mapOptions);
+						centerMarker();
+						google.maps.event.addListener(map, 'center_changed', function() {				
+							var position = map.getCenter();
+							updateInputs(position.lat(), position.lng(), '', '', 'change.bymap');
+							centerMarker();
+						});
+					}
+				}
+
+				function centerMarker(){
+					if (typeof marker !== 'undefined'){
+						marker.setMap(null);
+					}
+					marker = new google.maps.Marker({
+						position: map.getCenter(),
+						map: map
+					});
+				}
+				/**
+				 * [updateInputs description]
+				 * @param  {number} lat [description]
+				 * @param  {number} lng [description]
+				 * @param  {(string|number)} alt [description]
+				 * @param  {(string|number)} acc [description]
+				 * @param  {string=} ev  [description]
+				 */
+				function updateInputs(lat, lng, alt, acc, ev){
+					alt = alt || '';
+					acc = acc || '';
+					ev = ev || 'change';
+					$lat.val(Math.round(lat*10000)/10000);
+					$lng.val(Math.round(lng*10000)/10000);
+					$alt.val(Math.round(alt*10)/10);
+					$acc.val(Math.round(acc*10)/10).trigger(ev);
+				}
+	
+			});
 		},
 		autoCompleteWidget: function(){
 

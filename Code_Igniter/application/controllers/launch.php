@@ -33,20 +33,33 @@ class Launch extends CI_Controller {
 		else 
 		{
 			$data = array('offline'=>FALSE, 'title_component'=>'launch');
+			
+			$common_scripts = array(
+				base_url('libraries/jquery.min.js'),
+				base_url('libraries/jquery-ui/js/jquery-ui.custom.min.js'),
+				base_url('libraries/jquery-ui-timepicker-addon.js'),
+				base_url('libraries/jquery.multiselect.min.js'),	
+				base_url('libraries/modernizr.min.js'),
+				base_url('libraries/xpathjs_javarosa.min.js'),
+				base_url('libraries/jquery.form.js'),
+				base_url('libraries/vkbeautify.js'),
+				"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
+			);
+
 			if (ENVIRONMENT === 'production')
 			{
-				$data['scripts'] = array(
+				$data['scripts'] = array_merge($common_scripts, array(
 					base_url('js-min/launch-all-min.js')
-				);
+				));
 			}
 			else
 			{
-				$data['scripts'] = array(
+				$data['scripts'] = array_merge($common_scripts, array(
 					base_url('js-source/__common.js'),
 					base_url('js-source/__form.js'),
 					base_url('js-source/__launch.js'),
 					base_url('js-source/__debug.js')
-				);
+				));
 			}
 			$this->load->view('launch_view', $data);
 		}

@@ -727,7 +727,6 @@ footer.ui-widget {
     color: $a-hvr;
     text-decoration: none; } }
 
-
 .jr {
   label, fieldset {
     box-sizing: border-box;
@@ -739,6 +738,20 @@ footer.ui-widget {
     padding: 14px 14px; }
   label + label {
     border-top: 1px solid $shadow; }
+  .geopoint{ 
+    height: 350px;
+    .map-canvas{
+      width: 340px;
+      height: 275px; 
+      margin-top: 10px;
+      float: right;
+      border: 1px solid $shadow;}
+    label{
+      border: none;
+      padding: 5px 0;}
+    button{
+      width: 130px;
+      margin-top: 10px;}}
   fieldset:not(#jr-preload-items):not(.jr-group) + {
     label, fieldset:not(.jr-group) {
       border-top: 1px solid $shadow; } }
@@ -780,7 +793,7 @@ footer.ui-widget {
     &[type="text"] {
       width: 100%; }
     &[type=date], &[type=number], &[type=email], &[type=password] {
-      width: 10em;
+      width: 130px;
       text-align: right; }
     &[type=radio], &[type=checkbox] {
       display: block;
@@ -913,9 +926,7 @@ input, .fakefileinput {
       text-decoration: underline; }
     &.active {
       color: $header-bg;
-      text-decoration: none; } } }
-
-
+      text-decoration: none; } } }  
 
 .ui-datepicker {
   margin-left: -270px;

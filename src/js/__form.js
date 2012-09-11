@@ -1877,7 +1877,7 @@ function Form (formSelector, dataStr){
 				function centralizeWithDelay(){
 					window.setTimeout(function() {
 						map.panTo(marker.getPosition());
-					}, 3000);
+					}, 5000);
 				}
 
 				/**

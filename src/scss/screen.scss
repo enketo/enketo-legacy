@@ -1,4 +1,5 @@
 @import "compass/reset";
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
 
 /******* COLORS **********/
 $button-bg: #fece2f; /*dark yellow*/
@@ -17,6 +18,10 @@ $a-hvr: #381f00; /*very dark brown*/
 /***************************
  ****BASIC GUI ELEMENTS ****
  ***************************/
+
+.ui-widget,.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { 
+  font-family: 'Open Sans', Segoe UI, Arial, sans-serif; 
+  font-size: 1em;}
 
 p {
   text-align: left;

@@ -1871,11 +1871,6 @@ function Form (formSelector, dataStr){
 							updateInputs(event.latLng.lat(), event.latLng.lng(), '', '', 'change.bymap');
 							placeMarker(event.latLng);
 						});
-						// make marker draggable
-						google.maps.event.addListener(marker, 'dragend', function() {
-							updateInputs(marker.getPosition().lat(), marker.getPosition().lng(), '', '', 'change.bymap');
-							centralizeWithDelay();
-						});
 					}
 				}
 
@@ -1898,6 +1893,11 @@ function Form (formSelector, dataStr){
 						position: latLng, //map.getCenter(),
 						map: map,
 						draggable: true
+					});
+					// make marker draggable
+					google.maps.event.addListener(marker, 'dragend', function() {
+						updateInputs(marker.getPosition().lat(), marker.getPosition().lng(), '', '', 'change.bymap');
+						centralizeWithDelay();
 					});
 					centralizeWithDelay();
 					//center it (optional)

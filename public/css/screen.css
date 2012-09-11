@@ -1304,7 +1304,19 @@ input, .fakefileinput {
   text-decoration: none;
 }
 
+/* line 913, ../../src/scss/screen.scss */
+label.geopoint {
+  height: 350px;
+}
 /* line 915, ../../src/scss/screen.scss */
+label.geopoint .map-canvas {
+  width: 300px;
+  height: 300px;
+  float: right;
+  border: 1px solid #cccccc;
+}
+
+/* line 921, ../../src/scss/screen.scss */
 .ui-datepicker {
   margin-left: -270px;
   margin-top: -100px;
@@ -1312,66 +1324,66 @@ input, .fakefileinput {
 }
 
 /* css for multi-select addon */
-/* line 922, ../../src/scss/screen.scss */
+/* line 928, ../../src/scss/screen.scss */
 button.ui-multiselect {
   display: block;
 }
 
-/* line 925, ../../src/scss/screen.scss */
+/* line 931, ../../src/scss/screen.scss */
 .ui-multiselect {
   padding: 2px 0 2px 4px;
   text-align: left;
 }
-/* line 928, ../../src/scss/screen.scss */
+/* line 934, ../../src/scss/screen.scss */
 .ui-multiselect span.ui-icon {
   float: right;
 }
 
-/* line 932, ../../src/scss/screen.scss */
+/* line 938, ../../src/scss/screen.scss */
 .ui-multiselect-single .ui-multiselect-checkboxes input {
   position: absolute !important;
   top: auto !important;
   left: -9999px;
 }
-/* line 936, ../../src/scss/screen.scss */
+/* line 942, ../../src/scss/screen.scss */
 .ui-multiselect-single .ui-multiselect-checkboxes label {
   padding: 5px !important;
 }
 
-/* line 939, ../../src/scss/screen.scss */
+/* line 945, ../../src/scss/screen.scss */
 .ui-multiselect-header {
   margin-bottom: 3px;
   padding: 3px 0 3px 4px;
 }
-/* line 942, ../../src/scss/screen.scss */
+/* line 948, ../../src/scss/screen.scss */
 .ui-multiselect-header ul {
   font-size: 0.9em;
 }
-/* line 944, ../../src/scss/screen.scss */
+/* line 950, ../../src/scss/screen.scss */
 .ui-multiselect-header ul li {
   float: left;
   padding: 0 10px 0 0;
 }
-/* line 947, ../../src/scss/screen.scss */
+/* line 953, ../../src/scss/screen.scss */
 .ui-multiselect-header a {
   text-decoration: none;
 }
-/* line 949, ../../src/scss/screen.scss */
+/* line 955, ../../src/scss/screen.scss */
 .ui-multiselect-header a:hover {
   text-decoration: underline;
 }
-/* line 951, ../../src/scss/screen.scss */
+/* line 957, ../../src/scss/screen.scss */
 .ui-multiselect-header span.ui-icon {
   float: left;
 }
-/* line 953, ../../src/scss/screen.scss */
+/* line 959, ../../src/scss/screen.scss */
 .ui-multiselect-header li.ui-multiselect-close {
   float: right;
   text-align: right;
   padding-right: 0;
 }
 
-/* line 958, ../../src/scss/screen.scss */
+/* line 964, ../../src/scss/screen.scss */
 .ui-multiselect-menu {
   display: none;
   padding: 3px;
@@ -1379,36 +1391,36 @@ button.ui-multiselect {
   z-index: 10000;
 }
 
-/* line 964, ../../src/scss/screen.scss */
+/* line 970, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes {
   position: relative;
   overflow-y: scroll;
 }
-/* line 967, ../../src/scss/screen.scss */
+/* line 973, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes label {
   cursor: default;
   display: block;
   border: 1px solid transparent;
   padding: 3px 1px;
 }
-/* line 972, ../../src/scss/screen.scss */
+/* line 978, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes label input {
   position: relative;
   top: 1px;
 }
-/* line 975, ../../src/scss/screen.scss */
+/* line 981, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li {
   clear: both;
   font-size: 0.9em;
   padding-right: 3px;
 }
-/* line 979, ../../src/scss/screen.scss */
+/* line 985, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li.ui-multiselect-optgroup-label {
   text-align: center;
   font-weight: bold;
   border-bottom: 1px solid;
 }
-/* line 983, ../../src/scss/screen.scss */
+/* line 989, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li.ui-multiselect-optgroup-label a {
   display: block;
   padding: 3px;
@@ -1417,35 +1429,35 @@ button.ui-multiselect {
 }
 
 /* remove label borders in IE6 because IE6 does not support transparency */
-/* line 991, ../../src/scss/screen.scss */
+/* line 997, ../../src/scss/screen.scss */
 * html .ui-multiselect-checkboxes label {
   border: none;
 }
 
 /* css for timepicker */
-/* line 997, ../../src/scss/screen.scss */
+/* line 1003, ../../src/scss/screen.scss */
 .ui-timepicker-div .ui-widget-header {
   margin-bottom: 8px;
 }
-/* line 999, ../../src/scss/screen.scss */
+/* line 1005, ../../src/scss/screen.scss */
 .ui-timepicker-div dl {
   text-align: left;
 }
-/* line 1001, ../../src/scss/screen.scss */
+/* line 1007, ../../src/scss/screen.scss */
 .ui-timepicker-div dl dt {
   height: 25px;
   margin-bottom: -25px;
 }
-/* line 1004, ../../src/scss/screen.scss */
+/* line 1010, ../../src/scss/screen.scss */
 .ui-timepicker-div dl dd {
   margin: 0 10px 10px 65px;
 }
-/* line 1006, ../../src/scss/screen.scss */
+/* line 1012, ../../src/scss/screen.scss */
 .ui-timepicker-div td {
   font-size: 90%;
 }
 
-/* line 1009, ../../src/scss/screen.scss */
+/* line 1015, ../../src/scss/screen.scss */
 .ui-tpicker-grid-label {
   background: none;
   border: none;

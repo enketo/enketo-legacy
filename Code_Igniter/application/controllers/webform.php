@@ -69,6 +69,7 @@ class Webform extends CI_Controller {
 							base_url('libraries/jquery.multiselect.min.js'),	
 							base_url('libraries/modernizr.min.js'),
 							base_url('libraries/xpathjs_javarosa.min.js'),
+							"http://maps.googleapis.com/maps/api/js?key=AIzaSyDF5xYZfxN7r5SsNPGstjAeTzwa6dVU4Ik&sensor=false"
 						);
 
 						//log_message('debug', 'form string: '.$form->asXML());

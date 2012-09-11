@@ -910,7 +910,13 @@ input, .fakefileinput {
       color: $header-bg;
       text-decoration: none; } } }
 
-
+label.geopoint{
+  height: 350px;
+  .map-canvas{
+      width: 300px;
+      height: 300px;
+      float: right;
+      border: 1px solid $shadow;}}
 
 .ui-datepicker {
   margin-left: -270px;

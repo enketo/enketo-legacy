@@ -58,23 +58,33 @@ class Survey extends CI_Controller {
 							'form'=> $form,
 							'form_data'=> $form_data
 							);
+						$common_scripts = array(
+							base_url('libraries/jquery.min.js'),
+							base_url('libraries/jquery-ui/js/jquery-ui.custom.min.js'),
+							base_url('libraries/jquery-ui-timepicker-addon.js'),
+							base_url('libraries/jquery.multiselect.min.js'),	
+							base_url('libraries/modernizr.min.js'),
+							base_url('libraries/xpathjs_javarosa.min.js'),
+							"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
+						);
+
 						//log_message('debug', 'form string: '.$form->asXML());
 						if (ENVIRONMENT === 'production')
 						{
 							//$this->output->cache(60);
-							$data['scripts'] = array(
+							$data['scripts'] = array_merge($common_scripts, array(
 								base_url('js-min/survey-all-min.js')
-							);
+							));
 						}
 						else
 						{		
-							$data['scripts'] = array(
+							$data['scripts'] = array_merge($common_scripts, array(
 								base_url('js-source/__common.js'),
 								base_url('js-source/__storage.js'),
 								base_url('js-source/__form.js'),
 								base_url('js-source/__survey.js'),
 								base_url('js-source/__debug.js')
-							);
+							));
 						}
 						$this->load->view('survey_view',$data);
 					}

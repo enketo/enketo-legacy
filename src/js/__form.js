@@ -1860,23 +1860,48 @@ function Form (formSelector, dataStr){
 							streetViewControl: false
 						};
 						map = new google.maps.Map($map[0], mapOptions);
-						centerMarker();
-						google.maps.event.addListener(map, 'center_changed', function() {				
-							var position = map.getCenter();
-							updateInputs(position.lat(), position.lng(), '', '', 'change.bymap');
-							centerMarker();
+						placeMarker();
+						//google.maps.event.addListener(map, 'center_changed', function() {				
+						//	var position = map.getCenter();
+						//	updateInputs(position.lat(), position.lng(), '', '', 'change.bymap');
+						//	centerMarker();
+						//});\
+						// place marker where user clicks
+						google.maps.event.addListener(map, 'click', function(event){
+							updateInputs(event.latLng.lat(), event.latLng.lng(), '', '', 'change.bymap');
+							placeMarker(event.latLng);
+						});
+						// make marker draggable
+						google.maps.event.addListener(marker, 'dragend', function() {
+							updateInputs(marker.getPosition().lat(), marker.getPosition().lng(), '', '', 'change.bymap');
+							centralizeWithDelay();
 						});
 					}
 				}
 
-				function centerMarker(){
+				function centralizeWithDelay(){
+					window.setTimeout(function() {
+						map.panTo(marker.getPosition());
+					}, 3000);
+				}
+
+				/**
+				 * [placeMarker description]
+				 * @param  {number=} latLng [description]
+				 */
+				function placeMarker(latLng){
+					latLng = latLng || map.getCenter();
 					if (typeof marker !== 'undefined'){
 						marker.setMap(null);
 					}
 					marker = new google.maps.Marker({
-						position: map.getCenter(),
-						map: map
+						position: latLng, //map.getCenter(),
+						map: map,
+						draggable: true
 					});
+					centralizeWithDelay();
+					//center it (optional)
+					//map.setCenter(latLng);
 				}
 				/**
 				 * [updateInputs description]

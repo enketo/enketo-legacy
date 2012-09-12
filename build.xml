@@ -16,6 +16,7 @@
       <sources dir="${basedir}/src/js">
         <file name="__common.js"/>
         <file name="__form.js"/>
+        <file name="__form_widgets.js"/>
         <file name="__launch.js"/>
       </sources>
 
@@ -45,6 +46,7 @@
         <file name="__common.js"/>
         <file name="__storage.js"/>
         <file name="__form.js"/>
+        <file name="__form_widgets.js"/>
         <file name="__survey.js"/>
       </sources>
 

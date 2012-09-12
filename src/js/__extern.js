@@ -3,7 +3,7 @@ var jrDataStr;
 function vkbeautify(){}
 
 /**
- * @param {string} str
+ * @param {?string} str
  */
 vkbeautify.xml = function(str){};
 
@@ -21,7 +21,11 @@ var XPathJS = (function(){})();
 
 XPathJS.bindDomLevel3XPath = function(){};
 
-
+/**
+ * @param  {*} blob     [description]
+ * @param  {string} filename [description]
+ */
+function saveAs(blob, filename){}
 
 
 

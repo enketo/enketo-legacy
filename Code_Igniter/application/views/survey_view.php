@@ -3,8 +3,9 @@
 <?
 	$theme = $this->config->item('survey','themes');
 ?>
-		<link rel="stylesheet" type="text/css" href="libraries/jquery-ui/css/<?= $theme ?>/jquery-ui.custom.css"/>
-		<link rel="stylesheet" type="text/css" href="css/screen.css" />
+		<link rel="stylesheet" media="screen" type="text/css" href="libraries/jquery-ui/css/<?= $theme ?>/jquery-ui.custom.css"/>
+		<link rel="stylesheet" media="screen" type="text/css" href="css/screen.css" />
+		<link href="/css/print.css" media="print" rel="stylesheet" type="text/css" />
 
 	<? foreach ($scripts as $script): ?>
 		<script type="text/javascript" src="<?= $script; ?>"></script>

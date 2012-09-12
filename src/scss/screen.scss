@@ -257,7 +257,16 @@ header {
     padding: 10px 0; }
   button {}
   &.right button {
-    display: block; } }
+    display: block; }
+  #queue{
+    display: block;
+    width: 160px;
+    text-decoration: none;
+    margin: 0 0 -35px 10px;
+    #queue-length{
+      font-size: 36px;
+      display: block;
+      float: left; }}}
 
 #container {
   position: absolute;

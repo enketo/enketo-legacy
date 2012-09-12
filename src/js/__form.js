@@ -120,6 +120,9 @@ function Form (formSelector, dataStr){
 	 this.getEditStatus = function(){
 		return form.editStatus.get();
 	 };
+	 this.getName = function(){
+		return $form.find('#form-title').text();
+	 };
 
 	//restores form instance to pre-initialized state
 	this.reset = function(){

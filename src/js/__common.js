@@ -22,12 +22,8 @@
 
 var /**@type {GUI}*/ gui;
 
-//form = null,
 var DEFAULT_SETTINGS = {};
-//var	_$pages; //getPage, addScrollBar, display, buttonArray, setSettings;
-	//resetForm, setSettings, loadForm, deleteForm, saveForm,
-// !Document.ready()
-/************ Document Ready ****************/
+
 $(document).ready(function(){
 	"use strict";
 	gui = new GUI();
@@ -42,74 +38,27 @@ $(document).ready(function(){
 	}
 });
 
-// !Global Functions
-/************ Global Functions ***************/
 
-
-
-/* !GUI Class */
-//The GUI object deals with the main GUI elements (but not the survey form elements)
 /**
- *
+ * Class GUI deals with the main GUI elements (but not the survey form)
  * @constructor
- *
- * Function (Class): GUI
- *
- * description
- *
- * Returns:
- *
- *   return description
  */
 function GUI(){
 	"use strict";
-	//var fbBar, //true if feedbackBar is shown
-	//	page, //true if page is shown
-	//	feedbackTimeout,
-		//headerEl, feedbackEl, pageEl, confirmEl, alertEl, $form,
-		//browserSupport = {'offline-launch':false, 'local-storage':false, 'fancy-visuals':false},
-		//updateEditStatus,
-		//_this=this;
-		//$form = $('form.jr:eq(0)');
 }
 
 GUI.prototype.init = function(){
 	"use strict";
-	// setting up UI elements
-	
-	
-	
+		
 	this.nav.setup();
-	//setTabs();
-	// setting consistent theme colors using a JQuery UI theme
-	//this.setConsistentColors();
 	this.pages().init();
-	
-	// setup eventHandlers
 	this.setEventHandlers();
 	// setup additional 'custom' eventHandlers declared other js file
 	if (typeof this.setCustomEventHandlers === 'function'){
 		this.setCustomEventHandlers();
 	}
 	
-	// the settings are retrieved from storage and applied before the pages are removed from the DOM
-	
-			//tooltips on all elements with a title
-	//$('[title]').tooltip();
-	//$("[title]").tipTip();
-	//$("[title]").tipsy({gravity: $.fn.tipsy.autoNS});
 	$('.dialog [title]').tooltip();
-	//transform comboboxes
-	//$('#forms-saved-names').combobox();
-	/*$('#forms-saved ol').selectable({
-		stop: function() {
-			var recordName;
-			alert ($( ".ui-selected").text());
-			$('ui-selected').removeClass('ui-selected');
-			$(this).selectable('destroy');
-
-		}
-	});*/
 
 	// checking for support for specific fancy css3 visual stuff
 	if (Modernizr.borderradius && Modernizr.boxshadow && Modernizr.csstransitions && Modernizr.opacity){
@@ -123,88 +72,12 @@ GUI.prototype.init = function(){
 GUI.prototype.setup = function(){
 	"use strict";
 	// final setup of GUI object
-		//setSettings();
-		// set height of scrollable container by calling resize event
-		$(window).trigger('resize');
-};
-
-
-	
-//	this.setBrowserSupport = function(propObj){
-//		for (var propName in propObj){
-//			browserSupport[propName] = propObj[propName];
-//			//console.log('just set browser support property: '+propName+' to:'+propObj[propName]); // DEBUG
-//		}
-//	};
-	
-	
-	// setting consistent theme colors, the purpose of using this function (instead of css stylesheet adjustments)
-	// is to be able to easily switch to another jQuery UI theme
-GUI.prototype.setConsistentColors = function(){
-	"use strict";
-	//$('body').removeClass('ui-widget-content'); //???????
-
-
-	//var bodyBackgroundColor, pageBackgroundColor, headerHighlightColor, headerBorderColor, headerBackgroundColor, headerNavTextColor, //mainContentBackground,
-//		buttonBackgroundColorDefault,buttonBackgroundColorHover, buttonBackgroundColorActive;
-//	//colors used for different states in nav menu (see setEventHandlers())
-//	headerHighlightColor = /** @type {string} */ $('#feedback-bar').css('background-color');
-//	headerBorderColor =  /** @type {string} */ $('header').css('border-top-color');
-//	headerBackgroundColor =  /** @type {string} */ $('header').css('background-color');
-//	//mainContentBackground = $('body').addClass('ui-widget-content').css('background');
-	
-
-//	$('nav').addClass('ui-state-default'); //trick
-//	headerNavTextColor =  /** @type {string} */ $('nav').css('color');
-//	buttonBackgroundColorDefault =  /** @type {string} */ $('nav').css('background-color');
-//	$('nav').addClass('ui-state-hover');
-//	buttonBackgroundColorHover =  /** @type {string} */ $('nav').css('background-color');
-//	$('nav').addClass('ui-state-active');
-//	buttonBackgroundColorActive =  /** @type {string} */ $('nav').css('background-color');
-//	$('nav').removeClass();
-			
-	//$('#logo').css('color', headerHighlightColor);
-
-	//$('#page, #form-controls').css('background-image','none'); //CHANGE: DO THIS IN CSS STYLESHEET INSTEAD
-
-	//$('#page, #component').css('color', headerHighlightColor);
-	//$('#survey-info').css('color',headerBorderColor);
-
-	//bodyBackgroundColor = /** @type {string} */ $('body').addClass('ui-widget-shadow').css('background-color');
-	//$('body').css('background-color', bodyBackgroundColor).removeClass('ui-widget-shadow');
-	//$('body').addClass('ui-widget-shadow') //trick
-	//	.css('background-color', $('body').css('background-color'))
-	//	.removeClass('ui-widget-shadow');
-	//$('.question').css('border-color', $('body').css('background-color'));
-	//pageBackgroundColor = /** @type {string} */ $('#page-content').addClass('ui-widget-overlay').css('background-color');
-	//$('#page-content, #overlay').css('background-color', pageBackgroundColor).removeClass('ui-widget-overlay');
-	//$('#page-content, #overlay').addClass('ui-widget-overlay') // trick
-	//	.css('background-color', $('#page-content').css('background-color'))
-	//	.removeClass('ui-widget-overlay');
-
-	//all links in articles .page
-	//$('.page a, .page a:link, .page a:visited').css('color', buttonBackgroundColorDefault)
-//		.hover(function(){
-//			$(this).css('color', buttonBackgroundColorHover);
-//		}, function(){
-//			$(this).css('color', buttonBackgroundColorDefault);
-//		})
-//		.mousedown(function(){
-//			$(this).css('color', buttonBackgroundColorActive);
-//		})
-//		.mouseup(function(){
-//			$(this).css('color', buttonBackgroundColorDefault);
-//		});
-
-	//form background on page with tabs
-	//$('.tabs-nohdr .ui-tabs-panel').css('background-color', '#FEEEBD');
-
-	//$('#export-excel').button({'icons': {'primary':"ui-icon-suitcase"}});
-
-	//set navigation menu colors;
-	
+	$(window).trigger('resize');
 };
 	
+/**
+ * Sets the default (common) UI eventhandlers (extended in each class for custom handlers)
+ */
 GUI.prototype.setEventHandlers = function(){
 	"use strict";
 	var that=this;
@@ -233,11 +106,6 @@ GUI.prototype.setEventHandlers = function(){
 			$('nav li a[href="'+href+'"]').click();
 		}
 	});
-	
-	//particularly relevant in launch component where popstate is triggered when # is added to url
-//	$(document).on('click', $('a[href="#"]'), function(event){
-//		event.preventDefault();
-//	});
 
 	// event handlers for navigation menu
 	$('nav ul li a[href^="#"]')
@@ -248,17 +116,6 @@ GUI.prototype.setEventHandlers = function(){
 			$(this).closest('li').addClass('nav-state-active');//.css('border-color', headerBorderColor);
 			//$(this).css('color', headerHighlightColor);
 		});
-		//.hover(function(){
-//;			$(this).closest('li').addClass('nav-state-hover');
-//;			//$(this).css('color', buttonBackgroundColorHover);
-//;			//$('nav ul li:not(.active)').css('border-color', headerBackgroundColor);
-//;			//$(this).closest('li:not(.active)').css('border-color', headerHighlightColor)
-//;				//.find('a').css('color', buttonBackgroundColorHover);
-//;		}, function(){
-//;			$(this).closest('li').removeClass('nav-state-hover');
-//;			//$('nav ul li:not(.active)').css('border-color', headerBackgroundColor)
-//;			//	.find('a').css('color', buttonBackgroundColorDefault);
-//		});
 	
 	// handlers for status icons in header
 	$(window).on('onlinestatuschange', function(e,online){
@@ -343,28 +200,6 @@ GUI.prototype.nav = {
 		//$('nav ul li a').css('color', buttonBackgroundColorDefault);
 	}
 };
-	
-	//function setTabs(){
-	//	$('.main article').each(function(){
-	//		var display, title='', id, link;
-	//		id=$(this).attr('id');
-	//		if ($(this).attr('data-display')){
-	//			display = $(this).attr('data-display');
-	//		}
-	//		else display = id;
-	//		if ($(this).attr('data-title')){
-	//			title = $(this).attr('data-title');
-	//		}
-	//		else title = id;
-	//		if ($(this).attr('data-ext-link')){
-	//			link = $(this).attr('data-ext-link');
-	//		}
-	//		else link = '#'+id;
-	//		$('<a href="'+link+'" title="'+title+'" >'+display+'</a>')
-	//			.appendTo($('#tabs'));
-	//	});
-	//}
-	//
 
 GUI.prototype.pages = function(){
 	"use strict";
@@ -452,6 +287,8 @@ GUI.prototype.pages = function(){
 
 
 /**
+ * Shows an unobtrusive feedback message to the user.
+ * 
  * @param {string=} message
  * @param {number=} duration
  */
@@ -494,6 +331,8 @@ GUI.prototype.hideFeedback = function(){
 };
 
 /**
+ * Shows a modal alert box with a message.
+ *
  * @param {string} message
  * @param {string=} heading
  * @param {string=} icon css class of icon
@@ -530,15 +369,15 @@ GUI.prototype.alert = function(message, heading, icon){
 	});
 };
 	
-	/**
-	 * Function: confirm
-	 *
-	 * description
-	 *
-	 *   @param {?(Object.<string, (string|boolean)>|string)=} text - In its simplest form this is just a string but it can
-	 *                                                         also an object with parameters msg, heading and errorMsg.
-	 *   @param {Object=} choices - [type/description]
-	 */
+/**
+ * Function: confirm
+ *
+ * description
+ *
+ *   @param {?(Object.<string, (string|boolean)>|string)=} text - In its simplest form this is just a string but it can
+ *                                                         also an object with parameters msg, heading and errorMsg.
+ *   @param {Object=} choices - [type/description]
+ */
 GUI.prototype.confirm = function(text, choices){
 	"use strict";
 	var msg, heading, errorMsg, closeFn, dialogName, $dialog;
@@ -671,8 +510,6 @@ GUI.prototype.display = function(){
 			pageTop = $header.outerHeight() - $page.outerHeight();
 		}
 	}
-	////console.log ('top feedback: '+feedbackTop); //DEBUG
-	////console.log ('top page: '+pageTop); //DEBUG
 	$feedback.css('top', feedbackTop);
 	$page.css('top', pageTop);
 };

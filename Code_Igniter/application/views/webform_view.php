@@ -29,46 +29,6 @@
 			</p>
 		</div>
 
-		<article id="records" data-title="locally saved survey data" data-display="data" class="page">
-			<div class="ui-helper-clearfix">
-				<div id="records-saved" >
-					<h3>Data Queued for Submission</h3>
-					<div class="ui-widget ui-corner-all scroll-list">
-						<div>
-							<ol>
-							</ol>
-						</div>
-					</div>
-					<p id="records-summary" class="ui-helper-clearfix">
-						<!--<span class="ui-icon ui-icon-check"></span><span id="records-final-qty"></span> finished surveys
-						<span class="ui-icon ui-icon-pencil"></span><span id="records-draft-qty"></span> draft surveys-->
-					</p>
-				</div>
-				<div class="column middle"></div>
-				<div class="column right">
-					<!--<a id="link-analysis" href="data/view" title="go to collated data page (online)" target="_blank">
-						<span>collated data (online) </span><span class="ui-icon ui-icon-extlink"></span>
-					</a>-->
-
-					<div id="records-buttons" class="ui-helper-clearfix">
-						<button id="records-force-upload">Upload</button>
-						<button id="records-export">Export</button>
-					</div>
-					<div id="records-force-upload-info">
-						Upload all "final" survey records (bypass automatic uploads).
-					</div>
-					<div id="records-export-info">
-						Export all locally stored records marked as 'final'. 
-					</div>
-				</div>
-			</div>
-			<!--
-			<div id="ExportDiv" >
-				Export &amp; Backup
-				<p id="downloader">Oops, you need Flash 10 for this to work</p>
-			</div>--><!-- end of ExportDiv -->
-		</article>
-
 		<div id="container">
 			<article class="main ui-widget" >
 				<!--<div class="ui-widget">-->
@@ -84,6 +44,9 @@
 		</div>
 
 		<div id="form-controls" class="bottom ui-widget ui-widget-header">
+			<a id="queue" href="#" style="display: none;" title="click to export to file">
+				<span id="queue-length"></span><span> records queued for submission</span>
+			</a>
 			<button id="submit-form" >Submit</button>
 			<!--<button id="reset-form" >New</button>-->
 			<!--<button id="delete-form" >Delete</button>-->

@@ -20,6 +20,7 @@ $title: #CE4F07;
 
 
 @mixin paper{
+  /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
   position: relative;
   /*width: 500px;*/
   padding: 50px;
@@ -766,11 +767,6 @@ footer.ui-widget {
     text-decoration: none; } }
 
 .jr {
-  /*background-color: white;
-  border: black solid 1px;*/
-  /**-moz-box-shadow:    2px 2px 3px 0px $shadow;
-  -webkit-box-shadow: 2px 2px 3px 0px $shadow;
-  box-shadow:         2px 2px 3px 0px $shadow;*/
   @include paper;
   line-height: 1.1em;
   .form-logo img {

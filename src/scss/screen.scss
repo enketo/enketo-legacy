@@ -163,7 +163,8 @@ article.page {
  ***************************/
 
 body {
-  background-color: $bg;
+  background: $bg url('../images/grid.png') repeat;
+  
   /*overflow: hidden;*/ }
 
 #overlay {
@@ -776,6 +777,8 @@ footer.ui-widget {
     width: 120px;
     margin-left: -60px;
     margin-bottom: 10px; }
+  h2{
+    text-align: left;  }
   label, fieldset {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;

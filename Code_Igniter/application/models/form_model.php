@@ -156,7 +156,10 @@ class Form_model extends CI_Model {
     private function _get_formlist_url($server_url)
     {
         $server_url = ( strrpos($server_url, '/') == strlen($server_url)-1 ) ? $server_url : $server_url.'/';
-        $list_url = ( strpos($server_url, 'formhub.org/') === false ) ? $server_url.'xformsList' : $server_url.'formList';
+        // the line below breaks when hosting formhub on a dev server 
+        //$list_url = ( strpos($server_url, 'formhub.org/') === false ) ? $server_url.'xformsList' : $server_url.'formList';
+        // ...... so let's break the ODK Aggregate compatibility for now
+        $list_url = $server_url.'formList';
         return $list_url;
     }
 

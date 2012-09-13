@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-class Survey extends CI_Controller {
+class Webform extends CI_Controller {
 
 	public function index()
 	{
@@ -33,7 +33,7 @@ class Survey extends CI_Controller {
 			//if ($this->Survey_model->is_live_survey($subdomain))
 			if ($this->Survey_model->is_launched_survey())
 			{
-				$offline = $this ->config->item('application_cache'); //can be overridden here
+				$offline = FALSE; //$this ->config->item('application_cache'); //can be overridden here
 				$server_url= $this->Survey_model->get_server_url();
 				$form_id = $this->Survey_model->get_form_id();
 
@@ -54,10 +54,14 @@ class Survey extends CI_Controller {
 					{
 						$data = array(
 							'offline'=>$offline, 
-							'title_component'=>'survey', 
+							'title_component'=>'webform', 
 							'form'=> $form,
-							'form_data'=> $form_data
-							);
+							'form_data'=> $form_data,
+							'stylesheets'=> array(
+								base_url('libraries/jquery-ui/css/sunny/jquery-ui.custom.css'),
+								base_url('css/screen.css')
+							)
+						);
 						$common_scripts = array(
 							base_url('libraries/jquery.min.js'),
 							base_url('libraries/jquery-ui/js/jquery-ui.custom.min.js'),
@@ -89,7 +93,7 @@ class Survey extends CI_Controller {
 								base_url('js-source/__debug.js')
 							));
 						}
-						$this->load->view('survey_view',$data);
+						$this->load->view('webform_view',$data);
 					}
 					else
 					{

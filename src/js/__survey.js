@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global gui, jrDataStr, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, vkbeautify, saveAs, gui, jrDataStr, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var /**@type {Form}*/form;
@@ -287,7 +287,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	console.debug(rec);
 	//alert('hey');
 	result = store.setRecord(confirmedRecordName, rec, deleteOldName, overwriteExisting, curRecordName);
-		
+
 	console.log('result of save: '+result); // DEBUG
 	if (result === 'success'){
 		gui.showFeedback('Form with name "'+confirmedRecordName+'" has been saved.', 2);
@@ -382,57 +382,94 @@ function deleteForm(confirmed) {
 	return;
 }
 
+
+/**
+ * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a backup, without saved data loading
+ * functionality. It only allows validated forms to be submitted. 'Submitted' in this case actually still means it is saved to localStorage first
+ * and then forced to upload. If uploading fails the user can continue working on a blank form. Uploading will be attempted at intervals until it
+ * succeeds.
+ *
+ */
+function submitForm() {
+	var record, saveResult;
+	if (!form.isValid()){
+		gui.alert('Form contains errors (please see fields marked in red)');
+		return;
+	}
+	record = { 'data': form.getDataStr(true, true), 'ready': true};
+	saveResult = store.setRecord(form.getName()+' - '+store.getCounterValue(), record, false, false);
+	
+	console.log('result of save: '+saveResult); // DEBUG
+	if (saveResult === 'success'){
+		//attempt uploading the data (all data in localStorage)
+		connection.upload(true);
+		resetForm(true);
+		$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
+		//gui.showFeedback('Form with name "'+confirmedRecordName+'" has been saved.', 2);
+	}
+	else{
+		gui.alert('Error trying to save data locally before submit');
+	}
+}
+
 /**
  * function to export or backup data. It depends on the browser whether this data is shown in a new browser window/tab
  * or is downloaded automatically. It is not possible to provide a file name.
- *
+ * @deprecated
  * @param  {boolean=} finalOnly [description]
  */
 function exportData(finalOnly){
 	"use strict";
-	var data, uriContent, newWindow;
+	var i,dataArr, dataStr, uriContent, newWindow;
 	finalOnly = finalOnly || true;
 
-	data = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
+	//dataArr = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
+	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
+	for (i = 0 ; i<dataArr.length ; i++){
+		dataArr[i] = form.prepareForSubmission(dataArr[i]);
+	}
 	//console.debug(data);
-	if (!data){
+	if (dataArr.length === 0){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
-		uriContent = "data:application/octet-stream," + encodeURIComponent(data); /*data:application/octet-stream*/
+		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
+		uriContent = "data:application/octet-stream," + encodeURIComponent(dataStr); /*data:application/octet-stream*/
 		newWindow = window.open(uriContent, 'exportedData');
 	//window.location.href = uriContent;
 	}
 }
 
-// BUG: function causes a crash in Safari on OS X when loaded from appCache in fresh Safari browser window
-//function initSaveFormsToFile() {
-//	'use strict';
-//	$('#downloader').downloadify({
-//		filename: function(){
-//			return 'All_Form_Data.json'; //static file -- you could retrieve from form input box
-//		},
-//		data: function(){
-//			console.log('getting data for download'); // DEBUG
-//			return JSON.stringify(store.getRecordCollection()); //static content -- you could retrieve from form input box
-//		},
-//		onComplete: function(){
-//			gui.showFeedback('The file has been saved!');
-//		},
-//		onCancel: function(){
-//		// anything?
-//		},
-//		onError: function(){
-//			gui.alert('Error saving file. File not saved!');
-//		},
-//		swf: '/libraries/downloadify/downloadify.swf',
-//		downloadImage: '/libraries/downloadify/download.png', // CHANGE THIS IMAGE AND LOCATION
-//		width: 210,
-//		height: 55,
-//		transparent: true,
-//		append: false
-//	});
-//}
+/**
+ * function to export or backup data to a file.
+ *
+ *	@param {string=}  fileName
+ *  @param {boolean=} finalOnly [description]
+ */
+function exportToFile(fileName, finalOnly){
+	"use strict";
+	var i, dataArr, dataStr, bb, blob;
+		//filename="test.xml";//, uriContent, newWindow;
+	finalOnly = finalOnly || true;
+	fileName = fileName || form.getName()+'_data_backup.xml';
+	
+	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
+	for (i = 0 ; i<dataArr.length ; i++){
+		dataArr[i] = form.prepareForSubmission(dataArr[i]);
+	}
+
+	//console.debug(data);
+	if (dataArr.length === 0){
+		gui.showFeedback('No data marked "final" to export.');
+	}
+	else{
+		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
+		bb = new BlobBuilder();
+		bb.append(dataStr);
+		blob = bb.getBlob("application/octet-stream; charset=utf-8");
+		saveAs(blob, fileName);
+	}
+}
 
 /**
  * @constructor
@@ -594,44 +631,14 @@ function Connection(){
 	};
 }
 	
-//	function setTableVars(){
-//		var primaryKey;
-//		tableName = form.COUNTRY+'_'+form.SECTOR+'_'+form.YEAR+'_'+form.SURVEY_NAME;
-//
-//		//make tableName database friendly
-//		tableName = tableName.replace(/\s/g, '_');
-//		//console.log('tableName without whitespace: '+tableName); //DEBUG
-//		tableName = tableName.toLowerCase();
-//		//console.log('tableName lowercase: '+tableName); //DEBUG
-//
-//		version = form.VERSION;
-//
-//		//tableFields = '';
-//		//for (var i=0; i<form.QUESTIONS.length; i++){
-//		//	tableFields += form.QUESTIONS[i].id + ' ' + form.QUESTIONS[i].type + ', ';
-//		//}
-//		//tableFields += 'lastSaved double, lastUploaded double';
-//		//primary key of MySQL table is a combination of two colummns and only the first 20 characters of the second column are used.
-//		primaryKey = 'lastUploaded, '+form.KEY_NAME+'(20)';
-//	}
-//
-//	this.getStatus = function(){
-//		return onlineStatus;
-//	};
-//
-//	this.getTableName = function(){
-//		return tableName;
-//	};
-	
-	//this.setAutoUpload = function(upload){
-	//	autoUpload = upload;
-	//}
-	
-	// provides the connection status, should be considered: 'seems online' or 'seems offline'
-	// NEEDS IMPROVEMENT. navigator.onLine alone is probably not appropriate because for some browsers this will
-	// return true when connected to a local network that is not connected to the Internet.
-	// However, this could be the first step. If (true) a request is sent to the server to check for a connection
-	// @online = used to force a status (necessary?)
+/**
+ * provides the connection status, should be considered: 'seems online' or 'seems offline'
+ * NEEDS IMPROVEMENT. navigator.onLine alone is probably not appropriate because for some browsers this will
+ * return true when connected to a local network that is not connected to the Internet.
+ * However, this could be the first step. If (true) a request is sent to the server to check for a connection
+ *
+ * @return {boolean} true if it seems the browser is online, false if it does not
+ */
 Connection.prototype.getOnlineStatus = function(){
 	console.log('checking connection status');//, status before check is: '+onlineStatus); // DEBUG
 	//if (typeof online !== 'undefined' && ( online === true || online === false ) ){
@@ -673,13 +680,15 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 	this.currentOnlineStatus = newStatus;
 };
 
-// PROTECTION AGAINST CALLING FUNCTION TWICE to be tested
-// attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
+/**
+ * PROTECTION AGAINST CALLING FUNCTION TWICE to be tested, attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
+ * @param  {boolean=} force       [description]
+ * @param  {string=} excludeName [description]
+ */
 Connection.prototype.upload = function(force, excludeName) {
-	var i, name, result,// last,
-		//uploadQueue = [],
+	var i, name, result,
 		autoUpload = (settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ? true : false;
-	//console.log('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
+	//console.debug('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
 
 	// proceed if autoUpload is true or it is overridden, and if there is currently no queue for submissions
 	if ( ( typeof this.uploadQueue == 'undefined' || this.uploadQueue.length === 0 ) && ( autoUpload === true || force ) ){
@@ -692,12 +701,7 @@ Connection.prototype.upload = function(force, excludeName) {
 		if (this.uploadQueue.length === 0 ){
 			return (force) ? gui.showFeedback('Nothing marked "final" to upload (or record is currently open).') : false;
 		}
-		//for (i=0 ; i<dataArr.length ; i++){
-			//last = (i == dataArr.length-1) ? true : false;
-		//name = dataArr[i].name;
 		this.uploadOne();
-		//this.uploadOne(dataArr[i].data, name, last);
-		//}
 	}
 };
 
@@ -710,8 +714,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 		content.append('xml_submission_data', form.prepareForSubmission(record.data));//dataXMLStr);
 		content.append('Date', new Date().toUTCString());
 		last = (this.uploadQueue.length === 0) ? true : false;
-		//console.log('attempting upload with override: '+override+' Changing uploadOngoing to true'); // DEBUG
-		//this.uploadOngoing = true;
+
 		//console.log('data to be send: '+JSON.stringify(dataObj)); // DEBUG
 		$.ajax('data/submission',{
 			type: 'POST',
@@ -722,16 +725,16 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 			processData: false,
 			complete: function(jqXHR, response){
 				that.processOpenRosaResponse(jqXHR.status, record.name, last);
-				//ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
-				//as it duplicates 1 entry and omits the other but returns 201 for both...
-				//so we wait until previous POST is finished.
+				/**
+				  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
+				  * as it duplicates 1 entry and omits the other but returns 201 for both...
+				  * so we wait until previous POST is finished.
+				  */
 				that.uploadOne();
 			}
 		});
 	}
-	
 };
-
 
 Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	var i, waswere, namesStr,
@@ -752,8 +755,8 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		503: {success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."},
 		'5xx':{success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."}
 	};
-	console.debug('name: '+name);
-	console.debug(status);
+	//console.debug('name: '+name);
+	//console.debug(status);
 	
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
@@ -825,46 +828,14 @@ Settings.prototype['buttonLocation'] = function(val){
 	//if ($(this).checked === true) {
 	//console.log('found radio input with required value'); // DEBUG
 	$('#form-controls').removeClass('bottom right mobile').addClass(val);
-//						if (el[i].value==='mobile'){
-//							$('body').addClass('no-scroll');
-//						}
-//						else {
-//							$('body').removeClass('no-scroll');
-//						}
+	//if (el[i].value==='mobile'){
+	//	$('body').addClass('no-scroll');
+	//}
+	//else {
+	//	$('body').removeClass('no-scroll');
+	//}
 	$(window).trigger('resize');
 };
-
-//function to update the settings record
-///function updateSettings(){
-//"use strict";
-//console.log('updateSettings fired, with parameter settingsForm:'); //DEBUG
-//
-//// the intro message might also contain a setting: 'never show this message again'
-//	//if(!settingsForm){
-//		settingsForm = 'settings-form';
-//	//}
-//
-//	//detect change
-//	console.log('triggered by :'+$(this).attr('name')); // DEBUG
-//
-//	//save settings to localStorage
-//	var data = form.getData(settingsForm);
-//	//console.log('data scraped from '+settingsForm+': '+JSON.stringify(data)); // DEBUG
-//	if (data !== null){ // CHECK IF AN EMPTY FORM REALLY RETURNS NULL!
-//		var result = store.setRecord(data);
-//		//console.log('result of attempt to save settings: '+result);
-//		if (result !== 'success'){
-//			gui.showFeedback('Error occurred when trying to save the settings.');
-//		}
-//	}
-//	//make changes
-//	updateSetting($(this));
-//
-/// perform action according to the (changed) settings
-//function updateSetting(el){
-//	"use strict";
-//}
-
 
 //Extend GUI
 //setCustomEventHandlers is called automatically by GUI.init();
@@ -886,6 +857,15 @@ GUI.prototype.setCustomEventHandlers = function(){
 		.click(function(){
 			deleteForm(false);
 		});
+	$('button#submit-form').button({'icons': {'primary':"ui-icon-check"}})
+		.click(function(){
+			form.validateForm();
+			submitForm();
+		});
+	$('a#queue').click(function(){
+		exportToFile();
+		return false;
+	});
 
 	$('#form-controls button').equalWidth();
 
@@ -1019,9 +999,11 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 			$li.find('.name').text(name); // encodes string to html
 			$list.append($li);
 		}
+		$('#queue').show().find('#queue-length').text(recordList.length);
 	}
 	else{
 		$('<li class="no-click">no locally saved records found</li>').appendTo($list);
+		$('#queue').hide().find('.queue-length').text('');
 	}
 // *	OLD*	else if (result.field(2) == 2) {
 // *	OLD*		color = 'gray';

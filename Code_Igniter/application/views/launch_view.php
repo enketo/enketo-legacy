@@ -10,14 +10,7 @@
 		<link rel="stylesheet" type="text/css" href="libraries/jquery-ui/css/<?= $theme ?>/jquery-ui.custom.css"/>
 		<link rel="stylesheet" type="text/css" href="css/screen.css" />
 
-		<script type="text/javascript" src="libraries/jquery.min.js"></script>
-		<script type="text/javascript" src="libraries/jquery-ui/js/jquery-ui.custom.min.js"></script>
-		<script type="text/javascript" src="libraries/jquery-ui-timepicker-addon.js"></script>
-		<script type="text/javascript" src="libraries/jquery.multiselect.min.js"></script>
-		<script type="text/javascript" src="libraries/jquery.form.js"></script><!-- minimize -->
-		<script type="text/javascript" src="libraries/modernizr.min.js"></script>
-		<script type="text/javascript" src="libraries/vkbeautify.js"></script>
-		<script type="text/javascript" src="libraries/xpathjs_javarosa.min.js"></script>
+
 		<!--<script type="text/javascript" src="libraries/xpathjs_javarosa/src/engine.js"></script>
 		<script type="text/javascript" src="libraries/xpathjs_javarosa/build/parser.js"></script>-->
 

@@ -80,7 +80,7 @@ $autoload['helper'] = array();
 |
 */
 
-$autoload['config'] = array('themes', 'application_cache', 'javarosa');
+$autoload['config'] = array('themes', 'enketo');
 
 
 /*

@@ -112,7 +112,7 @@ class Survey_model extends CI_Model {
             return ($result != FALSE) ? 
                 array('success'=>TRUE, 'url'=> $survey_url): array('success'=>FALSE, 'reason'=>'database');
         }
-        return array('success'=>FALSE, 'reason'=>'');
+        return array('success'=>FALSE, 'reason'=>'unknown');
     }
 
     /**
@@ -125,7 +125,7 @@ class Survey_model extends CI_Model {
         $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
         $domain = $_SERVER['SERVER_NAME'];
         $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
-        return $protocol.$subdomain.'.'.$domain;
+        return $protocol.$subdomain.'.'.$domain.'/webform';
     }
 
 // 	public function update_formlist()

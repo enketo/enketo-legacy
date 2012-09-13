@@ -1,4 +1,5 @@
 @import "compass/reset";
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
 
 /******* COLORS **********/
 $button-bg: #fece2f; /*dark yellow*/
@@ -17,6 +18,10 @@ $a-hvr: #381f00; /*very dark brown*/
 /***************************
  ****BASIC GUI ELEMENTS ****
  ***************************/
+
+.ui-widget,.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { 
+  font-family: 'Open Sans', Segoe UI, Arial, sans-serif; 
+  font-size: 1em;}
 
 p {
   text-align: left;
@@ -252,7 +257,16 @@ header {
     padding: 10px 0; }
   button {}
   &.right button {
-    display: block; } }
+    display: block; }
+  #queue{
+    display: block;
+    width: 160px;
+    text-decoration: none;
+    margin: 0 0 -35px 10px;
+    #queue-length{
+      font-size: 36px;
+      display: block;
+      float: left; }}}
 
 #container {
   position: absolute;
@@ -722,7 +736,6 @@ footer.ui-widget {
     color: $a-hvr;
     text-decoration: none; } }
 
-
 .jr {
   label, fieldset {
     box-sizing: border-box;
@@ -734,6 +747,20 @@ footer.ui-widget {
     padding: 14px 14px; }
   label + label {
     border-top: 1px solid $shadow; }
+  .geopoint{ 
+    height: 350px;
+    .map-canvas{
+      width: 340px;
+      height: 275px; 
+      margin-top: 10px;
+      float: right;
+      border: 1px solid $shadow;}
+    label{
+      border: none;
+      padding: 5px 0;}
+    button{
+      width: 130px;
+      margin-top: 10px;}}
   fieldset:not(#jr-preload-items):not(.jr-group) + {
     label, fieldset:not(.jr-group) {
       border-top: 1px solid $shadow; } }
@@ -775,7 +802,7 @@ footer.ui-widget {
     &[type="text"] {
       width: 100%; }
     &[type=date], &[type=number], &[type=email], &[type=password] {
-      width: 10em;
+      width: 130px;
       text-align: right; }
     &[type=radio], &[type=checkbox] {
       display: block;
@@ -908,9 +935,7 @@ input, .fakefileinput {
       text-decoration: underline; }
     &.active {
       color: $header-bg;
-      text-decoration: none; } } }
-
-
+      text-decoration: none; } } }  
 
 .ui-datepicker {
   margin-left: -270px;

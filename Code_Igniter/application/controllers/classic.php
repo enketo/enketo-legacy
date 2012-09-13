@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-class Survey extends CI_Controller {
+class Classic extends CI_Controller {
 
 	public function index()
 	{
@@ -65,6 +65,9 @@ class Survey extends CI_Controller {
 							base_url('libraries/jquery.multiselect.min.js'),	
 							base_url('libraries/modernizr.min.js'),
 							base_url('libraries/xpathjs_javarosa.min.js'),
+							base_url('libraries/FileSaver.min.js'),
+							base_url('libraries/BlobBuilder.min.js'),
+							base_url('libraries/vkbeautify.js'),
 							"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
 						);
 
@@ -126,21 +129,7 @@ class Survey extends CI_Controller {
 				);
 			}
 
-			$this->load->view('survey_list_view', $data);			
-		}
-	}
-
-	public function update_list()
-	{
-		$this->load->model('Survey_model', '', TRUE);
-		$success = $this->Survey_model->update_formlist();
-		if ($success === TRUE)
-		{
-			echo 'form list has been updated';
-		}
-		else 
-		{
-			echo 'error updating form list';
+			$this->load->view('front_view', $data);			
 		}
 	}
 }

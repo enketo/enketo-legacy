@@ -112,7 +112,7 @@ class Survey_model extends CI_Model {
             return ($result != FALSE) ? 
                 array('success'=>TRUE, 'url'=> $survey_url): array('success'=>FALSE, 'reason'=>'database');
         }
-        return array('success'=>FALSE, 'reason'=>'');
+        return array('success'=>FALSE, 'reason'=>'unknown');
     }
 
     /**

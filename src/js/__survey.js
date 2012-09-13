@@ -415,21 +415,26 @@ function submitForm() {
 /**
  * function to export or backup data. It depends on the browser whether this data is shown in a new browser window/tab
  * or is downloaded automatically. It is not possible to provide a file name.
- *
+ * @deprecated
  * @param  {boolean=} finalOnly [description]
  */
 function exportData(finalOnly){
 	"use strict";
-	var data, uriContent, newWindow;
+	var i,dataArr, dataStr, uriContent, newWindow;
 	finalOnly = finalOnly || true;
 
-	data = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
+	//dataArr = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
+	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
+	for (i = 0 ; i<dataArr.length ; i++){
+		dataArr[i] = form.prepareForSubmission(dataArr[i]);
+	}
 	//console.debug(data);
-	if (!data){
+	if (dataArr.length === 0){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
-		uriContent = "data:application/octet-stream," + encodeURIComponent(data); /*data:application/octet-stream*/
+		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
+		uriContent = "data:application/octet-stream," + encodeURIComponent(dataStr); /*data:application/octet-stream*/
 		newWindow = window.open(uriContent, 'exportedData');
 	//window.location.href = uriContent;
 	}
@@ -443,18 +448,24 @@ function exportData(finalOnly){
  */
 function exportToFile(fileName, finalOnly){
 	"use strict";
-	var data, bb, blob;
+	var i, dataArr, dataStr, bb, blob;
 		//filename="test.xml";//, uriContent, newWindow;
 	finalOnly = finalOnly || true;
 	fileName = fileName || form.getName()+'_data_backup.xml';
-	data = vkbeautify.xml(store.getSurveyDataXMLStr(finalOnly));
+	
+	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
+	for (i = 0 ; i<dataArr.length ; i++){
+		dataArr[i] = form.prepareForSubmission(dataArr[i]);
+	}
+
 	//console.debug(data);
-	if (!data){
+	if (dataArr.length === 0){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
+		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		bb = new BlobBuilder();
-		bb.append(data);
+		bb.append(dataStr);
 		blob = bb.getBlob("application/octet-stream; charset=utf-8");
 		saveAs(blob, fileName);
 	}

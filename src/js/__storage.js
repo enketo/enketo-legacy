@@ -238,7 +238,7 @@ function StorageLocal(){
 	/**
 	 * [getSurveyDataArr description]
 	 * @param  {boolean=} finalOnly   [description]
-	 * @param  {?string=} excludeName [description]
+	 * @param  {?string=} excludeName the (currently open) record name to exclude from the returned data set
 	 * @return {Array.<Object.<string, string>>}             [description]
 	 */
 	this.getSurveyDataArr = function(finalOnly, excludeName){
@@ -255,19 +255,34 @@ function StorageLocal(){
 	};
 
 	/**
-	 * [getSurveyDataXMLStr description]
+	 * [getSurveyDataOnlyArr description]
 	 * @param  {boolean=} finalOnly [description]
-	 * @return {?string}           [description]
+	 * @return {?Array.<string>}           [description]
 	 */
-	this.getSurveyDataXMLStr = function(finalOnly){
+	this.getSurveyDataOnlyArr = function(finalOnly){
 		var i,
 			dataObjArr = this.getSurveyDataArr(finalOnly),
 			dataOnlyArr =[];
 		for (i=0 ; i<dataObjArr.length ; i++){
 			dataOnlyArr.push(dataObjArr[i].data);
 		}
-		return (dataOnlyArr.length>0) ? '<exported>'+dataOnlyArr.join('')+'</exported>' : null;
+		return (dataOnlyArr.length>0) ? dataOnlyArr: null;
 	};
+
+	/**
+	 * [getSurveyDataXMLStr description]
+	 * @param  {boolean=} finalOnly [description]
+	 * @return {?string}           [description]
+	 */
+//	this.getSurveyDataXMLStr = function(finalOnly){
+//		var i,
+//			dataObjArr = this.getSurveyDataArr(finalOnly),
+//			dataOnlyArr =[];
+//		for (i=0 ; i<dataObjArr.length ; i++){
+//			dataOnlyArr.push(dataObjArr[i].data);
+//		}
+//		return (dataOnlyArr.length>0) ? '<exported>'+dataOnlyArr.join('')+'</exported>' : null;
+//	};
 	
 	
 	// MOVE TO STORE?
@@ -289,7 +304,11 @@ function StorageLocal(){
 //		return settings;
 //	};
 
-	// private function to check if key is forbidden
+	/**
+	 * private function to check if key is forbidden
+	 * @param  {string}  k [description]
+	 * @return {boolean}   [description]
+	 */
 	function isReservedKey(k) {
 		var i;
 		for (i=0 ; i<RESERVED_KEYS.length ; i++){
@@ -300,7 +319,11 @@ function StorageLocal(){
 		return false;
 	}
 
-	// private function to check if the key exists
+	/**
+	 * private function to check if the key exists
+	 * @param  {string}  k [description]
+	 * @return {boolean}   [description]
+	 */
 	function isExistingKey(k) {
 		if (localStorage.getItem(k)){
 			//console.log('existing key');// DEBUG
@@ -310,6 +333,10 @@ function StorageLocal(){
 		return false;
 	}
 	
+	/**
+	 * Obtain a new counter string value that is one higher than the previous
+	 * @return {string} [description]
+	 */
 	this.getCounterValue = function(){
 		var record = this.getRecord('__counter'),
 			number = (record && typeof record['counter'] !== 'undefined' && isNumber(record['counter'])) ? Number(record['counter']) : 0,

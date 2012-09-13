@@ -108,6 +108,13 @@ header.ui-widget-header {
   display: none;
 }
 
+/* line 44, ../../src/scss/print.scss */
+h2 {
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
 /* line 46, ../../src/scss/print.scss */
 #form-controls.ui-widget-header {
   display: none;
@@ -290,7 +297,26 @@ article.main .jr {
   text-decoration: none;
 }
 
-/* line 197, ../../src/scss/print.scss */
+/* line 196, ../../src/scss/print.scss */
+.jr {
+  /*background-color: white;
+  border: black solid 1px;*/
+  /**-moz-box-shadow:    2px 2px 3px 0px $shadow;
+  -webkit-box-shadow: 2px 2px 3px 0px $shadow;
+  box-shadow:         2px 2px 3px 0px $shadow;*/
+  /*@include paper;*/
+  line-height: 1.1em;
+}
+/* line 204, ../../src/scss/print.scss */
+.jr .form-logo img {
+  position: relative;
+  left: 50%;
+  max-height: 200px;
+  width: 120px;
+  margin-left: -60px;
+  margin-bottom: 10px;
+}
+/* line 211, ../../src/scss/print.scss */
 .jr label, .jr fieldset {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -299,16 +325,17 @@ article.main .jr {
   display: block;
   width: 100%;
   padding: 14px 14px;
+  font-weight: bold;
 }
-/* line 205, ../../src/scss/print.scss */
+/* line 220, ../../src/scss/print.scss */
 .jr label + label {
-  border-top: 1px solid #cccccc;
+  /*border-top: 1px solid $shadow;*/
 }
-/* line 207, ../../src/scss/print.scss */
+/* line 222, ../../src/scss/print.scss */
 .jr .geopoint {
   height: 350px;
 }
-/* line 209, ../../src/scss/print.scss */
+/* line 224, ../../src/scss/print.scss */
 .jr .geopoint .map-canvas {
   width: 340px;
   height: 275px;
@@ -316,25 +343,25 @@ article.main .jr {
   float: right;
   border: 1px solid #cccccc;
 }
-/* line 215, ../../src/scss/print.scss */
+/* line 230, ../../src/scss/print.scss */
 .jr .geopoint label {
   border: none;
   padding: 5px 0;
 }
-/* line 218, ../../src/scss/print.scss */
+/* line 233, ../../src/scss/print.scss */
 .jr .geopoint button {
   width: 130px;
   margin-top: 10px;
 }
-/* line 222, ../../src/scss/print.scss */
+/* line 237, ../../src/scss/print.scss */
 .jr fieldset:not(#jr-preload-items):not(.jr-group) + label, .jr fieldset:not(#jr-preload-items):not(.jr-group) + fieldset:not(.jr-group) {
-  border-top: 1px solid #cccccc;
+  /*border-top: 1px solid $shadow;*/
 }
-/* line 224, ../../src/scss/print.scss */
+/* line 239, ../../src/scss/print.scss */
 .jr label + fieldset:not(.jr-group) {
-  border-top: 1px solid #cccccc;
+  /*border-top: 1px solid $shadow;*/
 }
-/* line 226, ../../src/scss/print.scss */
+/* line 241, ../../src/scss/print.scss */
 .jr span.repeat-number {
   height: 2em;
   display: block;
@@ -343,58 +370,60 @@ article.main .jr {
   margin-top: -8px;
   color: #cccccc;
 }
-/* line 233, ../../src/scss/print.scss */
+/* line 248, ../../src/scss/print.scss */
 .jr legend {
   position: absolute;
   top: 1.5em;
+  font-weight: bold;
 }
-/* line 236, ../../src/scss/print.scss */
+/* line 252, ../../src/scss/print.scss */
 .jr legend ~ label {
   border-top: none;
   padding: .5em 0 .5em 0;
   margin-left: 25px;
+  font-weight: normal;
 }
-/* line 240, ../../src/scss/print.scss */
+/* line 257, ../../src/scss/print.scss */
 .jr legend + label {
   margin-top: 25px;
 }
-/* line 242, ../../src/scss/print.scss */
+/* line 259, ../../src/scss/print.scss */
 .jr fieldset {
   position: relative;
 }
-/* line 244, ../../src/scss/print.scss */
+/* line 261, ../../src/scss/print.scss */
 .jr fieldset.jr-group {
   border: 1px solid #cccccc;
   margin: .5em 0;
 }
-/* line 247, ../../src/scss/print.scss */
+/* line 264, ../../src/scss/print.scss */
 .jr fieldset.jr-repeat {
   border: 1px dotted #cccccc;
 }
-/* line 249, ../../src/scss/print.scss */
+/* line 266, ../../src/scss/print.scss */
 .jr label, .jr legend, .jr .trigger {
   font-size: .8em;
 }
-/* line 251, ../../src/scss/print.scss */
+/* line 268, ../../src/scss/print.scss */
 .jr input {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   display: block;
-  margin: .2em;
+  margin: 8px 0 0 0;
   font-size: .9em;
 }
-/* line 259, ../../src/scss/print.scss */
+/* line 276, ../../src/scss/print.scss */
 .jr input[type="text"] {
   width: 100%;
 }
-/* line 261, ../../src/scss/print.scss */
+/* line 278, ../../src/scss/print.scss */
 .jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password] {
   width: 130px;
   text-align: right;
 }
-/* line 264, ../../src/scss/print.scss */
+/* line 281, ../../src/scss/print.scss */
 .jr input[type=radio], .jr input[type=checkbox] {
   display: block;
   /*****/
@@ -405,43 +434,43 @@ article.main .jr {
   /*compensates for the label margin, fixes multi-line labels */
   margin-left: -25px;
 }
-/* line 273, ../../src/scss/print.scss */
+/* line 290, ../../src/scss/print.scss */
 .jr select {
   display: block;
 }
-/* line 276, ../../src/scss/print.scss */
+/* line 293, ../../src/scss/print.scss */
 .jr fieldset .ui-button {
   width: 27px;
   height: 27px;
   margin-top: 6px;
 }
-/* line 280, ../../src/scss/print.scss */
+/* line 297, ../../src/scss/print.scss */
 .jr fieldset .one-more {
   margin: 0 -34px -5px 10px;
 }
-/* line 282, ../../src/scss/print.scss */
+/* line 299, ../../src/scss/print.scss */
 .jr fieldset .remove {
   float: right;
   margin-right: 0;
 }
-/* line 285, ../../src/scss/print.scss */
+/* line 302, ../../src/scss/print.scss */
 .jr .trigger {
   padding: 7px 12px;
   margin: 1em 0;
 }
 
-/* line 289, ../../src/scss/print.scss */
+/* line 306, ../../src/scss/print.scss */
 label.with-media {
   margin-top: 5px;
 }
 
-/* line 292, ../../src/scss/print.scss */
+/* line 309, ../../src/scss/print.scss */
 .with-media > span.active {
   display: block;
   width: 100%;
 }
 
-/* line 297, ../../src/scss/print.scss */
+/* line 314, ../../src/scss/print.scss */
 label.with-media img, label.with-media video, label.with-media audio {
   max-width: 45%;
   padding-right: 5%;
@@ -449,29 +478,29 @@ label.with-media img, label.with-media video, label.with-media audio {
   float: right;
 }
 
-/* line 303, ../../src/scss/print.scss */
+/* line 320, ../../src/scss/print.scss */
 .with-media input {
   float: left;
   width: 5%;
   margin-top: -17px;
 }
 
-/* line 309, ../../src/scss/print.scss */
+/* line 326, ../../src/scss/print.scss */
 input, .fakefileinput {
   background-color: white;
   border: 2px solid #cccccc;
   min-height: 30px;
 }
 
-/* line 314, ../../src/scss/print.scss */
+/* line 331, ../../src/scss/print.scss */
 .jr-appearance-compact label {
   display: inline;
 }
-/* line 316, ../../src/scss/print.scss */
+/* line 333, ../../src/scss/print.scss */
 .jr-appearance-compact label span {
   display: none;
 }
-/* line 318, ../../src/scss/print.scss */
+/* line 335, ../../src/scss/print.scss */
 .jr-appearance-compact label img {
   float: left;
   width: 120px;
@@ -479,13 +508,13 @@ input, .fakefileinput {
   padding: 5px;
   margin-top: 25px;
 }
-/* line 325, ../../src/scss/print.scss */
+/* line 342, ../../src/scss/print.scss */
 .jr-appearance-compact label input[type=radio], .jr-appearance-compact label input[type=checkbox] {
   /*display: none;*/
   margin-top: 35px;
 }
 
-/* line 329, ../../src/scss/print.scss */
+/* line 346, ../../src/scss/print.scss */
 .jr-branch {
   border-top: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
@@ -496,13 +525,13 @@ input, .fakefileinput {
   opacity: 0.5;
 }
 
-/* line 338, ../../src/scss/print.scss */
+/* line 355, ../../src/scss/print.scss */
 .disabled {
   /*color: $shadow*/
   opacity: 0.5;
 }
 
-/* line 342, ../../src/scss/print.scss */
+/* line 359, ../../src/scss/print.scss */
 .ui-multiselect-menu {
   display: none;
 }

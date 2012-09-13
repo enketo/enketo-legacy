@@ -41,7 +41,7 @@ div[id^="dialog"] {
 header.ui-widget-header {
   display: none; }
 
-
+h2{text-align: center; font-size: 1.5em; font-weight: bold;}
 
 #form-controls.ui-widget-header {
   display: none;}
@@ -194,6 +194,20 @@ article.main .jr {
     text-decoration: none; } }
 
 .jr {
+  /*background-color: white;
+  border: black solid 1px;*/
+  /**-moz-box-shadow:    2px 2px 3px 0px $shadow;
+  -webkit-box-shadow: 2px 2px 3px 0px $shadow;
+  box-shadow:         2px 2px 3px 0px $shadow;*/
+  /*@include paper;*/
+  line-height: 1.1em;
+  .form-logo img {
+    position: relative;
+    left: 50%;
+    max-height: 200px;
+    width: 120px;
+    margin-left: -60px;
+    margin-bottom: 10px; }
   label, fieldset {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -201,9 +215,10 @@ article.main .jr {
     -ms-box-sizing: border-box;
     display: block;
     width: 100%;
-    padding: 14px 14px; }
+    padding: 14px 14px;
+    font-weight: bold; }
   label + label {
-    border-top: 1px solid $shadow; }
+    /*border-top: 1px solid $shadow;*/ }
   .geopoint{ 
     height: 350px;
     .map-canvas{
@@ -220,9 +235,9 @@ article.main .jr {
       margin-top: 10px;}}
   fieldset:not(#jr-preload-items):not(.jr-group) + {
     label, fieldset:not(.jr-group) {
-      border-top: 1px solid $shadow; } }
+      /*border-top: 1px solid $shadow;*/ } }
   label + fieldset:not(.jr-group) {
-    border-top: 1px solid $shadow; }
+    /*border-top: 1px solid $shadow;*/ }
   span.repeat-number {
     height: 2em;
     display: block;
@@ -233,10 +248,12 @@ article.main .jr {
   legend {
     position: absolute;
     top: 1.5em;
+    font-weight: bold;
     ~ label {
       border-top: none;
       padding: .5em 0 .5em 0;
-      margin-left: 25px; }
+      margin-left: 25px;
+      font-weight: normal; }
     + label {
       margin-top: 25px; } }
   fieldset {
@@ -254,7 +271,7 @@ article.main .jr {
     -moz-box-sizing: border-box;
     -ms-box-sizing: border-box;
     display: block;
-    margin: .2em;
+    margin: 8px 0 0 0;
     font-size: .9em;
     &[type="text"] {
       width: 100%; }

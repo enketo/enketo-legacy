@@ -1,3 +1,508 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
 /* Welcome to Compass. Use this file to define print styles.
  * Import this file using the following HTML or equivalent:
  * <link href="/stylesheets/print.css" media="print" rel="stylesheet" type="text/css" /> */
+/* line 17, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* line 22, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html {
+  line-height: 1;
+}
+
+/* line 24, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 26, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 28, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* line 30, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q, blockquote {
+  quotes: none;
+}
+/* line 103, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+/* line 32, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+a img {
+  border: none;
+}
+
+/* line 116, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block;
+}
+
+/******* COLORS **********/
+/*dark yellow*/
+/*very light yellow*/
+/*brown*/
+/*dark brown*/
+/*white*/
+/*yellow*/
+/*lighter brown but similar to header-brdr*/
+/*red*/
+/*darker gray */
+/*light gray*/
+/*very dark brown*/
+/***************************
+ ****BASIC GUI ELEMENTS ****
+ ***************************/
+/* line 26, ../../src/scss/print.scss */
+.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+  font-family: 'Open Sans', Segoe UI, Arial, sans-serif;
+  font-size: 1em;
+}
+
+/* line 31, ../../src/scss/print.scss */
+.center {
+  text-align: center;
+}
+
+/* line 34, ../../src/scss/print.scss */
+div[id^="dialog"] {
+  display: none;
+}
+
+/* line 37, ../../src/scss/print.scss */
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* line 41, ../../src/scss/print.scss */
+header.ui-widget-header {
+  display: none;
+}
+
+/* line 46, ../../src/scss/print.scss */
+#form-controls.ui-widget-header {
+  display: none;
+}
+
+/*#container {
+  position: absolute;
+  top: 80px;
+  width: 100%;
+  overflow: auto; }
+
+.main {
+  padding: 20px;
+  margin-left: auto;
+  margin-bottom: 20px;
+  margin-right: auto;
+  margin-top: 50px;
+  position: relative;
+  z-index: 0;
+
+  display: block;
+
+  text-align: left;
+ }
+
+article.main .jr {
+  padding: 1.5em;
+  min-height: 300px; }
+ */
+/* line 73, ../../src/scss/print.scss */
+.main {
+  /*article {
+    padding: 1.5em;
+    min-height: 300px; }*/
+  max-width: 700px;
+}
+
+/*  &#wrap-collation, &#wrap-charts {
+    max-width: 95%; }
+  ul, ol {
+
+    margin-left: 30px;
+    margin-bottom: 25px; }
+  ul li, ol li {
+    margin: 10px 0; }
+  ul li span.ui-icon, ol li span.ui-icon {
+    float: left;
+    margin-left: -25px; }
+  textarea.source {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    width: 100%;
+    height: 500px;
+    font-size: .8em;
+    padding: 5px; }
+  label#data-template-show {
+    font-size: .8em;
+    float: right;
+    margin: -15px 0 5px 0;
+    input {
+      float: left;
+      margin-right: 8px; } }
+  .ui-tabs-nav li.ui-state-active {
+   }
+  .ui-widget-header {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 3px 3px 30px 3px; } }
+/*
+
+/**************************
+****    SURVEY FORM    ****
+**************************/
+/* line 118, ../../src/scss/print.scss */
+.jr {
+  /*padding: 1.5em;*/
+  line-height: 1.1em;
+}
+
+/* line 122, ../../src/scss/print.scss */
+.form-logo img {
+  position: relative;
+  left: 50%;
+  max-height: 200px;
+  width: 120px;
+  margin-left: -60px;
+  margin-bottom: 10px;
+}
+
+/* line 130, ../../src/scss/print.scss */
+.jr [lang]:not(.active), .jr-hint {
+  display: none;
+}
+
+/* line 134, ../../src/scss/print.scss */
+.jr-constraint-msg.active {
+  display: block;
+  visibility: hidden;
+  min-height: 1em;
+}
+/* line 138, ../../src/scss/print.scss */
+.jr-constraint-msg:not(.active) {
+  display: none;
+}
+
+/* line 141, ../../src/scss/print.scss */
+.invalid .jr-constraint-msg.active {
+  visibility: visible;
+  font-weight: bold;
+  font-style: italic;
+}
+
+/* line 146, ../../src/scss/print.scss */
+.jr-option-translations {
+  display: none;
+}
+
+/* line 149, ../../src/scss/print.scss */
+.jr h2.ui-widget-header {
+  margin: 0;
+}
+/* line 151, ../../src/scss/print.scss */
+.jr h2.ui-widget-header span {
+  display: block;
+  color: #494437;
+  font-size: 10px;
+  line-height: 10px;
+  text-align: right;
+}
+
+/* line 158, ../../src/scss/print.scss */
+.question-icons {
+  float: right;
+  margin: -5px -10px 0 0;
+  /*line-height: 15px;*/
+}
+/* line 162, ../../src/scss/print.scss */
+.question-icons span {
+  display: inline-block;
+  text-align: right;
+  width: 18px;
+}
+
+/* line 167, ../../src/scss/print.scss */
+#form-languages {
+  margin-top: -18px;
+  margin-bottom: 18px;
+  margin-right: 10px;
+  font-size: 0.8em;
+}
+
+/* correction for when tabs are present */
+/* line 175, ../../src/scss/print.scss */
+.ui-tabs-panel #form-languages {
+  margin-top: -35px;
+  margin-bottom: 45px;
+  margin-right: -15px;
+}
+
+/* line 181, ../../src/scss/print.scss */
+#form-languages a:link {
+  float: right;
+  padding-left: 10px;
+  border: none;
+  background: none;
+  font-weight: normal;
+  font-size: .8em;
+  color: #5c5c5c;
+}
+/* line 189, ../../src/scss/print.scss */
+#form-languages a:not(.active):hover {
+  color: #381f00;
+  text-decoration: underline;
+}
+/* line 192, ../../src/scss/print.scss */
+#form-languages a.active {
+  color: #381f00;
+  text-decoration: none;
+}
+
+/* line 197, ../../src/scss/print.scss */
+.jr label, .jr fieldset {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  display: block;
+  width: 100%;
+  padding: 14px 14px;
+}
+/* line 205, ../../src/scss/print.scss */
+.jr label + label {
+  border-top: 1px solid #cccccc;
+}
+/* line 207, ../../src/scss/print.scss */
+.jr .geopoint {
+  height: 350px;
+}
+/* line 209, ../../src/scss/print.scss */
+.jr .geopoint .map-canvas {
+  width: 340px;
+  height: 275px;
+  margin-top: 10px;
+  float: right;
+  border: 1px solid #cccccc;
+}
+/* line 215, ../../src/scss/print.scss */
+.jr .geopoint label {
+  border: none;
+  padding: 5px 0;
+}
+/* line 218, ../../src/scss/print.scss */
+.jr .geopoint button {
+  width: 130px;
+  margin-top: 10px;
+}
+/* line 222, ../../src/scss/print.scss */
+.jr fieldset:not(#jr-preload-items):not(.jr-group) + label, .jr fieldset:not(#jr-preload-items):not(.jr-group) + fieldset:not(.jr-group) {
+  border-top: 1px solid #cccccc;
+}
+/* line 224, ../../src/scss/print.scss */
+.jr label + fieldset:not(.jr-group) {
+  border-top: 1px solid #cccccc;
+}
+/* line 226, ../../src/scss/print.scss */
+.jr span.repeat-number {
+  height: 2em;
+  display: block;
+  float: right;
+  margin-right: -8px;
+  margin-top: -8px;
+  color: #cccccc;
+}
+/* line 233, ../../src/scss/print.scss */
+.jr legend {
+  position: absolute;
+  top: 1.5em;
+}
+/* line 236, ../../src/scss/print.scss */
+.jr legend ~ label {
+  border-top: none;
+  padding: .5em 0 .5em 0;
+  margin-left: 25px;
+}
+/* line 240, ../../src/scss/print.scss */
+.jr legend + label {
+  margin-top: 25px;
+}
+/* line 242, ../../src/scss/print.scss */
+.jr fieldset {
+  position: relative;
+}
+/* line 244, ../../src/scss/print.scss */
+.jr fieldset.jr-group {
+  border: 1px solid #cccccc;
+  margin: .5em 0;
+}
+/* line 247, ../../src/scss/print.scss */
+.jr fieldset.jr-repeat {
+  border: 1px dotted #cccccc;
+}
+/* line 249, ../../src/scss/print.scss */
+.jr label, .jr legend, .jr .trigger {
+  font-size: .8em;
+}
+/* line 251, ../../src/scss/print.scss */
+.jr input {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  display: block;
+  margin: .2em;
+  font-size: .9em;
+}
+/* line 259, ../../src/scss/print.scss */
+.jr input[type="text"] {
+  width: 100%;
+}
+/* line 261, ../../src/scss/print.scss */
+.jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password] {
+  width: 130px;
+  text-align: right;
+}
+/* line 264, ../../src/scss/print.scss */
+.jr input[type=radio], .jr input[type=checkbox] {
+  display: block;
+  /*****/
+  float: left;
+  /*****/
+  margin-top: 5px;
+  /****/
+  /*compensates for the label margin, fixes multi-line labels */
+  margin-left: -25px;
+}
+/* line 273, ../../src/scss/print.scss */
+.jr select {
+  display: block;
+}
+/* line 276, ../../src/scss/print.scss */
+.jr fieldset .ui-button {
+  width: 27px;
+  height: 27px;
+  margin-top: 6px;
+}
+/* line 280, ../../src/scss/print.scss */
+.jr fieldset .one-more {
+  margin: 0 -34px -5px 10px;
+}
+/* line 282, ../../src/scss/print.scss */
+.jr fieldset .remove {
+  float: right;
+  margin-right: 0;
+}
+/* line 285, ../../src/scss/print.scss */
+.jr .trigger {
+  padding: 7px 12px;
+  margin: 1em 0;
+}
+
+/* line 289, ../../src/scss/print.scss */
+label.with-media {
+  margin-top: 5px;
+}
+
+/* line 292, ../../src/scss/print.scss */
+.with-media > span.active {
+  display: block;
+  width: 100%;
+}
+
+/* line 297, ../../src/scss/print.scss */
+label.with-media img, label.with-media video, label.with-media audio {
+  max-width: 45%;
+  padding-right: 5%;
+  display: block;
+  float: right;
+}
+
+/* line 303, ../../src/scss/print.scss */
+.with-media input {
+  float: left;
+  width: 5%;
+  margin-top: -17px;
+}
+
+/* line 309, ../../src/scss/print.scss */
+input, .fakefileinput {
+  background-color: white;
+  border: 2px solid #cccccc;
+  min-height: 30px;
+}
+
+/* line 314, ../../src/scss/print.scss */
+.jr-appearance-compact label {
+  display: inline;
+}
+/* line 316, ../../src/scss/print.scss */
+.jr-appearance-compact label span {
+  display: none;
+}
+/* line 318, ../../src/scss/print.scss */
+.jr-appearance-compact label img {
+  float: left;
+  width: 120px;
+  height: 120px;
+  padding: 5px;
+  margin-top: 25px;
+}
+/* line 325, ../../src/scss/print.scss */
+.jr-appearance-compact label input[type=radio], .jr-appearance-compact label input[type=checkbox] {
+  /*display: none;*/
+  margin-top: 35px;
+}
+
+/* line 329, ../../src/scss/print.scss */
+.jr-branch {
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+  background-color: #cccccc;
+  height: 8px;
+  text-align: center;
+  margin: 10px 0;
+  opacity: 0.5;
+}
+
+/* line 338, ../../src/scss/print.scss */
+.disabled {
+  /*color: $shadow*/
+  opacity: 0.5;
+}
+
+/* line 342, ../../src/scss/print.scss */
+.ui-multiselect-menu {
+  display: none;
+}

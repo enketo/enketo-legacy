@@ -26,6 +26,7 @@ Installation
 4. Create wildcard subdomain that points to /public
 5. Import database structure into MYSQL database (most queries are done with the Active Record Class so any supported db should do with minimal fixes)
 6. Set up config/database.php with correct db user name and password
+8. Add the base url to config.php (e.g http://enketo.formhub.org)
 7. Set environment in index.php to 'production'
 8. Replace Code_Igniter/application/views/elements/tracking.php with your own tracking code
 

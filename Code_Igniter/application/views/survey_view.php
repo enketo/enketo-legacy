@@ -3,20 +3,9 @@
 <?
 	$theme = $this->config->item('survey','themes');
 ?>
-		<link rel="stylesheet" type="text/css" href="libraries/jquery-ui/css/<?= $theme ?>/jquery-ui.custom.css"/>
-		<link rel="stylesheet" type="text/css" href="css/screen.css" />
-
-		<script type="text/javascript" src="libraries/jquery.min.js"></script>
-		<!--<script type="text/javascript" src="libraries/jquery.mousewheel.min.js"></script>-->
-		<script type="text/javascript" src="libraries/jquery-ui/js/jquery-ui.custom.min.js"></script>
-		<script type="text/javascript" src="libraries/jquery-ui-timepicker-addon.js"></script>
-		<script type="text/javascript" src="libraries/jquery.multiselect.min.js"></script>
-		<!--<script type="text/javascript" src="libraries/downloadify/swfobject.js"></script>
-		<script type="text/javascript" src="libraries/downloadify/downloadify.min.js"></script>-->
-		<script type="text/javascript" src="libraries/modernizr.min.js"></script>
-		<!--<script type="text/javascript" src="libraries/gears_init.js"></script>-->
-		<script type="text/javascript" src="libraries/xpathjs_javarosa.min.js"></script>
-
+		<link rel="stylesheet" media="screen" type="text/css" href="libraries/jquery-ui/css/<?= $theme ?>/jquery-ui.custom.css"/>
+		<link rel="stylesheet" media="screen" type="text/css" href="css/screen.css" />
+		<link href="/css/print.css" media="print" rel="stylesheet" type="text/css" />
 
 	<? foreach ($scripts as $script): ?>
 		<script type="text/javascript" src="<?= $script; ?>"></script>

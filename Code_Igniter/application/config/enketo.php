@@ -27,4 +27,9 @@ $config['application_cache'] = FALSE;
 //	
 //	)
 //);
+//
+//
+
+$config['google_maps_api_v3_key'] = "AIzaSyDF5xYZfxN7r5SsNPGstjAeTzwa6dVU4Ik";
+
 

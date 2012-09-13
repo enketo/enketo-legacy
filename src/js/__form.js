@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google*/
 
 /**
  * Class: Form
@@ -120,6 +120,9 @@ function Form (formSelector, dataStr){
 	 this.getEditStatus = function(){
 		return form.editStatus.get();
 	 };
+	 this.getName = function(){
+		return $form.find('#form-title').text();
+	 };
 
 	//restores form instance to pre-initialized state
 	this.reset = function(){
@@ -169,6 +172,7 @@ function Form (formSelector, dataStr){
 		});
 		return formData.getStr(true, true);
 	};
+	
 /**
  * Function: DataXML
  *
@@ -534,14 +538,14 @@ function Form (formSelector, dataStr){
 			}, 
 			'date' : {
 				validate : function(x){
-					////console.debug('validating date: "'+x+'"');
-					////console.debug(new Date(x.toString()));
+					//console.debug('validating date: "'+x+'"');
+					//console.debug(new Date(x.toString()));
 					return ( new Date(x.toString()).toString() !== 'Invalid Date' );
 				},
 				convert : function(x){
 					var datetime = new Date(x);
 					datetime.setUTCHours(0,0,0,0);
-					////console.log('converting datetime to date');
+					//console.log('converting datetime to date');
 					return new Date(datetime).toUTCString();//.getUTCFullYear(), datetime.getUTCMonth(), datetime.getUTCDate());
 				}
 			},
@@ -559,7 +563,7 @@ function Form (formSelector, dataStr){
 				},
 				convert : function(x){
 					var datetime = new Date('2012-01-01 '+x);
-					////console.log('converting datetime to time');
+					//console.log('converting datetime to time');
 					return datetime.getHours().toString().pad(2)+':'+datetime.getMinutes().toString().pad(2)+':'+datetime.getSeconds().toString().pad(2);
 				}
 			},
@@ -570,7 +574,13 @@ function Form (formSelector, dataStr){
 			},
 			'geopoint' : {
 				validate: function(x){
-					return true;
+					var coords = x.toString().split(' ');
+					return ( coords[0] !== '' && coords[0] >= -90 && coords[0] <= 90 ) && 
+						( coords[1] !== '' && coords[1] >= -180 && coords[1] <= 180) && 
+						!isNaN(coords[2]) && (typeof coords[3] == 'undefined' || !isNaN(coords[3]));
+				},
+				convert: function(x){
+					return x.toString().trim();
 				}
 			},
 			'binary' : {
@@ -581,7 +591,7 @@ function Form (formSelector, dataStr){
 		};	
 	}
 
-		/**
+	/**
 	 * Function: DataXML.init
 	 * 
 	 * Sets up the $data object.
@@ -604,13 +614,10 @@ function Form (formSelector, dataStr){
 			$(this).text(val.trim());
 		});
 		$root = this.node(':first', 0).get();
-		////console.debug('root element');
-		////console.debug($root);
+
 		//store namespace of root element
 		this.namespace = $root.attr('xmlns');
 		//console.debug('namespace of root element is:'+this.namespace);
-		//remove namespace from <instance>
-		//this.$.find('instance').removeAttr('xmlns');
 		//strip namespace from root element (first child of instance) 
 		$root.removeAttr('xmlns');
 
@@ -620,10 +627,10 @@ function Form (formSelector, dataStr){
 	};
 
 
-//index is the index of the node (defined in Nodeset), that the clone should be added immediately after
-		//if a node with that name and that index already exists the node will NOT be cloned
-		//almost same as clone() but adds targetIndex and removes template attributes and if no template node exists it will copy a normal node
-		//nodeset (givein in node() should include filter noTemplate:false) so it will provide all nodes that that name
+	//index is the index of the node (defined in Nodeset), that the clone should be added immediately after
+	//if a node with that name and that index already exists the node will NOT be cloned
+	//almost same as clone() but adds targetIndex and removes template attributes and if no template node exists it will copy a normal node
+	//nodeset (givein in node() should include filter noTemplate:false) so it will provide all nodes that that name
 	DataXML.prototype.cloneTemplate = function(selector, index){
 		////console.log('trying to locate data node with path: '+path+' to clone and insert after node with same xpath and index: '+index);
 		var $insertAfterNode, name,
@@ -637,20 +644,14 @@ function Form (formSelector, dataStr){
 		//if templatenodes and insertafternode(s) have been identified AND the node following insertafternode doesn't already exist(! important for nested repeats!)
 		if (template.get().length === 1 && $insertAfterNode.length === 1 && $insertAfterNode.next().prop('nodeName') !== name){//this.node(selector, index+1).get().length === 0){
 			//console.log('found data repeat node with template attribute');
-				//cloneDataNode(templateNode, insertAfterNode);
+			//cloneDataNode(templateNode, insertAfterNode);
 
 			template.clone($insertAfterNode);
 			//console.debug('cloning done');
-				//templateNode.clone().insertAfter(templateNode.parent().children(templateNode.prop('nodeName')).last()).removeAttr('template');
+			//templateNode.clone().insertAfter(templateNode.parent().children(templateNode.prop('nodeName')).last()).removeAttr('template');
 		}
 		else{
 			//console.error ('Could locate node: '+path+' with index '+index+' in data instance.There could be multiple template node (a BUG) or none.');
-			//console.debug('templatenode found: ');
-			//console.debug(template.get());
-			//console.debug('insertAfternode found: ');
-			//console.debug($insertAfterNode);
-			////console.debug('target existing already?: ');
-			////console.debug(this.node(selector, index+1).get());
 			if ($insertAfterNode.next().prop('nodeName') !== name ){
 				console.error('Could not find template node and/or node to insert the clone after');
 			}
@@ -1688,7 +1689,6 @@ function Form (formSelector, dataStr){
 
 	FormHTML.prototype.widgets = {
 		init : function(){
-			//console.log('initializing widgets');
 			this.compactWidget();
 			this.dateWidget();
 			this.timeWidget();
@@ -1699,7 +1699,7 @@ function Form (formSelector, dataStr){
 			this.gridWidget();
 			this.spinnerWidget();
 			this.sliderWidget();
-			this.geoPointWidget();
+			this.geopointWidget();
 			this.barcodeWidget();
 		},
 		compactWidget: function(){
@@ -1782,12 +1782,136 @@ function Form (formSelector, dataStr){
 			//detect max and min with algorithm that evaluates expressions multiple times
 			//algortithm could guess likely border values by using a regular expression search...
 		},
-		geoPointWidget : function(){
-			//add current location automatically
-			//provide edit button to change manually
-			//in edit mode, the button switches to an Auto button that 
-			//automatically detects
-			$form.find('input[data-type-xml="geopoint"]').attr('placeholder', 'Awesome geopoint widget will follow in the future!');
+		geopointWidget : function(){
+			console.log('initializing geopoint widget');
+
+			//function update(){alert('updating')}
+			$form.find('input[data-type-xml="geopoint"]').each(function(){ //.attr('placeholder', 'Awesome geopoint widget will follow in the future!');
+				var $lat, $lng, $alt, $acc, $button, $map, mapOptions, map, marker,
+					$inputOrigin = $(this),
+					$geoWrap = $(this).parent('label');
+				$geoWrap.addClass('geopoint');
+				
+				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
+					'<label>latitude (x.y &deg;)<input name="lat" type="number" step="0.0001" /></label>'+
+					'<label>longitude (x.y &deg;)<input name="long" type="number" step="0.0001" /></label>'+
+					'<label>altitude (m)<input name="alt" type="number" step="0.1" /></label>'+
+					'<label>accuracy (m)<input name="acc" type="number" step="0.1" /></label>'+
+					'<button name="geodetect" type="button">detect</button>'); 
+				$map = $geoWrap.find('.map-canvas');
+				$lat = $geoWrap.find('[name="lat"]');
+				$lng = $geoWrap.find('[name="long"]');
+				$alt = $geoWrap.find('[name="alt"]');
+				$acc = $geoWrap.find('[name="acc"]');
+				$button = $geoWrap.find('button[name="geodetect"]');
+				
+				$geoWrap.find('input').not($inputOrigin).on('change change.bymap', function(event){
+					console.debug('change event dected');
+					var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
+						lng = ($lng.val() !== '') ? $lng.val() : 0.0, 
+						alt = ($alt.val() !== '') ? $alt.val() : 0.0, 
+						acc = $acc.val();
+					//event.preventDefault();
+					$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
+					//console.log(event);
+					if (event.namespace !== 'bymap'){
+						updateMap(lat, lng);
+					}
+					//event.stopPropagation();
+					return false;
+				});
+
+				if (!navigator.geolocation){
+					$button.attr('disabled', 'disabled');
+				}
+				//default map view
+				if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
+					updateMap(0,0,1);
+				}
+
+				$button.click(function(event){
+					event.preventDefault();
+					console.debug('click event detected');
+					console.debug(event);
+					navigator.geolocation.getCurrentPosition(function(position){	
+						updateMap(position.coords.latitude, position.coords.longitude);
+						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	
+					});
+					return false;
+				}).click();
+				/**
+				 * [updateMap description]
+				 * @param  {number} lat  [description]
+				 * @param  {number} lng  [description]
+				 * @param  {number=} zoom [description]
+				 */
+				function updateMap(lat, lng, zoom){
+					zoom = zoom || 15;
+					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
+						mapOptions = {
+							zoom: zoom,
+							center: new google.maps.LatLng(lat, lng),
+							mapTypeId: google.maps.MapTypeId.ROADMAP,
+							streetViewControl: false
+						};
+						map = new google.maps.Map($map[0], mapOptions);
+						placeMarker();
+						// place marker where user clicks
+						google.maps.event.addListener(map, 'click', function(event){
+							updateInputs(event.latLng.lat(), event.latLng.lng(), '', '', 'change.bymap');
+							placeMarker(event.latLng);
+						});
+					}
+				}
+
+				function centralizeWithDelay(){
+					window.setTimeout(function() {
+						map.panTo(marker.getPosition());
+					}, 5000);
+				}
+
+				/**
+				 * [placeMarker description]
+				 * @param  {Object.<string, number>=} latLng [description]
+				 */
+				function placeMarker(latLng){
+					latLng = latLng || map.getCenter();
+					if (typeof marker !== 'undefined'){
+						marker.setMap(null);
+					}
+					marker = new google.maps.Marker({
+						position: latLng, //map.getCenter(),
+						map: map,
+						draggable: true
+					});
+					// dragging markers
+					google.maps.event.addListener(marker, 'dragend', function() {
+						updateInputs(marker.getPosition().lat(), marker.getPosition().lng(), '', '', 'change.bymap');
+						centralizeWithDelay();
+					});
+					centralizeWithDelay();
+					//center it (optional)
+					//map.setCenter(latLng);
+				}
+				/**
+				 * [updateInputs description]
+				 * @param  {number} lat [description]
+				 * @param  {number} lng [description]
+				 * @param  {(string|number)} alt [description]
+				 * @param  {(string|number)} acc [description]
+				 * @param  {string=} ev  [description]
+				 */
+				function updateInputs(lat, lng, alt, acc, ev){
+					alt = alt || '';
+					acc = acc || '';
+					ev = ev || 'change';
+					$lat.val(Math.round(lat*10000)/10000);
+					$lng.val(Math.round(lng*10000)/10000);
+					$alt.val(Math.round(alt*10)/10);
+					$acc.val(Math.round(acc*10)/10).trigger(ev);
+				}
+	
+			});
 		},
 		autoCompleteWidget: function(){
 

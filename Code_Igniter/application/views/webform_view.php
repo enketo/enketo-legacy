@@ -32,15 +32,15 @@
 		</div>
 
 		<div id="container">
-			<article class="main ui-widget" >
+			<article class="main" >
 				<!--<div class="ui-widget">-->
-					<div class="ui-widget-content ui-corner-all" >
-						<?= $form ?>
+					<!--<div class="" >-->
+					<?= $form ?>
 						<!--
 						<h2 class="ui-widget-header ui-corner-all"><span id="survey-title" ></span></h2>
 						<form name="survey-form" id="survey-form" class="ui-helper-clearfix"></form>
 						-->
-					</div>
+					<!--</div>-->
 				<!--</div>	-->
 			</article>
 		</div>

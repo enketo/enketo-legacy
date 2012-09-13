@@ -1676,13 +1676,10 @@ function Form (formSelector, dataStr){
 	};
 
 	FormHTML.prototype.beautify = function(){
-		//$form.find('#form_logo').detach().prependTo($form);
-		$form.find('.jr-group, .jr-repeat').addClass('ui-corner-all');
-		$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');
-		/*$form.find('form > fieldset').alternateBackground('alt-bg');*/
-		$form.find('.trigger').addClass('ui-state-highlight ui-corner-all');
-		//need to trigger fixLegends with a delay.. this is ugly..
-		//setTimeout(function(){$form.fixLegends();}, 1000);
+		//$form.find('.jr-group, .jr-repeat').addClass('ui-corner-all');
+		//$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');		
+		$form.find('.trigger').addClass('ui-state-highlight');// ui-corner-all');
+
 		//improve looks when images, video or audio is used as label
 		$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend').children('img,video,audio').parent().addClass('ui-helper-clearfix with-media');
 	};

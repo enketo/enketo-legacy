@@ -14,12 +14,52 @@ $overlay-bg: #5c5c5c; /*darker gray */
 $shadow: #cccccc; /*light gray*/
 $a-hvr: #381f00; /*very dark brown*/
 
+/******* new ********/
+$bg: #ddd;
+$title: #CE4F07;
+
+
+@mixin paper{
+  /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
+  position: relative;
+  /*width: 500px;*/
+  padding: 50px;
+  margin: 0 auto;
+  background-color: #fff;
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  &:before, &:after{
+    position: absolute;
+    width: 40%;
+    height: 10px;
+    content: ' ';
+    left: 12px;
+    bottom: 12px;
+    background: transparent;
+    -webkit-transform: skew(-5deg) rotate(-5deg);
+    -moz-transform: skew(-5deg) rotate(-5deg);
+    -ms-transform: skew(-5deg) rotate(-5deg);
+    -o-transform: skew(-5deg) rotate(-5deg);
+    transform: skew(-5deg) rotate(-5deg);
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    z-index: -1;}
+  &:after{
+    left: auto;
+    right: 12px;
+    -webkit-transform: skew(5deg) rotate(5deg);
+    -moz-transform: skew(5deg) rotate(5deg);
+    -ms-transform: skew(5deg) rotate(5deg);
+    -o-transform: skew(5deg) rotate(5deg);
+    transform: skew(5deg) rotate(5deg);}}
 
 /***************************
  ****BASIC GUI ELEMENTS ****
  ***************************/
 
-.ui-widget,.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { 
+body, .ui-widget,.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { 
   font-family: 'Open Sans', Segoe UI, Arial, sans-serif; 
   font-size: 1em;}
 
@@ -34,7 +74,9 @@ h2, h3, h4 {
   text-align: center;
   font-weight: bolder;
   margin-bottom: 10px;
-  padding: 0 5px; }
+  padding: 0 5px; 
+  color: $title;
+}
 
 ul {
   list-style: disc;
@@ -121,7 +163,7 @@ article.page {
  ***************************/
 
 body {
-  background-color: $shadow;
+  background-color: $bg;
   /*overflow: hidden;*/ }
 
 #overlay {
@@ -218,14 +260,14 @@ header {
   z-index: 5;
   .ui-tabs-nav {
     padding-left: 0;
-    background: $shadow;
+    background: $bg;
     margin-bottom: -1px;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
     border-radius: 0;
     .ui-state-default{
       background: none;
-      border: solid 1px $shadow;}
+      border: solid 1px $bg;}
     .ui-state-hover{
       background: none;
       border: solid 1px $header-brdr;}
@@ -296,7 +338,7 @@ article.main .jr {
   article {
     padding: 1.5em;
     min-height: 300px; }
-  max-width: 600px;
+  max-width: 720px;
   &#wrap-collation, &#wrap-charts {
     max-width: 95%; }
   ul, ol {
@@ -658,18 +700,6 @@ footer.ui-widget {
 ****    SURVEY FORM    ****
 **************************/
 
-.jr {
-  /*padding: 1.5em;*/
-  line-height: 1.1em; }
-
-.form-logo img {
-  position: relative;
-  left: 50%;
-  max-height: 200px;
-  width: 120px;
-  margin-left: -60px;
-  margin-bottom: 10px; }
-
 .jr [lang]:not(.active), .jr-hint {
   display: none; }
 
@@ -737,6 +767,15 @@ footer.ui-widget {
     text-decoration: none; } }
 
 .jr {
+  @include paper;
+  line-height: 1.1em;
+  .form-logo img {
+    position: relative;
+    left: 50%;
+    max-height: 200px;
+    width: 120px;
+    margin-left: -60px;
+    margin-bottom: 10px; }
   label, fieldset {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -744,9 +783,10 @@ footer.ui-widget {
     -ms-box-sizing: border-box;
     display: block;
     width: 100%;
-    padding: 14px 14px; }
+    padding: 14px 14px;
+    font-weight: bold; }
   label + label {
-    border-top: 1px solid $shadow; }
+    /*border-top: 1px solid $shadow;*/ }
   .geopoint{ 
     height: 350px;
     .map-canvas{
@@ -763,9 +803,9 @@ footer.ui-widget {
       margin-top: 10px;}}
   fieldset:not(#jr-preload-items):not(.jr-group) + {
     label, fieldset:not(.jr-group) {
-      border-top: 1px solid $shadow; } }
+      /*border-top: 1px solid $shadow;*/ } }
   label + fieldset:not(.jr-group) {
-    border-top: 1px solid $shadow; }
+    /*border-top: 1px solid $shadow;*/ }
   span.repeat-number {
     height: 2em;
     display: block;
@@ -776,10 +816,12 @@ footer.ui-widget {
   legend {
     position: absolute;
     top: 1.5em;
+    font-weight: bold;
     ~ label {
       border-top: none;
       padding: .5em 0 .5em 0;
-      margin-left: 25px; }
+      margin-left: 25px;
+      font-weight: normal; }
     + label {
       margin-top: 25px; } }
   fieldset {
@@ -797,7 +839,7 @@ footer.ui-widget {
     -moz-box-sizing: border-box;
     -ms-box-sizing: border-box;
     display: block;
-    margin: .2em;
+    margin: 8px 0 0 0;
     font-size: .9em;
     &[type="text"] {
       width: 100%; }

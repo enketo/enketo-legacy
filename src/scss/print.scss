@@ -41,75 +41,16 @@ div[id^="dialog"] {
 header.ui-widget-header {
   display: none; }
 
-
+h2{text-align: center; font-size: 1.5em; font-weight: bold;}
 
 #form-controls.ui-widget-header {
   display: none;}
 
-/*#container {
-  position: absolute;
-  top: 80px;
-  width: 100%;
-  overflow: auto; }
 
 .main {
-  padding: 20px;
-  margin-left: auto;
-  margin-bottom: 20px;
-  margin-right: auto;
-  margin-top: 50px;
-  position: relative;
-  z-index: 0;
-
-  display: block;
-
-  text-align: left;
- }
-
-article.main .jr {
-  padding: 1.5em;
-  min-height: 300px; }
- */
-.main {
-  /*article {
-    padding: 1.5em;
-    min-height: 300px; }*/
+ 
   max-width: 700px;
 }
-/*  &#wrap-collation, &#wrap-charts {
-    max-width: 95%; }
-  ul, ol {
-
-    margin-left: 30px;
-    margin-bottom: 25px; }
-  ul li, ol li {
-    margin: 10px 0; }
-  ul li span.ui-icon, ol li span.ui-icon {
-    float: left;
-    margin-left: -25px; }
-  textarea.source {
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    width: 100%;
-    height: 500px;
-    font-size: .8em;
-    padding: 5px; }
-  label#data-template-show {
-    font-size: .8em;
-    float: right;
-    margin: -15px 0 5px 0;
-    input {
-      float: left;
-      margin-right: 8px; } }
-  .ui-tabs-nav li.ui-state-active {
-   }
-  .ui-widget-header {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin: 3px 3px 30px 3px; } }
-/*
 
 /**************************
 ****    SURVEY FORM    ****
@@ -194,6 +135,14 @@ article.main .jr {
     text-decoration: none; } }
 
 .jr {
+  line-height: 1.1em;
+  .form-logo img {
+    position: relative;
+    left: 50%;
+    max-height: 200px;
+    width: 120px;
+    margin-left: -60px;
+    margin-bottom: 10px; }
   label, fieldset {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -201,9 +150,10 @@ article.main .jr {
     -ms-box-sizing: border-box;
     display: block;
     width: 100%;
-    padding: 14px 14px; }
+    padding: 14px 14px;
+    font-weight: bold; }
   label + label {
-    border-top: 1px solid $shadow; }
+    /*border-top: 1px solid $shadow;*/ }
   .geopoint{ 
     height: 350px;
     .map-canvas{
@@ -220,9 +170,9 @@ article.main .jr {
       margin-top: 10px;}}
   fieldset:not(#jr-preload-items):not(.jr-group) + {
     label, fieldset:not(.jr-group) {
-      border-top: 1px solid $shadow; } }
+      /*border-top: 1px solid $shadow;*/ } }
   label + fieldset:not(.jr-group) {
-    border-top: 1px solid $shadow; }
+    /*border-top: 1px solid $shadow;*/ }
   span.repeat-number {
     height: 2em;
     display: block;
@@ -233,10 +183,12 @@ article.main .jr {
   legend {
     position: absolute;
     top: 1.5em;
+    font-weight: bold;
     ~ label {
       border-top: none;
       padding: .5em 0 .5em 0;
-      margin-left: 25px; }
+      margin-left: 25px;
+      font-weight: normal; }
     + label {
       margin-top: 25px; } }
   fieldset {
@@ -254,7 +206,7 @@ article.main .jr {
     -moz-box-sizing: border-box;
     -ms-box-sizing: border-box;
     display: block;
-    margin: .2em;
+    margin: 8px 0 0 0;
     font-size: .9em;
     &[type="text"] {
       width: 100%; }

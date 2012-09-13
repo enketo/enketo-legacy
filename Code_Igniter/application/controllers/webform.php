@@ -114,7 +114,7 @@ class Webform extends CI_Controller {
 		{
 			//$surveys = $this->Survey_model->get_survey_list();
 			//log_message('debug', 'surveys: '.json_encode($surveys));
-			$data = array('offline'=>FALSE, 'title_component'=>'survey');//, 'surveys' => array());
+			$data = array('offline'=>FALSE, 'title_component'=>'');//, 'surveys' => array());
 			//if (isset($surveys) && $surveys !== FALSE)
 			//{
 				//$data['surveys'] = $surveys);					
@@ -133,7 +133,7 @@ class Webform extends CI_Controller {
 				);
 			}
 
-			$this->load->view('survey_list_view', $data);			
+			$this->load->view('front_view', $data);			
 		}
 	}
 

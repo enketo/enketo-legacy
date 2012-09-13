@@ -38,7 +38,7 @@
 |
 */
 
-$route['default_controller'] = "survey";
+$route['default_controller'] = "front";
 $route['404_override'] = '';
 
 

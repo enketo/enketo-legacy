@@ -1457,7 +1457,7 @@ function Form (formSelector, dataStr){
 		/**
 		 * updates branches based on changed input fields
 		 * @param  {string=} changedNodeNames [description]
-		 * @return {boolean}                  [description]
+		 * @return {?boolean}                  [description]
 		 */
 		update: function(changedNodeNames){
 			var i, p, branchNode, result, namesArr, cleverSelector,			
@@ -1477,15 +1477,18 @@ function Form (formSelector, dataStr){
 			$form.find(cleverSelector.join()).each(function(){
 				//VERY WRONG TO USE form HERE!!!! FIX THIS
 				//one could argue that I should not use the input object here as a branch is not always an input (sometimes a group)		
+				//console.debug('input node with branching logic:');
+				//console.debug($(this));
 				p = form.input.getProps($(this));
 				branchNode = form.input.getWrapNodes($(this));
 				
 				//name = $(this).attr('name');
 				
 				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[p.path]){
-					return false;
+					return;
 				}
-				////console.debug(p);
+				console.debug('properties of branch input node:');
+				console.debug(p);
 				////console.debug(branchNode);
 
 				//type = $(this).prop('nodeName').toLowerCase();
@@ -1498,7 +1501,7 @@ function Form (formSelector, dataStr){
 
 				if(branchNode.length !== 1){
 					console.error('could not find branch node');
-					return false;
+					return;
 				}
 				try{
 					//var result = evaluator.evaluate(expr, context.documentElement, null, XPathResult.BOOLEAN_TYPE, null);
@@ -1508,7 +1511,7 @@ function Form (formSelector, dataStr){
 				catch(e){
 					console.error('Serious error occurred trying to evaluate skip logic '+
 					'for node with name: "'+p.path+'" (message: '+e.message+')');
-					return false;
+					return;
 				}
 			
 				alreadyCovered[p.path] = true;

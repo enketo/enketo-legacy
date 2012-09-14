@@ -393,7 +393,7 @@ function deleteForm(confirmed) {
 function submitForm() {
 	var record, saveResult;
 	if (!form.isValid()){
-		gui.alert('Form contains errors (please see fields marked in red)');
+		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
 	record = { 'data': form.getDataStr(true, true), 'ready': true};
@@ -455,10 +455,8 @@ function exportToFile(fileName, finalOnly){
 	fileName = fileName || form.getName()+'_data_backup.xml';
 	
 	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
-	
-
 	//console.debug(data);
-	if (dataArr.length === 0){
+	if (!dataArr || dataArr.length === 0){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
@@ -620,7 +618,7 @@ function Connection(){
 		//	setStatus();
 		//}
 		$(window).on('offline online', function(){
-			//console.log('window network event detected');
+			console.log('window network event detected');
 			that.setOnlineStatus(that.getOnlineStatus());
 		});
 		//since network change events are not properly fired, at least not in Firefox 13 (OS X), this is an temporary fix
@@ -797,15 +795,24 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		waswere = (i>1) ? ' were' : ' was';
 		namesStr = names.join(', ');
 		gui.showFeedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
+		gui.updateStatus.connection(true);
 	}
 	//else{
 	// not sure if there should be a notification if forms fail automatic submission
 	if (this.uploadResult.fail.length > 0){
+		console.debug('upload failed');
 		if (this.uploadResult.force === true){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
 			}
-			gui.alert(msg, 'Failed data submission');
+			console.debug('going to give feedback to user');
+			if ($('.drawer.left').length > 0){
+				gui.updateStatus.connection(false);
+				$('.drawer.left .handle.right').click();
+			}
+			else {
+				gui.alert(msg, 'Failed data submission');
+			}
 		}
 		else{
 
@@ -859,14 +866,26 @@ GUI.prototype.setCustomEventHandlers = function(){
 		.click(function(){
 			deleteForm(false);
 		});
-	$('button#submit-form').button({'icons': {'primary':"ui-icon-check"}})
-		.click(function(){
-			form.validateForm();
-			submitForm();
+	$('button#submit-form')//.detach().appendTo($('form.jr'))
+		.button({'icons': {'primary':"ui-icon-check"}})
+			.click(function(){
+				form.validateForm();
+				submitForm();
+				return false;
 		});
-	$('a#queue').click(function(){
+//	$('a#queue').click(function(){
+//		exportToFile();
+//		return false;
+//	});
+//
+	$('#drawer-export').click(function(){
 		exportToFile();
 		return false;
+	});
+	$('.drawer.left .handle.right').click(function(){
+		var $drawer = $(this).parent('.drawer');
+		console.debug('clicked handle');
+		$drawer.toggleClass('hide');
 	});
 
 	$('#form-controls button').equalWidth();
@@ -1001,11 +1020,12 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 			$li.find('.name').text(name); // encodes string to html
 			$list.append($li);
 		}
-		$('#queue').show().find('#queue-length').text(recordList.length);
+		//$('#queue').show().find('#queue-length').text(recordList.length);
+		$('#queue-length').text(recordList.length);
 	}
 	else{
 		$('<li class="no-click">no locally saved records found</li>').appendTo($list);
-		$('#queue').hide().find('.queue-length').text('');
+		//$('#queue').hide().find('.queue-length').text('');
 	}
 // *	OLD*	else if (result.field(2) == 2) {
 // *	OLD*		color = 'gray';

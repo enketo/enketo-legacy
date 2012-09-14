@@ -467,3 +467,8 @@ input, .fakefileinput {
 .ui-multiselect-menu {
   display: none;
 }
+
+/* line 298, ../../src/scss/print.scss */
+#submit-form, .drawer, #branding {
+  display: none;
+}

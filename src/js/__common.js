@@ -68,12 +68,15 @@ GUI.prototype.init = function(){
 	$('footer').detach().appendTo('#container');
 	//this.nav.reset();
 	this.display();
+
+
 };
 
 GUI.prototype.setup = function(){
 	"use strict";
 	// final setup of GUI object
 	$(window).trigger('resize');
+	$('.ui-corner-all').removeClass('ui-corner-all'); //TEMPORARY
 };
 	
 /**

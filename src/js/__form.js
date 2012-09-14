@@ -1545,7 +1545,7 @@ function Form (formSelector, dataStr){
 		},
 		disable : function(branchNode){
 			var type, 
-				branchClue = '<div class="jr-branch ui-corner-all"></div>';
+				branchClue = '<div class="jr-branch"></div>'; //ui-corner-all
 
 			console.debug('disabling branch');
 			//add disabled class (to style) and hide
@@ -1676,13 +1676,10 @@ function Form (formSelector, dataStr){
 	};
 
 	FormHTML.prototype.beautify = function(){
-		//$form.find('#form_logo').detach().prependTo($form);
-		$form.find('.jr-group, .jr-repeat').addClass('ui-corner-all');
-		$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');
-		/*$form.find('form > fieldset').alternateBackground('alt-bg');*/
-		$form.find('.trigger').addClass('ui-state-highlight ui-corner-all');
-		//need to trigger fixLegends with a delay.. this is ugly..
-		//setTimeout(function(){$form.fixLegends();}, 1000);
+		//$form.find('.jr-group, .jr-repeat').addClass('ui-corner-all');
+		//$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');		
+		$form.find('.trigger').addClass('ui-state-highlight');// ui-corner-all');
+
 		//improve looks when images, video or audio is used as label
 		$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend').children('img,video,audio').parent().addClass('ui-helper-clearfix with-media');
 	};
@@ -1690,6 +1687,7 @@ function Form (formSelector, dataStr){
 	FormHTML.prototype.widgets = {
 		init : function(){
 			this.compactWidget();
+			this.radioWidget();
 			this.dateWidget();
 			this.timeWidget();
 			this.dateTimeWidget();
@@ -1701,10 +1699,18 @@ function Form (formSelector, dataStr){
 			this.sliderWidget();
 			this.geopointWidget();
 			this.barcodeWidget();
+			this.fileWidget();
 		},
 		compactWidget: function(){
 			//move this to css!
 			$form.find('.jr-appearance-compact>label>span').hide(); 
+		},
+		radioWidget: function(){
+			//$form.on('mouseup', 'input:radio:checked', function(){
+			//	console.debug($(this).prop('checked'));
+			//	//$(this).parent('label').clearInputs('change');
+			//	console.debug('clicked label of: '+$(this).attr('name'));
+			//}); 
 		},
 		dateWidget : function(){
 			
@@ -1767,7 +1773,7 @@ function Form (formSelector, dataStr){
 					relevant = $(this).find('input').attr('data-relevant'),
 					name = 'name="'+$(this).find('input').attr('name')+'"',
 					attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name;
-				$('<fieldset class="trigger ui-state-highlight ui-corner-all" '+attributes+'></fieldset>')
+				$('<fieldset class="trigger ui-state-highlight" '+attributes+'></fieldset>') //ui-corner-all
 					.insertBefore($(this)).append(html).find('input').remove(); 
 				$(this).remove();
 			});
@@ -1917,7 +1923,10 @@ function Form (formSelector, dataStr){
 
 		},
 		barcodeWidget : function(){
-			$form.find('input[data-type-xml="barcode"]').attr('placeholder', 'This probably does not require support for browser data entry.');
+			$form.find('input[data-type-xml="barcode"]').attr('placeholder', 'not supported in browser data entry').attr('disabled', 'disabled');
+		},
+		fileWidget : function(){
+			$form.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled');
 		}
 	};
 

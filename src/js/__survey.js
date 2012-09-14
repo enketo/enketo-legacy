@@ -66,8 +66,8 @@ $(document).ready(function() {
 	if(shown < 3){
 		setTimeout(function(){
 			time = (shown === 1) ? 'time' : 'times';
-			gui.showFeedback('Please bookmark this page for easy offline launch. '+
-				'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
+			//gui.showFeedback('Please bookmark this page for easy offline launch. '+
+			//	'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
 			shown++;
 			store.setRecord('__bookmark', {'shown': shown});
 		}, 5*1000);
@@ -425,14 +425,15 @@ function exportData(finalOnly){
 
 	//dataArr = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
 	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
-	for (i = 0 ; i<dataArr.length ; i++){
-		dataArr[i] = form.prepareForSubmission(dataArr[i]);
-	}
+	
 	//console.debug(data);
 	if (dataArr.length === 0){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
+		for (i = 0 ; i<dataArr.length ; i++){
+			dataArr[i] = form.prepareForSubmission(dataArr[i]);
+		}
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		uriContent = "data:application/octet-stream," + encodeURIComponent(dataStr); /*data:application/octet-stream*/
 		newWindow = window.open(uriContent, 'exportedData');
@@ -454,15 +455,16 @@ function exportToFile(fileName, finalOnly){
 	fileName = fileName || form.getName()+'_data_backup.xml';
 	
 	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
-	for (i = 0 ; i<dataArr.length ; i++){
-		dataArr[i] = form.prepareForSubmission(dataArr[i]);
-	}
+	
 
 	//console.debug(data);
 	if (dataArr.length === 0){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
+		for (i = 0 ; i<dataArr.length ; i++){
+			dataArr[i] = form.prepareForSubmission(dataArr[i]);
+		}
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		bb = new BlobBuilder();
 		bb.append(dataStr);

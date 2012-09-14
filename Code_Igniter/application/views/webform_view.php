@@ -18,7 +18,35 @@
 
 	</head>
 
-	<? require 'elements/header++.php'; ?>
+	<? //require 'elements/header++.php'; ?>
+
+	<body>
+		
+		<div id="overlay"></div>
+		<header style="height: 0;"></header>
+		<!--<div id="status">
+			<span id="status-connection" title=""></span>
+			<span id="status-editing" title=""></span>
+			<span id="status-upload" title=""></span>
+		</div>-->
+			
+		<div id="feedback-bar" class="ui-widget ui-widget-content ui-state-highlight">			
+			<span class="ui-icon ui-icon-info" ></span>
+			<a href="#" id="feedback-bar-close" class="custom-button" ></a>
+		</div>
+		
+		<div class="dialog" id="dialog-confirm" style="display: none;">
+			<p>
+				<span class="ui-icon ui-icon-alert"></span>
+				<span class="dialog-msg"></span>
+			</p>
+		</div>
+		<div class="dialog" id="dialog-alert" style="display: none;">
+			<p>
+				<span class="ui-icon ui-icon-alert"></span>
+				<span id="dialog-alert-msg"></span>
+			</p>
+		</div>
 
 		<div class="dialog" id="dialog-save" style="display: none;">
 			<p>
@@ -32,10 +60,10 @@
 		</div>
 
 		<div id="container">
-			<article class="main" >
+			<article class="main">
 				<!--<div class="ui-widget">-->
 					<!--<div class="" >-->
-					<?= $form ?>
+				<?= $form ?>
 						<!--
 						<h2 class="ui-widget-header ui-corner-all"><span id="survey-title" ></span></h2>
 						<form name="survey-form" id="survey-form" class="ui-helper-clearfix"></form>
@@ -45,9 +73,9 @@
 			</article>
 		</div>
 
-		<div id="form-controls" class="bottom ui-widget ui-widget-header">
+		<div id="bottom-bar">
 			<a id="queue" href="#" style="display: none;" title="click to export to file">
-				<span id="queue-length"></span><span> records queued for submission</span>
+				<span id="queue-length">0</span><span> records queued for submission</span>
 			</a>
 			<button id="submit-form" >Submit</button>
 			<!--<button id="reset-form" >New</button>-->

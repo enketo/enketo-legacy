@@ -279,6 +279,30 @@ header {
   .ui-tabs-panel {
     border-width: 1px 1px 1px 1px; } }
 
+#bottom-bar{
+  background-color: #444; /*#2B2C30; */
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  border-left: none;
+  border-right: none;
+  background-image: none;
+  bottom: 0px;
+  width: 100%;
+  padding: 10px 0; 
+  #queue{
+    color: #BCBEC0;
+    display: block;
+    text-align: left;
+    width: 160px;
+    text-decoration: none;
+    margin: 0 0 -35px 10px;
+    #queue-length{
+      font-size: 36px;
+      display: block;
+      padding: 0 8px 0 0;
+      float: left; }}}
+
 #form-controls.ui-widget-header {
   position: absolute;
   z-index: 1;
@@ -300,16 +324,7 @@ header {
     padding: 10px 0; }
   button {}
   &.right button {
-    display: block; }
-  #queue{
-    display: block;
-    width: 160px;
-    text-decoration: none;
-    margin: 0 0 -35px 10px;
-    #queue-length{
-      font-size: 36px;
-      display: block;
-      float: left; }}}
+    display: block; }}
 
 #container {
   position: absolute;
@@ -770,6 +785,7 @@ footer.ui-widget {
 .jr {
   @include paper;
   line-height: 1.1em;
+  margin-bottom: 40px;
   .form-logo img {
     position: relative;
     left: 50%;
@@ -778,6 +794,12 @@ footer.ui-widget {
     margin-left: -60px;
     margin-bottom: 10px; }
   h2{
+    text-align: center;
+    font-size: 24px;
+    padding-bottom: 15px;
+    border-bottom: solid 3px #ccc;
+  }
+  h3{
     text-align: left;  }
   label, fieldset {
     box-sizing: border-box;
@@ -871,6 +893,9 @@ footer.ui-widget {
       float: right;
       margin-right: 0; } }
   .trigger {
+    border: 1px solid #FBEED5;/* REPLACE AFTER BOOTSTRAP */
+    color: #C09853;
+    background-color: #FCF8E3;
     padding: 7px 12px;
     margin: 1em 0; } } 
 

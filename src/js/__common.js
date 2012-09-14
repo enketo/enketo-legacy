@@ -103,7 +103,7 @@ GUI.prototype.setEventHandlers = function(){
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
 	$(document).on('click', 'a[href^="#"]:not([href="#"]):not(nav ul li a)', function(event){
 		var href = $(this).attr('href');
-		//console.log('captured click to nav page, href='+href);
+		console.log('captured click to nav page, href='+href);
 		//if href is not just an empty anchor it is an internal link and will trigger a navigation menu click
 		if (href !== '#'){
 			event.preventDefault();
@@ -154,14 +154,14 @@ GUI.prototype.setEventHandlers = function(){
 		$('#container').css('top', $('header').outerHeight());
 		
 		// resizing scrollable container\
-		if ($('#form-controls.bottom').length > 0){
+		//if ($('#form-controls.bottom').length > 0){
 			$('body:not(.no-scroll) #container')
 				.height($(window).height()-$('header').outerHeight()-$('#form-controls.bottom').outerHeight());
-		}
-		else{
-			$('body:not(.no-scroll) #container')
-				.height($(window).height()-$('header').outerHeight()-$('#bottom-bar').outerHeight());
-		}
+		//}
+		//else{
+		//	$('body:not(.no-scroll) #container')
+		//		.height($(window).height()-$('header').outerHeight());//-$('#bottom-bar').outerHeight());
+		//}
 		// replacing form controls in mobile setting // REPLACE: SHOULD MOVE WITH CSS
 		//$('body.no-scroll #form-controls')
 		//	.css('height',$('#form-controls').height()).css('top', $('header').outerHeight()+$('#container').outerHeight());
@@ -463,10 +463,12 @@ GUI.prototype.updateStatus = {
 		if (online) {
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-signal-diag')
 				.attr('title', 'It appears there is currently an Internet connection available.');
+			$('.drawer #status').removeClass('offline').text('');
 		}
 		else {
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-cancel')
 				.attr('title', 'It appears there is currently no Internet connection');
+			$('.drawer #status').addClass('offline').text('no connection');
 		}
 	},
 	edit : function(editing){

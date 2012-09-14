@@ -59,28 +59,35 @@
 			</p>
 		</div>
 
-		<div id="container">
+		<!--<div id="container">-->
 			<article class="main">
 				<!--<div class="ui-widget">-->
-					<!--<div class="" >-->
-				<?= $form ?>
+				<div class="form-wrapper" >
+					<?= $form ?>
 						<!--
 						<h2 class="ui-widget-header ui-corner-all"><span id="survey-title" ></span></h2>
 						<form name="survey-form" id="survey-form" class="ui-helper-clearfix"></form>
 						-->
 					<!--</div>-->
 				<!--</div>	-->
+					<button id="submit-form" >Submit</button>
+				</div>
 			</article>
+		<!--</div>-->
+
+		<div class="drawer left hide">
+			<div class="handle right"></div>
+			<!--<a id="queue" href="#" title="click to export to file">-->
+			<div class="content">
+				<span id="status"></span>
+				<span id="queue-length">0</span><span> records queued for submission</span>
+				<button id="drawer-export">Export</button>
+			<!--</a>-->
+			</div>	
 		</div>
 
-		<div id="bottom-bar">
-			<a id="queue" href="#" style="display: none;" title="click to export to file">
-				<span id="queue-length">0</span><span> records queued for submission</span>
-			</a>
-			<button id="submit-form" >Submit</button>
-			<!--<button id="reset-form" >New</button>-->
-			<!--<button id="delete-form" >Delete</button>-->
-		</div>
+		<div id="branding">
+			<a href="http://aidwebsolutions.com" target="_blank">enketo forms</a> for <a href="http://formhub.org" target="_blank">formhub</a></div>
 
 		<? require 'elements/footer++.php' ?>
 

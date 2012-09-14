@@ -144,6 +144,7 @@
 		<div id="container">
 			<article class="main ui-widget" >
 				<!--<div class="ui-widget">-->
+				<div class="form-wrapper" >
 					<!--<div class="ui-widget-content ui-corner-all" >-->
 						<?= $form ?>
 						<!--
@@ -151,7 +152,7 @@
 						<form name="survey-form" id="survey-form" class="ui-helper-clearfix"></form>
 						-->
 					<!--</div>-->
-				<!--</div>	-->
+				</div>
 			</article>
 		</div>
 

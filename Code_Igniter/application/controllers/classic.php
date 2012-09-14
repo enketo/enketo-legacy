@@ -89,7 +89,7 @@ class Classic extends CI_Controller {
 								base_url('js-source/__debug.js')
 							));
 						}
-						$this->load->view('survey_view',$data);
+						$this->load->view('classic_view',$data);
 					}
 					else
 					{

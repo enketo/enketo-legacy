@@ -335,7 +335,7 @@ function StorageLocal(){
 	
 	/**
 	 * Obtain a new counter string value that is one higher than the previous
-	 * @return {string} [description]
+	 * @return {?(string|String)} [description]
 	 */
 	this.getCounterValue = function(){
 		var record = this.getRecord('__counter'),

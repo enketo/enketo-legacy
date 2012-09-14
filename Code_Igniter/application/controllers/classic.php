@@ -54,7 +54,7 @@ class Classic extends CI_Controller {
 					{
 						$data = array(
 							'offline'=>$offline, 
-							'title_component'=>'survey', 
+							'title_component'=>'classic', 
 							'form'=> $form,
 							'form_data'=> $form_data
 							);

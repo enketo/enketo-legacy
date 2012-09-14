@@ -67,6 +67,7 @@ GUI.prototype.init = function(){
 
 	$('footer').detach().appendTo('#container');
 	//this.nav.reset();
+	this.display();
 };
 
 GUI.prototype.setup = function(){
@@ -150,24 +151,30 @@ GUI.prototype.setEventHandlers = function(){
 		$('#container').css('top', $('header').outerHeight());
 		
 		// resizing scrollable container\
-		$('body:not(.no-scroll) #container')
-			.height($(window).height()-$('header').outerHeight()-$('#form-controls.bottom').outerHeight());
-		
+		if ($('#form-controls.bottom').length > 0){
+			$('body:not(.no-scroll) #container')
+				.height($(window).height()-$('header').outerHeight()-$('#form-controls.bottom').outerHeight());
+		}
+		else{
+			$('body:not(.no-scroll) #container')
+				.height($(window).height()-$('header').outerHeight()-$('#bottom-bar').outerHeight());
+		}
 		// replacing form controls in mobile setting // REPLACE: SHOULD MOVE WITH CSS
 		//$('body.no-scroll #form-controls')
 		//	.css('height',$('#form-controls').height()).css('top', $('header').outerHeight()+$('#container').outerHeight());
 		
 		// hide logo if the navigation menu starts overlapping
-		var navLeft = $('nav').offset().left;
-		var logoRight = $('#logo').offset().left+$('#logo').outerWidth();
-		//console.log('nav left:'+navLeft+' logo right:'+logoRight); // DEBUG
-		if (navLeft < logoRight){
-			$('#logo').css('visibility', 'hidden');
+		if ($('nav').length > 0){
+			var navLeft = $('nav').offset().left;
+			var logoRight = $('#logo').offset().left+$('#logo').outerWidth();
+			//console.log('nav left:'+navLeft+' logo right:'+logoRight); // DEBUG
+			if (navLeft < logoRight){
+				$('#logo').css('visibility', 'hidden');
+			}
+			else {
+				$('#logo').css('visibility', 'visible');
+			}
 		}
-		else {
-			$('#logo').css('visibility', 'visible');
-		}
-					
 	});
 };
 	

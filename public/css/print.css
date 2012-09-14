@@ -239,7 +239,7 @@ h2 {
 .jr {
   line-height: 1.1em;
 }
-/* line 139, ../../src/scss/print.scss */
+/* line 141, ../../src/scss/print.scss */
 .jr .form-logo img {
   position: relative;
   left: 50%;
@@ -248,7 +248,18 @@ h2 {
   margin-left: -60px;
   margin-bottom: 10px;
 }
-/* line 146, ../../src/scss/print.scss */
+/* line 148, ../../src/scss/print.scss */
+.jr h2 {
+  text-align: center;
+  font-size: 24px;
+  padding-bottom: 15px;
+  border-bottom: solid 3px #ccc;
+}
+/* line 154, ../../src/scss/print.scss */
+.jr h3 {
+  text-align: left;
+}
+/* line 156, ../../src/scss/print.scss */
 .jr label, .jr fieldset {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -256,18 +267,19 @@ h2 {
   -ms-box-sizing: border-box;
   display: block;
   width: 100%;
-  padding: 14px 14px;
+  padding: 16px 14px;
+  /* */
   font-weight: bold;
 }
-/* line 155, ../../src/scss/print.scss */
+/* line 165, ../../src/scss/print.scss */
 .jr label + label {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 157, ../../src/scss/print.scss */
+/* line 167, ../../src/scss/print.scss */
 .jr .geopoint {
   height: 350px;
 }
-/* line 159, ../../src/scss/print.scss */
+/* line 169, ../../src/scss/print.scss */
 .jr .geopoint .map-canvas {
   width: 340px;
   height: 275px;
@@ -275,25 +287,25 @@ h2 {
   float: right;
   border: 1px solid #cccccc;
 }
-/* line 165, ../../src/scss/print.scss */
+/* line 175, ../../src/scss/print.scss */
 .jr .geopoint label {
   border: none;
   padding: 5px 0;
 }
-/* line 168, ../../src/scss/print.scss */
+/* line 178, ../../src/scss/print.scss */
 .jr .geopoint button {
   width: 130px;
   margin-top: 10px;
 }
-/* line 172, ../../src/scss/print.scss */
+/* line 182, ../../src/scss/print.scss */
 .jr fieldset:not(#jr-preload-items):not(.jr-group) + label, .jr fieldset:not(#jr-preload-items):not(.jr-group) + fieldset:not(.jr-group) {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 174, ../../src/scss/print.scss */
+/* line 184, ../../src/scss/print.scss */
 .jr label + fieldset:not(.jr-group) {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 176, ../../src/scss/print.scss */
+/* line 186, ../../src/scss/print.scss */
 .jr span.repeat-number {
   height: 2em;
   display: block;
@@ -302,41 +314,42 @@ h2 {
   margin-top: -8px;
   color: #cccccc;
 }
-/* line 183, ../../src/scss/print.scss */
+/* line 193, ../../src/scss/print.scss */
 .jr legend {
   position: absolute;
   top: 1.5em;
   font-weight: bold;
 }
-/* line 187, ../../src/scss/print.scss */
+/* line 197, ../../src/scss/print.scss */
 .jr legend ~ label {
   border-top: none;
   padding: .5em 0 .5em 0;
   margin-left: 25px;
   font-weight: normal;
 }
-/* line 192, ../../src/scss/print.scss */
+/* line 202, ../../src/scss/print.scss */
 .jr legend + label {
   margin-top: 25px;
 }
-/* line 194, ../../src/scss/print.scss */
+/* line 204, ../../src/scss/print.scss */
 .jr fieldset {
   position: relative;
 }
-/* line 196, ../../src/scss/print.scss */
+/* line 206, ../../src/scss/print.scss */
 .jr fieldset.jr-group {
-  border: 1px solid #cccccc;
+  border-top: 2px solid #555;
+  /**/
   margin: .5em 0;
 }
-/* line 199, ../../src/scss/print.scss */
+/* line 209, ../../src/scss/print.scss */
 .jr fieldset.jr-repeat {
   border: 1px dotted #cccccc;
 }
-/* line 201, ../../src/scss/print.scss */
+/* line 211, ../../src/scss/print.scss */
 .jr label, .jr legend, .jr .trigger {
   font-size: .8em;
 }
-/* line 203, ../../src/scss/print.scss */
+/* line 213, ../../src/scss/print.scss */
 .jr input {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -346,16 +359,16 @@ h2 {
   margin: 8px 0 0 0;
   font-size: .9em;
 }
-/* line 211, ../../src/scss/print.scss */
+/* line 221, ../../src/scss/print.scss */
 .jr input[type="text"] {
   width: 100%;
 }
-/* line 213, ../../src/scss/print.scss */
+/* line 223, ../../src/scss/print.scss */
 .jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password] {
   width: 130px;
   text-align: right;
 }
-/* line 216, ../../src/scss/print.scss */
+/* line 226, ../../src/scss/print.scss */
 .jr input[type=radio], .jr input[type=checkbox] {
   display: block;
   /*****/
@@ -366,43 +379,43 @@ h2 {
   /*compensates for the label margin, fixes multi-line labels */
   margin-left: -25px;
 }
-/* line 225, ../../src/scss/print.scss */
+/* line 235, ../../src/scss/print.scss */
 .jr select {
   display: block;
 }
-/* line 228, ../../src/scss/print.scss */
+/* line 238, ../../src/scss/print.scss */
 .jr fieldset .ui-button {
   width: 27px;
   height: 27px;
   margin-top: 6px;
 }
-/* line 232, ../../src/scss/print.scss */
+/* line 242, ../../src/scss/print.scss */
 .jr fieldset .one-more {
   margin: 0 -34px -5px 10px;
 }
-/* line 234, ../../src/scss/print.scss */
+/* line 244, ../../src/scss/print.scss */
 .jr fieldset .remove {
   float: right;
   margin-right: 0;
 }
-/* line 237, ../../src/scss/print.scss */
+/* line 247, ../../src/scss/print.scss */
 .jr .trigger {
   padding: 7px 12px;
   margin: 1em 0;
 }
 
-/* line 241, ../../src/scss/print.scss */
+/* line 252, ../../src/scss/print.scss */
 label.with-media {
   margin-top: 5px;
 }
 
-/* line 244, ../../src/scss/print.scss */
+/* line 255, ../../src/scss/print.scss */
 .with-media > span.active {
   display: block;
   width: 100%;
 }
 
-/* line 249, ../../src/scss/print.scss */
+/* line 260, ../../src/scss/print.scss */
 label.with-media img, label.with-media video, label.with-media audio {
   max-width: 45%;
   padding-right: 5%;
@@ -410,29 +423,29 @@ label.with-media img, label.with-media video, label.with-media audio {
   float: right;
 }
 
-/* line 255, ../../src/scss/print.scss */
+/* line 266, ../../src/scss/print.scss */
 .with-media input {
   float: left;
   width: 5%;
   margin-top: -17px;
 }
 
-/* line 261, ../../src/scss/print.scss */
+/* line 272, ../../src/scss/print.scss */
 input, .fakefileinput {
   background-color: white;
   border: 2px solid #cccccc;
   min-height: 30px;
 }
 
-/* line 266, ../../src/scss/print.scss */
+/* line 277, ../../src/scss/print.scss */
 .jr-appearance-compact label {
   display: inline;
 }
-/* line 268, ../../src/scss/print.scss */
+/* line 279, ../../src/scss/print.scss */
 .jr-appearance-compact label span {
   display: none;
 }
-/* line 270, ../../src/scss/print.scss */
+/* line 281, ../../src/scss/print.scss */
 .jr-appearance-compact label img {
   float: left;
   width: 120px;
@@ -440,13 +453,13 @@ input, .fakefileinput {
   padding: 5px;
   margin-top: 25px;
 }
-/* line 277, ../../src/scss/print.scss */
+/* line 288, ../../src/scss/print.scss */
 .jr-appearance-compact label input[type=radio], .jr-appearance-compact label input[type=checkbox] {
   /*display: none;*/
   margin-top: 35px;
 }
 
-/* line 281, ../../src/scss/print.scss */
+/* line 292, ../../src/scss/print.scss */
 .jr-branch {
   border-top: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
@@ -457,18 +470,18 @@ input, .fakefileinput {
   opacity: 0.5;
 }
 
-/* line 290, ../../src/scss/print.scss */
+/* line 301, ../../src/scss/print.scss */
 .disabled {
   /*color: $shadow*/
   opacity: 0.5;
 }
 
-/* line 294, ../../src/scss/print.scss */
+/* line 305, ../../src/scss/print.scss */
 .ui-multiselect-menu {
   display: none;
 }
 
-/* line 298, ../../src/scss/print.scss */
+/* line 309, ../../src/scss/print.scss */
 #submit-form, .drawer, #branding {
   display: none;
 }

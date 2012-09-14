@@ -352,7 +352,7 @@ header #survey-info {
 /* line 287, ../../src/scss/screen.scss */
 .tabs-nohdr .ui-tabs-nav {
   padding-left: 0;
-  background: #dddddd;
+  background: #dddddd url("../images/tex2res2.png") repeat;
   margin-bottom: -1px;
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
@@ -707,7 +707,7 @@ footer.ui-widget a {
  ***************************/
 /* line 545, ../../src/scss/screen.scss */
 #feedback-bar {
-  position: absolute;
+  position: fixed;
   z-index: 13;
   top: 25px;
   /* invisible initially (header top: 80 - #feedback height - #feedback paddingx2)*/

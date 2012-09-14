@@ -286,7 +286,7 @@ header {
   z-index: 5;
   .ui-tabs-nav {
     padding-left: 0;
-    background: $bg;
+    background: $bg url('../images/tex2res2.png') repeat;
     margin-bottom: -1px;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
@@ -543,7 +543,7 @@ footer.ui-widget {
  ***************************/
 
 #feedback-bar {
-  position: absolute;
+  position: fixed;
   z-index: 13;
   top: 25px;
   /* invisible initially (header top: 80 - #feedback height - #feedback paddingx2)*/

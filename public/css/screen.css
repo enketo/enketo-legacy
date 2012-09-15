@@ -1372,21 +1372,26 @@ footer.ui-widget a {
   padding: 7px 12px;
   margin: 1em 0;
 }
+/* line 997, ../../src/scss/screen.scss */
+.jr .required {
+  margin-left: 3px;
+  color: #ce4f07;
+}
 
 /*excludes first label or fieldset in each fieldset or root of form*/
 /*first label of a set of radio buttons or checkboxes */
-/* line 1002, ../../src/scss/screen.scss */
+/* line 1005, ../../src/scss/screen.scss */
 label.with-media {
   margin-top: 5px;
 }
 
-/* line 1005, ../../src/scss/screen.scss */
+/* line 1008, ../../src/scss/screen.scss */
 .with-media > span.active {
   display: block;
   width: 100%;
 }
 
-/* line 1010, ../../src/scss/screen.scss */
+/* line 1013, ../../src/scss/screen.scss */
 label.with-media img, label.with-media video, label.with-media audio {
   max-width: 45%;
   padding-right: 5%;
@@ -1394,29 +1399,29 @@ label.with-media img, label.with-media video, label.with-media audio {
   float: right;
 }
 
-/* line 1016, ../../src/scss/screen.scss */
+/* line 1019, ../../src/scss/screen.scss */
 .with-media input {
   float: left;
   width: 5%;
   margin-top: -17px;
 }
 
-/* line 1022, ../../src/scss/screen.scss */
+/* line 1025, ../../src/scss/screen.scss */
 input, .fakefileinput {
   background-color: white;
   border: 2px solid #cccccc;
   min-height: 30px;
 }
 
-/* line 1027, ../../src/scss/screen.scss */
+/* line 1030, ../../src/scss/screen.scss */
 .jr-appearance-compact label {
   display: inline;
 }
-/* line 1029, ../../src/scss/screen.scss */
+/* line 1032, ../../src/scss/screen.scss */
 .jr-appearance-compact label span {
   display: none;
 }
-/* line 1031, ../../src/scss/screen.scss */
+/* line 1034, ../../src/scss/screen.scss */
 .jr-appearance-compact label img {
   float: left;
   width: 120px;
@@ -1424,13 +1429,13 @@ input, .fakefileinput {
   padding: 5px;
   margin-top: 25px;
 }
-/* line 1038, ../../src/scss/screen.scss */
+/* line 1041, ../../src/scss/screen.scss */
 .jr-appearance-compact label input[type=radio], .jr-appearance-compact label input[type=checkbox] {
   /*display: none;*/
   margin-top: 35px;
 }
 
-/* line 1042, ../../src/scss/screen.scss */
+/* line 1045, ../../src/scss/screen.scss */
 .jr-branch {
   border-top: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
@@ -1441,17 +1446,17 @@ input, .fakefileinput {
   opacity: 0.5;
 }
 
-/* line 1051, ../../src/scss/screen.scss */
+/* line 1054, ../../src/scss/screen.scss */
 .disabled {
   /*color: $shadow*/
   opacity: 0.5;
 }
 
-/* line 1055, ../../src/scss/screen.scss */
+/* line 1058, ../../src/scss/screen.scss */
 #upload form {
   text-align: center;
 }
-/* line 1057, ../../src/scss/screen.scss */
+/* line 1060, ../../src/scss/screen.scss */
 #upload form label {
   position: absolute;
   top: 120px;
@@ -1463,11 +1468,11 @@ input, .fakefileinput {
   z-index: 0;
   width: 80%;
 }
-/* line 1067, ../../src/scss/screen.scss */
+/* line 1070, ../../src/scss/screen.scss */
 #upload form label > span {
   display: block;
 }
-/* line 1069, ../../src/scss/screen.scss */
+/* line 1072, ../../src/scss/screen.scss */
 #upload form input, #upload form .fakefileinput {
   position: absolute;
   top: 20px;
@@ -1480,7 +1485,7 @@ input, .fakefileinput {
   font-size: .9em;
   text-align: center;
 }
-/* line 1080, ../../src/scss/screen.scss */
+/* line 1083, ../../src/scss/screen.scss */
 #upload form input[type=file] {
   /*height: 0px;
   width: 0px;
@@ -1488,11 +1493,11 @@ input, .fakefileinput {
   z-index: 5;
   opacity: 0;
 }
-/* line 1086, ../../src/scss/screen.scss */
+/* line 1089, ../../src/scss/screen.scss */
 #upload form .hurry {
   margin-top: 180px;
 }
-/* line 1090, ../../src/scss/screen.scss */
+/* line 1093, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:link {
   padding: 0 10px;
   font-size: 13px;
@@ -1501,22 +1506,22 @@ input, .fakefileinput {
   text-decoration: none;
   color: #5c5c5c;
 }
-/* line 1097, ../../src/scss/screen.scss */
+/* line 1100, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:hover {
   font-weight: normal;
 }
-/* line 1099, ../../src/scss/screen.scss */
+/* line 1102, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:not(.active):hover {
   color: #381f00;
   text-decoration: underline;
 }
-/* line 1102, ../../src/scss/screen.scss */
+/* line 1105, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a.active {
   color: #817865;
   text-decoration: none;
 }
 
-/* line 1106, ../../src/scss/screen.scss */
+/* line 1109, ../../src/scss/screen.scss */
 .ui-datepicker {
   margin-left: -270px;
   margin-top: -100px;
@@ -1524,66 +1529,66 @@ input, .fakefileinput {
 }
 
 /* css for multi-select addon */
-/* line 1113, ../../src/scss/screen.scss */
+/* line 1116, ../../src/scss/screen.scss */
 button.ui-multiselect {
   display: block;
 }
 
-/* line 1116, ../../src/scss/screen.scss */
+/* line 1119, ../../src/scss/screen.scss */
 .ui-multiselect {
   padding: 2px 0 2px 4px;
   text-align: left;
 }
-/* line 1119, ../../src/scss/screen.scss */
+/* line 1122, ../../src/scss/screen.scss */
 .ui-multiselect span.ui-icon {
   float: right;
 }
 
-/* line 1123, ../../src/scss/screen.scss */
+/* line 1126, ../../src/scss/screen.scss */
 .ui-multiselect-single .ui-multiselect-checkboxes input {
   position: absolute !important;
   top: auto !important;
   left: -9999px;
 }
-/* line 1127, ../../src/scss/screen.scss */
+/* line 1130, ../../src/scss/screen.scss */
 .ui-multiselect-single .ui-multiselect-checkboxes label {
   padding: 5px !important;
 }
 
-/* line 1130, ../../src/scss/screen.scss */
+/* line 1133, ../../src/scss/screen.scss */
 .ui-multiselect-header {
   margin-bottom: 3px;
   padding: 3px 0 3px 4px;
 }
-/* line 1133, ../../src/scss/screen.scss */
+/* line 1136, ../../src/scss/screen.scss */
 .ui-multiselect-header ul {
   font-size: 0.9em;
 }
-/* line 1135, ../../src/scss/screen.scss */
+/* line 1138, ../../src/scss/screen.scss */
 .ui-multiselect-header ul li {
   float: left;
   padding: 0 10px 0 0;
 }
-/* line 1138, ../../src/scss/screen.scss */
+/* line 1141, ../../src/scss/screen.scss */
 .ui-multiselect-header a {
   text-decoration: none;
 }
-/* line 1140, ../../src/scss/screen.scss */
+/* line 1143, ../../src/scss/screen.scss */
 .ui-multiselect-header a:hover {
   text-decoration: underline;
 }
-/* line 1142, ../../src/scss/screen.scss */
+/* line 1145, ../../src/scss/screen.scss */
 .ui-multiselect-header span.ui-icon {
   float: left;
 }
-/* line 1144, ../../src/scss/screen.scss */
+/* line 1147, ../../src/scss/screen.scss */
 .ui-multiselect-header li.ui-multiselect-close {
   float: right;
   text-align: right;
   padding-right: 0;
 }
 
-/* line 1149, ../../src/scss/screen.scss */
+/* line 1152, ../../src/scss/screen.scss */
 .ui-multiselect-menu {
   display: none;
   padding: 3px;
@@ -1591,36 +1596,36 @@ button.ui-multiselect {
   z-index: 10000;
 }
 
-/* line 1155, ../../src/scss/screen.scss */
+/* line 1158, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes {
   position: relative;
   overflow-y: scroll;
 }
-/* line 1158, ../../src/scss/screen.scss */
+/* line 1161, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes label {
   cursor: default;
   display: block;
   border: 1px solid transparent;
   padding: 3px 1px;
 }
-/* line 1163, ../../src/scss/screen.scss */
+/* line 1166, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes label input {
   position: relative;
   top: 1px;
 }
-/* line 1166, ../../src/scss/screen.scss */
+/* line 1169, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li {
   clear: both;
   font-size: 0.9em;
   padding-right: 3px;
 }
-/* line 1170, ../../src/scss/screen.scss */
+/* line 1173, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li.ui-multiselect-optgroup-label {
   text-align: center;
   font-weight: bold;
   border-bottom: 1px solid;
 }
-/* line 1174, ../../src/scss/screen.scss */
+/* line 1177, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li.ui-multiselect-optgroup-label a {
   display: block;
   padding: 3px;
@@ -1629,35 +1634,35 @@ button.ui-multiselect {
 }
 
 /* remove label borders in IE6 because IE6 does not support transparency */
-/* line 1182, ../../src/scss/screen.scss */
+/* line 1185, ../../src/scss/screen.scss */
 * html .ui-multiselect-checkboxes label {
   border: none;
 }
 
 /* css for timepicker */
-/* line 1188, ../../src/scss/screen.scss */
+/* line 1191, ../../src/scss/screen.scss */
 .ui-timepicker-div .ui-widget-header {
   margin-bottom: 8px;
 }
-/* line 1190, ../../src/scss/screen.scss */
+/* line 1193, ../../src/scss/screen.scss */
 .ui-timepicker-div dl {
   text-align: left;
 }
-/* line 1192, ../../src/scss/screen.scss */
+/* line 1195, ../../src/scss/screen.scss */
 .ui-timepicker-div dl dt {
   height: 25px;
   margin-bottom: -25px;
 }
-/* line 1195, ../../src/scss/screen.scss */
+/* line 1198, ../../src/scss/screen.scss */
 .ui-timepicker-div dl dd {
   margin: 0 10px 10px 65px;
 }
-/* line 1197, ../../src/scss/screen.scss */
+/* line 1200, ../../src/scss/screen.scss */
 .ui-timepicker-div td {
   font-size: 90%;
 }
 
-/* line 1200, ../../src/scss/screen.scss */
+/* line 1203, ../../src/scss/screen.scss */
 .ui-tpicker-grid-label {
   background: none;
   border: none;

@@ -405,8 +405,8 @@
       <bind nodeset="/data/TLlocation_5" type="geopoint" readonly="true()"/>
       <bind nodeset="/data/TLmedia_6" type="binary"/>
       <bind nodeset="/data/TLbarcode_7" type="barcode"/>
-      <bind nodeset="/data/TLselect1_8" type="select1"/>
-      <bind nodeset="/data/TLselect_9" type="select"/>
+      <bind nodeset="/data/TLselect1_8" type="select1" required="true()"/>
+      <bind nodeset="/data/TLselect_9" type="select"  required="true()"/>
       <bind nodeset="/data/TLcheck_10" type="select"/>
       <bind nodeset="/data/A_TLgroup/A1_text" type="string"/>
       <bind nodeset="/data/B_TLRepeat/B_decimal" type="decimal" constraint="(. &gt;= -100 and . &lt; 5.34)"/>

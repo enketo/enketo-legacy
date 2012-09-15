@@ -468,7 +468,7 @@ GUI.prototype.updateStatus = {
 		else {
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-cancel')
 				.attr('title', 'It appears there is currently no Internet connection');
-			$('.drawer #status').addClass('offline').text('no connection');
+			$('.drawer #status').addClass('offline').text('Offline.');
 		}
 	},
 	edit : function(editing){

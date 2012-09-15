@@ -135,7 +135,9 @@ h2{text-align: center; font-size: 1.5em; font-weight: bold;}
     text-decoration: none; } }
 
 .jr {
+  
   line-height: 1.1em;
+  
   .form-logo img {
     position: relative;
     left: 50%;
@@ -143,6 +145,14 @@ h2{text-align: center; font-size: 1.5em; font-weight: bold;}
     width: 120px;
     margin-left: -60px;
     margin-bottom: 10px; }
+  h2{
+    text-align: center;
+    font-size: 24px;
+    padding-bottom: 15px;
+    border-bottom: solid 3px #ccc;
+  }
+  h3{
+    text-align: left;  }
   label, fieldset {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -150,7 +160,7 @@ h2{text-align: center; font-size: 1.5em; font-weight: bold;}
     -ms-box-sizing: border-box;
     display: block;
     width: 100%;
-    padding: 14px 14px;
+    padding: 16px 14px; /* */
     font-weight: bold; }
   label + label {
     /*border-top: 1px solid $shadow;*/ }
@@ -194,7 +204,7 @@ h2{text-align: center; font-size: 1.5em; font-weight: bold;}
   fieldset {
     position: relative;
     &.jr-group {
-      border: 1px solid $shadow;
+      border-top: 2px solid #555; /**/
       margin: .5em 0; }
     &.jr-repeat {
       border: 1px dotted $shadow;} }
@@ -235,8 +245,9 @@ h2{text-align: center; font-size: 1.5em; font-weight: bold;}
       float: right;
       margin-right: 0; } }
   .trigger {
+    
     padding: 7px 12px;
-    margin: 1em 0; } } 
+    margin: 1em 0; }} 
 
 label.with-media {
   margin-top: 5px; }

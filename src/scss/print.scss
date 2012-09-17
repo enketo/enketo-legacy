@@ -210,7 +210,7 @@ h2{text-align: center; font-size: 1.5em; font-weight: bold;}
       border: 1px dotted $shadow;} }
   label, legend, .trigger {
     font-size: .8em; }
-  input {
+  input, textarea {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -232,6 +232,9 @@ h2{text-align: center; font-size: 1.5em; font-weight: bold;}
       /****/
       /*compensates for the label margin, fixes multi-line labels */
       margin-left: -25px; } }
+  textarea{
+    width: 100%;
+    min-height: 5em;}
   select {
     display: block; }
   fieldset {
@@ -313,7 +316,7 @@ input, .fakefileinput {
 .jr-hint.active {
   /*border: 1px solid #BCE8F1;*/
   /*background-color: #D9EDF7;*/
-  color: #3A87AD;
+  color: blue;/*#3A87AD;*/
   /*padding: 1px 6px;
   margin: 3px 12px;*/
   display: block;

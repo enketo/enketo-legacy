@@ -350,7 +350,7 @@ h2 {
   font-size: .8em;
 }
 /* line 213, ../../src/scss/print.scss */
-.jr input {
+.jr input, .jr textarea {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -360,16 +360,16 @@ h2 {
   font-size: .9em;
 }
 /* line 221, ../../src/scss/print.scss */
-.jr input[type="text"] {
+.jr input[type="text"], .jr textarea[type="text"] {
   width: 100%;
 }
 /* line 223, ../../src/scss/print.scss */
-.jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password] {
+.jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password], .jr textarea[type=date], .jr textarea[type=number], .jr textarea[type=email], .jr textarea[type=password] {
   width: 130px;
   text-align: right;
 }
 /* line 226, ../../src/scss/print.scss */
-.jr input[type=radio], .jr input[type=checkbox] {
+.jr input[type=radio], .jr input[type=checkbox], .jr textarea[type=radio], .jr textarea[type=checkbox] {
   display: block;
   /*****/
   float: left;
@@ -380,42 +380,47 @@ h2 {
   margin-left: -25px;
 }
 /* line 235, ../../src/scss/print.scss */
+.jr textarea {
+  width: 100%;
+  min-height: 5em;
+}
+/* line 238, ../../src/scss/print.scss */
 .jr select {
   display: block;
 }
-/* line 238, ../../src/scss/print.scss */
+/* line 241, ../../src/scss/print.scss */
 .jr fieldset .ui-button {
   width: 27px;
   height: 27px;
   margin-top: 6px;
 }
-/* line 242, ../../src/scss/print.scss */
+/* line 245, ../../src/scss/print.scss */
 .jr fieldset .one-more {
   margin: 0 -34px -5px 10px;
 }
-/* line 244, ../../src/scss/print.scss */
+/* line 247, ../../src/scss/print.scss */
 .jr fieldset .remove {
   float: right;
   margin-right: 0;
 }
-/* line 247, ../../src/scss/print.scss */
+/* line 250, ../../src/scss/print.scss */
 .jr .trigger {
   padding: 7px 12px;
   margin: 1em 0;
 }
 
-/* line 252, ../../src/scss/print.scss */
+/* line 255, ../../src/scss/print.scss */
 label.with-media {
   margin-top: 5px;
 }
 
-/* line 255, ../../src/scss/print.scss */
+/* line 258, ../../src/scss/print.scss */
 .with-media > span.active {
   display: block;
   width: 100%;
 }
 
-/* line 260, ../../src/scss/print.scss */
+/* line 263, ../../src/scss/print.scss */
 label.with-media img, label.with-media video, label.with-media audio {
   max-width: 45%;
   padding-right: 5%;
@@ -423,29 +428,29 @@ label.with-media img, label.with-media video, label.with-media audio {
   float: right;
 }
 
-/* line 266, ../../src/scss/print.scss */
+/* line 269, ../../src/scss/print.scss */
 .with-media input {
   float: left;
   width: 5%;
   margin-top: -17px;
 }
 
-/* line 272, ../../src/scss/print.scss */
+/* line 275, ../../src/scss/print.scss */
 input, .fakefileinput {
   background-color: white;
   border: 2px solid #cccccc;
   min-height: 30px;
 }
 
-/* line 277, ../../src/scss/print.scss */
+/* line 280, ../../src/scss/print.scss */
 .jr-appearance-compact label {
   display: inline;
 }
-/* line 279, ../../src/scss/print.scss */
+/* line 282, ../../src/scss/print.scss */
 .jr-appearance-compact label span {
   display: none;
 }
-/* line 281, ../../src/scss/print.scss */
+/* line 284, ../../src/scss/print.scss */
 .jr-appearance-compact label img {
   float: left;
   width: 120px;
@@ -453,13 +458,13 @@ input, .fakefileinput {
   padding: 5px;
   margin-top: 25px;
 }
-/* line 288, ../../src/scss/print.scss */
+/* line 291, ../../src/scss/print.scss */
 .jr-appearance-compact label input[type=radio], .jr-appearance-compact label input[type=checkbox] {
   /*display: none;*/
   margin-top: 35px;
 }
 
-/* line 292, ../../src/scss/print.scss */
+/* line 295, ../../src/scss/print.scss */
 .jr-branch {
   border-top: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
@@ -470,27 +475,28 @@ input, .fakefileinput {
   opacity: 0.5;
 }
 
-/* line 301, ../../src/scss/print.scss */
+/* line 304, ../../src/scss/print.scss */
 .disabled {
   /*color: $shadow*/
   opacity: 0.5;
 }
 
-/* line 305, ../../src/scss/print.scss */
+/* line 308, ../../src/scss/print.scss */
 .ui-multiselect-menu {
   display: none;
 }
 
-/* line 309, ../../src/scss/print.scss */
+/* line 312, ../../src/scss/print.scss */
 #submit-form, .drawer, #branding {
   display: none;
 }
 
-/* line 313, ../../src/scss/print.scss */
+/* line 316, ../../src/scss/print.scss */
 .jr-hint.active {
   /*border: 1px solid #BCE8F1;*/
   /*background-color: #D9EDF7;*/
-  color: #3A87AD;
+  color: blue;
+  /*#3A87AD;*/
   /*padding: 1px 6px;
   margin: 3px 12px;*/
   display: block;
@@ -504,18 +510,18 @@ input, .fakefileinput {
     font-size: 10px; }*/
 }
 
-/* line 331, ../../src/scss/print.scss */
+/* line 334, ../../src/scss/print.scss */
 legend span {
   display: block;
 }
 
-/* line 334, ../../src/scss/print.scss */
+/* line 337, ../../src/scss/print.scss */
 .jr-appearance-page-break {
   display: block;
   page-break-before: always;
 }
 
-/* line 338, ../../src/scss/print.scss */
+/* line 341, ../../src/scss/print.scss */
 .ui-tabs-nav {
   display: none !important;
 }

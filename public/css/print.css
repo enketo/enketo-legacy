@@ -83,7 +83,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
  ****BASIC GUI ELEMENTS ****
  ***************************/
 /* line 26, ../../src/scss/print.scss */
-.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+body, .ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
   font-family: 'Open Sans', Segoe UI, Arial, sans-serif;
   font-size: 1em;
 }

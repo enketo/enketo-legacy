@@ -466,16 +466,10 @@ input, .fakefileinput {
 
 /* line 295, ../../src/scss/print.scss */
 .jr-branch {
-  border-top: 1px solid #cccccc;
-  border-bottom: 1px solid #cccccc;
-  background-color: #cccccc;
-  height: 8px;
-  text-align: center;
-  margin: 10px 0;
-  opacity: 0.5;
+  display: none;
 }
 
-/* line 304, ../../src/scss/print.scss */
+/* line 298, ../../src/scss/print.scss */
 .disabled {
   /*color: $shadow*/
   opacity: 1;
@@ -487,17 +481,17 @@ input, .fakefileinput {
 .disabled input[type="radio"]{
   opacity: 1;
 }*/
-/* line 315, ../../src/scss/print.scss */
+/* line 309, ../../src/scss/print.scss */
 .ui-multiselect-menu {
   display: none;
 }
 
-/* line 319, ../../src/scss/print.scss */
+/* line 313, ../../src/scss/print.scss */
 #submit-form, .drawer, #branding {
   display: none;
 }
 
-/* line 323, ../../src/scss/print.scss */
+/* line 317, ../../src/scss/print.scss */
 .jr-hint.active {
   /*border: 1px solid #BCE8F1;*/
   /*background-color: #D9EDF7;*/
@@ -516,23 +510,23 @@ input, .fakefileinput {
     font-size: 10px; }*/
 }
 
-/* line 341, ../../src/scss/print.scss */
+/* line 335, ../../src/scss/print.scss */
 legend span {
   display: block;
 }
 
-/* line 344, ../../src/scss/print.scss */
+/* line 338, ../../src/scss/print.scss */
 .jr-appearance-page-break {
   display: block;
   page-break-before: always;
 }
 
-/* line 348, ../../src/scss/print.scss */
+/* line 342, ../../src/scss/print.scss */
 .ui-tabs-nav {
   display: none !important;
 }
 
-/* line 353, ../../src/scss/print.scss */
+/* line 347, ../../src/scss/print.scss */
 .jr-branch + fieldset.disabled,
 .jr-branch + label.disabled {
   display: block !important;

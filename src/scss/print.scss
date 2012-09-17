@@ -38,7 +38,7 @@ div[id^="dialog"] {
   text-transform: capitalize; }
 
 
-header.ui-widget-header {
+header.ui-widget-header, #feedback-bar, #page {
   display: none; }
 
 h2{text-align: center; font-size: 1.5em; font-weight: bold;}
@@ -234,7 +234,7 @@ h2{text-align: center; font-size: 1.5em; font-weight: bold;}
       margin-left: -25px; } }
   textarea{
     width: 100%;
-    min-height: 5em;}
+    min-height: 150px;}
   select {
     display: block; }
   fieldset {
@@ -303,7 +303,14 @@ input, .fakefileinput {
 
 .disabled {
   /*color: $shadow*/
-  opacity: 0.5; }
+  opacity: 1;
+  color: #ddd; }
+
+/*doesn't do anything
+.disabled input[type="checkbox"],
+.disabled input[type="radio"]{
+  opacity: 1;
+}*/
 
 .ui-multiselect-menu{
 	display: none;
@@ -340,3 +347,9 @@ legend span {
 
 .ui-tabs-nav{
   display: none !important;}
+
+
+.jr-branch+fieldset.disabled,
+.jr-branch+label.disabled{
+  display: block !important;
+}

@@ -104,7 +104,7 @@ div[id^="dialog"] {
 }
 
 /* line 41, ../../src/scss/print.scss */
-header.ui-widget-header {
+header.ui-widget-header, #feedback-bar, #page {
   display: none;
 }
 
@@ -382,7 +382,7 @@ h2 {
 /* line 235, ../../src/scss/print.scss */
 .jr textarea {
   width: 100%;
-  min-height: 5em;
+  min-height: 150px;
 }
 /* line 238, ../../src/scss/print.scss */
 .jr select {
@@ -478,20 +478,26 @@ input, .fakefileinput {
 /* line 304, ../../src/scss/print.scss */
 .disabled {
   /*color: $shadow*/
-  opacity: 0.5;
+  opacity: 1;
+  color: #ddd;
 }
 
-/* line 308, ../../src/scss/print.scss */
+/*doesn't do anything
+.disabled input[type="checkbox"],
+.disabled input[type="radio"]{
+  opacity: 1;
+}*/
+/* line 315, ../../src/scss/print.scss */
 .ui-multiselect-menu {
   display: none;
 }
 
-/* line 312, ../../src/scss/print.scss */
+/* line 319, ../../src/scss/print.scss */
 #submit-form, .drawer, #branding {
   display: none;
 }
 
-/* line 316, ../../src/scss/print.scss */
+/* line 323, ../../src/scss/print.scss */
 .jr-hint.active {
   /*border: 1px solid #BCE8F1;*/
   /*background-color: #D9EDF7;*/
@@ -510,18 +516,24 @@ input, .fakefileinput {
     font-size: 10px; }*/
 }
 
-/* line 334, ../../src/scss/print.scss */
+/* line 341, ../../src/scss/print.scss */
 legend span {
   display: block;
 }
 
-/* line 337, ../../src/scss/print.scss */
+/* line 344, ../../src/scss/print.scss */
 .jr-appearance-page-break {
   display: block;
   page-break-before: always;
 }
 
-/* line 341, ../../src/scss/print.scss */
+/* line 348, ../../src/scss/print.scss */
 .ui-tabs-nav {
   display: none !important;
+}
+
+/* line 353, ../../src/scss/print.scss */
+.jr-branch + fieldset.disabled,
+.jr-branch + label.disabled {
+  display: block !important;
 }

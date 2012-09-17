@@ -420,7 +420,7 @@
     </model>
   </h:head>
   <h:body>
-    <input ref="/data/TLtext_1">
+    <input ref="/data/TLtext_1" appearance="big">
       <label ref="jr:itext('/data/TLtext_1:label')"/>
       <hint ref="jr:itext('/data/TLtext_1:hint')"/>
     </input>

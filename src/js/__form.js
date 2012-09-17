@@ -985,7 +985,7 @@ function Form (formSelector, dataStr){
 		
 		//append icons
 		$form.find('label>input[type="checkbox"], label>input[type="radio"]').parent().parent('fieldset').prepend(icons);
-		$form.parent().find('label>select, :not(#jr-preload-items, #jr-calculated-items)>label>input')//, form>label>input')
+		$form.parent().find('label>select, , label>textarea, :not(#jr-preload-items, #jr-calculated-items)>label>input')//, form>label>input')
 			.not('[type="checkbox"], [type="radio"]').parent().prepend(icons);
 
 		//this.input.getWrapNodes($form.parent().find('fieldset:not(#jr-preload-items, #jr-calculated-items) input, select, textarea'))
@@ -996,7 +996,7 @@ function Form (formSelector, dataStr){
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
 			.find('legend:eq(0)').append(required);
 			//.find('.question-icons .required').addClass('ui-icon ui-icon-notice');
-		$form.parent().find('label>select[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
+		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
 			.not('[type="checkbox"], [type="radio"]').parent()
 			.each(function(){
 				$(this).children('span:not(.jr-option-translations):last').after(required);
@@ -1143,6 +1143,9 @@ function Form (formSelector, dataStr){
 			}
 			else if ($node.prop('nodeName').toLowerCase() == 'select' ){
 				return 'select';
+			}
+			else if ($node.prop('nodeName').toLowerCase() == 'textarea'){
+				return 'textarea';
 			}
 			else if ($node.prop('nodeName').toLowerCase() == 'fieldset'){
 				return 'fieldset';

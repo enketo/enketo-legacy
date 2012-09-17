@@ -488,34 +488,34 @@ input, .fakefileinput {
 
 /* line 313, ../../src/scss/print.scss */
 .jr-hint.active {
-  border: 1px solid #BCE8F1;
-  background-color: #D9EDF7;
+  /*border: 1px solid #BCE8F1;*/
+  /*background-color: #D9EDF7;*/
   color: #3A87AD;
-  padding: 1px 6px;
-  margin: 3px 12px;
+  /*padding: 1px 6px;
+  margin: 3px 12px;*/
   display: block;
+  font-weight: normal;
   /*float: left;*/
-  font-size: 11px;
-  line-height: 14px;
-}
-/* line 323, ../../src/scss/print.scss */
-.jr-hint.active:before {
-  content: 'HINT: ';
   font-size: 10px;
+  font-style: italic;
+  /*line-height: 14px;
+  &:before {
+    content: 'HINT: ';
+    font-size: 10px; }*/
 }
 
-/* line 327, ../../src/scss/print.scss */
+/* line 331, ../../src/scss/print.scss */
+legend span {
+  display: block;
+}
+
+/* line 334, ../../src/scss/print.scss */
 .jr-appearance-page-break {
   display: block;
   page-break-before: always;
 }
 
-/* line 332, ../../src/scss/print.scss */
-.ui-tabs-nav {
-  display: none;
-}
-
 /* line 338, ../../src/scss/print.scss */
-legend span {
-  display: block;
+.ui-tabs-nav {
+  display: none !important;
 }

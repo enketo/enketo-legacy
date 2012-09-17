@@ -317,12 +317,21 @@ input, .fakefileinput {
   padding: 1px 6px;
   margin: 3px 12px;
   display: block;
-  float: left;
+  /*float: left;*/
   font-size: 11px;
   line-height: 14px;
   &:before {
     content: 'HINT: ';
     font-size: 10px; } }
+
+.jr-appearance-page-break{
+  display: block; 
+  page-break-before: always;
+}
+
+.ui-tabs-nav{
+  display: none;
+}
 
 // This could have negative side effects.
 // If so, then take out "float:left" from .jr-hint.active above

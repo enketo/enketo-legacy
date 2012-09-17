@@ -962,12 +962,9 @@ function Form (formSelector, dataStr){
 	function FormHTML (selector){
 		//there will be only one instance of FormHTML
 		$form = $(selector);
-
 		//this.input = function($node){
 		//	return new Input($node);
 		//};
-
-		
 	}
 
 	FormHTML.prototype.init = function(){
@@ -1372,7 +1369,7 @@ function Form (formSelector, dataStr){
 			////console.debug('hint: '+hint);
 			if (hint.length > 0){
 				////console.debug('setting hint: '+hint);
-				//$(this).find('input, select').attr('title', hint);
+				//$(this).find('input, select, textarea').attr('title', hint);
 				$wrapNode.find('.question-icons .hint').attr('title', hint).addClass('ui-icon ui-icon-help');
 			}
 			else{

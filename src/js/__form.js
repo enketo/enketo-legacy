@@ -1704,6 +1704,7 @@ function Form (formSelector, dataStr){
 			this.dateTimeWidget();
 			this.selectOneWidget();
 			this.selectMultiWidget();
+			this.pageBreakWidget();
 			this.readonlyWidget();
 			this.gridWidget();
 			this.spinnerWidget();
@@ -1774,6 +1775,15 @@ function Form (formSelector, dataStr){
 					'at': 'left bottom'
 				}
 
+			});
+		},
+		//transforms temporary page-break elements to triggers //REMOVE WHEN BETTER SOLUTION FOR PAGE BREAKS IS FOUND
+		pageBreakWidget : function(){
+			$form.find('.jr-appearance-page-break input[readonly]').parent('label').each(function(){
+				var	name = 'name="'+$(this).find('input').attr('name')+'"';
+				$('<fieldset class="jr-appearance-page-break" '+name+'></fieldset>') //ui-corner-all
+					.insertBefore($(this)).find('input').remove(); 
+				$(this).remove();
 			});
 		},
 		//transforms readonly inputs into triggers

@@ -999,7 +999,9 @@ footer.ui-widget {
     margin: 1em 0; }
   .required{
     margin-left: 3px;
-    color: $title;}} 
+    color: $title;}
+  .jr-appearance-page-break{
+    display: none;}} 
 
 /*excludes first label or fieldset in each fieldset or root of form*/
 

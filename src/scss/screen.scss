@@ -956,7 +956,7 @@ footer.ui-widget {
       border: 1px dotted $shadow;} }
   label, legend, .trigger {
     font-size: .8em; }
-  input {
+  input, textarea {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -978,6 +978,9 @@ footer.ui-widget {
       /****/
       /*compensates for the label margin, fixes multi-line labels */
       margin-left: -25px; } }
+  textarea{
+    width: 100%;
+    min-height: 5em;}
   select {
     display: block; }
   fieldset {
@@ -1022,7 +1025,7 @@ label.with-media {
   margin-top: -17px; }
 
 
-input, .fakefileinput {
+input, .fakefileinput, textarea {
   background-color: $header-txt;
   border: 2px solid $shadow;
   min-height: 30px; }

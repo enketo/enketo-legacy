@@ -460,15 +460,18 @@ GUI.prototype.updateStatus = {
 		"use strict";
 		console.log('updating online status in menu bar to:');
 		console.log(online);
-		if (online) {
+		if (online === true) {
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-signal-diag')
 				.attr('title', 'It appears there is currently an Internet connection available.');
-			$('.drawer #status').removeClass('offline').text('');
+			$('.drawer #status').removeClass('offline waiting').text('');
 		}
-		else {
+		else if (online === false) {
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-cancel')
 				.attr('title', 'It appears there is currently no Internet connection');
-			$('.drawer #status').addClass('offline').text('Offline.');
+			$('.drawer #status').removeClass('waiting').addClass('offline').text('Offline.');
+		}
+		else{
+			$('.drawer #status').removeClass('offline').addClass('waiting').text('Waiting.');
 		}
 	},
 	edit : function(editing){

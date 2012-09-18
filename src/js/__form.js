@@ -376,7 +376,7 @@ function Form (formSelector, dataStr){
 
 			target = this.get();//.eq(index);
 
-			if ( target.length === 1 && newVal.toString().trim() !== curVal.toString().trim() ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
+			if ( target.length === 1 && $.trim(newVal.toString()) !== $.trim(curVal.toString()) ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
 				//if (this.validate(value) === true){
 				//first change the value so that it can be evaluated in XPath (validated)
 				
@@ -553,7 +553,7 @@ function Form (formSelector, dataStr){
 					return ( new Date(x).toString() !== 'Invalid Date');
 				},
 			'convert' : function(x){
-					return ( new Date(x).toUTCString() );
+					return new Date(x).toUTCString();
 				}
 			},
 			'time' : {
@@ -579,7 +579,7 @@ function Form (formSelector, dataStr){
 						!isNaN(coords[2]) && (typeof coords[3] == 'undefined' || !isNaN(coords[3]));
 				},
 				convert: function(x){
-					return x.toString().trim();
+					return $.trim(x.toString());
 				}
 			},
 			'binary' : {
@@ -610,7 +610,7 @@ function Form (formSelector, dataStr){
 		this.node(null, null, {noEmpty: true, noTemplate: false}).get().each(function(){
 			////console.debug('value found'+ $(this).text());
 			val = $(this).text();
-			$(this).text(val.trim());
+			$(this).text($.trim(val));
 		});
 		$root = this.node(':first', 0).get();
 

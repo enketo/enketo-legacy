@@ -51,7 +51,6 @@ function Form (formSelector, dataStr){
 	this.validateAll = function(){return form.validateAll();};
 	//***************************************
 
-
 /**
  * Function: init
  *
@@ -325,7 +324,7 @@ function Form (formSelector, dataStr){
 					//$this = $(this);
 					////console.log ('children: '+$(this).children().length);
 					////console.log ('text length: '+($.trim($this.text()).length));
-					return $(this).children().length === 0 && val.trim().length > 0;//$.trim($this.text()).length > 0;
+					return $(this).children().length === 0 && $.trim(val).length > 0;//$.trim($this.text()).length > 0;
 				});
 			}
 			//this may still contain empty leaf nodes
@@ -861,7 +860,7 @@ function Form (formSelector, dataStr){
 		////console.log('selector of context node: '+selector);
 		////console.log('index of context node: '+index);
 		//use a trick to be able to get the context node using getElementById
-		if (typeof selector !== 'undefined' || selector !== null) {
+		if (typeof selector !== 'undefined' && selector !== null) {
 			//console.debug('selector for context node in evaluate(): '+selector+' with index: '+index);
 			//dataCleanClone.node(selector, index, {}).get().attr('id','getme');
 			//context = dataCleanClone.get()[0].getElementById('getme');
@@ -908,7 +907,7 @@ function Form (formSelector, dataStr){
 		////console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
 		//result = evaluator.evaluate(expr, context.documentElement, null, resultType, null);
 		try{
-				result = document.evaluate(expr, context, null, resTypeNum, null);
+			result = document.evaluate(expr, context, null, resTypeNum, null);
 			////console.log('evaluated: '+expr+' to: '+(result[resultTypes[type][1]] || 'resultnode(s)'));
 			////console.log(result); //NOTE THAT THIS USE OF THE CONSOLE THROWS AN ERROR IN FIREFOX when using native XPath!
 			if (resTypeNum === 0){
@@ -941,6 +940,7 @@ function Form (formSelector, dataStr){
 		}
 		catch(e){
 			console.error('Error occurred trying to evaluate: '+expr+', message: '+e.message);
+			return null;
 		}
 	};
 

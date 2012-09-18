@@ -1,0 +1,3 @@
+[submodule "lib/EnvJasmine"]
+	path = lib/EnvJasmine
+	url = https://github.com/trevmex/EnvJasmine.git

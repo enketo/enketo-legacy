@@ -1023,9 +1023,9 @@ function Form (formSelector, dataStr){
 		this.outputUpdate();
 		this.setEventHandlers();
 		this.preloads.init(); //after event handlers!
-		//$form.fixLegends();
 		this.setLangs();
 		this.editStatus.set(false);
+		setTimeout(function(){$form.fixLegends();}, 500);
 	};
 
 	FormHTML.prototype.checkForErrors = function(){

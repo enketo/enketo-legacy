@@ -176,7 +176,7 @@ function StorageLocal(){
 		formList.sort(function(a,b){
 			return b['lastSaved']-a['lastSaved'];
 		});
-		console.debug('formlist: '+JSON.stringify(formList));
+		//console.debug('formlist: '+JSON.stringify(formList));
 		return formList;//returns empty object if no form data in storage or error was thrown
 	};
 	
@@ -381,7 +381,9 @@ Settings.prototype.init = function(){
  */
 Settings.prototype.get = function(){
 	"use strict";
-	return store.getRecord('__settings') || DEFAULT_SETTINGS;
+	//DISABLED SETTINGS IN LOCAL STORAGE AS IT IS NOT REQUIRED FOR NOW
+	//return store.getRecord('__settings') || DEFAULT_SETTINGS;
+	return DEFAULT_SETTINGS;
 };
 
 /**
@@ -390,7 +392,7 @@ Settings.prototype.get = function(){
  * @return {?(string|boolean)}         [description]
  */
 Settings.prototype.getOne = function(setting){
-	var settings = store.getRecord('__settings') || DEFAULT_SETTINGS;
+	var settings = this.get();//store.getRecord('__settings') || DEFAULT_SETTINGS;
 	return (typeof setting !== 'undefined' && typeof settings[setting] !== 'undefined') ? settings[setting] : null;
 };
 

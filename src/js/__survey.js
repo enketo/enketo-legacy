@@ -328,7 +328,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 function resetForm(confirmed){
 	'use strict';
 	var message, choices;
-		//valueFirst = /**@type {string} */$('#saved-forms option:first').val();
+	//valueFirst = /**@type {string} */$('#saved-forms option:first').val();
 	//console.debug('first form is '+valueFirst);
 	//gui.pages().get('records').find('#records-saved').val(valueFirst);
 	console.debug('editstatus: '+ form.getEditStatus());
@@ -689,19 +689,25 @@ Connection.prototype.upload = function(force, excludeName) {
 	var i, name, result,
 		autoUpload = (settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ? true : false;
 	//console.debug('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
-
-	// proceed if autoUpload is true or it is overridden, and if there is currently no queue for submissions
-	if ( ( typeof this.uploadQueue == 'undefined' || this.uploadQueue.length === 0 ) && ( autoUpload === true || force ) ){
+	
+	// proceed if autoUpload is true or it is overridden, and if there is currently no ongoing upload
+	if ( this.uploadOngoing === false  && ( autoUpload === true || force ) ){
 		//var dataArr=[];//, insertedStr='';
-		this.uploadResult = {win:[], fail:[], force: force};
+		
+		this.uploadResult = {win:[], fail:[]};
 		this.uploadQueue = store.getSurveyDataArr(true, excludeName);
-
+		this.forced = force;
 		console.debug('upload queue: '+this.uploadQueue);
 
 		if (this.uploadQueue.length === 0 ){
 			return (force) ? gui.showFeedback('Nothing marked "final" to upload (or record is currently open).') : false;
 		}
+
 		this.uploadOne();
+	}
+	else{
+		//allow override of this.forced if called with force=true
+		this.forced = (force === true) ? true : this.forced;
 	}
 };
 
@@ -709,12 +715,14 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 	var record, content, last,
 		that = this;
 	if (this.uploadQueue.length > 0){
+		this.uploadOngoing = true;
 		record = this.uploadQueue.pop();
 		content = new FormData();
 		content.append('xml_submission_data', form.prepareForSubmission(record.data));//dataXMLStr);
 		content.append('Date', new Date().toUTCString());
 		last = (this.uploadQueue.length === 0) ? true : false;
-
+		this.setOnlineStatus('waiting');
+		//$('.drawer.left #status').text('Waiting...');
 		//console.log('data to be send: '+JSON.stringify(dataObj)); // DEBUG
 		$.ajax('data/submission',{
 			type: 'POST',
@@ -723,6 +731,8 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 			//async: false, //THIS NEEDS TO BE CHANGED, BUT AJAX SUBMISSIONS NEED TO TAke place sequentially
 			contentType: false,
 			processData: false,
+			//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
+			timeout: 5*1000,
 			complete: function(jqXHR, response){
 				that.processOpenRosaResponse(jqXHR.status, record.name, last);
 				/**
@@ -771,21 +781,24 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	}
 	//unforeseen statuscodes
 	else if (status > 500){
-		console.error ('error during uploading, received unexpected statuscode: '+status);
+		console.error ('Error during uploading, received unexpected statuscode: '+status);
 		this.uploadResult.fail.push([name, statusMap['5xx'].msg]);
 	}
 	else if (status > 400){
-		console.error ('error during uploading, received unexpected statuscode: '+status);
+		console.error ('Error during uploading, received unexpected statuscode: '+status);
 		this.uploadResult.fail.push([name, statusMap['4xx'].msg]);
 	}
 	else if (status > 200){
-		console.error ('error during uploading, received unexpected statuscode: '+status);
+		console.error ('Error during uploading, received unexpected statuscode: '+status);
 		this.uploadResult.fail.push([name, statusMap['2xx'].msg]);
 	}
 	
 	if (last !== true){
 		return;
 	}
+
+	console.debug('going to provide upload feedback (forced = '+this.forced+') from object:');
+	console.debug(this.uploadResult);
 
 	if (this.uploadResult.win.length > 0){
 		for (i = 0 ; i<this.uploadResult.win.length ; i++){
@@ -795,30 +808,36 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		waswere = (i>1) ? ' were' : ' was';
 		namesStr = names.join(', ');
 		gui.showFeedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
-		gui.updateStatus.connection(true);
+		this.setOnlineStatus(true);
+		//$('.drawer.left #status').text('');
+		//gui.updateStatus.connection(true);
 	}
 	//else{
-	// not sure if there should be a notification if forms fail automatic submission
 	if (this.uploadResult.fail.length > 0){
 		console.debug('upload failed');
-		if (this.uploadResult.force === true){
+		
+		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
+		this.setOnlineStatus(false);
+		$('.drawer.left #status').text('Offline.');
+
+		if (this.forced === true){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
 			}
-			console.debug('going to give feedback to user');
+			console.debug('going to give upload feedback to user');
 			if ($('.drawer.left').length > 0){
-				gui.updateStatus.connection(false);
-				$('.drawer.left .handle.right').click();
+				//gui.updateStatus.connection(false);
+				//show drawer if currently hidden
+				$('.drawer.left.hide .handle').click();
 			}
 			else {
 				gui.alert(msg, 'Failed data submission');
 			}
 		}
 		else{
-
+			// not sure if there should be a notification if forms fail automatic submission
 		}
 	}
-
 	this.uploadOngoing = false;
 	//re-enable upload button
 };
@@ -936,12 +955,12 @@ GUI.prototype.setCustomEventHandlers = function(){
 		});
 
 	$(document).on('save delete', 'form.jr', function(e, formList){
-		//console.debug('save or delete event detected with new formlist: '+formList);
+		console.debug('save or delete event detected with new formlist: '+formList);
 		that.updateRecordList(JSON.parse(formList));
 	});
 
 	$(document).on('setsettings', function(e, settings){
-		console.debug('settingschange detected, GUI will be updated with settings:');
+		//console.debug('settingschange detected, GUI will be updated with settings:');
 		//console.debug(settings);
 		that.setSettings(settings);
 	});
@@ -1025,7 +1044,7 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 	}
 	else{
 		$('<li class="no-click">no locally saved records found</li>').appendTo($list);
-		//$('#queue').hide().find('.queue-length').text('');
+		$('#queue-length').text('0');
 	}
 // *	OLD*	else if (result.field(2) == 2) {
 // *	OLD*		color = 'gray';

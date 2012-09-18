@@ -1051,7 +1051,7 @@ function Form (formSelector, dataStr){
 		total.hCheck = $form.find('input[type="checkbox"]').length;
 		total.hSelect = $form.find('select').length;
 		total.hOption = $form.find('option[value!=""]').length;
-		total.hInputNotRadioCheck = $form.find('input:not([type="radio"],[type="checkbox"])').length;
+		total.hInputNotRadioCheck = $form.find('textarea, input:not([type="radio"],[type="checkbox"])').length;
 		total.hTrigger = $form.find('.trigger').length;
 		total.hRelevantNotRadioCheck = $form.find('[data-relevant]:not([type="radio"],[type="checkbox"])').length;
 		total.hRelevantRadioCheck = $form.find('input[data-relevant][type="radio"],input[data-relevant][type="checkbox"]').parent().parent('fieldset').length;

@@ -51,7 +51,7 @@ describe("get XML Node", function () {
     });
 });
 
-describe('set XML node value if passing data type validation', function(){
+describe('set XML node value if passing data type conversion and validation', function(){
 	it('validates xml-type (without constraint evaluation)', function(){
 		t =
 		[

@@ -1941,7 +1941,7 @@ function Form (formSelector, dataStr){
 
 		},
 		barcodeWidget : function(){
-			$form.find('input[data-type-xml="barcode"]').attr('placeholder', 'not supported in browser data entry').attr('disabled', 'disabled');
+			//$form.find('input[data-type-xml="barcode"]').attr('placeholder', 'not supported in browser data entry').attr('disabled', 'disabled');
 		},
 		fileWidget : function(){
 			$form.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled');

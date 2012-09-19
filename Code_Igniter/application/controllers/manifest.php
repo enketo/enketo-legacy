@@ -57,7 +57,7 @@ class Manifest extends CI_Controller {
 	| pages to be cached (urls relative to sub.example.com/)
 	|--------------------------------------------------------------------------
 	*/	
-		private $pages = array('', 'modern_browsers', 'survey_format'); 
+		private $pages = array('');//, 'modern_browsers'); 
 	/*
 	|--------------------------------------------------------------------------	
 	| page to re-direct offline 404 requests to (html5 manifest 'fallback' section)
@@ -116,7 +116,7 @@ class Manifest extends CI_Controller {
 	
 	private function _set_data(){
 		//check if the survey exists (from subdomain) and is live
-		if ($this->Survey_model->is_live_survey()){
+		if ($this->Survey_model->is_launched_survey() && $this->Survey_model->is_live_survey()){
 			//convert to full urls
 			$this->pages = $this->_full_url_arr($this->pages);
 			$this->data['hashes'] = '';

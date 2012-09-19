@@ -31,7 +31,6 @@ class Form extends CI_Controller {
             $this->load->helper(array('subdomain','url', 'json'));
 			$this->subdomain = get_subdomain(); //from subdomain helper
 			$this->load->model('Survey_model','',TRUE);
-			$this->load->model('Form_model');
        }
 	
 	public function index()
@@ -47,17 +46,19 @@ class Form extends CI_Controller {
 			if ($this->Survey_model->is_launched_survey($this->subdomain))
 			{				
 				$server_url = $this->Survey_model->get_server_url();
-				$form_id = $this->Survey_model->get_form_id();					
-				
+				$form_id = $this->Survey_model->get_form_id()						
 				if (isset($server_url) && isset($form_id))
 				{
-
-					$xml =  $this->Form_model->get_form_xml($server_url, $form_id) ;
-					$xmlStr = $xml->saveXML();
-					//$this->output->set_content_type("application/xml");
-					//$this->output->set_output($xml->saveXML());
-					$data = array('form'=>$xmlStr);
-					$this->load->view('form_xml_view', $data);
+					//$data = array('form' => file_get_contents($form_url));
+					//log_message('debug', 'form: '.$data['form']);
+					
+					header ("Content-Type:text/xml");
+					//readfile($form_url);
+					
+					//$this->load->view('form_xml_view',$data);
+					//$this->output
+					//	->set_content_type('xml')
+					//	->set_output(file_get_contents($form_url));
 				}
 				else
 				{
@@ -80,22 +81,19 @@ class Form extends CI_Controller {
 	{				
 		if (isset($this->subdomain))
 		{
-			if ($this->Survey_model->is_launched_survey($this->subdomain))
+			if ($this->Survey_model->is_existing_survey($this->subdomain))
 			{
-				$server_url = $this->Survey_model->get_server_url();
-				$form_id = $this->Survey_model->get_form_id();					
-				
-				if (isset($server_url) && isset($form_id))
+				$form_url = $this->Survey_model->get_form_url($this->subdomain);				
+				if (isset($form_url))
 				{
-					
-					$transf_result = $this->Form_model->transform($server_url, $form_id);			
+					$this->load->model('Form_model');
+					$transf_result = $this->Form_model->transform($form_url);			
 					$form = $transf_result->form;
-					
 					if (isset($form))
 					{
 						$data = array('form'=>$form->asXML());
 						log_message('debug', 'going to load bare html 5view of form');
-						$this->load->view('form_html5_view', $data);
+						$this->load->view('form_html5_view',$data);
 					}
 					else
 					{

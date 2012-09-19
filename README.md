@@ -10,7 +10,7 @@ Browser support
 
 Prerequisites
 -----------
-- LAMP stack (enabled: mode_rewrite, php5-xsl, curl)
+- LAMP stack (apache:mode_rewrite, php:php5-xsl, php:curl, php:allow_url_fopen)
 - XPathJS_javarosa (build/xpathjs_javarosa.min.js is the only file that is required)
 
 Installation

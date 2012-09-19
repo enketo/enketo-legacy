@@ -12,9 +12,9 @@
 </head>
 
 <body>
-	<h1>Cannot Access Requested Page</h1>
+	<h1>Sorry, cannot access requested page</h1>
 	<p>
-		This page is only accessible when the browser has an Internet connection (unless the page does not exist).
+		This page is only accessible when the browser has an Internet connection and the server is accessible (unless the page does not exist of course).
 	</p>
 </body>
 </html>

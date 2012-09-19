@@ -63,7 +63,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   display: block;
 }
 
-/*@import url(http://fonts.googleapis.com/css?family=Open+Sans);*/
 @font-face {
   font-family: 'Open Sans';
   src: local("☺"), url(fonts/OpenSans-Regular.ttf) format("truetype");
@@ -85,13 +84,13 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 /***************************
  ****BASIC GUI ELEMENTS ****
  ***************************/
-/* line 92, ../../src/scss/screen.scss */
+/* line 91, ../../src/scss/screen.scss */
 body, .ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
   font-family: 'Open Sans', Segoe UI, Arial, sans-serif;
   font-size: 1.1em;
 }
 
-/* line 96, ../../src/scss/screen.scss */
+/* line 95, ../../src/scss/screen.scss */
 p {
   text-align: left;
   margin-top: .9em;
@@ -99,7 +98,7 @@ p {
   line-height: 1.4em;
 }
 
-/* line 103, ../../src/scss/screen.scss */
+/* line 102, ../../src/scss/screen.scss */
 h2, h3, h4 {
   text-align: center;
   font-weight: bolder;
@@ -108,74 +107,74 @@ h2, h3, h4 {
   color: #ce4f07;
 }
 
-/* line 111, ../../src/scss/screen.scss */
+/* line 110, ../../src/scss/screen.scss */
 ul {
   list-style: disc;
   margin-left: 20px;
 }
 
-/* line 115, ../../src/scss/screen.scss */
+/* line 114, ../../src/scss/screen.scss */
 strong {
   font-weight: bold;
 }
 
-/* line 118, ../../src/scss/screen.scss */
+/* line 117, ../../src/scss/screen.scss */
 button.close {
   background: none;
   border: none;
 }
 
-/* line 122, ../../src/scss/screen.scss */
+/* line 121, ../../src/scss/screen.scss */
 .center {
   text-align: center;
 }
 
-/* line 125, ../../src/scss/screen.scss */
+/* line 124, ../../src/scss/screen.scss */
 div[id^="dialog"] p span.ui-icon {
   float: left;
   margin: .3em .7em 3em 0;
 }
 
-/* line 130, ../../src/scss/screen.scss */
+/* line 129, ../../src/scss/screen.scss */
 .capitalize {
   text-transform: capitalize;
 }
 
-/* line 133, ../../src/scss/screen.scss */
+/* line 132, ../../src/scss/screen.scss */
 img.loading {
   display: block;
   margin: 15px 0 25px 48%;
 }
 
-/* line 137, ../../src/scss/screen.scss */
+/* line 136, ../../src/scss/screen.scss */
 #upload-form img.loading {
   margin-top: 130px;
 }
 
-/* line 140, ../../src/scss/screen.scss */
+/* line 139, ../../src/scss/screen.scss */
 .level-0, .level-1, .info, .success {
   color: #5c5c5c;
 }
 
 /*.level-1, .warning{}*/
-/* line 145, ../../src/scss/screen.scss */
+/* line 144, ../../src/scss/screen.scss */
 .level-2, .level-3, .error {
   color: #d34d17;
 }
 
-/* line 148, ../../src/scss/screen.scss */
+/* line 147, ../../src/scss/screen.scss */
 .level-3 {
   font-weight: bold;
 }
 
-/* line 151, ../../src/scss/screen.scss */
+/* line 150, ../../src/scss/screen.scss */
 .component {
   font-size: 12px;
 }
 
 /* Tooltip CAN/SHOULD BE REMOVED AFTER JQUERY UI 1.9 PROBABLY
 ----------------------------------*/
-/* line 157, ../../src/scss/screen.scss */
+/* line 156, ../../src/scss/screen.scss */
 .ui-tooltip {
   padding: 8px;
   position: absolute;
@@ -189,17 +188,17 @@ img.loading {
 }
 
 /* Fades and background-images don't work well together in IE6, drop the image */
-/* line 170, ../../src/scss/screen.scss */
+/* line 169, ../../src/scss/screen.scss */
 * html .ui-tooltip {
   background-image: none;
 }
 
-/* line 173, ../../src/scss/screen.scss */
+/* line 172, ../../src/scss/screen.scss */
 body .ui-tooltip {
   border-width: 2px;
 }
 
-/* line 176, ../../src/scss/screen.scss */
+/* line 175, ../../src/scss/screen.scss */
 .custom-button {
   height: 18px;
   width: 19px;
@@ -207,17 +206,17 @@ body .ui-tooltip {
   background: none;
 }
 
-/* line 182, ../../src/scss/screen.scss */
+/* line 181, ../../src/scss/screen.scss */
 .ui-widget {
   /*font-size: 90%;*/
 }
 
-/* line 185, ../../src/scss/screen.scss */
+/* line 184, ../../src/scss/screen.scss */
 .custom-button .ui-icon {
   margin: 1px;
 }
 
-/* line 188, ../../src/scss/screen.scss */
+/* line 187, ../../src/scss/screen.scss */
 article.page {
   display: none;
 }
@@ -225,13 +224,13 @@ article.page {
 /***************************
  ****      LAYOUT       ****
  ***************************/
-/* line 195, ../../src/scss/screen.scss */
+/* line 194, ../../src/scss/screen.scss */
 body {
   background: #dddddd url(images/tex2res2.png) repeat;
   /*overflow: hidden;*/
 }
 
-/* line 200, ../../src/scss/screen.scss */
+/* line 199, ../../src/scss/screen.scss */
 #overlay {
   display: none;
   background-color: #5c5c5c;
@@ -242,7 +241,7 @@ body {
   opacity: 0.8;
 }
 
-/* line 209, ../../src/scss/screen.scss */
+/* line 208, ../../src/scss/screen.scss */
 header.ui-widget-header {
   position: absolute;
   z-index: 14;
@@ -253,17 +252,17 @@ header.ui-widget-header {
   border-right: none;
 }
 
-/* line 218, ../../src/scss/screen.scss */
+/* line 217, ../../src/scss/screen.scss */
 #logo {
   position: absolute;
   top: 14px;
   left: 20px;
 }
-/* line 222, ../../src/scss/screen.scss */
+/* line 221, ../../src/scss/screen.scss */
 #logo img {
   height: 40px;
 }
-/* line 224, ../../src/scss/screen.scss */
+/* line 223, ../../src/scss/screen.scss */
 #logo #component {
   position: relative;
   display: inline-block;
@@ -271,7 +270,7 @@ header.ui-widget-header {
   font-size: 0.6em;
 }
 
-/* line 230, ../../src/scss/screen.scss */
+/* line 229, ../../src/scss/screen.scss */
 .ui-widget-header nav {
   position: absolute;
   top: 17px;
@@ -280,12 +279,12 @@ header.ui-widget-header {
   padding: 0.2em;
   zoom: 1;
 }
-/* line 237, ../../src/scss/screen.scss */
+/* line 236, ../../src/scss/screen.scss */
 .ui-widget-header nav ul {
   margin: 0;
   padding: 0.2em 0.2em 0;
 }
-/* line 240, ../../src/scss/screen.scss */
+/* line 239, ../../src/scss/screen.scss */
 .ui-widget-header nav ul li {
   background: none;
   float: left;
@@ -300,7 +299,7 @@ header.ui-widget-header {
   border-color: #817865;
   border-bottom: none;
 }
-/* line 253, ../../src/scss/screen.scss */
+/* line 252, ../../src/scss/screen.scss */
 .ui-widget-header nav ul li a {
   cursor: pointer;
   float: left;
@@ -308,36 +307,36 @@ header.ui-widget-header {
   padding: 0.5em 1em;
   text-decoration: none;
 }
-/* line 259, ../../src/scss/screen.scss */
+/* line 258, ../../src/scss/screen.scss */
 .ui-widget-header nav ul li a:link, .ui-widget-header nav ul li a:visited {
   cursor: pointer;
   float: left;
   padding: 0.5em 1em;
   text-decoration: none;
 }
-/* line 264, ../../src/scss/screen.scss */
+/* line 263, ../../src/scss/screen.scss */
 .ui-widget-header nav ul li:hover:not(.nav-state-active) {
   border-color: #fff9e5;
 }
-/* line 266, ../../src/scss/screen.scss */
+/* line 265, ../../src/scss/screen.scss */
 .ui-widget-header nav ul li.nav-state-active a {
   border-color: #817865;
   color: #fff9e5;
 }
 
-/* line 271, ../../src/scss/screen.scss */
+/* line 270, ../../src/scss/screen.scss */
 header #status {
   position: absolute;
   top: 55px;
   left: 50%;
   margin-left: -10px;
 }
-/* line 276, ../../src/scss/screen.scss */
+/* line 275, ../../src/scss/screen.scss */
 header #status .ui-icon {
   zoom: 125%;
   float: left;
 }
-/* line 279, ../../src/scss/screen.scss */
+/* line 278, ../../src/scss/screen.scss */
 header #survey-info {
   color: #494437;
   margin-top: 5px;
@@ -347,14 +346,14 @@ header #survey-info {
   letter-spacing: .4em;
 }
 
-/* line 287, ../../src/scss/screen.scss */
+/* line 286, ../../src/scss/screen.scss */
 .tabs-nohdr {
   padding: 0;
   background-image: none;
   border-width: 0;
   z-index: 5;
 }
-/* line 292, ../../src/scss/screen.scss */
+/* line 291, ../../src/scss/screen.scss */
 .tabs-nohdr .ui-tabs-nav {
   padding-left: 0;
   background: #dddddd url(images/tex2res2.png) repeat;
@@ -363,28 +362,28 @@ header #survey-info {
   -webkit-border-radius: 0;
   border-radius: 0;
 }
-/* line 299, ../../src/scss/screen.scss */
+/* line 298, ../../src/scss/screen.scss */
 .tabs-nohdr .ui-tabs-nav .ui-state-default {
   background: none;
   border: solid 1px #dddddd;
 }
-/* line 302, ../../src/scss/screen.scss */
+/* line 301, ../../src/scss/screen.scss */
 .tabs-nohdr .ui-tabs-nav .ui-state-hover {
   background: none;
   border: solid 1px #494437;
 }
-/* line 305, ../../src/scss/screen.scss */
+/* line 304, ../../src/scss/screen.scss */
 .tabs-nohdr .ui-tabs-nav .ui-state-active {
   background: #feeebd none;
   border: solid 1px #817865;
   border-bottom-color: #feeebd;
 }
-/* line 309, ../../src/scss/screen.scss */
+/* line 308, ../../src/scss/screen.scss */
 .tabs-nohdr .ui-tabs-panel {
   border-width: 1px 1px 1px 1px;
 }
 
-/* line 315, ../../src/scss/screen.scss */
+/* line 314, ../../src/scss/screen.scss */
 .drawer {
   border: 1px solid #D6E9C6;
   color: #468847;
@@ -398,22 +397,22 @@ header #survey-info {
   transition: margin 0.8s ease-out;
   font-size: 16px;
 }
-/* line 325, ../../src/scss/screen.scss */
+/* line 324, ../../src/scss/screen.scss */
 .drawer.left {
   bottom: 20%;
   left: 0;
   width: 300px;
   height: 80px;
 }
-/* line 330, ../../src/scss/screen.scss */
+/* line 329, ../../src/scss/screen.scss */
 .drawer.hide {
   margin-left: -280px;
 }
-/* line 332, ../../src/scss/screen.scss */
+/* line 331, ../../src/scss/screen.scss */
 .drawer .content {
   padding: 20px;
 }
-/* line 334, ../../src/scss/screen.scss */
+/* line 333, ../../src/scss/screen.scss */
 .drawer .handle {
   z-index: 101;
   width: 18px;
@@ -421,36 +420,36 @@ header #survey-info {
   border-radius: 0 4px 4px 0;
   /*background-color: #999999*/
 }
-/* line 340, ../../src/scss/screen.scss */
+/* line 339, ../../src/scss/screen.scss */
 .drawer .handle.hasrecords {
   /*background-color: #B94A48*/
 }
-/* line 342, ../../src/scss/screen.scss */
+/* line 341, ../../src/scss/screen.scss */
 .drawer .handle.right {
   float: right;
   border-left: 3px ridge #ccc;
   /*border-right: 1px dotted #aaa;*/
 }
-/* line 346, ../../src/scss/screen.scss */
+/* line 345, ../../src/scss/screen.scss */
 .drawer #status {
   display: inline-block;
   /*padding-bottom: 10px;
   height: 1em;*/
 }
-/* line 350, ../../src/scss/screen.scss */
+/* line 349, ../../src/scss/screen.scss */
 .drawer #status.offline {
   color: red;
 }
-/* line 352, ../../src/scss/screen.scss */
+/* line 351, ../../src/scss/screen.scss */
 .drawer #status.waiting {
   color: orange;
 }
-/* line 356, ../../src/scss/screen.scss */
+/* line 355, ../../src/scss/screen.scss */
 .drawer button#drawer-export {
   display: block;
 }
 
-/* line 360, ../../src/scss/screen.scss */
+/* line 359, ../../src/scss/screen.scss */
 #branding {
   position: fixed;
   width: 120px;
@@ -462,17 +461,17 @@ header #survey-info {
   color: #666;
   font-size: 1.1em;
 }
-/* line 370, ../../src/scss/screen.scss */
+/* line 369, ../../src/scss/screen.scss */
 #branding a:link, #branding a:hover, #branding a:visited {
   text-decoration: none;
   color: #666;
 }
-/* line 373, ../../src/scss/screen.scss */
+/* line 372, ../../src/scss/screen.scss */
 #branding a:hover {
   color: #444;
 }
 
-/* line 376, ../../src/scss/screen.scss */
+/* line 375, ../../src/scss/screen.scss */
 #bottom-bar {
   background-color: #444;
   /*#2B2C30; */
@@ -486,7 +485,7 @@ header #survey-info {
   width: 100%;
   padding: 10px 0;
 }
-/* line 387, ../../src/scss/screen.scss */
+/* line 386, ../../src/scss/screen.scss */
 #bottom-bar #queue {
   color: #BCBEC0;
   display: block;
@@ -495,7 +494,7 @@ header #survey-info {
   text-decoration: none;
   margin: 0 0 -35px 10px;
 }
-/* line 394, ../../src/scss/screen.scss */
+/* line 393, ../../src/scss/screen.scss */
 #bottom-bar #queue #queue-length {
   font-size: 36px;
   display: block;
@@ -503,7 +502,7 @@ header #survey-info {
   float: left;
 }
 
-/* line 400, ../../src/scss/screen.scss */
+/* line 399, ../../src/scss/screen.scss */
 #form-controls.ui-widget-header {
   position: absolute;
   z-index: 1;
@@ -512,7 +511,7 @@ header #survey-info {
   border-right: none;
   background-image: none;
 }
-/* line 407, ../../src/scss/screen.scss */
+/* line 406, ../../src/scss/screen.scss */
 #form-controls.ui-widget-header.right {
   bottom: 35%;
   right: 3%;
@@ -522,18 +521,18 @@ header #survey-info {
   border-radius: 8px;
   /* consistent with theme? */
 }
-/* line 415, ../../src/scss/screen.scss */
+/* line 414, ../../src/scss/screen.scss */
 #form-controls.ui-widget-header.bottom, #form-controls.ui-widget-header.mobile {
   bottom: 0px;
   width: 100%;
   padding: 10px 0;
 }
-/* line 420, ../../src/scss/screen.scss */
+/* line 419, ../../src/scss/screen.scss */
 #form-controls.ui-widget-header.right button {
   display: block;
 }
 
-/* line 423, ../../src/scss/screen.scss */
+/* line 422, ../../src/scss/screen.scss */
 #container {
   position: absolute;
   top: 80px;
@@ -541,7 +540,7 @@ header #survey-info {
   overflow: auto;
 }
 
-/* line 429, ../../src/scss/screen.scss */
+/* line 428, ../../src/scss/screen.scss */
 .main {
   padding: 20px;
   margin-left: auto;
@@ -557,41 +556,41 @@ header #survey-info {
   /* counter the body center */
 }
 
-/* line 443, ../../src/scss/screen.scss */
+/* line 442, ../../src/scss/screen.scss */
 article.main .jr {
   padding: 1.5em;
   min-height: 300px;
 }
 
-/* line 447, ../../src/scss/screen.scss */
+/* line 446, ../../src/scss/screen.scss */
 .main {
   max-width: 720px;
 }
-/* line 448, ../../src/scss/screen.scss */
+/* line 447, ../../src/scss/screen.scss */
 .main article {
   padding: 1.5em;
   min-height: 300px;
 }
-/* line 452, ../../src/scss/screen.scss */
+/* line 451, ../../src/scss/screen.scss */
 .main#wrap-collation, .main#wrap-charts {
   max-width: 95%;
 }
-/* line 454, ../../src/scss/screen.scss */
+/* line 453, ../../src/scss/screen.scss */
 .main ul, .main ol {
   /*list-style: disc;*/
   margin-left: 30px;
   margin-bottom: 25px;
 }
-/* line 458, ../../src/scss/screen.scss */
+/* line 457, ../../src/scss/screen.scss */
 .main ul li, .main ol li {
   margin: 10px 0;
 }
-/* line 460, ../../src/scss/screen.scss */
+/* line 459, ../../src/scss/screen.scss */
 .main ul li span.ui-icon, .main ol li span.ui-icon {
   float: left;
   margin-left: -25px;
 }
-/* line 463, ../../src/scss/screen.scss */
+/* line 462, ../../src/scss/screen.scss */
 .main textarea.source {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -602,22 +601,22 @@ article.main .jr {
   font-size: .8em;
   padding: 5px;
 }
-/* line 472, ../../src/scss/screen.scss */
+/* line 471, ../../src/scss/screen.scss */
 .main label#data-template-show {
   font-size: .8em;
   float: right;
   margin: -15px 0 5px 0;
 }
-/* line 476, ../../src/scss/screen.scss */
+/* line 475, ../../src/scss/screen.scss */
 .main label#data-template-show input {
   float: left;
   margin-right: 8px;
 }
-/* line 479, ../../src/scss/screen.scss */
+/* line 478, ../../src/scss/screen.scss */
 .main .ui-tabs-nav li.ui-state-active {
   /*background: blue;*/
 }
-/* line 481, ../../src/scss/screen.scss */
+/* line 480, ../../src/scss/screen.scss */
 .main .ui-widget-header {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -631,60 +630,60 @@ article.main .jr {
     display: block;
     width: 100%;}  
 }*/
-/* line 494, ../../src/scss/screen.scss */
+/* line 493, ../../src/scss/screen.scss */
 .dialog {
   display: none;
   line-height: 1.5em;
 }
-/* line 497, ../../src/scss/screen.scss */
+/* line 496, ../../src/scss/screen.scss */
 .dialog .dialog-msg {
   display: block;
   margin-bottom: 5px;
 }
-/* line 500, ../../src/scss/screen.scss */
+/* line 499, ../../src/scss/screen.scss */
 .dialog .dialog-error.ui-state-error {
   display: block;
   margin-bottom: 15px;
 }
-/* line 503, ../../src/scss/screen.scss */
+/* line 502, ../../src/scss/screen.scss */
 .dialog input {
   width: 100%;
   display: block;
   margin-bottom: 20px;
 }
-/* line 507, ../../src/scss/screen.scss */
+/* line 506, ../../src/scss/screen.scss */
 .dialog input[type=checkbox] {
   width: 1em;
   float: left;
 }
-/* line 510, ../../src/scss/screen.scss */
+/* line 509, ../../src/scss/screen.scss */
 .dialog input[type=checkbox] + span {
   display: block;
 }
-/* line 513, ../../src/scss/screen.scss */
+/* line 512, ../../src/scss/screen.scss */
 .dialog input[type=checkbox]:disabled + span {
   opacity: 0.5;
 }
-/* line 515, ../../src/scss/screen.scss */
+/* line 514, ../../src/scss/screen.scss */
 .dialog label {
   display: block;
 }
-/* line 517, ../../src/scss/screen.scss */
+/* line 516, ../../src/scss/screen.scss */
 .dialog a.advanced {
   font-size: 11px;
   display: block;
   text-align: center;
   margin: 10px 0 10px 0;
 }
-/* line 522, ../../src/scss/screen.scss */
+/* line 521, ../../src/scss/screen.scss */
 .dialog fieldset.advanced {
   display: none;
 }
-/* line 524, ../../src/scss/screen.scss */
+/* line 523, ../../src/scss/screen.scss */
 .dialog .hint {
   display: inline-block;
 }
-/* line 526, ../../src/scss/screen.scss */
+/* line 525, ../../src/scss/screen.scss */
 .dialog .launch-link {
   margin: 25px 0 0 0;
   text-align: center;
@@ -693,19 +692,19 @@ article.main .jr {
   color: #5c5c5c;
   font-size: 1.2em;
 }
-/* line 533, ../../src/scss/screen.scss */
+/* line 532, ../../src/scss/screen.scss */
 .dialog .launch-link:hover {
   color: #494437;
 }
 
-/* line 536, ../../src/scss/screen.scss */
+/* line 535, ../../src/scss/screen.scss */
 footer.ui-widget {
   margin-top: 15px;
   margin-bottom: 20px;
   font-size: 10px;
   color: #5c5c5c;
 }
-/* line 540, ../../src/scss/screen.scss */
+/* line 539, ../../src/scss/screen.scss */
 footer.ui-widget a {
   text-decoration: none;
   color: #5c5c5c;
@@ -714,7 +713,7 @@ footer.ui-widget a {
 /***************************
  ** FEEDBACK BAR & PAGE **
  ***************************/
-/* line 549, ../../src/scss/screen.scss */
+/* line 548, ../../src/scss/screen.scss */
 #feedback-bar {
   position: fixed;
   z-index: 13;
@@ -727,7 +726,7 @@ footer.ui-widget a {
   border-left: none;
   border-right: none;
 }
-/* line 560, ../../src/scss/screen.scss */
+/* line 559, ../../src/scss/screen.scss */
 #feedback-bar p {
   position: relative;
   margin: 0 50px;
@@ -736,15 +735,15 @@ footer.ui-widget a {
   font-size: 0.9em;
   border-top: 1px #ddd dashed;
 }
-/* line 567, ../../src/scss/screen.scss */
+/* line 566, ../../src/scss/screen.scss */
 #feedback-bar p:first-child {
   border-top: none;
 }
-/* line 569, ../../src/scss/screen.scss */
+/* line 568, ../../src/scss/screen.scss */
 #feedback-bar p .ui-icon {
   display: inline-block;
 }
-/* line 571, ../../src/scss/screen.scss */
+/* line 570, ../../src/scss/screen.scss */
 #feedback-bar .ui-icon.ui-icon-info {
   position: absolute;
   left: 20px;
@@ -752,7 +751,7 @@ footer.ui-widget a {
   margin-top: -8px;
 }
 
-/* line 577, ../../src/scss/screen.scss */
+/* line 576, ../../src/scss/screen.scss */
 #feedback-bar-close {
   position: absolute;
   right: 20px;
@@ -760,7 +759,7 @@ footer.ui-widget a {
   margin-top: -8px;
 }
 
-/* line 583, ../../src/scss/screen.scss */
+/* line 582, ../../src/scss/screen.scss */
 #page.ui-widget-header {
   position: absolute;
   z-index: 12;
@@ -775,7 +774,7 @@ footer.ui-widget a {
   border-right: none;
 }
 
-/* line 596, ../../src/scss/screen.scss */
+/* line 595, ../../src/scss/screen.scss */
 .ui-widget-header #page-content {
   margin: 2em;
   padding: 3em;
@@ -788,88 +787,88 @@ footer.ui-widget a {
   -o-box-shadow: inset 0 0 5px #817865;
   box-shadow: inner 0 0 5px #817865;
 }
-/* line 608, ../../src/scss/screen.scss */
+/* line 607, ../../src/scss/screen.scss */
 .ui-widget-header #page-content p:first-child {
   margin-top: 0;
 }
-/* line 610, ../../src/scss/screen.scss */
+/* line 609, ../../src/scss/screen.scss */
 .ui-widget-header #page-content p:last-child {
   margin-bottom: 0;
 }
 
-/* line 614, ../../src/scss/screen.scss */
+/* line 613, ../../src/scss/screen.scss */
 #page a {
   color: #fece2f;
   text-decoration: none;
 }
-/* line 617, ../../src/scss/screen.scss */
+/* line 616, ../../src/scss/screen.scss */
 #page a:link {
   color: #fece2f;
 }
-/* line 619, ../../src/scss/screen.scss */
+/* line 618, ../../src/scss/screen.scss */
 #page a:hover, #page a:focus {
   text-decoration: underline;
   color: #fff9e5;
 }
-/* line 622, ../../src/scss/screen.scss */
+/* line 621, ../../src/scss/screen.scss */
 #page a:active {
   color: white;
   text-decoration: none;
 }
-/* line 625, ../../src/scss/screen.scss */
+/* line 624, ../../src/scss/screen.scss */
 #page .ui-icon {
   float: left;
   margin-right: 10px;
 }
 
-/* line 629, ../../src/scss/screen.scss */
+/* line 628, ../../src/scss/screen.scss */
 #page-close {
   position: absolute;
   right: 20px;
   bottom: 20px;
 }
 
-/* line 634, ../../src/scss/screen.scss */
+/* line 633, ../../src/scss/screen.scss */
 #page .column {
   width: 50%;
   float: left;
   height: 100%;
 }
 
-/* line 640, ../../src/scss/screen.scss */
+/* line 639, ../../src/scss/screen.scss */
 #settings h3 {
   text-align: left;
 }
-/* line 642, ../../src/scss/screen.scss */
+/* line 641, ../../src/scss/screen.scss */
 #settings input {
   display: block;
   float: left;
   margin-right: 10px;
   margin-left: 0;
 }
-/* line 647, ../../src/scss/screen.scss */
+/* line 646, ../../src/scss/screen.scss */
 #settings label {
   display: block;
   margin-bottom: 5px;
 }
-/* line 650, ../../src/scss/screen.scss */
+/* line 649, ../../src/scss/screen.scss */
 #settings ul {
   margin-left: 0;
   list-style: none;
 }
 
-/* line 654, ../../src/scss/screen.scss */
+/* line 653, ../../src/scss/screen.scss */
 #records-saved {
   width: 45%;
   float: left;
   /*display: inline;*/
   /* doesn't make sense right? with float*/
 }
-/* line 659, ../../src/scss/screen.scss */
+/* line 658, ../../src/scss/screen.scss */
 #records-saved h3 {
   /*margin-left: 30px;*/
 }
-/* line 661, ../../src/scss/screen.scss */
+/* line 660, ../../src/scss/screen.scss */
 #records-saved .scroll-list {
   border-color: white;
   min-height: 150px;
@@ -877,22 +876,22 @@ footer.ui-widget a {
   overflow: auto;
 }
 
-/* line 669, ../../src/scss/screen.scss */
+/* line 668, ../../src/scss/screen.scss */
 #form-list ol {
   margin: 0px;
 }
-/* line 671, ../../src/scss/screen.scss */
+/* line 670, ../../src/scss/screen.scss */
 #form-list ol li {
   display: block;
   text-align: center;
 }
-/* line 674, ../../src/scss/screen.scss */
+/* line 673, ../../src/scss/screen.scss */
 #form-list ol li a {
   font-size: 12px;
   width: 100%;
 }
 
-/* line 678, ../../src/scss/screen.scss */
+/* line 677, ../../src/scss/screen.scss */
 .scroll-list {
   position: relative;
   border: 1px solid;
@@ -903,13 +902,13 @@ footer.ui-widget a {
   padding: 15px;
   /*height: 300px;*/
 }
-/* line 686, ../../src/scss/screen.scss */
+/* line 685, ../../src/scss/screen.scss */
 .scroll-list > div {
   position: relative;
   width: 100%;
   height: 100%;
 }
-/* line 690, ../../src/scss/screen.scss */
+/* line 689, ../../src/scss/screen.scss */
 .scroll-list > div ol {
   position: relative;
   top: 0;
@@ -919,7 +918,7 @@ footer.ui-widget a {
   padding: 0;
   width: 100%;
 }
-/* line 698, ../../src/scss/screen.scss */
+/* line 697, ../../src/scss/screen.scss */
 .scroll-list > div ol li {
   list-style: none;
   margin: 3px;
@@ -930,19 +929,19 @@ footer.ui-widget a {
   overflow: hidden;
   /* for very long names */
 }
-/* line 707, ../../src/scss/screen.scss */
+/* line 706, ../../src/scss/screen.scss */
 .scroll-list > div ol li .date {
   font-size: .6em;
   float: right;
 }
-/* line 711, ../../src/scss/screen.scss */
+/* line 710, ../../src/scss/screen.scss */
 .scroll-list > div ol li.no-click {
   font-style: italic;
   text-align: center;
   margin: 40px;
 }
 
-/* line 716, ../../src/scss/screen.scss */
+/* line 715, ../../src/scss/screen.scss */
 #records-summary {
   margin: 0;
   margin-top: 5px;
@@ -951,22 +950,22 @@ footer.ui-widget a {
   font-size: 0.6em;
   text-align: center;
 }
-/* line 723, ../../src/scss/screen.scss */
+/* line 722, ../../src/scss/screen.scss */
 #records-summary .ui-icon {
   display: inline-block;
   float: none;
 }
-/* line 726, ../../src/scss/screen.scss */
+/* line 725, ../../src/scss/screen.scss */
 #records-summary .ui-icon-pencil {
   margin-left: 3em;
 }
 
-/* line 730, ../../src/scss/screen.scss */
+/* line 729, ../../src/scss/screen.scss */
 #records .column.middle {
   width: 10%;
   height: 100%;
 }
-/* line 733, ../../src/scss/screen.scss */
+/* line 732, ../../src/scss/screen.scss */
 #records .column.right {
   /*right column of records page*/
   width: 45%;
@@ -976,23 +975,23 @@ footer.ui-widget a {
   margin-right: -10px;
   /*visual correction due to absence of border, stricly speaking not correct*/
 }
-/* line 741, ../../src/scss/screen.scss */
+/* line 740, ../../src/scss/screen.scss */
 #records .column .ui-icon {
   display: inline-block;
   float: none;
 }
 
-/* line 745, ../../src/scss/screen.scss */
+/* line 744, ../../src/scss/screen.scss */
 #records-buttons {
   /*width: auto;*/
   margin: 20% auto 5% auto;
 }
-/* line 748, ../../src/scss/screen.scss */
+/* line 747, ../../src/scss/screen.scss */
 #records-buttons button {
   /*float: left;*/
 }
 
-/* line 751, ../../src/scss/screen.scss */
+/* line 750, ../../src/scss/screen.scss */
 #records-force-upload-info, #records-export-info {
   display: none;
   font-size: .8em;
@@ -1000,7 +999,7 @@ footer.ui-widget a {
   line-height: 1.5em;
 }
 
-/* line 757, ../../src/scss/screen.scss */
+/* line 756, ../../src/scss/screen.scss */
 #slider-wrap {
   /*float:left;*/
   width: 25px;
@@ -1008,25 +1007,25 @@ footer.ui-widget a {
   margin: 0 auto;
 }
 
-/* line 763, ../../src/scss/screen.scss */
+/* line 762, ../../src/scss/screen.scss */
 #slider-vertical {
   position: relative;
   height: 100%;
   background: none;
 }
 
-/* line 768, ../../src/scss/screen.scss */
+/* line 767, ../../src/scss/screen.scss */
 .ui-slider-vertical {
   width: 100%;
   border: none;
 }
-/* line 771, ../../src/scss/screen.scss */
+/* line 770, ../../src/scss/screen.scss */
 .ui-slider-vertical .ui-slider-range {
   background: none;
   position: absolute;
   width: 100%;
 }
-/* line 775, ../../src/scss/screen.scss */
+/* line 774, ../../src/scss/screen.scss */
 .ui-slider-vertical .ui-slider-handle {
   /*left: 1px; */
   left: 0px;
@@ -1039,12 +1038,12 @@ footer.ui-widget a {
   position: absolute;
 }
 
-/* line 786, ../../src/scss/screen.scss */
+/* line 785, ../../src/scss/screen.scss */
 .ui-slider .ui-slider-handle {
   width: 23px;
 }
 
-/* line 789, ../../src/scss/screen.scss */
+/* line 788, ../../src/scss/screen.scss */
 .ui-slider-handle .ui-state-default {
   background-image: none;
 }
@@ -1058,7 +1057,7 @@ footer.ui-widget a {
 	.scroll-bar-wrap .ui-slider-handle .ui-icon { margin: -8px auto 0; position: relative; top: 50%; }
 */
 /* these transitions should match */
-/* line 803, ../../src/scss/screen.scss */
+/* line 802, ../../src/scss/screen.scss */
 #feedback-bar, #main, #page {
   -webkit-transition: all 1s ease-out;
   -moz-transition: all 1s ease-out;
@@ -1069,39 +1068,39 @@ footer.ui-widget a {
 /**************************
 ****    SURVEY FORM    ****
 **************************/
-/* line 813, ../../src/scss/screen.scss */
+/* line 812, ../../src/scss/screen.scss */
 .jr [lang]:not(.active), .jr-hint {
   display: none;
 }
 
-/* line 817, ../../src/scss/screen.scss */
+/* line 816, ../../src/scss/screen.scss */
 .jr-constraint-msg.active {
   display: block;
   visibility: hidden;
   min-height: 1em;
 }
-/* line 821, ../../src/scss/screen.scss */
+/* line 820, ../../src/scss/screen.scss */
 .jr-constraint-msg:not(.active) {
   display: none;
 }
 
-/* line 824, ../../src/scss/screen.scss */
+/* line 823, ../../src/scss/screen.scss */
 .invalid .jr-constraint-msg.active {
   visibility: visible;
   font-weight: bold;
   font-style: italic;
 }
 
-/* line 829, ../../src/scss/screen.scss */
+/* line 828, ../../src/scss/screen.scss */
 .jr-option-translations {
   display: none;
 }
 
-/* line 832, ../../src/scss/screen.scss */
+/* line 831, ../../src/scss/screen.scss */
 .jr h2.ui-widget-header {
   margin: 0;
 }
-/* line 834, ../../src/scss/screen.scss */
+/* line 833, ../../src/scss/screen.scss */
 .jr h2.ui-widget-header span {
   display: block;
   color: #494437;
@@ -1110,20 +1109,20 @@ footer.ui-widget a {
   text-align: right;
 }
 
-/* line 841, ../../src/scss/screen.scss */
+/* line 840, ../../src/scss/screen.scss */
 .question-icons {
   float: right;
   margin: -5px -10px 0 0;
   /*line-height: 15px;*/
 }
-/* line 845, ../../src/scss/screen.scss */
+/* line 844, ../../src/scss/screen.scss */
 .question-icons span {
   display: inline-block;
   text-align: right;
   width: 18px;
 }
 
-/* line 850, ../../src/scss/screen.scss */
+/* line 849, ../../src/scss/screen.scss */
 #form-languages {
   margin-top: -18px;
   margin-bottom: 18px;
@@ -1132,14 +1131,14 @@ footer.ui-widget a {
 }
 
 /* correction for when tabs are present */
-/* line 858, ../../src/scss/screen.scss */
+/* line 857, ../../src/scss/screen.scss */
 .ui-tabs-panel #form-languages {
   margin-top: -35px;
   margin-bottom: 45px;
   margin-right: -15px;
 }
 
-/* line 864, ../../src/scss/screen.scss */
+/* line 863, ../../src/scss/screen.scss */
 #form-languages a:link {
   float: right;
   padding-left: 10px;
@@ -1149,18 +1148,18 @@ footer.ui-widget a {
   font-size: .8em;
   color: #5c5c5c;
 }
-/* line 872, ../../src/scss/screen.scss */
+/* line 871, ../../src/scss/screen.scss */
 #form-languages a:not(.active):hover {
   color: #381f00;
   text-decoration: underline;
 }
-/* line 875, ../../src/scss/screen.scss */
+/* line 874, ../../src/scss/screen.scss */
 #form-languages a.active {
   color: #381f00;
   text-decoration: none;
 }
 
-/* line 879, ../../src/scss/screen.scss */
+/* line 878, ../../src/scss/screen.scss */
 .form-wrapper {
   /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
   position: relative;
@@ -1174,7 +1173,7 @@ footer.ui-widget a {
   margin: 0 0 40px 0;
   padding: 0;
 }
-/* line 38, ../../src/scss/screen.scss */
+/* line 37, ../../src/scss/screen.scss */
 .form-wrapper:before, .form-wrapper:after {
   position: absolute;
   width: 40%;
@@ -1193,7 +1192,7 @@ footer.ui-widget a {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   z-index: -1;
 }
-/* line 55, ../../src/scss/screen.scss */
+/* line 54, ../../src/scss/screen.scss */
 .form-wrapper:after {
   left: auto;
   right: 12px;
@@ -1203,17 +1202,17 @@ footer.ui-widget a {
   -o-transform: skew(5deg) rotate(5deg);
   transform: skew(5deg) rotate(5deg);
 }
-/* line 883, ../../src/scss/screen.scss */
+/* line 882, ../../src/scss/screen.scss */
 .form-wrapper #submit-form {
   left: 50%;
   margin: 10px 0 45px -56px;
 }
 
-/* line 887, ../../src/scss/screen.scss */
+/* line 886, ../../src/scss/screen.scss */
 .jr {
   line-height: 1.1em;
 }
-/* line 891, ../../src/scss/screen.scss */
+/* line 890, ../../src/scss/screen.scss */
 .jr .form-logo img {
   position: relative;
   left: 50%;
@@ -1222,18 +1221,18 @@ footer.ui-widget a {
   margin-left: -60px;
   margin-bottom: 10px;
 }
-/* line 898, ../../src/scss/screen.scss */
+/* line 897, ../../src/scss/screen.scss */
 .jr h2 {
   text-align: center;
   font-size: 24px;
   padding-bottom: 15px;
   border-bottom: solid 3px #ccc;
 }
-/* line 904, ../../src/scss/screen.scss */
+/* line 903, ../../src/scss/screen.scss */
 .jr h3 {
   text-align: left;
 }
-/* line 906, ../../src/scss/screen.scss */
+/* line 905, ../../src/scss/screen.scss */
 .jr label, .jr fieldset {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -1245,15 +1244,15 @@ footer.ui-widget a {
   /* */
   font-weight: bold;
 }
-/* line 915, ../../src/scss/screen.scss */
+/* line 914, ../../src/scss/screen.scss */
 .jr label + label {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 917, ../../src/scss/screen.scss */
+/* line 916, ../../src/scss/screen.scss */
 .jr .geopoint {
   height: 350px;
 }
-/* line 919, ../../src/scss/screen.scss */
+/* line 918, ../../src/scss/screen.scss */
 .jr .geopoint .map-canvas {
   width: 340px;
   height: 275px;
@@ -1261,25 +1260,25 @@ footer.ui-widget a {
   float: right;
   border: 1px solid #cccccc;
 }
-/* line 925, ../../src/scss/screen.scss */
+/* line 924, ../../src/scss/screen.scss */
 .jr .geopoint label {
   border: none;
   padding: 5px 0;
 }
-/* line 928, ../../src/scss/screen.scss */
+/* line 927, ../../src/scss/screen.scss */
 .jr .geopoint button {
   width: 130px;
   margin-top: 10px;
 }
-/* line 932, ../../src/scss/screen.scss */
+/* line 931, ../../src/scss/screen.scss */
 .jr fieldset:not(#jr-preload-items):not(.jr-group) + label, .jr fieldset:not(#jr-preload-items):not(.jr-group) + fieldset:not(.jr-group) {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 934, ../../src/scss/screen.scss */
+/* line 933, ../../src/scss/screen.scss */
 .jr label + fieldset:not(.jr-group) {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 936, ../../src/scss/screen.scss */
+/* line 935, ../../src/scss/screen.scss */
 .jr span.repeat-number {
   height: 2em;
   display: block;
@@ -1288,42 +1287,42 @@ footer.ui-widget a {
   margin-top: -8px;
   color: #cccccc;
 }
-/* line 943, ../../src/scss/screen.scss */
+/* line 942, ../../src/scss/screen.scss */
 .jr legend {
   position: absolute;
   top: 1.5em;
   font-weight: bold;
 }
-/* line 947, ../../src/scss/screen.scss */
+/* line 946, ../../src/scss/screen.scss */
 .jr legend ~ label {
   border-top: none;
   padding: .5em 0 .5em 0;
   margin-left: 25px;
   font-weight: normal;
 }
-/* line 952, ../../src/scss/screen.scss */
+/* line 951, ../../src/scss/screen.scss */
 .jr legend + label {
   margin-top: 25px;
 }
-/* line 954, ../../src/scss/screen.scss */
+/* line 953, ../../src/scss/screen.scss */
 .jr fieldset {
   position: relative;
 }
-/* line 956, ../../src/scss/screen.scss */
+/* line 955, ../../src/scss/screen.scss */
 .jr fieldset.jr-group {
   border-top: 2px solid #bbbbbb;
   /**/
   margin: .5em 0;
 }
-/* line 959, ../../src/scss/screen.scss */
+/* line 958, ../../src/scss/screen.scss */
 .jr fieldset.jr-repeat {
   border: 1px dotted #cccccc;
 }
-/* line 961, ../../src/scss/screen.scss */
+/* line 960, ../../src/scss/screen.scss */
 .jr label, .jr legend, .jr .trigger {
   font-size: .8em;
 }
-/* line 963, ../../src/scss/screen.scss */
+/* line 962, ../../src/scss/screen.scss */
 .jr input, .jr textarea {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -1333,16 +1332,16 @@ footer.ui-widget a {
   margin: 8px 0 0 0;
   font-size: .9em;
 }
-/* line 971, ../../src/scss/screen.scss */
+/* line 970, ../../src/scss/screen.scss */
 .jr input[type="text"], .jr textarea[type="text"] {
   width: 100%;
 }
-/* line 973, ../../src/scss/screen.scss */
+/* line 972, ../../src/scss/screen.scss */
 .jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password], .jr textarea[type=date], .jr textarea[type=number], .jr textarea[type=email], .jr textarea[type=password] {
   width: 130px;
   text-align: right;
 }
-/* line 976, ../../src/scss/screen.scss */
+/* line 975, ../../src/scss/screen.scss */
 .jr input[type=radio], .jr input[type=checkbox], .jr textarea[type=radio], .jr textarea[type=checkbox] {
   display: block;
   /*****/
@@ -1353,31 +1352,31 @@ footer.ui-widget a {
   /*compensates for the label margin, fixes multi-line labels */
   margin-left: -25px;
 }
-/* line 985, ../../src/scss/screen.scss */
+/* line 984, ../../src/scss/screen.scss */
 .jr textarea {
   width: 100%;
   min-height: 5em;
 }
-/* line 988, ../../src/scss/screen.scss */
+/* line 987, ../../src/scss/screen.scss */
 .jr select {
   display: block;
 }
-/* line 991, ../../src/scss/screen.scss */
+/* line 990, ../../src/scss/screen.scss */
 .jr fieldset .ui-button {
   width: 27px;
   height: 27px;
   margin-top: 6px;
 }
-/* line 995, ../../src/scss/screen.scss */
+/* line 994, ../../src/scss/screen.scss */
 .jr fieldset .one-more {
   margin: 0 -34px -5px 10px;
 }
-/* line 997, ../../src/scss/screen.scss */
+/* line 996, ../../src/scss/screen.scss */
 .jr fieldset .remove {
   float: right;
   margin-right: 0;
 }
-/* line 1000, ../../src/scss/screen.scss */
+/* line 999, ../../src/scss/screen.scss */
 .jr .trigger {
   border: 1px solid #FBEED5;
   /* REPLACE AFTER BOOTSTRAP */
@@ -1386,30 +1385,30 @@ footer.ui-widget a {
   padding: 7px 12px;
   margin: 1em 0;
 }
-/* line 1004, ../../src/scss/screen.scss */
+/* line 1003, ../../src/scss/screen.scss */
 .jr .required {
   margin-left: 3px;
   color: #ce4f07;
 }
-/* line 1007, ../../src/scss/screen.scss */
+/* line 1006, ../../src/scss/screen.scss */
 .jr .jr-appearance-page-break {
   display: none;
 }
 
 /*excludes first label or fieldset in each fieldset or root of form*/
 /*first label of a set of radio buttons or checkboxes */
-/* line 1014, ../../src/scss/screen.scss */
+/* line 1013, ../../src/scss/screen.scss */
 label.with-media {
   margin-top: 5px;
 }
 
-/* line 1017, ../../src/scss/screen.scss */
+/* line 1016, ../../src/scss/screen.scss */
 .with-media > span.active {
   display: block;
   width: 100%;
 }
 
-/* line 1022, ../../src/scss/screen.scss */
+/* line 1021, ../../src/scss/screen.scss */
 label.with-media img, label.with-media video, label.with-media audio {
   max-width: 45%;
   padding-right: 5%;
@@ -1417,29 +1416,29 @@ label.with-media img, label.with-media video, label.with-media audio {
   float: right;
 }
 
-/* line 1028, ../../src/scss/screen.scss */
+/* line 1027, ../../src/scss/screen.scss */
 .with-media input {
   float: left;
   width: 5%;
   margin-top: -17px;
 }
 
-/* line 1034, ../../src/scss/screen.scss */
+/* line 1033, ../../src/scss/screen.scss */
 input, .fakefileinput, textarea {
   background-color: white;
   border: 2px solid #cccccc;
   min-height: 30px;
 }
 
-/* line 1039, ../../src/scss/screen.scss */
+/* line 1038, ../../src/scss/screen.scss */
 .jr-appearance-compact label {
   display: inline;
 }
-/* line 1041, ../../src/scss/screen.scss */
+/* line 1040, ../../src/scss/screen.scss */
 .jr-appearance-compact label span {
   display: none;
 }
-/* line 1043, ../../src/scss/screen.scss */
+/* line 1042, ../../src/scss/screen.scss */
 .jr-appearance-compact label img {
   float: left;
   width: 120px;
@@ -1447,13 +1446,13 @@ input, .fakefileinput, textarea {
   padding: 5px;
   margin-top: 25px;
 }
-/* line 1050, ../../src/scss/screen.scss */
+/* line 1049, ../../src/scss/screen.scss */
 .jr-appearance-compact label input[type=radio], .jr-appearance-compact label input[type=checkbox] {
   /*display: none;*/
   margin-top: 35px;
 }
 
-/* line 1054, ../../src/scss/screen.scss */
+/* line 1053, ../../src/scss/screen.scss */
 .jr-branch {
   border-top: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
@@ -1464,17 +1463,17 @@ input, .fakefileinput, textarea {
   opacity: 0.5;
 }
 
-/* line 1063, ../../src/scss/screen.scss */
+/* line 1062, ../../src/scss/screen.scss */
 .disabled {
   /*color: $shadow*/
   opacity: 0.5;
 }
 
-/* line 1067, ../../src/scss/screen.scss */
+/* line 1066, ../../src/scss/screen.scss */
 #upload form {
   text-align: center;
 }
-/* line 1069, ../../src/scss/screen.scss */
+/* line 1068, ../../src/scss/screen.scss */
 #upload form label {
   position: absolute;
   top: 120px;
@@ -1486,11 +1485,11 @@ input, .fakefileinput, textarea {
   z-index: 0;
   width: 80%;
 }
-/* line 1079, ../../src/scss/screen.scss */
+/* line 1078, ../../src/scss/screen.scss */
 #upload form label > span {
   display: block;
 }
-/* line 1081, ../../src/scss/screen.scss */
+/* line 1080, ../../src/scss/screen.scss */
 #upload form input, #upload form .fakefileinput {
   position: absolute;
   top: 20px;
@@ -1503,7 +1502,7 @@ input, .fakefileinput, textarea {
   font-size: .9em;
   text-align: center;
 }
-/* line 1092, ../../src/scss/screen.scss */
+/* line 1091, ../../src/scss/screen.scss */
 #upload form input[type=file] {
   /*height: 0px;
   width: 0px;
@@ -1511,11 +1510,11 @@ input, .fakefileinput, textarea {
   z-index: 5;
   opacity: 0;
 }
-/* line 1098, ../../src/scss/screen.scss */
+/* line 1097, ../../src/scss/screen.scss */
 #upload form .hurry {
   margin-top: 180px;
 }
-/* line 1102, ../../src/scss/screen.scss */
+/* line 1101, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:link {
   padding: 0 10px;
   font-size: 13px;
@@ -1524,22 +1523,22 @@ input, .fakefileinput, textarea {
   text-decoration: none;
   color: #5c5c5c;
 }
-/* line 1109, ../../src/scss/screen.scss */
+/* line 1108, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:hover {
   font-weight: normal;
 }
-/* line 1111, ../../src/scss/screen.scss */
+/* line 1110, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:not(.active):hover {
   color: #381f00;
   text-decoration: underline;
 }
-/* line 1114, ../../src/scss/screen.scss */
+/* line 1113, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a.active {
   color: #817865;
   text-decoration: none;
 }
 
-/* line 1118, ../../src/scss/screen.scss */
+/* line 1117, ../../src/scss/screen.scss */
 .ui-datepicker {
   margin-left: -270px;
   margin-top: -100px;
@@ -1547,66 +1546,66 @@ input, .fakefileinput, textarea {
 }
 
 /* css for multi-select addon */
-/* line 1125, ../../src/scss/screen.scss */
+/* line 1124, ../../src/scss/screen.scss */
 button.ui-multiselect {
   display: block;
 }
 
-/* line 1128, ../../src/scss/screen.scss */
+/* line 1127, ../../src/scss/screen.scss */
 .ui-multiselect {
   padding: 2px 0 2px 4px;
   text-align: left;
 }
-/* line 1131, ../../src/scss/screen.scss */
+/* line 1130, ../../src/scss/screen.scss */
 .ui-multiselect span.ui-icon {
   float: right;
 }
 
-/* line 1135, ../../src/scss/screen.scss */
+/* line 1134, ../../src/scss/screen.scss */
 .ui-multiselect-single .ui-multiselect-checkboxes input {
   position: absolute !important;
   top: auto !important;
   left: -9999px;
 }
-/* line 1139, ../../src/scss/screen.scss */
+/* line 1138, ../../src/scss/screen.scss */
 .ui-multiselect-single .ui-multiselect-checkboxes label {
   padding: 5px !important;
 }
 
-/* line 1142, ../../src/scss/screen.scss */
+/* line 1141, ../../src/scss/screen.scss */
 .ui-multiselect-header {
   margin-bottom: 3px;
   padding: 3px 0 3px 4px;
 }
-/* line 1145, ../../src/scss/screen.scss */
+/* line 1144, ../../src/scss/screen.scss */
 .ui-multiselect-header ul {
   font-size: 0.9em;
 }
-/* line 1147, ../../src/scss/screen.scss */
+/* line 1146, ../../src/scss/screen.scss */
 .ui-multiselect-header ul li {
   float: left;
   padding: 0 10px 0 0;
 }
-/* line 1150, ../../src/scss/screen.scss */
+/* line 1149, ../../src/scss/screen.scss */
 .ui-multiselect-header a {
   text-decoration: none;
 }
-/* line 1152, ../../src/scss/screen.scss */
+/* line 1151, ../../src/scss/screen.scss */
 .ui-multiselect-header a:hover {
   text-decoration: underline;
 }
-/* line 1154, ../../src/scss/screen.scss */
+/* line 1153, ../../src/scss/screen.scss */
 .ui-multiselect-header span.ui-icon {
   float: left;
 }
-/* line 1156, ../../src/scss/screen.scss */
+/* line 1155, ../../src/scss/screen.scss */
 .ui-multiselect-header li.ui-multiselect-close {
   float: right;
   text-align: right;
   padding-right: 0;
 }
 
-/* line 1161, ../../src/scss/screen.scss */
+/* line 1160, ../../src/scss/screen.scss */
 .ui-multiselect-menu {
   display: none;
   padding: 3px;
@@ -1614,36 +1613,36 @@ button.ui-multiselect {
   z-index: 10000;
 }
 
-/* line 1167, ../../src/scss/screen.scss */
+/* line 1166, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes {
   position: relative;
   overflow-y: scroll;
 }
-/* line 1170, ../../src/scss/screen.scss */
+/* line 1169, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes label {
   cursor: default;
   display: block;
   border: 1px solid transparent;
   padding: 3px 1px;
 }
-/* line 1175, ../../src/scss/screen.scss */
+/* line 1174, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes label input {
   position: relative;
   top: 1px;
 }
-/* line 1178, ../../src/scss/screen.scss */
+/* line 1177, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li {
   clear: both;
   font-size: 0.9em;
   padding-right: 3px;
 }
-/* line 1182, ../../src/scss/screen.scss */
+/* line 1181, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li.ui-multiselect-optgroup-label {
   text-align: center;
   font-weight: bold;
   border-bottom: 1px solid;
 }
-/* line 1186, ../../src/scss/screen.scss */
+/* line 1185, ../../src/scss/screen.scss */
 .ui-multiselect-checkboxes li.ui-multiselect-optgroup-label a {
   display: block;
   padding: 3px;
@@ -1652,35 +1651,35 @@ button.ui-multiselect {
 }
 
 /* remove label borders in IE6 because IE6 does not support transparency */
-/* line 1194, ../../src/scss/screen.scss */
+/* line 1193, ../../src/scss/screen.scss */
 * html .ui-multiselect-checkboxes label {
   border: none;
 }
 
 /* css for timepicker */
-/* line 1200, ../../src/scss/screen.scss */
+/* line 1199, ../../src/scss/screen.scss */
 .ui-timepicker-div .ui-widget-header {
   margin-bottom: 8px;
 }
-/* line 1202, ../../src/scss/screen.scss */
+/* line 1201, ../../src/scss/screen.scss */
 .ui-timepicker-div dl {
   text-align: left;
 }
-/* line 1204, ../../src/scss/screen.scss */
+/* line 1203, ../../src/scss/screen.scss */
 .ui-timepicker-div dl dt {
   height: 25px;
   margin-bottom: -25px;
 }
-/* line 1207, ../../src/scss/screen.scss */
+/* line 1206, ../../src/scss/screen.scss */
 .ui-timepicker-div dl dd {
   margin: 0 10px 10px 65px;
 }
-/* line 1209, ../../src/scss/screen.scss */
+/* line 1208, ../../src/scss/screen.scss */
 .ui-timepicker-div td {
   font-size: 90%;
 }
 
-/* line 1212, ../../src/scss/screen.scss */
+/* line 1211, ../../src/scss/screen.scss */
 .ui-tpicker-grid-label {
   background: none;
   border: none;

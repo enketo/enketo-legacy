@@ -164,6 +164,7 @@ class Manifest extends CI_Controller {
 	// get all resources used in a web page
 	private function _get_resources_from_html($url, $base=NULL)
 	{
+		//SMALL PROBLEM: ALSO COPIES RESOURCES THAT ARE COMMENTED OUT
 		$pattern = '/(<script|<link|<img) [^>]*(src|href)="([^"]+)"/';
 		$index = 3; //match of 3rd set of parentheses is what we want
 		$resources = $this->_get_resources($url, $pattern, $index, $base);	
@@ -187,6 +188,7 @@ class Manifest extends CI_Controller {
 	// extract all resources from a css file
 	private function _get_resources_from_css($url, $base=NULL)
 	{
+		//SMALL PROBLEM: ALSO EXTRACTS RESOURCES THAT ARE COMMENTED OUT
 		$pattern = '/url\(([^)]+)\)/';
 		$index = 1; //match of 1st set of parentheses is what we want
 		return $this->_get_resources($url, $pattern, $index, $base);

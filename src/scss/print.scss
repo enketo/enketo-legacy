@@ -3,8 +3,11 @@
  * <link href="/stylesheets/print.css" media="print" rel="stylesheet" type="text/css" /> */
 
 @import "compass/reset";
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
-
+@font-face{
+  font-family: 'Open Sans';
+  src: local('☺'),
+        url(fonts/OpenSans-Regular.ttf) format('truetype');
+}
 /******* COLORS **********/
 $button-bg: #fece2f; /*dark yellow*/
 $highlight-bg: #FFF9E5; /*very light yellow*/

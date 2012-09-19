@@ -1,4 +1,3 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
 /* Welcome to Compass. Use this file to define print styles.
  * Import this file using the following HTML or equivalent:
  * <link href="/stylesheets/print.css" media="print" rel="stylesheet" type="text/css" /> */
@@ -67,6 +66,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   display: block;
 }
 
+@font-face {
+  font-family: 'Open Sans';
+  src: local("☺"), url(fonts/OpenSans-Regular.ttf) format("truetype");
+}
+
 /******* COLORS **********/
 /*dark yellow*/
 /*very light yellow*/
@@ -82,45 +86,45 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 /***************************
  ****BASIC GUI ELEMENTS ****
  ***************************/
-/* line 26, ../../src/scss/print.scss */
+/* line 29, ../../src/scss/print.scss */
 body, .ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
   font-family: 'Open Sans', Segoe UI, Arial, sans-serif;
   font-size: 1em;
 }
 
-/* line 31, ../../src/scss/print.scss */
+/* line 34, ../../src/scss/print.scss */
 .center {
   text-align: center;
 }
 
-/* line 34, ../../src/scss/print.scss */
+/* line 37, ../../src/scss/print.scss */
 div[id^="dialog"] {
   display: none;
 }
 
-/* line 37, ../../src/scss/print.scss */
+/* line 40, ../../src/scss/print.scss */
 .capitalize {
   text-transform: capitalize;
 }
 
-/* line 41, ../../src/scss/print.scss */
+/* line 44, ../../src/scss/print.scss */
 header.ui-widget-header, #feedback-bar, #page {
   display: none;
 }
 
-/* line 44, ../../src/scss/print.scss */
+/* line 47, ../../src/scss/print.scss */
 h2 {
   text-align: center;
   font-size: 1.5em;
   font-weight: bold;
 }
 
-/* line 46, ../../src/scss/print.scss */
+/* line 49, ../../src/scss/print.scss */
 #form-controls.ui-widget-header {
   display: none;
 }
 
-/* line 50, ../../src/scss/print.scss */
+/* line 53, ../../src/scss/print.scss */
 .main {
   max-width: 700px;
 }
@@ -128,13 +132,13 @@ h2 {
 /**************************
 ****    SURVEY FORM    ****
 **************************/
-/* line 59, ../../src/scss/print.scss */
+/* line 62, ../../src/scss/print.scss */
 .jr {
   /*padding: 1.5em;*/
   line-height: 1.1em;
 }
 
-/* line 63, ../../src/scss/print.scss */
+/* line 66, ../../src/scss/print.scss */
 .form-logo img {
   position: relative;
   left: 50%;
@@ -144,39 +148,39 @@ h2 {
   margin-bottom: 10px;
 }
 
-/* line 71, ../../src/scss/print.scss */
+/* line 74, ../../src/scss/print.scss */
 .jr [lang]:not(.active), .jr-hint {
   display: none;
 }
 
-/* line 75, ../../src/scss/print.scss */
+/* line 78, ../../src/scss/print.scss */
 .jr-constraint-msg.active {
   display: block;
   visibility: hidden;
   min-height: 1em;
 }
-/* line 79, ../../src/scss/print.scss */
+/* line 82, ../../src/scss/print.scss */
 .jr-constraint-msg:not(.active) {
   display: none;
 }
 
-/* line 82, ../../src/scss/print.scss */
+/* line 85, ../../src/scss/print.scss */
 .invalid .jr-constraint-msg.active {
   visibility: visible;
   font-weight: bold;
   font-style: italic;
 }
 
-/* line 87, ../../src/scss/print.scss */
+/* line 90, ../../src/scss/print.scss */
 .jr-option-translations {
   display: none;
 }
 
-/* line 90, ../../src/scss/print.scss */
+/* line 93, ../../src/scss/print.scss */
 .jr h2.ui-widget-header {
   margin: 0;
 }
-/* line 92, ../../src/scss/print.scss */
+/* line 95, ../../src/scss/print.scss */
 .jr h2.ui-widget-header span {
   display: block;
   color: #494437;
@@ -185,20 +189,20 @@ h2 {
   text-align: right;
 }
 
-/* line 99, ../../src/scss/print.scss */
+/* line 102, ../../src/scss/print.scss */
 .question-icons {
   float: right;
   margin: -5px -10px 0 0;
   /*line-height: 15px;*/
 }
-/* line 103, ../../src/scss/print.scss */
+/* line 106, ../../src/scss/print.scss */
 .question-icons span {
   display: inline-block;
   text-align: right;
   width: 18px;
 }
 
-/* line 108, ../../src/scss/print.scss */
+/* line 111, ../../src/scss/print.scss */
 #form-languages {
   margin-top: -18px;
   margin-bottom: 18px;
@@ -207,14 +211,14 @@ h2 {
 }
 
 /* correction for when tabs are present */
-/* line 116, ../../src/scss/print.scss */
+/* line 119, ../../src/scss/print.scss */
 .ui-tabs-panel #form-languages {
   margin-top: -35px;
   margin-bottom: 45px;
   margin-right: -15px;
 }
 
-/* line 122, ../../src/scss/print.scss */
+/* line 125, ../../src/scss/print.scss */
 #form-languages a:link {
   float: right;
   padding-left: 10px;
@@ -224,22 +228,22 @@ h2 {
   font-size: .8em;
   color: #5c5c5c;
 }
-/* line 130, ../../src/scss/print.scss */
+/* line 133, ../../src/scss/print.scss */
 #form-languages a:not(.active):hover {
   color: #381f00;
   text-decoration: underline;
 }
-/* line 133, ../../src/scss/print.scss */
+/* line 136, ../../src/scss/print.scss */
 #form-languages a.active {
   color: #381f00;
   text-decoration: none;
 }
 
-/* line 137, ../../src/scss/print.scss */
+/* line 140, ../../src/scss/print.scss */
 .jr {
   line-height: 1.1em;
 }
-/* line 141, ../../src/scss/print.scss */
+/* line 144, ../../src/scss/print.scss */
 .jr .form-logo img {
   position: relative;
   left: 50%;
@@ -248,18 +252,18 @@ h2 {
   margin-left: -60px;
   margin-bottom: 10px;
 }
-/* line 148, ../../src/scss/print.scss */
+/* line 151, ../../src/scss/print.scss */
 .jr h2 {
   text-align: center;
   font-size: 24px;
   padding-bottom: 15px;
   border-bottom: solid 3px #ccc;
 }
-/* line 154, ../../src/scss/print.scss */
+/* line 157, ../../src/scss/print.scss */
 .jr h3 {
   text-align: left;
 }
-/* line 156, ../../src/scss/print.scss */
+/* line 159, ../../src/scss/print.scss */
 .jr label, .jr fieldset {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -271,15 +275,15 @@ h2 {
   /* */
   font-weight: bold;
 }
-/* line 165, ../../src/scss/print.scss */
+/* line 168, ../../src/scss/print.scss */
 .jr label + label {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 167, ../../src/scss/print.scss */
+/* line 170, ../../src/scss/print.scss */
 .jr .geopoint {
   height: 350px;
 }
-/* line 169, ../../src/scss/print.scss */
+/* line 172, ../../src/scss/print.scss */
 .jr .geopoint .map-canvas {
   width: 340px;
   height: 275px;
@@ -287,25 +291,25 @@ h2 {
   float: right;
   border: 1px solid #cccccc;
 }
-/* line 175, ../../src/scss/print.scss */
+/* line 178, ../../src/scss/print.scss */
 .jr .geopoint label {
   border: none;
   padding: 5px 0;
 }
-/* line 178, ../../src/scss/print.scss */
+/* line 181, ../../src/scss/print.scss */
 .jr .geopoint button {
   width: 130px;
   margin-top: 10px;
 }
-/* line 182, ../../src/scss/print.scss */
+/* line 185, ../../src/scss/print.scss */
 .jr fieldset:not(#jr-preload-items):not(.jr-group) + label, .jr fieldset:not(#jr-preload-items):not(.jr-group) + fieldset:not(.jr-group) {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 184, ../../src/scss/print.scss */
+/* line 187, ../../src/scss/print.scss */
 .jr label + fieldset:not(.jr-group) {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 186, ../../src/scss/print.scss */
+/* line 189, ../../src/scss/print.scss */
 .jr span.repeat-number {
   height: 2em;
   display: block;
@@ -314,42 +318,42 @@ h2 {
   margin-top: -8px;
   color: #cccccc;
 }
-/* line 193, ../../src/scss/print.scss */
+/* line 196, ../../src/scss/print.scss */
 .jr legend {
   position: absolute;
   top: 1.5em;
   font-weight: bold;
 }
-/* line 197, ../../src/scss/print.scss */
+/* line 200, ../../src/scss/print.scss */
 .jr legend ~ label {
   border-top: none;
   padding: .5em 0 .5em 0;
   margin-left: 25px;
   font-weight: normal;
 }
-/* line 202, ../../src/scss/print.scss */
+/* line 205, ../../src/scss/print.scss */
 .jr legend + label {
   margin-top: 25px;
 }
-/* line 204, ../../src/scss/print.scss */
+/* line 207, ../../src/scss/print.scss */
 .jr fieldset {
   position: relative;
 }
-/* line 206, ../../src/scss/print.scss */
+/* line 209, ../../src/scss/print.scss */
 .jr fieldset.jr-group {
   border-top: 2px solid #555;
   /**/
   margin: .5em 0;
 }
-/* line 209, ../../src/scss/print.scss */
+/* line 212, ../../src/scss/print.scss */
 .jr fieldset.jr-repeat {
   border: 1px dotted #cccccc;
 }
-/* line 211, ../../src/scss/print.scss */
+/* line 214, ../../src/scss/print.scss */
 .jr label, .jr legend, .jr .trigger {
   font-size: .8em;
 }
-/* line 213, ../../src/scss/print.scss */
+/* line 216, ../../src/scss/print.scss */
 .jr input, .jr textarea {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -359,16 +363,16 @@ h2 {
   margin: 8px 0 0 0;
   font-size: .9em;
 }
-/* line 221, ../../src/scss/print.scss */
+/* line 224, ../../src/scss/print.scss */
 .jr input[type="text"], .jr textarea[type="text"] {
   width: 100%;
 }
-/* line 223, ../../src/scss/print.scss */
+/* line 226, ../../src/scss/print.scss */
 .jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password], .jr textarea[type=date], .jr textarea[type=number], .jr textarea[type=email], .jr textarea[type=password] {
   width: 130px;
   text-align: right;
 }
-/* line 226, ../../src/scss/print.scss */
+/* line 229, ../../src/scss/print.scss */
 .jr input[type=radio], .jr input[type=checkbox], .jr textarea[type=radio], .jr textarea[type=checkbox] {
   display: block;
   /*****/
@@ -379,48 +383,48 @@ h2 {
   /*compensates for the label margin, fixes multi-line labels */
   margin-left: -25px;
 }
-/* line 235, ../../src/scss/print.scss */
+/* line 238, ../../src/scss/print.scss */
 .jr textarea {
   width: 100%;
   min-height: 150px;
 }
-/* line 238, ../../src/scss/print.scss */
+/* line 241, ../../src/scss/print.scss */
 .jr select {
   display: block;
 }
-/* line 241, ../../src/scss/print.scss */
+/* line 244, ../../src/scss/print.scss */
 .jr fieldset .ui-button {
   width: 27px;
   height: 27px;
   margin-top: 6px;
 }
-/* line 245, ../../src/scss/print.scss */
+/* line 248, ../../src/scss/print.scss */
 .jr fieldset .one-more {
   margin: 0 -34px -5px 10px;
 }
-/* line 247, ../../src/scss/print.scss */
+/* line 250, ../../src/scss/print.scss */
 .jr fieldset .remove {
   float: right;
   margin-right: 0;
 }
-/* line 250, ../../src/scss/print.scss */
+/* line 253, ../../src/scss/print.scss */
 .jr .trigger {
   padding: 7px 12px;
   margin: 1em 0;
 }
 
-/* line 255, ../../src/scss/print.scss */
+/* line 258, ../../src/scss/print.scss */
 label.with-media {
   margin-top: 5px;
 }
 
-/* line 258, ../../src/scss/print.scss */
+/* line 261, ../../src/scss/print.scss */
 .with-media > span.active {
   display: block;
   width: 100%;
 }
 
-/* line 263, ../../src/scss/print.scss */
+/* line 266, ../../src/scss/print.scss */
 label.with-media img, label.with-media video, label.with-media audio {
   max-width: 45%;
   padding-right: 5%;
@@ -428,29 +432,29 @@ label.with-media img, label.with-media video, label.with-media audio {
   float: right;
 }
 
-/* line 269, ../../src/scss/print.scss */
+/* line 272, ../../src/scss/print.scss */
 .with-media input {
   float: left;
   width: 5%;
   margin-top: -17px;
 }
 
-/* line 275, ../../src/scss/print.scss */
+/* line 278, ../../src/scss/print.scss */
 input, .fakefileinput {
   background-color: white;
   border: 2px solid #cccccc;
   min-height: 30px;
 }
 
-/* line 280, ../../src/scss/print.scss */
+/* line 283, ../../src/scss/print.scss */
 .jr-appearance-compact label {
   display: inline;
 }
-/* line 282, ../../src/scss/print.scss */
+/* line 285, ../../src/scss/print.scss */
 .jr-appearance-compact label span {
   display: none;
 }
-/* line 284, ../../src/scss/print.scss */
+/* line 287, ../../src/scss/print.scss */
 .jr-appearance-compact label img {
   float: left;
   width: 120px;
@@ -458,18 +462,18 @@ input, .fakefileinput {
   padding: 5px;
   margin-top: 25px;
 }
-/* line 291, ../../src/scss/print.scss */
+/* line 294, ../../src/scss/print.scss */
 .jr-appearance-compact label input[type=radio], .jr-appearance-compact label input[type=checkbox] {
   /*display: none;*/
   margin-top: 35px;
 }
 
-/* line 295, ../../src/scss/print.scss */
+/* line 298, ../../src/scss/print.scss */
 .jr-branch {
   display: none;
 }
 
-/* line 298, ../../src/scss/print.scss */
+/* line 301, ../../src/scss/print.scss */
 .disabled {
   /*color: $shadow*/
   opacity: 1;
@@ -481,17 +485,17 @@ input, .fakefileinput {
 .disabled input[type="radio"]{
   opacity: 1;
 }*/
-/* line 309, ../../src/scss/print.scss */
+/* line 312, ../../src/scss/print.scss */
 .ui-multiselect-menu {
   display: none;
 }
 
-/* line 313, ../../src/scss/print.scss */
+/* line 316, ../../src/scss/print.scss */
 #submit-form, .drawer, #branding {
   display: none;
 }
 
-/* line 317, ../../src/scss/print.scss */
+/* line 320, ../../src/scss/print.scss */
 .jr-hint.active {
   /*border: 1px solid #BCE8F1;*/
   /*background-color: #D9EDF7;*/
@@ -510,23 +514,23 @@ input, .fakefileinput {
     font-size: 10px; }*/
 }
 
-/* line 335, ../../src/scss/print.scss */
+/* line 338, ../../src/scss/print.scss */
 legend span {
   display: block;
 }
 
-/* line 338, ../../src/scss/print.scss */
+/* line 341, ../../src/scss/print.scss */
 .jr-appearance-page-break {
   display: block;
   page-break-before: always;
 }
 
-/* line 342, ../../src/scss/print.scss */
+/* line 345, ../../src/scss/print.scss */
 .ui-tabs-nav {
   display: none !important;
 }
 
-/* line 347, ../../src/scss/print.scss */
+/* line 350, ../../src/scss/print.scss */
 .jr-branch + fieldset.disabled,
 .jr-branch + label.disabled {
   display: block !important;

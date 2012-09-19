@@ -83,8 +83,7 @@ if ( ! function_exists('url_exists'))
 		return ($httpcode >= 200 && $httpcode < 300) ? TRUE : FALSE;
 	}
 
-	//function not used yet
-	function makeValid()
+	function url_make_valid($url)
 	{
 		$url = trim($url);
 		$url = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) ? $url : 'http://'.$url;

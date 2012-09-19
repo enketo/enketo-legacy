@@ -79,6 +79,11 @@ class Survey_model extends CI_Model {
     {
         return strtolower($this->_get_item('submission_url'));
     }
+
+    public function has_offline_launch_enabled()
+    {
+        return $this->_get_item('offline');
+    }
     
     public function launch_survey($server_url, $form_id, $submission_url, $data_url, $email)
     {  

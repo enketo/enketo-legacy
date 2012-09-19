@@ -1871,7 +1871,7 @@ function Form (formSelector, dataStr){
 				 */
 				function updateMap(lat, lng, zoom){
 					zoom = zoom || 15;
-					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
+					if (typeof google.maps.LatLng !== 'undefined'){
 						mapOptions = {
 							zoom: zoom,
 							center: new google.maps.LatLng(lat, lng),

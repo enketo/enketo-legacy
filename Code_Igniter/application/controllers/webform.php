@@ -33,7 +33,8 @@ class Webform extends CI_Controller {
 			//if ($this->Survey_model->is_live_survey($subdomain))
 			if ($this->Survey_model->is_launched_survey())
 			{
-				$offline = FALSE; //$this ->config->item('application_cache'); //can be overridden here
+				//$offline = FALSE; //$this ->config->item('application_cache'); //can be overridden here
+				$offline = $this->Survey_model->has_offline_launch_enabled();
 				$server_url= $this->Survey_model->get_server_url();
 				$form_id = $this->Survey_model->get_form_id();
 

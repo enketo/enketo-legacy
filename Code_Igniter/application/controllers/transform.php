@@ -63,7 +63,7 @@ class Transform extends CI_Controller {
 		{
 			//$url_to_server = $_POST['server_url'];
 			log_message('debug', 'server url received: '.$server_url);
-			$result = $this->Form_model->getFormListHTML($server_url);
+			$result = $this->Form_model->get_formlist_HTML($server_url);
 		}
 		else
 		{

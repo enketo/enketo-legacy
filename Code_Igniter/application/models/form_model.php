@@ -100,8 +100,15 @@ class Form_model extends CI_Model {
 
     	return $result;
     }
+
+    function get_form_xml($server_url, $form_id)
+    {
+        $urls = $this->_get_form_urls($server_url, $form_id);
+        $xml = $this->_load_xml($urls['xml']);
+        return ($xml['doc']) ? $xml['doc'] : null;
+    }
    	
-    function getFormListHTML($server_url)
+    function get_formlist_HTML($server_url)
     {
         $result = new SimpleXMLElement('<root></root>');
         $formlist = $result->addChild('formlist');

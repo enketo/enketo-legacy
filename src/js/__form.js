@@ -320,7 +320,7 @@ function Form (formSelector, dataStr){
 			//noEmpty automatically excludes non-leaf nodes
 			if (this.filter.noEmpty === true){
 				$nodes = $nodes.filter(function(){
-					val = $(this).text();
+					val = /** @type {string} */ $(this).text();
 					//$this = $(this);
 					////console.log ('children: '+$(this).children().length);
 					////console.log ('text length: '+($.trim($this.text()).length));
@@ -609,7 +609,7 @@ function Form (formSelector, dataStr){
 		//trimming values
 		this.node(null, null, {noEmpty: true, noTemplate: false}).get().each(function(){
 			////console.debug('value found'+ $(this).text());
-			val = $(this).text();
+			val = /** @type {string} */$(this).text();
 			$(this).text($.trim(val));
 		});
 		$root = this.node(':first', 0).get();

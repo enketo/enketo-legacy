@@ -23,4 +23,4 @@ RewriteRule ^(.*)manifest\.appcache /$1 [NC,L]
 AddType font/ttf .ttf
 
 #Avoid caching of manifest files
-#ExpiresByType text/cache-manifest "access plus 0 seconds"
+ExpiresByType text/cache-manifest "access plus 0 seconds"

@@ -428,7 +428,7 @@ function exportData(finalOnly){
 	
 	//console.debug(data);
 	if (dataArr.length === 0){
-		gui.showFeedback('No data marked "final" to export.');
+		gui.showFeedback('No data to export.');
 	}
 	else{
 		for (i = 0 ; i<dataArr.length ; i++){

@@ -468,10 +468,10 @@ GUI.prototype.updateStatus = {
 		else if (online === false) {
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-cancel')
 				.attr('title', 'It appears there is currently no Internet connection');
-			$('.drawer #status').removeClass('waiting').addClass('offline').text('Offline.');
+			$('.drawer #status').removeClass('waiting').addClass('offline').text('Offline. ');
 		}
 		else{
-			$('.drawer #status').removeClass('offline').addClass('waiting').text('Waiting.');
+			$('.drawer #status').removeClass('offline').addClass('waiting').text('Waiting. ');
 		}
 	},
 	edit : function(editing){
@@ -494,6 +494,10 @@ GUI.prototype.updateStatus = {
 			console.debug('updating browser support for '+supported);
 			$page.find('#settings-browserSupport-'+supported+' span.ui-icon').addClass('ui-icon-check');
 		}
+	},
+	offlineLaunch: function(offlineCapable){
+		var status = (offlineCapable) ? 'Offline Launch: Yes' : 'Offline Launch: No';
+		$('.drawer #status-offline-launch').text(status);
 	}
 };
 

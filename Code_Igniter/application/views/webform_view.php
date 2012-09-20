@@ -79,8 +79,8 @@
 			<div class="handle right"></div>
 			<!--<a id="queue" href="#" title="click to export to file">-->
 			<div class="content">
-				<span id="status"></span>
-				<span> Submissions queued: </span><span id="queue-length">0</span>
+				<span id="status"></span><span>Submissions queued: </span><span id="queue-length">0</span>
+				<span id="status-offline-launch"></span>
 				<button id="drawer-export">Export</button>
 			<!--</a>-->
 			</div>	

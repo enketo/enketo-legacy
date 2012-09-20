@@ -69,7 +69,10 @@ class Manifest extends CI_Controller {
 	| pages to always retrieve from the server (html5 manifest 'network' section)
 	|--------------------------------------------------------------------------
 	*/
-		private $network = array('*');
+		private $network = array
+		(
+			'*'//'http://maps.googleapis.com/*', 'http://maps.gstatic.com/*', 'http://www.google-analytics.com/ga.js'
+		);
 	/*
 	|---------------------------------------------------------------------------
 	*/
@@ -133,10 +136,11 @@ class Manifest extends CI_Controller {
 		// else return an empty manifest that can be used to remotely clear the client's applicationCache
 		else
 		{
-			$this->data['hashes'] = 'a';//time(); //timestamp forces update of applicationCache
-			$this->data['cache'] = array();
-			$this->data['network'] = array('*');
-			$this->data['fallback'] = '';
+			//$this->data['hashes'] = 'a';//time(); //timestamp forces update of applicationCache
+			//$this->data['cache'] = array();
+			//$this->data['network'] = array('*');
+			//$this->data['fallback'] = '';
+			show_404();
 		}
 	}
 	
@@ -232,7 +236,7 @@ class Manifest extends CI_Controller {
 			$base = url_make_valid($_SERVER['SERVER_NAME'].'/');
 		}
 		//in case relative urls were used, prepend the base
-		if (strpos($url, 'http://')!==0 && strpos($url, 'https://')!==0)
+		if (strpos($url, 'http://')!==0 && strpos($url, 'https://')!==0 && $url !== '*')
 		{
 			$url = $base.$url;
 		}

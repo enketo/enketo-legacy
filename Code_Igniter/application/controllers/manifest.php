@@ -51,18 +51,18 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0001'; //time();
+		private $hash_manual_override = '0002'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
 	|--------------------------------------------------------------------------
 	*/	
-		private $pages = array('webform');//, 'modern_browsers'); 
+		private $pages = array('webform'); //, 'modern_browsers'); 
 	/*
 	|--------------------------------------------------------------------------	
 	| page to re-direct offline 404 requests to (html5 manifest 'fallback' section)
 	|__________________________________________________________________________
-	*/
+	*/ 
 		private $offline = 'offline';	
 	/*
 	|--------------------------------------------------------------------------
@@ -85,7 +85,7 @@ class Manifest extends CI_Controller {
 		$this->load->helper(array('url', 'json'));
 		$this->load->model('Survey_model','',TRUE);
 		$this->_set_data();
-		log_message('debug', 'array with manifest resources generated');
+		//log_message('debug', 'array with manifest resources generated');
 	}
 	
 	public function index()
@@ -126,7 +126,7 @@ class Manifest extends CI_Controller {
 			$this->data['cache'] = array();	
 			foreach ($this->pages as $page)
 			{
-				log_message('debug', 'checking resources on page: '.$page);
+				//log_message('debug', 'checking resources on page: '.$page);
 				$this->_add_resources_to_cache($page);				
 			}
 			$this->data['hashes'] = md5($this->data['hashes']).'_'.$this->hash_manual_override; //hash of hashes		
@@ -148,11 +148,11 @@ class Manifest extends CI_Controller {
 	private function _add_resources_to_cache($url)
 	{
 		$resources = array_merge( array($url), $this->_get_resources_from_html($url));
-		
+		$this->load->helper('http');
 		//add each new resource to the cache and calculate the hash 
 		foreach ($resources as $resource)
 		{
-			if (!in_array($resource, $this->data['cache']))
+			if (!in_array($resource, $this->data['cache']) && url_exists($resource))
 			{
 			    $this->data['cache'][] = $resource;	
 			    // create a hash of the content
@@ -211,7 +211,10 @@ class Manifest extends CI_Controller {
 	private function _get_content($url)
 	{
 		$rel = $this->_rel_url($url);
-		return (is_file($rel)) ? file_get_contents($rel) : file_get_contents($url);
+		$content = (is_file($rel)) ? file_get_contents($rel) : file_get_contents($url);
+		
+		//log_message('error', 'Manifest controller failed to get contents of '.$url);
+		return $content;
 	}
 	
 	// turns array of relative and/or full urls into an array of full urls
@@ -240,7 +243,7 @@ class Manifest extends CI_Controller {
 		{
 			$url = $base.$url;
 		}
-		log_message('debug', '_full_url() returns:'.$url);
+		//log_message('debug', '_full_url() returns:'.$url);
 		return $url;
 	}
 	

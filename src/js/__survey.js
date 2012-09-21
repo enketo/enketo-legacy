@@ -395,6 +395,9 @@ Cache.prototype.init = function(){
 	if (applicationCache.status === applicationCache.UPDATEREADY){
 		this.onUpdateReady();
 	}
+	if (applicationCache.status === applicationCache.OBSOLETE){
+		this.onObsolete();
+	}
 
 	//manifest is no longer served (form removed or offline-launch disabled). DOES THIS FIRE IN ALL BROWSERS?
 	applicationCache.addEventListener('obsolete', this.onObsolete, false);

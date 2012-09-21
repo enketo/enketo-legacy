@@ -86,6 +86,7 @@ if ( ! function_exists('url_exists'))
 		{
 			log_message('error', 'HTTP Helper: resource at '.$url.' not available.');
 		}
+		return $exists;
 	}
 
 	function url_make_valid($url)

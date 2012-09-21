@@ -1,5 +1,7 @@
 route all traffic (in Turnkey Linux by routing all traffic on port 80 to webroot (rapaide/public/) by editing existing virtual host)
 enabling mod_rewrite in Turnkey Linux -> https://IP-ADDRESS:12321/apache/edit_mods.cgi) 
+enabling mod_expires: sudo a2enmod expires (restart apache)
 install php5-xsl -> sudo apt-get install php5-xsl
 in config.php set log_threshold to level to 1 or 2?
+ON VIRTUAL MACHINE AND HOST, the /etc/hosts file needs to be edited to get file_get_contents (manifest) to work!
 

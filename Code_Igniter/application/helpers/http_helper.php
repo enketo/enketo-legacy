@@ -80,11 +80,15 @@ if ( ! function_exists('url_exists'))
 		//echo curl_error($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
-		return ($httpcode >= 200 && $httpcode < 300) ? TRUE : FALSE;
+		
+		$exists = ($httpcode >= 200 && $httpcode < 300) ? TRUE : FALSE;
+		if (!$exists)
+		{
+			log_message('error', 'HTTP Helper: resource at '.$url.' not available.');
+		}
 	}
 
-	//function not used yet
-	function makeValid()
+	function url_make_valid($url)
 	{
 		$url = trim($url);
 		$url = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) ? $url : 'http://'.$url;
@@ -93,7 +97,7 @@ if ( ! function_exists('url_exists'))
 
 	function url_valid($url)
 	{
-		log_message('debug', 'result of url check on '.$url.filter_var($url, FILTER_VALIDATE_URL));
+		//log_message('debug', 'result of url check on '.$url.filter_var($url, FILTER_VALIDATE_URL));
 		return (filter_var($url, FILTER_VALIDATE_URL)) ? TRUE : FALSE;
 	}
 

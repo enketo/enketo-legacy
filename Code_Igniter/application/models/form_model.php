@@ -35,12 +35,12 @@ class Form_model extends CI_Model {
         $this->file_path_to_jr2HTML5_XSL = APPPATH.'libraries/jr2html5_php5.xsl'; //_php5 indicates that it has been 'fixed' for the php 5 processor
         //$this->load->database();
         $this->file_path_to_jr2Data_XSL = APPPATH.'libraries/jr2xmldata.xsl';
-        log_message('debug', 'Form Model loaded');
+        //log_message('debug', 'Form Model loaded');
     }
     
     function transform($server_url=NULL, $form_id = NULL, $file_path = NULL, $feedback = FALSE)
     {
-        log_message('debug', 'Starting transform');
+        //log_message('debug', 'Starting transform');
         
     	$xsl_form = $this->_load_xml($this->file_path_to_jr2HTML5_XSL);
     	$xsl_data = $this->_load_xml($this->file_path_to_jr2Data_XSL);
@@ -54,7 +54,7 @@ class Form_model extends CI_Model {
             
         if (isset($url['manifest']))//$manifest_url !== FALSE)
         {
-            log_message('debug', 'received: '.$url['manifest']);
+            //log_message('debug', 'received: '.$url['manifest']);
             $manifest = $this->_load_xml($url['manifest']);
             $manifest_sxe = simplexml_import_dom($manifest['doc']);
             //log_message('debug', $manifest_sxe->asXML()); 
@@ -243,7 +243,7 @@ class Form_model extends CI_Model {
     		}	  			
     		//if($success)
     		//{
-    		log_message('debug', 'loaded doc!');// xml:'.$doc->saveXML());
+    		//log_message('debug', 'loaded doc!');// xml:'.$doc->saveXML());
     			
             return array('doc' => $doc, 'errors' => $errors, 'type' => $type);     			
     		//}
@@ -263,7 +263,7 @@ class Form_model extends CI_Model {
 	//returns SimpleXML Object
 	private function _xslt_transform($xml, $xsl)
 	{
-		log_message('debug', 'starting transformation');
+		//log_message('debug', 'starting transformation');
 		$result = new SimpleXMLElement('<root></root>'); //default
 		
 		$proc = new XSLTProcessor;
@@ -299,7 +299,7 @@ class Form_model extends CI_Model {
 			$result = $this->_add_errors($errors, 'xsltmessages', $result);			
 		}		
 		//log_message('debug', 'result:'.$result->asXML());		
-		log_message('debug', 'return a result and ending _xslt_transform');
+		//log_message('debug', 'return a result and ending _xslt_transform');
 		return $result;						
 	}	    
     
@@ -430,13 +430,13 @@ class Form_model extends CI_Model {
     		{
 	    		//attribute not a string so needs casting
 	    		$lang = (string) $a['lang'];
-	    		log_message('debug', 'found a element inside div#form-languages with lang='.$lang);
+	    		//log_message('debug', 'found a element inside div#form-languages with lang='.$lang);
 	    		
 	    		if (isset($lang) && strlen($lang)>1)
 	    		{
 	    			$lang_mod = $this->_html5_lang($lang);
 	    			//change language name/description in <a> element
-	    			log_message('debug', 'changing name in language selector from '.(string) $a.' to '.$lang_mod['lang_name']);
+	    			//log_message('debug', 'changing name in language selector from '.(string) $a.' to '.$lang_mod['lang_name']);
 	    			$a->addChild('span', $lang_mod['lang_name']);
 	    			//if lang attribute has been modified add to $langs array
 	    			if ($lang !== $lang_mod['lang'])
@@ -447,14 +447,14 @@ class Form_model extends CI_Model {
 	    	}	
     	}
     	
-    	log_message('debug', 'content of langs array: '.json_encode($langs));
+    	//log_message('debug', 'content of langs array: '.json_encode($langs));
     	
     	$form_languages = $result->xpath('/root/form/div[@id="form-languages"]');
     	$default_lang = '';
     	if (isset($form_languages[0]['data-default-lang']))
     	{
     		$default_lang = (string) ($form_languages[0]['data-default-lang']);
-    		log_message('debug', 'default lang defined as: '.$default_lang);
+    		//log_message('debug', 'default lang defined as: '.$default_lang);
     	}
     	//now iterate $langs array to replace all required lang attributes in $result   	
     	foreach ($langs as $lang_map)
@@ -468,7 +468,7 @@ class Form_model extends CI_Model {
     		{   			
     			//the data-default-lang attribute only occurs once 
     			$form_languages[0]['data-default-lang'] = $lang_map['new_lang'];
-    			log_message ('debug', 'recognized default lang found: '.$default_lang.' and changed to: '.$lang_map['new_lang']);
+    			//log_message ('debug', 'recognized default lang found: '.$default_lang.' and changed to: '.$lang_map['new_lang']);
     		}    			
     	}
     	
@@ -482,17 +482,17 @@ class Form_model extends CI_Model {
 
     //function to replace media (img, video audio) urls with urls from the manifest
     private function _fix_media_urls($manifest, &$result){
-        log_message('debug', 'going to fix media urls');
+        //log_message('debug', 'going to fix media urls');
         //log_message('debug', 'manifest'.$manifest.asXML());
         if (isset($manifest) && $manifest !== FALSE)
         {
             //$media_arr = array();
-            log_message('debug', 'checking mediaFile elements');
+            //log_message('debug', 'checking mediaFile elements');
             foreach ($manifest->mediaFile as $m)
             {
                 //$media_arr[$m->filename] => $m->downloadUrl;
-                log_message('debug', 'filename: '.$m->filename);
-                log_message('debug', 'downloadUrl: '.$m->downloadUrl);
+                //log_message('debug', 'filename: '.$m->filename);
+                //log_message('debug', 'downloadUrl: '.$m->downloadUrl);
                 foreach ( $result->xpath('/root/form/descendant::*[@src="'.$m->filename.'"]') as $el)
                 {
                     $el['src'] = $m->downloadUrl;
@@ -527,7 +527,7 @@ class Form_model extends CI_Model {
 			{
 				$row = $query->row();    					
    				$lang_name = $this->_first_name($row->name_en);
-   				log_message('debug', 'found language name: '.$lang_name.' belonging to attribute lang with 2 chars: '.$lang);
+   				//log_message('debug', 'found language name: '.$lang_name.' belonging to attribute lang with 2 chars: '.$lang);
 			}
 		}    	
 		else if (strlen($lang) === 3)
@@ -542,10 +542,10 @@ class Form_model extends CI_Model {
 			if ($query->num_rows() > 0 ) 
 			{
 				$row = $query->row();
-				log_message('debug', 'going to transform lang with 3 chars "'.$lang.'"..');
+				//log_message('debug', 'going to transform lang with 3 chars "'.$lang.'"..');
 				$lang = $row->alpha2;
 				$lang_name = $this->_first_name($row->name_en);
-				log_message('debug', '.. into lang "'.$lang.'" with name "'.$lang_name.'"');    	
+				//log_message('debug', '.. into lang "'.$lang.'" with name "'.$lang_name.'"');    	
 			}
 		}
 		else if (strlen($lang) > 3) 
@@ -572,9 +572,9 @@ class Form_model extends CI_Model {
 			{
 				$row = $query->row();   				
 				//probably best to keep lang_name as it is (=$lang)
-				log_message('debug', 'going to transform lang  with more than 3 chars"'.$lang.'"..');
+				//log_message('debug', 'going to transform lang  with more than 3 chars"'.$lang.'"..');
 				$lang = $row->alpha2;
-				log_message('debug', '.. into lang "'.$lang.'" with unchanged name "'.$lang_name.'"');    				
+				//log_message('debug', '.. into lang "'.$lang.'" with unchanged name "'.$lang_name.'"');    				
 			}   		  	
     	}
     	$last_query = $this->db->last_query();

@@ -51,25 +51,28 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '107'; //time();
+		private $hash_manual_override = '0002'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
 	|--------------------------------------------------------------------------
 	*/	
-		private $pages = array('');//, 'modern_browsers'); 
+		private $pages = array('webform'); //, 'modern_browsers'); 
 	/*
 	|--------------------------------------------------------------------------	
 	| page to re-direct offline 404 requests to (html5 manifest 'fallback' section)
 	|__________________________________________________________________________
-	*/
+	*/ 
 		private $offline = 'offline';	
 	/*
 	|--------------------------------------------------------------------------
 	| pages to always retrieve from the server (html5 manifest 'network' section)
 	|--------------------------------------------------------------------------
 	*/
-		private $network = array('checkforconnection.txt', '*');
+		private $network = array
+		(
+			'*'//'http://maps.googleapis.com/*', 'http://maps.gstatic.com/*', 'http://www.google-analytics.com/ga.js'
+		);
 	/*
 	|---------------------------------------------------------------------------
 	*/
@@ -82,7 +85,7 @@ class Manifest extends CI_Controller {
 		$this->load->helper(array('url', 'json'));
 		$this->load->model('Survey_model','',TRUE);
 		$this->_set_data();
-		log_message('debug', 'array with manifest resources generated');
+		//log_message('debug', 'array with manifest resources generated');
 	}
 	
 	public function index()
@@ -116,13 +119,14 @@ class Manifest extends CI_Controller {
 	
 	private function _set_data(){
 		//check if the survey exists (from subdomain) and is live
-		if ($this->Survey_model->is_launched_survey() && $this->Survey_model->is_live_survey()){
+		if ($this->Survey_model->is_launched_survey() && $this->Survey_model->is_live_survey() && $this->Survey_model->has_offline_launch_enabled()){
 			//convert to full urls
 			$this->pages = $this->_full_url_arr($this->pages);
 			$this->data['hashes'] = '';
 			$this->data['cache'] = array();	
 			foreach ($this->pages as $page)
 			{
+				//log_message('debug', 'checking resources on page: '.$page);
 				$this->_add_resources_to_cache($page);				
 			}
 			$this->data['hashes'] = md5($this->data['hashes']).'_'.$this->hash_manual_override; //hash of hashes		
@@ -132,10 +136,11 @@ class Manifest extends CI_Controller {
 		// else return an empty manifest that can be used to remotely clear the client's applicationCache
 		else
 		{
-			$this->data['hashes'] = time(); //timestamp forces update of applicationCache
-			$this->data['cache'] = array();
-			$this->data['network'] = array();
-			$this->data['fallback'] = '';
+			//$this->data['hashes'] = 'a';//time(); //timestamp forces update of applicationCache
+			//$this->data['cache'] = array();
+			//$this->data['network'] = array('*');
+			//$this->data['fallback'] = '';
+			show_404();
 		}
 	}
 	
@@ -143,17 +148,18 @@ class Manifest extends CI_Controller {
 	private function _add_resources_to_cache($url)
 	{
 		$resources = array_merge( array($url), $this->_get_resources_from_html($url));
-		
+		$this->load->helper('http');
 		//add each new resource to the cache and calculate the hash 
 		foreach ($resources as $resource)
 		{
-			if (!in_array($resource, $this->data['cache']))
+			if (!in_array($resource, $this->data['cache']) && url_exists($resource))
 			{
 			    $this->data['cache'][] = $resource;	
 			    // create a hash of the content
 				// NOTE: creating a hash from a dynamically created html file is
 				// a problem because the hash will always change (because of header date info?)
 				// therefore the hash is created from the content string
+				// IT IS BETTER TO STORE THE CONTENT IN A VARIABLE INSTEAD OF TWICE _get(ting)_content() over http
 			    $this->data['hashes'] .= md5($this->_get_content($resource));
 			}
 		}
@@ -162,6 +168,7 @@ class Manifest extends CI_Controller {
 	// get all resources used in a web page
 	private function _get_resources_from_html($url, $base=NULL)
 	{
+		//SMALL PROBLEM: ALSO COPIES RESOURCES THAT ARE COMMENTED OUT
 		$pattern = '/(<script|<link|<img) [^>]*(src|href)="([^"]+)"/';
 		$index = 3; //match of 3rd set of parentheses is what we want
 		$resources = $this->_get_resources($url, $pattern, $index, $base);	
@@ -185,6 +192,7 @@ class Manifest extends CI_Controller {
 	// extract all resources from a css file
 	private function _get_resources_from_css($url, $base=NULL)
 	{
+		//SMALL PROBLEM: ALSO EXTRACTS RESOURCES THAT ARE COMMENTED OUT
 		$pattern = '/url\(([^)]+)\)/';
 		$index = 1; //match of 1st set of parentheses is what we want
 		return $this->_get_resources($url, $pattern, $index, $base);
@@ -203,7 +211,10 @@ class Manifest extends CI_Controller {
 	private function _get_content($url)
 	{
 		$rel = $this->_rel_url($url);
-		return (is_file($rel)) ? file_get_contents($rel) : file_get_contents($url);
+		$content = (is_file($rel)) ? file_get_contents($rel) : file_get_contents($url);
+		
+		//log_message('error', 'Manifest controller failed to get contents of '.$url);
+		return $content;
 	}
 	
 	// turns array of relative and/or full urls into an array of full urls
@@ -223,13 +234,16 @@ class Manifest extends CI_Controller {
 	{
 		if(!isset($base))
 		{
-			$base = base_url();
+			//$base = base_url();
+			//using http helper function to add protocol
+			$base = url_make_valid($_SERVER['SERVER_NAME'].'/');
 		}
 		//in case relative urls were used, prepend the base
-		if (strpos($url, 'http://')!==0 && strpos($url, 'https://')!==0)
+		if (strpos($url, 'http://')!==0 && strpos($url, 'https://')!==0 && $url !== '*')
 		{
 			$url = $base.$url;
 		}
+		//log_message('debug', '_full_url() returns:'.$url);
 		return $url;
 	}
 	

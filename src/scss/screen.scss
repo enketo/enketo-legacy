@@ -1,5 +1,9 @@
 @import "compass/reset";
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@font-face{
+  font-family: 'Open Sans';
+  src: local('☺'),
+        url(fonts/OpenSans-Regular.ttf) format('truetype');
+}
 
 /******* COLORS **********/
 $button-bg: #fece2f; /*dark yellow*/
@@ -188,7 +192,7 @@ article.page {
  ***************************/
 
 body {
-  background: $bg url('../images/tex2res2.png') repeat;
+  background: $bg url(images/tex2res2.png) repeat;
   
   /*overflow: hidden;*/ }
 
@@ -286,7 +290,7 @@ header {
   z-index: 5;
   .ui-tabs-nav {
     padding-left: 0;
-    background: $bg url('../images/tex2res2.png') repeat;
+    background: $bg url(images/tex2res2.png) repeat;
     margin-bottom: -1px;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
@@ -348,6 +352,9 @@ $tab-width: 18px;
       color: orange;}}
   .queue-length{
       }
+  #status-offline-launch{
+    display: block;
+  }
   button#drawer-export{
     display: block;
   }}

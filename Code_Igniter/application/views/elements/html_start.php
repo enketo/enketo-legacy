@@ -2,7 +2,7 @@
 
 <!-- An offline-capable survey application suite (c) Aid Web Solutions -->
 
-<html lang="en" <?= (isset($offline) && $offline) ? 'manifest="manifest/html5"' : '' ?> class="no-js">
+<html lang="en" <?= (isset($offline) && $offline) ? 'manifest="manifest/html5/manifest.appcache"' : '' ?> class="no-js">
 	<head>
 		<title>
 			 Enketo - Faster Assessments (Offline)

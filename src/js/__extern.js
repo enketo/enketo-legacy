@@ -1,5 +1,7 @@
 var jrDataStr;
 
+DOMApplicationCache.OBSOLETE;
+
 function vkbeautify(){}
 
 /**

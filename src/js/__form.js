@@ -1871,7 +1871,7 @@ function Form (formSelector, dataStr){
 				 */
 				function updateMap(lat, lng, zoom){
 					zoom = zoom || 15;
-					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
+					if (typeof google.maps.LatLng !== 'undefined'){
 						mapOptions = {
 							zoom: zoom,
 							center: new google.maps.LatLng(lat, lng),
@@ -2005,22 +2005,22 @@ function Form (formSelector, dataStr){
 		'property' : function(o){
 			// of = 'deviceid', 'subscriberid', 'simserial', 'phonenumber'
 			// return '' except for deviceid?
-			return 'no property preload in Rapaide';
+			return 'no device properties in enketo';
 		},
 		'context' : function(o){
 			// 'application', 'user'??
-			return (o.param == 'application') ? 'rapaide' : '';
+			return (o.param == 'application') ? 'enketo' : '';
 		},
 		'patient' : function(o){
-			return 'not supported in Rapaide';
+			return 'patient preload not supported in enketo';
 		},
 		'user' : function(o){
 			//uuid, user_id, user_type
 			return 'user preload item not functioning yet';
 		},
 		'uid' : function(o){
-			//general
-			return 'no uid';
+			//general 
+			return 'no uid yet in enketo';
 		},
 		'browser' : function(o){
 			//console.debug('evaluation browser preload');

@@ -79,6 +79,19 @@ class Survey_model extends CI_Model {
     {
         return strtolower($this->_get_item('submission_url'));
     }
+
+    public function has_offline_launch_enabled()
+    {
+        return $this->_get_item('offline');
+    }
+
+    public function switch_offline_launch($active)
+    {
+        $current = $this->_get_item('offline');
+        log_message('debug', 'current: '.$current);
+        log_message('debug', 'active: '.$active);
+        return ($current == $active) ? TRUE : $this->_update_item('offline', $active);
+    }
     
     public function launch_survey($server_url, $form_id, $submission_url, $data_url, $email)
     {  
@@ -217,6 +230,22 @@ class Survey_model extends CI_Model {
         else 
         {
             return NULL;   
+        }
+    }
+
+    private function _update_item($field, $value)
+    {
+        $data = array($field => $value);
+        //would be safer to include limit(1)
+        $this->db->where('subdomain', $this->subdomain);
+        $query = $this->db->update('surveys', $data); 
+        if ($this->db->affected_rows() > 0) 
+        {
+            return TRUE;
+        }
+        else 
+        {
+            return FALSE;   
         }
     }
 

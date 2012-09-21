@@ -10,7 +10,7 @@ Browser support
 
 Prerequisites
 -----------
-- LAMP stack (apache:mode_rewrite, php:php5-xsl, php:curl, php:allow_url_fopen)
+- LAMP stack (apache:mode_rewrite, apache: mod_expires, php:php5-xsl, php:curl, php:allow_url_fopen)
 - XPathJS_javarosa (build/xpathjs_javarosa.min.js is the only file that is required)
 
 Installation
@@ -26,7 +26,7 @@ Installation
 4. Create wildcard subdomain that points to /public
 5. Import database structure into MYSQL database (most queries are done with the Active Record Class so any supported db should do with minimal fixes)
 6. Set up config/database.php with correct db user name and password
-8. Add the base url to config.php (e.g http://enketo.formhub.org)
+8. Add the base url to config/config.php (e.g http://enketo.formhub.org)
 7. Set environment in index.php to 'production'
 8. Replace Code_Igniter/application/views/elements/tracking.php with your own tracking code
 
@@ -45,7 +45,7 @@ Tools required:
 - Apache ANT to compile javascript 
 
 Instructions for developers:
-- create a symlink at public/js-source to src/js
+- create a symlink at public/js-source to src/js (when environment is set to 'development' in index.php, it will automatically load the uncompiled javascript files)
 
 Code contributions are very welcome!
 

@@ -9,9 +9,18 @@ IndexIgnore *
 
 RewriteEngine on
 
-RewriteCond $1 !^(index\.php|css|images|js-source|js-min|cache|mintest|testing|libraries|_tryout|robots\.txt|favicon\.ico|checkforconnection\.txt)
+RewriteCond $1 !^(index\.php|info\.php|css|images|js-source|js-min|cache|mintest|testing|libraries|_tryout|robots\.txt|favicon\.ico|checkforconnection\.txt)
 RewriteRule ^(.*)$ /index.php/$1 [L]
+
+#attempt to allow .appcache extension for manifest files (not working yet)
+RewriteRule ^(.*)manifest\.appcache /$1 [NC,L]
 
 #to use proxy for cross-domain ajax request (can't get CURL to work in php…)
 #RewriteRule ^html5validate/(.*)$ http://html5.validator.nu/$1 [P]
 #RewriteRule ^formtranslate(.*)$ http://www.commcarehq.org/formtranslate$1 [P]
+
+#make sure .ttf files are served with the right Content-type
+AddType font/ttf .ttf
+
+#Avoid caching of manifest files
+ExpiresByType text/cache-manifest "access plus 0 seconds"

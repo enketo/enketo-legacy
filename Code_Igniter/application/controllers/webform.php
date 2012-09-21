@@ -33,7 +33,8 @@ class Webform extends CI_Controller {
 			//if ($this->Survey_model->is_live_survey($subdomain))
 			if ($this->Survey_model->is_launched_survey())
 			{
-				$offline = FALSE; //$this ->config->item('application_cache'); //can be overridden here
+				//$offline = FALSE; //$this ->config->item('application_cache'); //can be overridden here
+				$offline = $this->Survey_model->has_offline_launch_enabled();
 				$server_url= $this->Survey_model->get_server_url();
 				$form_id = $this->Survey_model->get_form_id();
 
@@ -134,6 +135,21 @@ class Webform extends CI_Controller {
 			}
 
 			$this->load->view('front_view', $data);			
+		}
+	}
+
+	public function switch_cache(){
+		$this->load->model('Survey_model','',TRUE);
+		$app_cache = $_POST['cache'];
+
+		if ($app_cache === 'true' || $app_cache === 'false'){
+			$app_cache = ($app_cache === 'true') ? TRUE : FALSE;
+			$result = $this->Survey_model->switch_offline_launch($app_cache);
+			echo ($result === TRUE) ? 'success' : 'error';
+		}
+		else
+		{
+			echo 'Did not understand request.';
 		}
 	}
 

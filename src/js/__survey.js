@@ -24,7 +24,7 @@ var /**@type {Settings}*/settings,
 	currentOnlineStatus = false;
 var /**@type {StorageLocal}*/ store;
 var MODERN_BROWSERS_URL = 'modern_browsers';
-var CACHE_CHECK_INTERVAL = 30*1000; //CHANGE TO 3600*1000
+var CACHE_CHECK_INTERVAL = 360*1000; //CHANGE TO 3600*1000
 DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBackup':false };
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
@@ -50,9 +50,11 @@ $(document).ready(function() {
 		$(document).trigger('browsersupport', 'local-storage');
 	}
 
+	//instantiate Cache object even if no manifest attribute is provided to have access to cache.activate()
+	cache = new Cache();
 	gui.updateStatus.offlineLaunch(false);
+	
 	if ($('html').attr('manifest')){
-		cache = new Cache();
 		if (cache.isSupported()){
 			//reminder to bookmark page will be shown 3 times
 			bookmark = store.getRecord('__bookmark');
@@ -384,12 +386,12 @@ function Cache(){
 }
 		
 Cache.prototype.init = function(){
-	that = this;
+	var that = this;
 	//first check for the preferred cache
 	if (!this.isSupported){
 		return false;
 	}
-	if (applicationCache.status > 0){
+	if (applicationCache.status > 0 && applicationCache.status < 5){
 		gui.updateStatus.offlineLaunch(true);
 	}
 	if (applicationCache.status === applicationCache.UPDATEREADY){
@@ -409,7 +411,7 @@ Cache.prototype.init = function(){
 	applicationCache.addEventListener('updateready', this.onUpdateReady, false);
 	
 	//when an error occurs (not necessarily serious)
-	applicationCache.addEventListener('error', this.onError, false);
+	applicationCache.addEventListener('error', this.onErrors, false);
 
 	setInterval(function(){
 		that.update();
@@ -424,13 +426,7 @@ Cache.prototype.init = function(){
 };
 
 Cache.prototype.update = function(){
-	try{
-		applicationCache.update();
-	}
-	catch(e){
-		console.debug('exception occurred when updating application cache:');
-		console.debug(e);
-	}
+	applicationCache.update();
 };
 
 Cache.prototype.onObsolete = function(){
@@ -449,16 +445,36 @@ Cache.prototype.onUpdateReady = function(){
 		"Refresh this page to load the updated version.", 20);
 };
 
-Cache.prototype.onError = function(error){
-	console.log('HTML5 cache error event'); // DEBUG
+Cache.prototype.onErrors = function(error){
+	console.error('HTML5 cache error event'); // DEBUG
 	//if (connection.getOnlineStatus()) {//error event always triggered when offline
 	console.debug(error);
+	gui.showFeedback('There is a new version of this application or form available but an error occurs when'+
+			' trying to download it. Please send a bug report.');
 		//gui.updateStatus.offlineLaunch(false);
 		//gui.alert('Application error (manifest error). Try to submit or export any locally saved data. Please report to formhub mentioning the url.');
 		// Possible to trigger cache problem for testing? ->
 		// 1. going offline, 2.manifest with unavailable resource, 3. manifest syntax error
 	//}
 };
+
+//Cache.prototype.activate = function(){
+//	if (applicationCache.status > 0){
+//		gui.showFeedback('Offline launch is already activated. If it is not working please contact formhub.');
+//	}
+//	else{
+//		gui.confirm('By confirming offline launch functionality will be switched on. The application will automatically refresh.');
+//	}
+//};//
+
+//Cache.prototype.deActivate = function(){
+//	if (applicationCache.status === 0){
+//		gui.showFeedback('Offline launch is not active.');
+//	}
+//	else{
+//		gui.confirm('By confirming offline launch functionality will be switched off.');
+//	}
+//};
 	
 Cache.prototype.isSupported = function(){
 	return (window.applicationCache) ? true : false;
@@ -577,6 +593,18 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 		$(window).trigger('onlinestatuschange', newStatus);
 	}
 	this.currentOnlineStatus = newStatus;
+};
+
+//REMOVE THIS AS IT MAKES NO SENSE WHATSOEVER TO LET USERS CHANGE A CENTRAL FORM SETTING!
+Connection.prototype.switchCache = function(active){
+	if (typeof active !== 'boolean'){
+		console.error('switchCache called without parameter');
+		return;
+	}
+	$.ajax('webform/switch_cache', {
+		type: 'POST',
+		data: {cache: active}
+	});
 };
 
 /**

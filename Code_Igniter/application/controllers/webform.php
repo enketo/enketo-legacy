@@ -138,6 +138,21 @@ class Webform extends CI_Controller {
 		}
 	}
 
+	public function switch_cache(){
+		$this->load->model('Survey_model','',TRUE);
+		$app_cache = $_POST['cache'];
+
+		if ($app_cache === 'true' || $app_cache === 'false'){
+			$app_cache = ($app_cache === 'true') ? TRUE : FALSE;
+			$result = $this->Survey_model->switch_offline_launch($app_cache);
+			echo ($result === TRUE) ? 'success' : 'error';
+		}
+		else
+		{
+			echo 'Did not understand request.';
+		}
+	}
+
 	public function update_list()
 	{
 		$this->load->model('Survey_model', '', TRUE);

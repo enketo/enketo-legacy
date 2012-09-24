@@ -1771,7 +1771,6 @@ function Form (formSelector, dataStr){
 					'my':'left top', 
 					'at': 'left bottom'
 				}
-
 			});
 		},
 		//transforms temporary page-break elements to triggers //REMOVE WHEN BETTER SOLUTION FOR PAGE BREAKS IS FOUND
@@ -2373,6 +2372,13 @@ function Form (formSelector, dataStr){
 	 */
 	FormHTML.prototype.isValid = function(){
 		return ($form.find('.invalid').length > 0) ? false : true;
+	};
+
+	/**
+	 * Adds <hr class="page-break"> to prevent cutting off questions with page-breaks
+	 */
+	FormHTML.prototype.addPageBreaks = function(){
+
 	};
 }
 

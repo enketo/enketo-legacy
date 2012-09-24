@@ -45,9 +45,9 @@ if ( ! function_exists('get_subdomain'))
 		$full_name = $_SERVER['SERVER_NAME'];
 		
 		$full_url = (isset($_SERVER['HTTPS'])) ? 'https://'.$full_name.'/' : 'http://'.$full_name.'/';
-		log_message('debug', 'full url:'.$full_url);
-		log_message('debug', 'base url: '.base_url());
-		//if(strpos($full_name, '.') != strrpos($full_name, "."))
+		//log_message('debug', 'full url:'.$full_url);
+		//log_message('debug', 'base url: '.base_url());
+
 		if ($full_url != base_url())
 		{
 			// extract it => e.g. result = 'sub' 
@@ -55,7 +55,7 @@ if ( ! function_exists('get_subdomain'))
 			// nor for domains such as co.uks//
 			//$subdomain_arr = explode('.', $//full_name, 2);
 			//$subdomain_name = $subdomain_arr[0];
-			log_message('debug', $full_name);
+			//log_message('debug', $full_name);
 			
 			//log_message('debug', 'going to extract subdomain');
 			//$subdomain_name = substr($full_name, 0, strrpos($full_name, '.', -5));	
@@ -70,6 +70,12 @@ if ( ! function_exists('get_subdomain'))
 			return $default;
 		}
 
-		return strtoupper($subdomain_name);
+		//if the last character is '-' pretend it is not there
+		//if ( substr($subdomain_name, strlen($subdomain_name)-1) === '-')
+		//{
+		//	$subdomain_name = substr($subdomain_name, 0, strlen($subdomain_name) - 1) );
+		//}
+
+		return strtolower($subdomain_name);
 	}
 }

@@ -1,10 +1,13 @@
-<? require 'elements/html_start.php' ?>
+<? 	
+	require 'elements/html_start.php'; 
+	$this->load->helper('url'); 
+?>
 
 	<? foreach ($stylesheets as $css): ?>
 		<link href="<?= $css; ?>" media="screen" rel="stylesheet" type="text/css" />
 	<? endforeach; ?>
 
-	<link href="css/print.css" media="print" rel="stylesheet" type="text/css" />
+	<link href="<?= base_url('css/print.css')?>" media="print" rel="stylesheet" type="text/css" />
 
 	<? foreach ($scripts as $script): ?>
 		<script type="text/javascript" src="<?= $script; ?>"></script>

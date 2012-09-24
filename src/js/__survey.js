@@ -596,16 +596,16 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 };
 
 //REMOVE THIS AS IT MAKES NO SENSE WHATSOEVER TO LET USERS CHANGE A CENTRAL FORM SETTING!
-Connection.prototype.switchCache = function(active){
-	if (typeof active !== 'boolean'){
-		console.error('switchCache called without parameter');
-		return;
-	}
-	$.ajax('webform/switch_cache', {
-		type: 'POST',
-		data: {cache: active}
-	});
-};
+//Connection.prototype.switchCache = function(active){
+//	if (typeof active !== 'boolean'){
+//		console.error('switchCache called without parameter');
+//		return;
+//	}
+//	$.ajax('webform/switch_cache', {
+//		type: 'POST',
+//		data: {cache: active}
+//	});
+//};
 
 /**
  * PROTECTION AGAINST CALLING FUNCTION TWICE to be tested, attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server

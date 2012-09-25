@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0002'; //time();
+		private $hash_manual_override = '0003'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -82,7 +82,7 @@ class Manifest extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->helper(array('url', 'json'));
+		$this->load->helper(array('url', 'json', 'subdomain'));
 		$this->load->model('Survey_model','',TRUE);
 		$this->_set_data();
 		//log_message('debug', 'array with manifest resources generated');
@@ -96,7 +96,7 @@ class Manifest extends CI_Controller {
 	public function gears()
 	{	
 		// IE9 requires these additional resources for Gears function properly
-		$this->data['cache'][] = base_url().'index.php';
+		//$this->data['cache'][] = base_url().'index.php';
 		
 		// convert html5 manifest properties into object with Gears properties
 		$g_data['manifest']['betaManifestVersion'] = 1;
@@ -152,6 +152,7 @@ class Manifest extends CI_Controller {
 		//add each new resource to the cache and calculate the hash 
 		foreach ($resources as $resource)
 		{
+			//log_message('debug', 'checking resource')
 			if (!in_array($resource, $this->data['cache']) && url_exists($resource))
 			{
 			    $this->data['cache'][] = $resource;	
@@ -234,9 +235,12 @@ class Manifest extends CI_Controller {
 	{
 		if(!isset($base))
 		{
+			//$subdomain = get_subdomain();
+			//log_message('debug', 'subdomain: '.$subdomain);
+			//log_message('debug', 'servername: '.$_SERVER['SERVER_NAME']);
 			//$base = base_url();
 			//using http helper function to add protocol
-			$base = url_make_valid($_SERVER['SERVER_NAME'].'/');
+			$base =  full_base_url();//url_add_protocol($_SERVER['SERVER_NAME'].'/');//get_subdomain_plus_base_url();
 		}
 		//in case relative urls were used, prepend the base
 		if (strpos($url, 'http://')!==0 && strpos($url, 'https://')!==0 && $url !== '*')

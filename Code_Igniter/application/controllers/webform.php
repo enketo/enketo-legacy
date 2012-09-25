@@ -59,20 +59,20 @@ class Webform extends CI_Controller {
 							'form'=> $form,
 							'form_data'=> $form_data,
 							'stylesheets'=> array(
-								base_url('libraries/jquery-ui/css/sunny/jquery-ui.custom.css'),
-								base_url('css/screen.css')
+								full_base_url('libraries/jquery-ui/css/sunny/jquery-ui.custom.css'),
+								full_base_url('css/screen.css')
 							)
 						);
 						$common_scripts = array(
-							base_url('libraries/jquery.min.js'),
-							base_url('libraries/jquery-ui/js/jquery-ui.custom.min.js'),
-							base_url('libraries/jquery-ui-timepicker-addon.js'),
-							base_url('libraries/jquery.multiselect.min.js'),	
-							base_url('libraries/modernizr.min.js'),
-							base_url('libraries/xpathjs_javarosa.min.js'),
-							base_url('libraries/FileSaver.min.js'),
-							base_url('libraries/BlobBuilder.min.js'),
-							base_url('libraries/vkbeautify.js'),
+							full_base_url('libraries/jquery.min.js'),
+							full_base_url('libraries/jquery-ui/js/jquery-ui.custom.min.js'),
+							full_base_url('libraries/jquery-ui-timepicker-addon.js'),
+							full_base_url('libraries/jquery.multiselect.min.js'),	
+							full_base_url('libraries/modernizr.min.js'),
+							full_base_url('libraries/xpathjs_javarosa.min.js'),
+							full_base_url('libraries/FileSaver.min.js'),
+							full_base_url('libraries/BlobBuilder.min.js'),
+							full_base_url('libraries/vkbeautify.js'),
 							"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
 						);
 
@@ -87,11 +87,11 @@ class Webform extends CI_Controller {
 						else
 						{		
 							$data['scripts'] = array_merge($common_scripts, array(
-								base_url('js-source/__common.js'),
-								base_url('js-source/__storage.js'),
-								base_url('js-source/__form.js'),
-								base_url('js-source/__survey.js'),
-								base_url('js-source/__debug.js')
+								full_base_url('js-source/__common.js'),
+								full_base_url('js-source/__storage.js'),
+								full_base_url('js-source/__form.js'),
+								full_base_url('js-source/__survey.js'),
+								full_base_url('js-source/__debug.js')
 							));
 						}
 						$this->load->view('webform_view',$data);

@@ -44,7 +44,7 @@ if ( ! function_exists('get_subdomain'))
 	{ 
 		$full_name = $_SERVER['SERVER_NAME'];
 		
-		$full_url = (isset($_SERVER['HTTPS'])) ? 'https://'.$full_name.'/' : 'http://'.$full_name.'/';
+		$full_url = full_base_url(); //(isset($_SERVER['HTTPS'])) ? 'https://'.$full_name.'/' : 'http://'.$full_name.'/';
 		//log_message('debug', 'full url:'.$full_url);
 		//log_message('debug', 'base url: '.base_url());
 
@@ -79,3 +79,22 @@ if ( ! function_exists('get_subdomain'))
 		return strtolower($subdomain_name);
 	}
 }
+
+if ( ! function_exists('full_base_url') )
+{
+	function full_base_url($path=''){
+		$full_name = $_SERVER['SERVER_NAME'].'/'.$path;
+
+		return (isset($_SERVER['HTTPS'])) ? 'https://'.$full_name : 'http://'.$full_name;
+	}
+}
+
+//if ( ! function_exists('get_subdomain_plus_base_url') )
+//{
+//	function get_subdomain_plus_base_url()
+//	{
+//		$this->load->helper('http');
+//		
+//		return url_add_protocol($_SERVER['SERVER_NAME'].'/');
+//	}
+//}

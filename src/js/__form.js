@@ -1854,8 +1854,8 @@ function Form (formSelector, dataStr){
 
 				$button.click(function(event){
 					event.preventDefault();
-					console.debug('click event detected');
-					console.debug(event);
+					//console.debug('click event detected');
+					//console.debug(event);
 					navigator.geolocation.getCurrentPosition(function(position){	
 						updateMap(position.coords.latitude, position.coords.longitude);
 						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	

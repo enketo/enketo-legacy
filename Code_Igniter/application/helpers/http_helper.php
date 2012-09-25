@@ -93,15 +93,15 @@ if ( ! function_exists('url_exists'))
 	}
 }
 
-if ( ! function_exists('url_add_protocol'))
-{
-	function url_add_protocol($url)
-	{
-		$url = trim($url);
-		$url = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) ? $url : 'http://'.$url;
-		return (url_valid($url)) ? $url : FALSE;
-	}
-}
+//if ( ! function_exists('url_add_protocol'))
+//{
+//	function url_add_protocol($url)
+//	{
+//		$url = trim($url);
+//		$url = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) ? $url : 'http://'.$url;
+//		return (url_valid($url)) ? $url : FALSE;
+//	}
+//}
 
 if ( ! function_exists('url_valid'))
 {

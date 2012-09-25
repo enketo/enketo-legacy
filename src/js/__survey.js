@@ -420,13 +420,14 @@ Cache.prototype.init = function(){
 
 	//if status is UNCACHED OR IDLE, force an update check
 	if (applicationCache.status === applicationCache.UNCACHED || applicationCache.status === applicationCache.IDLE){
-		//applicationCache.update();
-		this.update();
+		//throws expeception in Firefox if user hasn't yet approved the use of the application cache
+		//it also doesn't seem necessary in Firefox and Chrome as it happens right away automatically
+		//this.update();
 	}
 };
 
 Cache.prototype.update = function(){
-	applicationCache.update();
+	window.applicationCache.update();
 };
 
 Cache.prototype.onObsolete = function(){
@@ -445,10 +446,10 @@ Cache.prototype.onUpdateReady = function(){
 		"Refresh this page to load the updated version.", 20);
 };
 
-Cache.prototype.onErrors = function(error){
+Cache.prototype.onErrors = function(e){
+	console.debug(e);
 	console.error('HTML5 cache error event'); // DEBUG
-	//if (connection.getOnlineStatus()) {//error event always triggered when offline
-	console.debug(error);
+	//if (connection.getOnlineStatus()) {//error event always triggered when offline!!
 	gui.showFeedback('There is a new version of this application or form available but an error occurs when'+
 			' trying to download it. Please send a bug report.');
 		//gui.updateStatus.offlineLaunch(false);

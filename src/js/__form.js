@@ -1476,7 +1476,7 @@ function Form (formSelector, dataStr){
 				cleverSelector.push('[data-relevant*="'+namesArr[i]+'"]');
 			}
 
-			console.debug('Updating branches for expressions that contain: '+namesArr.join());
+			//console.debug('Updating branches for expressions that contain: '+namesArr.join());
 			//console.debug('the clever selector created: '+cleverSelector.join());
 
 			$form.find(cleverSelector.join()).each(function(){
@@ -1492,8 +1492,8 @@ function Form (formSelector, dataStr){
 				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[p.path]){
 					return;
 				}
-				console.debug('properties of branch input node:');
-				console.debug(p);
+				//console.debug('properties of branch input node:');
+				//console.debug(p);
 				////console.debug(branchNode);
 
 				//type = $(this).prop('nodeName').toLowerCase();

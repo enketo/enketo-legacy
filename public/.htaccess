@@ -13,7 +13,7 @@ RewriteCond $1 !^(index\.php|info\.php|css|images|js-source|js-min|cache|mintest
 RewriteRule ^(.*)$ /index.php/$1 [L]
 
 #attempt to allow .appcache extension for manifest files (not working yet)
-RewriteRule ^(.*)manifest\.appcache /$1 [NC,L]
+RewriteRule ^(.*)manifest\.appcache$ /$1 [NC,L]
 
 #to use proxy for cross-domain ajax request (can't get CURL to work in php…)
 #RewriteRule ^html5validate/(.*)$ http://html5.validator.nu/$1 [P]

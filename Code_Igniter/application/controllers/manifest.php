@@ -45,7 +45,7 @@ class Manifest extends CI_Controller {
 	|
 	| NOTE: on a local test server the (sub)domain has to be included in the 
 	| hosts file of the test server otherwise DNS will be used to get the 
-	| contents of the html pages.
+	| contents of the html pages (with file_get_contents()).
 	|
 	|--------------------------------------------------------------------------
 	| force cache update 
@@ -160,7 +160,7 @@ class Manifest extends CI_Controller {
 				// NOTE: creating a hash from a dynamically created html file is
 				// a problem because the hash will always change (because of header date info?)
 				// therefore the hash is created from the content string
-				// IT IS BETTER TO STORE THE CONTENT IN A VARIABLE INSTEAD OF TWICE _get(ting)_content() over http
+				// THIS CAN BE IMPROVED AS FOR html and css RESOURCES IT HAS TO GET THE CONTENTS TWICE
 			    $this->data['hashes'] .= md5($this->_get_content($resource));
 			}
 		}
@@ -183,7 +183,7 @@ class Manifest extends CI_Controller {
 			    // resources in a css file are assumed to be relative (to the css file) and may have
 			    // a base different from the webroot
 			    $path_prefix = substr($resource_in_html, 0, strrpos($resource_in_html, '/')+1);
-			    log_message('debug', 'css path_prefix: '.$path_prefix);
+			    //log_message('debug', 'css path_prefix: '.$path_prefix);
 			    // extract the resources from the css file
 			    $resources = array_merge($resources, $this->_get_resources_from_css($resource_in_html, $path_prefix));
 			}

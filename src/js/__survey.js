@@ -32,7 +32,7 @@ DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBa
 /************ Document Ready ****************/
 $(document).ready(function() {
 	'use strict';
-	var bookmark, message, choices, shown, time;
+	var message, choices;
 
 	store = new StorageLocal();
 	form = new Form('form.jr:eq(0)', jrDataStr);
@@ -40,10 +40,7 @@ $(document).ready(function() {
 	settings.init();
 	connection = new Connection();
 	
-	// check if localStorage is supported and if not re-direct to browser download page
 	if (!store.isSupported()){
-	//if(Modernizr.localStorage){
-		//console.log('redirect attempt because of lack of localStorage support'); // DEBUG
 		window.location = MODERN_BROWSERS_URL;
 	}
 	else{
@@ -56,24 +53,12 @@ $(document).ready(function() {
 	
 	if ($('html').attr('manifest')){
 		if (cache.isSupported()){
-			//reminder to bookmark page will be shown 3 times
-			bookmark = store.getRecord('__bookmark');
-			shown = (bookmark) ? bookmark['shown'] : 0;
-			if(shown < 3){
-				setTimeout(function(){
-					time = (shown === 1) ? 'time' : 'times';
-					gui.showFeedback('Please bookmark this page for easy offline launch. '+
-						'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
-					shown++;
-					store.setRecord('__bookmark', {'shown': shown});
-				}, 5*1000);
-			}
 			cache.init();
 			$(document).trigger('browsersupport', 'offline-launch');
 		}
 		// if applicationCache is not supported
 		else{
-			message = 'Offline application launch not supported by your browser. '+
+			message = 'Offline application launch is not supported by your browser. '+
 					'You can use the form without this feature or see options for resolving this';
 			choices = {
 				posButton : 'Show options',
@@ -340,7 +325,7 @@ function exportData(finalOnly){
 }
 
 /**
- * function to export or backup data to a file.
+ * Function to export or backup data to a file. In Chrome it will get an appropriate file name.
  *
  *	@param {string=}  fileName
  *  @param {boolean=} finalOnly [description]
@@ -393,6 +378,7 @@ Cache.prototype.init = function(){
 	}
 	if (applicationCache.status > 0 && applicationCache.status < 5){
 		gui.updateStatus.offlineLaunch(true);
+		this.showBookmarkMsg();
 	}
 	if (applicationCache.status === applicationCache.UPDATEREADY){
 		this.onUpdateReady();
@@ -438,6 +424,7 @@ Cache.prototype.onObsolete = function(){
 Cache.prototype.onCached = function(){
 	gui.showFeedback('Congratulations! This form can now be loaded when you are offline.');
 	gui.updateStatus.offlineLaunch(true);
+	this.showBookmarkMsg();
 };
 
 Cache.prototype.onUpdateReady = function(){
@@ -457,6 +444,20 @@ Cache.prototype.onErrors = function(e){
 		// Possible to trigger cache problem for testing? ->
 		// 1. going offline, 2.manifest with unavailable resource, 3. manifest syntax error
 	//}
+};
+
+Cache.prototype.showBookmarkMsg = function(){
+	var bookmark, shown, time;
+	//reminder to bookmark page will be shown 3 times
+	bookmark = store.getRecord('__bookmark');
+	shown = (bookmark) ? bookmark['shown'] : 0;
+	if(shown < 3){
+		time = (shown === 1) ? 'time' : 'times';
+		gui.showFeedback('This page can be loaded when your browser is offline. To be able to find it, we recommend to bookmark this page. '+
+			'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
+		shown++;
+		store.setRecord('__bookmark', {'shown': shown});
+	}
 };
 
 //Cache.prototype.activate = function(){
@@ -838,7 +839,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	$('#form-controls button').equalWidth();
 
 	$(document)
-		.on('click', '#records-saved li:not(.no-click)', function(event){ // future items matching selection will also get eventHandler
+		.on('click', '#records-saved li:not(.no-click)', function(event){
 			event.preventDefault();
 			var name = /** @type {string} */$(this).find('.name').text();
 			loadForm(name);
@@ -974,8 +975,6 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 		$('<li class="no-click">no locally saved records found</li>').appendTo($list);
 		$('#queue-length').text('0');
 	}
-// *	OLD*	else if (result.field(2) == 2) {
-// *	OLD*		color = 'gray';
 	// update status counters
 	//pageEl.find('#forms-saved-qty').text(recordList.length);
 	$page.find('#records-draft-qty').text(draftFormsQty);

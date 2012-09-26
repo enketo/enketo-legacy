@@ -354,6 +354,12 @@ function Form (formSelector, dataStr){
 		 * 
 		 *   -
 		 */
+		/**
+		 * [setVal description]
+		 * @param {(string|Array.<string>)=} newVal      [description]
+		 * @param {string=} expr        [description]
+		 * @param {string=} xmlDataType [description]
+		 */
 		Nodeset.prototype.setVal = function(newVal, expr, xmlDataType){
 			var target, curVal, success;
 			//index = (typeof index !== 'undefined') ? index : -1;
@@ -550,9 +556,9 @@ function Form (formSelector, dataStr){
 			},
 			'datetime' : {
 				validate : function(x){
-					return ( new Date(x).toString() !== 'Invalid Date');
+					return ( new Date(x.toString()).toString() !== 'Invalid Date');
 				},
-			'convert' : function(x){
+				convert : function(x){
 					return new Date(x).toUTCString();
 				}
 			},

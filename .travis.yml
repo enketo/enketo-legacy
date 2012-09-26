@@ -1,0 +1,5 @@
+language: javascript
+script:
+  - ./lib/EnvJasmine/bin/run_all_tests.sh --testDir=../../js_tests --configFile=../../js_tests/env_jasmine.conf.js
+notifications:
+  irc: "irc.freenode.org#moditest"

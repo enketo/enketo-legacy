@@ -30,7 +30,7 @@ $(document).ready(function(){
 	gui.init();
 	// avoid windows console errors
 	if (typeof console == "undefined") {console = {log: function(){}};}
-	if (typeof (window.console.debug) == "undefined") {console.debug = console.log;}
+	if (typeof window.console.debug == "undefined") {console.debug = console.log;}
 
 	if (getGetVariable('debug') !== 'true'){
 		window.console.log = function(){};

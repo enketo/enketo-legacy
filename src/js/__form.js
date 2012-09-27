@@ -1835,7 +1835,7 @@ function Form (formSelector, dataStr){
 				$button = $geoWrap.find('button[name="geodetect"]');
 				
 				$geoWrap.find('input').not($inputOrigin).on('change change.bymap', function(event){
-					console.debug('change event dected');
+					//console.debug('change event detected');
 					var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
 						lng = ($lng.val() !== '') ? $lng.val() : 0.0, 
 						alt = ($alt.val() !== '') ? $alt.val() : 0.0, 

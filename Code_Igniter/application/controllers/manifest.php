@@ -51,13 +51,13 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0003'; //time();
+		private $hash_manual_override = '0007'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
 	|--------------------------------------------------------------------------
 	*/	
-		private $pages = array('webform'); //, 'modern_browsers'); 
+		private $pages = array('webform', 'false'); //, 'modern_browsers'); 
 	/*
 	|--------------------------------------------------------------------------	
 	| page to re-direct offline 404 requests to (html5 manifest 'fallback' section)
@@ -129,7 +129,13 @@ class Manifest extends CI_Controller {
 			{
 				//log_message('debug', 'checking resources on page: '.$page);
 				$page_full_url = $this->_full_url($page);
-				$this->_add_resources_to_cache($page_full_url);				
+				$result = $this->_add_resources_to_cache($page_full_url);
+				if (!$result)
+				{
+					//remove non-existing page from manifest
+					$key = array_search($page, $this->data['cache']);
+					unset($this->data['cache'][$key]);
+				}		
 			}
 			$this->data['hashes'] = md5($this->data['hashes']).'_'.$this->hash_manual_override; //hash of hashes		
 			$this->data['network'] = $this->network;
@@ -148,6 +154,10 @@ class Manifest extends CI_Controller {
 		$resources = $this->_get_resources_from_html($full_url);
 		//add each new resource to the cache and calculate the hash 
 		//print_r($resources); 
+		if (!$resources)
+		{
+			return FALSE;
+		}
 		foreach ($resources as $resource)
 		{
 			//log_message('debug', 'checking resource')
@@ -164,6 +174,7 @@ class Manifest extends CI_Controller {
 			    $this->data['hashes'] .= md5($this->_get_content($resource));
 			}
 		}
+		return TRUE;
 	}
 	
 	// get all resources used in a web page
@@ -173,6 +184,10 @@ class Manifest extends CI_Controller {
 		$pattern = '/(<script|<link|<img) [^>]*(src|href)="([^"]+)"/';
 		$index = 3; //match of 3rd set of parentheses is what we want
 		$resources = $this->_get_resources($full_url, $pattern, $index, $base);	
+		if (!$resources)
+		{
+			return NULL;
+		}
 		foreach ($resources as $resource_in_html)
 		{		
 			// if the resource is a css stylesheet, also obtain all image urls 

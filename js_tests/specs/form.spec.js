@@ -1,7 +1,7 @@
 // Load mocks for this spec
 EnvJasmine.load(EnvJasmine.mocksDir + "form.mock.js");
 // Load files and specific libraries
-EnvJasmine.load(EnvJasmine.includeDir + "xpathjs_javarosa.min.js");
+EnvJasmine.load(EnvJasmine.includeDir + "xpathjs_javarosa/build/xpathjs_javarosa.min.js");
 EnvJasmine.load(EnvJasmine.jsDir + "__form.js");
 
 describe("get XML Node", function () {

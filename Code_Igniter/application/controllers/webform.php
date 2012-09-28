@@ -69,7 +69,7 @@ class Webform extends CI_Controller {
 							'libraries/jquery-ui-timepicker-addon.js',
 							'libraries/jquery.multiselect.min.js',	
 							'libraries/modernizr.min.js',
-							'libraries/xpathjs_javarosa.min.js',
+							'libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 							'libraries/FileSaver.min.js',
 							'libraries/BlobBuilder.min.js',
 							'libraries/vkbeautify.js',

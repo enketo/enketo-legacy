@@ -30,7 +30,7 @@ $(document).ready(function(){
 	gui.init();
 	// avoid windows console errors
 	if (typeof console == "undefined") {console = {log: function(){}};}
-	if (typeof (window.console.debug) == "undefined") {console.debug = console.log;}
+	if (typeof window.console.debug == "undefined") {console.debug = console.log;}
 
 	if (getGetVariable('debug') !== 'true'){
 		window.console.log = function(){};
@@ -67,12 +67,16 @@ GUI.prototype.init = function(){
 
 	$('footer').detach().appendTo('#container');
 	//this.nav.reset();
+	this.display();
+
+
 };
 
 GUI.prototype.setup = function(){
 	"use strict";
 	// final setup of GUI object
 	$(window).trigger('resize');
+	$('.ui-corner-all').removeClass('ui-corner-all'); //TEMPORARY
 };
 	
 /**
@@ -99,7 +103,7 @@ GUI.prototype.setEventHandlers = function(){
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
 	$(document).on('click', 'a[href^="#"]:not([href="#"]):not(nav ul li a)', function(event){
 		var href = $(this).attr('href');
-		//console.log('captured click to nav page, href='+href);
+		console.log('captured click to nav page, href='+href);
 		//if href is not just an empty anchor it is an internal link and will trigger a navigation menu click
 		if (href !== '#'){
 			event.preventDefault();
@@ -150,24 +154,30 @@ GUI.prototype.setEventHandlers = function(){
 		$('#container').css('top', $('header').outerHeight());
 		
 		// resizing scrollable container\
-		$('body:not(.no-scroll) #container')
-			.height($(window).height()-$('header').outerHeight()-$('#form-controls.bottom').outerHeight());
-		
+		//if ($('#form-controls.bottom').length > 0){
+			$('body:not(.no-scroll) #container')
+				.height($(window).height()-$('header').outerHeight()-$('#form-controls.bottom').outerHeight());
+		//}
+		//else{
+		//	$('body:not(.no-scroll) #container')
+		//		.height($(window).height()-$('header').outerHeight());//-$('#bottom-bar').outerHeight());
+		//}
 		// replacing form controls in mobile setting // REPLACE: SHOULD MOVE WITH CSS
 		//$('body.no-scroll #form-controls')
 		//	.css('height',$('#form-controls').height()).css('top', $('header').outerHeight()+$('#container').outerHeight());
 		
 		// hide logo if the navigation menu starts overlapping
-		var navLeft = $('nav').offset().left;
-		var logoRight = $('#logo').offset().left+$('#logo').outerWidth();
-		//console.log('nav left:'+navLeft+' logo right:'+logoRight); // DEBUG
-		if (navLeft < logoRight){
-			$('#logo').css('visibility', 'hidden');
+		if ($('nav').length > 0){
+			var navLeft = $('nav').offset().left;
+			var logoRight = $('#logo').offset().left+$('#logo').outerWidth();
+			//console.log('nav left:'+navLeft+' logo right:'+logoRight); // DEBUG
+			if (navLeft < logoRight){
+				$('#logo').css('visibility', 'hidden');
+			}
+			else {
+				$('#logo').css('visibility', 'visible');
+			}
 		}
-		else {
-			$('#logo').css('visibility', 'visible');
-		}
-					
 	});
 };
 	
@@ -288,7 +298,7 @@ GUI.prototype.pages = function(){
 
 /**
  * Shows an unobtrusive feedback message to the user.
- * 
+ *
  * @param {string=} message
  * @param {number=} duration
  */
@@ -450,13 +460,18 @@ GUI.prototype.updateStatus = {
 		"use strict";
 		console.log('updating online status in menu bar to:');
 		console.log(online);
-		if (online) {
+		if (online === true) {
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-signal-diag')
 				.attr('title', 'It appears there is currently an Internet connection available.');
+			$('.drawer #status').removeClass('offline waiting').text('');
 		}
-		else {
+		else if (online === false) {
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-cancel')
 				.attr('title', 'It appears there is currently no Internet connection');
+			$('.drawer #status').removeClass('waiting').addClass('offline').text('Offline. ');
+		}
+		else{
+			$('.drawer #status').removeClass('offline').addClass('waiting').text('Waiting. ');
 		}
 	},
 	edit : function(editing){
@@ -479,6 +494,10 @@ GUI.prototype.updateStatus = {
 			console.debug('updating browser support for '+supported);
 			$page.find('#settings-browserSupport-'+supported+' span.ui-icon').addClass('ui-icon-check');
 		}
+	},
+	offlineLaunch: function(offlineCapable){
+		var status = (offlineCapable) ? 'Offline Launch: Yes' : 'Offline Launch: No';
+		$('.drawer #status-offline-launch').text(status);
 	}
 };
 
@@ -515,7 +534,7 @@ GUI.prototype.display = function(){
 };
 
 /**
- * [updateSettings description] Updates the settings in the GUI and triggers change events (used when app launches) that are handled in customEventHandlers.
+ * Updates the settings in the GUI and triggers change events (used when app launches) that are handled in customEventHandlers.
  * It is generic and could be used for any kind of radio or checkbox settings.
  *
  * @param  {Object.<string, (boolean|string)>} settings [description]

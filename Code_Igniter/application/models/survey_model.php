@@ -26,6 +26,7 @@ class Survey_model extends CI_Model {
         log_message('debug', 'Survey Model loaded');
         $this->load->helper(array('subdomain', 'url', 'string', 'http'));
     	$this->subdomain = get_subdomain();
+        $this->ONLINE_SUBDOMAIN_SUFFIX = '-';
         date_default_timezone_set('UTC');
     }
     
@@ -55,9 +56,10 @@ class Survey_model extends CI_Model {
     //returns true if a requested survey or template exists
     public function is_launched_survey()
     {    
-    	$this->db->where('subdomain', $this->subdomain);
-    	$query = $this->db->get('surveys', 1); 
-    	return ($query->num_rows() === 1) ? TRUE : FALSE;	
+        //$this->db->where('subdomain', $this->subdomain);
+    	//$query = $this->db->get('surveys', 1); 
+    	//return ($query->num_rows() === 1) ? TRUE : FALSE;	
+        return ($this->_get_item('subdomain')) ? TRUE : FALSE;
     }
     
     public function get_server_url()
@@ -78,6 +80,20 @@ class Survey_model extends CI_Model {
     public function get_form_submission_url()
     {
         return strtolower($this->_get_item('submission_url'));
+    }
+
+    public function has_offline_launch_enabled()
+    {
+        //return $this->_get_item('offline');
+        return !$this->_has_subdomain_suffix();
+    }
+
+    public function switch_offline_launch($active)
+    {
+        $current = $this->_get_item('offline');
+        log_message('debug', 'current: '.$current);
+        log_message('debug', 'active: '.$active);
+        return ($current == $active) ? TRUE : $this->_update_item('offline', $active);
     }
     
     public function launch_survey($server_url, $form_id, $submission_url, $data_url, $email)
@@ -206,8 +222,10 @@ class Survey_model extends CI_Model {
     
     private function _get_item($field)
     {
+        $subd = $this->subdomain;
+        $db_subd = ( $this->_has_subdomain_suffix() ) ? substr($subd, 0, strlen($subd)-1) : $subd;
         $this->db->select($field);
-        $this->db->where('subdomain', $this->subdomain);
+        $this->db->where('subdomain', $db_subd); //$this->subdomain);
         $query = $this->db->get('surveys', 1); 
         if ($query->num_rows() === 1) 
         {
@@ -220,7 +238,27 @@ class Survey_model extends CI_Model {
         }
     }
 
-    
+    private function _update_item($field, $value)
+    {
+        $data = array($field => $value);
+        //would be safer to include limit(1)
+        $this->db->where('subdomain', $this->subdomain);
+        $query = $this->db->update('surveys', $data); 
+        if ($this->db->affected_rows() > 0) 
+        {
+            return TRUE;
+        }
+        else 
+        {
+            return FALSE;   
+        }
+    }
+
+    private function _has_subdomain_suffix()
+    {
+        $s = $this->subdomain;
+        return ( substr($s, strlen($s)-1) === $this->ONLINE_SUBDOMAIN_SUFFIX ) ? TRUE : FALSE; 
+    }
 //    //returns the form format as an object   NOT USED ANYMORE! 
 //    public function get_form_format($id = NULL, $live = TRUE)
 //    {

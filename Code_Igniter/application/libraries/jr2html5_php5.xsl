@@ -359,12 +359,13 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
             </xsl:call-template>
         </xsl:variable>
          -->
-        
-        
         <label>
             <xsl:if test="@appearance"><!--only expected for input elements-->
-                <xsl:attribute name="class">
+                <!--<xsl:variable name="appearance">
                     <xsl:call-template name="appearance" />
+                </xsl:variable>--> 
+                <xsl:attribute name="class">
+                    <!--<xsl:value-of select="$appearance" />--><xsl:call-template name="appearance" />
                 </xsl:attribute>
             </xsl:if> 
             <!-- if "$html_type = 'radio' or $html_type = 'checkbox'"-->
@@ -376,7 +377,17 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 However, to support multiple languages and parse all of them (to be available offline)
                 they are placed in the label instead.-->
             <xsl:apply-templates select="xf:hint" />
-            <input>
+            <xsl:variable name="element">
+                <xsl:choose>
+                    <xsl:when test="$html_type = 'text' and @appearance = 'big' or @appearance = 'big-text' or @appearance = 'textarea'">
+                        <xsl:value-of select="string('textarea')" />
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="string('input')" />
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:variable>
+            <xsl:element name="{$element}">
                 <!-- ****** ACCEPT ****** -->
                 <xsl:if test="$html_type = 'file'">
                     <xsl:if test="@mediatype">
@@ -542,9 +553,13 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 <!--<xsl:attribute name="step"/>-->
 
                 <!-- ****** TYPE ****** -->
-                <xsl:attribute name="type">
-                    <xsl:value-of select="$html_type"/>
-                </xsl:attribute>
+                <xsl:if test="not($element='textarea')">
+                    <xsl:attribute name="type">
+                        <xsl:value-of select="$html_type" />
+                    </xsl:attribute>
+                </xsl:if>
+
+
 
                 <!-- ****** VALUE ****** -->
                 <xsl:if test="local-name() = 'item'"><!-- add test for 'if default value exists' -->
@@ -602,7 +617,12 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                     </xsl:attribute>
                 </xsl:if>
 
-            </input>
+                <!-- avoid self-closing textarea (browser bug?)-->
+                <xsl:if test="$element='textarea'">
+                    <xsl:text>
+                    </xsl:text>
+                </xsl:if>
+            </xsl:element>
         </label>
     </xsl:template>
 

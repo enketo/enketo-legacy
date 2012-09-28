@@ -1,6 +1,0 @@
-<?php
-//This is file is requested by the client application at regular intervals to determine whether there is an Internet connection (and a connection to the server).
-
-echo 'connected!';
-
-?>

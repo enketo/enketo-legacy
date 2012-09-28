@@ -35,7 +35,9 @@ Site:
 - cd /var/www/enketo
 - sudo git init
 - sudo git pull https://github.com/modilabs/enketo.git
+- sudo git submodule update --init
 - enter database info in /var/www/enketo/Code_Igniter/application/config/database.php (username, password, database)
+- enter domain info in $config['base_url'] /var/www/enketo/Code_Igniter/application/config/config.php
 - replace /var/www/enketo/Code_Igniter/application/views/elements/tracking.php with your own tracking code
 - set environment in index.php to 'production' if it isn't already
 - change permissions of /var/www/enketo/Code_Igniter/application/cache and /var/www/enketo/Code_Igniter/application/logs to 777

@@ -1,5 +1,9 @@
 @import "compass/reset";
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@font-face{
+  font-family: 'Open Sans';
+  src: local('☺'),
+        url(fonts/OpenSans-Regular.ttf) format('truetype');
+}
 
 /******* COLORS **********/
 $button-bg: #fece2f; /*dark yellow*/
@@ -14,14 +18,77 @@ $overlay-bg: #5c5c5c; /*darker gray */
 $shadow: #cccccc; /*light gray*/
 $a-hvr: #381f00; /*very dark brown*/
 
+/******* new ********/
+$bg: #ddd;
+$groupline: #bbbbbb;
+$title: #CE4F07;
+
+@mixin paper{
+  /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
+  position: relative;
+  /*width: 500px;*/
+  /*z-index: 10;*/
+  padding: 50px;
+  margin: 0 auto;
+  background-color: #fff;
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  &:before, &:after{
+    position: absolute;
+    width: 40%;
+    height: 10px;
+    content: ' ';
+    left: 12px;
+    bottom: 12px;
+    background: transparent;
+    -webkit-transform: skew(-5deg) rotate(-5deg);
+    -moz-transform: skew(-5deg) rotate(-5deg);
+    -ms-transform: skew(-5deg) rotate(-5deg);
+    -o-transform: skew(-5deg) rotate(-5deg);
+    transform: skew(-5deg) rotate(-5deg);
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    z-index: -1;}
+  &:after{
+    left: auto;
+    right: 12px;
+    -webkit-transform: skew(5deg) rotate(5deg);
+    -moz-transform: skew(5deg) rotate(5deg);
+    -ms-transform: skew(5deg) rotate(5deg);
+    -o-transform: skew(5deg) rotate(5deg);
+    transform: skew(5deg) rotate(5deg);}}
+
+/* Bootstrap color schemes */
+@mixin alert{
+  border: 1px solid #EED3D7;
+  color: #B94A48;
+  background-color: #F2DEDE;
+}
+@mixin warning{
+  border: 1px solid #FBEED5;
+  color: #C09853;
+  background-color: #FCF8E3;
+}
+@mixin information{
+  border: 1px solid #BCE8F1;
+  color: #3A87AD;
+  background-color: #D9EDF7;
+}
+@mixin success{
+  border: 1px solid #D6E9C6;
+  color: #468847;
+  background-color: #DFF0D8;
+}
 
 /***************************
  ****BASIC GUI ELEMENTS ****
  ***************************/
 
-.ui-widget,.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { 
+body, .ui-widget,.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { 
   font-family: 'Open Sans', Segoe UI, Arial, sans-serif; 
-  font-size: 1em;}
+  font-size: 1.1em;}
 
 p {
   text-align: left;
@@ -34,7 +101,8 @@ h2, h3, h4 {
   text-align: center;
   font-weight: bolder;
   margin-bottom: 10px;
-  padding: 0 5px; }
+  padding: 0 5px; 
+  color: $title;}
 
 ul {
   list-style: disc;
@@ -121,21 +189,22 @@ article.page {
  ***************************/
 
 body {
-  background-color: $shadow;
+  background: $bg url(images/tex2res2.png) repeat;
+  
   /*overflow: hidden;*/ }
 
 #overlay {
   display: none;
   background-color: $overlay-bg;
   position: absolute;
-  z-index: 10;
+  z-index: 12;
   width: 100%;
   height: 100%;
   opacity: 0.8; }
 
 header.ui-widget-header {
   position: absolute;
-  z-index: 14;
+  z-index: 30;
   top: 0px;
   height: 80px;
   width: 100%;
@@ -218,14 +287,14 @@ header {
   z-index: 5;
   .ui-tabs-nav {
     padding-left: 0;
-    background: $shadow;
+    background: $bg url(images/tex2res2.png) repeat;
     margin-bottom: -1px;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
     border-radius: 0;
     .ui-state-default{
       background: none;
-      border: solid 1px $shadow;}
+      border: solid 1px $bg;}
     .ui-state-hover{
       background: none;
       border: solid 1px $header-brdr;}
@@ -235,6 +304,98 @@ header {
       border-bottom-color: $widget-bg;} }
   .ui-tabs-panel {
     border-width: 1px 1px 1px 1px; } }
+
+$drawer-width: 300px;
+$tab-width: 18px;
+
+.drawer{
+  @include success;
+  position: fixed;
+  z-index: 15;
+  border-radius: 0 4px 4px 0;
+  border-color: #aaaaaa;
+  -moz-transition: margin 0.8s ease-out;
+  -webkit-transition: margin 0.8s ease-out;
+  transition: margin 0.8s ease-out;
+  font-size: 16px;
+  &.left{
+    bottom: 20%;
+    left: 0;
+    width: $drawer-width;
+    height: 80px;}
+  &.hide{
+    margin-left: $tab-width+2px-$drawer-width;}
+  .content{
+    padding: 20px;  }
+  .handle{
+    z-index: 101;
+    width: $tab-width;
+    height: 100%;
+    border-radius: 0 4px 4px 0;
+    /*background-color: #999999*/;
+    &.hasrecords{
+      /*background-color: #B94A48*/}
+    &.right{
+      float: right;
+      border-left: 3px ridge #ccc;
+      /*border-right: 1px dotted #aaa;*/}}
+  #status{
+    display: inline-block;
+    /*padding-bottom: 10px;
+    height: 1em;*/
+    &.offline{
+      color: red;}
+    &.waiting{
+      color: orange;}}
+  .queue-length{
+      }
+  #status-offline-launch{
+    display: block;
+  }
+  button#drawer-export{
+    display: block;
+  }}
+ 
+#branding{
+  position: fixed;
+  z-index: 0;
+  width: 120px;
+  bottom: 0px;
+  right: 0px;
+  padding: 15px;
+  text-align: center;
+  line-height: 1.3em;
+  color: #666;
+  font-size: 1.1em;
+  a:link, a:hover, a:visited{
+    text-decoration: none;
+    color: #666;}
+  a:hover{
+    color: #444;}}
+
+#bottom-bar{
+  background-color: #444; /*#2B2C30; */
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  border-left: none;
+  border-right: none;
+  background-image: none;
+  bottom: 0px;
+  width: 100%;
+  padding: 10px 0; 
+  #queue{
+    color: #BCBEC0;
+    display: block;
+    text-align: left;
+    width: 160px;
+    text-decoration: none;
+    margin: 0 0 -35px 10px;
+    #queue-length{
+      font-size: 36px;
+      display: block;
+      padding: 0 8px 0 0;
+      float: left; }}}
 
 #form-controls.ui-widget-header {
   position: absolute;
@@ -257,16 +418,7 @@ header {
     padding: 10px 0; }
   button {}
   &.right button {
-    display: block; }
-  #queue{
-    display: block;
-    width: 160px;
-    text-decoration: none;
-    margin: 0 0 -35px 10px;
-    #queue-length{
-      font-size: 36px;
-      display: block;
-      float: left; }}}
+    display: block; }}
 
 #container {
   position: absolute;
@@ -281,7 +433,7 @@ header {
   margin-right: auto;
   margin-top: 50px;
   position: relative;
-  z-index: 0;
+  /*z-index: 0;*/
   /*top: 80px;*/
   display: block;
   /* align for good browsers */
@@ -296,7 +448,7 @@ article.main .jr {
   article {
     padding: 1.5em;
     min-height: 300px; }
-  max-width: 600px;
+  max-width: 720px;
   &#wrap-collation, &#wrap-charts {
     max-width: 95%; }
   ul, ol {
@@ -395,9 +547,9 @@ footer.ui-widget {
  ***************************/
 
 #feedback-bar {
-  position: absolute;
+  position: fixed;
   z-index: 13;
-  top: 25px;
+  top: -35px;
   /* invisible initially (header top: 80 - #feedback height - #feedback paddingx2)*/
   width: 100%;
   min-height: 35px;
@@ -658,18 +810,6 @@ footer.ui-widget {
 ****    SURVEY FORM    ****
 **************************/
 
-.jr {
-  /*padding: 1.5em;*/
-  line-height: 1.1em; }
-
-.form-logo img {
-  position: relative;
-  left: 50%;
-  max-height: 200px;
-  width: 120px;
-  margin-left: -60px;
-  margin-bottom: 10px; }
-
 .jr [lang]:not(.active), .jr-hint {
   display: none; }
 
@@ -736,7 +876,31 @@ footer.ui-widget {
     color: $a-hvr;
     text-decoration: none; } }
 
+.form-wrapper{
+  @include paper;
+  margin: 0 0 40px 0;
+  padding: 0;
+  #submit-form{
+    left: 50%;
+    margin: 10px 0 45px -56px;}}
+
 .jr {
+  line-height: 1.1em;  
+  .form-logo img {
+    position: relative;
+    left: 50%;
+    max-height: 200px;
+    width: 120px;
+    margin-left: -60px;
+    margin-bottom: 10px; }
+  h2{
+    text-align: center;
+    font-size: 24px;
+    padding-bottom: 15px;
+    border-bottom: solid 3px #ccc;
+  }
+  h3{
+    text-align: left;  }
   label, fieldset {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -744,9 +908,10 @@ footer.ui-widget {
     -ms-box-sizing: border-box;
     display: block;
     width: 100%;
-    padding: 14px 14px; }
+    padding: 16px 14px; /* */
+    font-weight: bold; }
   label + label {
-    border-top: 1px solid $shadow; }
+    /*border-top: 1px solid $shadow;*/ }
   .geopoint{ 
     height: 350px;
     .map-canvas{
@@ -763,9 +928,9 @@ footer.ui-widget {
       margin-top: 10px;}}
   fieldset:not(#jr-preload-items):not(.jr-group) + {
     label, fieldset:not(.jr-group) {
-      border-top: 1px solid $shadow; } }
+      /*border-top: 1px solid $shadow;*/ } }
   label + fieldset:not(.jr-group) {
-    border-top: 1px solid $shadow; }
+    /*border-top: 1px solid $shadow;*/ }
   span.repeat-number {
     height: 2em;
     display: block;
@@ -776,28 +941,30 @@ footer.ui-widget {
   legend {
     position: absolute;
     top: 1.5em;
+    font-weight: bold;
     ~ label {
       border-top: none;
       padding: .5em 0 .5em 0;
-      margin-left: 25px; }
+      margin-left: 25px;
+      font-weight: normal; }
     + label {
       margin-top: 25px; } }
   fieldset {
     position: relative;
     &.jr-group {
-      border: 1px solid $shadow;
+      border-top: 2px solid $groupline; /**/
       margin: .5em 0; }
     &.jr-repeat {
       border: 1px dotted $shadow;} }
   label, legend, .trigger {
     font-size: .8em; }
-  input {
+  input, textarea {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     -ms-box-sizing: border-box;
     display: block;
-    margin: .2em;
+    margin: 8px 0 0 0;
     font-size: .9em;
     &[type="text"] {
       width: 100%; }
@@ -813,6 +980,9 @@ footer.ui-widget {
       /****/
       /*compensates for the label margin, fixes multi-line labels */
       margin-left: -25px; } }
+  textarea{
+    width: 100%;
+    min-height: 5em;}
   select {
     display: block; }
   fieldset {
@@ -826,12 +996,15 @@ footer.ui-widget {
       float: right;
       margin-right: 0; } }
   .trigger {
+    @include warning;
     padding: 7px 12px;
-    margin: 1em 0; } } 
+    margin: 1em 0; }
+  .required{
+    margin-left: 3px;
+    color: $title;}
+  .jr-appearance-page-break{
+    display: none;}} 
 
-/*excludes first label or fieldset in each fieldset or root of form*/
-
-/*first label of a set of radio buttons or checkboxes */
 
 label.with-media {
   margin-top: 5px; }
@@ -853,7 +1026,7 @@ label.with-media {
   margin-top: -17px; }
 
 
-input, .fakefileinput {
+input, .fakefileinput, textarea {
   background-color: $header-txt;
   border: 2px solid $shadow;
   min-height: 30px; }
@@ -984,7 +1157,7 @@ button.ui-multiselect {
   display: none;
   padding: 3px;
   position: absolute;
-  z-index: 10000; }
+  z-index: 20; }
 
 .ui-multiselect-checkboxes {
   position: relative;

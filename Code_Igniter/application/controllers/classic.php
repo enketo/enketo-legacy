@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-class Webform extends CI_Controller {
+class Classic extends CI_Controller {
 
 	public function index()
 	{
@@ -33,8 +33,7 @@ class Webform extends CI_Controller {
 			//if ($this->Survey_model->is_live_survey($subdomain))
 			if ($this->Survey_model->is_launched_survey())
 			{
-				//$offline = FALSE; //$this ->config->item('application_cache'); //can be overridden here
-				$offline = $this->Survey_model->has_offline_launch_enabled();
+				$offline = $this ->config->item('application_cache'); //can be overridden here
 				$server_url= $this->Survey_model->get_server_url();
 				$form_id = $this->Survey_model->get_form_id();
 
@@ -55,24 +54,20 @@ class Webform extends CI_Controller {
 					{
 						$data = array(
 							'offline'=>$offline, 
-							'title_component'=>'webform', 
+							'title_component'=>'classic', 
 							'form'=> $form,
-							'form_data'=> $form_data,
-							'stylesheets'=> array(
-								'libraries/jquery-ui/css/sunny/jquery-ui.custom.css',
-								'css/screen.css'
-							)
-						);
+							'form_data'=> $form_data
+							);
 						$common_scripts = array(
-							'libraries/jquery.min.js',
-							'libraries/jquery-ui/js/jquery-ui.custom.min.js',
-							'libraries/jquery-ui-timepicker-addon.js',
-							'libraries/jquery.multiselect.min.js',	
-							'libraries/modernizr.min.js',
-							'libraries/xpathjs_javarosa.min.js',
-							'libraries/FileSaver.min.js',
-							'libraries/BlobBuilder.min.js',
-							'libraries/vkbeautify.js',
+							base_url('libraries/jquery.min.js'),
+							base_url('libraries/jquery-ui/js/jquery-ui.custom.min.js'),
+							base_url('libraries/jquery-ui-timepicker-addon.js'),
+							base_url('libraries/jquery.multiselect.min.js'),	
+							base_url('libraries/modernizr.min.js'),
+							base_url('libraries/xpathjs_javarosa.min.js'),
+							base_url('libraries/FileSaver.min.js'),
+							base_url('libraries/BlobBuilder.min.js'),
+							base_url('libraries/vkbeautify.js'),
 							"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
 						);
 
@@ -81,20 +76,20 @@ class Webform extends CI_Controller {
 						{
 							//$this->output->cache(60);
 							$data['scripts'] = array_merge($common_scripts, array(
-								'js-min/survey-all-min.js'
+								base_url('js-min/survey-all-min.js')
 							));
 						}
 						else
 						{		
 							$data['scripts'] = array_merge($common_scripts, array(
-								'js-source/__common.js',
-								'js-source/__storage.js',
-								'js-source/__form.js',
-								'js-source/__survey.js',
-								'js-source/__debug.js'
+								base_url('js-source/__common.js'),
+								base_url('js-source/__storage.js'),
+								base_url('js-source/__form.js'),
+								base_url('js-source/__survey.js'),
+								base_url('js-source/__debug.js')
 							));
 						}
-						$this->load->view('webform_view',$data);
+						$this->load->view('classic_view',$data);
 					}
 					else
 					{
@@ -115,7 +110,7 @@ class Webform extends CI_Controller {
 		{
 			//$surveys = $this->Survey_model->get_survey_list();
 			//log_message('debug', 'surveys: '.json_encode($surveys));
-			$data = array('offline'=>FALSE, 'title_component'=>'');//, 'surveys' => array());
+			$data = array('offline'=>FALSE, 'title_component'=>'survey');//, 'surveys' => array());
 			//if (isset($surveys) && $surveys !== FALSE)
 			//{
 				//$data['surveys'] = $surveys);					
@@ -135,35 +130,6 @@ class Webform extends CI_Controller {
 			}
 
 			$this->load->view('front_view', $data);			
-		}
-	}
-
-	//public function switch_cache(){
-	//	$this->load->model('Survey_model','',TRUE);
-	//	$app_cache = $_POST['cache'];
-	//
-	//	if ($app_cache === 'true' || $app_cache === 'false'){
-	//		$app_cache = ($app_cache === 'true') ? TRUE : FALSE;
-	//		$result = $this->Survey_model->switch_offline_launch($app_cache);
-	//		echo ($result === TRUE) ? 'success' : 'error';
-	//	}
-	//	else
-	//	{
-	//		echo 'Did not understand request.';
-	//	}
-	//}
-
-	public function update_list()
-	{
-		$this->load->model('Survey_model', '', TRUE);
-		$success = $this->Survey_model->update_formlist();
-		if ($success === TRUE)
-		{
-			echo 'form list has been updated';
-		}
-		else 
-		{
-			echo 'error updating form list';
 		}
 	}
 }

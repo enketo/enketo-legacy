@@ -51,7 +51,6 @@ function Form (formSelector, dataStr){
 	this.validateAll = function(){return form.validateAll();};
 	//***************************************
 
-
 /**
  * Function: init
  *
@@ -321,11 +320,11 @@ function Form (formSelector, dataStr){
 			//noEmpty automatically excludes non-leaf nodes
 			if (this.filter.noEmpty === true){
 				$nodes = $nodes.filter(function(){
-					val = $(this).text();
+					val = /** @type {string} */ $(this).text();
 					//$this = $(this);
 					////console.log ('children: '+$(this).children().length);
 					////console.log ('text length: '+($.trim($this.text()).length));
-					return $(this).children().length === 0 && val.trim().length > 0;//$.trim($this.text()).length > 0;
+					return $(this).children().length === 0 && $.trim(val).length > 0;//$.trim($this.text()).length > 0;
 				});
 			}
 			//this may still contain empty leaf nodes
@@ -355,6 +354,12 @@ function Form (formSelector, dataStr){
 		 * 
 		 *   -
 		 */
+		/**
+		 * [setVal description]
+		 * @param {(string|Array.<string>)=} newVal      [description]
+		 * @param {string=} expr        [description]
+		 * @param {string=} xmlDataType [description]
+		 */
 		Nodeset.prototype.setVal = function(newVal, expr, xmlDataType){
 			var target, curVal, success;
 			//index = (typeof index !== 'undefined') ? index : -1;
@@ -377,7 +382,7 @@ function Form (formSelector, dataStr){
 
 			target = this.get();//.eq(index);
 
-			if ( target.length === 1 && newVal.toString().trim() !== curVal.toString().trim() ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
+			if ( target.length === 1 && $.trim(newVal.toString()) !== $.trim(curVal.toString()) ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
 				//if (this.validate(value) === true){
 				//first change the value so that it can be evaluated in XPath (validated)
 				
@@ -551,10 +556,10 @@ function Form (formSelector, dataStr){
 			},
 			'datetime' : {
 				validate : function(x){
-					return ( new Date(x).toString() !== 'Invalid Date');
+					return ( new Date(x.toString()).toString() !== 'Invalid Date');
 				},
-			'convert' : function(x){
-					return ( new Date(x).toUTCString() );
+				convert : function(x){
+					return new Date(x).toUTCString();
 				}
 			},
 			'time' : {
@@ -580,7 +585,7 @@ function Form (formSelector, dataStr){
 						!isNaN(coords[2]) && (typeof coords[3] == 'undefined' || !isNaN(coords[3]));
 				},
 				convert: function(x){
-					return x.toString().trim();
+					return $.trim(x.toString());
 				}
 			},
 			'binary' : {
@@ -610,8 +615,8 @@ function Form (formSelector, dataStr){
 		//trimming values
 		this.node(null, null, {noEmpty: true, noTemplate: false}).get().each(function(){
 			////console.debug('value found'+ $(this).text());
-			val = $(this).text();
-			$(this).text(val.trim());
+			val = /** @type {string} */$(this).text();
+			$(this).text($.trim(val));
 		});
 		$root = this.node(':first', 0).get();
 
@@ -861,7 +866,7 @@ function Form (formSelector, dataStr){
 		////console.log('selector of context node: '+selector);
 		////console.log('index of context node: '+index);
 		//use a trick to be able to get the context node using getElementById
-		if (typeof selector !== 'undefined' || selector !== null) {
+		if (typeof selector !== 'undefined' && selector !== null) {
 			//console.debug('selector for context node in evaluate(): '+selector+' with index: '+index);
 			//dataCleanClone.node(selector, index, {}).get().attr('id','getme');
 			//context = dataCleanClone.get()[0].getElementById('getme');
@@ -908,7 +913,7 @@ function Form (formSelector, dataStr){
 		////console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
 		//result = evaluator.evaluate(expr, context.documentElement, null, resultType, null);
 		try{
-				result = document.evaluate(expr, context, null, resTypeNum, null);
+			result = document.evaluate(expr, context, null, resTypeNum, null);
 			////console.log('evaluated: '+expr+' to: '+(result[resultTypes[type][1]] || 'resultnode(s)'));
 			////console.log(result); //NOTE THAT THIS USE OF THE CONSOLE THROWS AN ERROR IN FIREFOX when using native XPath!
 			if (resTypeNum === 0){
@@ -941,6 +946,7 @@ function Form (formSelector, dataStr){
 		}
 		catch(e){
 			console.error('Error occurred trying to evaluate: '+expr+', message: '+e.message);
+			return null;
 		}
 	};
 
@@ -962,16 +968,13 @@ function Form (formSelector, dataStr){
 	function FormHTML (selector){
 		//there will be only one instance of FormHTML
 		$form = $(selector);
-
 		//this.input = function($node){
 		//	return new Input($node);
 		//};
-
-		
 	}
 
 	FormHTML.prototype.init = function(){
-		var icons, name;//,
+		var icons, name, required;//,
 			//that = this; 
 		//console.debug ('initializing HTML form');
 
@@ -985,18 +988,23 @@ function Form (formSelector, dataStr){
 		
 		//append icons
 		$form.find('label>input[type="checkbox"], label>input[type="radio"]').parent().parent('fieldset').prepend(icons);
-		$form.parent().find('label>select, :not(#jr-preload-items, #jr-calculated-items)>label>input')//, form>label>input')
+		$form.parent().find('label>select, , label>textarea, :not(#jr-preload-items, #jr-calculated-items)>label>input')//, form>label>input')
 			.not('[type="checkbox"], [type="radio"]').parent().prepend(icons);
 
 		//this.input.getWrapNodes($form.parent().find('fieldset:not(#jr-preload-items, #jr-calculated-items) input, select, textarea'))
 		//	.prepend(icons);	
 
 		//add 'required field' clue
+		required = '<span class="required">*</span>';
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
-			.find('.question-icons .required').addClass('ui-icon ui-icon-notice');
-		$form.parent().find('label>select[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
-			.not('[type="checkbox"], [type="radio"]').parent().find('.question-icons .required')
-			.addClass('ui-icon ui-icon-notice');
+			.find('legend:eq(0)').append(required);
+			//.find('.question-icons .required').addClass('ui-icon ui-icon-notice');
+		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
+			.not('[type="checkbox"], [type="radio"]').parent()
+			.each(function(){
+				$(this).children('span:not(.jr-option-translations):last').after(required);
+			});
+			//.find('.question-icons .required').addClass('ui-icon ui-icon-notice');
 
 		//this.input.getWrapNodes($form.find('[required]')).find('.question-icons .required').text('*');
 
@@ -1021,9 +1029,9 @@ function Form (formSelector, dataStr){
 		this.outputUpdate();
 		this.setEventHandlers();
 		this.preloads.init(); //after event handlers!
-		//$form.fixLegends();
 		this.setLangs();
 		this.editStatus.set(false);
+		setTimeout(function(){$form.fixLegends();}, 500);
 	};
 
 	FormHTML.prototype.checkForErrors = function(){
@@ -1049,7 +1057,7 @@ function Form (formSelector, dataStr){
 		total.hCheck = $form.find('input[type="checkbox"]').length;
 		total.hSelect = $form.find('select').length;
 		total.hOption = $form.find('option[value!=""]').length;
-		total.hInputNotRadioCheck = $form.find('input:not([type="radio"],[type="checkbox"])').length;
+		total.hInputNotRadioCheck = $form.find('textarea, input:not([type="radio"],[type="checkbox"])').length;
 		total.hTrigger = $form.find('.trigger').length;
 		total.hRelevantNotRadioCheck = $form.find('[data-relevant]:not([type="radio"],[type="checkbox"])').length;
 		total.hRelevantRadioCheck = $form.find('input[data-relevant][type="radio"],input[data-relevant][type="checkbox"]').parent().parent('fieldset').length;
@@ -1138,6 +1146,9 @@ function Form (formSelector, dataStr){
 			}
 			else if ($node.prop('nodeName').toLowerCase() == 'select' ){
 				return 'select';
+			}
+			else if ($node.prop('nodeName').toLowerCase() == 'textarea'){
+				return 'textarea';
 			}
 			else if ($node.prop('nodeName').toLowerCase() == 'fieldset'){
 				return 'fieldset';
@@ -1364,7 +1375,7 @@ function Form (formSelector, dataStr){
 			////console.debug('hint: '+hint);
 			if (hint.length > 0){
 				////console.debug('setting hint: '+hint);
-				//$(this).find('input, select').attr('title', hint);
+				//$(this).find('input, select, textarea').attr('title', hint);
 				$wrapNode.find('.question-icons .hint').attr('title', hint).addClass('ui-icon ui-icon-help');
 			}
 			else{
@@ -1457,7 +1468,7 @@ function Form (formSelector, dataStr){
 		/**
 		 * updates branches based on changed input fields
 		 * @param  {string=} changedNodeNames [description]
-		 * @return {boolean}                  [description]
+		 * @return {?boolean}                  [description]
 		 */
 		update: function(changedNodeNames){
 			var i, p, branchNode, result, namesArr, cleverSelector,			
@@ -1471,21 +1482,24 @@ function Form (formSelector, dataStr){
 				cleverSelector.push('[data-relevant*="'+namesArr[i]+'"]');
 			}
 
-			console.debug('Updating branches for expressions that contain: '+namesArr.join());
+			//console.debug('Updating branches for expressions that contain: '+namesArr.join());
 			//console.debug('the clever selector created: '+cleverSelector.join());
 
 			$form.find(cleverSelector.join()).each(function(){
 				//VERY WRONG TO USE form HERE!!!! FIX THIS
 				//one could argue that I should not use the input object here as a branch is not always an input (sometimes a group)		
+				//console.debug('input node with branching logic:');
+				//console.debug($(this));
 				p = form.input.getProps($(this));
 				branchNode = form.input.getWrapNodes($(this));
 				
 				//name = $(this).attr('name');
 				
 				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[p.path]){
-					return false;
+					return;
 				}
-				////console.debug(p);
+				//console.debug('properties of branch input node:');
+				//console.debug(p);
 				////console.debug(branchNode);
 
 				//type = $(this).prop('nodeName').toLowerCase();
@@ -1498,7 +1512,7 @@ function Form (formSelector, dataStr){
 
 				if(branchNode.length !== 1){
 					console.error('could not find branch node');
-					return false;
+					return;
 				}
 				try{
 					//var result = evaluator.evaluate(expr, context.documentElement, null, XPathResult.BOOLEAN_TYPE, null);
@@ -1508,7 +1522,7 @@ function Form (formSelector, dataStr){
 				catch(e){
 					console.error('Serious error occurred trying to evaluate skip logic '+
 					'for node with name: "'+p.path+'" (message: '+e.message+')');
-					return false;
+					return;
 				}
 			
 				alreadyCovered[p.path] = true;
@@ -1545,7 +1559,7 @@ function Form (formSelector, dataStr){
 		},
 		disable : function(branchNode){
 			var type, 
-				branchClue = '<div class="jr-branch ui-corner-all"></div>';
+				branchClue = '<div class="jr-branch"></div>'; //ui-corner-all
 
 			console.debug('disabling branch');
 			//add disabled class (to style) and hide
@@ -1676,13 +1690,10 @@ function Form (formSelector, dataStr){
 	};
 
 	FormHTML.prototype.beautify = function(){
-		//$form.find('#form_logo').detach().prependTo($form);
-		$form.find('.jr-group, .jr-repeat').addClass('ui-corner-all');
-		$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');
-		/*$form.find('form > fieldset').alternateBackground('alt-bg');*/
-		$form.find('.trigger').addClass('ui-state-highlight ui-corner-all');
-		//need to trigger fixLegends with a delay.. this is ugly..
-		//setTimeout(function(){$form.fixLegends();}, 1000);
+		//$form.find('.jr-group, .jr-repeat').addClass('ui-corner-all');
+		//$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');		
+		$form.find('.trigger').addClass('ui-state-highlight');// ui-corner-all');
+
 		//improve looks when images, video or audio is used as label
 		$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend').children('img,video,audio').parent().addClass('ui-helper-clearfix with-media');
 	};
@@ -1690,21 +1701,31 @@ function Form (formSelector, dataStr){
 	FormHTML.prototype.widgets = {
 		init : function(){
 			this.compactWidget();
+			this.radioWidget();
 			this.dateWidget();
 			this.timeWidget();
 			this.dateTimeWidget();
 			this.selectOneWidget();
 			this.selectMultiWidget();
+			this.pageBreakWidget();
 			this.readonlyWidget();
 			this.gridWidget();
 			this.spinnerWidget();
 			this.sliderWidget();
 			this.geopointWidget();
 			this.barcodeWidget();
+			this.fileWidget();
 		},
 		compactWidget: function(){
 			//move this to css!
 			$form.find('.jr-appearance-compact>label>span').hide(); 
+		},
+		radioWidget: function(){
+			//$form.on('mouseup', 'input:radio:checked', function(){
+			//	console.debug($(this).prop('checked'));
+			//	//$(this).parent('label').clearInputs('change');
+			//	console.debug('clicked label of: '+$(this).attr('name'));
+			//}); 
 		},
 		dateWidget : function(){
 			
@@ -1756,7 +1777,15 @@ function Form (formSelector, dataStr){
 					'my':'left top', 
 					'at': 'left bottom'
 				}
-
+			});
+		},
+		//transforms temporary page-break elements to triggers //REMOVE WHEN BETTER SOLUTION FOR PAGE BREAKS IS FOUND
+		pageBreakWidget : function(){
+			$form.find('.jr-appearance-page-break input[readonly]').parent('label').each(function(){
+				var	name = 'name="'+$(this).find('input').attr('name')+'"';
+				$('<fieldset class="jr-appearance-page-break" '+name+'></fieldset>') //ui-corner-all
+					.insertBefore($(this)).find('input').remove(); 
+				$(this).remove();
 			});
 		},
 		//transforms readonly inputs into triggers
@@ -1767,7 +1796,7 @@ function Form (formSelector, dataStr){
 					relevant = $(this).find('input').attr('data-relevant'),
 					name = 'name="'+$(this).find('input').attr('name')+'"',
 					attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name;
-				$('<fieldset class="trigger ui-state-highlight ui-corner-all" '+attributes+'></fieldset>')
+				$('<fieldset class="trigger ui-state-highlight" '+attributes+'></fieldset>') //ui-corner-all
 					.insertBefore($(this)).append(html).find('input').remove(); 
 				$(this).remove();
 			});
@@ -1806,7 +1835,7 @@ function Form (formSelector, dataStr){
 				$button = $geoWrap.find('button[name="geodetect"]');
 				
 				$geoWrap.find('input').not($inputOrigin).on('change change.bymap', function(event){
-					console.debug('change event dected');
+					//console.debug('change event detected');
 					var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
 						lng = ($lng.val() !== '') ? $lng.val() : 0.0, 
 						alt = ($alt.val() !== '') ? $alt.val() : 0.0, 
@@ -1831,8 +1860,8 @@ function Form (formSelector, dataStr){
 
 				$button.click(function(event){
 					event.preventDefault();
-					console.debug('click event detected');
-					console.debug(event);
+					//console.debug('click event detected');
+					//console.debug(event);
 					navigator.geolocation.getCurrentPosition(function(position){	
 						updateMap(position.coords.latitude, position.coords.longitude);
 						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	
@@ -1847,7 +1876,7 @@ function Form (formSelector, dataStr){
 				 */
 				function updateMap(lat, lng, zoom){
 					zoom = zoom || 15;
-					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
+					if (typeof google.maps.LatLng !== 'undefined'){
 						mapOptions = {
 							zoom: zoom,
 							center: new google.maps.LatLng(lat, lng),
@@ -1917,7 +1946,10 @@ function Form (formSelector, dataStr){
 
 		},
 		barcodeWidget : function(){
-			$form.find('input[data-type-xml="barcode"]').attr('placeholder', 'This probably does not require support for browser data entry.');
+			//$form.find('input[data-type-xml="barcode"]').attr('placeholder', 'not supported in browser data entry').attr('disabled', 'disabled');
+		},
+		fileWidget : function(){
+			$form.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled');
 		}
 	};
 
@@ -1978,22 +2010,22 @@ function Form (formSelector, dataStr){
 		'property' : function(o){
 			// of = 'deviceid', 'subscriberid', 'simserial', 'phonenumber'
 			// return '' except for deviceid?
-			return 'no property preload in Rapaide';
+			return 'no device properties in enketo';
 		},
 		'context' : function(o){
 			// 'application', 'user'??
-			return (o.param == 'application') ? 'rapaide' : '';
+			return (o.param == 'application') ? 'enketo' : '';
 		},
 		'patient' : function(o){
-			return 'not supported in Rapaide';
+			return 'patient preload not supported in enketo';
 		},
 		'user' : function(o){
 			//uuid, user_id, user_type
 			return 'user preload item not functioning yet';
 		},
 		'uid' : function(o){
-			//general
-			return 'no uid';
+			//general 
+			return 'no uid yet in enketo';
 		},
 		'browser' : function(o){
 			//console.debug('evaluation browser preload');
@@ -2346,6 +2378,13 @@ function Form (formSelector, dataStr){
 	 */
 	FormHTML.prototype.isValid = function(){
 		return ($form.find('.invalid').length > 0) ? false : true;
+	};
+
+	/**
+	 * Adds <hr class="page-break"> to prevent cutting off questions with page-breaks
+	 */
+	FormHTML.prototype.addPageBreaks = function(){
+
 	};
 }
 

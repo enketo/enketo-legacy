@@ -1,5 +1,10 @@
 var jrDataStr;
 
+/**
+ * @type number
+ */
+applicationCache.OBSOLETE;
+
 function vkbeautify(){}
 
 /**

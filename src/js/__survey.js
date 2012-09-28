@@ -21,22 +21,20 @@ var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var /**@type {Cache}*/cache;
 var /**@type {Settings}*/settings,
-	currentOnlineStatus = false;//, SURVEY_FORM_ID;
+	currentOnlineStatus = false;
 var /**@type {StorageLocal}*/ store;
 var MODERN_BROWSERS_URL = 'modern_browsers';
-
+var CACHE_CHECK_INTERVAL = 360*1000; //CHANGE TO 3600*1000
+var CONNECTION_URL = 'checkforconnection.php';
 DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBackup':false };
-//var GEARS_MANIFEST_URL = 'manifest/gears';
 
-//var MAX_QTY_SAVED_FORMS = 50;
-var CACHE_CHECK_INTERVAL = 3600*1000;
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 // !Document.ready()
 /************ Document Ready ****************/
 $(document).ready(function() {
 	'use strict';
-	var bookmark, message, choices, shown, time;
+	var message, choices;
 
 	store = new StorageLocal();
 	form = new Form('form.jr:eq(0)', jrDataStr);
@@ -44,57 +42,26 @@ $(document).ready(function() {
 	settings.init();
 	connection = new Connection();
 	
-	// check if localStorage is supported and if not re-direct to browser download page
 	if (!store.isSupported()){
-	//if(Modernizr.localStorage){
-		//console.log('redirect attempt because of lack of localStorage support'); // DEBUG
 		window.location = MODERN_BROWSERS_URL;
 	}
 	else{
 		$(document).trigger('browsersupport', 'local-storage');
 	}
 
-	//reminder to bookmark page will be shown 3 times
-	bookmark = store.getRecord('__bookmark');
+	//instantiate Cache object even if no manifest attribute is provided to have access to cache.activate()
+	cache = new Cache();
+	gui.updateStatus.offlineLaunch(false);
 	
-	//shown=0;
-	//if (bookmark){
-	//	shown = (bookmark.shown) ? bookmark.shown : 0;
-	//}
-
-	shown = (bookmark) ? bookmark['shown'] : 0;
-	if(shown < 3){
-		setTimeout(function(){
-			time = (shown === 1) ? 'time' : 'times';
-			gui.showFeedback('Please bookmark this page for easy offline launch. '+
-				'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
-			shown++;
-			store.setRecord('__bookmark', {'shown': shown});
-		}, 5*1000);
-	}
-	
-	//best to place this after localStorage check, so that IE7 users with Gears
-	//will be re-directed immediately before asking whether they allow Gears to store data
 	if ($('html').attr('manifest')){
-		cache = new Cache();
-		cache.init();
-		// application cache for launching application offline
 		if (cache.isSupported()){
-			
+			cache.init();
 			$(document).trigger('browsersupport', 'offline-launch');
-			
-			//check for updated cache
-			checkCache();
-			
-			// Check for an updated manifest file regularly and refresh cache if necessary.
-			window.setInterval(function(){
-				checkCache();
-			}, CACHE_CHECK_INTERVAL);
-			
 		}
-		else{ // if applicationCache is not supported
-			message = 'Offline application launch not supported by your browser. '+
-					'You can use it without this feature or see options for resolving this';
+		// if applicationCache is not supported
+		else{
+			message = 'Offline application launch is not supported by your browser. '+
+					'You can use the form without this feature or see options for resolving this';
 			choices = {
 				posButton : 'Show options',
 				negButton : 'Use it',
@@ -102,96 +69,14 @@ $(document).ready(function() {
 			};
 			gui.confirm({msg: message, heading:'Application cannot launch offline'}, choices);
 		}
-		console.log('cache initialized');
 	}
-
-	//var formFormat;
-	// get form format from json file and build the survey form elements
-	//var request;
-//	if (window.XMLHttpRequest){
-	//request=new XMLHttpRequest();
-	//request.open("GET", FORM_FORMAT_URL, false); //not asynchronous!!
-	//request.send();
-	//if (request.responseText === 'error'){
-	//	console.log('This survey does not exist or has not been published yet');
-	//}
-	//else if (request.responseText && request.responseText!=''){
-	//	formFormat = JSON.parse(request.responseText);
-	//	//formFormat = request.responseText; //maybe do check to see if responseText is in XML format?
-	//	console.log('loaded form format from the json file:'+JSON.stringify(formFormat));
-	//}
-	//else {
-	//	console.log('Error occurred while loading form format');
-	//}
-	////	var formBuiltSuccessfully;
-//	if (formFormat){
-//		formBuiltSuccessfully = form.init(formFormat);
-//	}
-	
-	//console.log('form built successfully?: '+formBuiltSuccessfully); // DEBUG
-	
-//	if(formBuiltSuccessfully){
-		
-		
-		//$('header #survey-info').text(form.COUNTRY+' '+form.SECTOR+' '+form.YEAR+' '+form.SURVEY_NAME);
-		
-	// initialize the GUI object
-	//gui.init();
-	
 	form.init();
-	
-	connection.init(); //should be called after form format is loaded
-	//initialize file export/backup function
-	//initSaveFormsToFile(); // CHECK SAFARI OS X BUG
-	
-	
-	
-	// ADD / REPLACE If there is sufficient cross-browser support this could be replaced by simply calling window.navigator.onLine which returns false or true
-	//var onlineCheckInterval = window.setInterval(function () {
-		//checking online status
-		//console.log('checking online status'); // DEBUG
-	//	gui.updateConnectionStatus(connection.getStatus());
-	//}, 5*1000);
-			
-	
-	
-	///var linkAnalysis = $('#link-analysis').attr('href')+'?name='+connection.getTableName();
-	//$('#link-analysis').attr('href', linkAnalysis);
-	
-	
-
+	connection.init();
 	gui.setup();
-//	}
-//	else{
-//	// ADD ERROR PAGE!
-//	console.log('form not built successfully');
-//	}
 
 	//trigger fake save event to update formlist on data page
 	$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
 });
-
-function checkCache(){
-	'use strict';
-	cache.checkForUpdate();
-	window.setTimeout(function(){
-		console.log('going to provide cache feedback to user. cache.getError='+cache.getError()); // DEBUG
-		if (cache.updateReady()){
-			gui.showFeedback('A new version of this application has been downloaded. '+
-				'Please save your work and refresh to update.', 20); //REQUIRES DOUBLE REFRESH IN IE8....
-		}
-		else if (cache.getError()){
-			if (cache.getError() === 'security'){
-				gui.showFeedback ('Please allow site to store data for offline use and refresh.', 60);
-			}
-			else {
-				gui.alert('An error occurred with the application cache. '+
-				'You may have a problem launching offline (error: '+cache.getError()+'). '+
-				'Please save your work, refresh and check if offline launch works.');
-			}
-		}
-	}, 30*1000); //it may take a while for the resources to download
-}
 
 /**
  * Controller function to load a form from local storage. Checks whether there is any unsaved data in the current form first.
@@ -328,7 +213,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 function resetForm(confirmed){
 	'use strict';
 	var message, choices;
-		//valueFirst = /**@type {string} */$('#saved-forms option:first').val();
+	//valueFirst = /**@type {string} */$('#saved-forms option:first').val();
 	//console.debug('first form is '+valueFirst);
 	//gui.pages().get('records').find('#records-saved').val(valueFirst);
 	console.debug('editstatus: '+ form.getEditStatus());
@@ -393,7 +278,7 @@ function deleteForm(confirmed) {
 function submitForm() {
 	var record, saveResult;
 	if (!form.isValid()){
-		gui.alert('Form contains errors (please see fields marked in red)');
+		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
 	record = { 'data': form.getDataStr(true, true), 'ready': true};
@@ -425,14 +310,15 @@ function exportData(finalOnly){
 
 	//dataArr = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
 	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
-	for (i = 0 ; i<dataArr.length ; i++){
-		dataArr[i] = form.prepareForSubmission(dataArr[i]);
-	}
+	
 	//console.debug(data);
 	if (dataArr.length === 0){
-		gui.showFeedback('No data marked "final" to export.');
+		gui.showFeedback('No data to export.');
 	}
 	else{
+		for (i = 0 ; i<dataArr.length ; i++){
+			dataArr[i] = form.prepareForSubmission(dataArr[i]);
+		}
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		uriContent = "data:application/octet-stream," + encodeURIComponent(dataStr); /*data:application/octet-stream*/
 		newWindow = window.open(uriContent, 'exportedData');
@@ -441,7 +327,7 @@ function exportData(finalOnly){
 }
 
 /**
- * function to export or backup data to a file.
+ * Function to export or backup data to a file. In Chrome it will get an appropriate file name.
  *
  *	@param {string=}  fileName
  *  @param {boolean=} finalOnly [description]
@@ -454,15 +340,14 @@ function exportToFile(fileName, finalOnly){
 	fileName = fileName || form.getName()+'_data_backup.xml';
 	
 	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
-	for (i = 0 ; i<dataArr.length ; i++){
-		dataArr[i] = form.prepareForSubmission(dataArr[i]);
-	}
-
 	//console.debug(data);
-	if (dataArr.length === 0){
+	if (!dataArr || dataArr.length === 0){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
+		for (i = 0 ; i<dataArr.length ; i++){
+			dataArr[i] = form.prepareForSubmission(dataArr[i]);
+		}
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		bb = new BlobBuilder();
 		bb.append(dataStr);
@@ -483,101 +368,139 @@ function exportToFile(fileName, finalOnly){
  */
 function Cache(){
 	'use strict';
-	var cacheType, appCache, update, error;
-	var loadedVersion; //only used for Gears cache
-		
-	this.init = function(){
-		//first check for the preferred cache
-		if (window.applicationCache){
-			cacheType='html5Cache';
-			appCache = window.applicationCache;
-			//checkForUpdate();
-			appCache.addEventListener('updateready', function(){
-			// when an updated cache is downloaded and ready to be used
-			// swap to the newest version of the cache, will NOT refresh page only newly called resources
-			appCache.swapCache();
-			update = true;
-			}, false);
-			appCache.addEventListener('error', function(event){
-				console.log ('HTML5 cache error event'); // DEBUG
-				if (connection.getOnlineStatus()) {//error event always triggered when offline
-					console.log ('noticed online status'); //DEBUG
-					error = "error downloading application"; // Possible to trigger cache problem for testing?
-				}
-			}, false);
-		}
-//		else if (window.google && google.gears){
-//			try{
-//				var gearsServer = google.gears.factory.create('beta.localserver');
-//				appCache = gearsServer.createManagedStore('rapaide_store');
-//				appCache.manifestUrl = GEARS_MANIFEST_URL;
-//				if (appCache){
-//					cacheType='gearsCache';
-//				}
-//				loadedVersion = appCache.currentVersion;
-//				//checkForUpdate();
-//				var timerId = window.setInterval(function() {
-//					// When the currentVersion property has a value, all of the resources
-//					// listed in the manifest file for that version are captured.
-//					if (loadedVersion) {
-//						window.clearInterval(timerId);
-//						console.log('loaded Gears cache with version:'+loadedVersion);
-//						error = null;
-//					}
-//					else if (appCache.updateStatus == 3) {
-//						console.log('Error: ' + appCache.lastErrorMessage); // DEBUG
-//						error = appCache.lastErrorMessage;
-//						window.clearInterval(timerId); //TEST this by creating incorrect manifest URL
-//					}
-//				}, 500);
-//			}
-//			catch(e){
-//				console.log ('Gears does not have permission or other Gears initialization error');
-//			}
-//		}
-	};
-	
-	this.isSupported = function(){
-		return (cacheType==='html5Cache' || cacheType==='gearsCache') ? true : false;
-	};
-	
-	this.checkForUpdate = function(){
-		console.log('checking for cache update');
-		//switch(cacheType){
-			//case 'html5Cache':
-				try{appCache.update();}
-				//Opera throws mysterious INVALID_STATE_ERR
-				catch(e){
-					if (e.name === 'NS_ERROR_DOM_SECURITY_ERR'){ //FF before approving offline use
-						error = 'security';
-					}
-					console.log('error thrown during cache update. error name: '+e.name+'  message: '+e.message);
-				}
-				//event listener will update variable 'update';
-		//		break;
-//			case 'gearsCache' :
-//				// Checking for updates will also happen regularly automatically even if not explicitly called
-//				appCache.checkForUpdate();
-//				break;
-//		}
-		return;
-	};
-
-	this.updateReady = function(){
-//		if (cacheType==='gearsCache'){
-//			//console.log ('loadedVersion:'+loadedVersion); //DEBUG
-//			//console.log ('currentVersion:'+appCache.currentVersion); //DEBUG
-//			update = (loadedVersion !== '' && loadedVersion != appCache.currentVersion) ? true : false;
-//		}
-		console.log('updateReady() returns: '+update); //DEBUG
-		return update;
-	};
-
-	this.getError = function(){
-		return error;
-	};
-
+	//var cacheType, appCache, update, error;
+	//var loadedVersion; //only used for Gears cache
 }
+		
+Cache.prototype.init = function(){
+	var appCache= window.applicationCache,
+		that = this;
+	//first check for the preferred cache
+	if (!this.isSupported){
+		return false;
+	}
+	if (appCache.status > 0 && appCache.status < 5){
+		gui.updateStatus.offlineLaunch(true);
+		setTimeout(this.showBookmarkMsg, 5000);
+	}
+	if (appCache.status === appCache.UPDATEREADY){
+		this.onUpdateReady();
+	}
+	if (appCache.status === appCache.OBSOLETE){
+		this.onObsolete();
+	}
+
+	//manifest is no longer served (form removed or offline-launch disabled). DOES THIS FIRE IN ALL BROWSERS?
+	$(appCache).on('obsolete', function(){that.onObsolete();});
+	//applicationCache.addEventListener('obsolete', this.onObsolete, false);
+
+	//the very first time an application cache is saved
+	$(appCache).on('cached', function(){that.onCached();});
+	//applicationCache.addEventListener('cached', this.onCached, false);
+
+	//when an updated cache is downloaded and ready to be used
+	$(appCache).on('updateready', function(){that.onUpdateReady();});
+	//applicationCache.addEventListener('updateready', this.onUpdateReady, false);
+	
+	//when an error occurs (not necessarily serious)
+	$(appCache).on('error', function(e){that.onErrors(e);});
+	//applicationCache.addEventListener('error', this.onErrors, false);
+
+	setInterval(function(){
+		that.update();
+		//applicationCache.update();
+	}, CACHE_CHECK_INTERVAL);
+
+	//if status is UNCACHED OR IDLE, force an update check
+	//if (appCache.status === appCache.UNCACHED || appCache.status === appCache.IDLE){
+		//throws expeception in Firefox if user hasn't yet approved the use of the application cache
+		//it also doesn't seem necessary in Firefox and Chrome as it happens right away automatically
+		//this.update();
+	//}
+};
+
+Cache.prototype.update = function(){
+	window.applicationCache.update();
+};
+
+Cache.prototype.onObsolete = function(){
+	gui.showFeedback('Application/form is no longer able to launch offline.');
+	gui.updateStatus.offlineLaunch(false);
+};
+
+Cache.prototype.onCached = function(){
+	gui.showFeedback('This form can be loaded and used when you are offline!');
+	gui.updateStatus.offlineLaunch(true);
+};
+
+Cache.prototype.onUpdateReady = function(){
+	applicationCache.swapCache();
+	gui.showFeedback("A new version of this application or form has been downloaded. "+
+		"Refresh this page to load the updated version.", 20);
+};
+
+Cache.prototype.onErrors = function(e){
+	if (connection.currentOnlineStatus === true){
+		console.debug(e);
+		console.error('HTML5 cache error event'); // DEBUG
+		gui.showFeedback('There is a new version of this application or form available but an error occurs when'+
+			' trying to download it. Please send a bug report.');
+		//gui.updateStatus.offlineLaunch(false);
+		//gui.alert('Application error (manifest error). Try to submit or export any locally saved data. Please report to formhub mentioning the url.');
+		// Possible to trigger cache problem for testing? ->
+		// 1. going offline, 2.manifest with unavailable resource, 3. manifest syntax error
+	}
+};
+
+Cache.prototype.showBookmarkMsg = function(){
+	var bookmark, shown;//, time;
+	//reminder to bookmark page will be shown 3 times
+	bookmark = store.getRecord('__bookmark');
+	shown = (bookmark) ? bookmark['shown'] : 0;
+	if(shown < 3){
+		//time = (shown === 1) ? 'time' : 'times';
+		gui.showFeedback('We recommend to bookmark this page for easy access when you are not connected to the Internet. ');//+
+			//'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
+		shown++;
+		store.setRecord('__bookmark', {'shown': shown});
+	}
+};
+
+//Cache.prototype.activate = function(){
+//	if (applicationCache.status > 0){
+//		gui.showFeedback('Offline launch is already activated. If it is not working please contact formhub.');
+//	}
+//	else{
+//		gui.confirm('By confirming offline launch functionality will be switched on. The application will automatically refresh.');
+//	}
+//};//
+
+//Cache.prototype.deActivate = function(){
+//	if (applicationCache.status === 0){
+//		gui.showFeedback('Offline launch is not active.');
+//	}
+//	else{
+//		gui.confirm('By confirming offline launch functionality will be switched off.');
+//	}
+//};
+	
+Cache.prototype.isSupported = function(){
+	return (window.applicationCache) ? true : false;
+};
+	
+//Cache.prototype.checkForUpdate = function(){
+//	console.log('checking for cache update');
+//	try{
+//		applicationCache.update();}
+//	//Opera throws mysterious INVALID_STATE_ERR
+//	catch(e){
+//		if (e.name === 'NS_ERROR_DOM_SECURITY_ERR'){ //FF before approving offline use
+//			error = 'security';
+//		}
+//		console.log('error thrown during cache update. error name: '+e.name+'  message: '+e.message);
+//	}
+//	return;
+//};
 
 
 //Class dealing with communication to the server ADD HTML5 VALIDATION and FILE/URL UPLOAD from launch.js
@@ -598,17 +521,18 @@ function Connection(){
 	//var tableFields, primaryKey;
 	//var tableName, version;
 	var that=this;
+	this.currentOnlineStatus = false;
 	this.uploadOngoing = false;
 	
 	this.init = function(){
 		//console.log('initializing Connection object');
-		//checkOnlineStatus();
+		this.checkOnlineStatus();
 		that = this;
 		window.setInterval(function(){
 			//console.log('setting status'); //DEBUG
-			//setStatus();
+			that.checkOnlineStatus();
 			that.upload();
-		}, 10*1000);
+		}, 15*1000);
 		//window.addEventListener("offline", function(e){
 		//	console.log('offline event detected');
 		//	setStatus();
@@ -618,7 +542,7 @@ function Connection(){
 		//	setStatus();
 		//}
 		$(window).on('offline online', function(){
-			//console.log('window network event detected');
+			console.log('window network event detected');
 			that.setOnlineStatus(that.getOnlineStatus());
 		});
 		//since network change events are not properly fired, at least not in Firefox 13 (OS X), this is an temporary fix
@@ -630,7 +554,33 @@ function Connection(){
 		//setTableVars();
 	};
 }
-	
+
+Connection.prototype.checkOnlineStatus = function(){
+	var online,
+		that = this;
+	//console.log('checking connection status');
+	//navigator.onLine is totally unreliable (returns incorrect trues) on Firefox, Chrome, Safari (on OS X 10.8),
+	//but I assume falses are correct
+	if (navigator.onLine){
+		$.ajax({
+			type:'GET',
+			url: CONNECTION_URL,
+			cache: false,
+			dataType: 'json',
+			timeout: 3000,
+			complete: function(response){
+				//important to check for the content of the no-cache response as it will
+				//start receiving the fallback page specified in the manifest!
+				online = typeof response.responseText !== 'undefined' && response.responseText === 'connected';
+				that.setOnlineStatus(online);
+			}
+		});
+	}
+	else {
+		this.setOnlineStatus(false);
+	}
+};
+
 /**
  * provides the connection status, should be considered: 'seems online' or 'seems offline'
  * NEEDS IMPROVEMENT. navigator.onLine alone is probably not appropriate because for some browsers this will
@@ -640,45 +590,31 @@ function Connection(){
  * @return {boolean} true if it seems the browser is online, false if it does not
  */
 Connection.prototype.getOnlineStatus = function(){
-	console.log('checking connection status');//, status before check is: '+onlineStatus); // DEBUG
-	//if (typeof online !== 'undefined' && ( online === true || online === false ) ){
-		//setStatus(online);
-	//}
-	//forced status
-	//else {
-	return navigator.onLine;
-		//navigator.onLine not working properly in Firefox
-		//if (navigator.onLine){
-			//NOTE that GET is not working (by default) in a CodeIgniter setup!!
-//				$.ajax({
-//					type:'POST',
-//					url: CONNECTION_URL,
-//					cache: false,
-//					dataType: 'text',
-//					timeout: 3000,
-//					success: function(){
-//						setStatus(true);
-//						},
-//					error: function(){
-//						setStatus(false);
-//						}
-//				});
-		//}
-		//else {
-			//setStatus(false);
-		//}
-//	}
+	//return navigator.onLine;
+	return this.currentOnlineStatus;
 };
 	
 Connection.prototype.setOnlineStatus = function(newStatus){
 	//var oldStatus = onlineStatus;
 	//onlineStatus = online;
 	if (newStatus !== this.currentOnlineStatus){
-		console.log('status changed to: '+newStatus+', triggering window.onlinestatuschange');
+		console.log('online status changed to: '+newStatus+', triggering window.onlinestatuschange');
 		$(window).trigger('onlinestatuschange', newStatus);
 	}
 	this.currentOnlineStatus = newStatus;
 };
+
+//REMOVE THIS AS IT MAKES NO SENSE WHATSOEVER TO LET USERS CHANGE A CENTRAL FORM SETTING!
+//Connection.prototype.switchCache = function(active){
+//	if (typeof active !== 'boolean'){
+//		console.error('switchCache called without parameter');
+//		return;
+//	}
+//	$.ajax('webform/switch_cache', {
+//		type: 'POST',
+//		data: {cache: active}
+//	});
+//};
 
 /**
  * PROTECTION AGAINST CALLING FUNCTION TWICE to be tested, attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
@@ -689,19 +625,22 @@ Connection.prototype.upload = function(force, excludeName) {
 	var i, name, result,
 		autoUpload = (settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ? true : false;
 	//console.debug('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
-
-	// proceed if autoUpload is true or it is overridden, and if there is currently no queue for submissions
-	if ( ( typeof this.uploadQueue == 'undefined' || this.uploadQueue.length === 0 ) && ( autoUpload === true || force ) ){
-		//var dataArr=[];//, insertedStr='';
-		this.uploadResult = {win:[], fail:[], force: force};
+	// proceed if autoUpload is true or it is overridden, and if there is currently no ongoing upload, and if the browser is online
+	if ( this.uploadOngoing === false  && ( autoUpload === true || force ) ){
+		this.uploadResult = {win:[], fail:[]};
 		this.uploadQueue = store.getSurveyDataArr(true, excludeName);
-
-		console.debug('upload queue: '+this.uploadQueue);
+		this.forced = force;
+		console.debug('upload queue length: '+this.uploadQueue.length);
 
 		if (this.uploadQueue.length === 0 ){
 			return (force) ? gui.showFeedback('Nothing marked "final" to upload (or record is currently open).') : false;
 		}
+
 		this.uploadOne();
+	}
+	else{
+		//allow override of this.forced if called with force=true
+		this.forced = (force === true) ? true : this.forced;
 	}
 };
 
@@ -710,29 +649,35 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 		that = this;
 	if (this.uploadQueue.length > 0){
 		record = this.uploadQueue.pop();
-		content = new FormData();
-		content.append('xml_submission_data', form.prepareForSubmission(record.data));//dataXMLStr);
-		content.append('Date', new Date().toUTCString());
-		last = (this.uploadQueue.length === 0) ? true : false;
-
-		//console.log('data to be send: '+JSON.stringify(dataObj)); // DEBUG
-		$.ajax('data/submission',{
-			type: 'POST',
-			data: content,
-			cache: false,
-			//async: false, //THIS NEEDS TO BE CHANGED, BUT AJAX SUBMISSIONS NEED TO TAke place sequentially
-			contentType: false,
-			processData: false,
-			complete: function(jqXHR, response){
-				that.processOpenRosaResponse(jqXHR.status, record.name, last);
-				/**
-				  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
-				  * as it duplicates 1 entry and omits the other but returns 201 for both...
-				  * so we wait until previous POST is finished.
-				  */
-				that.uploadOne();
-			}
-		});
+		if (this.getOnlineStatus() !== true){
+			this.processOpenRosaResponse(0, record.name, true);
+		}
+		else{
+			this.uploadOngoing = true;
+			content = new FormData();
+			content.append('xml_submission_data', form.prepareForSubmission(record.data));//dataXMLStr);
+			content.append('Date', new Date().toUTCString());
+			last = (this.uploadQueue.length === 0) ? true : false;
+			this.setOnlineStatus(null);
+			$.ajax('data/submission',{
+				type: 'POST',
+				data: content,
+				cache: false,
+				contentType: false,
+				processData: false,
+				//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
+				timeout: 10*1000,
+				complete: function(jqXHR, response){
+					that.processOpenRosaResponse(jqXHR.status, record.name, last);
+					/**
+					  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
+					  * as it duplicates 1 entry and omits the other but returns 201 for both...
+					  * so we wait for the previous POST to finish before sending the next
+					  */
+					that.uploadOne();
+				}
+			});
+		}
 	}
 };
 
@@ -741,7 +686,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		msg = '',
 		names=[],
 		statusMap = {
-		0: {success: false, msg: "Uploading of data failed (probably offline)"},
+		0: {success: false, msg: "Uploading of data failed (probably offline) and will be tried again later."},
 		200: {success:false, msg: "Data server did not accept data. Contact Enketo helpdesk please."},
 		201: {success:true, msg: ""},
 		202: {success:true, msg: name+" may have had errors. Contact survey administrator please."},
@@ -757,7 +702,6 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	};
 	//console.debug('name: '+name);
 	//console.debug(status);
-	
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
 			store.removeRecord(name);
@@ -771,21 +715,24 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	}
 	//unforeseen statuscodes
 	else if (status > 500){
-		console.error ('error during uploading, received unexpected statuscode: '+status);
+		console.error ('Error during uploading, received unexpected statuscode: '+status);
 		this.uploadResult.fail.push([name, statusMap['5xx'].msg]);
 	}
 	else if (status > 400){
-		console.error ('error during uploading, received unexpected statuscode: '+status);
+		console.error ('Error during uploading, received unexpected statuscode: '+status);
 		this.uploadResult.fail.push([name, statusMap['4xx'].msg]);
 	}
 	else if (status > 200){
-		console.error ('error during uploading, received unexpected statuscode: '+status);
+		console.error ('Error during uploading, received unexpected statuscode: '+status);
 		this.uploadResult.fail.push([name, statusMap['2xx'].msg]);
 	}
 	
 	if (last !== true){
 		return;
 	}
+
+	console.debug('going to provide upload feedback (forced = '+this.forced+') from object:');
+	console.debug(this.uploadResult);
 
 	if (this.uploadResult.win.length > 0){
 		for (i = 0 ; i<this.uploadResult.win.length ; i++){
@@ -795,21 +742,35 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		waswere = (i>1) ? ' were' : ' was';
 		namesStr = names.join(', ');
 		gui.showFeedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
+		this.setOnlineStatus(true);
+		//$('.drawer.left #status').text('');
+		//gui.updateStatus.connection(true);
 	}
 	//else{
-	// not sure if there should be a notification if forms fail automatic submission
 	if (this.uploadResult.fail.length > 0){
-		if (this.uploadResult.force === true){
+		//console.debug('upload failed');
+		
+		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
+		this.setOnlineStatus(false);
+		//$('.drawer.left #status').text('Offline.');
+
+		if (this.forced === true){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
 			}
-			gui.alert(msg, 'Failed data submission');
+			//console.debug('going to give upload feedback to user');
+			//if ($('.drawer.left').length > 0){
+				//show drawer if currently hidden
+				$('.drawer.left.hide .handle').click();
+			//}
+			//else {
+				gui.alert(msg, 'Failed data submission');
+			//}
 		}
 		else{
-
+			// not sure if there should be a notification if forms fail automatic submission
 		}
 	}
-
 	this.uploadOngoing = false;
 	//re-enable upload button
 };
@@ -857,20 +818,32 @@ GUI.prototype.setCustomEventHandlers = function(){
 		.click(function(){
 			deleteForm(false);
 		});
-	$('button#submit-form').button({'icons': {'primary':"ui-icon-check"}})
-		.click(function(){
-			form.validateForm();
-			submitForm();
+	$('button#submit-form')//.detach().appendTo($('form.jr'))
+		.button({'icons': {'primary':"ui-icon-check"}})
+			.click(function(){
+				form.validateForm();
+				submitForm();
+				return false;
 		});
-	$('a#queue').click(function(){
+//	$('a#queue').click(function(){
+//		exportToFile();
+//		return false;
+//	});
+//
+	$('#drawer-export').click(function(){
 		exportToFile();
 		return false;
+	});
+	$('.drawer.left .handle.right').click(function(){
+		var $drawer = $(this).parent('.drawer');
+		console.debug('clicked handle');
+		$drawer.toggleClass('hide');
 	});
 
 	$('#form-controls button').equalWidth();
 
 	$(document)
-		.on('click', '#records-saved li:not(.no-click)', function(event){ // future items matching selection will also get eventHandler
+		.on('click', '#records-saved li:not(.no-click)', function(event){
 			event.preventDefault();
 			var name = /** @type {string} */$(this).find('.name').text();
 			loadForm(name);
@@ -915,12 +888,12 @@ GUI.prototype.setCustomEventHandlers = function(){
 		});
 
 	$(document).on('save delete', 'form.jr', function(e, formList){
-		//console.debug('save or delete event detected with new formlist: '+formList);
+		console.debug('save or delete event detected with new formlist: '+formList);
 		that.updateRecordList(JSON.parse(formList));
 	});
 
 	$(document).on('setsettings', function(e, settings){
-		console.debug('settingschange detected, GUI will be updated with settings:');
+		//console.debug('settingschange detected, GUI will be updated with settings:');
 		//console.debug(settings);
 		that.setSettings(settings);
 	});
@@ -999,14 +972,13 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 			$li.find('.name').text(name); // encodes string to html
 			$list.append($li);
 		}
-		$('#queue').show().find('#queue-length').text(recordList.length);
+		//$('#queue').show().find('#queue-length').text(recordList.length);
+		$('#queue-length').text(recordList.length);
 	}
 	else{
 		$('<li class="no-click">no locally saved records found</li>').appendTo($list);
-		$('#queue').hide().find('.queue-length').text('');
+		$('#queue-length').text('0');
 	}
-// *	OLD*	else if (result.field(2) == 2) {
-// *	OLD*		color = 'gray';
 	// update status counters
 	//pageEl.find('#forms-saved-qty').text(recordList.length);
 	$page.find('#records-draft-qty').text(draftFormsQty);

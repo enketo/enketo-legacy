@@ -38,13 +38,16 @@
  * @param	mixed
  * @return	mixed	depends on whether subdomain was used to access the page
  */
-if ( ! function_exists('url_exists'))
+if ( ! function_exists('url_exists_and_valid'))
 {
 	function url_exists_and_valid($url)
 	{
 		return url_exists($url) && url_valid($url);
 	}
+}
 
+if ( ! function_exists('url_exists'))
+{
 	function url_exists($url)
 	{		
 //		$file_headers = @get_headers($url);
@@ -80,23 +83,32 @@ if ( ! function_exists('url_exists'))
 		//echo curl_error($ch);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
-		return ($httpcode >= 200 && $httpcode < 300) ? TRUE : FALSE;
+		
+		$exists = ($httpcode >= 200 && $httpcode < 300) ? TRUE : FALSE;
+		if (!$exists)
+		{
+			log_message('error', 'HTTP Helper: resource at '.$url.' not available.');
+		}
+		return $exists;
 	}
+}
 
-	//function not used yet
-	function makeValid()
-	{
-		$url = trim($url);
-		$url = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) ? $url : 'http://'.$url;
-		return (url_valid($url)) ? $url : FALSE;
-	}
+//if ( ! function_exists('url_add_protocol'))
+//{
+//	function url_add_protocol($url)
+//	{
+//		$url = trim($url);
+//		$url = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) ? $url : 'http://'.$url;
+//		return (url_valid($url)) ? $url : FALSE;
+//	}
+//}
 
+if ( ! function_exists('url_valid'))
+{
 	function url_valid($url)
 	{
-		log_message('debug', 'result of url check on '.$url.filter_var($url, FILTER_VALIDATE_URL));
+		//log_message('debug', 'result of url check on '.$url.filter_var($url, FILTER_VALIDATE_URL));
 		return (filter_var($url, FILTER_VALIDATE_URL)) ? TRUE : FALSE;
 	}
-
-
 
 }

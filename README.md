@@ -15,7 +15,7 @@ Prerequisites
 
 Installation
 -----------
-See [bare Ubunutu 12.04 installation.txt](https://github.com/modilabs/enketo/devinfo/bare%20Ubuntu%2012.04%20installation.txt)
+See [Ubuntu_installation_instructions.md](https://github.com/modilabs/enketo/blob/master/devinfo/Ubuntu_installation_instructions.md)
 
 Frequently Asked Questions
 ---------------------------

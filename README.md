@@ -15,20 +15,7 @@ Prerequisites
 
 Installation
 -----------
-1. Clone the repository. It has the following structure:
-> enketo
->> Code_Igniter
->>> application
->>> system
->> public (this is the webroot that contains index.php)
-2. Make application/logs and application/cache writeable
-3. Add XPathJS_javarosa.min.js to the /public/libraries folder
-4. Create wildcard subdomain that points to /public
-5. Import database structure into MYSQL database (most queries are done with the Active Record Class so any supported db should do with minimal fixes)
-6. Set up config/database.php with correct db user name and password
-8. Add the base url to config/config.php (e.g http://enketo.formhub.org)
-7. Set environment in index.php to 'production'
-8. Replace Code_Igniter/application/views/elements/tracking.php with your own tracking code
+See [bare Ubunutu 12.04 installation.txt](https://github.com/modilabs/enketo/devinfo/bare%20Ubuntu%2012.04%20installation.txt)
 
 Frequently Asked Questions
 ---------------------------

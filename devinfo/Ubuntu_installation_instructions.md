@@ -1,4 +1,5 @@
 Installation on bare Ubuntu 12.04 server (AWS)
+=======
 
 Apache:
 - sudo apt-get update
@@ -43,6 +44,7 @@ Site:
   * change DocumentRoot to /var/www/enketo/public in /etc/apache2/sites-available/default
   * change 2nd <Directory /var/www> to: <Directory /var/www/enketo/public>
   * set AllowOverride All (I did this in both <directories>)
+- sudo apt-get upgrade
 - restart apache: sudo /etc/init.d/apache2 restart
 
 DNS / hosts file:

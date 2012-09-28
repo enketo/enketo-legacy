@@ -25,14 +25,16 @@ var /**@type {Settings}*/settings,
 var /**@type {StorageLocal}*/ store;
 var MODERN_BROWSERS_URL = 'modern_browsers';
 var CACHE_CHECK_INTERVAL = 360*1000; //CHANGE TO 3600*1000
+var CONNECTION_URL = 'checkforconnection.php';
 DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBackup':false };
+
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 // !Document.ready()
 /************ Document Ready ****************/
 $(document).ready(function() {
 	'use strict';
-	var bookmark, message, choices, shown, time;
+	var message, choices;
 
 	store = new StorageLocal();
 	form = new Form('form.jr:eq(0)', jrDataStr);
@@ -40,10 +42,7 @@ $(document).ready(function() {
 	settings.init();
 	connection = new Connection();
 	
-	// check if localStorage is supported and if not re-direct to browser download page
 	if (!store.isSupported()){
-	//if(Modernizr.localStorage){
-		//console.log('redirect attempt because of lack of localStorage support'); // DEBUG
 		window.location = MODERN_BROWSERS_URL;
 	}
 	else{
@@ -56,24 +55,12 @@ $(document).ready(function() {
 	
 	if ($('html').attr('manifest')){
 		if (cache.isSupported()){
-			//reminder to bookmark page will be shown 3 times
-			bookmark = store.getRecord('__bookmark');
-			shown = (bookmark) ? bookmark['shown'] : 0;
-			if(shown < 3){
-				setTimeout(function(){
-					time = (shown === 1) ? 'time' : 'times';
-					gui.showFeedback('Please bookmark this page for easy offline launch. '+
-						'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
-					shown++;
-					store.setRecord('__bookmark', {'shown': shown});
-				}, 5*1000);
-			}
 			cache.init();
 			$(document).trigger('browsersupport', 'offline-launch');
 		}
 		// if applicationCache is not supported
 		else{
-			message = 'Offline application launch not supported by your browser. '+
+			message = 'Offline application launch is not supported by your browser. '+
 					'You can use the form without this feature or see options for resolving this';
 			choices = {
 				posButton : 'Show options',
@@ -340,7 +327,7 @@ function exportData(finalOnly){
 }
 
 /**
- * function to export or backup data to a file.
+ * Function to export or backup data to a file. In Chrome it will get an appropriate file name.
  *
  *	@param {string=}  fileName
  *  @param {boolean=} finalOnly [description]
@@ -386,32 +373,38 @@ function Cache(){
 }
 		
 Cache.prototype.init = function(){
-	var that = this;
+	var appCache= window.applicationCache,
+		that = this;
 	//first check for the preferred cache
 	if (!this.isSupported){
 		return false;
 	}
-	if (applicationCache.status > 0 && applicationCache.status < 5){
+	if (appCache.status > 0 && appCache.status < 5){
 		gui.updateStatus.offlineLaunch(true);
+		setTimeout(this.showBookmarkMsg, 5000);
 	}
-	if (applicationCache.status === applicationCache.UPDATEREADY){
+	if (appCache.status === appCache.UPDATEREADY){
 		this.onUpdateReady();
 	}
-	if (applicationCache.status === applicationCache.OBSOLETE){
+	if (appCache.status === appCache.OBSOLETE){
 		this.onObsolete();
 	}
 
 	//manifest is no longer served (form removed or offline-launch disabled). DOES THIS FIRE IN ALL BROWSERS?
-	applicationCache.addEventListener('obsolete', this.onObsolete, false);
+	$(appCache).on('obsolete', function(){that.onObsolete();});
+	//applicationCache.addEventListener('obsolete', this.onObsolete, false);
 
 	//the very first time an application cache is saved
-	applicationCache.addEventListener('cached', this.onCached, false);
+	$(appCache).on('cached', function(){that.onCached();});
+	//applicationCache.addEventListener('cached', this.onCached, false);
 
 	//when an updated cache is downloaded and ready to be used
-	applicationCache.addEventListener('updateready', this.onUpdateReady, false);
+	$(appCache).on('updateready', function(){that.onUpdateReady();});
+	//applicationCache.addEventListener('updateready', this.onUpdateReady, false);
 	
 	//when an error occurs (not necessarily serious)
-	applicationCache.addEventListener('error', this.onErrors, false);
+	$(appCache).on('error', function(e){that.onErrors(e);});
+	//applicationCache.addEventListener('error', this.onErrors, false);
 
 	setInterval(function(){
 		that.update();
@@ -419,14 +412,15 @@ Cache.prototype.init = function(){
 	}, CACHE_CHECK_INTERVAL);
 
 	//if status is UNCACHED OR IDLE, force an update check
-	if (applicationCache.status === applicationCache.UNCACHED || applicationCache.status === applicationCache.IDLE){
-		//applicationCache.update();
-		this.update();
-	}
+	//if (appCache.status === appCache.UNCACHED || appCache.status === appCache.IDLE){
+		//throws expeception in Firefox if user hasn't yet approved the use of the application cache
+		//it also doesn't seem necessary in Firefox and Chrome as it happens right away automatically
+		//this.update();
+	//}
 };
 
 Cache.prototype.update = function(){
-	applicationCache.update();
+	window.applicationCache.update();
 };
 
 Cache.prototype.onObsolete = function(){
@@ -435,7 +429,7 @@ Cache.prototype.onObsolete = function(){
 };
 
 Cache.prototype.onCached = function(){
-	gui.showFeedback('Congratulations! This form can now be loaded when you are offline.');
+	gui.showFeedback('This form can be loaded and used when you are offline!');
 	gui.updateStatus.offlineLaunch(true);
 };
 
@@ -445,17 +439,31 @@ Cache.prototype.onUpdateReady = function(){
 		"Refresh this page to load the updated version.", 20);
 };
 
-Cache.prototype.onErrors = function(error){
-	console.error('HTML5 cache error event'); // DEBUG
-	//if (connection.getOnlineStatus()) {//error event always triggered when offline
-	console.debug(error);
-	gui.showFeedback('There is a new version of this application or form available but an error occurs when'+
+Cache.prototype.onErrors = function(e){
+	if (connection.currentOnlineStatus === true){
+		console.debug(e);
+		console.error('HTML5 cache error event'); // DEBUG
+		gui.showFeedback('There is a new version of this application or form available but an error occurs when'+
 			' trying to download it. Please send a bug report.');
 		//gui.updateStatus.offlineLaunch(false);
 		//gui.alert('Application error (manifest error). Try to submit or export any locally saved data. Please report to formhub mentioning the url.');
 		// Possible to trigger cache problem for testing? ->
 		// 1. going offline, 2.manifest with unavailable resource, 3. manifest syntax error
-	//}
+	}
+};
+
+Cache.prototype.showBookmarkMsg = function(){
+	var bookmark, shown;//, time;
+	//reminder to bookmark page will be shown 3 times
+	bookmark = store.getRecord('__bookmark');
+	shown = (bookmark) ? bookmark['shown'] : 0;
+	if(shown < 3){
+		//time = (shown === 1) ? 'time' : 'times';
+		gui.showFeedback('We recommend to bookmark this page for easy access when you are not connected to the Internet. ');//+
+			//'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
+		shown++;
+		store.setRecord('__bookmark', {'shown': shown});
+	}
 };
 
 //Cache.prototype.activate = function(){
@@ -513,15 +521,16 @@ function Connection(){
 	//var tableFields, primaryKey;
 	//var tableName, version;
 	var that=this;
+	this.currentOnlineStatus = false;
 	this.uploadOngoing = false;
 	
 	this.init = function(){
 		//console.log('initializing Connection object');
-		//checkOnlineStatus();
+		this.checkOnlineStatus();
 		that = this;
 		window.setInterval(function(){
 			//console.log('setting status'); //DEBUG
-			//setStatus();
+			that.checkOnlineStatus();
 			that.upload();
 		}, 15*1000);
 		//window.addEventListener("offline", function(e){
@@ -545,7 +554,33 @@ function Connection(){
 		//setTableVars();
 	};
 }
-	
+
+Connection.prototype.checkOnlineStatus = function(){
+	var online,
+		that = this;
+	//console.log('checking connection status');
+	//navigator.onLine is totally unreliable (returns incorrect trues) on Firefox, Chrome, Safari (on OS X 10.8),
+	//but I assume falses are correct
+	if (navigator.onLine){
+		$.ajax({
+			type:'GET',
+			url: CONNECTION_URL,
+			cache: false,
+			dataType: 'json',
+			timeout: 3000,
+			complete: function(response){
+				//important to check for the content of the no-cache response as it will
+				//start receiving the fallback page specified in the manifest!
+				online = typeof response.responseText !== 'undefined' && response.responseText === 'connected';
+				that.setOnlineStatus(online);
+			}
+		});
+	}
+	else {
+		this.setOnlineStatus(false);
+	}
+};
+
 /**
  * provides the connection status, should be considered: 'seems online' or 'seems offline'
  * NEEDS IMPROVEMENT. navigator.onLine alone is probably not appropriate because for some browsers this will
@@ -555,57 +590,31 @@ function Connection(){
  * @return {boolean} true if it seems the browser is online, false if it does not
  */
 Connection.prototype.getOnlineStatus = function(){
-	console.log('checking connection status');//, status before check is: '+onlineStatus); // DEBUG
-	//if (typeof online !== 'undefined' && ( online === true || online === false ) ){
-		//setStatus(online);
-	//}
-	//forced status
-	//else {
-	return navigator.onLine;
-		//navigator.onLine not working properly in Firefox
-		//if (navigator.onLine){
-			//NOTE that GET is not working (by default) in a CodeIgniter setup!!
-//				$.ajax({
-//					type:'POST',
-//					url: CONNECTION_URL,
-//					cache: false,
-//					dataType: 'text',
-//					timeout: 3000,
-//					success: function(){
-//						setStatus(true);
-//						},
-//					error: function(){
-//						setStatus(false);
-//						}
-//				});
-		//}
-		//else {
-			//setStatus(false);
-		//}
-//	}
+	//return navigator.onLine;
+	return this.currentOnlineStatus;
 };
 	
 Connection.prototype.setOnlineStatus = function(newStatus){
 	//var oldStatus = onlineStatus;
 	//onlineStatus = online;
 	if (newStatus !== this.currentOnlineStatus){
-		console.log('status changed to: '+newStatus+', triggering window.onlinestatuschange');
+		console.log('online status changed to: '+newStatus+', triggering window.onlinestatuschange');
 		$(window).trigger('onlinestatuschange', newStatus);
 	}
 	this.currentOnlineStatus = newStatus;
 };
 
 //REMOVE THIS AS IT MAKES NO SENSE WHATSOEVER TO LET USERS CHANGE A CENTRAL FORM SETTING!
-Connection.prototype.switchCache = function(active){
-	if (typeof active !== 'boolean'){
-		console.error('switchCache called without parameter');
-		return;
-	}
-	$.ajax('webform/switch_cache', {
-		type: 'POST',
-		data: {cache: active}
-	});
-};
+//Connection.prototype.switchCache = function(active){
+//	if (typeof active !== 'boolean'){
+//		console.error('switchCache called without parameter');
+//		return;
+//	}
+//	$.ajax('webform/switch_cache', {
+//		type: 'POST',
+//		data: {cache: active}
+//	});
+//};
 
 /**
  * PROTECTION AGAINST CALLING FUNCTION TWICE to be tested, attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
@@ -616,15 +625,12 @@ Connection.prototype.upload = function(force, excludeName) {
 	var i, name, result,
 		autoUpload = (settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ? true : false;
 	//console.debug('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
-	
-	// proceed if autoUpload is true or it is overridden, and if there is currently no ongoing upload
+	// proceed if autoUpload is true or it is overridden, and if there is currently no ongoing upload, and if the browser is online
 	if ( this.uploadOngoing === false  && ( autoUpload === true || force ) ){
-		//var dataArr=[];//, insertedStr='';
-		
 		this.uploadResult = {win:[], fail:[]};
 		this.uploadQueue = store.getSurveyDataArr(true, excludeName);
 		this.forced = force;
-		console.debug('upload queue: '+this.uploadQueue);
+		console.debug('upload queue length: '+this.uploadQueue.length);
 
 		if (this.uploadQueue.length === 0 ){
 			return (force) ? gui.showFeedback('Nothing marked "final" to upload (or record is currently open).') : false;
@@ -642,34 +648,36 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 	var record, content, last,
 		that = this;
 	if (this.uploadQueue.length > 0){
-		this.uploadOngoing = true;
 		record = this.uploadQueue.pop();
-		content = new FormData();
-		content.append('xml_submission_data', form.prepareForSubmission(record.data));//dataXMLStr);
-		content.append('Date', new Date().toUTCString());
-		last = (this.uploadQueue.length === 0) ? true : false;
-		this.setOnlineStatus('waiting');
-		//$('.drawer.left #status').text('Waiting...');
-		//console.log('data to be send: '+JSON.stringify(dataObj)); // DEBUG
-		$.ajax('data/submission',{
-			type: 'POST',
-			data: content,
-			cache: false,
-			//async: false, //THIS NEEDS TO BE CHANGED, BUT AJAX SUBMISSIONS NEED TO TAke place sequentially
-			contentType: false,
-			processData: false,
-			//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
-			timeout: 8*1000,
-			complete: function(jqXHR, response){
-				that.processOpenRosaResponse(jqXHR.status, record.name, last);
-				/**
-				  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
-				  * as it duplicates 1 entry and omits the other but returns 201 for both...
-				  * so we wait until previous POST is finished.
-				  */
-				that.uploadOne();
-			}
-		});
+		if (this.getOnlineStatus() !== true){
+			this.processOpenRosaResponse(0, record.name, true);
+		}
+		else{
+			this.uploadOngoing = true;
+			content = new FormData();
+			content.append('xml_submission_data', form.prepareForSubmission(record.data));//dataXMLStr);
+			content.append('Date', new Date().toUTCString());
+			last = (this.uploadQueue.length === 0) ? true : false;
+			this.setOnlineStatus(null);
+			$.ajax('data/submission',{
+				type: 'POST',
+				data: content,
+				cache: false,
+				contentType: false,
+				processData: false,
+				//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
+				timeout: 10*1000,
+				complete: function(jqXHR, response){
+					that.processOpenRosaResponse(jqXHR.status, record.name, last);
+					/**
+					  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
+					  * as it duplicates 1 entry and omits the other but returns 201 for both...
+					  * so we wait for the previous POST to finish before sending the next
+					  */
+					that.uploadOne();
+				}
+			});
+		}
 	}
 };
 
@@ -678,7 +686,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		msg = '',
 		names=[],
 		statusMap = {
-		0: {success: false, msg: "Uploading of data failed (probably offline)"},
+		0: {success: false, msg: "Uploading of data failed (probably offline) and will be tried again later."},
 		200: {success:false, msg: "Data server did not accept data. Contact Enketo helpdesk please."},
 		201: {success:true, msg: ""},
 		202: {success:true, msg: name+" may have had errors. Contact survey administrator please."},
@@ -694,7 +702,6 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	};
 	//console.debug('name: '+name);
 	//console.debug(status);
-	
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
 			store.removeRecord(name);
@@ -741,25 +748,24 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	}
 	//else{
 	if (this.uploadResult.fail.length > 0){
-		console.debug('upload failed');
+		//console.debug('upload failed');
 		
 		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
 		this.setOnlineStatus(false);
-		$('.drawer.left #status').text('Offline.');
+		//$('.drawer.left #status').text('Offline.');
 
 		if (this.forced === true){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
 			}
-			console.debug('going to give upload feedback to user');
-			if ($('.drawer.left').length > 0){
-				//gui.updateStatus.connection(false);
+			//console.debug('going to give upload feedback to user');
+			//if ($('.drawer.left').length > 0){
 				//show drawer if currently hidden
 				$('.drawer.left.hide .handle').click();
-			}
-			else {
+			//}
+			//else {
 				gui.alert(msg, 'Failed data submission');
-			}
+			//}
 		}
 		else{
 			// not sure if there should be a notification if forms fail automatic submission
@@ -837,7 +843,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	$('#form-controls button').equalWidth();
 
 	$(document)
-		.on('click', '#records-saved li:not(.no-click)', function(event){ // future items matching selection will also get eventHandler
+		.on('click', '#records-saved li:not(.no-click)', function(event){
 			event.preventDefault();
 			var name = /** @type {string} */$(this).find('.name').text();
 			loadForm(name);
@@ -973,8 +979,6 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 		$('<li class="no-click">no locally saved records found</li>').appendTo($list);
 		$('#queue-length').text('0');
 	}
-// *	OLD*	else if (result.field(2) == 2) {
-// *	OLD*		color = 'gray';
 	// update status counters
 	//pageEl.find('#forms-saved-qty').text(recordList.length);
 	$page.find('#records-draft-qty').text(draftFormsQty);

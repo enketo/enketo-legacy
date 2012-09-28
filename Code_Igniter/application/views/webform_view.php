@@ -1,4 +1,7 @@
-<? require 'elements/html_start.php' ?>
+<? 	
+	require 'elements/html_start.php'; 
+	$this->load->helper('subdomain'); 
+?>
 
 	<? foreach ($stylesheets as $css): ?>
 		<link href="<?= $css; ?>" media="screen" rel="stylesheet" type="text/css" />

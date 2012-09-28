@@ -30,7 +30,7 @@ $(document).ready(function(){
 	gui.init();
 	// avoid windows console errors
 	if (typeof console == "undefined") {console = {log: function(){}};}
-	if (typeof (window.console.debug) == "undefined") {console.debug = console.log;}
+	if (typeof window.console.debug == "undefined") {console.debug = console.log;}
 
 	if (getGetVariable('debug') !== 'true'){
 		window.console.log = function(){};
@@ -298,7 +298,7 @@ GUI.prototype.pages = function(){
 
 /**
  * Shows an unobtrusive feedback message to the user.
- * 
+ *
  * @param {string=} message
  * @param {number=} duration
  */
@@ -534,7 +534,7 @@ GUI.prototype.display = function(){
 };
 
 /**
- * [updateSettings description] Updates the settings in the GUI and triggers change events (used when app launches) that are handled in customEventHandlers.
+ * Updates the settings in the GUI and triggers change events (used when app launches) that are handled in customEventHandlers.
  * It is generic and could be used for any kind of radio or checkbox settings.
  *
  * @param  {Object.<string, (boolean|string)>} settings [description]

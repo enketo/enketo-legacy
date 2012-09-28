@@ -59,20 +59,20 @@ class Webform extends CI_Controller {
 							'form'=> $form,
 							'form_data'=> $form_data,
 							'stylesheets'=> array(
-								base_url('libraries/jquery-ui/css/sunny/jquery-ui.custom.css'),
-								base_url('css/screen.css')
+								'libraries/jquery-ui/css/sunny/jquery-ui.custom.css',
+								'css/screen.css'
 							)
 						);
 						$common_scripts = array(
-							base_url('libraries/jquery.min.js'),
-							base_url('libraries/jquery-ui/js/jquery-ui.custom.min.js'),
-							base_url('libraries/jquery-ui-timepicker-addon.js'),
-							base_url('libraries/jquery.multiselect.min.js'),	
-							base_url('libraries/modernizr.min.js'),
-							base_url('libraries/xpathjs_javarosa.min.js'),
-							base_url('libraries/FileSaver.min.js'),
-							base_url('libraries/BlobBuilder.min.js'),
-							base_url('libraries/vkbeautify.js'),
+							'libraries/jquery.min.js',
+							'libraries/jquery-ui/js/jquery-ui.custom.min.js',
+							'libraries/jquery-ui-timepicker-addon.js',
+							'libraries/jquery.multiselect.min.js',	
+							'libraries/modernizr.min.js',
+							'libraries/xpathjs_javarosa.min.js',
+							'libraries/FileSaver.min.js',
+							'libraries/BlobBuilder.min.js',
+							'libraries/vkbeautify.js',
 							"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
 						);
 
@@ -81,17 +81,17 @@ class Webform extends CI_Controller {
 						{
 							//$this->output->cache(60);
 							$data['scripts'] = array_merge($common_scripts, array(
-								base_url('js-min/survey-all-min.js')
+								'js-min/survey-all-min.js'
 							));
 						}
 						else
 						{		
 							$data['scripts'] = array_merge($common_scripts, array(
-								base_url('js-source/__common.js'),
-								base_url('js-source/__storage.js'),
-								base_url('js-source/__form.js'),
-								base_url('js-source/__survey.js'),
-								base_url('js-source/__debug.js')
+								'js-source/__common.js',
+								'js-source/__storage.js',
+								'js-source/__form.js',
+								'js-source/__survey.js',
+								'js-source/__debug.js'
 							));
 						}
 						$this->load->view('webform_view',$data);
@@ -138,20 +138,20 @@ class Webform extends CI_Controller {
 		}
 	}
 
-	public function switch_cache(){
-		$this->load->model('Survey_model','',TRUE);
-		$app_cache = $_POST['cache'];
-
-		if ($app_cache === 'true' || $app_cache === 'false'){
-			$app_cache = ($app_cache === 'true') ? TRUE : FALSE;
-			$result = $this->Survey_model->switch_offline_launch($app_cache);
-			echo ($result === TRUE) ? 'success' : 'error';
-		}
-		else
-		{
-			echo 'Did not understand request.';
-		}
-	}
+	//public function switch_cache(){
+	//	$this->load->model('Survey_model','',TRUE);
+	//	$app_cache = $_POST['cache'];
+	//
+	//	if ($app_cache === 'true' || $app_cache === 'false'){
+	//		$app_cache = ($app_cache === 'true') ? TRUE : FALSE;
+	//		$result = $this->Survey_model->switch_offline_launch($app_cache);
+	//		echo ($result === TRUE) ? 'success' : 'error';
+	//	}
+	//	else
+	//	{
+	//		echo 'Did not understand request.';
+	//	}
+	//}
 
 	public function update_list()
 	{

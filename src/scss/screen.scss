@@ -23,11 +23,11 @@ $bg: #ddd;
 $groupline: #bbbbbb;
 $title: #CE4F07;
 
-
 @mixin paper{
   /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
   position: relative;
   /*width: 500px;*/
+  /*z-index: 10;*/
   padding: 50px;
   margin: 0 auto;
   background-color: #fff;
@@ -60,24 +60,22 @@ $title: #CE4F07;
     -o-transform: skew(5deg) rotate(5deg);
     transform: skew(5deg) rotate(5deg);}}
 
+/* Bootstrap color schemes */
 @mixin alert{
   border: 1px solid #EED3D7;
   color: #B94A48;
   background-color: #F2DEDE;
 }
-
 @mixin warning{
-  border: 1px solid #FBEED5;/* REPLACE AFTER BOOTSTRAP */
+  border: 1px solid #FBEED5;
   color: #C09853;
   background-color: #FCF8E3;
 }
-
 @mixin information{
   border: 1px solid #BCE8F1;
   color: #3A87AD;
   background-color: #D9EDF7;
 }
-
 @mixin success{
   border: 1px solid #D6E9C6;
   color: #468847;
@@ -104,8 +102,7 @@ h2, h3, h4 {
   font-weight: bolder;
   margin-bottom: 10px;
   padding: 0 5px; 
-  color: $title;
-}
+  color: $title;}
 
 ul {
   list-style: disc;
@@ -200,14 +197,14 @@ body {
   display: none;
   background-color: $overlay-bg;
   position: absolute;
-  z-index: 10;
+  z-index: 12;
   width: 100%;
   height: 100%;
   opacity: 0.8; }
 
 header.ui-widget-header {
   position: absolute;
-  z-index: 14;
+  z-index: 30;
   top: 0px;
   height: 80px;
   width: 100%;
@@ -314,7 +311,7 @@ $tab-width: 18px;
 .drawer{
   @include success;
   position: fixed;
-  z-index: 100;
+  z-index: 15;
   border-radius: 0 4px 4px 0;
   border-color: #aaaaaa;
   -moz-transition: margin 0.8s ease-out;
@@ -361,6 +358,7 @@ $tab-width: 18px;
  
 #branding{
   position: fixed;
+  z-index: 0;
   width: 120px;
   bottom: 0px;
   right: 0px;
@@ -435,7 +433,7 @@ $tab-width: 18px;
   margin-right: auto;
   margin-top: 50px;
   position: relative;
-  z-index: 0;
+  /*z-index: 0;*/
   /*top: 80px;*/
   display: block;
   /* align for good browsers */
@@ -551,7 +549,7 @@ footer.ui-widget {
 #feedback-bar {
   position: fixed;
   z-index: 13;
-  top: 25px;
+  top: -35px;
   /* invisible initially (header top: 80 - #feedback height - #feedback paddingx2)*/
   width: 100%;
   min-height: 35px;
@@ -887,9 +885,7 @@ footer.ui-widget {
     margin: 10px 0 45px -56px;}}
 
 .jr {
-  
-  line-height: 1.1em;
-  
+  line-height: 1.1em;  
   .form-logo img {
     position: relative;
     left: 50%;
@@ -1009,9 +1005,6 @@ footer.ui-widget {
   .jr-appearance-page-break{
     display: none;}} 
 
-/*excludes first label or fieldset in each fieldset or root of form*/
-
-/*first label of a set of radio buttons or checkboxes */
 
 label.with-media {
   margin-top: 5px; }
@@ -1164,7 +1157,7 @@ button.ui-multiselect {
   display: none;
   padding: 3px;
   position: absolute;
-  z-index: 10000; }
+  z-index: 20; }
 
 .ui-multiselect-checkboxes {
   position: relative;

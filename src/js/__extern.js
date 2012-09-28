@@ -1,6 +1,9 @@
 var jrDataStr;
 
-DOMApplicationCache.OBSOLETE;
+/**
+ * @type number
+ */
+applicationCache.OBSOLETE;
 
 function vkbeautify(){}
 

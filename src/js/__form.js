@@ -354,6 +354,12 @@ function Form (formSelector, dataStr){
 		 * 
 		 *   -
 		 */
+		/**
+		 * [setVal description]
+		 * @param {(string|Array.<string>)=} newVal      [description]
+		 * @param {string=} expr        [description]
+		 * @param {string=} xmlDataType [description]
+		 */
 		Nodeset.prototype.setVal = function(newVal, expr, xmlDataType){
 			var target, curVal, success;
 			//index = (typeof index !== 'undefined') ? index : -1;
@@ -550,9 +556,9 @@ function Form (formSelector, dataStr){
 			},
 			'datetime' : {
 				validate : function(x){
-					return ( new Date(x).toString() !== 'Invalid Date');
+					return ( new Date(x.toString()).toString() !== 'Invalid Date');
 				},
-			'convert' : function(x){
+				convert : function(x){
 					return new Date(x).toUTCString();
 				}
 			},
@@ -1476,7 +1482,7 @@ function Form (formSelector, dataStr){
 				cleverSelector.push('[data-relevant*="'+namesArr[i]+'"]');
 			}
 
-			console.debug('Updating branches for expressions that contain: '+namesArr.join());
+			//console.debug('Updating branches for expressions that contain: '+namesArr.join());
 			//console.debug('the clever selector created: '+cleverSelector.join());
 
 			$form.find(cleverSelector.join()).each(function(){
@@ -1492,8 +1498,8 @@ function Form (formSelector, dataStr){
 				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[p.path]){
 					return;
 				}
-				console.debug('properties of branch input node:');
-				console.debug(p);
+				//console.debug('properties of branch input node:');
+				//console.debug(p);
 				////console.debug(branchNode);
 
 				//type = $(this).prop('nodeName').toLowerCase();
@@ -1771,7 +1777,6 @@ function Form (formSelector, dataStr){
 					'my':'left top', 
 					'at': 'left bottom'
 				}
-
 			});
 		},
 		//transforms temporary page-break elements to triggers //REMOVE WHEN BETTER SOLUTION FOR PAGE BREAKS IS FOUND
@@ -1830,7 +1835,7 @@ function Form (formSelector, dataStr){
 				$button = $geoWrap.find('button[name="geodetect"]');
 				
 				$geoWrap.find('input').not($inputOrigin).on('change change.bymap', function(event){
-					console.debug('change event dected');
+					//console.debug('change event detected');
 					var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
 						lng = ($lng.val() !== '') ? $lng.val() : 0.0, 
 						alt = ($alt.val() !== '') ? $alt.val() : 0.0, 
@@ -1855,8 +1860,8 @@ function Form (formSelector, dataStr){
 
 				$button.click(function(event){
 					event.preventDefault();
-					console.debug('click event detected');
-					console.debug(event);
+					//console.debug('click event detected');
+					//console.debug(event);
 					navigator.geolocation.getCurrentPosition(function(position){	
 						updateMap(position.coords.latitude, position.coords.longitude);
 						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	
@@ -2373,6 +2378,13 @@ function Form (formSelector, dataStr){
 	 */
 	FormHTML.prototype.isValid = function(){
 		return ($form.find('.invalid').length > 0) ? false : true;
+	};
+
+	/**
+	 * Adds <hr class="page-break"> to prevent cutting off questions with page-breaks
+	 */
+	FormHTML.prototype.addPageBreaks = function(){
+
 	};
 }
 

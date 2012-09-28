@@ -38,13 +38,16 @@
  * @param	mixed
  * @return	mixed	depends on whether subdomain was used to access the page
  */
-if ( ! function_exists('url_exists'))
+if ( ! function_exists('url_exists_and_valid'))
 {
 	function url_exists_and_valid($url)
 	{
 		return url_exists($url) && url_valid($url);
 	}
+}
 
+if ( ! function_exists('url_exists'))
+{
 	function url_exists($url)
 	{		
 //		$file_headers = @get_headers($url);
@@ -88,20 +91,24 @@ if ( ! function_exists('url_exists'))
 		}
 		return $exists;
 	}
+}
 
-	function url_make_valid($url)
-	{
-		$url = trim($url);
-		$url = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) ? $url : 'http://'.$url;
-		return (url_valid($url)) ? $url : FALSE;
-	}
+//if ( ! function_exists('url_add_protocol'))
+//{
+//	function url_add_protocol($url)
+//	{
+//		$url = trim($url);
+//		$url = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) ? $url : 'http://'.$url;
+//		return (url_valid($url)) ? $url : FALSE;
+//	}
+//}
 
+if ( ! function_exists('url_valid'))
+{
 	function url_valid($url)
 	{
 		//log_message('debug', 'result of url check on '.$url.filter_var($url, FILTER_VALIDATE_URL));
 		return (filter_var($url, FILTER_VALIDATE_URL)) ? TRUE : FALSE;
 	}
-
-
 
 }

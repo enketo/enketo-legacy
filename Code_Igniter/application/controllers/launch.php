@@ -40,7 +40,7 @@ class Launch extends CI_Controller {
 				base_url('libraries/jquery-ui-timepicker-addon.js'),
 				base_url('libraries/jquery.multiselect.min.js'),	
 				base_url('libraries/modernizr.min.js'),
-				base_url('libraries/xpathjs_javarosa.min.js'),
+				base_url('libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js'),
 				base_url('libraries/jquery.form.js'),
 				base_url('libraries/vkbeautify.js'),
 				"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"

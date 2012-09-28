@@ -1,3 +1,6 @@
 [submodule "lib/EnvJasmine"]
 	path = lib/EnvJasmine
 	url = https://github.com/trevmex/EnvJasmine.git
+[submodule "public/libraries/xpathjs_javarosa"]
+	path = public/libraries/xpathjs_javarosa
+	url = https://github.com/MartijnR/xpathjs_javarosa.git

@@ -46,7 +46,8 @@
         <file name="__common.js"/>
         <file name="__storage.js"/>
         <file name="__form.js"/>
-        <file name="__form_widgets.js"/>
+        <file name="__connection.js"/>
+        <file name="__cache.js"/>
         <file name="__survey.js"/>
       </sources>
 

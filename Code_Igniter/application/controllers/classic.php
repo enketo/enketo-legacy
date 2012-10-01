@@ -64,7 +64,7 @@ class Classic extends CI_Controller {
 							base_url('libraries/jquery-ui-timepicker-addon.js'),
 							base_url('libraries/jquery.multiselect.min.js'),	
 							base_url('libraries/modernizr.min.js'),
-							base_url('libraries/xpathjs_javarosa.min.js'),
+							base_url('libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js'),
 							base_url('libraries/FileSaver.min.js'),
 							base_url('libraries/BlobBuilder.min.js'),
 							base_url('libraries/vkbeautify.js'),

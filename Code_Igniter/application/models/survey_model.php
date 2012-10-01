@@ -110,7 +110,8 @@ class Survey_model extends CI_Model {
             if ( $existing->num_rows() > 0 )
             {
                 return array('success'=>FALSE, 'reason'=>'existing', 
-                    'url'=> $this->_get_full_survey_url($existing->row()->subdomain));
+                    'url'=> $this->_get_full_survey_url($existing->row()->subdomain),
+                    'edit_url'=> $this->_get_full_survey_edit_url($existing->row()->subdomain));
             }    
             //if we can ensure only requests from enketo.org are processed, it is pretty certain that $server_url is live       
             $data = array(
@@ -124,9 +125,10 @@ class Survey_model extends CI_Model {
             );
             $result = $this->db->insert('surveys', $data); 
             $survey_url = $this->_get_full_survey_url($subdomain);
+            $edit_url = $this->_get_full_survey_edit_url($subdomain);
             log_message('debug', 'result of insert into surveys table: '.$result);
             return ($result != FALSE) ? 
-                array('success'=>TRUE, 'url'=> $survey_url): array('success'=>FALSE, 'reason'=>'database');
+                array('success'=>TRUE, 'url'=> $survey_url, 'edit_url' => $edit_url) : array('success'=>FALSE, 'reason'=>'database');
         }
         return array('success'=>FALSE, 'reason'=>'unknown');
     }
@@ -142,6 +144,19 @@ class Survey_model extends CI_Model {
         $domain = $_SERVER['SERVER_NAME'];
         $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
         return $protocol.$subdomain.'.'.$domain.'/webform';
+    }
+
+    /**
+     * @method _get_full_survey_edit_url turns a subdomain into the full url where the survey is available
+     * 
+     * @param $subdomain subdomain
+     */
+    private function _get_full_survey_edit_url($subdomain)
+    {
+        $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
+        $domain = $_SERVER['SERVER_NAME'];
+        $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
+        return $protocol.$subdomain.($this->ONLINE_SUBDOMAIN_SUFFIX).'.'.$domain.'/webform/edit';
     }
 
 // 	public function update_formlist()

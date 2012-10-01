@@ -1,0 +1,4 @@
+route all traffic (in Turnkey Linux by routing all traffic on port 80 to webroot (rapaide/public/) by editing existing virtual host)
+enabling mod_rewrite in Turnkey Linux -> https://IP-ADDRESS:12321/apache/edit_mods.cgi) 
+
+

@@ -185,8 +185,9 @@ class Webform extends CI_Controller {
 			show_error('No instance provided to edit and/or no return url provided to return to.', 404);
 			return;
 			//$instance = '<data><somedata>somedata</somedata><somedata>someotherdata</somedata></data>';
-			// test instance for household survey
+			// test instance for household survey with missing nodes and multiple repeats
 			//$instance = '<household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions><household_member><hh_member_age>001</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>002</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>003</hh_member_age><hh_member_gender/></household_member>            <hh_ownership/></sectionA>        </household_survey>';
+			//$return_url = "nothing";
 		}
 		if ($this->Survey_model->has_offline_launch_enabled() === TRUE)
 		{
@@ -219,6 +220,7 @@ class Webform extends CI_Controller {
 				'form'=> $form,
 				'form_data'=> $default_instance,
 				'form_data_to_edit' => $instance,
+				'return_url' => $return_url,
 				'stylesheets'=> array(
 					'../libraries/jquery-ui/css/sunny/jquery-ui.custom.css',
 					'../css/screen.css'

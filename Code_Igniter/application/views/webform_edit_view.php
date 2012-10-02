@@ -16,6 +16,7 @@
 		<script type="text/javascript">
 			var jrDataStr = '<?= $form_data ?>';
 			var jrDataStrToEdit = '<?= $form_data_to_edit ?>';
+			var RETURN_URL = '<?= $return_url ?>';
 		</script>
 	
 	<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>

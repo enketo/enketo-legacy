@@ -24,7 +24,7 @@ var /**@type {Settings}*/settings,
 var /**@type {StorageLocal}*/ store;
 var MODERN_BROWSERS_URL = 'modern_browsers';
 var CONNECTION_URL = '../checkforconnection.php';
-DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBackup':false };
+DEFAULT_SETTINGS = {'autoUpload':false, 'buttonLocation': 'bottom'};
 
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
@@ -32,20 +32,19 @@ DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBa
 /************ Document Ready ****************/
 $(document).ready(function() {
 	'use strict';
-	var message, choices;
 
-	store = new StorageLocal();
+	//store = new StorageLocal();
 	form = new Form('form.jr:eq(0)', jrDataStr, jrDataStrToEdit);
-	settings = new Settings();
-	settings.init();
+	//settings = new Settings();
+	//settings.init();
 	connection = new Connection();
 	
-	if (!store.isSupported()){
-		window.location = MODERN_BROWSERS_URL;
-	}
-	else{
-		$(document).trigger('browsersupport', 'local-storage');
-	}
+	//if (!store.isSupported()){
+//		window.location = MODERN_BROWSERS_URL;
+//	}
+//	else{
+//		$(document).trigger('browsersupport', 'local-storage');
+//	}
 
 	gui.updateStatus.offlineLaunch(false);
 	
@@ -54,5 +53,5 @@ $(document).ready(function() {
 	gui.setup();
 
 	//trigger fake save event to update formlist on data page
-	$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
+	//$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
 });

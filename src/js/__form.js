@@ -500,7 +500,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			if (typeof xmlDataType == 'undefined' || xmlDataType === null || 
 				typeof this.types[xmlDataType.toLowerCase()] == 'undefined'){
-				console.log('data type '+xmlDataType+' set to string');
+				//console.log('data type '+xmlDataType+' set to string');
 				xmlDataType = 'string';
 			}
 			typeValid = this.types[xmlDataType.toLowerCase()].validate(value);
@@ -578,7 +578,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					var coords = x.toString().split(' ');
 					return ( coords[0] !== '' && coords[0] >= -90 && coords[0] <= 90 ) && 
 						( coords[1] !== '' && coords[1] >= -180 && coords[1] <= 180) && 
-						!isNaN(coords[2]) && (typeof coords[3] == 'undefined' || !isNaN(coords[3]));
+						( typeof coords[2] == 'undefined' || !isNaN(coords[2]) ) && 
+						( typeof coords[3] == 'undefined' || ( !isNaN(coords[3]) && coords[3] >= 0 ) );
 				},
 				convert: function(x){
 					return $.trim(x.toString());

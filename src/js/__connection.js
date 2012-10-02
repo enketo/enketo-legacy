@@ -137,7 +137,7 @@ Connection.prototype.setOnlineStatus = function(newStatus){
  */
 Connection.prototype.upload = function(force, excludeName) {
 	var i, name, result,
-		autoUpload = (settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ? true : false;
+		autoUpload = (typeof settings !== 'undefined' && ( settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ) ? true : false;
 	//console.debug('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
 	// proceed if autoUpload is true or it is overridden, and if there is currently no ongoing upload, and if the browser is online
 	if ( this.uploadOngoing === false  && ( autoUpload === true || force ) ){

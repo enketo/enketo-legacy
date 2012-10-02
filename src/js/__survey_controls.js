@@ -236,6 +236,15 @@ function submitForm() {
 }
 
 /**
+ * used to submit a form with data that was loaded by POST
+ *
+ * @return {[type]} [description]
+ */
+function submitEditedForm() {
+
+}
+
+/**
  * function to export or backup data. It depends on the browser whether this data is shown in a new browser window/tab
  * or is downloaded automatically. It is not possible to provide a file name.
  * @deprecated
@@ -341,6 +350,14 @@ GUI.prototype.setCustomEventHandlers = function(){
 			.click(function(){
 				form.validateForm();
 				submitForm();
+				return false;
+		});
+
+	$('button#submit-edited-data')//.detach().appendTo($('form.jr'))
+		.button({'icons': {'primary':"ui-icon-check"}})
+			.click(function(){
+				form.validateForm();
+				submitEditedForm();
 				return false;
 		});
 //	$('a#queue').click(function(){

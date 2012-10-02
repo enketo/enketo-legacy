@@ -182,12 +182,11 @@ class Webform extends CI_Controller {
 		}
 		if (empty($instance)) // empty($return_url)
 		{
-			//show_error('No instance provided to edit and/or no return url provided to return to.', 404);
-			//return;
+			show_error('No instance provided to edit and/or no return url provided to return to.', 404);
+			return;
 			//$instance = '<data><somedata>somedata</somedata><somedata>someotherdata</somedata></data>';
-			//
-			//
-			$instance = '<instance xmlns="http://www.w3.org/2002/xforms">        <household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10 10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions></sectionA>        </household_survey>     </instance>';
+			// test instance for household survey
+			//$instance = '<household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions><household_member><hh_member_age>001</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>002</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>003</hh_member_age><hh_member_gender/></household_member>            <hh_ownership/></sectionA>        </household_survey>';
 		}
 		if ($this->Survey_model->has_offline_launch_enabled() === TRUE)
 		{

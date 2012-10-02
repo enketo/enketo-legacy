@@ -38,7 +38,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	this.sfv = function(){return form.setAllVals();};
 	this.getDataO = function(){return data.get();};
 	this.data = function(dataStr){return new DataXML(dataStr);};
-	//this.data = function(){return data;};
+	this.dataO = function(){return data;};
 	this.getDataEditO = function(){return dataToEdit.get();};
 	this.form = function(selector){return new FormHTML(selector);};
 	this.getDataXML = function(){return data.getXML();};
@@ -634,15 +634,22 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * 
 	 */
 	DataXML.prototype.load = function(instanceOfDataXML){
-		var nodesToLoad, index, path, value, target, $targetNode,
+		var nodesToLoad, index, path, value, target, $target, $template,
+			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
+		console.debug('loading instance values to be edited');
+
 		nodesToLoad = instanceOfDataXML.node(null, null, filter).get();
+		
 		console.debug(nodesToLoad.length+' nodes found in data to be edited: ');
 		console.debug(nodesToLoad);
 
-		//TODO empty all non-template nodes in data first?
-
+		//first empty all form data nodes, to clear any default values except those inside templates
+		this.node(null, null, filter).get().each(function(){
+			//something seems fishy about doing it this way instead of using node.setVal('');
+			$(this).text('');
+		});
 
 		nodesToLoad.each(function(){
 			path = form.generateName($(this));
@@ -652,20 +659,41 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			value = $(this).text();
 			console.debug('value: '+value);
 
-			target = data.node(path, index);
-			$targetNode = target.get();
-			if ($targetNode.length > 1){
+			target = that.node(path, index);
+			$target = target.get();
+
+			//if there are multiple nodes with that name and index (actually impossible)
+			if ($target.length > 1){
 				console.error('Found multiple nodes with path: '+path+' and index: '+index);
 			}
-			else if ($targetNode.length === 1){
+			//if there is a corresponding node in the form's original instance
+			else if ($target.length === 1){
 				//set the value
 				target.setVal(value);
 			}
+			//if there is not a corresponding data node but there is a corresponding template node (=> <repeat>)
+			//this use of node(,,).get() is a bit of a trick that is difficult to wrap one's head around
+			else if (that.node(path, index, {noTemplate:false}).get().length > 0){
+				//clone the template node 
+				//TODO add support for repeated nodes in forms that do not use template=""
+				$template = that.node(path, 0, {noTemplate:false}).get().closest('[template]');
+				//TODO test this for nested repeats
+				that.cloneTemplate(form.generateName($template), index-1);
+				//try setting the value again
+				target = that.node(path,index);
+				if (target.get().length === 1){
+					target.setVal(value);
+				}
+				else{
+					console.error('Error occured trying to clone template node to set the repeat value of the instance to be edited.');
+				}
+			}
 			else{
-				//append the missing node TODO
+				//TODO append the missing node that was added by the server before passing it to enketo for editing
 				console.error('functionality to add new nodes to instance not yet completed');
 			}
 		});
+		console.debug('finished loading instance values to be edited');
 	};
 
 

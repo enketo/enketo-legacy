@@ -84,7 +84,7 @@ class Webform extends CI_Controller {
 						{
 							//$this->output->cache(60);
 							$data['scripts'] = array_merge($common_scripts, array(
-								'js-min/survey-all-min.js'
+								'js-min/webform-all-min.js'
 							));
 						}
 						else
@@ -95,7 +95,8 @@ class Webform extends CI_Controller {
 								'js-source/__form.js',
 								'js-source/__connection.js',
 								'js-source/__cache.js',
-								'js-source/__survey.js',
+								'js-source/__survey_controls.js',
+								'js-source/__webform.js',
 								'js-source/__debug.js'
 							));
 						}
@@ -156,7 +157,7 @@ class Webform extends CI_Controller {
 	//	{
 	//		echo 'Did not understand request.';
 	//	}
-	//}
+	//} 
 	//
 	//
 
@@ -181,9 +182,12 @@ class Webform extends CI_Controller {
 		}
 		if (empty($instance)) // empty($return_url)
 		{
-			show_error('No instance provided to edit and/or no return url provided to return to.', 404);
-			return;
-			//$instance = '<data><somedata>somedata</somedata></data>';
+			//show_error('No instance provided to edit and/or no return url provided to return to.', 404);
+			//return;
+			//$instance = '<data><somedata>somedata</somedata><somedata>someotherdata</somedata></data>';
+			//
+			//
+			$instance = '<instance xmlns="http://www.w3.org/2002/xforms">        <household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10 10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions></sectionA>        </household_survey>     </instance>';
 		}
 		if ($this->Survey_model->has_offline_launch_enabled() === TRUE)
 		{
@@ -239,7 +243,7 @@ class Webform extends CI_Controller {
 			{
 				//$this->output->cache(60);
 				$data['scripts'] = array_merge($common_scripts, array(
-					'../js-min/survey-edit-all-min.js'
+					'../js-min/webform-edit-all-min.js'
 				));
 			}
 			else
@@ -249,7 +253,8 @@ class Webform extends CI_Controller {
 					'../js-source/__storage.js',
 					'../js-source/__form.js',
 					'../js-source/__connection.js',
-					'../js-source/__survey.js',
+					'../js-source/__survey_controls.js',
+					'../js-source/__webform_edit.js',
 					'../js-source/__debug.js'
 				));
 			}

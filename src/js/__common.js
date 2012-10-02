@@ -21,7 +21,6 @@
 /************ Global variables ***************/
 
 var /**@type {GUI}*/ gui;
-
 var DEFAULT_SETTINGS = {};
 
 $(document).ready(function(){

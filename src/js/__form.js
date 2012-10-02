@@ -22,23 +22,16 @@
  * This class provides the JavaRosa form functionality by manipulating the survey form DOM object and
  * continuously updating the data XML Document. All methods are placed inside the constructor (so privileged 
  * or private) because only one instance will be created at a time.
- *
- * Parameters:
- *
- *   $form  - The form as JQuery object
- *   dataStr - <instance> as XML string
- *
- * Returns:
- *
- *   -
- *
- * Closure tags:
+ * 
+ * @param {string} formSelector  jquery selector for the form
+ * @param {string} dataStr       <instance> as XML string
+ * @param {string=} dataStrToEdit <instance> as XML string that is to be edit. This may not be a complete instance (empty nodes could be missing) and may have additional nodes.
  *
  * @constructor
  */
-function Form (formSelector, dataStr){
+function Form (formSelector, dataStr, dataStrToEdit){
 	"use strict";
-	var data, form, $form, $formClone;
+	var data, dataToEdit, form, $form, $formClone;
  
 	//*** FOR DEBUGGING and TESTING, OTHERWISE DISABLE***
 	this.ex = function(expr, type, selector, index){return data.evaluate(expr, type, selector, index);};
@@ -46,6 +39,7 @@ function Form (formSelector, dataStr){
 	this.getDataO = function(){return data.get();};
 	this.data = function(dataStr){return new DataXML(dataStr);};
 	//this.data = function(){return data;};
+	this.getDataEditO = function(){return dataToEdit.get();};
 	this.form = function(selector){return new FormHTML(selector);};
 	this.getDataXML = function(){return data.getXML();};
 	this.validateAll = function(){return form.validateAll();};
@@ -56,23 +50,25 @@ function Form (formSelector, dataStr){
  *
  * Initializes the Form instance (XML data and HTML form).
  * 
- *
- *
- *
  */
 	this.init = function() {
 		//dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/,'');
 		
-		//if (typeof console== 'undefined'){
-	///		report &= window.console;
-	//	}
 		//cloning children to keep any event handlers on 'form.jr' intact upon resetting
 		$formClone = $(formSelector).clone().appendTo('<original></original>');
 
 		data = new DataXML(dataStr);
-		data.init();
-		//console.debug('form data obj initialized');	
 		form = new FormHTML(formSelector);
+
+		data.init();
+		//console.debug('form data obj initialized');
+		//
+		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit.length > 0){
+			dataToEdit = new DataXML(dataStrToEdit);
+			dataToEdit.init();
+			data.load(dataToEdit);
+		}
+
 		form.init();
 		//console.debug('form html obj initialized');
 		
@@ -504,7 +500,7 @@ function Form (formSelector, dataStr){
 
 			if (typeof xmlDataType == 'undefined' || xmlDataType === null || 
 				typeof this.types[xmlDataType.toLowerCase()] == 'undefined'){
-				console.error('data type '+xmlDataType+' set to string');
+				console.log('data type '+xmlDataType+' set to string');
 				xmlDataType = 'string';
 			}
 			typeValid = this.types[xmlDataType.toLowerCase()].validate(value);
@@ -631,6 +627,47 @@ function Form (formSelector, dataStr){
 		return;
 	};
 
+	/**
+	 * Function to load an (incomplete) instance so that it can be edited.
+	 * 
+	 * @param  {Object} instanceOfDataXML [description]
+	 * 
+	 */
+	DataXML.prototype.load = function(instanceOfDataXML){
+		var nodesToLoad, index, path, value, target, $targetNode,
+			filter = {noTemplate: true, noEmpty: true};
+
+		nodesToLoad = instanceOfDataXML.node(null, null, filter).get();
+		console.debug(nodesToLoad.length+' nodes found in data to be edited: ');
+		console.debug(nodesToLoad);
+
+		//TODO empty all non-template nodes in data first?
+
+
+		nodesToLoad.each(function(){
+			path = form.generateName($(this));
+			console.debug('path: '+path);
+			index = instanceOfDataXML.$.xfind(path).index($(this));
+			console.debug('index: '+index);
+			value = $(this).text();
+			console.debug('value: '+value);
+
+			target = data.node(path, index);
+			$targetNode = target.get();
+			if ($targetNode.length > 1){
+				console.error('Found multiple nodes with path: '+path+' and index: '+index);
+			}
+			else if ($targetNode.length === 1){
+				//set the value
+				target.setVal(value);
+			}
+			else{
+				//append the missing node TODO
+				console.error('functionality to add new nodes to instance not yet completed');
+			}
+		});
+	};
+
 
 	//index is the index of the node (defined in Nodeset), that the clone should be added immediately after
 	//if a node with that name and that index already exists the node will NOT be cloned
@@ -705,10 +742,6 @@ function Form (formSelector, dataStr){
 		});
 		return;
 	};
-
-	
-
-	
 
 	/**
 	 * Function: get
@@ -2021,6 +2054,9 @@ function Form (formSelector, dataStr){
 		},
 		'user' : function(o){
 			//uuid, user_id, user_type
+			if (o.param == 'uuid'){
+				return (o.curVal === '') ? o.curVal : data.evaluate('uuid()', 'string');
+			}
 			return 'user preload item not functioning yet';
 		},
 		'uid' : function(o){

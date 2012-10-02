@@ -31,7 +31,7 @@
 			<span id="status-connection" title=""></span>
 			<span id="status-editing" title=""></span>
 			<span id="status-upload" title=""></span>
-		</div>-->
+		</div>--> 
 			
 		<div id="feedback-bar" class="ui-widget ui-widget-content ui-state-highlight">			
 			<span class="ui-icon ui-icon-info" ></span>

@@ -1,4 +1,4 @@
-var jrDataStr;
+var jrDataStr, jrDataStrToEdit;
 
 /**
  * @type number

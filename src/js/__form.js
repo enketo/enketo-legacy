@@ -1849,9 +1849,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//function update(){alert('updating')}
 			$form.find('input[data-type-xml="geopoint"]').each(function(){ //.attr('placeholder', 'Awesome geopoint widget will follow in the future!');
-				var $lat, $lng, $alt, $acc, $button, $map, mapOptions, map, marker,
+				var $lat, $lng, $alt, $acc, $button, $map, mapOptions, map, marker, inputVals,
 					$inputOrigin = $(this),
 					$geoWrap = $(this).parent('label');
+				inputVals = $(this).val().split(' ');
 				$geoWrap.addClass('geopoint');
 				
 				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
@@ -1891,6 +1892,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					updateMap(0,0,1);
 				}
 
+				if (inputVals[3]) $acc.val(inputVals[3]);
+				if (inputVals[2]) $alt.val(inputVals[2]);
+				if (inputVals[1]) $lng.val(inputVals[1]);
+				if (inputVals[0].length > 0) $lat.val(inputVals[0]).trigger('change');
+				
 				$button.click(function(event){
 					event.preventDefault();
 					//console.debug('click event detected');
@@ -1900,7 +1906,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	
 					});
 					return false;
-				}).click();
+				});
+
+				if ($(this).val() === ''){
+					$button.click();
+				}
+
 				/**
 				 * [updateMap description]
 				 * @param  {number} lat  [description]

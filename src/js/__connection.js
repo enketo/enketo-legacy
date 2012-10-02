@@ -45,7 +45,7 @@ function Connection(){
 		window.setInterval(function(){
 			//console.log('setting status'); //DEBUG
 			that.checkOnlineStatus();
-			that.upload();
+			that.uploadFromStore();
 		}, 15*1000);
 		//window.addEventListener("offline", function(e){
 		//	console.log('offline event detected');
@@ -135,7 +135,7 @@ Connection.prototype.setOnlineStatus = function(newStatus){
  * @param  {boolean=} force       [description]
  * @param  {string=} excludeName [description]
  */
-Connection.prototype.upload = function(force, excludeName) {
+Connection.prototype.uploadFromStore = function(force, excludeName) {
 	var i, name, result,
 		autoUpload = (typeof settings !== 'undefined' && ( settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ) ? true : false;
 	//console.debug('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
@@ -149,12 +149,28 @@ Connection.prototype.upload = function(force, excludeName) {
 		if (this.uploadQueue.length === 0 ){
 			return (force) ? gui.showFeedback('Nothing marked "final" to upload (or record is currently open).') : false;
 		}
-
 		this.uploadOne();
 	}
 	else{
 		//allow override of this.forced if called with force=true
 		this.forced = (force === true) ? true : this.forced;
+	}
+};
+
+/**
+ * Function used to directly upload data (forced) bypassing local storage. It is used for submitting edited data
+ * that was POSTed to webform/edit
+ *
+ * @param  {Object.<string, string>} record with name and data properties,  temporary name is used to trigger uploadsuccess event
+ */
+Connection.prototype.uploadFromString = function(record) {
+	var result;
+	this.forced = true;
+	// proceed if f there is currently no ongoing upload
+	if ( this.uploadOngoing === false ){
+		this.uploadResult = {win:[], fail:[]};
+		this.uploadQueue = [record];
+		this.uploadOne();
 	}
 };
 
@@ -173,7 +189,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 			content.append('Date', new Date().toUTCString());
 			last = (this.uploadQueue.length === 0) ? true : false;
 			this.setOnlineStatus(null);
-			$.ajax('data/submission',{
+			$.ajax(SUBMISSION_URL,{
 				type: 'POST',
 				data: content,
 				cache: false,
@@ -218,9 +234,12 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	//console.debug(status);
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
-			store.removeRecord(name);
-			$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
-			console.log('tried to remove record with key: '+name);
+			if (typeof store !== 'undefined'){
+				store.removeRecord(name);
+				$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
+				console.log('tried to remove record with key: '+name);
+			}
+			$('form.jr').trigger('uploadsuccess', name);
 			this.uploadResult.win.push([name, statusMap[status].msg]);
 		}
 		else if (statusMap[status].success === false){
@@ -288,3 +307,5 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	this.uploadOngoing = false;
 	//re-enable upload button
 };
+
+

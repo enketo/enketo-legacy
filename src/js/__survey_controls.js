@@ -225,7 +225,7 @@ function submitForm() {
 	console.log('result of save: '+saveResult); // DEBUG
 	if (saveResult === 'success'){
 		//attempt uploading the data (all data in localStorage)
-		connection.upload(true);
+		connection.uploadFromStore(true);
 		resetForm(true);
 		$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
 		//gui.showFeedback('Form with name "'+confirmedRecordName+'" has been saved.', 2);
@@ -238,10 +238,25 @@ function submitForm() {
 /**
  * used to submit a form with data that was loaded by POST
  *
- * @return {[type]} [description]
  */
 function submitEditedForm() {
+	var name, record, saveResult;
+	if (!form.isValid()){
+		gui.alert('Form contains errors <br/>(please see fields marked in red)');
+		return;
+	}
+	name = (Math.floor(Math.random()*100001)).toString();
+	console.debug('temporary record name: '+name);
+	record = { 'name': name,'data': form.getDataStr(true, true)};
+	
+	connection.uploadFromString(record);
 
+	$('form.jr').on('uploadsuccess', function(e, uploadedName){
+		console.debug('uploaded successfully: '+uploadedName);
+		if (uploadedName == name){
+			location.href = RETURN_URL;
+		}
+	});
 }
 
 /**
@@ -400,7 +415,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	this.pages().get('records').find('button#records-force-upload').button({'icons': {'primary':"ui-icon-arrowthick-1-n"}})
 		.click(function(){
 			//gui.alert('Sorry, this button is not working yet.');
-			connection.upload(true, form.getRecordName());
+			connection.uploadFromStore(true, form.getRecordName());
 		})
 		.hover(function(){
 			$('#records-force-upload-info').show();

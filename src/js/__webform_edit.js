@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, Connection, Cache, vkbeautify, saveAs, gui, jrDataStr, jrDataStrToEdit, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global Connection, gui, jrDataStr, jrDataStrToEdit, Form*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
-var /**@type {Settings}*/settings,
-	currentOnlineStatus = false;
-var /**@type {StorageLocal}*/ store;
-var MODERN_BROWSERS_URL = 'modern_browsers';
+var	currentOnlineStatus = false;
+var settings, store; //leave, though not used, to prevent compilation error
 var CONNECTION_URL = '../checkforconnection.php';
-DEFAULT_SETTINGS = {'autoUpload':false, 'buttonLocation': 'bottom'};
-
+var SUBMISSION_URL = '../data/submission';
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 // !Document.ready()
@@ -33,25 +30,12 @@ DEFAULT_SETTINGS = {'autoUpload':false, 'buttonLocation': 'bottom'};
 $(document).ready(function() {
 	'use strict';
 
-	//store = new StorageLocal();
 	form = new Form('form.jr:eq(0)', jrDataStr, jrDataStrToEdit);
-	//settings = new Settings();
-	//settings.init();
-	connection = new Connection();
-	
-	//if (!store.isSupported()){
-//		window.location = MODERN_BROWSERS_URL;
-//	}
-//	else{
-//		$(document).trigger('browsersupport', 'local-storage');
-//	}
 
-	gui.updateStatus.offlineLaunch(false);
-	
+	connection = new Connection();
+
 	form.init();
 	connection.init();
 	gui.setup();
 
-	//trigger fake save event to update formlist on data page
-	//$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
 });

@@ -98,7 +98,7 @@ class Survey_model extends CI_Model {
     
     public function launch_survey($server_url, $form_id, $submission_url, $data_url, $email)
     {  
-        
+        log_message('debug', 'launch_survey function started');
         if (url_valid($server_url) && url_valid($submission_url) && (url_valid($data_url) || $data_url===NULL))
         {
             //ADD: CHECK URLS FOR LIVENESS?

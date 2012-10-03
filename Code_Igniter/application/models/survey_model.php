@@ -98,10 +98,8 @@ class Survey_model extends CI_Model {
     
     public function launch_survey($server_url, $form_id, $submission_url, $data_url, $email)
     {  
-        $subdomain = $this->_generate_subdomain();
-        log_message('debug', 'subdomain generated:'.$subdomain);
-
-        if (url_valid($server_url) && url_valid($submission_url) && (url_valid($data_url) || $data_url===NULL) && $subdomain)
+        log_message('debug', 'launch_survey function started');
+        if (url_valid($server_url) && url_valid($submission_url) && (url_valid($data_url) || $data_url===NULL))
         {
             //ADD: CHECK URLS FOR LIVENESS?
             
@@ -109,9 +107,14 @@ class Survey_model extends CI_Model {
 
             if ( $existing->num_rows() > 0 )
             {
+                log_message('debug', 'survey exists already in enketo db, returning edit_url: '.$this->_get_full_survey_edit_url($existing->row()->subdomain));
                 return array('success'=>FALSE, 'reason'=>'existing', 
-                    'url'=> $this->_get_full_survey_url($existing->row()->subdomain));
-            }    
+                    'url'=> $this->_get_full_survey_url($existing->row()->subdomain),
+                    'edit_url'=> $this->_get_full_survey_edit_url($existing->row()->subdomain));
+            } 
+
+            $subdomain = $this->_generate_subdomain();
+            log_message('debug', 'subdomain generated:'.$subdomain);   
             //if we can ensure only requests from enketo.org are processed, it is pretty certain that $server_url is live       
             $data = array(
                 'subdomain' => $subdomain,
@@ -124,10 +127,13 @@ class Survey_model extends CI_Model {
             );
             $result = $this->db->insert('surveys', $data); 
             $survey_url = $this->_get_full_survey_url($subdomain);
+            $edit_url = $this->_get_full_survey_edit_url($subdomain);
             log_message('debug', 'result of insert into surveys table: '.$result);
+            log_message('debug', 'returning new edit_url: '.$edit_url);
             return ($result != FALSE) ? 
-                array('success'=>TRUE, 'url'=> $survey_url): array('success'=>FALSE, 'reason'=>'database');
+                array('success'=>TRUE, 'url'=> $survey_url, 'edit_url' => $edit_url) : array('success'=>FALSE, 'reason'=>'database');
         }
+        log_message('debug', 'unknown error occurred when trying to launch survey');
         return array('success'=>FALSE, 'reason'=>'unknown');
     }
 
@@ -142,6 +148,19 @@ class Survey_model extends CI_Model {
         $domain = $_SERVER['SERVER_NAME'];
         $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
         return $protocol.$subdomain.'.'.$domain.'/webform';
+    }
+
+    /**
+     * @method _get_full_survey_edit_url turns a subdomain into the full url where the survey is available
+     * 
+     * @param $subdomain subdomain
+     */
+    private function _get_full_survey_edit_url($subdomain)
+    {
+        $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
+        $domain = $_SERVER['SERVER_NAME'];
+        $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
+        return $protocol.$subdomain.($this->ONLINE_SUBDOMAIN_SUFFIX).'.'.$domain.'/webform/edit';
     }
 
 // 	public function update_formlist()

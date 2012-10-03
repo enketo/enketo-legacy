@@ -8,7 +8,7 @@
 		<link href="<?= $css; ?>" media="screen" rel="stylesheet" type="text/css" />
 	<? endforeach; ?>
 
-	<link href="css/print.css" media="print" rel="stylesheet" type="text/css" />
+	<link href="../css/print.css" media="print" rel="stylesheet" type="text/css" />
 
 	<? foreach ($scripts as $script): ?>
 		<script type="text/javascript" src="<?= $script; ?>"></script>
@@ -16,23 +16,18 @@
 		
 		<script type="text/javascript">
 			var jrDataStr = '<?= $form_data ?>';
+			var jrDataStrToEdit = '<?= $form_data_to_edit ?>';
+			var RETURN_URL = '<?= $return_url ?>';
 		</script>
 	
 	<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>
 
 	</head>
 
-	<? //require 'elements/header++.php'; ?>
-
 	<body>
 		
 		<div id="overlay"></div>
 		<header style="height: 0;"></header>
-		<!--<div id="status">
-			<span id="status-connection" title=""></span>
-			<span id="status-editing" title=""></span>
-			<span id="status-upload" title=""></span>
-		</div>--> 
 			
 		<div id="feedback-bar" class="ui-widget ui-widget-content ui-state-highlight">			
 			<span class="ui-icon ui-icon-info" ></span>
@@ -63,35 +58,16 @@
 			</p>
 		</div>
 
-		<!--<div id="container">-->
-			<article class="main">
-				<!--<div class="ui-widget">-->
-				<div class="form-wrapper" >
-					<?= $form ?>
-						<!--
-						<h2 class="ui-widget-header ui-corner-all"><span id="survey-title" ></span></h2>
-						<form name="survey-form" id="survey-form" class="ui-helper-clearfix"></form>
-						-->
-					<!--</div>-->
-				<!--</div>	-->
-					<button id="submit-form" >Submit</button>
-				</div>
-			</article>
-		<!--</div>-->
-
-		<div class="drawer left hide">
-			<div class="handle right"></div>
-			<!--<a id="queue" href="#" title="click to export to file">-->
-			<div class="content">
-				<span id="status"></span><span>Submissions queued: </span><span id="queue-length">0</span>
-				<!--<span id="status-offline-launch"></span>-->
-				<button id="drawer-export">Export</button>
-			<!--</a>-->
-			</div>	
-		</div>
+		<article class="main">
+			<div class="form-wrapper" >
+				<?= $form ?>
+				<button id="submit-edited-data" >Submit</button>
+			</div>
+		</article>
 
 		<div id="branding">
-			<a href="http://aidwebsolutions.com" target="_blank">enketo forms</a> for <a href="http://formhub.org" target="_blank">formhub</a></div>
+			<a href="http://aidwebsolutions.com" target="_blank">enketo forms</a> for <a href="http://formhub.org" target="_blank">formhub</a>
+		</div>
 
 		<? require 'elements/footer++.php' ?>
 

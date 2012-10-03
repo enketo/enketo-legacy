@@ -1,4 +1,5 @@
-var jrDataStr;
+var jrDataStr, jrDataStrToEdit, RETURN_URL;
+
 
 /**
  * @type number

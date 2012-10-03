@@ -1210,7 +1210,7 @@ footer.ui-widget a {
   transform: skew(5deg) rotate(5deg);
 }
 /* line 883, ../../src/scss/screen.scss */
-.form-wrapper #submit-form {
+.form-wrapper #submit-form, .form-wrapper #submit-edited-data {
   left: 50%;
   margin: 10px 0 45px -56px;
 }

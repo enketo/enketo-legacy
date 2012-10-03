@@ -124,6 +124,42 @@ class Data extends CI_Controller {
 
 		$this->output->set_status_header($http_code, $response);
 	}
+
+	public function edit_url()
+	{
+		$this->load->helper('subdomain');
+		$this->load->model('Survey_model', '', TRUE);
+		$subdomain = get_subdomain();
+
+		if (isset($subdomain))
+		{
+			show_404();
+		}
+		else 
+		{
+			extract($_POST);
+
+			//trim strings first??
+			if (!empty($server_url) && !empty($form_id) && !empty($instance))
+			{
+				//to be replaced by user-submitted and -editable submission_url
+				$submission_url = (strrpos($server_url, '/') === strlen($server_url)-1) ? 
+					$server_url.'submission' :$server_url.'/submission';
+
+				//$data_url = (empty($data_url)) ? NULL : $data_url;
+				//$email = (empty($email)) ? NULL : $email;
+
+				$result = $this->Survey_model->launch_survey($server_url, $form_id, $submission_url, $data_url, $email);
+
+				echo json_encode($result);
+			}	
+			else
+			{
+				echo json_encode(array('success'=>FALSE, 'reason'=>'empty'));
+			}
+
+		}
+	}
 }
 ?>
 

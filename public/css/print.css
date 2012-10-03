@@ -491,7 +491,7 @@ input, .fakefileinput {
 }
 
 /* line 316, ../../src/scss/print.scss */
-#submit-form, .drawer, #branding {
+#submit-form, #submit-edited-data, .drawer, #branding {
   display: none;
 }
 

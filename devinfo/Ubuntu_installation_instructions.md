@@ -36,7 +36,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 - replace /var/www/enketo/Code_Igniter/application/views/elements/tracking.php with your own tracking code
 - add your own Google Maps API v3 key in /var/www/enketo/Code_Igniter/application/views/elements/enketo.php
 - set environment in index.php to 'production' if it isn't already
-- change permissions `sudo chmod 777 /var/www/enketo/Code_Igniter/application/cache` and `sudo chmod 777 /var/www/enketo/Code_Igniter/application/logs` (double-check that this actually works, may require chown first)
+- change permissions `sudo chmod 777 /var/www/enketo/Code_Igniter/application/cache` and `sudo chmod 777 /var/www/enketo/Code_Igniter/application/logs` (double-check that this actually works, may require `sudo chown -R ubuntu enketo` first)
 - open /etc/apache2/sites-available/default for editing:
   * change DocumentRoot to /var/www/enketo/public in /etc/apache2/sites-available/default
   * change 2nd `<Directory /var/www>` to: `<Directory /var/www/enketo/public>`

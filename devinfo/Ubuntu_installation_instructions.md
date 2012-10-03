@@ -5,7 +5,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 - `sudo apt-get update`
 - `sudo apt-get install apache2`
 - check for 'It Works!' message when visiting domain or IP-address
-- `sudo a2enmod expires rewrite`
+- `sudo a2enmod expires rewrite` (?alias?)
 
 #### PHP & git:
 - `sudo apt-get install php5 libapache2-mod-php5 php5-xsl php5-curl git`
@@ -36,7 +36,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 - replace /var/www/enketo/Code_Igniter/application/views/elements/tracking.php with your own tracking code
 - add your own Google Maps API v3 key in /var/www/enketo/Code_Igniter/application/views/elements/enketo.php
 - set environment in index.php to 'production' if it isn't already
-- change permissions `sudo chmod 777 /var/www/enketo/Code_Igniter/application/cache` and `sudo chmod 777 /var/www/enketo/Code_Igniter/application/logs`
+- change permissions `sudo chmod 777 /var/www/enketo/Code_Igniter/application/cache` and `sudo chmod 777 /var/www/enketo/Code_Igniter/application/logs` (double-check that this actually works, may require chown first)
 - open /etc/apache2/sites-available/default for editing:
   * change DocumentRoot to /var/www/enketo/public in /etc/apache2/sites-available/default
   * change 2nd `<Directory /var/www>` to: `<Directory /var/www/enketo/public>`

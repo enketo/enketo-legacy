@@ -76,7 +76,7 @@ class Classic extends CI_Controller {
 						{
 							//$this->output->cache(60);
 							$data['scripts'] = array_merge($common_scripts, array(
-								base_url('js-min/survey-all-min.js')
+								base_url('js-min/webform-all-min.js')
 							));
 						}
 						else
@@ -84,8 +84,11 @@ class Classic extends CI_Controller {
 							$data['scripts'] = array_merge($common_scripts, array(
 								base_url('js-source/__common.js'),
 								base_url('js-source/__storage.js'),
+								base_url('js-source/__cache.js'),
+								base_url('js-source/__connection.js'),
 								base_url('js-source/__form.js'),
-								base_url('js-source/__survey.js'),
+								base_url('js-source/__survey_controls.js'),
+								base_url('js-source/__webform.js'),
 								base_url('js-source/__debug.js')
 							));
 						}

@@ -57,7 +57,7 @@ class Manifest extends CI_Controller {
 	| pages to be cached (urls relative to sub.example.com/)
 	|--------------------------------------------------------------------------
 	*/	
-		private $pages = array('webform', 'false'); //, 'modern_browsers'); 
+		private $pages = array('webform'); //, 'modern_browsers'); 
 	/*
 	|--------------------------------------------------------------------------	
 	| page to re-direct offline 404 requests to (html5 manifest 'fallback' section)
@@ -164,7 +164,7 @@ class Manifest extends CI_Controller {
 			//don't add existing or cross-domain resources for now
 			if (!in_array($resource, $this->data['cache']) && strpos($resource, 'http://')!==0 && strpos($resource, 'https://')!==0)//&& url_exists($resource))
 			{
-				log_message('debug', 'adding resource to cache: '.$resource);
+				//log_message('debug', 'adding resource to cache: '.$resource);
 			    $this->data['cache'][] = $resource;	
 			    // create a hash of the content
 				// NOTE: creating a hash from a dynamically created html file is
@@ -246,9 +246,9 @@ class Manifest extends CI_Controller {
 		log_message('debug', 'getting content of '.$url);
 		if (strpos($url, 'http://')!==0 && strpos($url, 'https://')!==0)
 		{
-			log_message('debug', 'checking url: '.$url);
+			//log_message('debug', 'checking url: '.$url);
 			$abs_path = constant('FCPATH'). $url; //$this->_rel_url($url);
-			log_message('debug', 'checking absolute path: '.$abs_path);
+			//log_message('debug', 'checking absolute path: '.$abs_path);
 			$content = (is_file($abs_path)) ? file_get_contents($abs_path) : NULL;
 		}
 		else

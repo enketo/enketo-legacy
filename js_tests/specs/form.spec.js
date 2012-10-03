@@ -72,7 +72,21 @@ describe('set XML node value if passing data type conversion and validation', fu
 				["/thedata/nodeA", 0   , null, 5, 'double', true],
 				["/thedata/nodeA", 0   , null, ['a', 'b', 'c'], 'string', true],
 				["/thedata/nodeA", 0   , null, ['d', 'e', 'f', ''], 'string', true],
-				
+				["/thedata/nodeA", null, null, '0 0 0 0', 'geopoint', true],
+				["/thedata/nodeA", null, null, '10 10', 'geopoint', true],
+				["/thedata/nodeA", null, null, '10 10 10', 'geopoint', true],
+				["/thedata/nodeA", null, null, '-90 -180', 'geopoint', true],
+				["/thedata/nodeA", null, null, '90 180', 'geopoint', true],
+				["/thedata/nodeA", null, null, '-91 -180', 'geopoint', false],
+				["/thedata/nodeA", null, null, '-90 -181', 'geopoint', false],
+				["/thedata/nodeA", null, null, '91 180', 'geopoint', false],
+				["/thedata/nodeA", null, null, '90 -181', 'geopoint', false],
+				["/thedata/nodeA", null, null, 'a -180', 'geopoint', false],
+				["/thedata/nodeA", null, null, '0 a', 'geopoint', false],
+				["/thedata/nodeA", null, null, '0', 'geopoint', false],
+				["/thedata/nodeA", null, null, '0 0 a', 'geopoint', false],
+				["/thedata/nodeA", null, null, '0 0 0 a', 'geopoint', false],
+
 				//TODO Other Data Types
 				
 				["/thedata/repeatGroup/nodeC", null, null, 'val', null] //multiple

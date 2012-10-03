@@ -107,7 +107,7 @@ class Survey_model extends CI_Model {
 
             if ( $existing->num_rows() > 0 )
             {
-                log_message('debug', 'survey exists already in enketo db, returning edit_url: '._get_full_survey_edit_url($existing->row()->subdomain));
+                log_message('debug', 'survey exists already in enketo db, returning edit_url: '.$this->_get_full_survey_edit_url($existing->row()->subdomain));
                 return array('success'=>FALSE, 'reason'=>'existing', 
                     'url'=> $this->_get_full_survey_url($existing->row()->subdomain),
                     'edit_url'=> $this->_get_full_survey_edit_url($existing->row()->subdomain));

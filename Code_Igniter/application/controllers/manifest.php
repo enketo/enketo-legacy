@@ -57,7 +57,7 @@ class Manifest extends CI_Controller {
 	| pages to be cached (urls relative to sub.example.com/)
 	|--------------------------------------------------------------------------
 	*/	
-		private $pages = array('webform', 'false'); //, 'modern_browsers'); 
+		private $pages = array('webform'); //, 'modern_browsers'); 
 	/*
 	|--------------------------------------------------------------------------	
 	| page to re-direct offline 404 requests to (html5 manifest 'fallback' section)

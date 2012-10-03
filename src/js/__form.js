@@ -635,7 +635,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * 
 	 */
 	DataXML.prototype.load = function(instanceOfDataXML){
-		var nodesToLoad, index, path, value, target, $target, $template,
+		var nodesToLoad, index, path, value, target, $target, $template, meta,
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
@@ -690,8 +690,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			}
 			else{
-				//TODO append the missing node that was added by the server before passing it to enketo for editing
-				console.error('functionality to add new nodes to instance not yet completed');
+				//TODO append the missing node that was added by the server before passing it to enketo for editin
+				if ($(this).parent('meta').length === 1){
+					if (that.get().children().eq(0).children('meta').length === 0){
+						meta = document.createElement('meta');
+						that.get().children().eq(0).append(meta);
+					}
+					console.debug('cloning this direct child of <meta>:');
+					console.debug($(this).clone());
+					$(this).clone().appendTo(that.get().children().eq(0).children('meta'));
+				}
+				else {
+					console.error('functionality to add new non-meta nodes to instance not yet completed');
+				}
 			}
 		});
 		console.debug('finished loading instance values to be edited');

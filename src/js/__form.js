@@ -22,30 +22,24 @@
  * This class provides the JavaRosa form functionality by manipulating the survey form DOM object and
  * continuously updating the data XML Document. All methods are placed inside the constructor (so privileged 
  * or private) because only one instance will be created at a time.
- *
- * Parameters:
- *
- *   $form  - The form as JQuery object
- *   dataStr - <instance> as XML string
- *
- * Returns:
- *
- *   -
- *
- * Closure tags:
+ * 
+ * @param {string} formSelector  jquery selector for the form
+ * @param {string} dataStr       <instance> as XML string
+ * @param {string=} dataStrToEdit <instance> as XML string that is to be edit. This may not be a complete instance (empty nodes could be missing) and may have additional nodes.
  *
  * @constructor
  */
-function Form (formSelector, dataStr){
+function Form (formSelector, dataStr, dataStrToEdit){
 	"use strict";
-	var data, form, $form, $formClone;
+	var data, dataToEdit, form, $form, $formClone;
  
 	//*** FOR DEBUGGING and TESTING, OTHERWISE DISABLE***
 	this.ex = function(expr, type, selector, index){return data.evaluate(expr, type, selector, index);};
 	this.sfv = function(){return form.setAllVals();};
 	this.getDataO = function(){return data.get();};
 	this.data = function(dataStr){return new DataXML(dataStr);};
-	//this.data = function(){return data;};
+	this.dataO = function(){return data;};
+	this.getDataEditO = function(){return dataToEdit.get();};
 	this.form = function(selector){return new FormHTML(selector);};
 	this.getDataXML = function(){return data.getXML();};
 	this.validateAll = function(){return form.validateAll();};
@@ -56,23 +50,25 @@ function Form (formSelector, dataStr){
  *
  * Initializes the Form instance (XML data and HTML form).
  * 
- *
- *
- *
  */
 	this.init = function() {
 		//dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/,'');
 		
-		//if (typeof console== 'undefined'){
-	///		report &= window.console;
-	//	}
 		//cloning children to keep any event handlers on 'form.jr' intact upon resetting
 		$formClone = $(formSelector).clone().appendTo('<original></original>');
 
 		data = new DataXML(dataStr);
-		data.init();
-		//console.debug('form data obj initialized');	
 		form = new FormHTML(formSelector);
+
+		data.init();
+		//console.debug('form data obj initialized');
+		//
+		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit.length > 0){
+			dataToEdit = new DataXML(dataStrToEdit);
+			dataToEdit.init();
+			data.load(dataToEdit);
+		}
+
 		form.init();
 		//console.debug('form html obj initialized');
 		
@@ -504,7 +500,7 @@ function Form (formSelector, dataStr){
 
 			if (typeof xmlDataType == 'undefined' || xmlDataType === null || 
 				typeof this.types[xmlDataType.toLowerCase()] == 'undefined'){
-				console.error('data type '+xmlDataType+' set to string');
+				//console.log('data type '+xmlDataType+' set to string');
 				xmlDataType = 'string';
 			}
 			typeValid = this.types[xmlDataType.toLowerCase()].validate(value);
@@ -582,7 +578,8 @@ function Form (formSelector, dataStr){
 					var coords = x.toString().split(' ');
 					return ( coords[0] !== '' && coords[0] >= -90 && coords[0] <= 90 ) && 
 						( coords[1] !== '' && coords[1] >= -180 && coords[1] <= 180) && 
-						!isNaN(coords[2]) && (typeof coords[3] == 'undefined' || !isNaN(coords[3]));
+						( typeof coords[2] == 'undefined' || !isNaN(coords[2]) ) && 
+						( typeof coords[3] == 'undefined' || ( !isNaN(coords[3]) && coords[3] >= 0 ) );
 				},
 				convert: function(x){
 					return $.trim(x.toString());
@@ -629,6 +626,86 @@ function Form (formSelector, dataStr){
 		this.cloneAllTemplates();
 
 		return;
+	};
+
+	/**
+	 * Function to load an (incomplete) instance so that it can be edited.
+	 * 
+	 * @param  {Object} instanceOfDataXML [description]
+	 * 
+	 */
+	DataXML.prototype.load = function(instanceOfDataXML){
+		var nodesToLoad, index, path, value, target, $target, $template, meta,
+			that = this,
+			filter = {noTemplate: true, noEmpty: true};
+
+		console.debug('loading instance values to be edited');
+
+		nodesToLoad = instanceOfDataXML.node(null, null, filter).get();
+		
+		console.debug(nodesToLoad.length+' nodes found in data to be edited: ');
+		console.debug(nodesToLoad);
+
+		//first empty all form data nodes, to clear any default values except those inside templates
+		this.node(null, null, filter).get().each(function(){
+			//something seems fishy about doing it this way instead of using node.setVal('');
+			$(this).text('');
+		});
+
+		nodesToLoad.each(function(){
+			path = form.generateName($(this));
+			console.debug('path: '+path);
+			index = instanceOfDataXML.$.xfind(path).index($(this));
+			console.debug('index: '+index);
+			value = $(this).text();
+			console.debug('value: '+value);
+
+			target = that.node(path, index);
+			$target = target.get();
+
+			//if there are multiple nodes with that name and index (actually impossible)
+			if ($target.length > 1){
+				console.error('Found multiple nodes with path: '+path+' and index: '+index);
+			}
+			//if there is a corresponding node in the form's original instance
+			else if ($target.length === 1){
+				//set the value
+				target.setVal(value);
+			}
+			//if there is not a corresponding data node but there is a corresponding template node (=> <repeat>)
+			//this use of node(,,).get() is a bit of a trick that is difficult to wrap one's head around
+			else if (that.node(path, index, {noTemplate:false}).get().length > 0){
+				//clone the template node 
+				//TODO add support for repeated nodes in forms that do not use template=""
+				$template = that.node(path, 0, {noTemplate:false}).get().closest('[template]');
+				//TODO test this for nested repeats
+				that.cloneTemplate(form.generateName($template), index-1);
+				//try setting the value again
+				target = that.node(path,index);
+				if (target.get().length === 1){
+					target.setVal(value);
+				}
+				else{
+					console.error('Error occured trying to clone template node to set the repeat value of the instance to be edited.');
+				}
+			}
+			else{
+				//TODO append the missing node that was added by the server before passing it to enketo for editin
+				if ($(this).parent('meta').length === 1){
+					if (that.get().children().eq(0).children('meta').length === 0){
+						meta = document.createElement('meta');
+						that.get().children().eq(0).append(meta);
+					}
+					console.debug('cloning this direct child of <meta>:');
+					console.debug($(this).clone());
+					$(this).clone().appendTo(that.get().children().eq(0).children('meta'));
+				}
+				else {
+					console.error('functionality to add new non-meta nodes to instance not yet completed');
+				}
+			}
+		});
+		console.debug('finished loading instance values to be edited');
 	};
 
 
@@ -705,10 +782,6 @@ function Form (formSelector, dataStr){
 		});
 		return;
 	};
-
-	
-
-	
 
 	/**
 	 * Function: get
@@ -1816,9 +1889,10 @@ function Form (formSelector, dataStr){
 
 			//function update(){alert('updating')}
 			$form.find('input[data-type-xml="geopoint"]').each(function(){ //.attr('placeholder', 'Awesome geopoint widget will follow in the future!');
-				var $lat, $lng, $alt, $acc, $button, $map, mapOptions, map, marker,
+				var $lat, $lng, $alt, $acc, $button, $map, mapOptions, map, marker, inputVals,
 					$inputOrigin = $(this),
 					$geoWrap = $(this).parent('label');
+				inputVals = $(this).val().split(' ');
 				$geoWrap.addClass('geopoint');
 				
 				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
@@ -1858,6 +1932,11 @@ function Form (formSelector, dataStr){
 					updateMap(0,0,1);
 				}
 
+				if (inputVals[3]) $acc.val(inputVals[3]);
+				if (inputVals[2]) $alt.val(inputVals[2]);
+				if (inputVals[1]) $lng.val(inputVals[1]);
+				if (inputVals[0].length > 0) $lat.val(inputVals[0]).trigger('change');
+				
 				$button.click(function(event){
 					event.preventDefault();
 					//console.debug('click event detected');
@@ -1867,7 +1946,12 @@ function Form (formSelector, dataStr){
 						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	
 					});
 					return false;
-				}).click();
+				});
+
+				if ($(this).val() === ''){
+					$button.click();
+				}
+
 				/**
 				 * [updateMap description]
 				 * @param  {number} lat  [description]
@@ -2021,6 +2105,9 @@ function Form (formSelector, dataStr){
 		},
 		'user' : function(o){
 			//uuid, user_id, user_type
+			if (o.param == 'uuid'){
+				return (o.curVal === '') ? o.curVal : data.evaluate('uuid()', 'string');
+			}
 			return 'user preload item not functioning yet';
 		},
 		'uid' : function(o){

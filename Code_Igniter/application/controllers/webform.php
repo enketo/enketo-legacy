@@ -18,16 +18,19 @@
 
 class Webform extends CI_Controller {
 
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->helper(array('subdomain','url'));
+		$this->load->model('Form_model', '', TRUE);
+		$this->load->model('Survey_model','',TRUE);
+	}
+
 	public function index()
 	{
-		$this->load->helper(array('subdomain','url'));
+		
 		$subdomain = get_subdomain(); //from subdomain helper
 		
-		//$this->load->library('carabiner');
-		
-		$this->load->model('Survey_model','',TRUE);
-		$this->load->model('Form_model', '', TRUE);
-				
 		if (isset($subdomain))
 		{
 			//if ($this->Survey_model->is_live_survey($subdomain))
@@ -50,12 +53,15 @@ class Webform extends CI_Controller {
 					//log_message('debug', $form_data);
 					//remove line breaks and tabs
 					$form_data = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form_data);
+
+					$html_title = $transf_result->form->xpath('//h2[@id="form-title"]');
 					//$form_data = preg_replace("\>/s*",">", $form_data);
 					if (strlen($form)>0 && strlen($form_data)>0)
 					{
 						$data = array(
 							'offline'=>$offline, 
 							'title_component'=>'webform', 
+							'html_title'=>$html_title[0],
 							'form'=> $form,
 							'form_data'=> $form_data,
 							'stylesheets'=> array(
@@ -81,7 +87,7 @@ class Webform extends CI_Controller {
 						{
 							//$this->output->cache(60);
 							$data['scripts'] = array_merge($common_scripts, array(
-								'js-min/survey-all-min.js'
+								'js-min/webform-all-min.js'
 							));
 						}
 						else
@@ -90,7 +96,10 @@ class Webform extends CI_Controller {
 								'js-source/__common.js',
 								'js-source/__storage.js',
 								'js-source/__form.js',
-								'js-source/__survey.js',
+								'js-source/__connection.js',
+								'js-source/__cache.js',
+								'js-source/__survey_controls.js',
+								'js-source/__webform.js',
 								'js-source/__debug.js'
 							));
 						}
@@ -151,7 +160,241 @@ class Webform extends CI_Controller {
 	//	{
 	//		echo 'Did not understand request.';
 	//	}
-	//}
+	//} 
+	//
+	//
+
+	/**
+	 * function that receives data by POST and opens an edit-view of the form 
+	 * the edit-view is a (iframable?) simplified webform view without any offline capabilities (not launch and not saving data)
+	 **/
+	public function edit()
+	{
+		log_message('debug', 'webform edit view controller started');
+		extract($_POST);
+		$subdomain = get_subdomain(); //from subdomain helper
+		
+		if (!isset($subdomain))
+		{
+			show_error('Edit view should be launched from survey subdomain', 404);
+			return;
+		}
+		if (! $this->Survey_model->is_launched_survey())
+		{
+			show_error('This survey has not been launched in enketo', 404);
+			return;
+		}
+		if (empty($instance)) // empty($return_url)
+		{
+			show_error('No instance provided to edit and/or no return url provided to return to.', 404);
+			return;
+			//$instance = '<data><somedata>somedata</somedata><somedata>someotherdata</somedata></data>';
+			// test instance for household survey with missing nodes and multiple repeats
+			//$instance = '<household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions><household_member><hh_member_age>001</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>002</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>003</hh_member_age><hh_member_gender/></household_member>            <hh_ownership/></sectionA><meta><instanceID>uuid:ef0f40d039a24103beecc13ae526b98a</instanceID></meta></household_survey>';
+			//$return_url = "nothing";
+		}
+		if ($this->Survey_model->has_offline_launch_enabled() === TRUE)
+		{
+			show_error('The edit view can only be launched in offline mode', 404);
+		}
+
+		$offline = FALSE;
+		$server_url= $this->Survey_model->get_server_url();
+		$form_id = $this->Survey_model->get_form_id();
+
+		if (!$form_id || !$server_url)
+		{
+			show_error('Could not find server url and/or form ID in enketo database.', 404);	
+		}
+		
+		$transf_result = $this->Form_model->transform($server_url, $form_id, FALSE);
+		$form = $transf_result->form->asXML();
+		//log_message('debug', $form);
+		$default_instance = $transf_result->instance->asXML();
+		//log_message('debug', $form_data);
+		//remove line breaks and tabs
+		$default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $default_instance);
+		$instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $instance);
+
+		$html_title = $transf_result->form->xpath('//h2[@id="form-title"]');
+		//$form_data = preg_replace("\>/s*",">", $form_data);
+		log_message('debug', 'form html to launch in edit view: '.$form);
+		log_message('debug', 'default instance to add in edit view: '.$default_instance);
+		log_message('debug', 'instance-to-edit to add in edit view: '.$instance);
+		//
+		if (strlen($form)>0 && strlen($default_instance)>0 && strlen($instance))
+		{
+			$data = array(
+				'offline'=>$offline, 
+				'title_component'=>'webform', 
+				'html_title'=> $html_title[0],
+				'form'=> $form,
+				'form_data'=> $default_instance,
+				'form_data_to_edit' => $instance,
+				'return_url' => $return_url,
+				'stylesheets'=> array(
+					'../libraries/jquery-ui/css/sunny/jquery-ui.custom.css',
+					'../css/screen.css'
+				)
+			);
+			$common_scripts = array(
+				'../libraries/jquery.min.js',
+				'../libraries/jquery-ui/js/jquery-ui.custom.min.js',
+				'../libraries/jquery-ui-timepicker-addon.js',
+				'../libraries/jquery.multiselect.min.js',	
+				'../libraries/modernizr.min.js',
+				'../libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
+				//'libraries/FileSaver.min.js',
+				//'libraries/BlobBuilder.min.js',
+				'../libraries/vkbeautify.js',
+				"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
+			);
+
+			//log_message('debug', 'form string: '.$form->asXML());
+			if (ENVIRONMENT === 'production')
+			{
+				//$this->output->cache(60);
+				$data['scripts'] = array_merge($common_scripts, array(
+					'../js-min/webform-edit-all-min.js'
+				));
+			}
+			else
+			{		
+				$data['scripts'] = array_merge($common_scripts, array(
+					'../js-source/__common.js',
+					'../js-source/__storage.js',
+					'../js-source/__form.js',
+					'../js-source/__connection.js',
+					'../js-source/__survey_controls.js',
+					'../js-source/__webform_edit.js',
+					'../js-source/__debug.js'
+				));
+			}
+			$this->load->view('webform_edit_view',$data);
+		}
+		else
+		{
+			show_error('An error occurred during transformation or processing instances. ', 404);
+		}
+
+	}
+
+
+	/**
+	 * function that receives data by POST and opens an edit-view of the form 
+	 * the edit-view is a (iframable?) simplified webform view without any offline capabilities (not launch and not saving data)
+	 **/
+	public function edit1()
+	{
+		log_message('debug', 'webform edit view controller started');
+		
+		$instance_id = $_GET['instance'];
+		$instance = $_SESSION[$instance_id];
+		unset($_SESSION['count']);
+		
+		$subdomain = get_subdomain(); //from subdomain helper
+		
+		if (!isset($subdomain))
+		{
+			show_error('Edit view should be launched from survey subdomain', 404);
+			return;
+		}
+		if (! $this->Survey_model->is_launched_survey())
+		{
+			show_error('This survey has not been launched in enketo', 404);
+			return;
+		}
+		if (empty($instance)) // empty($return_url)
+		{
+			show_error('No instance provided to edit and/or no return url provided to return to.', 404);
+			return;
+			//$instance = '<data><somedata>somedata</somedata><somedata>someotherdata</somedata></data>';
+			// test instance for household survey with missing nodes and multiple repeats
+			//$instance = '<household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions><household_member><hh_member_age>001</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>002</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>003</hh_member_age><hh_member_gender/></household_member>            <hh_ownership/></sectionA>        </household_survey>';
+			//$return_url = "nothing";
+		}
+		if ($this->Survey_model->has_offline_launch_enabled() === TRUE)
+		{
+			show_error('The edit view can only be launched in offline mode', 404);
+		}
+
+		$offline = FALSE;
+		$server_url= $this->Survey_model->get_server_url();
+		$form_id = $this->Survey_model->get_form_id();
+
+		if (!$form_id || !$server_url)
+		{
+			show_error('Could not find server url and/or form ID in enketo database.', 404);	
+		}
+		
+		$transf_result = $this->Form_model->transform($server_url, $form_id, FALSE);
+		$form = $transf_result->form->asXML();
+		//log_message('debug', $form);
+		$default_instance = $transf_result->instance->asXML();
+		//log_message('debug', $form_data);
+		//remove line breaks and tabs
+		$default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $default_instance);
+		$instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $instance);
+		//$form_data = preg_replace("\>/s*",">", $form_data);
+		log_message('debug', 'form html to launch in edit view: '.$form);
+		log_message('debug', 'default instance to add in edit view: '.$default_instance);
+		log_message('debug', 'instance-to-edit to add in edit view: '.$instance);
+		//
+		if (strlen($form)>0 && strlen($default_instance)>0 && strlen($instance))
+		{
+			$data = array(
+				'offline'=>$offline, 
+				'title_component'=>'webform', 
+				'form'=> $form,
+				'form_data'=> $default_instance,
+				'form_data_to_edit' => $instance,
+				'return_url' => $return_url,
+				'stylesheets'=> array(
+					'../libraries/jquery-ui/css/sunny/jquery-ui.custom.css',
+					'../css/screen.css'
+				)
+			);
+			$common_scripts = array(
+				'../libraries/jquery.min.js',
+				'../libraries/jquery-ui/js/jquery-ui.custom.min.js',
+				'../libraries/jquery-ui-timepicker-addon.js',
+				'../libraries/jquery.multiselect.min.js',	
+				'../libraries/modernizr.min.js',
+				'../libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
+				//'libraries/FileSaver.min.js',
+				//'libraries/BlobBuilder.min.js',
+				'../libraries/vkbeautify.js',
+				"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
+			);
+
+			//log_message('debug', 'form string: '.$form->asXML());
+			if (ENVIRONMENT === 'production')
+			{
+				//$this->output->cache(60);
+				$data['scripts'] = array_merge($common_scripts, array(
+					'../js-min/webform-edit-all-min.js'
+				));
+			}
+			else
+			{		
+				$data['scripts'] = array_merge($common_scripts, array(
+					'../js-source/__common.js',
+					'../js-source/__storage.js',
+					'../js-source/__form.js',
+					'../js-source/__connection.js',
+					'../js-source/__survey_controls.js',
+					'../js-source/__webform_edit.js',
+					'../js-source/__debug.js'
+				));
+			}
+			$this->load->view('webform_edit_view',$data);
+		}
+		else
+		{
+			show_error('An error occurred during transformation or processing instances. ', 404);
+		}
+
+	}
 
 	public function update_list()
 	{

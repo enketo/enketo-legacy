@@ -336,9 +336,9 @@ class Webform extends CI_Controller {
 		$default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $default_instance);
 		$instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $instance);
 		//$form_data = preg_replace("\>/s*",">", $form_data);
-		log_message('debug', 'form html to launch in edit view: '.$form);
-		log_message('debug', 'default instance to add in edit view: '.$default_instance);
-		log_message('debug', 'instance-to-edit to add in edit view: '.$instance);
+		//log_message('debug', 'form html to launch in edit view: '.$form);
+		//log_message('debug', 'default instance to add in edit view: '.$default_instance);
+		//log_message('debug', 'instance-to-edit to add in edit view: '.$instance);
 		//
 		if (strlen($form)>0 && strlen($default_instance)>0 && strlen($instance))
 		{

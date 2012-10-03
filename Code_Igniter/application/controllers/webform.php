@@ -53,12 +53,15 @@ class Webform extends CI_Controller {
 					//log_message('debug', $form_data);
 					//remove line breaks and tabs
 					$form_data = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form_data);
+
+					$html_title = $transf_result->form->xpath('//h2[@id="form-title"]');
 					//$form_data = preg_replace("\>/s*",">", $form_data);
 					if (strlen($form)>0 && strlen($form_data)>0)
 					{
 						$data = array(
 							'offline'=>$offline, 
 							'title_component'=>'webform', 
+							'html_title'=>$html_title[0],
 							'form'=> $form,
 							'form_data'=> $form_data,
 							'stylesheets'=> array(
@@ -183,12 +186,12 @@ class Webform extends CI_Controller {
 		}
 		if (empty($instance)) // empty($return_url)
 		{
-			//show_error('No instance provided to edit and/or no return url provided to return to.', 404);
-			//return;
+			show_error('No instance provided to edit and/or no return url provided to return to.', 404);
+			return;
 			//$instance = '<data><somedata>somedata</somedata><somedata>someotherdata</somedata></data>';
 			// test instance for household survey with missing nodes and multiple repeats
-			$instance = '<household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions><household_member><hh_member_age>001</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>002</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>003</hh_member_age><hh_member_gender/></household_member>            <hh_ownership/></sectionA><meta><instanceID>uuid:ef0f40d039a24103beecc13ae526b98a</instanceID></meta></household_survey>';
-			$return_url = "nothing";
+			//$instance = '<household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions><household_member><hh_member_age>001</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>002</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>003</hh_member_age><hh_member_gender/></household_member>            <hh_ownership/></sectionA><meta><instanceID>uuid:ef0f40d039a24103beecc13ae526b98a</instanceID></meta></household_survey>';
+			//$return_url = "nothing";
 		}
 		if ($this->Survey_model->has_offline_launch_enabled() === TRUE)
 		{
@@ -212,6 +215,8 @@ class Webform extends CI_Controller {
 		//remove line breaks and tabs
 		$default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $default_instance);
 		$instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $instance);
+
+		$html_title = $transf_result->form->xpath('//h2[@id="form-title"]');
 		//$form_data = preg_replace("\>/s*",">", $form_data);
 		log_message('debug', 'form html to launch in edit view: '.$form);
 		log_message('debug', 'default instance to add in edit view: '.$default_instance);
@@ -222,6 +227,7 @@ class Webform extends CI_Controller {
 			$data = array(
 				'offline'=>$offline, 
 				'title_component'=>'webform', 
+				'html_title'=> $html_title[0],
 				'form'=> $form,
 				'form_data'=> $default_instance,
 				'form_data_to_edit' => $instance,

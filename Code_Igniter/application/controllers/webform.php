@@ -107,7 +107,7 @@ class Webform extends CI_Controller {
 					}
 					else
 					{
-						show_error('Form not available (or an error occurred) ', 404);
+						show_error('Form not available (or an error occurred). It is also possible that "require phone authentication" is switched on in your formhub account (under account settings) which is not supported in enketo yet.', 404);
 					}				
 				}
 				else 

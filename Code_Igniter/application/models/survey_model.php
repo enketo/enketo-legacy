@@ -26,7 +26,7 @@ class Survey_model extends CI_Model {
         log_message('debug', 'Survey Model loaded');
         $this->load->helper(array('subdomain', 'url', 'string', 'http'));
     	$this->subdomain = get_subdomain();
-        $this->ONLINE_SUBDOMAIN_SUFFIX = '-0';
+        $this->ONLINE_SUBDOMAIN_SUFFIX = '-';
         date_default_timezone_set('UTC');
     }
     

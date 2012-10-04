@@ -172,6 +172,12 @@ class Webform extends CI_Controller {
 	{
 		log_message('debug', 'webform edit view controller started');
 		extract($_POST);
+
+		if (isset($instance))
+		{
+			log_message('instance posted: '.$instance);
+		}
+
 		$subdomain = get_subdomain(); //from subdomain helper
 		
 		if (!isset($subdomain))

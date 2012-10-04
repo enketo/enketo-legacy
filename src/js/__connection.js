@@ -215,21 +215,24 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	var i, waswere, namesStr,
 		msg = '',
 		names=[],
+		contactSupport = 'Contact support@formhub.org please.',
+		contactAdmin = 'Contact the survey administrator please.',
+		serverDown = 'Sorry, the enketo server is down or being maintained. Please try again later or contact support@formhub.org please.',
 		statusMap = {
-		0: {success: false, msg: "Uploading of data failed (probably offline) and will be tried again later."},
-		200: {success:false, msg: "Data server did not accept data. Contact Enketo helpdesk please."},
-		201: {success:true, msg: ""},
-		202: {success:true, msg: name+" may have had errors. Contact survey administrator please."},
-		'2xx': {success:false, msg: "Unknown error occurred when submitting data. Contact Enketo helpdesk please"},
-		400: {success:false, msg: "Data server did not accept data. Contact survey administrator please."},
-		403: {success:false, msg: "You are not allowed to post data to this data server. Contact survey administrator please."},
-		404: {success:false, msg: "Submission area on data server not found or not properly configured."},
-		'4xx': {success:false, msg: "Unknown submission problem on data server."},
-		413: {success:false, msg: "Data is too large. Please export the data and contact the Enketo helpdesk please."},
-		500: {success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."},
-		503: {success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."},
-		'5xx':{success:false, msg: "Sorry, the Enketo server is down or being maintained. Please try again later or contact Enketo helpdesk please."}
-	};
+			0: {success: false, msg: "Uploading of data failed (probably offline) and will be tried again later."},
+			200: {success:false, msg: "Data server did not accept data. "+contactSupport},
+			201: {success:true, msg: ""},
+			202: {success:true, msg: name+" may have had errors. "+contactAdmin},
+			'2xx': {success:false, msg: "Unknown error occurred when submitting data. "+contactSupport},
+			400: {success:false, msg: "Data server did not accept data. "+contactAdmin},
+			403: {success:false, msg: "You are not allowed to post data to this data server. "+contactAdmin},
+			404: {success:false, msg: "Submission service on data server not found or not properly configured."},
+			'4xx': {success:false, msg: "Unknown submission problem on data server."},
+			413: {success:false, msg: "Data is too large. Please export the data and contact support@formhub.org please."},
+			500: {success:false, msg: serverDown},
+			503: {success:false, msg: serverDown},
+			'5xx':{success:false, msg: serverDown}
+		};
 	//console.debug('name: '+name);
 	//console.debug(status);
 	if (typeof statusMap[status] !== 'undefined'){

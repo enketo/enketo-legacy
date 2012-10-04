@@ -175,7 +175,7 @@ class Webform extends CI_Controller {
 
 		if (isset($instance))
 		{
-			log_message('instance posted: '.$instance);
+			log_message('debug', 'instance posted: '.$instance);
 		}
 
 		$subdomain = get_subdomain(); //from subdomain helper

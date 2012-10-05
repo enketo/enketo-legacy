@@ -25,7 +25,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 #### Enketo:
 - create a new database, e.g. named 'enketo'
 - add a user account (Privileges -> Add new user) with localhost as Host (in the future use this account to log in)
-- import surveys.sql and languages.sql into the enketo database from phpmyadmin (find these files in /devinfo)
+- import surveys.sql, instances.sql and languages.sql into the enketo database from phpmyadmin (find these files in /devinfo)
 - `sudo mkdir /var/www/enketo`
 - `cd /var/www/enketo`
 - `sudo git init`

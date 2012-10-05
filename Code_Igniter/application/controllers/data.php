@@ -126,24 +126,28 @@ class Data extends CI_Controller {
 		$this->output->set_status_header($http_code, $response);
 	}
 
-	public function remove_instance()
-	{
-		log_message('debug', 'attempting to remove instance');
-		extract($_POST);
+//	public function remove_instance()
+//	{
+//		log_message('debug', 'attempting to remove instance');
+//		extract($_POST);//
 
-		if (empty($instance_id))
-		{
-			return $this->output->set_status_header(400, 'fail');
-		}
+//		if (empty($instance_id))
+//		{
+//			return $this->output->set_status_header(400, 'fail');
+//		}
+//		else
+//		{
+//			return $this->Instance_model->
+//		}//
 
-	}
+//	}
 
 	public function edit_url()
 	{
 		log_message('debug', 'edit url function started');
-		$this->load->helper('subdomain');
-		$this->load->model('Survey_model', '', TRUE);
-		$this->load->model('Instance_model', '', TRUE);
+		//$this->load->helper('subdomain');
+		//$this->load->model('Survey_model', '', TRUE);
+		//$this->load->model('Instance_model', '', TRUE);
 		$subdomain = get_subdomain();
 
 		if (isset($subdomain))

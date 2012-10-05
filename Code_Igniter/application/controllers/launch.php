@@ -67,6 +67,7 @@ class Launch extends CI_Controller {
 
 	public function launchSurvey()
 	{
+		
 		$this->load->helper('subdomain');
 		$this->load->model('Survey_model', '', TRUE);
 		$this->load->model('Instance_model', '', TRUE);

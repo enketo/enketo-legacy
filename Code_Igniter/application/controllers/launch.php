@@ -69,6 +69,7 @@ class Launch extends CI_Controller {
 	{
 		$this->load->helper('subdomain');
 		$this->load->model('Survey_model', '', TRUE);
+		$this->load->model('Instance_model', '', TRUE);
 		$subdomain = get_subdomain();
 
 		if (isset($subdomain))
@@ -90,6 +91,18 @@ class Launch extends CI_Controller {
 				$email = (empty($email)) ? NULL : $email;
 
 				$result = $this->Survey_model->launch_survey($server_url, $form_id, $submission_url, $data_url, $email);
+
+        if(isset($instance) && isset($instance_id) && isset($result['subdomain']))
+        {
+            $rs = $this->Instance_model->insert_instance($result['subdomain'], $instance_id,
+                $instance, $return_url);
+            if($rs !== null){
+                $result['edit_url'] = $result['edit_url'] . '?instance_id=' . $instance_id;
+            }else{
+              unset($result['edit_url']);
+              $result['reason'] = "someone is already editing instance";
+            }
+        }
 
 				echo json_encode($result);
 			}	

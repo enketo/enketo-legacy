@@ -24,6 +24,7 @@ class Webform extends CI_Controller {
 		$this->load->helper(array('subdomain','url'));
 		$this->load->model('Form_model', '', TRUE);
 		$this->load->model('Survey_model','',TRUE);
+		$this->load->model('Instance_model','',TRUE);
 	}
 
 	public function index()
@@ -171,14 +172,16 @@ class Webform extends CI_Controller {
 	public function edit()
 	{
 		log_message('debug', 'webform edit view controller started');
-		extract($_POST);
+		extract($_GET);
 
-		if (isset($instance))
+		if (isset($instance_id))
 		{
-			log_message('debug', 'instance posted: '.$instance);
+			log_message('debug', 'instance posted: '.$instance_id);
 		}
 
 		$subdomain = get_subdomain(); //from subdomain helper
+    $subdomain = str_replace($this->Survey_model->ONLINE_SUBDOMAIN_SUFFIX, "",
+        $subdomain);
 		
 		if (!isset($subdomain))
 		{
@@ -190,7 +193,7 @@ class Webform extends CI_Controller {
 			show_error('This survey has not been launched in enketo', 404);
 			return;
 		}
-		if (empty($instance)) // empty($return_url)
+		if (empty($instance_id)) // empty($return_url)
 		{
 			show_error('No instance provided to edit and/or no return url provided to return to.', 404);
 			return;
@@ -199,11 +202,19 @@ class Webform extends CI_Controller {
 			//$instance = '<household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions><household_member><hh_member_age>001</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>002</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>003</hh_member_age><hh_member_gender/></household_member>            <hh_ownership/></sectionA><meta><instanceID>uuid:ef0f40d039a24103beecc13ae526b98a</instanceID></meta></household_survey>';
 			//$return_url = "nothing";
 		}
+    // get instance
+    $instance_obj = $this->Instance_model->get_instance($subdomain, $instance_id);
+    if(!$instance_obj)
+    {
+      show_error("Couldn't find instance fro subdomain ". $subdomain . " and
+          instance id " . $instance_id, 404);
+    }
+    $instance = $instance_obj->instance_xml;
+    $return_url = $instance_obj->return_url;
 		if ($this->Survey_model->has_offline_launch_enabled() === TRUE)
 		{
 			show_error('The edit view can only be launched in offline mode', 404);
 		}
-
 		$offline = FALSE;
 		$server_url= $this->Survey_model->get_server_url();
 		$form_id = $this->Survey_model->get_form_id();

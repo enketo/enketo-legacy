@@ -108,7 +108,9 @@ class Survey_model extends CI_Model {
             {
                 log_message('debug', 'survey exists already in enketo db, returning edit_url: '.$this->_get_full_survey_edit_url($existing->row()->subdomain));
                 return array('success'=>FALSE, 'reason'=>'existing', 
-                    'url'=> $this->_get_full_survey_url($existing->row()->subdomain),
+                    'url'=>
+                    $this->_get_full_survey_url($existing->row()->subdomain),
+                    'subdomain' => $existing->row()->subdomain,
                     'edit_url'=> $this->_get_full_survey_edit_url($existing->row()->subdomain));
             } 
 
@@ -130,7 +132,8 @@ class Survey_model extends CI_Model {
             log_message('debug', 'result of insert into surveys table: '.$result);
             log_message('debug', 'returning new edit_url: '.$edit_url);
             return ($result != FALSE) ? 
-                array('success'=>TRUE, 'url'=> $survey_url, 'edit_url' => $edit_url) : array('success'=>FALSE, 'reason'=>'database');
+                array('success'=>TRUE, 'url'=> $survey_url, 'edit_url' =>
+                    $edit_url, 'subdomain' => $subdomain) : array('success'=>FALSE, 'reason'=>'database');
         }
         log_message('debug', 'unknown error occurred when trying to launch survey');
         return array('success'=>FALSE, 'reason'=>'unknown');

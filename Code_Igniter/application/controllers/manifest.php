@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0007'; //time();
+		private $hash_manual_override = '0008'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -87,11 +87,6 @@ class Manifest extends CI_Controller {
 		$this->_set_data();
 		//log_message('debug', 'array with manifest resources generated');
 	}
-	
-//	public function index()
-//	{
-//		show_404('manifest');
-//	}
 
 	public function gears()
 	{	
@@ -122,7 +117,6 @@ class Manifest extends CI_Controller {
 		//check if the survey exists (from subdomain) and is live
 		if ($this->Survey_model->is_launched_survey() && $this->Survey_model->is_live_survey() && $this->Survey_model->has_offline_launch_enabled()){
 			//convert to full urls
-			//$this->pages = $this->_full_url_arr($this->pages);
 			$this->data['hashes'] = '';
 			$this->data['cache'] = $this->pages;	
 			foreach ($this->pages as $page)
@@ -166,12 +160,6 @@ class Manifest extends CI_Controller {
 			{
 				//log_message('debug', 'adding resource to cache: '.$resource);
 			    $this->data['cache'][] = $resource;	
-			    // create a hash of the content
-				// NOTE: creating a hash from a dynamically created html file is
-				// a problem because the hash will always change (because of header date info?)
-				// therefore the hash is created from the content string
-				// THIS CAN BE IMPROVED AS FOR html and css RESOURCES IT HAS TO GET THE CONTENTS TWICE
-			    $this->data['hashes'] .= md5($this->_get_content($resource));
 			}
 		}
 		return TRUE;
@@ -231,6 +219,12 @@ class Manifest extends CI_Controller {
 					$resources[$index] = $base . $resource;
 				}
 			}
+			//add md5 of content and linked resources in content
+			$this->data['hashes'] .= md5($content);
+			foreach ($resources as $resource)
+			{
+				$this->data['hashes'] .= md5($this->_get_content($resource));
+			}
 			return $resources;
 		}
 		else
@@ -261,29 +255,13 @@ class Manifest extends CI_Controller {
 		//return $content;
 	}
 	
-	// turns array of relative and/or full urls into an array of full urls
-	//if the relative url is not relative to the webroot, an alternative base can be provided
-//	private function _full_url_arr($url_array, $base=NULL)
-//	{
-//		foreach ($url_array as $index => $url)
-//		{
-//			$url_array[$index] = $this->_full_url($url, $base);
-//		}
-//		return $url_array;
-//	}
-	
 	//returns a full url if relative url was provided
 	//if the relative url is not relative to the webroot, an alternative base can be provided
 	private function _full_url($url, $base=NULL)
 	{
 		if(!isset($base))
 		{
-			//$subdomain = get_subdomain();
-			//log_message('debug', 'subdomain: '.$subdomain);
-			//log_message('debug', 'servername: '.$_SERVER['SERVER_NAME']);
-			//$base = base_url();
-			//using http helper function to add protocol
-			$base =  full_base_url();//url_add_protocol($_SERVER['SERVER_NAME'].'/');//get_subdomain_plus_base_url();
+			$base =  full_base_url();
 		}
 		//in case relative urls were used, prepend the base
 		if (strpos($url, 'http://')!==0 && strpos($url, 'https://')!==0 && $url !== '*')
@@ -293,18 +271,5 @@ class Manifest extends CI_Controller {
 		//log_message('debug', '_full_url() returns:'.$url);
 		return $url;
 	}
-	
-	//returns a relative url if a full url was provided
-//	private function _rel_url($url)
-//	{
-//		//in case full urls were used, remove the base_url:
-//		if (strpos($url, base_url())==0)
-//		{
-//			$url = substr_replace($url, '', 0, strlen(base_url()));
-//		}
-//		return $url;
-//	}
 }
-
-
 ?>

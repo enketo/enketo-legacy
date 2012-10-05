@@ -635,7 +635,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * 
 	 */
 	DataXML.prototype.load = function(instanceOfDataXML){
-		var nodesToLoad, index, path, value, target, $target, $template, meta,
+		var nodesToLoad, name, index, path, value, target, $target, $template, meta, metaChild,
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
@@ -653,6 +653,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 
 		nodesToLoad.each(function(){
+			name = $(this).prop('nodeName');
 			path = form.generateName($(this));
 			console.debug('path: '+path);
 			index = instanceOfDataXML.$.xfind(path).index($(this));
@@ -667,7 +668,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if ($target.length > 1){
 				console.error('Found multiple nodes with path: '+path+' and index: '+index);
 			}
-			//if there is a corresponding node in the form's original instance
+			//if there is a corresponding node in the form's original instances
 			else if ($target.length === 1){
 				//set the value
 				target.setVal(value);
@@ -690,14 +691,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			}
 			else{
-				//TODO append the missing node that was added by the server before passing it to enketo for editin
 				if ($(this).parent('meta').length === 1){
-					if (that.get().children().eq(0).children('meta').length === 0){
-						meta = document.createElement('meta');
-						that.get().children().eq(0).append(meta);
-					}
+					//if (that.get().children().eq(0).children('meta').length === 0){
+					//	meta = document.createElement('meta');
+					//	that.get().children().eq(0).append(meta);
+					//}
 					console.debug('cloning this direct child of <meta>:');
 					console.debug($(this).clone());
+					//metaChild = document.createElement(name);
+					//that.node('meta').get().append(metaChild).text(value);
 					$(this).clone().appendTo(that.get().children().eq(0).children('meta'));
 				}
 				else {

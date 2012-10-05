@@ -76,6 +76,25 @@ class Form_model extends CI_Model {
 				$result = $this->_xslt_transform($xml['doc'], $xsl_form['doc']);
 				//perform transformation to get data
 				$data = $this->_xslt_transform($xml['doc'], $xsl_data['doc']);
+                //hack to add <meta><instanceID/></meta>
+                $meta = NULL;
+                $dataroot = NULL;
+                foreach ($data->instance->children() as $rootchild)
+                {
+                    $dataroot = $rootchild;
+                    $meta = $dataroot->meta;
+                    break;
+                }
+                if (!$meta)
+                {
+                    //$dataroot = $data->instance->household_survey;
+                    $meta = $dataroot->addChild('meta');
+                }
+               // $instanceid =  $meta->instanceID;
+//                if (!$instanceid)
+//                {
+//                    $instanceid = $meta->addChild('instanceID');
+//                }
 				
 				$this->_fix_lang($result);
                 

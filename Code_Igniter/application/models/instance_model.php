@@ -6,6 +6,14 @@ class Instance_model extends CI_Model {
   var $instance_xml = '';
   var $return_url = '';
 
+  function __construct()
+  {
+    parent::__construct();
+    log_message('debug', 'Instance Model loaded');
+    $this->remove_old_instances();
+  }
+
+
   function insert_instance($subdomain, $instance_id, $instance_xml, $return_url)
   {
       $instance = $this->get_instance($subdomain, $instance_id);
@@ -15,6 +23,7 @@ class Instance_model extends CI_Model {
           $this->instanceid = $instance_id; 
           $this->instance_xml = $instance_xml;
           $this->return_url = $return_url;
+          $this->timestamp = time();
           $this->db->insert('instances', $this);
           return $this;
       }
@@ -32,5 +41,20 @@ class Instance_model extends CI_Model {
       }
       return $result;
   }
+
+  function remove_old_instances()
+  {
+    log_message('debug', 'removing old instances');
+    $this->db->where('timestamp <', time()-60 );
+    $this->db->delete('instances');
+    return;
+  }
+
+//  function remove_instance($subdomain, $instance_id)
+//  {
+//      $query = $this->db->delete('instances', array('instanceid' => $instance_id,
+//        'subdomain' => $subdomain));
+//      return ($this->db->affected_rows() > 0) ? TRUE : FALSE;
+//  }
 
 }

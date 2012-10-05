@@ -555,6 +555,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return ( new Date(x.toString()).toString() !== 'Invalid Date');
 				},
 				convert : function(x){
+					var date, timezone, segments, dateS, timeS,
+						pattern = /([0-9]{2,4}\-[0-9]{1,2}\-[0-9]{1,2})T([0-9:.]+)([0-9+\-]*)/;
+					if (pattern.test(x)){
+						segments = pattern.exec(x);
+						dateS = segments[1].split('-');
+						timeS = segments[2].split(':');
+						timeS[2] = timeS[2].split('.')[0]; //ignores milliseconds
+						timezone = Number(segments[3]);
+						timeS[0] = Number(timeS[0])+timezone;
+
+						return new Date(Date.UTC(
+							Number(dateS[0]), Number(dateS[1])-1, Number(dateS[2]), Number(timeS[0]), 
+							Number(timeS[1]), Number(timeS[2]))).toUTCString();
+					}
 					return new Date(x).toUTCString();
 				}
 			},
@@ -635,7 +649,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * 
 	 */
 	DataXML.prototype.load = function(instanceOfDataXML){
-		var nodesToLoad, name, index, path, value, target, $target, $template, meta, metaChild,
+		var nodesToLoad, name, index, xmlDataType, path, value, target, $input, $target, $template,
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
@@ -654,6 +668,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		nodesToLoad.each(function(){
 			name = $(this).prop('nodeName');
+
 			path = form.generateName($(this));
 			console.debug('path: '+path);
 			index = instanceOfDataXML.$.xfind(path).index($(this));
@@ -661,6 +676,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			value = $(this).text();
 			console.debug('value: '+value);
 
+			$input = $form.find('[name="'+path+'"]').eq(0);
+			
+			xmlDataType = ($input.length > 0) ? form.input.getXmlType($input) : 'string';
+			
 			target = that.node(path, index);
 			$target = target.get();
 
@@ -671,7 +690,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//if there is a corresponding node in the form's original instances
 			else if ($target.length === 1){
 				//set the value
-				target.setVal(value);
+				target.setVal(value, null, xmlDataType);
 			}
 			//if there is not a corresponding data node but there is a corresponding template node (=> <repeat>)
 			//this use of node(,,).get() is a bit of a trick that is difficult to wrap one's head around
@@ -684,7 +703,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//try setting the value again
 				target = that.node(path,index);
 				if (target.get().length === 1){
-					target.setVal(value);
+					//we really have to provide a datatype here...
+					
+					target.setVal(value, null, xmlDataType);
 				}
 				else{
 					console.error('Error occured trying to clone template node to set the repeat value of the instance to be edited.');
@@ -1046,6 +1067,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//this.input = function($node){
 		//	return new Input($node);
 		//};
+		//
+		
 	}
 
 	FormHTML.prototype.init = function(){
@@ -1308,7 +1331,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return $node.val() || '';
 		},
 		setVal : function(name, index, value){
-			var $inputNodes;//, 
+			var $inputNodes, type, date;//, 
 				//values = value.split(' ');
 			index = index || 0;
 			
@@ -1321,12 +1344,23 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			else {
 				//why not use this.getIndex?
 				$inputNodes = this.getWrapNodes($form.find('[name="'+name+'"]')).eq(index).find('input, select, textarea');
+				
+				type = this.getInputType($inputNodes.eq(0)); 
+				
+				//if ( type === 'date' || type === 'datetime' ){
+				//	console.debug('convert date before setting input field from: '+value);
+				//	date = new Date(value);
+				//	value = (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear().toString().substring(2);
+				//	value = (type === 'datetime') ? value + ' ' + date.getHours() + ':' + date.getMinutes() : value;
+				//	console.debug('to: '+value);
+				//}
 			}
 
 			if (this.isMultiple($inputNodes.eq(0)) === true){
 				////console.log('control allows values will be split at spaces');
 				value = value.split(' ');
 			}
+			
 			//console.debug('name of form element to set value of (if exists in form):'+name+', index:'+index+' new value: '+value);
 			////console.debug($inputNodes);
 			return $inputNodes.val(value);

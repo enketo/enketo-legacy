@@ -196,24 +196,24 @@ class Webform extends CI_Controller {
 		}
 		if (empty($instance_id)) // empty($return_url)
 		{
-			//show_error('No instance provided to edit and/or no return url provided to return to.', 404);
-			//return;
+			show_error('No instance provided to edit and/or no return url provided to return to.', 404);
+			return;
 			//$instance = '<data><somedata>somedata</somedata><somedata>someotherdata</somedata></data>';
 			// test instance for household survey with missing nodes and multiple repeats
 			//$instance = '<household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions><household_member><hh_member_age>001</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>002</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>003</hh_member_age><hh_member_gender/></household_member>            <hh_ownership/></sectionA><meta><instanceID>uuid:ef0f40d039a24103beecc13ae526b98a</instanceID></meta></household_survey>';
 			//test instance for data_types.xml
-			$instance = '<instance xmlns="http://www.w3.org/2002/xforms">        <Data_Types id="data_types"><formhub><uuid/></formhub>          <text/>          <textarea/><pagebreak/><integ>5</integ><decim>5.55</decim><onecolor/><multicolor/><geop/>          <barc/>          <day>2010-10-01</day><now>2012-06-05T10:53:00.000-06</now><aud/>          <img/>          <vid/>        </Data_Types>      </instance>';
-			$return_url = "nothing";
+			//$instance = '<instance xmlns="http://www.w3.org/2002/xforms">        <Data_Types id="data_types"><formhub><uuid/></formhub>          <text/>          <textarea/><pagebreak/><integ>5</integ><decim>5.55</decim><onecolor/><multicolor/><geop/>          <barc/>          <day>2012-10-01</day><now>2012-06-05T14:53:00.000-06</now><aud/>          <img/>          <vid/>        </Data_Types>      </instance>';
+			//$return_url = "nothing";
 		}
 	    // get instance
-	    //$instance_obj = $this->Instance_model->get_instance($subdomain, $instance_id);
-	    //if(!$instance_obj)
+	    $instance_obj = $this->Instance_model->get_instance($subdomain, $instance_id);
+	    if(!$instance_obj)
 	    {
-	      //show_error("Couldn't find instance for subdomain ". $subdomain . " and
-	      //    instance id " . $instance_id, 404);
+	      show_error("Couldn't find instance for subdomain ". $subdomain . " and
+	          instance id " . $instance_id, 404);
 	    }
-	    //$instance = $instance_obj->instance_xml;
-	    //$return_url = $instance_obj->return_url;
+	    $instance = $instance_obj->instance_xml;
+	    $return_url = $instance_obj->return_url;
 
 		if ($this->Survey_model->has_offline_launch_enabled() === TRUE)
 		{

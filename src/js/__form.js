@@ -563,7 +563,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						timeS = segments[2].split(':');
 						timeS[2] = timeS[2].split('.')[0]; //ignores milliseconds
 						timezone = Number(segments[3]);
-						timeS[0] = Number(timeS[0])+timezone;
+						timeS[0] = (Number(timeS[0])+timezone).toString(); 
 
 						return new Date(Date.UTC(
 							Number(dateS[0]), Number(dateS[1])-1, Number(dateS[2]), Number(timeS[0]), 
@@ -649,7 +649,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * 
 	 */
 	DataXML.prototype.load = function(instanceOfDataXML){
-		var nodesToLoad, name, index, xmlDataType, path, value, target, $input, $target, $template,
+		var nodesToLoad, index, xmlDataType, path, value, target, $input, $target, $template,
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
@@ -667,8 +667,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 
 		nodesToLoad.each(function(){
-			name = $(this).prop('nodeName');
-
+			//name = $(this).prop('nodeName');
 			path = form.generateName($(this));
 			console.debug('path: '+path);
 			index = instanceOfDataXML.$.xfind(path).index($(this));
@@ -724,7 +723,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$(this).clone().appendTo(that.get().children().eq(0).children('meta'));
 				}
 				else {
-					console.error('functionality to add new non-meta nodes to instance not yet completed');
+					console.error('did not find expected meta node ');
 				}
 			}
 		});
@@ -1347,13 +1346,27 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				
 				type = this.getInputType($inputNodes.eq(0)); 
 				
-				//if ( type === 'date' || type === 'datetime' ){
-				//	console.debug('convert date before setting input field from: '+value);
+				if ( type === 'date' || type === 'datetime'){
+					//convert current value (loaded from instance) to a value that a native datepicker understands
+					//TODO test for IE, FF, Safari when those browsers start including native datepickers
+					date = new Date(value);
+					if (date.toString() !== 'Invalid Date'){
+						value = date.getUTCFullYear().toString()+'-'+
+							(date.getUTCMonth()+1).toString().pad(2)+'-'+
+							date.getUTCDate().toString().pad(2);
+						if (type === 'datetime'){
+							value += ' '+date.getHours()+':'+date.getMinutes();
+						}
+					}
+					else{
+						value = date.toString(); 
+					}
+					console.debug('converting date before setting input field to: '+value);
 				//	date = new Date(value);
 				//	value = (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear().toString().substring(2);
 				//	value = (type === 'datetime') ? value + ' ' + date.getHours() + ':' + date.getMinutes() : value;
 				//	console.debug('to: '+value);
-				//}
+				}
 			}
 
 			if (this.isMultiple($inputNodes.eq(0)) === true){
@@ -1808,6 +1821,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	FormHTML.prototype.widgets = {
+		//IMPORTANT! Widgets should be initalized after instance values have been loaded in $data as well as in input fields
 		init : function(){
 			this.compactWidget();
 			this.radioWidget();
@@ -1837,16 +1851,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//}); 
 		},
 		dateWidget : function(){
-			
-			/*$form.find('input[type="date"]').click(function(e){
-				e.preventDefault();
-			}).datepicker({
-				onSelect: function(dateText){
-					var d = new Date(dateText),
-						dv = d.getFullYear().toString().pad(4)+'-'+(d.getMonth()+1).toString().pad(2)+'-'+d.getDate().toString().pad(2);
-					$(this).val(dv).trigger('change');
-				}
-			});*/
+			//$form.find('input[type="date"]').click(function(e){
+			//	e.preventDefault();
+			//}).datepicker({
+			//	onSelect: function(dateText){
+			//		var d = new Date(dateText),
+			//			dv = d.getFullYear().toString().pad(4)+'-'+(d.getMonth()+1).toString().pad(2)+'-'+d.getDate().toString().pad(2);
+			//		$(this).val(dv).trigger('change');
+			//	}
+			//});*/
 			if(!Modernizr.inputtypes.date){
 				$form.find('input[type="date"]').datepicker({});
 			}
@@ -1858,7 +1871,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}, 
 		dateTimeWidget : function(){
 			if(!Modernizr.inputtypes.datetime){
-				$form.find('input[type="datetime"]').datetimepicker();
+				$form.find('input[type="datetime"]').datetimepicker({dateFormat: 'yy-mm-dd'});
 			}
 		},
 		selectOneWidget : function(){

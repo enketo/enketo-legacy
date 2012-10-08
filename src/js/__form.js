@@ -146,6 +146,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var name, value,
 			formData = new DataXML(dataStr); //$($.parseXML(dataStr));
 		//console.debug(formData.);
+		//convert dates
 		$form.find('[data-type-xml="date"], [data-type-xml="dateTime"]').each(function(){
 			name = $(this).attr('name');
 			//console.debug('found date element with name: '+name);
@@ -155,7 +156,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				if (value.length > 0){
 					console.debug('converting date string: '+value);
 					value = new Date(value).toJrString();
-					console.debug('jrDateString: '+value);
+					//console.debug('jrDateString: '+value);
 					//bypassing validation & conversion of Nodeset sub-class
 					$(this).text(value);
 				}
@@ -165,7 +166,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.find('[type="time"]').each(function(){
 
 		});
-		return formData.getStr(true, true);
+		return formData.getStr(false, true);
 	};
 	
 /**

@@ -25,7 +25,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 #### Enketo:
 - create a new database, e.g. named 'enketo'
 - add a user account (Privileges -> Add new user) with localhost as Host (in the future use this account to log in)
-- import surveys.sql and languages.sql into the enketo database from phpmyadmin (find these files in /devinfo)
+- import surveys.sql, instances.sql and languages.sql into the enketo database from phpmyadmin (find these files in /devinfo)
 - `sudo mkdir /var/www/enketo`
 - `cd /var/www/enketo`
 - `sudo git init`
@@ -36,7 +36,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 - replace /var/www/enketo/Code_Igniter/application/views/elements/tracking.php with your own tracking code
 - add your own Google Maps API v3 key in /var/www/enketo/Code_Igniter/application/views/elements/enketo.php
 - set environment in index.php to 'production' if it isn't already
-- change permissions `sudo chmod 777 /var/www/enketo/Code_Igniter/application/cache` and `sudo chmod 777 /var/www/enketo/Code_Igniter/application/logs` (double-check that this actually works, may require chown first)
+- change permissions `sudo chmod 777 /var/www/enketo/Code_Igniter/application/cache` and `sudo chmod 777 /var/www/enketo/Code_Igniter/application/logs` (double-check that this actually works, may require `sudo chown -R ubuntu enketo` first)
 - open /etc/apache2/sites-available/default for editing:
   * change DocumentRoot to /var/www/enketo/public in /etc/apache2/sites-available/default
   * change 2nd `<Directory /var/www>` to: `<Directory /var/www/enketo/public>`

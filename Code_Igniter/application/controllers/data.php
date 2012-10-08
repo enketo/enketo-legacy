@@ -23,6 +23,7 @@ class Data extends CI_Controller {
 	function __construct() {
 			parent::__construct();
 			$this->load->model('Survey_model', '', TRUE);
+			$this->load->model('Instance_model', '', TRUE);
 			$this->load->helper(array('subdomain','url', 'string'));
 		
 	}
@@ -125,10 +126,28 @@ class Data extends CI_Controller {
 		$this->output->set_status_header($http_code, $response);
 	}
 
+//	public function remove_instance()
+//	{
+//		log_message('debug', 'attempting to remove instance');
+//		extract($_POST);//
+
+//		if (empty($instance_id))
+//		{
+//			return $this->output->set_status_header(400, 'fail');
+//		}
+//		else
+//		{
+//			return $this->Instance_model->
+//		}//
+
+//	}
+
 	public function edit_url()
 	{
-		$this->load->helper('subdomain');
-		$this->load->model('Survey_model', '', TRUE);
+		log_message('debug', 'edit url function started');
+		//$this->load->helper('subdomain');
+		//$this->load->model('Survey_model', '', TRUE);
+		//$this->load->model('Instance_model', '', TRUE);
 		$subdomain = get_subdomain();
 
 		if (isset($subdomain))
@@ -140,16 +159,28 @@ class Data extends CI_Controller {
 			extract($_POST);
 
 			//trim strings first??
-			if (!empty($server_url) && !empty($form_id) && !empty($instance))
+			if (!empty($server_url) && !empty($form_id))
 			{
 				//to be replaced by user-submitted and -editable submission_url
 				$submission_url = (strrpos($server_url, '/') === strlen($server_url)-1) ? 
 					$server_url.'submission' :$server_url.'/submission';
 
-				//$data_url = (empty($data_url)) ? NULL : $data_url;
-				//$email = (empty($email)) ? NULL : $email;
+				$data_url = (empty($data_url)) ? NULL : $data_url;
+				$email = (empty($email)) ? NULL : $email;
 
 				$result = $this->Survey_model->launch_survey($server_url, $form_id, $submission_url, $data_url, $email);
+
+        if(isset($instance) && isset($instance_id) && isset($result['subdomain']))
+        {
+            $rs = $this->Instance_model->insert_instance($result['subdomain'], $instance_id,
+                $instance, $return_url);
+            if($rs !== null){
+                $result['edit_url'] = $result['edit_url'] . '?instance_id=' . $instance_id;
+            }else{
+              unset($result['edit_url']);
+              $result['reason'] = "someone is already editing instance";
+            }
+        }
 
 				echo json_encode($result);
 			}	

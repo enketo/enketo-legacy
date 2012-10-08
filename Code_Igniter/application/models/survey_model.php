@@ -26,14 +26,13 @@ class Survey_model extends CI_Model {
         log_message('debug', 'Survey Model loaded');
         $this->load->helper(array('subdomain', 'url', 'string', 'http'));
     	$this->subdomain = get_subdomain();
-        $this->ONLINE_SUBDOMAIN_SUFFIX = '-';
+        $this->ONLINE_SUBDOMAIN_SUFFIX = '-0';
         date_default_timezone_set('UTC');
     }
     
     // returns true if a requested survey form is live / published, used for manifest
     public function is_live_survey($survey_subdomain = NULL)
     {
-
     	//$query = $this->db->get_where('surveys',array('subdomain'=>$survey_subdomain, 'survey_live'=>TRUE), 1);
     	//return ($query->num_rows() === 1) ? TRUE : FALSE;
         //since management of surveys is done at the OpenRosa-compliant server, all we could do here is see
@@ -109,7 +108,9 @@ class Survey_model extends CI_Model {
             {
                 log_message('debug', 'survey exists already in enketo db, returning edit_url: '.$this->_get_full_survey_edit_url($existing->row()->subdomain));
                 return array('success'=>FALSE, 'reason'=>'existing', 
-                    'url'=> $this->_get_full_survey_url($existing->row()->subdomain),
+                    'url'=>
+                    $this->_get_full_survey_url($existing->row()->subdomain),
+                    'subdomain' => $existing->row()->subdomain,
                     'edit_url'=> $this->_get_full_survey_edit_url($existing->row()->subdomain));
             } 
 
@@ -131,7 +132,8 @@ class Survey_model extends CI_Model {
             log_message('debug', 'result of insert into surveys table: '.$result);
             log_message('debug', 'returning new edit_url: '.$edit_url);
             return ($result != FALSE) ? 
-                array('success'=>TRUE, 'url'=> $survey_url, 'edit_url' => $edit_url) : array('success'=>FALSE, 'reason'=>'database');
+                array('success'=>TRUE, 'url'=> $survey_url, 'edit_url' =>
+                    $edit_url, 'subdomain' => $subdomain) : array('success'=>FALSE, 'reason'=>'database');
         }
         log_message('debug', 'unknown error occurred when trying to launch survey');
         return array('success'=>FALSE, 'reason'=>'unknown');
@@ -242,7 +244,7 @@ class Survey_model extends CI_Model {
     private function _get_item($field)
     {
         $subd = $this->subdomain;
-        $db_subd = ( $this->_has_subdomain_suffix() ) ? substr($subd, 0, strlen($subd)-1) : $subd;
+        $db_subd = ( $this->_has_subdomain_suffix() ) ? substr($subd, 0, strlen($subd)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) : $subd;
         $this->db->select($field);
         $this->db->where('subdomain', $db_subd); //$this->subdomain);
         $query = $this->db->get('surveys', 1); 
@@ -276,7 +278,7 @@ class Survey_model extends CI_Model {
     private function _has_subdomain_suffix()
     {
         $s = $this->subdomain;
-        return ( substr($s, strlen($s)-1) === $this->ONLINE_SUBDOMAIN_SUFFIX ) ? TRUE : FALSE; 
+        return ( substr($s, strlen($s)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) === $this->ONLINE_SUBDOMAIN_SUFFIX ) ? TRUE : FALSE; 
     }
 //    //returns the form format as an object   NOT USED ANYMORE! 
 //    public function get_form_format($id = NULL, $live = TRUE)

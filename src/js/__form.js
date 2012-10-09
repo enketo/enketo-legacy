@@ -380,22 +380,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			target = this.get();//.eq(index);
 
 			if ( target.length === 1 && $.trim(newVal.toString()) !== $.trim(curVal.toString()) ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
-				//if (this.validate(value) === true){
 				//first change the value so that it can be evaluated in XPath (validated)
-				
-
 				target.text(newVal);
-				//	return true;
-				//}
-				//return false;
 				//then return validation result
 				success = this.validate(expr, xmlDataType);
 				$form.trigger('dataupdate', target.prop('nodeName'));
 				return success;
 			}
 			if (target.length > 1){
-			//	//console.debug('number of nodes with that name: '+target.length);
-			//	target.eq(this.index).text(value);
 				console.error('nodeset.setVal expected nodeset with one node, but received multiple');
 				return null;
 			}
@@ -2546,6 +2538,19 @@ Date.prototype.toJrString = function(){
 		//(-date.getTimezoneOffset()/60);
 	}
 	return jrDate;
+};
+
+/**
+ * Pads a string with prefixed zeros until the requested string length is achieved.
+ * @param  {number} digits [description]
+ * @return {String|string}        [description]
+ */
+String.prototype.pad = function(digits){
+		var x = this;
+		while (x.length < digits){
+			x = '0'+x;
+		}
+		return x;
 };
 
 (function($){

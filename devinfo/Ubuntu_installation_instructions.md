@@ -5,7 +5,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 - `sudo apt-get update`
 - `sudo apt-get install apache2`
 - check for 'It Works!' message when visiting domain or IP-address
-- `sudo a2enmod expires rewrite` (?alias?)
+- `sudo a2enmod expires rewrite`
 
 #### PHP & git:
 - `sudo apt-get install php5 libapache2-mod-php5 php5-xsl php5-curl git`

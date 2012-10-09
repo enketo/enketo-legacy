@@ -1,12 +1,12 @@
 Enketo
 ======
 
-Enketo is a lightweight web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). _THE CORE FEATURES OF ENKETO ARE NOT YET COMPLETE._ More info: [blog](http://blog.aidwebsolutions.com)
+Enketo is a lightweight web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). More info: [blog](http://blog.aidwebsolutions.com)
 
 Browser support
 ---------------
 - IE is not supported (does not support the required technologies). Support for the app without offline-launch cability may follow in the future or when IE catches up.
-- Chrome, Firefox, Safari for both desktop and mobile devices will be supported
+- Chrome, Firefox, Safari for both desktop and mobile devices are largely supported but Chrome is recommended.
 
 Prerequisites
 -----------
@@ -19,7 +19,9 @@ See [Ubuntu_installation_instructions.md](https://github.com/modilabs/enketo/blo
 
 Frequently Asked Questions
 ---------------------------
-to follow
+##### Why are file-upload inputs greyed out and not usable?
+File uploads are not supported in enketo at the moment. Support may be added in the future but it is not a high priority for 2012. If file uploads (images/sound/video) are important, ODK Collect may be a better option.
+
 
 Development
 -----------
@@ -38,7 +40,7 @@ Code contributions are very welcome!
 
 License
 -------
-To promote further adoption of the JavaRosa/OpenRosa XForm-derived form format, Enketo is made available under the Apache 2.0 license. See [LICENSE.TXT](https://github.com/MartijnR/enketo/blob/master/LICENSE.TXT). 
+To promote further adoption of the JavaRosa/OpenRosa XForm-derived form format, Enketo is made available under the permissive Apache 2.0 license. See [LICENSE.TXT](https://github.com/MartijnR/enketo/blob/master/LICENSE.TXT). 
 
 Related Projects
 ----------------

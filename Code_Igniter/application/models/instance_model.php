@@ -42,6 +42,7 @@ class Instance_model extends CI_Model {
       return $result;
   }
 
+  // removes instances that were stored more than 60 seconds ago
   function remove_old_instances()
   {
     log_message('debug', 'removing old instances');

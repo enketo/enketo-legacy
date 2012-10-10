@@ -358,9 +358,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @param {string=} xmlDataType [description]
 		 */
 		Nodeset.prototype.setVal = function(newVal, expr, xmlDataType){
-			var target, curVal, success;
+			var $target, curVal, success;
 			//index = (typeof index !== 'undefined') ? index : -1;
-			curVal = this.getVal().join(' ');
+			//is the .join(' ') an artefact that can be removed?
+			curVal = this.getVal();//.join(' ');
 			//console.log('setting value of data node: '+this.selector+' with index: '+this.index);
 			
 			if (typeof newVal !== 'undefined'){
@@ -377,21 +378,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//console.debug('value(s) to set: '+newVal);
 			//console.debug('existing value(s): '+curVal);
 
-			target = this.get();//.eq(index);
+			$target = this.get();//.eq(index);
 
-			if ( target.length === 1 && $.trim(newVal.toString()) !== $.trim(curVal.toString()) ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
+			if ( $target.length === 1 && $.trim(newVal.toString()) !== $.trim(curVal.toString()) ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
 				//first change the value so that it can be evaluated in XPath (validated)
-				target.text(newVal);
+				$target.text(newVal);
 				//then return validation result
 				success = this.validate(expr, xmlDataType);
-				$form.trigger('dataupdate', target.prop('nodeName'));
+				$form.trigger('dataupdate', $target.prop('nodeName'));
 				return success;
 			}
-			if (target.length > 1){
+			if ($target.length > 1){
 				console.error('nodeset.setVal expected nodeset with one node, but received multiple');
 				return null;
 			}
-			if (target.length === 0 ){
+			if ($target.length === 0 ){
 				console.error('Data node: '+this.selector+' with null-based index: '+this.index+' not found!');
 				return null;
 			}
@@ -412,14 +413,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 *   
 		 * Returns:
 		 * 
-		 *   returns the value of the node or false if no nodes were found. Throws error and stops when multiple 
-		 *   nodes with that selector were found
+		 *   returns [multiple OBSOLETE?] an array of values 
 		 *   
 		 */
 		Nodeset.prototype.getVal = function(){
 			var vals=[];
 			this.get().each(function(){
-				//if not leaf node
 				vals.push($(this).text());
 			});
 			return vals;
@@ -557,7 +556,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						timeS[2] = timeS[2].split('.')[0]; //ignores milliseconds
 						timezone = Number(segments[3]);
 						timeS[0] = (Number(timeS[0])+timezone).toString(); 
-						
+
 						return new Date(Date.UTC(
 							Number(dateS[0]), Number(dateS[1])-1, Number(dateS[2]), Number(timeS[0]), 
 							Number(timeS[1]), Number(timeS[2]))).toUTCString();

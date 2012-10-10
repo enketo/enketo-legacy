@@ -4,49 +4,70 @@ EnvJasmine.load(EnvJasmine.mocksDir + "form.mock.js");
 EnvJasmine.load(EnvJasmine.includeDir + "xpathjs_javarosa/build/xpathjs_javarosa.min.js");
 EnvJasmine.load(EnvJasmine.jsDir + "__form.js");
 
-describe("Data node getter function", function () {
-    it("obtains XML node(s) from instance", function() {
-        var t =
-			[
-				["", null, null, 9],
-				["", null, {}, 9],
-				//["/", null, {}, 9], //issue with xfind, not important
-				[false, null, {}, 9],
-				[null, null, {}, 9],
-				[null, null, {noTemplate:true}, 9],
-				[null, null, {noTemplate:false}, 11],
-				[null, null, {onlyTemplate:true}, 1],
-				[null, null, {noEmpty:true}, 3],
-				[null, null, {noEmpty:true, noTemplate:false}, 4],
+describe("Data node getter", function () {
+    var t =
+		[
+			["", null, null, 9],
+			["", null, {}, 9],
+			//["/", null, {}, 9], //issue with xfind, not important
+			[false, null, {}, 9],
+			[null, null, {}, 9],
+			[null, null, {noTemplate:true}, 9],
+			[null, null, {noTemplate:false}, 11],
+			[null, null, {onlyTemplate:true}, 1],
+			[null, null, {noEmpty:true}, 3],
+			[null, null, {noEmpty:true, noTemplate:false}, 4],
 
-				["/thedata/nodeA", null, null, 1],
-				["/thedata/nodeA", 1   , null, 0],
-				["/thedata/nodeA", null, {noEmpty:true}, 0], //"int"
-				["/thedata/nodeA", null, {onlyleaf:true}, 1],
-				["/thedata/nodeA", null, {onlyTemplate:true}, 0],
-				["/thedata/nodeA", null, {noTemplate:true}, 1],
-				["/thedata/nodeA", null, {noTemplate:false}, 1],
+			["/thedata/nodeA", null, null, 1],
+			["/thedata/nodeA", 1   , null, 0],
+			["/thedata/nodeA", null, {noEmpty:true}, 0], //"int"
+			["/thedata/nodeA", null, {onlyleaf:true}, 1],
+			["/thedata/nodeA", null, {onlyTemplate:true}, 0],
+			["/thedata/nodeA", null, {noTemplate:true}, 1],
+			["/thedata/nodeA", null, {noTemplate:false}, 1],
 
-				["/thedata/repeatGroup", null, null, 3],
-				["/thedata/repeatGroup", null, {onlyTemplate:true}, 1],
-				["/thedata/repeatGroup", null, {noTemplate:false}, 4],
+			["/thedata/repeatGroup", null, null, 3],
+			["/thedata/repeatGroup", null, {onlyTemplate:true}, 1],
+			["/thedata/repeatGroup", null, {noTemplate:false}, 4],
 
-				["//nodeC", null, null, 3],
-				["/thedata/repeatGroup/nodeC", null, null, 3],
-				["/thedata/repeatGroup/nodeC", 2   , null, 1],
-				["/thedata/repeatGroup/nodeC", null, {noEmpty:true}, 2],
-				["/thedata/repeatGroup/nodeC", null, {onlyleaf:true}, 3],
-				["/thedata/repeatGroup/nodeC", null, {onlyTemplate:true}, 0],
-				["/thedata/repeatGroup/nodeC", null, {noTemplate:true}, 3],
-				["/thedata/repeatGroup/nodeC", null, {noTemplate:false}, 4]
-			],
-			form = new Form("", ""),
-			data = form.data(dataStr1);
+			["//nodeC", null, null, 3],
+			["/thedata/repeatGroup/nodeC", null, null, 3],
+			["/thedata/repeatGroup/nodeC", 2   , null, 1],
+			["/thedata/repeatGroup/nodeC", null, {noEmpty:true}, 2],
+			["/thedata/repeatGroup/nodeC", null, {onlyleaf:true}, 3],
+			["/thedata/repeatGroup/nodeC", null, {onlyTemplate:true}, 0],
+			["/thedata/repeatGroup/nodeC", null, {noTemplate:true}, 3],
+			["/thedata/repeatGroup/nodeC", null, {noTemplate:false}, 4]
+		],
+		form = new Form("", ""),
+		data = form.data(dataStr1);
 		
-		for (i = 0 ; i<t.length ; i++){
-			expect(data.node(t[i][0], t[i][1], t[i][2]).get().length).toEqual(t[i][3]);
+		function test(node){
+			it("obtains nodes (selector: "+node.selector+", index: "+node.index+", filter: "+JSON.stringify(node.filter)+")", function() {
+				expect(data.node(node.selector, node.index, node.filter).get().length).toEqual(node.result);
+			});
 		}
-    });
+
+		for (i = 0 ; i<t.length ; i++){
+			test({selector: t[i][0], index: t[i][1], filter: t[i][2], result: t[i][3]});
+		}
+});
+
+describe('Date node value getter', function(){
+	var form = new Form('',''),
+		data = form.data(dataStr1);
+
+	it('returns an array of one node value', function(){
+		expect(data.node("/thedata/nodeB").getVal()).toEqual(['b']);
+	});
+
+	it('returns an array of multiple node values', function(){
+		expect(data.node("/thedata/repeatGroup/nodeC").getVal()).toEqual(['', 'c2', 'c3']);
+	});
+
+	it('returns an empty array', function(){
+		expect(data.node("/thedata/nodeX").getVal()).toEqual([]);
+	});
 });
 
 describe('Data node XML data type validation', function(){
@@ -54,7 +75,7 @@ describe('Data node XML data type validation', function(){
 		form = new Form("", "");
 	form.form('<form></form>');
 
-	it('validates xml-type (without constraint evaluation)', function(){
+	
 		var t =
 			[
 				["/thedata/nodeA", null, null, 'val1', null, true],
@@ -122,12 +143,16 @@ describe('Data node XML data type validation', function(){
 
 				//TO DO binary (?)
 			];
+		function test(n){
+			it("validates xml-type (type: "+n.type+", value: "+n.value+")", function(){
+				data = form.data(dataStr1);
+				expect(data.node(n.selector, n.index, n.filter).setVal(n.value, null, n.type)).toEqual(n.result);
+			});
+		}
 
 		for (i = 0 ; i<t.length ; i++){
-			data = form.data(dataStr1);
-			expect(data.node(t[i][0], t[i][1], t[i][2]).setVal(t[i][3], null, t[i][4])).toEqual(t[i][5]);
+			test({selector: t[i][0], index: t[i][1], filter: t[i][2], value: t[i][3], type: t[i][4], result:t[i][5]});
 		}
-	});
 
 	it('sets a non-empty value to empty', function(){
 		var node = data.node('/thedata/nodeA', null, null);

@@ -339,7 +339,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		/**
 		 * Function: setVal
 		 * 
-		 * Sets data node values.
+		 * 
 		 * 
 		 * Parameters:
 		 * 
@@ -352,15 +352,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 *   -
 		 */
 		/**
-		 * [setVal description]
-		 * @param {(string|Array.<string>)=} newVal      [description]
-		 * @param {string=} expr        [description]
-		 * @param {string=} xmlDataType [description]
+		 * Sets data node values.
+		 * 
+		 * @param {(string|Array.<string>)=} newVal	The new value of the node.
+		 * @param {string=} expr        			XPath expression to validate the node.
+		 * @param {string=} xmlDataType 			XML data type of the node
+		 *
+		 * @returns {?boolean} null is returned when the node is not found or multiple nodes were selected
 		 */
 		Nodeset.prototype.setVal = function(newVal, expr, xmlDataType){
-			var target, curVal, success;
+			var $target, curVal, success;
 			//index = (typeof index !== 'undefined') ? index : -1;
-			curVal = this.getVal().join(' ');
+			//is the .join(' ') an artefact that can be removed?
+			curVal = this.getVal();//.join(' ');
 			//console.log('setting value of data node: '+this.selector+' with index: '+this.index);
 			
 			if (typeof newVal !== 'undefined'){
@@ -377,29 +381,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//console.debug('value(s) to set: '+newVal);
 			//console.debug('existing value(s): '+curVal);
 
-			target = this.get();//.eq(index);
+			$target = this.get();//.eq(index);
 
-			if ( target.length === 1 && $.trim(newVal.toString()) !== $.trim(curVal.toString()) ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
-				//if (this.validate(value) === true){
+			if ( $target.length === 1 && $.trim(newVal.toString()) !== $.trim(curVal.toString()) ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
 				//first change the value so that it can be evaluated in XPath (validated)
-				
-
-				target.text(newVal);
-				//	return true;
-				//}
-				//return false;
+				$target.text(newVal);
 				//then return validation result
 				success = this.validate(expr, xmlDataType);
-				$form.trigger('dataupdate', target.prop('nodeName'));
+				$form.trigger('dataupdate', $target.prop('nodeName'));
 				return success;
 			}
-			if (target.length > 1){
-			//	//console.debug('number of nodes with that name: '+target.length);
-			//	target.eq(this.index).text(value);
+			if ($target.length > 1){
 				console.error('nodeset.setVal expected nodeset with one node, but received multiple');
 				return null;
 			}
-			if (target.length === 0 ){
+			if ($target.length === 0 ){
 				console.error('Data node: '+this.selector+' with null-based index: '+this.index+' not found!');
 				return null;
 			}
@@ -420,14 +416,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 *   
 		 * Returns:
 		 * 
-		 *   returns the value of the node or false if no nodes were found. Throws error and stops when multiple 
-		 *   nodes with that selector were found
+		 *   returns [multiple OBSOLETE?] an array of values 
 		 *   
 		 */
 		Nodeset.prototype.getVal = function(){
 			var vals=[];
 			this.get().each(function(){
-				//if not leaf node
 				vals.push($(this).text());
 			});
 			return vals;
@@ -575,12 +569,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			},
 			'time' : {
 				validate : function(x){
-					return ( new Date('2012-01-01 '+x).toString() !== 'Invalid Date');
+					var date = new Date(),
+						segments = x.toString().split(':');
+					console.debug('time value to validate: '+x);
+					console.debug(segments);
+					if (segments.length < 2){
+						return false;
+					}
+					segments[2] = (segments[2]) ? segments[2] : 0;
+						
+					return ( segments[0] < 24 && segments[0] >= 0 && segments[1] < 60 && segments[1] >= 0 && segments[2] < 60 && segments[2] >= 0 && date.toString() !== 'Invalid Date' );
 				},
 				convert : function(x){
-					var datetime = new Date('2012-01-01 '+x);
+					var segments = x.toString().split(':');
+					$.each(segments, function(i, val){
+						segments[i] = val.toString().pad(2);
+					});
+					return segments.join(':');
 					//console.log('converting datetime to time');
-					return datetime.getHours().toString().pad(2)+':'+datetime.getMinutes().toString().pad(2)+':'+datetime.getSeconds().toString().pad(2);
+					//return datetime.getHours().toString().pad(2)+':'+datetime.getMinutes().toString().pad(2)+':'+datetime.getSeconds().toString().pad(2);
 				}
 			},
 			'barcode' : {
@@ -2546,6 +2553,19 @@ Date.prototype.toJrString = function(){
 		//(-date.getTimezoneOffset()/60);
 	}
 	return jrDate;
+};
+
+/**
+ * Pads a string with prefixed zeros until the requested string length is achieved.
+ * @param  {number} digits [description]
+ * @return {String|string}        [description]
+ */
+String.prototype.pad = function(digits){
+		var x = this;
+		while (x.length < digits){
+			x = '0'+x;
+		}
+		return x;
 };
 
 (function($){

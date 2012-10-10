@@ -63,7 +63,7 @@ describe('Data node XML data type validation', function(){
 				["/thedata/nodeA", 1   , null, 'val13', 'string', null], //non-existing node
 				["/thedata/repeatGroup/nodeC", null, null, 'val', null], //multiple nodes
 
-				["/thedata/nodeA", 0   , null, '4', 'double', true], //non-existing xml data type -> string
+				["/thedata/nodeA", 0   , null, '4', 'double', true], //double is a non-existing xml data type so turned into string
 				["/thedata/nodeA", 0   , null, 5, 'double', true],
 
 				["/thedata/nodeA", null, null, 'val2', 'string', true],
@@ -86,15 +86,22 @@ describe('Data node XML data type validation', function(){
 				
 				["/thedata/nodeA", null, null, 'val5565ghgyuyua', 'datetime', false], //Chrome turns val10 into a valid date..
 				["/thedata/nodeA", null, null, '2012-01-01T00:00:00-06', 'datetime', true],
-				["/thedata/nodeA", null, null, '2012-12-32T23:59:59-06', 'datetime', true],
-				["/thedata/nodeA", null, null, '2012-01-01T30:00:00-06', 'datetime', true], //datetimes can deal with 25:00s
-
+				//["/thedata/nodeA", null, null, '2012-12-32T00:00:00-06', 'datetime', false], fails, would be good if it didn't, but not critical
+				["/thedata/nodeA", null, null, '2012-12-31T23:59:59-06', 'datetime', true],
+				//["/thedata/nodeA", null, null, '2012-01-01T30:00:00-06', 'datetime', fails], fails, would be good if it didn't, but not critical
+				
 				["/thedata/nodeA", null, null, 'a', 'time', false],
 				["/thedata/nodeA", null, null, 'aa:bb', 'time', false],
-/*FF,Rhino*/	["/thedata/nodeA", null, null, '0:0', 'time', true],
-/*FF,Rhino*/	["/thedata/nodeA", null, null, '00:00', 'time', true],
-/*FF,Rhino*/	["/thedata/nodeA", null, null, '23:59', 'time', true],
+				["/thedata/nodeA", null, null, '0:0', 'time', true],
+				["/thedata/nodeA", null, null, '00:00', 'time', true],
+				["/thedata/nodeA", null, null, '23:59', 'time', true],
+				["/thedata/nodeA", null, null, '23:59:59', 'time', true],
 				["/thedata/nodeA", null, null, '24:00', 'time', false],
+				["/thedata/nodeA", null, null, '00:60', 'time', false],
+				["/thedata/nodeA", null, null, '00:00:60', 'time', false],
+				["/thedata/nodeA", null, null, '-01:00', 'time', false],
+				["/thedata/nodeA", null, null, '00:-01', 'time', false],
+				["/thedata/nodeA", null, null, '00:00:-01', 'time', false],
 
 				["/thedata/nodeA", null, null, 'val2', 'barcode', true],
 

@@ -557,7 +557,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						timeS[2] = timeS[2].split('.')[0]; //ignores milliseconds
 						timezone = Number(segments[3]);
 						timeS[0] = (Number(timeS[0])+timezone).toString(); 
-
+						
 						return new Date(Date.UTC(
 							Number(dateS[0]), Number(dateS[1])-1, Number(dateS[2]), Number(timeS[0]), 
 							Number(timeS[1]), Number(timeS[2]))).toUTCString();
@@ -567,12 +567,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			},
 			'time' : {
 				validate : function(x){
-					return ( new Date('2012-01-01 '+x).toString() !== 'Invalid Date');
+					var date = new Date(),
+						segments = x.toString().split(':');
+					console.debug('time value to validate: '+x);
+					console.debug(segments);
+					if (segments.length < 2){
+						return false;
+					}
+					segments[2] = (segments[2]) ? segments[2] : 0;
+						
+					return ( segments[0] < 24 && segments[0] >= 0 && segments[1] < 60 && segments[1] >= 0 && segments[2] < 60 && segments[2] >= 0 && date.toString() !== 'Invalid Date' );
 				},
 				convert : function(x){
-					var datetime = new Date('2012-01-01 '+x);
+					var segments = x.toString().split(':');
+					$.each(segments, function(i, val){
+						segments[i] = val.toString().pad(2);
+					});
+					return segments.join(':');
 					//console.log('converting datetime to time');
-					return datetime.getHours().toString().pad(2)+':'+datetime.getMinutes().toString().pad(2)+':'+datetime.getSeconds().toString().pad(2);
+					//return datetime.getHours().toString().pad(2)+':'+datetime.getMinutes().toString().pad(2)+':'+datetime.getSeconds().toString().pad(2);
 				}
 			},
 			'barcode' : {

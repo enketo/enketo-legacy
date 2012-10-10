@@ -5,7 +5,7 @@ EnvJasmine.load(EnvJasmine.includeDir + "xpathjs_javarosa/build/xpathjs_javarosa
 EnvJasmine.load(EnvJasmine.jsDir + "__form.js");
 
 describe("Data node getter", function () {
-    var t =
+    var i, t =
 		[
 			["", null, null, 9],
 			["", null, {}, 9],
@@ -71,13 +71,9 @@ describe('Date node value getter', function(){
 });
 
 describe('Data node XML data type validation', function(){
-	var data,
-		form = new Form("", "");
-	form.form('<form></form>');
-
-	
-		var t =
-			[
+	var i, data,
+		form = new Form("", ""),
+		t =	[
 				["/thedata/nodeA", null, null, 'val1', null, true],
 				["/thedata/nodeA", null, null, 'val3', 'somewrongtype', true],
 
@@ -101,7 +97,7 @@ describe('Data node XML data type validation', function(){
 				["/thedata/nodeA", 0   , null, 3, 'int', true],
 
 				["/thedata/nodeA", null, null, 'val5565ghgyuyuy', 'date', false], //Chrome turns val5 into a valid date...
-/*Rhino*/		["/thedata/nodeA", null, null, '2012-01-01', 'date', true],
+	/*Rhino*/	["/thedata/nodeA", null, null, '2012-01-01', 'date', true],
 				["/thedata/nodeA", null, null, '2012-12-32', 'date', false],
 				["/thedata/nodeA", null, null, 324, 'date', true],
 				
@@ -143,6 +139,8 @@ describe('Data node XML data type validation', function(){
 
 				//TO DO binary (?)
 			];
+		form.form('<form></form>');
+
 		function test(n){
 			it("validates xml-type (type: "+n.type+", value: "+n.value+")", function(){
 				data = form.data(dataStr1);
@@ -178,8 +176,7 @@ describe("Data node remove function", function(){
 
 
 describe("XPath Evaluator", function(){
-	it('evaluates an XPath expression', function(){
-		var t =
+	var i, t =
 		[
 			["/thedata/nodeB", "string", null, 0, "b"],
 			["../nodeB", "string", "/thedata/nodeB", 0, "b"],
@@ -188,15 +185,19 @@ describe("XPath Evaluator", function(){
 			//["/thedata/repeatGroup[2]/nodeC", "string", null, 0, "c3"]//, //INFINITE LOOP?
 			//['/thedata/repeatGroup[position()=3]/nodeC', 'string', null, 0, 'c3']//INFINITE LOOP?
 			// add test case where formula with absolute path is evaluated inside a repeat (ie. [x] position gets injected)
-		];
+		],
 		form = new Form("", ""),
 		data = form.data(dataStr1);
-		//just need to instantiate this to get $form variable without calling init()
-		form.form('<form></form>');
+	//just need to instantiate this to get $form variable without calling init()
+	form.form('<form></form>');
 
-		for (i = 0 ; i<t.length ; i++){
-			//console.debug('i is '+i+ ' out of '+t.length);
-			expect(data.evaluate(String(t[i][0]), t[i][1], t[i][2], t[i][3])).toEqual(t[i][4]);
-		}
-	});
+	function test(expr, resultType, contextSelector, index, result){
+		it("evaluates XPath: "+expr, function(){
+			expect(data.evaluate(expr, resultType, contextSelector, index)).toEqual(result);
+		});
+	}
+
+	for (i = 0 ; i<t.length ; i++){
+		test(String(t[i][0]), t[i][1], t[i][2], t[i][3], t[i][4]);
+	}
 });

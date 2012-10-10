@@ -339,7 +339,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		/**
 		 * Function: setVal
 		 * 
-		 * Sets data node values.
+		 * 
 		 * 
 		 * Parameters:
 		 * 
@@ -352,10 +352,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 *   -
 		 */
 		/**
-		 * [setVal description]
-		 * @param {(string|Array.<string>)=} newVal      [description]
-		 * @param {string=} expr        [description]
-		 * @param {string=} xmlDataType [description]
+		 * Sets data node values.
+		 * 
+		 * @param {(string|Array.<string>)=} newVal	The new value of the node.
+		 * @param {string=} expr        			XPath expression to validate the node.
+		 * @param {string=} xmlDataType 			XML data type of the node
+		 *
+		 * @returns {?boolean} null is returned when the node is not found or multiple nodes were selected
 		 */
 		Nodeset.prototype.setVal = function(newVal, expr, xmlDataType){
 			var $target, curVal, success;

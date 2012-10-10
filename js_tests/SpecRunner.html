@@ -19,12 +19,18 @@
 
   <!-- include source files here... -->
   <script type="text/javascript" src="../src/js/__form.js"></script>
+  <script type="text/javascript" src="../src/js/__storage.js"></script>
 
   <!-- include spec files here... -->
   <script type="text/javascript" src="specs/form.spec.js"></script>
+  <script type="text/javascript" src="specs/storage.spec.js"></script>
 
   <script type="text/javascript">
     (function() {
+      if (typeof console.debug === 'undefined'){
+        console.debug = console.log;
+      }
+
       var jasmineEnv = jasmine.getEnv();
       jasmineEnv.updateInterval = 1000;
 

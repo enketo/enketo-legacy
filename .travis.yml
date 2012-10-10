@@ -2,6 +2,7 @@ before_install:
   - git submodule update --init --recursive
 language: javascript
 script:
-  - ./lib/EnvJasmine/bin/run_all_tests.sh --testDir=../../js_tests --configFile=../../js_tests/env_jasmine.conf.js
+  - phantomjs lib/phantom-jasmine/lib/run_jasmine_test.coffee js_tests/SpecRunner_c.html
+  #- ./lib/EnvJasmine/bin/run_all_tests.sh --testDir=../../js_tests --configFile=../../js_tests/env_jasmine.conf.js
 notifications:
   irc: "irc.freenode.org#moditest"

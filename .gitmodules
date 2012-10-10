@@ -4,3 +4,6 @@
 [submodule "public/libraries/xpathjs_javarosa"]
 	path = public/libraries/xpathjs_javarosa
 	url = https://github.com/MartijnR/xpathjs_javarosa.git
+[submodule "lib/phantom-jasmine"]
+	path = lib/phantom-jasmine
+	url = https://github.com/jcarver989/phantom-jasmine.git

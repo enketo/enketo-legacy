@@ -228,7 +228,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			403: {success:false, msg: "You are not allowed to post data to this data server. "+contactAdmin},
 			404: {success:false, msg: "Submission service on data server not found or not properly configured."},
 			'4xx': {success:false, msg: "Unknown submission problem on data server."},
-			413: {success:false, msg: "Data is too large. Please export the data and contact support@formhub.org please."},
+			413: {success:false, msg: "Data is too large. Please export the data and contact support@formhub.org."},
 			500: {success:false, msg: serverDown},
 			503: {success:false, msg: serverDown},
 			'5xx':{success:false, msg: serverDown}

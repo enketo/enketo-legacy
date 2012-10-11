@@ -211,7 +211,8 @@ function deleteForm(confirmed) {
  * functionality. It only allows validated forms to be submitted. 'Submitted' in this case actually still means it is saved to localStorage first
  * and then forced to upload. If uploading fails the user can continue working on a blank form. Uploading will be attempted at intervals until it
  * succeeds.
- *
+ * TODO: it may be better to set the form name with counterValue in the traditional fashion with form.setRecordName() to prevent duplicate records in case
+ * resetForm() does not function as expected.
  */
 function submitForm() {
 	var record, saveResult;
@@ -224,11 +225,10 @@ function submitForm() {
 	
 	console.log('result of save: '+saveResult); // DEBUG
 	if (saveResult === 'success'){
-		//attempt uploading the data (all data in localStorage)
-		connection.uploadFromStore(true);
 		resetForm(true);
 		$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
-		//gui.showFeedback('Form with name "'+confirmedRecordName+'" has been saved.', 2);
+		//attempt uploading the data (all data in localStorage)
+		connection.uploadFromStore(true);
 	}
 	else{
 		gui.alert('Error trying to save data locally before submit');

@@ -19,6 +19,3 @@ var dataStr1 =
     "</instance>";
     
 function GUI(){}
-
-            //this.data = form.data(dataStr);
-            //this.form = form.form('nothing'); //jus

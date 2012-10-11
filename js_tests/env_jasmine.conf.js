@@ -17,8 +17,10 @@ EnvJasmine.includeDir = EnvJasmine.rootDir + "/../../public/libraries/"; // proj
 EnvJasmine.loadGlobal(EnvJasmine.includeDir + "jquery.min.js"); // for example, load jquery.
 // TODO: Add your own
 
-/* run like this in terminal from project root:
+/******************************************************************************************************************
+
+	run like this in terminal from project root:
 
 	./lib/EnvJasmine/bin/run_all_tests.sh --testDir=../../js_tests --configFile=../../js_tests/env_jasmine.conf.js
 
-*/
+ ******************************************************************************************************************/

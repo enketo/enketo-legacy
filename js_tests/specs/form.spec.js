@@ -218,5 +218,6 @@ describe("XPath Evaluator", function(){
 		form.form(formStr1);
 		expect(data.evaluate("/thedata/repeatGroup/nodeC", "string", "/thedata/repeatGroup/nodeC", 2)).toEqual("c3");
 	});
-
 });
+
+//TODO load a large complex form and detect console errors

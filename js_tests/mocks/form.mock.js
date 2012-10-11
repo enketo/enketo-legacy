@@ -32,5 +32,4 @@ var formStr1 =
             '</fieldset>'+
         '</fieldset>'+
     '</form>';
-    
-function GUI(){}
+

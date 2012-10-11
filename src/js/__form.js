@@ -335,28 +335,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return $nodes;
 		};
 
-
-		/**
-		 * Function: setVal
-		 * 
-		 * 
-		 * 
-		 * Parameters:
-		 * 
-		 *   selector - String of JQuery or XPath selector for a data node
-		 *   value - String/Number/Boolean of the new value of this node
-		 *   index - The 0-based index of this node amongs its peers with the same selector
-		 *   
-		 * Returns:
-		 * 
-		 *   -
-		 */
 		/**
 		 * Sets data node values.
 		 * 
 		 * @param {(string|Array.<string>)=} newVal	The new value of the node.
-		 * @param {string=} expr        			XPath expression to validate the node.
-		 * @param {string=} xmlDataType 			XML data type of the node
+		 * @param {string=} expr  XPath expression to validate the node.
+		 * @param {string=} xmlDataType XML data type of the node
 		 *
 		 * @returns {?boolean} null is returned when the node is not found or multiple nodes were selected
 		 */
@@ -534,30 +518,39 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}, 
 			'date' : {
 				validate : function(x){
-					//console.debug('validating date: "'+x+'"');
-					//console.debug(new Date(x.toString()));
-					return ( new Date(x.toString()).toString() !== 'Invalid Date' );
+					//console.debug('datestring: '+x+ ' type: '+ typeof x + 'is valid? -> '+new Date(x.toString()).toString());
+					return ( new Date(x).toString() !== 'Invalid Date' );
 				},
 				convert : function(x){
-					var datetime = new Date(x);
-					datetime.setUTCHours(0,0,0,0);
-					//console.log('converting datetime to date');
-					return new Date(datetime).toUTCString();//.getUTCFullYear(), datetime.getUTCMonth(), datetime.getUTCDate());
+					var date, segments,
+						pattern = /([0-9]{4})([\-]|[\/])([0-9]{2})([\-]|[\/])([0-9]{2})/;
+					segments = (pattern.exec(x));
+					//the 'flaw' in the code below is that "2012-02-30" will return a valid date of 2012-03-02
+					//this way of instantiating the date object (New Date(y,m,d)) is nevertheless preferred in order for it 
+					//to work in the Rhino engine and the webkit engine in PhantomJasmine
+					if (segments && Number(segments[1]) > 0 && Number(segments[3]) >=0 && Number(segments[3]) < 12 && Number(segments[5]) < 32){
+						date = new Date(Number(segments[1]), (Number(segments[3])-1), Number(segments[5]));
+					}
+					else date = new Date(x);
+					date.setUTCHours(0,0,0,0);
+					return date.toUTCString();//.getUTCFullYear(), datetime.getUTCMonth(), datetime.getUTCDate());
 				}
 			},
 			'datetime' : {
 				validate : function(x){
+					console.debug('datetime validation function received: '+x+' type:'+ typeof x);
 					return ( new Date(x.toString()).toString() !== 'Invalid Date');
 				},
 				convert : function(x){
 					var date, timezone, segments, dateS, timeS,
-						pattern = /([0-9]{2,4}\-[0-9]{1,2}\-[0-9]{1,2})T([0-9:.]+)([0-9+\-]*)/;
+						pattern = /([0-9]{4}\-[0-9]{1,2}\-[0-9]{1,2})([T]|[\s])([0-9:.]+)([0-9+\-]*)/;
+					//console.debug('datetime conversion function received: '+x+' type:'+ typeof x);
 					if (pattern.test(x)){
 						segments = pattern.exec(x);
 						dateS = segments[1].split('-');
-						timeS = segments[2].split(':');
-						timeS[2] = timeS[2].split('.')[0]; //ignores milliseconds
-						timezone = Number(segments[3]);
+						timeS = segments[3].split(':');
+						timeS[2] = (timeS[2]) ? timeS[2].split('.')[0] : 0; //ignores milliseconds
+						timezone = Number(segments[4]);
 						timeS[0] = (Number(timeS[0])+timezone).toString(); 
 
 						return new Date(Date.UTC(
@@ -1869,7 +1862,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//	}
 			//});*/
 			if(!Modernizr.inputtypes.date){
-				$form.find('input[type="date"]').datepicker({});
+				$form.find('input[type="date"]').datepicker({dateFormat: 'yy/mm/dd'});
 			}
 		},
 		timeWidget : function(){
@@ -1879,7 +1872,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}, 
 		dateTimeWidget : function(){
 			if(!Modernizr.inputtypes.datetime){
-				$form.find('input[type="datetime"]').datetimepicker({dateFormat: 'yy-mm-dd'});
+				$form.find('input[type="datetime"]').datetimepicker({dateFormat: 'yy/mm/dd', timeFormat: 'hh:mm:ss'});
 			}
 		},
 		selectOneWidget : function(){

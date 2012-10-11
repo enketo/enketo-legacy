@@ -17,5 +17,19 @@ var dataStr1 =
             "</repeatGroup>"+
         "</thedata>"+
     "</instance>";
-    
-function GUI(){}
+
+var formStr1 =
+    '<form>'+
+        '<fieldset class="jr-group">'+
+            '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
+                '<input name="/thedata/repeatGroup/nodeC" />'+
+            '</fieldset>'+
+            '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
+                '<input name="/thedata/repeatGroup/nodeC" />'+
+            '</fieldset>'+
+            '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
+                '<input name="/thedata/repeatGroup/nodeC" />'+
+            '</fieldset>'+
+        '</fieldset>'+
+    '</form>';
+

@@ -142,7 +142,7 @@ describe('Data node XML data type validation', function(){
 		form.form('<form></form>');
 
 		function test(n){
-			it("validates xml-type (type: "+n.type+", value: "+n.value+")", function(){
+			it("validates xml-type "+n.type+" with value: "+n.value, function(){
 				data = form.data(dataStr1);
 				expect(data.node(n.selector, n.index, n.filter).setVal(n.value, null, n.type)).toEqual(n.result);
 			});

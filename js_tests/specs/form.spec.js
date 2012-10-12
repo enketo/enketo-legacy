@@ -70,7 +70,7 @@ describe('Date node value getter', function(){
 	});
 });
 
-describe('Data node XML data type validation', function(){
+describe('Data node XML data type conversion & validation', function(){
 	var i, data,
 		form = new Form("", ""),
 		t =	[
@@ -97,7 +97,7 @@ describe('Data node XML data type validation', function(){
 				["/thedata/nodeA", 0   , null, 3, 'int', true],
 
 				["/thedata/nodeA", null, null, 'val5565ghgyuyuy', 'date', false], //Chrome turns val5 into a valid date...
-	/*Rhino*/	["/thedata/nodeA", null, null, '2012-01-01', 'date', true],
+				["/thedata/nodeA", null, null, '2012-01-01', 'date', true],
 				["/thedata/nodeA", null, null, '2012-12-32', 'date', false],
 				["/thedata/nodeA", null, null, 324, 'date', true],
 				
@@ -142,7 +142,7 @@ describe('Data node XML data type validation', function(){
 		form.form('<form></form>');
 
 		function test(n){
-			it("validates xml-type "+n.type+" with value: "+n.value, function(){
+			it("converts and validates xml-type "+n.type+" with value: "+n.value, function(){
 				data = form.data(dataStr1);
 				expect(data.node(n.selector, n.index, n.filter).setVal(n.value, null, n.type)).toEqual(n.result);
 			});
@@ -160,7 +160,21 @@ describe('Data node XML data type validation', function(){
 	});
 });
 
-describe("Data node remove function", function(){
+describe("clones a data node", function(){
+	it("has cloned a data node", function(){
+		var form = new Form('', ''),
+			data = form.data(dataStr1),
+			node = data.node("/thedata/nodeA"),
+			$precedingTarget = data.node("/thedata/repeatGroup/nodeC", 0).get();
+		form.form('form');
+
+		expect(data.node('/thedata/repeatGroup/nodeA', 0).get().length).toEqual(0);
+		node.clone($precedingTarget);
+		expect(data.node('/thedata/repeatGroup/nodeA', 0).get().length).toEqual(1);
+	});
+});
+
+describe("removes a data node", function(){
 	it("has removed a data node", function(){
 		var form = new Form('', ''),
 			data = form.data(dataStr1),
@@ -171,20 +185,17 @@ describe("Data node remove function", function(){
 		data.node("/thedata/nodeA").remove();
 		expect(node.get().length).toEqual(0);
 	});
-
 });
 
-
-describe("XPath Evaluator", function(){
+describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehensive tests)", function(){
 	var i, t =
 		[
 			["/thedata/nodeB", "string", null, 0, "b"],
 			["../nodeB", "string", "/thedata/nodeB", 0, "b"],
 			["/thedata/nodeB", "boolean", null, 0, true],
-			["/thedata/notexist", "boolean", null, 0, false]//,
-			//["/thedata/repeatGroup[2]/nodeC", "string", null, 0, "c3"]//, //INFINITE LOOP?
-			//['/thedata/repeatGroup[position()=3]/nodeC', 'string', null, 0, 'c3']//INFINITE LOOP?
-			// add test case where formula with absolute path is evaluated inside a repeat (ie. [x] position gets injected)
+			["/thedata/notexist", "boolean", null, 0, false],
+			["/thedata/repeatGroup[2]/nodeC", "string", null, 0, "c2"],
+			['/thedata/repeatGroup[position()=3]/nodeC', 'string', null, 0, 'c3']
 		],
 		form = new Form("", ""),
 		data = form.data(dataStr1);
@@ -200,4 +211,34 @@ describe("XPath Evaluator", function(){
 	for (i = 0 ; i<t.length ; i++){
 		test(String(t[i][0]), t[i][1], t[i][2], t[i][3], t[i][4]);
 	}
+
+	// this tests the makeBugCompliant() workaround that injects a position into an absolute path
+	// for the issue described here: https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations
+	it("evaluates a repaired absolute XPath inside a repeat", function(){
+		form.form(formStr1);
+		expect(data.evaluate("/thedata/repeatGroup/nodeC", "string", "/thedata/repeatGroup/nodeC", 2)).toEqual("c3");
+	});
 });
+
+describe("Output test", function(){
+	// These tests were orginally meant for modilabs/enketo issue #141. However, they passed when they were
+	// failing in the enketo client itself (same form). It appeared the issue was untestable (except manually) 
+	// since the issue was resolved by updating outputs with a one millisecond delay (!). 
+	// Nevertheless, these tests can be useful.
+	var	form = new Form(formStr2, dataStr2);
+	
+	form.init();
+	
+	it("tests output upon initialization: node random__", function(){
+		console.debug(form.getFormO().$.find('[data-value="/random/random__"]'));
+		expect(form.getFormO().$.find('[data-value="/random/random__"]').text().length).toEqual(17);
+	});
+
+	it("tests output upon initialization: node uuid__", function(){
+		console.debug(form.getFormO().$.find('[data-value="/random/uuid__"]'));
+		expect(form.getFormO().$.find('[data-value="/random/uuid__"]').text().length).toEqual(36);
+	});
+
+});
+
+//TODO load a large complex form and detect console errors

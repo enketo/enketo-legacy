@@ -97,7 +97,7 @@ describe('Data node XML data type conversion & validation', function(){
 				["/thedata/nodeA", 0   , null, 3, 'int', true],
 
 				["/thedata/nodeA", null, null, 'val5565ghgyuyuy', 'date', false], //Chrome turns val5 into a valid date...
-	/*Rhino*/	["/thedata/nodeA", null, null, '2012-01-01', 'date', true],
+				["/thedata/nodeA", null, null, '2012-01-01', 'date', true],
 				["/thedata/nodeA", null, null, '2012-12-32', 'date', false],
 				["/thedata/nodeA", null, null, 324, 'date', true],
 				
@@ -160,7 +160,7 @@ describe('Data node XML data type conversion & validation', function(){
 	});
 });
 
-describe("Data node clone function", function(){
+describe("clones a data node", function(){
 	it("has cloned a data node", function(){
 		var form = new Form('', ''),
 			data = form.data(dataStr1),
@@ -174,7 +174,7 @@ describe("Data node clone function", function(){
 	});
 });
 
-describe("Data node remove function", function(){
+describe("removes a data node", function(){
 	it("has removed a data node", function(){
 		var form = new Form('', ''),
 			data = form.data(dataStr1),

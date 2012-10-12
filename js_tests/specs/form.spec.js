@@ -222,8 +222,8 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 
 describe("Output test", function(){
 	// These tests were orginally meant for modilabs/enketo issue #141. However, they passed when they were
-	// failing in the enketo client itself (same form). It appeared the issue was untestable (except manually) 
-	// since the issue was resolved by updating outputs with a one millisecond delay (!). 
+	// failing in the enketo client itself (same form). It appeared the issue was untestable (except manually)
+	// since the issue was resolved by updating outputs with a one millisecond delay (!).
 	// Nevertheless, these tests can be useful.
 	var	form = new Form(formStr2, dataStr2);
 	

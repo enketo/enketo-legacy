@@ -187,7 +187,7 @@ describe("removes a data node", function(){
 	});
 });
 
-describe("XPath Evaluator", function(){
+describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehensive tests)", function(){
 	var i, t =
 		[
 			["/thedata/nodeB", "string", null, 0, "b"],
@@ -218,6 +218,27 @@ describe("XPath Evaluator", function(){
 		form.form(formStr1);
 		expect(data.evaluate("/thedata/repeatGroup/nodeC", "string", "/thedata/repeatGroup/nodeC", 2)).toEqual("c3");
 	});
+});
+
+describe("Output test", function(){
+	// These tests were orginally meant for modilabs/enketo issue #141. However, they passed when they were
+	// failing in the enketo client itself (same form). It appeared the issue was untestable (except manually) 
+	// since the issue was resolved by updating outputs with a one millisecond delay (!). 
+	// Nevertheless, these tests can be useful.
+	var	form = new Form(formStr2, dataStr2);
+	
+	form.init();
+	
+	it("tests output upon initialization: node random__", function(){
+		console.debug(form.getFormO().$.find('[data-value="/random/random__"]'));
+		expect(form.getFormO().$.find('[data-value="/random/random__"]').text().length).toEqual(17);
+	});
+
+	it("tests output upon initialization: node uuid__", function(){
+		console.debug(form.getFormO().$.find('[data-value="/random/uuid__"]'));
+		expect(form.getFormO().$.find('[data-value="/random/uuid__"]').text().length).toEqual(36);
+	});
+
 });
 
 //TODO load a large complex form and detect console errors

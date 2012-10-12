@@ -38,11 +38,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	this.sfv = function(){return form.setAllVals();};
 	this.getDataO = function(){return data.get();};
 	this.data = function(dataStr){return new DataXML(dataStr);};
-	this.dataO = function(){return data;};
+	this.getDataO = function(){return data;};
 	this.getDataEditO = function(){return dataToEdit.get();};
 	this.form = function(selector){return new FormHTML(selector);};
+	this.getFormO = function(){return form;};
 	this.getDataXML = function(){return data.getXML();};
 	this.validateAll = function(){return form.validateAll();};
+	this.outputUpdate = function(){return form.outputUpdate();};
 	//***************************************
 
 /**
@@ -351,7 +353,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			curVal = this.getVal();//.join(' ');
 			//console.log('setting value of data node: '+this.selector+' with index: '+this.index);
 			
-			if (typeof newVal !== 'undefined'){
+			if (typeof newVal !== 'undefined' && newVal !== null){
 				newVal = ($.isArray(newVal)) ? newVal.join(' ') : newVal;
 				//this would perhaps be better: (but selected('a b') actually would not work (and does now))
 				//if($.isArray(value)){
@@ -1067,7 +1069,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//this.input = function($node){
 		//	return new Input($node);
 		//};
-		//
+		//used for testing
+		this.$ = $form;
 		
 	}
 
@@ -1086,7 +1089,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		
 		//append icons
 		$form.find('label>input[type="checkbox"], label>input[type="radio"]').parent().parent('fieldset').prepend(icons);
-		$form.parent().find('label>select, , label>textarea, :not(#jr-preload-items, #jr-calculated-items)>label>input')//, form>label>input')
+		$form.parent().find('label>select, label>textarea, :not(#jr-preload-items, #jr-calculated-items)>label>input')//, form>label>input')
 			.not('[type="checkbox"], [type="radio"]').parent().prepend(icons);
 
 		//this.input.getWrapNodes($form.parent().find('fieldset:not(#jr-preload-items, #jr-calculated-items) input, select, textarea'))
@@ -1729,42 +1732,40 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var i, $inputNode, contextPath, contextIndex, expr, namesArr, cleverSelector, 
 			that=this,
 			val='';
-		console.log('updating active outputs that contain: '+changedNodeNames);
-		namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
-		cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
-		for (i=0 ; i<namesArr.length ; i++){
-			cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
-		}
-		//console.debug('the clever selector created: '+cleverSelector.join());
-		
-		$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
-			try{
+		/** 
+		 * issue #141 on modilabs/enketo was found to be a very mysterious one. In a very short form (random.xml)
+		 * it was found that the outputs were not updated because the cleverSelector did not find any nodes
+		 * It must have something to do with the DOM not having been built or something, because a 1 millisecond!!!
+		 * delay in executing the code below, the issue was resolved. To be properly fixed later...
+		 */	
+		setTimeout(function(){
+
+			console.log('updating active outputs that contain: '+changedNodeNames);
+			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
+			cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
+			for (i=0 ; i<namesArr.length ; i++){
+				cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
+			}
+			//console.debug('the clever selector created: '+cleverSelector.join());
+			//console.debug($form.find('*:not([disabled]) span.active'));
+			$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
+				console.log('found outputs');
+				try{
 					expr = $(this).attr('data-value');
-			//val = data.node($(this).attr('data-value')).getVal();
-			///if (typeof expr !== 'undefined' && expr.length > 0){
-				//temporary solution to make eMCI form run, some weird stuff in <output value= expressions
-			//	try{
-					//console.log('trying output expression: '+expr);
-		
 					val = data.evaluate(expr, 'string');
-					//console.log(val);
+					console.log('value: '+val);
 				}
 				catch(e){
 					console.error('error occurred trying to evaluate output value from expression: '+
-						expr+', (message:'+e.message+')');
+					expr+', (message:'+e.message+')');
 					val = '[ERROR]';
 				}
-			//}	
-//			} 
-//			catch(e){
-//				val = $(this).attr('data-value');
-//				//console.log('output value was not referring to a node value, and was therefore assumed to be a string:' +val);
-//			}
-			$(this).text(val);
-		});
-		$form.fixLegends();
-		//hints may have changed too
-		this.setHints();
+				$(this).text(val);
+			});
+			$form.fixLegends();
+			//hints may have changed too
+			that.setHints();
+		}, 1);
 	};
 
 	//var updatingCalcs;

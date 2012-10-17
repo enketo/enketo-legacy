@@ -97,45 +97,68 @@ class Survey_model extends CI_Model {
     
     public function launch_survey($server_url, $form_id, $submission_url, $data_url, $email)
     {  
-        log_message('debug', 'launch_survey function started');
+        //log_message('debug', 'launch_survey function started');
         if (url_valid($server_url) && url_valid($submission_url) && (url_valid($data_url) || $data_url===NULL))
         {
-            //ADD: CHECK URLS FOR LIVENESS?
-            
-            $existing = $this->db->get_where('surveys', array('server_url'=>$server_url, 'form_id'=>$form_id), 1);
-
+            //TODO: CHECK URLS FOR LIVENESS?
+            $this->db->where("server_url = '".$server_url."' AND BINARY form_id = '".$form_id."'");
+            $existing = $this->db->get('surveys', 1); 
             if ( $existing->num_rows() > 0 )
             {
-                log_message('debug', 'survey exists already in enketo db, returning edit_url: '.$this->_get_full_survey_edit_url($existing->row()->subdomain));
-                return array('success'=>FALSE, 'reason'=>'existing', 
-                    'url'=>
-                    $this->_get_full_survey_url($existing->row()->subdomain),
-                    'subdomain' => $existing->row()->subdomain,
-                    'edit_url'=> $this->_get_full_survey_edit_url($existing->row()->subdomain));
+                $subdomain = $existing->row()->subdomain;
+                $success = FALSE;
+                $reason = 'existing';
             } 
+            else
+            {
+                $subdomain = $this->_generate_subdomain();
+                log_message('debug', 'new subdomain generated:'.$subdomain);   
+                //if we can ensure only requests from enketo.org are processed, it is pretty certain that $server_url is live       
+                $data = array(
+                    'subdomain' => $subdomain,
+                    'server_url' => strtolower($server_url),
+                    'form_id' => $form_id,
+                    'submission_url' => strtolower($submission_url),
+                    'data_url' => strtolower($data_url),
+                    'email' => $email,
+                    'launch_date' => date( 'Y-m-d H:i:s', time())
+                );
 
-            $subdomain = $this->_generate_subdomain();
-            log_message('debug', 'subdomain generated:'.$subdomain);   
-            //if we can ensure only requests from enketo.org are processed, it is pretty certain that $server_url is live       
-            $data = array(
-                'subdomain' => $subdomain,
-                'server_url' => strtolower($server_url),
-                'form_id' => $form_id,
-                'submission_url' => strtolower($submission_url),
-                'data_url' => strtolower($data_url),
-                'email' => $email,
-                'launch_date' => date( 'Y-m-d H:i:s', time())
-            );
-            $result = $this->db->insert('surveys', $data); 
-            $survey_url = $this->_get_full_survey_url($subdomain);
-            $edit_url = $this->_get_full_survey_edit_url($subdomain);
-            log_message('debug', 'result of insert into surveys table: '.$result);
-            log_message('debug', 'returning new edit_url: '.$edit_url);
-            return ($result != FALSE) ? 
-                array('success'=>TRUE, 'url'=> $survey_url, 'edit_url' =>
-                    $edit_url, 'subdomain' => $subdomain) : array('success'=>FALSE, 'reason'=>'database');
+                $result = $this->db->insert('surveys', $data);
+                
+                if (!$result)
+                {
+                    $success = FALSE;
+                    $reason = 'database';
+                    unset($subdomain);
+                }
+                else
+                {
+                    $success = TRUE;
+                    $reason = 'new';
+                }
+            }
+
+            $survey_url = (isset($subdomain)) ? $this->_get_full_survey_url($subdomain) : '';
+            $edit_url = (isset($subdomain)) ? $this->_get_full_survey_edit_url($subdomain) : '';
+
+            return (isset($subdomain)) ? 
+                array
+                (
+                    'success' => $success, 
+                    'url'=> $survey_url, 
+                    'edit_url' => $edit_url, 
+                    'subdomain' => $subdomain,
+                    'reason' => $reason
+                ) 
+                : 
+                array
+                (
+                    'success' => $success, 
+                    'reason' => $reason
+                );
         }
-        log_message('debug', 'unknown error occurred when trying to launch survey');
+        log_message('error', 'unknown error occurred when trying to launch survey');
         return array('success'=>FALSE, 'reason'=>'unknown');
     }
 

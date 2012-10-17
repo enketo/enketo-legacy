@@ -15,6 +15,16 @@ var dataStr1 =
             "<repeatGroup>"+
                 "<nodeC>c3</nodeC>"+
             "</repeatGroup>"+
+            "<somenodes>"+
+                "<A>one</A>"+
+                "<B>one</B>"+
+                "<C>one</C>"+
+            "</somenodes>"+
+            "<someweights>"+
+                "<w1>1</w1>"+
+                "<w2>3</w2>"+
+                "<w3>5</w3>"+
+            "</someweights>"+
         "</thedata>"+
     "</instance>";
 
@@ -35,7 +45,7 @@ var formStr1 =
 
 var dataStr2 =
     '<instance xmlns="http://www.w3.org/2002/xforms">'+
-        '<random id="random"><formhub/>'+
+        '<random id="random"><formhub><uuid/></formhub>'+
           '<random__/>'+
           '<note_random/>'+
           '<uuid__/>'+

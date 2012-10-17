@@ -7,16 +7,16 @@ EnvJasmine.load(EnvJasmine.jsDir + "__form.js");
 describe("Data node getter", function () {
     var i, t =
 		[
-			["", null, null, 9],
-			["", null, {}, 9],
+			["", null, null, 17],
+			["", null, {}, 17],
 			//["/", null, {}, 9], //issue with xfind, not important
-			[false, null, {}, 9],
-			[null, null, {}, 9],
-			[null, null, {noTemplate:true}, 9],
-			[null, null, {noTemplate:false}, 11],
+			[false, null, {}, 17],
+			[null, null, {}, 17],
+			[null, null, {noTemplate:true}, 17],
+			[null, null, {noTemplate:false}, 19],
 			[null, null, {onlyTemplate:true}, 1],
-			[null, null, {noEmpty:true}, 3],
-			[null, null, {noEmpty:true, noTemplate:false}, 4],
+			[null, null, {noEmpty:true}, 9],
+			[null, null, {noEmpty:true, noTemplate:false}, 10],
 
 			["/thedata/nodeA", null, null, 1],
 			["/thedata/nodeA", 1   , null, 0],
@@ -187,7 +187,7 @@ describe("removes a data node", function(){
 	});
 });
 
-describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehensive tests)", function(){
+describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehensive tests!)", function(){
 	var i, t =
 		[
 			["/thedata/nodeB", "string", null, 0, "b"],
@@ -195,7 +195,11 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 			["/thedata/nodeB", "boolean", null, 0, true],
 			["/thedata/notexist", "boolean", null, 0, false],
 			["/thedata/repeatGroup[2]/nodeC", "string", null, 0, "c2"],
-			['/thedata/repeatGroup[position()=3]/nodeC', 'string', null, 0, 'c3']
+			['/thedata/repeatGroup[position()=3]/nodeC', 'string', null, 0, 'c3'],
+			['coalesce(/thedata/nodeA, /thedata/nodeB)', 'string', null, 0, 'b'],
+			['coalesce(/thedata/nodeB, /thedata/nodeA)', 'string', null, 0, 'b'],
+			['weighted-checklist(3, 3, /thedata/somenodes/A, /thedata/someweights/w2)', 'boolean', null, 0, true],
+			['weighted-checklist(9, 9, /thedata/somenodes/*, /thedata/someweights/*)', 'boolean', null, 0, true]
 		],
 		form = new Form("", ""),
 		data = form.data(dataStr1);
@@ -214,7 +218,7 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 
 	// this tests the makeBugCompliant() workaround that injects a position into an absolute path
 	// for the issue described here: https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations
-	it("evaluates a repaired absolute XPath inside a repeat", function(){
+	it("evaluates a repaired absolute XPath inside a repeat (makeBugCompliant())", function(){
 		form.form(formStr1);
 		expect(data.evaluate("/thedata/repeatGroup/nodeC", "string", "/thedata/repeatGroup/nodeC", 2)).toEqual("c3");
 	});

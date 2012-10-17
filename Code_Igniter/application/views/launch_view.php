@@ -151,16 +151,15 @@
 			    <ul style="line-height: 1.5em">
 			    	<li>support for cascading selections</li>
 			    	<li>itext(path/to/node) support</li>
-			    	<li>complete data type validation</li>
-			    	<li>widgets (grids, slider, geop., auto, select, big-text)</li>
+			    	<li>widgets</li>
 			    </ul>
 			</div>
-			<div class="column ui-corner-all ui-helper-clearfix">
+			<!--<div class="column ui-corner-all ui-helper-clearfix">
 				Use the links below to relaunch this app in a developer mode:<br/><br/>
-				<!--<a style="display: block; text-align: center;" href="?debug=true" title="click to relaunch">debug mode</a><br/>-->
+				<a style="display: block; text-align: center;" href="?debug=true" title="click to relaunch">debug mode</a><br/>
 				<a style="display: block; text-align: center;" href="?source=true" title="click to relaunch with an add 'source' tab that shows html5 source of the transformed form">source-view mode</a><br/>
 				<a style="display: block; text-align: center;" href="#" title="click to relaunch">normal mode</a>
-			</div>
+			</div>-->
 		</div>
 		<!--<p>
 		 	Note that for standard XPath 1.0 functions, Enketo does not deviate from the XPath specification. This means that existing forms may not work properly until they are corrected. This is particularly relevant to usages described in item 1 of <a target="_blank" href="https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations">this document</a>.

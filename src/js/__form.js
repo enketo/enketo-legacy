@@ -36,7 +36,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	//*** FOR DEBUGGING and TESTING, OTHERWISE DISABLE***
 	this.ex = function(expr, type, selector, index){return data.evaluate(expr, type, selector, index);};
 	this.sfv = function(){return form.setAllVals();};
-	this.getDataO = function(){return data.get();};
+	//this.getDataO = function(){return data.get();};
 	this.data = function(dataStr){return new DataXML(dataStr);};
 	this.getDataO = function(){return data;};
 	this.getDataEditO = function(){return dataToEdit.get();};

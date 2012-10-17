@@ -617,10 +617,9 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                     </xsl:attribute>
                 </xsl:if>
 
-                <!-- avoid self-closing textarea (browser bug?)-->
+                <!-- avoid self-closing textarea -->
                 <xsl:if test="$element='textarea'">
-                    <xsl:text>
-                    </xsl:text>
+                    <xsl:text> </xsl:text>
                 </xsl:if>
             </xsl:element>
         </label>
@@ -1224,7 +1223,6 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
             <!-- temporary -->
             <xsl:when test="$xml_type = 'barcode' or $xml_type = 'geopoint'" >
                 <xsl:value-of select="string('text')" />
-                <xsl:message>INFO: XML data type '<xsl:value-of select="$xml_type" />' not yet functional.</xsl:message>
             </xsl:when>
             <!-- ********* -->
             <xsl:otherwise>

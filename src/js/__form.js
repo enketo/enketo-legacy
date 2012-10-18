@@ -2142,8 +2142,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var value,
 				that = this;
 			// when is 'start' or 'end'
-			if (o.param == 'start' && o.curVal !== ''){
-				return (o.curVal === '') ? o.curVal : data.evaluate('now()', 'string');
+			if (o.param == 'start'){
+				return (o.curVal.length > 0) ? o.curVal : data.evaluate('now()', 'string');
 			}
 			if (o.param == 'end'){
 				//set event handler for each save event (needs to be triggered!)

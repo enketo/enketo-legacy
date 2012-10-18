@@ -156,7 +156,7 @@ describe('Data node XML data type conversion & validation', function(){
 		var node = data.node('/thedata/nodeA', null, null);
 		data = form.data(dataStr1);
 		node.setVal('value', 'string');
-		expect(node.setVal(''), true);
+		expect(node.setVal('')).toBe(true);
 	});
 });
 
@@ -245,7 +245,7 @@ describe("Output functionality ", function(){
 
 });
 
-describe("InstanceID generation functionality", function(){
+describe("Preload and MetaData functionality", function(){
 	var	form;
 
 	it("ignores a calculate binding on [ROOT]/meta/instanceID", function(){
@@ -254,14 +254,13 @@ describe("InstanceID generation functionality", function(){
 		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0].length).toEqual(41);
 	});
 
-	it("generates an instanceID even though no preload binding is present", function(){
+	it("generates an instanceID on meta/instanceID even though no preload binding is present", function(){
 		form = new Form(formStr2, dataStr2);
 		form.init();
 		form.getFormO().$.find('fieldset#jr-preload-items').remove();
 		expect(form.getFormO().$.find('fieldset#jr-preload-items').length).toEqual(0);
 		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0].length).toEqual(41);
 	});
-
 
 	it("generates an instanceID if instance preloader is present", function(){
 		form = new Form(formStr3, dataStr2);
@@ -278,6 +277,39 @@ describe("InstanceID generation functionality", function(){
 		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0]).toEqual('c13fe058-3349-4736-9645-8723d2806c8b');
 	});
 
+	it("generates a timeStart on meta/timeStart even though no preload binding is present", function(){
+		form = new Form(formStr2, dataStr2);
+		form.init();
+		form.getFormO().$.find('fieldset#jr-preload-items').remove();
+		expect(form.getFormO().$.find('fieldset#jr-preload-items').length).toEqual(0);
+		expect(form.getDataO().node('/random/meta/timeStart').getVal()[0].length > 10).toBe(true);
+	});
+
+	it("generates a timeEnd on init and updates this after a beforesave event even though no preload binding is present", function(){
+		var timeEnd, timeEndNew;
+		//jasmine.Clock.useMock();
+		form = new Form(formStr2, dataStr2);
+		form.init();
+		form.getFormO().$.find('fieldset#jr-preload-items').remove();
+		expect(form.getFormO().$.find('fieldset#jr-preload-items').length).toEqual(0);
+		timeEnd = form.getDataO().node('/random/meta/timeEnd').getVal()[0];
+		console.debug('init timeEnd: '+timeEnd);
+		expect(timeEnd.length > 10).toBe(true);
+		//setTimeout(function(){
+			form.getFormO().$.trigger('beforesave');
+			timeEndNew = form.getDataO().node('/random/meta/timeEnd').getVal()[0];
+			timeEnd = new Date(timeEnd);
+			timeEndNew = new Date(timeEndNew);
+			console.debug(timeEnd);
+			console.debug(timeEndNew);
+			//for some reason the setTimeout function doesn't work
+			expect(timeEnd-1 < timeEndNew).toBe(true);
+		//}, 1001);
+		//jasmine.Clock.tick(1001);
+		//TODO FIX THIS PROPERLY
+	});
+
+	//TODO add similar to last tests if preloader IS present
 });
 
 //TODO load a large complex form and detect console errors

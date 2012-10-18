@@ -52,6 +52,8 @@ var dataStr2 =
           '<note_uuid/>'+
           '<meta>'+
             '<instanceID/>'+
+            '<timeStart/>'+
+            '<timeEnd/>'+
           '</meta>'+
         '</random>'+
       '</instance>';
@@ -92,7 +94,7 @@ var formStr2 =
         '</fieldset>'+
         '<fieldset id="jr-calculated-items" style="display:none;">'+
             '<label>'+
-                '<input name="/random/formhub/uuid" type="hidden" data-calculate="string(9faaa6efd9bc48f9ab32d7ce5e9148d4)" data-type-xml="string"/>'+
+                '<input name="/random/formhub/uuid" type="hidden" data-calculate="9faaa6efd9bc48f9ab32d7ce5e9148d4" data-type-xml="string"/>'+
             '</label>'+
             '<label>'+
                 '<input name="/random/random__" type="hidden" data-calculate="random()" data-type-xml="string"/>'+
@@ -141,7 +143,7 @@ var formStr3 =
         '</fieldset>'+
         '<fieldset id="jr-calculated-items" style="display:none;">'+
             '<label>'+
-                '<input name="/random/formhub/uuid" type="hidden" data-calculate="string(9faaa6efd9bc48f9ab32d7ce5e9148d4)" data-type-xml="string"/>'+
+                '<input name="/random/formhub/uuid" type="hidden" data-calculate="9faaa6efd9bc48f9ab32d7ce5e9148d4" data-type-xml="string"/>'+
             '</label>'+
             '<label>'+
                 '<input name="/random/random__" type="hidden" data-calculate="random()" data-type-xml="string"/>'+

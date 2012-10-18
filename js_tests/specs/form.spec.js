@@ -248,13 +248,13 @@ describe("Output test", function(){
 describe("InstanceID generation functionality", function(){
 	var	form;
 
-	it("ignoring a calculate binding on [ROOT]/meta/instanceID", function(){
+	it("ignores a calculate binding on [ROOT]/meta/instanceID", function(){
 		form = new Form(formStr2, dataStr2);
 		form.init();
 		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0].length).toEqual(41);
 	});
 
-	it("generating an instanceID even though no preload binding is present", function(){
+	it("generates an instanceID even though no preload binding is present", function(){
 		form = new Form(formStr2, dataStr2);
 		form.init();
 		form.getFormO().$.find('fieldset#jr-preload-items').remove();
@@ -263,7 +263,7 @@ describe("InstanceID generation functionality", function(){
 	});
 
 
-	it("generating an instanceID if instance preloader is present", function(){
+	it("generates an instanceID if instance preloader is present", function(){
 		form = new Form(formStr3, dataStr2);
 		form.init();
 		expect(form.getFormO().$

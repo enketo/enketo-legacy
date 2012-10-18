@@ -271,6 +271,13 @@ describe("InstanceID generation functionality", function(){
 			.toEqual(1);
 		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0].length).toEqual(41);
 	});
+
+	it("does not generate a new instanceID if one is already present", function(){
+		form = new Form(formStr3, dataStr3);
+		form.init();
+		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0]).toEqual('c13fe058-3349-4736-9645-8723d2806c8b');
+	});
+
 });
 
 //TODO load a large complex form and detect console errors

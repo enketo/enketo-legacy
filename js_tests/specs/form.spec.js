@@ -160,7 +160,7 @@ describe('Data node XML data type conversion & validation', function(){
 	});
 });
 
-describe("clones a data node", function(){
+describe("Data node cloner", function(){
 	it("has cloned a data node", function(){
 		var form = new Form('', ''),
 			data = form.data(dataStr1),
@@ -174,7 +174,7 @@ describe("clones a data node", function(){
 	});
 });
 
-describe("removes a data node", function(){
+describe("Data node remover", function(){
 	it("has removed a data node", function(){
 		var form = new Form('', ''),
 			data = form.data(dataStr1),
@@ -224,7 +224,7 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 	});
 });
 
-describe("Output test", function(){
+describe("Output functionality ", function(){
 	// These tests were orginally meant for modilabs/enketo issue #141. However, they passed when they were
 	// failing in the enketo client itself (same form). It appeared the issue was untestable (except manually)
 	// since the issue was resolved by updating outputs with a one millisecond delay (!).
@@ -233,14 +233,49 @@ describe("Output test", function(){
 	
 	form.init();
 	
-	it("tests output upon initialization: node random__", function(){
+	it("tested upon initialization: node random__", function(){
 		console.debug(form.getFormO().$.find('[data-value="/random/random__"]'));
 		expect(form.getFormO().$.find('[data-value="/random/random__"]').text().length).toEqual(17);
 	});
 
-	it("tests output upon initialization: node uuid__", function(){
+	it("tested upon initialization: node uuid__", function(){
 		console.debug(form.getFormO().$.find('[data-value="/random/uuid__"]'));
 		expect(form.getFormO().$.find('[data-value="/random/uuid__"]').text().length).toEqual(36);
+	});
+
+});
+
+describe("InstanceID generation functionality", function(){
+	var	form;
+
+	it("ignores a calculate binding on [ROOT]/meta/instanceID", function(){
+		form = new Form(formStr2, dataStr2);
+		form.init();
+		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0].length).toEqual(41);
+	});
+
+	it("generates an instanceID even though no preload binding is present", function(){
+		form = new Form(formStr2, dataStr2);
+		form.init();
+		form.getFormO().$.find('fieldset#jr-preload-items').remove();
+		expect(form.getFormO().$.find('fieldset#jr-preload-items').length).toEqual(0);
+		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0].length).toEqual(41);
+	});
+
+
+	it("generates an instanceID if instance preloader is present", function(){
+		form = new Form(formStr3, dataStr2);
+		form.init();
+		expect(form.getFormO().$
+			.find('fieldset#jr-preload-items input[name="/random/meta/instanceID"][data-preload="instance"]').length)
+			.toEqual(1);
+		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0].length).toEqual(41);
+	});
+
+	it("does not generate a new instanceID if one is already present", function(){
+		form = new Form(formStr3, dataStr3);
+		form.init();
+		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0]).toEqual('c13fe058-3349-4736-9645-8723d2806c8b');
 	});
 
 });

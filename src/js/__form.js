@@ -350,7 +350,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var $target, curVal, success;
 			//index = (typeof index !== 'undefined') ? index : -1;
 			//is the .join(' ') an artefact that can be removed?
-			curVal = this.getVal();//.join(' ');
+			curVal = this.getVal()[0];//.join(' ');
 			//console.log('setting value of data node: '+this.selector+' with index: '+this.index);
 			
 			if (typeof newVal !== 'undefined' && newVal !== null){
@@ -467,7 +467,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		Nodeset.prototype.validate = function(expr, xmlDataType){
 			//var //i, result,
 			var typeValid, exprValid,
-				value = this.getVal();
+				value = this.getVal()[0];
 			//	value = this.getVal(); //multiple acceptable???
 			
 			//for (i=0 ; i<values.length ; i++){
@@ -919,21 +919,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		return bcExpr;
 	};
 
-	/*
-	 * Evaluates an XPath Expression using the browser's native XPath 1.0 engine
-	 * $context parameter is a jQuery object!
-	 * type 
-	 *  (and only used for booleans
-	 *
-	 *
-	 * 
-	 */
 	/**
 	 * Evaluates an XPath Expression using XPathJS_javarosa (not native XPath 1.0 evaluator)
 	 * 
 	 * THIS FUNCTION DOESN'T SEEM TO WORK PROPERLY FOR NODE RESULTTYPES! otherwise:
-	 * nodes can be accessed by returned node.snapshotItem(i)(.textContent)
-	 * node can be accessed by returned node(.textContent)
+	 * muliple nodes can be accessed by returned node.snapshotItem(i)(.textContent)
+	 * a single node can be accessed by returned node(.textContent)
 	 * 
 	 * @param  {string} expr       [description]
 	 * @param  {string=} resTypeStr boolean, string, number, nodes (best to always supply this)
@@ -942,32 +933,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {?(number|string|boolean)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
-		var context, dataCleanClone, resTypeNum, resultTypes, result, $repParents;//, repSelector, repIndex;//, repDataNodeName;
+		var context, dataCleanClone, resTypeNum, resultTypes, result, $repParents;
 		
-		//$context = $context || this.get().find('instance>*');
-		//console.debug('evaluating expression: '+expr);
 		resTypeStr = resTypeStr || 'any';
 		index = index || 0;
-		//console.debug('selector of context: '+selector);
-		//console.debug('index of context node: '+index);
-		//var context = $.parseXML((new window.XMLSerializer()).serializeToString($context[0]));
-		//create a clone so that the template nodes can be removed (not tried detach() and attach()
-		
-		////console.debug(data.get());
-		//$clonedDoc = this.get().find('instance>*').clone().appendTo($('<root></root>'));
-		//$clonedContext.find('[template]').remove();
-		
-		////console.log('creating clean clone from string:'+this.getStr(false, false));
 		dataCleanClone = new DataXML(this.getStr(false, false));
-		////console.log('clean clone:');
-		////console.log(dataCleanClone);
-		////console.log('selector of context node: '+selector);
-		////console.log('index of context node: '+index);
-		//use a trick to be able to get the context node using getElementById
+
 		if (typeof selector !== 'undefined' && selector !== null) {
-			//console.debug('selector for context node in evaluate(): '+selector+' with index: '+index);
-			//dataCleanClone.node(selector, index, {}).get().attr('id','getme');
-			//context = dataCleanClone.get()[0].getElementById('getme');
+
 			context = dataCleanClone.node(selector, index, {}).get()[0];
 			/**
 			 * If the expressions is bound to a node that is inside a repeat.... see makeBugCompliant()
@@ -980,12 +953,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		else context = dataCleanClone.getXML();//dataCleanClone.get()[0];//.documentElement;
 		
 		resultTypes = { //REMOVE VALUES? NOT USED
-			0 : ['any', 'ANY_TYPE'], //works
-			1 : ['number', 'NUMBER_TYPE', 'numberValue'], //works, e.g. evalXpression('number(true())', 'number')
-			2 : ['string', 'STRING_TYPE', 'stringValue'], //works, e.g. evalXpression('string(38)', 'string')
-			3 : ['boolean', 'BOOLEAN_TYPE', 'booleanValue'], //works, e.g. evalXpression('"red" != "bleu", 'boolean')
-			//NOTE: nodes are actually never requested in this function as DataXML.node().get() is used to return nodes
-			
+			0 : ['any', 'ANY_TYPE'], 
+			1 : ['number', 'NUMBER_TYPE', 'numberValue'],
+			2 : ['string', 'STRING_TYPE', 'stringValue'], 
+			3 : ['boolean', 'BOOLEAN_TYPE', 'booleanValue'], 
+			//NOTE: nodes are actually never requested in this function as DataXML.node().get() is used to return nodes	
 			7 : ['nodes', 'ORDERED_NODE_SNAPSHOT_TYPE'], //works with iterateNext().textContent
 			9 : ['node', 'FIRST_ORDERED_NODE_TYPE']
 			//'node': ['FIRST_ORDERED_NODE_TYPE','singleNodeValue'], // does NOT work, just take first result of previous
@@ -1066,17 +1038,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	function FormHTML (selector){
 		//there will be only one instance of FormHTML
 		$form = $(selector);
-		//this.input = function($node){
-		//	return new Input($node);
-		//};
 		//used for testing
 		this.$ = $form;
-		
 	}
 
 	FormHTML.prototype.init = function(){
-		var icons, name, required;//,
-			//that = this; 
+		var icons, name, required;
 		//console.debug ('initializing HTML form');
 
 		this.checkForErrors();
@@ -1126,6 +1093,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.beautify();
 		this.widgets.init();
 		this.branch.init();
+		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 		this.calcUpdate();
 		this.outputUpdate();
 		this.setEventHandlers();
@@ -1768,6 +1736,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}, 1);
 	};
 
+	/**
+	 * See https://groups.google.com/forum/?fromgroups=#!topic/opendatakit-developers/oBn7eQNQGTg
+	 * and http://code.google.com/p/opendatakit/issues/detail?id=706
+	 * 
+	 * Once the following is complete this function can and should be removed:
+	 * 
+	 * 1. ODK Collect starts supporting an instanceID preload item
+	 * 2. Pyxforms changes the instanceID binding from calculate to preload
+	 * 3. Formhub has re-generated all stored XML forms from the stored XLS forms with the updated pyxforms
+	 * 
+	 */
+	FormHTML.prototype.grosslyViolateStandardComplianceByIgnoringCertainCalcs = function(){
+		var $culprit = $form.find('[name$="/meta/instanceID"][data-calculate]');
+		if ($culprit.length > 0){
+			console.debug("Found meta/instanceID with binding that has a calculate attribute and removed this calculation. It ain't right!");
+			$culprit.removeAttr('data-calculate');
+		}
+	};
+
 	//var updatingCalcs;
 	//@changedNodeNames {String} comma-separated list of changed data node names
 	/**
@@ -2088,43 +2075,89 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 	};
 
-	/*Note that preloaders may be deprecated in the future, so not important*/
+	/*
+	 * Note that preloaders may be deprecated in the future and be handled as metadata without bindings at all, in which
+	 * case all this stuff should perhaps move to DataXML
+	 */
 	//functions are design to fail silently if unknown preloaders are called
 	FormHTML.prototype.preloads = {
 		init: function(){
-			var item, param, name, curVal,
+			var item, param, name, curVal, meta, dataNode,
 				that = this;
 			//console.log('initializing preloads');
+			//these initialize actual preload items
 			$form.find('#jr-preload-items input').each(function(){
 				item = $(this).attr('data-preload').toLowerCase();
 				param = $(this).attr('data-preload-params').toLowerCase();
 				name = $(this).attr('name');
 				if (typeof that[item] !== 'undefined'){
 					//proper way would be to add index
-					curVal = data.node(name).getVal();
+					curVal = data.node(name).getVal()[0];
 					that.setVal($(this), that[item]({param: param, curVal:curVal, node: $(this)}));
 				}
 				else{
 					console.error('Preload "'+item+'"" not supported. May or may not be a big deal.');
 				}
 			});
+			//in addition the presence of certain meta data in the instance may automatically trigger a preload function
+			//even if the binding is not present. Note, that this actually does not deal with HTML elements at all.
+			meta = data.node('*>meta>*');
+			meta.get().each(function(){
+				item = null;
+				name = $(this).prop('nodeName');
+				//console.debug('meta data item found: '+name);
+				//console.debug($(this));
+				dataNode = data.node('*>meta>'+name);
+				curVal = dataNode.getVal()[0];
+				//first check if there isn't a binding with a preloader that already took care of this
+				if($form.find('#jr-preload-items input[name$="/meta/'+name+'"][data-preload]').length === 0){
+					switch (name){
+						case 'instanceID':
+							item = 'instance';
+							param = '';
+							break;
+						case 'timeStart':
+							item = 'timestamp';
+							param = 'start';
+							break;
+						case 'timeEnd':
+							item = 'timestamp';
+							param = 'end';
+							break;
+					}
+				}
+				if (item){
+					that.setDataVal(dataNode, that[item]({param: param, curVal:curVal, dataNode:dataNode}), null, 'string');
+				}
+			});
 		},
-		setVal: function(node, val){
-			//console.debug('preload input node:');
-			//console.debug(node);
-			//console.debug('value of preload item to set:' +val);
-			//node.removeAttr('disabled').val(val.toString()).trigger('change').attr('disabled', 'disabled');
-			node.val(val.toString()).trigger('change');
+		setVal: function($node, val){
+			$node.val(val.toString()).trigger('change');
+		},
+		setDataVal: function(node, val){
+			//console.debug('setting meta data value to: '+val);
+			node.setVal(val, 'string');
 		},
 		'timestamp' : function(o){
-			var that = this;
+			var value,
+				that = this;
 			// when is 'start' or 'end'
 			if (o.param == 'start' && o.curVal !== ''){
 				return (o.curVal === '') ? o.curVal : data.evaluate('now()', 'string');
 			}
 			if (o.param == 'end'){
 				//set event handler for each save event (needs to be triggered!)
-				$form.on('beforesave', function(){that.setVal(o.node, data.evaluate('now()', 'string'));});
+				$form.on('beforesave', function(){
+					value = data.evaluate('now()', 'string');
+					//if this is a preload item (and has a html input node)
+					if (o.node){
+						that.setVal(o.node, value);
+					}
+					//otherwise this is a metadata node
+					else{
+						that.setDataVal(o.dataNode, value);
+					}
+				});
 				return data.evaluate('now()', 'string');
 			}
 			return '';
@@ -2156,10 +2189,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		'user' : function(o){
 			//uuid, user_id, user_type
-			if (o.param == 'uuid'){
-				return (o.curVal === '') ? o.curVal : data.evaluate('uuid()', 'string');
-			}
-			return 'user preload item not functioning yet';
+			//if (o.param == 'uuid'){
+			//	return (o.curVal.length > 1) ? o.curVal : data.evaluate('uuid()', 'string');
+			//}
+			return 'user preload item not supported in enketo yet';
 		},
 		'uid' : function(o){
 			//general 
@@ -2179,6 +2212,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		'os': function(o){
 			return 'not known';
+		},
+		//Not according to spec yet, this will be added to spec but name may change
+		'instance' : function(o){
+			return (o.curVal.length > 0) ? o.curVal : data.evaluate("concat('uuid:', uuid())", 'string');
 		}
 	};
 
@@ -2239,7 +2276,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//NOTE THIS ASSUMES THE DEFAULT NUMBER IS STATIC, NOT DYNAMIC!!
 			$form.find('fieldset.jr-repeat').each(function(){
 				repCountPath = $(this).attr('data-repeat-count') || "";
-				numRepsInCount = (repCountPath.length > 0) ? parseInt(data.node(repCountPath).getVal(), 10) : 0;
+				numRepsInCount = (repCountPath.length > 0) ? parseInt(data.node(repCountPath).getVal()[0], 10) : 0;
 				//console.debug('number of reps in count attribute: ' +numRepsInCount);
 				numRepsInInstance = data.node($(this).attr('name')).get().length;
 				numRepsDefault = (numRepsInCount > numRepsInInstance) ? numRepsInCount : numRepsInInstance;

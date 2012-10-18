@@ -50,7 +50,10 @@ var dataStr2 =
           '<note_random/>'+
           '<uuid__/>'+
           '<note_uuid/>'+
-        '<meta/></random>'+
+          '<meta>'+
+            '<instanceID/>'+
+          '</meta>'+
+        '</random>'+
       '</instance>';
 
 var formStr2 =
@@ -70,6 +73,9 @@ var formStr2 =
             '<span id="jrCalculate">3</span>'+
             '<span id="jrPreload">0</span>'+
         '</div>'+
+        '<label>'+
+            '<input name="/random/meta/instanceID" type="hidden" data-calculate="(1+1)" />'+ /*******/
+        '</label>'+
         '<fieldset class="trigger ui-state-highlight" name="/random/note_random">'+
             '<div class="question-icons"><span class="required"></span><span class="hint"></span></div>'+
             '<span lang="en" class="active">This is the random number that was generated: '+
@@ -86,7 +92,56 @@ var formStr2 =
         '</fieldset>'+
         '<fieldset id="jr-calculated-items" style="display:none;">'+
             '<label>'+
-                '<input name="/random/formhub/uuid" type="hidden" data-calculate="9faaa6efd9bc48f9ab32d7ce5e9148d4" data-type-xml="string"/>'+
+                '<input name="/random/formhub/uuid" type="hidden" data-calculate="string(9faaa6efd9bc48f9ab32d7ce5e9148d4)" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/random/random__" type="hidden" data-calculate="random()" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/random/uuid__" type="hidden" data-calculate="uuid()" data-type-xml="string"/>'+
+            '</label>'+
+        '</fieldset>'+
+    '</form>';
+
+var dataStr3 =
+    '<instance xmlns="http://www.w3.org/2002/xforms">'+
+        '<random id="random"><formhub><uuid/></formhub>'+
+          '<random__/>'+
+          '<note_random/>'+
+          '<uuid__/>'+
+          '<note_uuid/>'+
+          '<meta>'+
+            '<instanceID>c13fe058-3349-4736-9645-8723d2806c8b</instanceID>'+
+          '</meta>'+
+        '</random>'+
+      '</instance>';
+
+var formStr3 =
+    '<form class="jr">'+
+        '<section class="form-logo"> </section>'+
+        '<h2 id="form-title">Random<span></span></h2>'+
+        '<fieldset id="jr-preload-items" style="display:none;">'+ /*****/
+            '<label>'+
+                '<input name="/random/meta/instanceID" type="hidden" data-preload="instance" data-preload-params="id" data-type-xml="string" />'+
+            '</label>'+
+        '</fieldset>'+                                           /*****/
+        '<fieldset class="trigger ui-state-highlight" name="/random/note_random">'+
+            '<div class="question-icons"><span class="required"></span><span class="hint"></span></div>'+
+            '<span lang="en" class="active">This is the random number that was generated: '+
+                '<span class="jr-output" data-value="/random/random__"></span>'+
+            '</span>'+
+        '</fieldset>'+
+        '<fieldset class="trigger ui-state-highlight" name="/random/note_uuid">'+
+            '<div class="question-icons">'+
+                '<span class="required"></span><span class="hint"></span>'+
+            '</div>'+
+            '<span lang="en" class="active">This is the uuid that was generated: '+
+                '<span class="jr-output" data-value="/random/uuid__"></span>'+
+            '</span>'+
+        '</fieldset>'+
+        '<fieldset id="jr-calculated-items" style="display:none;">'+
+            '<label>'+
+                '<input name="/random/formhub/uuid" type="hidden" data-calculate="string(9faaa6efd9bc48f9ab32d7ce5e9148d4)" data-type-xml="string"/>'+
             '</label>'+
             '<label>'+
                 '<input name="/random/random__" type="hidden" data-calculate="random()" data-type-xml="string"/>'+

@@ -566,8 +566,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				validate : function(x){
 					var date = new Date(),
 						segments = x.toString().split(':');
-					console.debug('time value to validate: '+x);
-					console.debug(segments);
+					//console.debug('time value to validate: '+x);
+					//console.debug(segments);
 					if (segments.length < 2){
 						return false;
 					}

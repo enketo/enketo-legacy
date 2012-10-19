@@ -1,6 +1,7 @@
 var dataStr1 =
     "<instance>"+
         "<thedata id='something'>"+
+            "<meta/>"+
             "<nodeA />"+
             "<nodeB>b</nodeB>"+
             "<repeatGroup template=''>"+
@@ -28,17 +29,60 @@ var dataStr1 =
         "</thedata>"+
     "</instance>";
 
+var dataEditStr1 =
+    "<instance>"+
+        "<thedata id='something'>"+
+            "<meta>"+
+                '<instanceID>7c990ed9-8aab-42ba-84f5-bf23277154ad</instanceID>'+
+                '<timeStart/>'+
+                '<timeEnd/>'+
+            "</meta>"+
+            "<nodeA>value</nodeA>"+
+            "<nodeB>b</nodeB>"+
+            "<repeatGroup template=''>"+
+                "<nodeC>cdefault</nodeC>"+
+            "</repeatGroup>"+
+            "<repeatGroup>"+
+                "<nodeC>some data</nodeC>"+
+            "</repeatGroup>"+
+            "<somenodes>"+
+                "<A>two</A>"+
+                "<B>three</B>"+
+                "<C>four</C>"+
+            "</somenodes>"+
+            "<someweights>"+
+                "<w1>1</w1>"+
+                "<w2>3</w2>"+
+                "<w3>5</w3>"+
+            "</someweights>"+
+        "</thedata>"+
+    "</instance>";
+
+
 var formStr1 =
     '<form>'+
+        '<div id="stats" style="display: none;">'+
+            '<span id="jrSelect">0</span>'+
+            '<span id="jrSelect1">0</span>'+
+            '<span id="jrItem">0</span>'+
+            '<span id="jrInput">3</span>'+
+            '<span id="jrUpload">0</span>'+
+            '<span id="jrTrigger">0</span>'+
+            '<span id="jrRepeat">0</span>'+
+            '<span id="jrRelevant">0</span>'+
+            '<span id="jrConstraint">0</span>'+
+            '<span id="jrCalculate">0</span>'+
+            '<span id="jrPreload">0</span>'+
+        '</div>'+
         '<fieldset class="jr-group">'+
             '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
-                '<input name="/thedata/repeatGroup/nodeC" />'+
+                '<input name="/thedata/repeatGroup/nodeC" type="text"/>'+
             '</fieldset>'+
             '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
-                '<input name="/thedata/repeatGroup/nodeC" />'+
+                '<input name="/thedata/repeatGroup/nodeC" type="text" />'+
             '</fieldset>'+
             '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
-                '<input name="/thedata/repeatGroup/nodeC" />'+
+                '<input name="/thedata/repeatGroup/nodeC" type="text" />'+
             '</fieldset>'+
         '</fieldset>'+
     '</form>';
@@ -52,9 +96,12 @@ var dataStr2 =
           '<note_uuid/>'+
           '<meta>'+
             '<instanceID/>'+
+            '<timeStart/>'+
+            '<timeEnd/>'+
           '</meta>'+
         '</random>'+
       '</instance>';
+
 
 var formStr2 =
     '<form class="jr">'+
@@ -64,9 +111,9 @@ var formStr2 =
             '<span id="jrSelect">0</span>'+
             '<span id="jrSelect1">0</span>'+
             '<span id="jrItem">0</span>'+
-            '<span id="jrInput">2</span>'+
+            '<span id="jrInput">0</span>'+
             '<span id="jrUpload">0</span>'+
-            '<span id="jrTrigger">0</span>'+
+            '<span id="jrTrigger">2</span>'+
             '<span id="jrRepeat">0</span>'+
             '<span id="jrRelevant">0</span>'+
             '<span id="jrConstraint">0</span>'+
@@ -92,7 +139,7 @@ var formStr2 =
         '</fieldset>'+
         '<fieldset id="jr-calculated-items" style="display:none;">'+
             '<label>'+
-                '<input name="/random/formhub/uuid" type="hidden" data-calculate="string(9faaa6efd9bc48f9ab32d7ce5e9148d4)" data-type-xml="string"/>'+
+                '<input name="/random/formhub/uuid" type="hidden" data-calculate="uuid()" data-type-xml="string"/>'+
             '</label>'+
             '<label>'+
                 '<input name="/random/random__" type="hidden" data-calculate="random()" data-type-xml="string"/>'+
@@ -141,7 +188,7 @@ var formStr3 =
         '</fieldset>'+
         '<fieldset id="jr-calculated-items" style="display:none;">'+
             '<label>'+
-                '<input name="/random/formhub/uuid" type="hidden" data-calculate="string(9faaa6efd9bc48f9ab32d7ce5e9148d4)" data-type-xml="string"/>'+
+                '<input name="/random/formhub/uuid" type="hidden" data-calculate="uuid()" data-type-xml="string"/>'+
             '</label>'+
             '<label>'+
                 '<input name="/random/random__" type="hidden" data-calculate="random()" data-type-xml="string"/>'+

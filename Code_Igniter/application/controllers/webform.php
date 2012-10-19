@@ -243,7 +243,7 @@ class Webform extends CI_Controller {
 		//log_message('debug', 'default instance to add in edit view: '.$default_instance);
 		//log_message('debug', 'instance-to-edit to add in edit view: '.$instance);
 		//
-		if (strlen($form)>0 && strlen($default_instance)>0 && strlen($instance))
+		if (strlen($form)>0 && strlen($default_instance)>0 && strlen($instance)>0)
 		{
 			$data = array(
 				'offline'=>$offline, 

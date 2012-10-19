@@ -77,6 +77,7 @@ class Form_model extends CI_Model {
 				//perform transformation to get data
 				$data = $this->_xslt_transform($xml['doc'], $xsl_data['doc']);
                 //hack to add <meta><instanceID/></meta>
+                //TODO: MOVE THIS TO SEPARATE FUNCTION $this->_fix_meta() or to XSLT
                 $meta = NULL;
                 $dataroot = NULL;
                 foreach ($data->instance->children() as $rootchild)
@@ -87,14 +88,13 @@ class Form_model extends CI_Model {
                 }
                 if (!$meta)
                 {
-                    //$dataroot = $data->instance->household_survey;
                     $meta = $dataroot->addChild('meta');
                 }
-               // $instanceid =  $meta->instanceID;
-//                if (!$instanceid)
-//                {
-//                    $instanceid = $meta->addChild('instanceID');
-//                }
+                $instanceid =  $meta->instanceID;
+                if (!$instanceid)
+                {
+                    $instanceid = $meta->addChild('instanceID');
+                }
 				
 				$this->_fix_lang($result);
                 

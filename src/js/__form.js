@@ -646,13 +646,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	/**
-	 * Function to load an (incomplete) instance so that it can be edited.
+	 * Function to load an (possibly incomplete) instance so that it can be edited.
 	 * 
 	 * @param  {Object} instanceOfDataXML [description]
 	 * 
 	 */
 	DataXML.prototype.load = function(instanceOfDataXML){
-		var nodesToLoad, index, xmlDataType, path, value, target, $input, $target, $template,
+		var nodesToLoad, index, xmlDataType, path, value, target, $input, $target, $template, instanceID,
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
@@ -672,11 +672,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		nodesToLoad.each(function(){
 			//name = $(this).prop('nodeName');
 			path = form.generateName($(this));
-			console.debug('path: '+path);
-			index = instanceOfDataXML.$.xfind(path).index($(this));
-			console.debug('index: '+index);
+			//console.debug('path: '+path);
+			index = instanceOfDataXML.node(path).get().index($(this));
+			//console.debug('index: '+index);
 			value = $(this).text();
-			console.debug('value: '+value);
+			//console.debug('value: '+value);
 
 			$input = $form.find('[name="'+path+'"]').eq(0);
 			
@@ -704,9 +704,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				that.cloneTemplate(form.generateName($template), index-1);
 				//try setting the value again
 				target = that.node(path,index);
-				if (target.get().length === 1){
-					//we really have to provide a datatype here...
-					
+				if (target.get().length === 1){				
 					target.setVal(value, null, xmlDataType);
 				}
 				else{
@@ -730,6 +728,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			}
 		});
+		//add deprecatedID node, copy instanceID value to deprecatedID and empty deprecatedID
+		instanceID = this.node('*>meta>instanceID');
+		if (instanceID.get().length !== 1){
+			//TODO add user feedback or delete form or something
+			console.error('instanceID was not found (or multiple)! Edited submission will not be successful.');
+			return;
+		}
+		if (this.node('*>meta>deprecatedID').get().length !== 1){
+			var deprecatedIDXMLNode = $.parseXML("<deprecatedID/>").documentElement;
+			$(deprecatedIDXMLNode).appendTo(this.node('*>meta').get());
+		}
+		this.node('*>meta>deprecatedID').setVal(instanceID.getVal()[0], null, 'string');
+		instanceID.setVal('', null, 'string');
 		console.debug('finished loading instance values to be edited');
 	};
 
@@ -1138,7 +1149,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//console.debug(total);
 
 		if ( total.jrItem !== ( total.hOption + total.hRadio + total.hCheck )  ) {
-			console.error(' total select-type filter differs between XML form and HTML form');
+			console.error(' total select fields differs between XML form and HTML form');
 		}
 		if ( ( total.jrInput + total.jrUpload ) !== ( total.hInputNotRadioCheck - total.hCalculate - total.hPreload ) ){
 			console.error(' total amount of input/upload fields differs between XML form and HTML form');
@@ -1154,7 +1165,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				' Note that constraints on &lt;trigger&gt; elements are ignored in the transformation and could cause this error too.');
 		}
 		if ( total.jrCalculate != total.hCalculate ){
-			console.error(' total amount of calculated items differs between XML form and HTML formprel');
+			console.error(' total amount of calculated items differs between XML form and HTML form');
 		}
 		if ( total.jrPreload != total.hPreload ){
 			console.error(' total amount of preload items differs between XML form and HTML form');
@@ -1717,11 +1728,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//console.debug('the clever selector created: '+cleverSelector.join());
 			//console.debug($form.find('*:not([disabled]) span.active'));
 			$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
-				console.log('found outputs');
+				//console.log('found outputs');
 				try{
 					expr = $(this).attr('data-value');
 					val = data.evaluate(expr, 'string');
-					console.log('value: '+val);
+					//console.log('value: '+val);
 				}
 				catch(e){
 					console.error('error occurred trying to evaluate output value from expression: '+
@@ -2142,8 +2153,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var value,
 				that = this;
 			// when is 'start' or 'end'
-			if (o.param == 'start' && o.curVal !== ''){
-				return (o.curVal === '') ? o.curVal : data.evaluate('now()', 'string');
+			if (o.param == 'start'){
+				return (o.curVal.length > 0) ? o.curVal : data.evaluate('now()', 'string');
 			}
 			if (o.param == 'end'){
 				//set event handler for each save event (needs to be triggered!)
@@ -2695,6 +2706,7 @@ String.prototype.pad = function(digits){
 						break;
 					default:
 						console.error('Unrecognized input type found when trying to reset: '+type);
+						console.error($(this));
 				}
 			});
 		});

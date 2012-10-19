@@ -170,17 +170,20 @@ class Data extends CI_Controller {
 
 				$result = $this->Survey_model->launch_survey($server_url, $form_id, $submission_url, $data_url, $email);
 
-        if(isset($instance) && isset($instance_id) && isset($result['subdomain']))
-        {
-            $rs = $this->Instance_model->insert_instance($result['subdomain'], $instance_id,
-                $instance, $return_url);
-            if($rs !== null){
-                $result['edit_url'] = $result['edit_url'] . '?instance_id=' . $instance_id;
-            }else{
-              unset($result['edit_url']);
-              $result['reason'] = "someone is already editing instance";
-            }
-        }
+		        if(isset($instance) && isset($instance_id) && isset($result['subdomain']))
+		        {
+		            $rs = $this->Instance_model->insert_instance($result['subdomain'], $instance_id,
+		                $instance, $return_url);
+		            if($rs !== null)
+		            {
+		                $result['edit_url'] = $result['edit_url'] . '?instance_id=' . $instance_id;
+		            }
+		            else
+		            {
+		              unset($result['edit_url']);
+		              $result['reason'] = "someone is already editing instance";
+		            }
+		        }
 
 				echo json_encode($result);
 			}	

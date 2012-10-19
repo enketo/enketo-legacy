@@ -7,13 +7,13 @@ EnvJasmine.load(EnvJasmine.jsDir + "__form.js");
 describe("Data node getter", function () {
     var i, t =
 		[
-			["", null, null, 17],
-			["", null, {}, 17],
+			["", null, null, 18],
+			["", null, {}, 18],
 			//["/", null, {}, 9], //issue with xfind, not important
-			[false, null, {}, 17],
-			[null, null, {}, 17],
-			[null, null, {noTemplate:true}, 17],
-			[null, null, {noTemplate:false}, 19],
+			[false, null, {}, 18],
+			[null, null, {}, 18],
+			[null, null, {noTemplate:true}, 18],
+			[null, null, {noTemplate:false}, 20],
 			[null, null, {onlyTemplate:true}, 1],
 			[null, null, {noEmpty:true}, 9],
 			[null, null, {noEmpty:true, noTemplate:false}, 10],
@@ -234,12 +234,10 @@ describe("Output functionality ", function(){
 	form.init();
 	
 	it("tested upon initialization: node random__", function(){
-		console.debug(form.getFormO().$.find('[data-value="/random/random__"]'));
 		expect(form.getFormO().$.find('[data-value="/random/random__"]').text().length).toEqual(17);
 	});
 
 	it("tested upon initialization: node uuid__", function(){
-		console.debug(form.getFormO().$.find('[data-value="/random/uuid__"]'));
 		expect(form.getFormO().$.find('[data-value="/random/uuid__"]').text().length).toEqual(36);
 	});
 
@@ -312,4 +310,68 @@ describe("Preload and MetaData functionality", function(){
 	//TODO add similar to last tests if preloader IS present
 });
 
+describe("Loading instance-to-edit functionality", function(){
+	var form;
+
+	describe('when instanceID and deprecatedID nodes are not present in the form format', function(){
+		form = new Form(formStr1, dataStr1, dataEditStr1);
+		form.init();
+
+		it ("adds an instanceID node", function(){
+			expect(form.getDataO().node('*>meta>instanceID').get().length).toEqual(1);
+		});
+
+		it ("adds a deprecatedID node", function(){
+			expect(form.getDataO().node('*>meta>deprecatedID').get().length).toEqual(1);
+		});
+
+		//this is an important test even though it may not seem to be...
+		it ("includes the deprecatedID in the string to be submitted", function(){
+			expect(form.getDataO().getStr().indexOf('<deprecatedID>')).not.toEqual(-1);
+		});
+
+		it ("gives the new deprecatedID node the old value of the instanceID node of the instance-to-edit", function(){
+			expect(form.getDataO().node('*>meta>deprecatedID').getVal()[0]).toEqual('7c990ed9-8aab-42ba-84f5-bf23277154ad');
+		});
+
+		it ("gives the added instanceID node a new value", function(){
+			expect(form.getDataO().node('*>meta>instanceID').getVal()[0].length).toEqual(41);
+			expect(form.getDataO().node('*>meta>instanceID').getVal()[0]).not.toEqual('7c990ed9-8aab-42ba-84f5-bf23277154ad');
+		});
+
+		it ("adds data from the instance-to-edit to the form instance", function(){
+			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('value');
+			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
+		});
+	});
+	
+	describe('when instanceID and deprecatedID nodes are already present in the form format', function(){
+		form = new Form(formStr1, dataEditStr1, dataEditStr1);
+		form.init();
+
+		it ("does not NOT add another instanceID node", function(){
+			expect(form.getDataO().node('*>meta>instanceID').get().length).toEqual(1);
+		});
+
+		it ("does not NOT add another deprecatedID node", function(){
+			expect(form.getDataO().node('*>meta>deprecatedID').get().length).toEqual(1);
+		});
+
+		it ("gives the deprecatedID node the old value of the instanceID node of the instance-to-edit", function(){
+			expect(form.getDataO().node('*>meta>deprecatedID').getVal()[0]).toEqual('7c990ed9-8aab-42ba-84f5-bf23277154ad');
+		});
+
+		it ("gives the instanceID node a new value", function(){
+			expect(form.getDataO().node('*>meta>instanceID').getVal()[0].length).toEqual(41);
+			expect(form.getDataO().node('*>meta>instanceID').getVal()[0]).not.toEqual('7c990ed9-8aab-42ba-84f5-bf23277154ad');
+		});
+
+		it ("adds data from the instance-to-edit to the form instance", function(){
+			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('value');
+			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
+		});
+
+	});
+
+});
 //TODO load a large complex form and detect console errors

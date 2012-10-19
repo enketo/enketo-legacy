@@ -341,8 +341,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * Sets data node values.
 		 * 
 		 * @param {(string|Array.<string>)=} newVal	The new value of the node.
-		 * @param {string=} expr  XPath expression to validate the node.
-		 * @param {string=} xmlDataType XML data type of the node
+		 * @param {?string=} expr  XPath expression to validate the node.
+		 * @param {?string=} xmlDataType XML data type of the node
 		 *
 		 * @returns {?boolean} null is returned when the node is not found or multiple nodes were selected
 		 */
@@ -1945,10 +1945,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$geoWrap.addClass('geopoint');
 				
 				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
-					'<label>latitude (x.y &deg;)<input name="lat" type="number" step="0.0001" /></label>'+
-					'<label>longitude (x.y &deg;)<input name="long" type="number" step="0.0001" /></label>'+
-					'<label>altitude (m)<input name="alt" type="number" step="0.1" /></label>'+
-					'<label>accuracy (m)<input name="acc" type="number" step="0.1" /></label>'+
+					'<label>latitude (x.y &deg;)<input class="novalidate" name="lat" type="number" step="0.0001" /></label>'+
+					'<label>longitude (x.y &deg;)<input class="novalidate" name="long" type="number" step="0.0001" /></label>'+
+					'<label>altitude (m)<input class="novalidate" name="alt" type="number" step="0.1" /></label>'+
+					'<label>accuracy (m)<input class="novalidate" name="acc" type="number" step="0.1" /></label>'+
 					'<button name="geodetect" type="button">detect</button>'); 
 				$map = $geoWrap.find('.map-canvas');
 				$lat = $geoWrap.find('[name="lat"]');
@@ -2554,7 +2554,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 		//the above still leaves out elements that are not disabled directly but have disabled parents
 		//this is dealt with in the validate event handler
-		$form.find('input, select, textarea').trigger('validate');
+		$form.find('input, select, textarea').not('.novalidate').trigger('validate');
 		return this.isValid();
 	};
 

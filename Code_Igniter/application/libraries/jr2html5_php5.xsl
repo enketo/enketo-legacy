@@ -379,7 +379,7 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
             <xsl:apply-templates select="xf:hint" />
             <xsl:variable name="element">
                 <xsl:choose>
-                    <xsl:when test="$html_type = 'text' and @appearance = 'big' or @appearance = 'big-text' or @appearance = 'textarea'">
+                    <xsl:when test="$html_type = 'text' and @appearance = 'text-area' or @appearance = 'big' or @appearance = 'big-text' or @appearance = 'textarea'">
                         <xsl:value-of select="string('textarea')" />
                     </xsl:when>
                     <xsl:otherwise>

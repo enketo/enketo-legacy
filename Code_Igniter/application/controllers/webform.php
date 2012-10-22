@@ -66,15 +66,17 @@ class Webform extends CI_Controller {
 							'form'=> $form,
 							'form_data'=> $form_data,
 							'stylesheets'=> array(
-								'libraries/jquery-ui/css/sunny/jquery-ui.custom.css',
+								'libraries/bootstrap/css/bootstrap.min.css',
+								//'libraries/jquery-ui/css/sunny/jquery-ui.custom.css',
 								'css/screen.css'
 							)
 						);
 						$common_scripts = array(
 							'libraries/jquery.min.js',
-							'libraries/jquery-ui/js/jquery-ui.custom.min.js',
-							'libraries/jquery-ui-timepicker-addon.js',
-							'libraries/jquery.multiselect.min.js',	
+							'libraries/bootstrap/js/bootstrap.min.js',
+							//'libraries/jquery-ui/js/jquery-ui.custom.min.js',
+							//'libraries/jquery-ui-timepicker-addon.js',
+							//'libraries/jquery.multiselect.min.js',	
 							'libraries/modernizr.min.js',
 							'libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 							'libraries/FileSaver.min.js',

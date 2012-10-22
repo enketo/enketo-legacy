@@ -1825,11 +1825,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		init : function(){
 			this.compactWidget();
 			this.radioWidget();
-			this.dateWidget();
-			this.timeWidget();
-			this.dateTimeWidget();
-			this.selectOneWidget();
-			this.selectMultiWidget();
+			//this.dateWidget();
+			//this.timeWidget();
+			//this.dateTimeWidget();
+			//this.selectOneWidget();
+			//this.selectMultiWidget();
 			this.pageBreakWidget();
 			this.readonlyWidget();
 			this.gridWidget();

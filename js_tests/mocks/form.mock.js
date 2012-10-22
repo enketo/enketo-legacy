@@ -24,7 +24,7 @@ var dataStr1 =
             "<someweights>"+
                 "<w1>1</w1>"+
                 "<w2>3</w2>"+
-                "<w3>5</w3>"+
+                "<w.3>5</w.3>"+
             "</someweights>"+
         "</thedata>"+
     "</instance>";

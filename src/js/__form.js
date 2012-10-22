@@ -566,8 +566,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				validate : function(x){
 					var date = new Date(),
 						segments = x.toString().split(':');
-					console.debug('time value to validate: '+x);
-					console.debug(segments);
+					//console.debug('time value to validate: '+x);
+					//console.debug(segments);
 					if (segments.length < 2){
 						return false;
 					}
@@ -2739,7 +2739,7 @@ String.prototype.pad = function(digits){
 	 * Simple XPath Compatibility Plugin for jQuery 1.1
 	 * By John Resig
 	 * Dual licensed under MIT and GPL.
-	 * some changes made by Martijn van de Rijdt (not replacing $.find(), removed context)
+	 * some changes made by Martijn van de Rijdt (not replacing $.find(), removed context, dot escaping)
 	 * 
 	 * Parameters:
 	 * 
@@ -2790,8 +2790,11 @@ String.prototype.pad = function(digits){
                     return cur.get();
             }
 
+            // any remaining dots inside node names need to be escaped (added by Martijn)
+			selector = selector.replace(/\./gi, '\\.');
+
             //selector += ':not([template], [template] *)';
-            ////console.debug('xfind plugin going to return jQuery object with selector: '+selector);
+            console.debug('xfind plugin going to return jQuery object with selector: '+selector);
             //if performance becomes an issue, it's worthwhile implementing this with native XPath instead.
             return this.find(selector);
     };

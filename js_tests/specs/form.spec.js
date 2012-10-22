@@ -51,9 +51,10 @@ describe("Data node getter", function () {
 		for (i = 0 ; i<t.length ; i++){
 			test({selector: t[i][0], index: t[i][1], filter: t[i][2], result: t[i][3]});
 		}
+
 });
 
-describe('Date node value getter', function(){
+describe('Date node (&) value getter', function(){
 	var form = new Form('',''),
 		data = form.data(dataStr1);
 
@@ -67,6 +68,10 @@ describe('Date node value getter', function(){
 
 	it('returns an empty array', function(){
 		expect(data.node("/thedata/nodeX").getVal()).toEqual([]);
+	});
+
+	it('obtains a node value of a node with a . in the name', function(){
+		expect(data.node("/thedata/someweights/w.3").getVal()).toEqual(['5']);
 	});
 });
 

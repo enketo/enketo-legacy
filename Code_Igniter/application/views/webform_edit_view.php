@@ -15,8 +15,8 @@
 	<? endforeach; ?>
 		
 		<script type="text/javascript">
-			var jrDataStr = '<?= $form_data ?>';
-			var jrDataStrToEdit = '<?= $form_data_to_edit ?>';
+			var jrDataStr = '<?= json_encode($form_data) ?>';
+			var jrDataStrToEdit = '<?= json_encode($form_data_to_edit) ?>';
 			var RETURN_URL = '<?= $return_url ?>';
 		</script>
 	

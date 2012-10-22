@@ -235,7 +235,7 @@ class Webform extends CI_Controller {
 		//log_message('debug', $form_data);
 		//remove line breaks and tabs
 		$default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $default_instance);
-		$instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $instance);
+		//$instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $instance);
 
 		$html_title = $transf_result->form->xpath('//h2[@id="form-title"]');
 		//$form_data = preg_replace("\>/s*",">", $form_data);

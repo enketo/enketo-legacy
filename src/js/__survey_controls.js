@@ -360,8 +360,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 		.click(function(){
 			deleteForm(false);
 		});
-	$('button#submit-form')//.detach().appendTo($('form.jr'))
-		.button({'icons': {'primary':"ui-icon-check"}})
+	$('button#submit-form').button()//.detach().appendTo($('form.jr'))
+		//.button({'icons': {'primary':"ui-icon-check"}})
 			.click(function(){
 				form.validateForm();
 				submitForm();

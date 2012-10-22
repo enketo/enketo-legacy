@@ -45,11 +45,18 @@
 				<span class="dialog-msg"></span>
 			</p>
 		</div>
-		<div class="dialog" id="dialog-alert" style="display: none;">
-			<p>
-				<span class="ui-icon ui-icon-alert"></span>
-				<span id="dialog-alert-msg"></span>
-			</p>
+		<div id="dialog-alert" class="modal hide fade ">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3></h3>
+			</div>
+			<div class="modal-body">
+				<p id="dialog-alert-msg" >
+				</p>
+			</div>
+			<div class="modal-footer">
+    			<a href="#" class="btn btn-primary">Ok</a>
+  			</div>
 		</div>
 
 		<div class="dialog" id="dialog-save" style="display: none;">
@@ -74,7 +81,7 @@
 						-->
 					<!--</div>-->
 				<!--</div>	-->
-					<button id="submit-form" >Submit</button>
+					<button id="submit-form" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
 				</div>
 			</article>
 		<!--</div>-->

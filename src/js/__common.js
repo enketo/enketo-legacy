@@ -352,19 +352,25 @@ GUI.prototype.alert = function(message, heading, icon){
 		$alert = $('#dialog-alert');
 
 	heading = heading || 'Alert';
-	icon = icon || 'ui-icon-alert';
+	icon = icon || 'icon-exclamation-sign';
 
-	$alert.find('p .ui-icon:eq(0)').removeClass().addClass('ui-icon '+icon);
+	//$alert.find('.modal-header h3 i').removeClass().addClass(icon);
 	//to call when dialog closes
-	closeFn = function(){
-		$alert.dialog('destroy');
-		$alert.find('#dialog-alert-msg').text('');
+	//closeFn = function(){
+	//	$alert.dialog('destroy');
+	//	$alert.find('#dialog-alert-msg').text('');
 		//console.log('alert dialog destroyed');
-	};
+	//};
 
 	//write content into alert dialog
+	$alert.find('.modal-header h3').text(heading);
 	$alert.find('#dialog-alert-msg').html(message).capitalizeStart();
 
+	$alert.modal({
+		keyboard: true,
+		show: true
+	});
+/**
 	$alert.dialog({
 		'title': heading,
 		'modal': true,
@@ -376,6 +382,7 @@ GUI.prototype.alert = function(message, heading, icon){
 		'beforeClose': closeFn,
 		'width': 500
 	});
+ **/
 };
 	
 /**

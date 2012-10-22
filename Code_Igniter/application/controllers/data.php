@@ -120,9 +120,9 @@ class Data extends CI_Controller {
 		
 		//debugging:
 		$response = '';
-		foreach (curl_getinfo($ch) as $property=>$value) { 
-			$response .= $property . " : " . $value . "<br />"; 
-		}	  
+		//foreach (curl_getinfo($ch) as $property=>$value) { 
+		//	$response .= $property . " : " . $value . "<br />"; 
+		//}	  
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		//close connection
 		curl_close($ch);

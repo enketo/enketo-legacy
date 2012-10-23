@@ -2794,7 +2794,7 @@ String.prototype.pad = function(digits){
 			selector = selector.replace(/\./gi, '\\.');
 
             //selector += ':not([template], [template] *)';
-            console.debug('xfind plugin going to return jQuery object with selector: '+selector);
+            //console.debug('xfind plugin going to return jQuery object with selector: '+selector);
             //if performance becomes an issue, it's worthwhile implementing this with native XPath instead.
             return this.find(selector);
     };

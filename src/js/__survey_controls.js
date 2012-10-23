@@ -387,7 +387,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	$('.drawer.left .handle.right').click(function(){
 		var $drawer = $(this).parent('.drawer');
 		console.debug('clicked handle');
-		$drawer.toggleClass('hide');
+		$drawer.toggleClass('closed');
 	});
 
 	$('#form-controls button').equalWidth();

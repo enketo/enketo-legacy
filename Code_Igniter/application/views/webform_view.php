@@ -45,7 +45,7 @@
 				<h3></h3>
 			</div>
 			<div class="modal-body">
-				<p class="alert-error"></p>
+				<p class="alert alert-block alert-error"></p>
 				<p class="msg"></p>
 			</div>
 			<div class="modal-footer">
@@ -60,7 +60,7 @@
 				<h3></h3>
 			</div>
 			<div class="modal-body">
-				<p class="alert-error"></p>
+				<p class="alert alert-block alert-error"></p>
 			</div>
 			<div class="modal-footer">
     			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -101,13 +101,13 @@
 			</article>
 		<!--</div>-->
 
-		<div class="drawer left hide">
+		<div class="drawer left closed alert-success">
 			<div class="handle right"></div>
 			<!--<a id="queue" href="#" title="click to export to file">-->
 			<div class="content">
 				<span id="status"></span><span>Submissions queued: </span><span id="queue-length">0</span>
 				<!--<span id="status-offline-launch"></span>-->
-				<button id="drawer-export">Export</button>
+				<button id="drawer-export" class="btn btn-mini">Export</button>
 			<!--</a>-->
 			</div>	
 		</div>

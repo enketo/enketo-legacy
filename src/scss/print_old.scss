@@ -1,0 +1,352 @@
+/* Welcome to Compass. Use this file to define print styles.
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/print.css" media="print" rel="stylesheet" type="text/css" /> */
+
+@import "compass/reset";
+@font-face{
+  font-family: 'Open Sans';
+  src: local('☺'),
+        url(fonts/OpenSans-Regular.ttf) format('truetype');
+}
+/******* COLORS **********/
+$button-bg: #fece2f; /*dark yellow*/
+$highlight-bg: #FFF9E5; /*very light yellow*/
+$header-bg: #817865; /*brown*/
+$header-brdr: #494437; /*dark brown*/
+$header-txt: #ffffff; /*white*/
+$widget-bg: #feeebd; /*yellow*/
+$widget-brdr: #8e846b; /*lighter brown but similar to header-brdr*/
+$error-bg: #d34d17; /*red*/
+$overlay-bg: #5c5c5c; /*darker gray */
+$shadow: #cccccc; /*light gray*/
+$a-hvr: #381f00; /*very dark brown*/
+
+
+/***************************
+ ****BASIC GUI ELEMENTS ****
+ ***************************/
+
+body, .ui-widget,.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { 
+  font-family: 'Open Sans', Segoe UI, Arial, sans-serif; 
+  font-size: 1em;}
+
+
+.center {
+  text-align: center; }
+
+div[id^="dialog"] {
+  display:none;}
+
+.capitalize {
+  text-transform: capitalize; }
+
+
+header.ui-widget-header, #feedback-bar, #page {
+  display: none; }
+
+h2{text-align: center; font-size: 1.5em; font-weight: bold;}
+
+#form-controls.ui-widget-header {
+  display: none;}
+
+
+.main {
+ 
+  max-width: 700px;
+}
+
+/**************************
+****    SURVEY FORM    ****
+**************************/
+
+.jr {
+  /*padding: 1.5em;*/
+  line-height: 1.1em; }
+
+.form-logo img {
+  position: relative;
+  left: 50%;
+  max-height: 200px;
+  width: 120px;
+  margin-left: -60px;
+  margin-bottom: 10px; }
+
+.jr [lang]:not(.active), .jr-hint {
+  display: none; }
+
+.jr-constraint-msg {
+  &.active {
+    display: block;
+    visibility: hidden;
+    min-height: 1em; }
+  &:not(.active) {
+    display: none; } }
+
+.invalid .jr-constraint-msg.active {
+  visibility: visible;
+  font-weight: bold;
+  font-style: italic;}
+
+.jr-option-translations {
+  display: none; }
+
+.jr h2.ui-widget-header {
+  margin: 0;
+  span{ 
+    display: block;
+    color: $header-brdr;
+    font-size: 10px;
+    line-height: 10px;
+    text-align: right;} }
+
+.question-icons {
+  float: right;
+  margin: -5px -10px 0 0;
+  /*line-height: 15px;*/
+  span {
+    display: inline-block;
+    text-align: right;
+    width: 18px; } }
+
+#form-languages {
+  margin-top: -18px;
+  margin-bottom: 18px;
+  margin-right: 10px;
+  font-size: 0.8em; }
+
+/* correction for when tabs are present */
+
+.ui-tabs-panel #form-languages {
+  margin-top: -35px;
+  margin-bottom: 45px;
+  margin-right: -15px; }
+
+#form-languages a {
+  &:link{
+  float: right;
+  padding-left: 10px;
+  border: none;
+  background: none;
+  font-weight: normal;
+  font-size: .8em;
+  color: $overlay-bg;}
+  &:not(.active):hover {
+    color: $a-hvr;
+    text-decoration: underline; }
+  &.active {
+    color: $a-hvr;
+    text-decoration: none; } }
+
+.jr {
+  
+  line-height: 1.1em;
+  
+  .form-logo img {
+    position: relative;
+    left: 50%;
+    max-height: 200px;
+    width: 120px;
+    margin-left: -60px;
+    margin-bottom: 10px; }
+  h2{
+    text-align: center;
+    font-size: 24px;
+    padding-bottom: 15px;
+    border-bottom: solid 3px #ccc;
+  }
+  h3{
+    text-align: left;  }
+  label, fieldset {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding: 16px 14px; /* */
+    font-weight: bold; }
+  label + label {
+    /*border-top: 1px solid $shadow;*/ }
+  .geopoint{ 
+    height: 350px;
+    .map-canvas{
+      width: 340px;
+      height: 275px; 
+      margin-top: 10px;
+      float: right;
+      border: 1px solid $shadow;}
+    label{
+      border: none;
+      padding: 5px 0;}
+    button{
+      width: 130px;
+      margin-top: 10px;}}
+  fieldset:not(#jr-preload-items):not(.jr-group) + {
+    label, fieldset:not(.jr-group) {
+      /*border-top: 1px solid $shadow;*/ } }
+  label + fieldset:not(.jr-group) {
+    /*border-top: 1px solid $shadow;*/ }
+  span.repeat-number {
+    height: 2em;
+    display: block;
+    float: right;
+    margin-right: -8px;
+    margin-top: -8px;
+    color: $shadow; }
+  legend {
+    position: absolute;
+    top: 1.5em;
+    font-weight: bold;
+    ~ label {
+      border-top: none;
+      padding: .5em 0 .5em 0;
+      margin-left: 25px;
+      font-weight: normal; }
+    + label {
+      margin-top: 25px; } }
+  fieldset {
+    position: relative;
+    &.jr-group {
+      border-top: 2px solid #555; /**/
+      margin: .5em 0; }
+    &.jr-repeat {
+      border: 1px dotted $shadow;} }
+  label, legend, .trigger {
+    font-size: .8em; }
+  input, textarea {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    display: block;
+    margin: 8px 0 0 0;
+    font-size: .9em;
+    &[type="text"] {
+      width: 100%; }
+    &[type=date], &[type=number], &[type=email], &[type=password] {
+      width: 130px;
+      text-align: right; }
+    &[type=radio], &[type=checkbox] {
+      display: block;
+      /*****/
+      float: left;
+      /*****/
+      margin-top: 5px;
+      /****/
+      /*compensates for the label margin, fixes multi-line labels */
+      margin-left: -25px; } }
+  textarea{
+    width: 100%;
+    min-height: 150px;}
+  select {
+    display: block; }
+  fieldset {
+    .ui-button {
+      width: 27px;
+      height: 27px;
+      margin-top: 6px; }
+    .one-more {
+      margin: 0 -34px -5px 10px; }
+    .remove {
+      float: right;
+      margin-right: 0; } }
+  .trigger {
+    
+    padding: 7px 12px;
+    margin: 1em 0; }} 
+
+label.with-media {
+  margin-top: 5px; }
+
+.with-media>span.active {
+  display: block;
+  width: 100%; }
+
+label.with-media {
+  img, video, audio {
+    max-width: 45%;
+    padding-right: 5%;
+    display: block;
+    float: right; } }
+
+.with-media input {
+  float: left;
+  width: 5%;
+  margin-top: -17px; }
+
+
+input, .fakefileinput {
+  background-color: $header-txt;
+  border: 2px solid $shadow;
+  min-height: 30px; }
+
+.jr-appearance-compact label {
+  display: inline;
+  span {
+    display: none; }
+  img {
+    float: left;
+    width: 120px;
+    height: 120px;
+    padding: 5px;
+    margin-top: 25px; }
+  input {
+    &[type=radio], &[type=checkbox] {
+      /*display: none;*/
+      margin-top: 35px; } } }
+
+.jr-branch {
+  display: none;}
+
+.disabled {
+  /*color: $shadow*/
+  opacity: 1;
+  color: #ddd; }
+
+/*doesn't do anything
+.disabled input[type="checkbox"],
+.disabled input[type="radio"]{
+  opacity: 1;
+}*/
+
+.ui-multiselect-menu{
+	display: none;
+}
+
+#submit-form, #submit-edited-data, .drawer, #branding{
+  display: none;
+}
+
+.jr-hint.active {
+  /*border: 1px solid #BCE8F1;*/
+  /*background-color: #D9EDF7;*/
+  color: blue;/*#3A87AD;*/
+  /*padding: 1px 6px;
+  margin: 3px 12px;*/
+  display: block;
+  font-weight: normal;
+  /*float: left;*/
+  font-size: 10px;
+  font-style: italic;
+  /*line-height: 14px;
+  &:before {
+    content: 'HINT: ';
+    font-size: 10px; }*/ }
+
+// This could have negative side effects.
+// If so, then take out "float:left" from .jr-hint.active above
+legend span {
+  display: block; }
+
+.jr-appearance-page-break{
+  display: block; 
+  page-break-before: always;}
+
+.ui-tabs-nav{
+  display: none !important;}
+
+
+.jr-branch+fieldset.disabled,
+.jr-branch+label.disabled{
+  display: block !important;
+}

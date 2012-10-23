@@ -1101,8 +1101,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//
 		this.repeat.init();
 		this.setAllVals();
-		this.beautify();
 		this.widgets.init();
+		this.bootstrapify();
 		this.branch.init();
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 		this.calcUpdate();
@@ -1811,11 +1811,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//updatingCalcs = false;
 	};
 
-	FormHTML.prototype.beautify = function(){
+	FormHTML.prototype.bootstrapify = function(){
 		//$form.find('.jr-group, .jr-repeat').addClass('ui-corner-all');
 		//$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');		
-		$form.find('.trigger').addClass('ui-state-highlight');// ui-corner-all');
-
+		$form.find('.trigger').addClass('alert alert-block');// ui-corner-all');
+ 
 		//improve looks when images, video or audio is used as label
 		$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend').children('img,video,audio').parent().addClass('ui-helper-clearfix with-media');
 	};
@@ -1918,7 +1918,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					relevant = $(this).find('input').attr('data-relevant'),
 					name = 'name="'+$(this).find('input').attr('name')+'"',
 					attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name;
-				$('<fieldset class="trigger ui-state-highlight" '+attributes+'></fieldset>') //ui-corner-all
+				$('<fieldset class="trigger" '+attributes+'></fieldset>') //ui-corner-all
 					.insertBefore($(this)).append(html).find('input').remove(); 
 				$(this).remove();
 			});

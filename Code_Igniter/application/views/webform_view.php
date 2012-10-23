@@ -39,20 +39,28 @@
 			<a href="#" id="feedback-bar-close" class="custom-button" ></a>
 		</div>
 		
-		<div class="dialog" id="dialog-confirm" style="display: none;">
-			<p>
-				<span class="ui-icon ui-icon-alert"></span>
-				<span class="dialog-msg"></span>
-			</p>
+		<div id="dialog-confirm" class="modal hide fade">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3></h3>
+			</div>
+			<div class="modal-body">
+				<p class="alert-error"></p>
+				<p class="msg"></p>
+			</div>
+			<div class="modal-footer">
+    			<button class="negative btn">Close</button>
+    			<button class="positive btn btn-primary">Confirm</button>
+  			</div>
 		</div>
+
 		<div id="dialog-alert" class="modal hide fade ">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h3></h3>
 			</div>
 			<div class="modal-body">
-				<p>
-				</p>
+				<p class="alert-error"></p>
 			</div>
 			<div class="modal-footer">
     			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>

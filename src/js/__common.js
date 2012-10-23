@@ -67,8 +67,6 @@ GUI.prototype.init = function(){
 	$('footer').detach().appendTo('#container');
 	//this.nav.reset();
 	this.display();
-
-
 };
 
 GUI.prototype.setup = function(){
@@ -354,14 +352,6 @@ GUI.prototype.alert = function(message, heading, icon){
 	heading = heading || 'Alert';
 	//icon = icon || 'icon-exclamation-sign';
 
-	//$alert.find('.modal-header h3 i').removeClass().addClass(icon);
-	//to call when dialog closes
-	//closeFn = function(){
-	//	$alert.dialog('destroy');
-	//	$alert.find('#dialog-alert-msg').text('');
-		//console.log('alert dialog destroyed');
-	//};
-
 	//write content into alert dialog
 	$alert.find('.modal-header h3').text(heading);
 	$alert.find('.modal-body p').html(message).capitalizeStart();
@@ -372,22 +362,8 @@ GUI.prototype.alert = function(message, heading, icon){
 	});
 
 	$alert.on('hidden', function(){
-		$alert.find('.modal-header h3').text('');
-		$alert.find('.modal-body p').html('');
+		$alert.find('.modal-header h3, .modal-body p').html('');
 	});
-/**
-	$alert.dialog({
-		'title': heading,
-		'modal': true,
-		'resizable': false,
-		'closeOnEscape': true,
-		'buttons': {
-			"Ok": closeFn
-		},
-		'beforeClose': closeFn,
-		'width': 500
-	});
- **/
 };
 	
 /**
@@ -399,21 +375,21 @@ GUI.prototype.alert = function(message, heading, icon){
  *                                                         also an object with parameters msg, heading and errorMsg.
  *   @param {Object=} choices - [type/description]
  */
-GUI.prototype.confirm = function(text, choices){
+GUI.prototype.confirm = function(texts, choices){
 	"use strict";
 	var msg, heading, errorMsg, closeFn, dialogName, $dialog;
 	
-	if (typeof text === 'string'){
-		msg = text;
+	if (typeof texts === 'string'){
+		msg = texts;
 	}
-	else if (typeof text.msg === 'string'){
-		msg = text.msg;
+	else if (typeof texts.msg === 'string'){
+		msg = texts.msg;
 	}
 	
 	msg = (typeof msg !== 'undefined') ? msg : 'Please confirm action';
-	heading = (typeof text.heading !== 'undefined') ? text.heading : 'Are you sure?';
-	//errorMsg = (typeof text.errorMsg !== 'undefined') ? text.errorMsg : '';
-	dialogName = (typeof text.dialog !== 'undefined') ? text.dialog : 'confirm';
+	heading = (typeof texts.heading !== 'undefined') ? texts.heading : 'Are you sure?';
+	errorMsg = (typeof texts.errorMsg !== 'undefined') ? texts.errorMsg : '';
+	dialogName = (typeof texts.dialog !== 'undefined') ? texts.dialog : 'confirm';
 	choices = (typeof choices !== 'undefined') ? choices : {};
 	choices.posButton = choices.posButton || 'Confirm';
 	choices.negButton = choices.negButton || 'Cancel';
@@ -422,48 +398,70 @@ GUI.prototype.confirm = function(text, choices){
 	choices.beforeAction = choices.beforeAction || function(){};
 
 	closeFn = function(){
-		$dialog.dialog('destroy');
-		$dialog.find('.dialog-msg, .dialog-error').text('');
-		console.debug('dialog destroyed');
+		//$dialog.dialog('destroy');
+		
 		//choices.afterAction.call();
+		
+		$dialog.modal('hide');
 	};
 
 	$dialog = $('#dialog-'+dialogName);
 	
 	//write content into confirmation dialog
-	$dialog.find('.dialog-msg').html(msg).capitalizeStart();
-	//$dialog.find('.dialog-error').text(errorMsg).capitalizeStart();
+	$dialog.find('.modal-header h3').text(heading);
+	$dialog.find('.modal-body .msg').html(msg).capitalizeStart();
+	$dialog.find('.modal-body .alert-error').html(errorMsg);
 
 	//instantiate dialog
-	$dialog.dialog({
-		'open': choices.beforeAction,
-		'title': heading,
-		'resizable': false,
-		'modal': true,
-		'closeOnEscape': true,
-		'buttons': [
-			{
-				text: choices.posButton,
-				click: function(){
-					choices.posAction.call();
-					//console.log('error text: '+$dialog.find('.dialog-error').text());
-					if ($dialog.find('.dialog-error').text().length === 0){
-						closeFn.call();
-					}
-				}
-			},
-			{
-				text: choices.negButton,
-				click: function(){
-					choices.negAction.call();
-					closeFn.call();
-				}
-			}
-		],
-		'width': 500,
-		'beforeClose': closeFn
+	$dialog.modal({
+		keyboard: true,
+		show: true
 	});
 
+	$dialog.on('shown', function(){
+		choices.beforeAction.call();
+	});
+
+	$dialog.on('hide', function(){
+		$dialog.off('shown hidden hide');
+		$dialog.find('button.positive, button.negative').off('click');
+	});
+
+	$dialog.on('hidden', function(){
+		$dialog.find('.modal-body .msg, .modal-body .alert-error, button').text('');
+		console.debug('dialog destroyed');
+	});
+
+	$dialog.find('button.positive').on('click', function(){
+		choices.posAction.call();
+		//console.log('error text: '+$dialog.find('.dialog-error').text());
+		if ($dialog.find('.modal-body .alert-error').text().length === 0){
+			closeFn.call();
+		}
+	}).text(choices.posButton);
+
+	$dialog.find('button.negative').on('click', function(){
+		choices.negAction.call();
+		closeFn.call();
+	}).text(choices.negButton);
+
+	/* sample test code (for console):
+
+		gui.confirm({
+			msg: 'This is a message telling you to make a decision',
+			heading: 'Please confirm this action',
+			errorMsg: 'Oh man, you messed up big time!'
+		},{
+			posButton: 'Confirmeer',
+			negButton: 'Annuleer',
+			posAction: function(){console.log('you just did something positive!')},
+			negAction: function(){console.log('you did something negative')},
+			beforeAction: function(){console.log('doing some preparatory work')}
+		})
+
+		gui.confirm('confirm this please');
+
+	 */
 };
 	
 GUI.prototype.updateStatus = {

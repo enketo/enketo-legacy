@@ -447,7 +447,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$form.trigger('dataupdate', dataNode.prop('nodeName') );
 			}
 			else {
-				console.error('could not find node '+this.selector+' with index '+this.index+ 'to remove ');
+				console.error('could not find node '+this.selector+' with index '+this.index+ ' to remove ');
 			}
 		};
 
@@ -2256,9 +2256,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//console.debug('initializing repeats');
 			$form.find('fieldset.jr-repeat').prepend('<span class="repeat-number"></span>');
 			$form.find('fieldset.jr-repeat:not([data-repeat-fixed])')
-				.append('<button type="button" class="repeat"></button><button type="button" class="remove"></button>');
-			$form.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
-			$form.find('button.remove').button({'disabled': true, 'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
+				.append('<button type="button" class="btn repeat"><i class="icon-plus"></i></button>'+
+					'<button type="button" disabled="disabled" class="btn remove"><i class="icon-minus"></i></button>');
+			//$form.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
+			//$form.find('button.remove').button({'disabled': true, 'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
 
 			//MOVE HANDLERS to FormHTML.eventHandlers?
 			//delegated handlers (strictly speaking not required, but checked for doubling of events -> OK)
@@ -2327,13 +2328,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$clone.find('.clone').remove();
 			$clone.addClass('clone');//.removeClass('invalid ui-state-error');
 			//re-initialize buttons
-			$clone.find('button.remove').button({'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
-			$clone.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
+			//$clone.find('button.remove').button({'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
+			//$clone.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
 
 			$clone.insertAfter($node)
 				//.find('button').removeClass('ui-state-hover')
 				.parent('.jr-group').numberRepeats();
-			$clone.hide().show('highlight',{ },600); //animations that look okay: highlight, scale, slide
+			$clone.hide().show(600); //animations that look okay: highlight, scale, slide
 			//is this code actually working?
 			//clone.find('input, select, textarea').val(null);
 			$clone.clearInputs(ev);
@@ -2343,7 +2344,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//clone.find('fieldset.jr-repeat').addClass('clone');
 
 			//note: in http://formhub.org/formhub_u/forms/hh_polio_survey_cloned/form.xml a parent group of a repeat
-			//has the same ref attribute as teh nodeset attribute of the repeat. This would cause a problem determining 
+			//has the same ref attribute as the nodeset attribute of the repeat. This would cause a problem determining 
 			//the proper index if .jr-repeat was not included in the selector
 			index = $form.find('fieldset.jr-repeat[name="'+$node.attr('name')+'"]').index($node);
 			//parentIndex = $form.find('[name="'+$master.attr('name')+'"]').parent().index($parent);
@@ -2391,7 +2392,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		
 			//var parentSiblings = parent.siblings();
 		
-			node.hide('drop',{}, delay, function(){
+			node.hide(600, function(){
 				node.remove();
 				parentGroup.numberRepeats();
 
@@ -2405,19 +2406,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		toggleButtons : function(node){
 			//var constraint;
+			console.debug('toggling repeat buttons');
 			node = (typeof node == 'undefined' || node.length === 0 || !node) ?	node = $form : node;
 			
 			//first switch everything off and remove hover state
-			node.find('button.repeat, button.remove').button('disable').removeClass('ui-state-hover');
+			node.find('button.repeat, button.remove').attr('disabled', 'disabled');//button('disable').removeClass('ui-state-hover');
 		
 			//enable last + button if constraint is true or non-existing
 			//constraint = node.attr('data-constraint');
 			//if ((constraint.length > 0 && evalXpression(constraint) === true) || typeof constraint == 'undefined'){
-				node.find('fieldset.jr-repeat:last-child > button.repeat').button('enable');
+				node.find('fieldset.jr-repeat:last-child > button.repeat').removeAttr('disabled');//.button('enable');
 			//}
 			// the nth-child selector is a bit dangerous. It relies on this structure <fieldset class="jr-repeat"><h2></h2><label><label><label></fieldset>
 			// alternatively, we could allow the first repeat to be deleted as well (as long as it is not the ONLY repeat)
-			node.find('fieldset.jr-repeat:not(:nth-child(2)) > button.remove').button('enable'); //Improve this so that it enables all except first
+			node.find('fieldset.jr-repeat:not(:nth-child(2)) > button.remove').removeAttr('disabled');//button('enable'); //Improve this so that it enables all except first
 		}
 	};
 	

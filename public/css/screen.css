@@ -432,15 +432,17 @@ article.main .jr {
 /* line 454, ../../src/scss/screen.scss */
 .main {
   max-width: 720px;
+  /*&#wrap-collation, &#wrap-charts {
+  max-width: 95%; }*/
+  /* .ui-widget-header {
+     padding-top: 10px;
+     padding-bottom: 10px;
+     margin: 3px 3px 30px 3px; }*/
 }
 /* line 455, ../../src/scss/screen.scss */
 .main article {
   padding: 1.5em;
   min-height: 300px;
-}
-/* line 459, ../../src/scss/screen.scss */
-.main#wrap-collation, .main#wrap-charts {
-  max-width: 95%;
 }
 /* line 461, ../../src/scss/screen.scss */
 .main ul, .main ol {
@@ -478,16 +480,6 @@ article.main .jr {
 .main label#data-template-show input {
   float: left;
   margin-right: 8px;
-}
-/* line 486, ../../src/scss/screen.scss */
-.main .ui-tabs-nav li.ui-state-active {
-  /*background: blue;*/
-}
-/* line 488, ../../src/scss/screen.scss */
-.main .ui-widget-header {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin: 3px 3px 30px 3px;
 }
 
 /*
@@ -545,7 +537,7 @@ footer.ui-widget {
 /***************************
  ** FEEDBACK BAR & PAGE **
  ***************************/
-/* line 549, ../../src/scss/screen.scss */
+/* line 548, ../../src/scss/screen.scss */
 #feedback-bar {
   position: fixed;
   z-index: 13;
@@ -558,7 +550,7 @@ footer.ui-widget {
   border-left: none;
   border-right: none;
 }
-/* line 560, ../../src/scss/screen.scss */
+/* line 559, ../../src/scss/screen.scss */
 #feedback-bar p {
   position: relative;
   margin: 0 50px;
@@ -567,15 +559,15 @@ footer.ui-widget {
   font-size: 0.9em;
   border-top: 1px #ddd dashed;
 }
-/* line 567, ../../src/scss/screen.scss */
+/* line 566, ../../src/scss/screen.scss */
 #feedback-bar p:first-child {
   border-top: none;
 }
-/* line 569, ../../src/scss/screen.scss */
+/* line 568, ../../src/scss/screen.scss */
 #feedback-bar p .ui-icon {
   display: inline-block;
 }
-/* line 571, ../../src/scss/screen.scss */
+/* line 570, ../../src/scss/screen.scss */
 #feedback-bar .ui-icon.ui-icon-info {
   position: absolute;
   left: 20px;
@@ -583,7 +575,7 @@ footer.ui-widget {
   margin-top: -8px;
 }
 
-/* line 577, ../../src/scss/screen.scss */
+/* line 576, ../../src/scss/screen.scss */
 #feedback-bar-close {
   position: absolute;
   right: 20px;
@@ -591,7 +583,7 @@ footer.ui-widget {
   margin-top: -8px;
 }
 
-/* line 583, ../../src/scss/screen.scss */
+/* line 582, ../../src/scss/screen.scss */
 #page.ui-widget-header {
   position: absolute;
   z-index: 12;
@@ -606,7 +598,7 @@ footer.ui-widget {
   border-right: none;
 }
 
-/* line 596, ../../src/scss/screen.scss */
+/* line 595, ../../src/scss/screen.scss */
 .ui-widget-header #page-content {
   margin: 2em;
   padding: 3em;
@@ -619,88 +611,88 @@ footer.ui-widget {
   -o-box-shadow: inset 0 0 5px #817865;
   box-shadow: inner 0 0 5px #817865;
 }
-/* line 608, ../../src/scss/screen.scss */
+/* line 607, ../../src/scss/screen.scss */
 .ui-widget-header #page-content p:first-child {
   margin-top: 0;
 }
-/* line 610, ../../src/scss/screen.scss */
+/* line 609, ../../src/scss/screen.scss */
 .ui-widget-header #page-content p:last-child {
   margin-bottom: 0;
 }
 
-/* line 614, ../../src/scss/screen.scss */
+/* line 613, ../../src/scss/screen.scss */
 #page a {
   color: #fece2f;
   text-decoration: none;
 }
-/* line 617, ../../src/scss/screen.scss */
+/* line 616, ../../src/scss/screen.scss */
 #page a:link {
   color: #fece2f;
 }
-/* line 619, ../../src/scss/screen.scss */
+/* line 618, ../../src/scss/screen.scss */
 #page a:hover, #page a:focus {
   text-decoration: underline;
   color: #fff9e5;
 }
-/* line 622, ../../src/scss/screen.scss */
+/* line 621, ../../src/scss/screen.scss */
 #page a:active {
   color: white;
   text-decoration: none;
 }
-/* line 625, ../../src/scss/screen.scss */
+/* line 624, ../../src/scss/screen.scss */
 #page .ui-icon {
   float: left;
   margin-right: 10px;
 }
 
-/* line 629, ../../src/scss/screen.scss */
+/* line 628, ../../src/scss/screen.scss */
 #page-close {
   position: absolute;
   right: 20px;
   bottom: 20px;
 }
 
-/* line 634, ../../src/scss/screen.scss */
+/* line 633, ../../src/scss/screen.scss */
 #page .column {
   width: 50%;
   float: left;
   height: 100%;
 }
 
-/* line 640, ../../src/scss/screen.scss */
+/* line 639, ../../src/scss/screen.scss */
 #settings h3 {
   text-align: left;
 }
-/* line 642, ../../src/scss/screen.scss */
+/* line 641, ../../src/scss/screen.scss */
 #settings input {
   display: block;
   float: left;
   margin-right: 10px;
   margin-left: 0;
 }
-/* line 647, ../../src/scss/screen.scss */
+/* line 646, ../../src/scss/screen.scss */
 #settings label {
   display: block;
   margin-bottom: 5px;
 }
-/* line 650, ../../src/scss/screen.scss */
+/* line 649, ../../src/scss/screen.scss */
 #settings ul {
   margin-left: 0;
   list-style: none;
 }
 
-/* line 654, ../../src/scss/screen.scss */
+/* line 653, ../../src/scss/screen.scss */
 #records-saved {
   width: 45%;
   float: left;
   /*display: inline;*/
   /* doesn't make sense right? with float*/
 }
-/* line 659, ../../src/scss/screen.scss */
+/* line 658, ../../src/scss/screen.scss */
 #records-saved h3 {
   /*margin-left: 30px;*/
 }
-/* line 661, ../../src/scss/screen.scss */
+/* line 660, ../../src/scss/screen.scss */
 #records-saved .scroll-list {
   border-color: white;
   min-height: 150px;
@@ -708,22 +700,22 @@ footer.ui-widget {
   overflow: auto;
 }
 
-/* line 669, ../../src/scss/screen.scss */
+/* line 668, ../../src/scss/screen.scss */
 #form-list ol {
   margin: 0px;
 }
-/* line 671, ../../src/scss/screen.scss */
+/* line 670, ../../src/scss/screen.scss */
 #form-list ol li {
   display: block;
   text-align: center;
 }
-/* line 674, ../../src/scss/screen.scss */
+/* line 673, ../../src/scss/screen.scss */
 #form-list ol li a {
   font-size: 12px;
   width: 100%;
 }
 
-/* line 678, ../../src/scss/screen.scss */
+/* line 677, ../../src/scss/screen.scss */
 .scroll-list {
   position: relative;
   border: 1px solid;
@@ -734,13 +726,13 @@ footer.ui-widget {
   padding: 15px;
   /*height: 300px;*/
 }
-/* line 686, ../../src/scss/screen.scss */
+/* line 685, ../../src/scss/screen.scss */
 .scroll-list > div {
   position: relative;
   width: 100%;
   height: 100%;
 }
-/* line 690, ../../src/scss/screen.scss */
+/* line 689, ../../src/scss/screen.scss */
 .scroll-list > div ol {
   position: relative;
   top: 0;
@@ -750,7 +742,7 @@ footer.ui-widget {
   padding: 0;
   width: 100%;
 }
-/* line 698, ../../src/scss/screen.scss */
+/* line 697, ../../src/scss/screen.scss */
 .scroll-list > div ol li {
   list-style: none;
   margin: 3px;
@@ -761,19 +753,19 @@ footer.ui-widget {
   overflow: hidden;
   /* for very long names */
 }
-/* line 707, ../../src/scss/screen.scss */
+/* line 706, ../../src/scss/screen.scss */
 .scroll-list > div ol li .date {
   font-size: .6em;
   float: right;
 }
-/* line 711, ../../src/scss/screen.scss */
+/* line 710, ../../src/scss/screen.scss */
 .scroll-list > div ol li.no-click {
   font-style: italic;
   text-align: center;
   margin: 40px;
 }
 
-/* line 716, ../../src/scss/screen.scss */
+/* line 715, ../../src/scss/screen.scss */
 #records-summary {
   margin: 0;
   margin-top: 5px;
@@ -782,22 +774,22 @@ footer.ui-widget {
   font-size: 0.6em;
   text-align: center;
 }
-/* line 723, ../../src/scss/screen.scss */
+/* line 722, ../../src/scss/screen.scss */
 #records-summary .ui-icon {
   display: inline-block;
   float: none;
 }
-/* line 726, ../../src/scss/screen.scss */
+/* line 725, ../../src/scss/screen.scss */
 #records-summary .ui-icon-pencil {
   margin-left: 3em;
 }
 
-/* line 730, ../../src/scss/screen.scss */
+/* line 729, ../../src/scss/screen.scss */
 #records .column.middle {
   width: 10%;
   height: 100%;
 }
-/* line 733, ../../src/scss/screen.scss */
+/* line 732, ../../src/scss/screen.scss */
 #records .column.right {
   /*right column of records page*/
   width: 45%;
@@ -807,23 +799,23 @@ footer.ui-widget {
   margin-right: -10px;
   /*visual correction due to absence of border, stricly speaking not correct*/
 }
-/* line 741, ../../src/scss/screen.scss */
+/* line 740, ../../src/scss/screen.scss */
 #records .column .ui-icon {
   display: inline-block;
   float: none;
 }
 
-/* line 745, ../../src/scss/screen.scss */
+/* line 744, ../../src/scss/screen.scss */
 #records-buttons {
   /*width: auto;*/
   margin: 20% auto 5% auto;
 }
-/* line 748, ../../src/scss/screen.scss */
+/* line 747, ../../src/scss/screen.scss */
 #records-buttons button {
   /*float: left;*/
 }
 
-/* line 751, ../../src/scss/screen.scss */
+/* line 750, ../../src/scss/screen.scss */
 #records-force-upload-info, #records-export-info {
   display: none;
   font-size: .8em;
@@ -831,7 +823,7 @@ footer.ui-widget {
   line-height: 1.5em;
 }
 
-/* line 757, ../../src/scss/screen.scss */
+/* line 756, ../../src/scss/screen.scss */
 #slider-wrap {
   /*float:left;*/
   width: 25px;
@@ -839,25 +831,25 @@ footer.ui-widget {
   margin: 0 auto;
 }
 
-/* line 763, ../../src/scss/screen.scss */
+/* line 762, ../../src/scss/screen.scss */
 #slider-vertical {
   position: relative;
   height: 100%;
   background: none;
 }
 
-/* line 768, ../../src/scss/screen.scss */
+/* line 767, ../../src/scss/screen.scss */
 .ui-slider-vertical {
   width: 100%;
   border: none;
 }
-/* line 771, ../../src/scss/screen.scss */
+/* line 770, ../../src/scss/screen.scss */
 .ui-slider-vertical .ui-slider-range {
   background: none;
   position: absolute;
   width: 100%;
 }
-/* line 775, ../../src/scss/screen.scss */
+/* line 774, ../../src/scss/screen.scss */
 .ui-slider-vertical .ui-slider-handle {
   /*left: 1px; */
   left: 0px;
@@ -870,12 +862,12 @@ footer.ui-widget {
   position: absolute;
 }
 
-/* line 786, ../../src/scss/screen.scss */
+/* line 785, ../../src/scss/screen.scss */
 .ui-slider .ui-slider-handle {
   width: 23px;
 }
 
-/* line 789, ../../src/scss/screen.scss */
+/* line 788, ../../src/scss/screen.scss */
 .ui-slider-handle .ui-state-default {
   background-image: none;
 }
@@ -889,7 +881,7 @@ footer.ui-widget {
 	.scroll-bar-wrap .ui-slider-handle .ui-icon { margin: -8px auto 0; position: relative; top: 50%; }
 */
 /* these transitions should match */
-/* line 803, ../../src/scss/screen.scss */
+/* line 802, ../../src/scss/screen.scss */
 #feedback-bar, #main, #page {
   -webkit-transition: all 1s ease-out;
   -moz-transition: all 1s ease-out;
@@ -900,39 +892,39 @@ footer.ui-widget {
 /**************************
 ****    SURVEY FORM    ****
 **************************/
-/* line 813, ../../src/scss/screen.scss */
+/* line 812, ../../src/scss/screen.scss */
 .jr [lang]:not(.active), .jr-hint {
   display: none;
 }
 
-/* line 817, ../../src/scss/screen.scss */
+/* line 816, ../../src/scss/screen.scss */
 .jr-constraint-msg.active {
   display: block;
   visibility: hidden;
   min-height: 1em;
 }
-/* line 821, ../../src/scss/screen.scss */
+/* line 820, ../../src/scss/screen.scss */
 .jr-constraint-msg:not(.active) {
   display: none;
 }
 
-/* line 824, ../../src/scss/screen.scss */
+/* line 823, ../../src/scss/screen.scss */
 .invalid .jr-constraint-msg.active {
   visibility: visible;
   font-weight: bold;
   font-style: italic;
 }
 
-/* line 829, ../../src/scss/screen.scss */
+/* line 828, ../../src/scss/screen.scss */
 .jr-option-translations {
   display: none;
 }
 
-/* line 832, ../../src/scss/screen.scss */
+/* line 831, ../../src/scss/screen.scss */
 .jr h2.ui-widget-header {
   margin: 0;
 }
-/* line 834, ../../src/scss/screen.scss */
+/* line 833, ../../src/scss/screen.scss */
 .jr h2.ui-widget-header span {
   display: block;
   color: #494437;
@@ -941,20 +933,20 @@ footer.ui-widget {
   text-align: right;
 }
 
-/* line 841, ../../src/scss/screen.scss */
+/* line 840, ../../src/scss/screen.scss */
 .question-icons {
   float: right;
   margin: -5px -10px 0 0;
   /*line-height: 15px;*/
 }
-/* line 845, ../../src/scss/screen.scss */
+/* line 844, ../../src/scss/screen.scss */
 .question-icons span {
   display: inline-block;
   text-align: right;
   width: 18px;
 }
 
-/* line 850, ../../src/scss/screen.scss */
+/* line 849, ../../src/scss/screen.scss */
 #form-languages {
   margin-top: -18px;
   margin-bottom: 18px;
@@ -969,7 +961,7 @@ footer.ui-widget {
   margin-bottom: 45px;
   margin-right: -15px; }
  */
-/* line 864, ../../src/scss/screen.scss */
+/* line 863, ../../src/scss/screen.scss */
 #form-languages a:link {
   float: right;
   padding-left: 10px;
@@ -979,18 +971,18 @@ footer.ui-widget {
   font-size: .8em;
   color: #5c5c5c;
 }
-/* line 872, ../../src/scss/screen.scss */
+/* line 871, ../../src/scss/screen.scss */
 #form-languages a:not(.active):hover {
   color: #381f00;
   text-decoration: underline;
 }
-/* line 875, ../../src/scss/screen.scss */
+/* line 874, ../../src/scss/screen.scss */
 #form-languages a.active {
   color: #381f00;
   text-decoration: none;
 }
 
-/* line 879, ../../src/scss/screen.scss */
+/* line 878, ../../src/scss/screen.scss */
 .form-wrapper {
   /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
   position: relative;
@@ -1034,16 +1026,16 @@ footer.ui-widget {
   -o-transform: skew(5deg) rotate(5deg);
   transform: skew(5deg) rotate(5deg);
 }
-/* line 883, ../../src/scss/screen.scss */
+/* line 882, ../../src/scss/screen.scss */
 .form-wrapper #submit-form, .form-wrapper #submit-edited-data {
   margin: 10px 0 45px 310.5px;
 }
 
-/* line 886, ../../src/scss/screen.scss */
+/* line 885, ../../src/scss/screen.scss */
 .jr {
   line-height: 1.1em;
 }
-/* line 888, ../../src/scss/screen.scss */
+/* line 887, ../../src/scss/screen.scss */
 .jr .form-logo img {
   position: relative;
   left: 50%;
@@ -1052,18 +1044,18 @@ footer.ui-widget {
   margin-left: -60px;
   margin-bottom: 10px;
 }
-/* line 895, ../../src/scss/screen.scss */
+/* line 894, ../../src/scss/screen.scss */
 .jr h2 {
   text-align: center;
-  font-size: 24px;
+  /*font-size: 24px;*/
   padding-bottom: 15px;
   border-bottom: solid 3px #ccc;
 }
-/* line 901, ../../src/scss/screen.scss */
+/* line 900, ../../src/scss/screen.scss */
 .jr h3 {
   text-align: left;
 }
-/* line 903, ../../src/scss/screen.scss */
+/* line 902, ../../src/scss/screen.scss */
 .jr label, .jr fieldset {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -1075,15 +1067,15 @@ footer.ui-widget {
   /* */
   font-weight: bold;
 }
-/* line 912, ../../src/scss/screen.scss */
+/* line 911, ../../src/scss/screen.scss */
 .jr label + label {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 914, ../../src/scss/screen.scss */
+/* line 913, ../../src/scss/screen.scss */
 .jr .geopoint {
   height: 350px;
 }
-/* line 916, ../../src/scss/screen.scss */
+/* line 915, ../../src/scss/screen.scss */
 .jr .geopoint .map-canvas {
   width: 340px;
   height: 275px;
@@ -1091,25 +1083,25 @@ footer.ui-widget {
   float: right;
   border: 1px solid #cccccc;
 }
-/* line 922, ../../src/scss/screen.scss */
+/* line 921, ../../src/scss/screen.scss */
 .jr .geopoint label {
   border: none;
   padding: 5px 0;
 }
-/* line 925, ../../src/scss/screen.scss */
+/* line 924, ../../src/scss/screen.scss */
 .jr .geopoint button {
   width: 130px;
   margin-top: 10px;
 }
-/* line 929, ../../src/scss/screen.scss */
+/* line 928, ../../src/scss/screen.scss */
 .jr fieldset:not(#jr-preload-items):not(.jr-group) + label, .jr fieldset:not(#jr-preload-items):not(.jr-group) + fieldset:not(.jr-group) {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 931, ../../src/scss/screen.scss */
+/* line 930, ../../src/scss/screen.scss */
 .jr label + fieldset:not(.jr-group) {
   /*border-top: 1px solid $shadow;*/
 }
-/* line 933, ../../src/scss/screen.scss */
+/* line 932, ../../src/scss/screen.scss */
 .jr span.repeat-number {
   height: 2em;
   display: block;
@@ -1118,42 +1110,42 @@ footer.ui-widget {
   margin-top: -8px;
   color: #cccccc;
 }
-/* line 940, ../../src/scss/screen.scss */
+/* line 939, ../../src/scss/screen.scss */
 .jr legend {
   position: absolute;
   top: 1.5em;
   font-weight: bold;
 }
-/* line 944, ../../src/scss/screen.scss */
+/* line 943, ../../src/scss/screen.scss */
 .jr legend ~ label {
   border-top: none;
   padding: .5em 0 .5em 0;
   margin-left: 25px;
   font-weight: normal;
 }
-/* line 949, ../../src/scss/screen.scss */
+/* line 948, ../../src/scss/screen.scss */
 .jr legend + label {
   margin-top: 25px;
 }
-/* line 951, ../../src/scss/screen.scss */
+/* line 950, ../../src/scss/screen.scss */
 .jr fieldset {
   position: relative;
 }
-/* line 953, ../../src/scss/screen.scss */
+/* line 952, ../../src/scss/screen.scss */
 .jr fieldset.jr-group {
   border-top: 2px solid #bbbbbb;
   /**/
   margin: .5em 0;
 }
-/* line 956, ../../src/scss/screen.scss */
+/* line 955, ../../src/scss/screen.scss */
 .jr fieldset.jr-repeat {
   border: 1px dotted #cccccc;
 }
-/* line 958, ../../src/scss/screen.scss */
+/* line 957, ../../src/scss/screen.scss */
 .jr label, .jr legend, .jr .trigger {
   font-size: .8em;
 }
-/* line 960, ../../src/scss/screen.scss */
+/* line 959, ../../src/scss/screen.scss */
 .jr input, .jr textarea {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -1163,16 +1155,16 @@ footer.ui-widget {
   margin: 8px 0 0 0;
   font-size: .9em;
 }
-/* line 968, ../../src/scss/screen.scss */
+/* line 967, ../../src/scss/screen.scss */
 .jr input[type="text"], .jr textarea[type="text"] {
   width: 100%;
 }
-/* line 970, ../../src/scss/screen.scss */
+/* line 969, ../../src/scss/screen.scss */
 .jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password], .jr textarea[type=date], .jr textarea[type=number], .jr textarea[type=email], .jr textarea[type=password] {
   width: 130px;
   text-align: right;
 }
-/* line 973, ../../src/scss/screen.scss */
+/* line 972, ../../src/scss/screen.scss */
 .jr input[type=radio], .jr input[type=checkbox], .jr textarea[type=radio], .jr textarea[type=checkbox] {
   display: block;
   /*****/
@@ -1183,58 +1175,58 @@ footer.ui-widget {
   /*compensates for the label margin, fixes multi-line labels */
   margin-left: -25px;
 }
-/* line 982, ../../src/scss/screen.scss */
+/* line 981, ../../src/scss/screen.scss */
 .jr textarea {
   width: 100%;
   min-height: 5em;
 }
-/* line 985, ../../src/scss/screen.scss */
+/* line 984, ../../src/scss/screen.scss */
 .jr select {
   display: block;
 }
-/* line 988, ../../src/scss/screen.scss */
+/* line 987, ../../src/scss/screen.scss */
 .jr fieldset .ui-button {
   width: 27px;
   height: 27px;
   margin-top: 6px;
 }
-/* line 992, ../../src/scss/screen.scss */
+/* line 991, ../../src/scss/screen.scss */
 .jr fieldset .one-more {
   margin: 0 -34px -5px 10px;
 }
-/* line 994, ../../src/scss/screen.scss */
+/* line 993, ../../src/scss/screen.scss */
 .jr fieldset .remove {
   float: right;
   margin-right: 0;
 }
-/* line 997, ../../src/scss/screen.scss */
+/* line 996, ../../src/scss/screen.scss */
 .jr .trigger {
   /*@include warning;*/
   padding: 7px 12px;
   margin: 1em 0;
 }
-/* line 1001, ../../src/scss/screen.scss */
+/* line 1000, ../../src/scss/screen.scss */
 .jr .required {
   margin-left: 3px;
   color: #ce4f07;
 }
-/* line 1004, ../../src/scss/screen.scss */
+/* line 1003, ../../src/scss/screen.scss */
 .jr .jr-appearance-page-break {
   display: none;
 }
 
-/* line 1008, ../../src/scss/screen.scss */
+/* line 1007, ../../src/scss/screen.scss */
 label.with-media {
   margin-top: 5px;
 }
 
-/* line 1011, ../../src/scss/screen.scss */
+/* line 1010, ../../src/scss/screen.scss */
 .with-media > span.active {
   display: block;
   width: 100%;
 }
 
-/* line 1016, ../../src/scss/screen.scss */
+/* line 1015, ../../src/scss/screen.scss */
 label.with-media img, label.with-media video, label.with-media audio {
   max-width: 45%;
   padding-right: 5%;
@@ -1242,29 +1234,29 @@ label.with-media img, label.with-media video, label.with-media audio {
   float: right;
 }
 
-/* line 1022, ../../src/scss/screen.scss */
+/* line 1021, ../../src/scss/screen.scss */
 .with-media input {
   float: left;
   width: 5%;
   margin-top: -17px;
 }
 
-/* line 1028, ../../src/scss/screen.scss */
+/* line 1027, ../../src/scss/screen.scss */
 input, .fakefileinput, textarea {
   background-color: white;
   border: 2px solid #cccccc;
   min-height: 30px;
 }
 
-/* line 1033, ../../src/scss/screen.scss */
+/* line 1032, ../../src/scss/screen.scss */
 .jr-appearance-compact label {
   display: inline;
 }
-/* line 1035, ../../src/scss/screen.scss */
+/* line 1034, ../../src/scss/screen.scss */
 .jr-appearance-compact label span {
   display: none;
 }
-/* line 1037, ../../src/scss/screen.scss */
+/* line 1036, ../../src/scss/screen.scss */
 .jr-appearance-compact label img {
   float: left;
   width: 120px;
@@ -1272,13 +1264,13 @@ input, .fakefileinput, textarea {
   padding: 5px;
   margin-top: 25px;
 }
-/* line 1044, ../../src/scss/screen.scss */
+/* line 1043, ../../src/scss/screen.scss */
 .jr-appearance-compact label input[type=radio], .jr-appearance-compact label input[type=checkbox] {
   /*display: none;*/
   margin-top: 35px;
 }
 
-/* line 1048, ../../src/scss/screen.scss */
+/* line 1047, ../../src/scss/screen.scss */
 .jr-branch {
   border-top: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
@@ -1289,17 +1281,17 @@ input, .fakefileinput, textarea {
   opacity: 0.5;
 }
 
-/* line 1057, ../../src/scss/screen.scss */
+/* line 1056, ../../src/scss/screen.scss */
 .disabled {
   /*color: $shadow*/
   opacity: 0.5;
 }
 
-/* line 1061, ../../src/scss/screen.scss */
+/* line 1060, ../../src/scss/screen.scss */
 #upload form {
   text-align: center;
 }
-/* line 1063, ../../src/scss/screen.scss */
+/* line 1062, ../../src/scss/screen.scss */
 #upload form label {
   position: absolute;
   top: 120px;
@@ -1311,11 +1303,11 @@ input, .fakefileinput, textarea {
   z-index: 0;
   width: 80%;
 }
-/* line 1073, ../../src/scss/screen.scss */
+/* line 1072, ../../src/scss/screen.scss */
 #upload form label > span {
   display: block;
 }
-/* line 1075, ../../src/scss/screen.scss */
+/* line 1074, ../../src/scss/screen.scss */
 #upload form input, #upload form .fakefileinput {
   position: absolute;
   top: 20px;
@@ -1328,7 +1320,7 @@ input, .fakefileinput, textarea {
   font-size: .9em;
   text-align: center;
 }
-/* line 1086, ../../src/scss/screen.scss */
+/* line 1085, ../../src/scss/screen.scss */
 #upload form input[type=file] {
   /*height: 0px;
   width: 0px;
@@ -1336,11 +1328,11 @@ input, .fakefileinput, textarea {
   z-index: 5;
   opacity: 0;
 }
-/* line 1092, ../../src/scss/screen.scss */
+/* line 1091, ../../src/scss/screen.scss */
 #upload form .hurry {
   margin-top: 180px;
 }
-/* line 1096, ../../src/scss/screen.scss */
+/* line 1095, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:link {
   padding: 0 10px;
   font-size: 13px;
@@ -1349,16 +1341,16 @@ input, .fakefileinput, textarea {
   text-decoration: none;
   color: #5c5c5c;
 }
-/* line 1103, ../../src/scss/screen.scss */
+/* line 1102, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:hover {
   font-weight: normal;
 }
-/* line 1105, ../../src/scss/screen.scss */
+/* line 1104, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a:not(.active):hover {
   color: #381f00;
   text-decoration: underline;
 }
-/* line 1108, ../../src/scss/screen.scss */
+/* line 1107, ../../src/scss/screen.scss */
 #upload form :not(#form-list) a.active {
   color: #817865;
   text-decoration: none;

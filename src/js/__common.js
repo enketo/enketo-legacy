@@ -364,6 +364,12 @@ GUI.prototype.alert = function(message, heading, icon){
 	$alert.on('hidden', function(){
 		$alert.find('.modal-header h3, .modal-body p').html('');
 	});
+
+	/* sample test code (for console):
+	
+		gui.alert('What did you just do???', 'Obtrusive alert dialog');
+
+	 */
 };
 	
 /**
@@ -397,14 +403,6 @@ GUI.prototype.confirm = function(texts, choices){
 	choices.negAction = choices.negAction || function(){return false;};
 	choices.beforeAction = choices.beforeAction || function(){};
 
-	closeFn = function(){
-		//$dialog.dialog('destroy');
-		
-		//choices.afterAction.call();
-		
-		$dialog.modal('hide');
-	};
-
 	$dialog = $('#dialog-'+dialogName);
 	
 	//write content into confirmation dialog
@@ -418,37 +416,36 @@ GUI.prototype.confirm = function(texts, choices){
 		show: true
 	});
 
+	//set eventhanders
 	$dialog.on('shown', function(){
 		choices.beforeAction.call();
 	});
 
+	$dialog.find('button.positive').on('click', function(){
+		choices.posAction.call();
+		$dialog.modal('hide');
+	}).text(choices.posButton);
+
+	$dialog.find('button.negative').on('click', function(){
+		choices.negAction.call();
+		$dialog.modal('hide');
+	}).text(choices.negButton);
+
 	$dialog.on('hide', function(){
+		//remove eventhandlers
 		$dialog.off('shown hidden hide');
 		$dialog.find('button.positive, button.negative').off('click');
 	});
 
 	$dialog.on('hidden', function(){
 		$dialog.find('.modal-body .msg, .modal-body .alert-error, button').text('');
-		console.debug('dialog destroyed');
+		//console.debug('dialog destroyed');
 	});
-
-	$dialog.find('button.positive').on('click', function(){
-		choices.posAction.call();
-		//console.log('error text: '+$dialog.find('.dialog-error').text());
-		if ($dialog.find('.modal-body .alert-error').text().length === 0){
-			closeFn.call();
-		}
-	}).text(choices.posButton);
-
-	$dialog.find('button.negative').on('click', function(){
-		choices.negAction.call();
-		closeFn.call();
-	}).text(choices.negButton);
 
 	/* sample test code (for console):
 
 		gui.confirm({
-			msg: 'This is a message telling you to make a decision',
+			msg: 'This is an obtrusive confirmation dialog asking you to make a decision',
 			heading: 'Please confirm this action',
 			errorMsg: 'Oh man, you messed up big time!'
 		},{

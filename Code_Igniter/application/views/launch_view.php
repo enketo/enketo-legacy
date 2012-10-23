@@ -7,9 +7,8 @@
 ?>
 		<!--[if IE]><script type="text/javascript">window.location.href = 'modern_browsers';</script><![endif]-->
 
-		<link rel="stylesheet" type="text/css" href="libraries/jquery-ui/css/<?= $theme ?>/jquery-ui.custom.css"/>
+		<link rel="stylesheet" type="text/css" href="libraries/bootstrap/css/bootstrap.min.css"/>
 		<link href="css/screen.css" media="screen" rel="stylesheet" type="text/css"  />
-
 		<link href="/css/print.css" media="print" rel="stylesheet" type="text/css" />
 
 		<!--<script type="text/javascript" src="libraries/xpathjs_javarosa/src/engine.js"></script>

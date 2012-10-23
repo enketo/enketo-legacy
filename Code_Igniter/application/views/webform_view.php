@@ -68,14 +68,21 @@
 		</div>
 
 		<div class="dialog" id="dialog-save" style="display: none;">
-			<p>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3></h3>
+			</div>
+			<div class="modal-body">
 				<form onsubmit="return false;">
 					<span class="dialog-msg"></span>
 					<span class="dialog-error ui-state-error"></span>
 					<label>name:<input name="record-name" type="text"/></label>
 					<label><input name="record-final" type="checkbox" value="true"/><span>final</span></label>
 				</form>
-			</p>
+			</div>
+			<div class="modal-footer">
+    			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  			</div>
 		</div>
 
 		<!--<div id="container">-->

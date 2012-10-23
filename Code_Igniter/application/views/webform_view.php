@@ -51,11 +51,11 @@
 				<h3></h3>
 			</div>
 			<div class="modal-body">
-				<p id="dialog-alert-msg" >
+				<p>
 				</p>
 			</div>
 			<div class="modal-footer">
-    			<a href="#" class="btn btn-primary">Ok</a>
+    			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
   			</div>
 		</div>
 

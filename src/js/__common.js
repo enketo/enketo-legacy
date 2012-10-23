@@ -352,7 +352,7 @@ GUI.prototype.alert = function(message, heading, icon){
 		$alert = $('#dialog-alert');
 
 	heading = heading || 'Alert';
-	icon = icon || 'icon-exclamation-sign';
+	//icon = icon || 'icon-exclamation-sign';
 
 	//$alert.find('.modal-header h3 i').removeClass().addClass(icon);
 	//to call when dialog closes
@@ -364,11 +364,16 @@ GUI.prototype.alert = function(message, heading, icon){
 
 	//write content into alert dialog
 	$alert.find('.modal-header h3').text(heading);
-	$alert.find('#dialog-alert-msg').html(message).capitalizeStart();
+	$alert.find('.modal-body p').html(message).capitalizeStart();
 
 	$alert.modal({
 		keyboard: true,
 		show: true
+	});
+
+	$alert.on('hidden', function(){
+		$alert.find('.modal-header h3').text('');
+		$alert.find('.modal-body p').html('');
 	});
 /**
 	$alert.dialog({

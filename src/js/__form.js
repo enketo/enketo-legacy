@@ -1380,13 +1380,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	FormHTML.prototype.setAllVals = function(){
 		var index, name, value,
 			that=this;			
-		////console.log('setting form values');
 		data.node(null, null, {noEmpty: true}).get().each(function(){
-			//parent = $(this).parent(),
-			//parentName = parent.prop('nodeName'),
-			value = $(this).text(); //actually should use Nodeset.getVal() for that would require changing getVal();
-			//index = data.node(parentName).get().index(parent);
-			//index = data.node($(this).prop('nodeName')).get().index($(this));
+			value = $(this).text(); 
 			name = that.generateName($(this));
 			index = data.node(name).get().index($(this));
 			//console.debug('calling input.setVal with name: '+name+', index: '+index+', value: '+value);
@@ -2387,7 +2382,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var delay = 600,// dataNode,
 				that = this,
 				repeatPath = node.attr('name'),
-				repeatIndex = $form.find('[name="'+repeatPath+'"]').index(node),
+				repeatIndex = $form.find('fieldset.jr-repeat[name="'+repeatPath+'"]').index(node),
 				parentGroup = node.parent('fieldset.jr-group');
 			//var parent = node.parent('fieldset.jr-repeat');
 		
@@ -2398,12 +2393,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				parentGroup.numberRepeats();
 
 				that.toggleButtons(parentGroup);
+				$form.trigger('changerepeat'); 
 			});
 
 			//now remove the data node
 			data.node(repeatPath, repeatIndex).remove();
-
-			$form.trigger('changerepeat'); 
 		},
 		toggleButtons : function(node){
 			//var constraint;

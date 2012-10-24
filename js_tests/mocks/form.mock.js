@@ -76,15 +76,9 @@ var formStr1 =
         '</div>'+
         '<label><input name="/thedata/nodeA" type="text"/></label>'+
         '<label><input name="/thedata/nodeB" type="text"/></label>'+
-        '<fieldset class="jr-group">'+
+        '<fieldset class="jr-group" name="/thedata/repeatGroup">'+
             '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
                 '<label><input name="/thedata/repeatGroup/nodeC" type="text"/></label>'+
-            '</fieldset>'+
-            '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
-                '<label><input name="/thedata/repeatGroup/nodeC" type="text" /></label>'+
-            '</fieldset>'+
-            '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
-                '<label><input name="/thedata/repeatGroup/nodeC" type="text" /></label>'+
             '</fieldset>'+
         '</fieldset>'+
     '</form>';
@@ -119,7 +113,7 @@ var formStr2 =
             '<span id="jrRepeat">0</span>'+
             '<span id="jrRelevant">0</span>'+
             '<span id="jrConstraint">0</span>'+
-            '<span id="jrCalculate">3</span>'+
+            '<span id="jrCalculate">4</span>'+
             '<span id="jrPreload">0</span>'+
         '</div>'+
         '<label>'+
@@ -169,6 +163,14 @@ var formStr3 =
     '<form class="jr">'+
         '<section class="form-logo"> </section>'+
         '<h2 id="form-title">Random<span></span></h2>'+
+        '<div id="stats" style="display: none;">'+
+            '<span id="jrSelect">0</span><span id="jrSelect1">0</span>'+
+            '<span id="jrItem">0</span><span id="jrInput">0</span>'+
+            '<span id="jrUpload">0</span><span id="jrTrigger">2</span>'+
+            '<span id="jrRepeat">0</span><span id="jrRelevant">0</span>'+
+            '<span id="jrConstraint">0</span><span id="jrCalculate">3</span>'+
+            '<span id="jrPreload">1</span>'+
+        '</div>'+
         '<fieldset id="jr-preload-items" style="display:none;">'+ /*****/
             '<label>'+
                 '<input name="/random/meta/instanceID" type="hidden" data-preload="instance" data-preload-params="id" data-type-xml="string" />'+

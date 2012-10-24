@@ -110,7 +110,6 @@ class Data extends CI_Controller {
 
 		//add POST content
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-		
 		//timeout high as it is dealt with in javascript
 		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 		
@@ -118,11 +117,16 @@ class Data extends CI_Controller {
 		//execute post
 		$result = curl_exec($ch);
 		
+		if (curl_errno($ch))
+		{
+			return 'curl_error:'.curl_error($ch).' number: '+curl_errno();
+		}
+		//$response = curl_getinfo($ch);
 		//debugging:
 		$response = '';
-		//foreach (curl_getinfo($ch) as $property=>$value) { 
-		//	$response .= $property . " : " . $value . "<br />"; 
-		//}	  
+		foreach (curl_getinfo($ch) as $property=>$value) { 
+			$response .= $property . " : " . $value . "<br />"; 
+		}	  
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		//close connection
 		curl_close($ch);

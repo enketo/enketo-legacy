@@ -670,13 +670,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 
 		nodesToLoad.each(function(){
-			//name = $(this).prop('nodeName');
+			var name = $(this).prop('nodeName');
+			console.debug(name);
 			path = form.generateName($(this));
-			//console.debug('path: '+path);
+			console.debug('path: '+path);
 			index = instanceOfDataXML.node(path).get().index($(this));
-			//console.debug('index: '+index);
+			console.debug('index: '+index);
 			value = $(this).text();
-			//console.debug('value: '+value);
+			console.debug('value: '+value);
 
 			$input = $form.find('[name="'+path+'"]').eq(0);
 			

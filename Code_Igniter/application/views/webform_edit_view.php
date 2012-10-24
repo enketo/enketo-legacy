@@ -16,7 +16,7 @@
 		
 		<script type="text/javascript">
 			var jrDataStr = '<?= $form_data ?>';
-			var jrDataStrToEdit = '<?= $form_data_to_edit ?>';
+			var jrDataStrToEdit = '<?= addcslashes($form_data_to_edit, "\\\'\"&\n\r") ?>';
 			var RETURN_URL = '<?= $return_url ?>';
 		</script>
 	

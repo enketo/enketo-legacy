@@ -224,8 +224,9 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 	// this tests the makeBugCompliant() workaround that injects a position into an absolute path
 	// for the issue described here: https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations
 	it("evaluates a repaired absolute XPath inside a repeat (makeBugCompliant())", function(){
-		form.form(formStr1);
-		expect(data.evaluate("/thedata/repeatGroup/nodeC", "string", "/thedata/repeatGroup/nodeC", 2)).toEqual("c3");
+		form = new Form(formStr1, dataStr1);
+		form.init();
+		expect(form.getDataO().evaluate("/thedata/repeatGroup/nodeC", "string", "/thedata/repeatGroup/nodeC", 2)).toEqual("c3");
 	});
 });
 
@@ -315,6 +316,25 @@ describe("Preload and MetaData functionality", function(){
 	//TODO add similar to last tests if preloader IS present
 });
 
+describe("Loading instance values into html input fields functionality", function(){
+	var form;
+
+	it('correctly populates input fields of non-repeat node names in the instance', function(){
+		form = new Form(formStr1, dataStr1);
+		form.init();
+		expect(form.getFormO().$.find('[name="/thedata/nodeB"]').val()).toEqual('b');
+		expect(form.getFormO().$.find('[name="/thedata/repeatGroup/nodeC"]').eq(2).val()).toEqual('c3');
+		expect(form.getFormO().$.find('[name="/thedata/nodeX"]').val()).toEqual(undefined);
+	});
+
+	it('correctly populates input field even if the instance node name is not unique and occurs at multiple levels', function(){
+		form = new Form(formStr4, dataStr4);
+		form.init();
+		expect(form.getFormO().$.find('[name="/nodename_bug/hh/hh"]').val()).toEqual('hi');
+	});
+
+});
+
 describe("Loading instance-to-edit functionality", function(){
 	var form;
 
@@ -374,6 +394,38 @@ describe("Loading instance-to-edit functionality", function(){
 		it ("adds data from the instance-to-edit to the form instance", function(){
 			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('value');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
+		});
+
+	});
+
+	describe('repeat functionality', function(){
+		var form, timerCallback;
+
+		beforeEach(function() {
+			//turn jQuery animations off
+			jQuery.fx.off = true;
+		});
+
+		it ("removes the correct instance and HTML node when the '-' button is clicked (issue 170)", function(){
+			var rep,
+				repeatPath = "/thedata/repeatGroup",
+				nodePath = "/thedata/repeatGroup/nodeC",
+				index = 2;
+			form = new Form(formStr1, dataStr1);
+			form.init();
+			
+			expect(form.getFormO().$.find('[name="'+repeatPath+'"]').eq(index).length).toEqual(1);
+			expect(form.getFormO().$.find('[name="'+repeatPath+'"]:eq('+index+') button.remove').length).toEqual(1);
+			expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index).val()).toEqual('c3');
+			expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual('c3');
+			
+			form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]:eq('+index+') button.remove').click();
+			expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual(undefined);
+			//check if it removed the correct data node
+			expect(form.getDataO().node(nodePath, index-1).getVal()[0]).toEqual('c2');
+			//check if it removed the correct html node
+			expect(form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]').eq(index).length).toEqual(0);
+			expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index-1).val()).toEqual('c2');
 		});
 
 	});

@@ -670,14 +670,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 
 		nodesToLoad.each(function(){
-			//name = $(this).prop('nodeName');
+			var name = $(this).prop('nodeName');
+			console.debug(name);
 			path = form.generateName($(this));
-			//console.debug('path: '+path);
+			console.debug('path: '+path);
 			index = instanceOfDataXML.node(path).get().index($(this));
-			//console.debug('index: '+index);
+			console.debug('index: '+index);
 			value = $(this).text();
-			//console.debug('value: '+value);
+			console.debug('value: '+value);
 
+			//input is not populated in this function, so we take index 0 to get the XML data type
 			$input = $form.find('[name="'+path+'"]').eq(0);
 			
 			xmlDataType = ($input.length > 0) ? form.input.getXmlType($input) : 'string';
@@ -711,8 +713,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					console.error('Error occured trying to clone template node to set the repeat value of the instance to be edited.');
 				}
 			}
-			else{
-				if ($(this).parent('meta').length === 1){
+			else if ($(this).parent('meta').length === 1){
 					//if (that.get().children().eq(0).children('meta').length === 0){
 					//	meta = document.createElement('meta');
 					//	that.get().children().eq(0).append(meta);
@@ -722,10 +723,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					//metaChild = document.createElement(name);
 					//that.node('meta').get().append(metaChild).text(value);
 					$(this).clone().appendTo(that.get().children().eq(0).children('meta'));
-				}
-				else {
-					console.error('did not find expected meta node ');
-				}
+			}
+			else {
+				console.error('did not find node with path: '+path+' and index: '+index+' so could not load data');
 			}
 		});
 		//add deprecatedID node, copy instanceID value to deprecatedID and empty deprecatedID
@@ -1380,14 +1380,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	FormHTML.prototype.setAllVals = function(){
 		var index, name, value,
 			that=this;			
-		////console.log('setting form values');
 		data.node(null, null, {noEmpty: true}).get().each(function(){
-			//parent = $(this).parent(),
-			//parentName = parent.prop('nodeName'),
-			value = $(this).text(); //actually should use Nodeset.getVal() for that would require changing getVal();
-			//index = data.node(parentName).get().index(parent);
-			index = data.node($(this).prop('nodeName')).get().index($(this));
+			value = $(this).text(); 
 			name = that.generateName($(this));
+			index = data.node(name).get().index($(this));
 			//console.debug('calling input.setVal with name: '+name+', index: '+index+', value: '+value);
 			that.input.setVal(name, index, value);
 		});
@@ -2385,7 +2381,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var delay = 600,// dataNode,
 				that = this,
 				repeatPath = node.attr('name'),
-				repeatIndex = $form.find('[name="'+repeatPath+'"]').index(node),
+				repeatIndex = $form.find('fieldset.jr-repeat[name="'+repeatPath+'"]').index(node),
 				parentGroup = node.parent('fieldset.jr-group');
 			//var parent = node.parent('fieldset.jr-repeat');
 		
@@ -2396,12 +2392,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				parentGroup.numberRepeats();
 
 				that.toggleButtons(parentGroup);
+				$form.trigger('changerepeat'); 
 			});
 
 			//now remove the data node
 			data.node(repeatPath, repeatIndex).remove();
-
-			$form.trigger('changerepeat'); 
 		},
 		toggleButtons : function(node){
 			//var constraint;
@@ -2794,7 +2789,7 @@ String.prototype.pad = function(digits){
 			selector = selector.replace(/\./gi, '\\.');
 
             //selector += ':not([template], [template] *)';
-            console.debug('xfind plugin going to return jQuery object with selector: '+selector);
+            //console.debug('xfind plugin going to return jQuery object with selector: '+selector);
             //if performance becomes an issue, it's worthwhile implementing this with native XPath instead.
             return this.find(selector);
     };

@@ -84,7 +84,7 @@ GUI.prototype.setEventHandlers = function(){
 	var that=this;
 	
 	// close 'buttons' on page and feedback bar
-	$('#feedback-bar-close').button({'icons':{'primary': "ui-icon-closethick"}, 'text': false})
+	$('#feedback-bar .close')
 		.click(function(event){
 			event.preventDefault();
 			that.hideFeedback();
@@ -95,7 +95,7 @@ GUI.prototype.setEventHandlers = function(){
 			that.pages().close();
 		});
 	// override style of some buttons and give them a 'custom-button class'
-	$('#feedback-bar-close, #page-close').removeClass().addClass('custom-button ui-widget-header ui-corner-all');
+	//$('#feedback-bar-close, #page-close').removeClass().addClass('custom-button ui-widget-header ui-corner-all');
 	
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
 	$(document).on('click', 'a[href^="#"]:not([href="#"]):not(nav ul li a)', function(event){

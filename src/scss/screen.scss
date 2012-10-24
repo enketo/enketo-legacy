@@ -548,7 +548,9 @@ footer.ui-widget {
 #feedback-bar {
   position: fixed;
   z-index: 13;
-  top: -35px;
+  top: -100px;
+  margin: 0;
+  padding: 0;
   /* invisible initially (header top: 80 - #feedback height - #feedback paddingx2)*/
   width: 100%;
   min-height: 35px;
@@ -564,20 +566,16 @@ footer.ui-widget {
     font-size: 0.9em;
     border-top: 1px #ddd dashed;
     &:first-child {
-      border-top: none; }
-    .ui-icon {
-      display: inline-block; } }
-  .ui-icon.ui-icon-info {
+      border-top: none; } }
+  i, .close {
     position: absolute;
-    left: 20px;
     top: 50%;
-    margin-top: -8px; } }
+    margin-top: -8px; }
+  i {
+    left: 20px; }
+  .close {
+    right: 20px; } }
 
-#feedback-bar-close {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  margin-top: -8px; }
 
 #page.ui-widget-header {
   position: absolute;

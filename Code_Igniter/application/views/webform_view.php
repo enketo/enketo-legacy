@@ -34,9 +34,9 @@
 			<span id="status-upload" title=""></span>
 		</div>--> 
 			
-		<div id="feedback-bar" class="ui-widget ui-widget-content ui-state-highlight">			
-			<span class="ui-icon ui-icon-info" ></span>
-			<a href="#" id="feedback-bar-close" class="custom-button" ></a>
+		<div id="feedback-bar" class="alert">			
+			<i class="icon-info-sign"></i>
+			<a href="#" class="close">&times;</a>
 		</div>
 		
 		<div id="dialog-confirm" class="modal hide fade">

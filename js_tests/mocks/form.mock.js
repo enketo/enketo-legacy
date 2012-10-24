@@ -53,7 +53,7 @@ var dataEditStr1 =
             "<someweights>"+
                 "<w1>1</w1>"+
                 "<w2>3</w2>"+
-                "<w3>5</w3>"+
+                "<w.3>5</w.3>"+
             "</someweights>"+
         "</thedata>"+
     "</instance>";
@@ -74,15 +74,17 @@ var formStr1 =
             '<span id="jrCalculate">0</span>'+
             '<span id="jrPreload">0</span>'+
         '</div>'+
+        '<label><input name="/thedata/nodeA" type="text"/></label>'+
+        '<label><input name="/thedata/nodeB" type="text"/></label>'+
         '<fieldset class="jr-group">'+
             '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
-                '<input name="/thedata/repeatGroup/nodeC" type="text"/>'+
+                '<label><input name="/thedata/repeatGroup/nodeC" type="text"/></label>'+
             '</fieldset>'+
             '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
-                '<input name="/thedata/repeatGroup/nodeC" type="text" />'+
+                '<label><input name="/thedata/repeatGroup/nodeC" type="text" /></label>'+
             '</fieldset>'+
             '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
-                '<input name="/thedata/repeatGroup/nodeC" type="text" />'+
+                '<label><input name="/thedata/repeatGroup/nodeC" type="text" /></label>'+
             '</fieldset>'+
         '</fieldset>'+
     '</form>';
@@ -198,3 +200,37 @@ var formStr3 =
             '</label>'+
         '</fieldset>'+
     '</form>';
+
+var dataStr4 =
+    '<nodename_bug id=\"nodename_bug\"><formhub><uuid>70bdb2dd3cf144288a6a00b36399ed79</uuid></formhub>'+
+        '<hh>'+
+            '<hh>hi</hh>'+
+        '</hh>'+
+        '<meta><instanceID></instanceID></meta>'+
+    '</nodename_bug>';
+
+var formStr4 =
+    '<form class="jr" id="nodename_bug">'+
+        '<section class="form-logo"> </section>'+
+        '<h2 id="form-title">Node Name bug (issue 169)</h2>'+
+        '<div id="stats" style="display: none;">'+
+            '<span id="jrSelect">0</span><span id="jrSelect1">0</span>'+
+            '<span id="jrItem">0</span><span id="jrInput">1</span>'+
+            '<span id="jrUpload">0</span><span id="jrTrigger">0</span>'+
+            '<span id="jrRepeat">0</span><span id="jrRelevant">0</span>'+
+            '<span id="jrConstraint">0</span><span id="jrCalculate">1</span>'+
+            '<span id="jrPreload">0</span>'+
+        '</div>'+
+        '+<fieldset class="" name="/nodename_bug/hh"><label>'+
+            '<span lang="" class="">Enter text</span><input name="/nodename_bug/hh/hh" type="text" data-type-xml="string"/>'+
+        '</label></fieldset>'+
+        '<fieldset id="jr-calculated-items" style="display:none;"><label>'+
+            '<input name="/nodename_bug/formhub/uuid" type="hidden" data-calculate="uuid()" data-type-xml="string"/>'+
+        '</label></fieldset>'+
+    '</form>';
+/**
+ * var jrDataStrToEdit = '<?xml version="1.0" ?><Data_Types id="data_types"><formhub><uuid>98063bc21324412f9cf1cb1c2a16c66e</uuid></formhub><text/><textarea>Lots of text
+with
+new 
+lines. Let's see if these new lines are persisten, when editing this data later.</textarea><pagebreak/><integ/><decim/><onecolor/><multicolor/><geop>39.761 -104.9284 0 22</geop><barc/><day/><now/><aud/><img/><vid/><meta><instanceID>uuid:96cc74a1-8fe9-4eeb-88fd-0371d5f76f94</instanceID></meta><meta><instanceID>uuid:c22ab3185bda403c81b8e7ed559217fa</instanceID></meta></Data_Types>';
+ */

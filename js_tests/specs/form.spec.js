@@ -315,6 +315,28 @@ describe("Preload and MetaData functionality", function(){
 	//TODO add similar to last tests if preloader IS present
 });
 
+describe("Loading instance values into html input fields functionality", function(){
+	var form;
+
+	it('correctly populates input fields of non-repeat node names in the instance', function(){
+		form = new Form(formStr1, dataStr1);
+		form.init();
+		console.debug('input:');
+		console.debug(form.getFormO().$.find('[name="/thedata/nodeB"]'));
+		console.debug(form.getFormO().$.find('[name="/thedata/nodeB"]').val());
+		expect(form.getFormO().$.find('[name="/thedata/nodeB"]').val()).toEqual('b');
+		expect(form.getFormO().$.find('[name="/thedata/repeatGroup/nodeC"]').eq(2).val()).toEqual('c3');
+		expect(form.getFormO().$.find('[name="/thedata/nodeX"]').val()).toEqual(undefined);
+	});
+
+	it('correctly populates input field even if the instance node name is not unique and occurs at multiple levels', function(){
+		form = new Form(formStr4, dataStr4);
+		form.init();
+		expect(form.getFormO().$.find('[name="/nodename_bug/hh/hh"]').val()).toEqual('hi');
+	});
+
+});
+
 describe("Loading instance-to-edit functionality", function(){
 	var form;
 

@@ -216,6 +216,7 @@ function deleteForm(confirmed) {
  */
 function submitForm() {
 	var record, saveResult;
+	$('form.jr').trigger('beforesave');
 	if (!form.isValid()){
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
@@ -241,6 +242,7 @@ function submitForm() {
  */
 function submitEditedForm() {
 	var name, record, saveResult;
+	$('form.jr').trigger('beforesave');
 	if (!form.isValid()){
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;

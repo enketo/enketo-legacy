@@ -1754,8 +1754,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * 
 	 * Once the following is complete this function can and should be removed:
 	 * 
-	 * 1. ODK Collect starts supporting an instanceID preload item
-	 * 2. Pyxforms changes the instanceID binding from calculate to preload
+	 * 1. ODK Collect starts supporting an instanceID preload item (or automatic handling of meta->instanceID without binding)
+	 * 2. Pyxforms changes the instanceID binding from calculate to preload (or without binding)
 	 * 3. Formhub has re-generated all stored XML forms from the stored XLS forms with the updated pyxforms
 	 * 
 	 */

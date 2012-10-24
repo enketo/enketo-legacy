@@ -321,9 +321,6 @@ describe("Loading instance values into html input fields functionality", functio
 	it('correctly populates input fields of non-repeat node names in the instance', function(){
 		form = new Form(formStr1, dataStr1);
 		form.init();
-		console.debug('input:');
-		console.debug(form.getFormO().$.find('[name="/thedata/nodeB"]'));
-		console.debug(form.getFormO().$.find('[name="/thedata/nodeB"]').val());
 		expect(form.getFormO().$.find('[name="/thedata/nodeB"]').val()).toEqual('b');
 		expect(form.getFormO().$.find('[name="/thedata/repeatGroup/nodeC"]').eq(2).val()).toEqual('c3');
 		expect(form.getFormO().$.find('[name="/thedata/nodeX"]').val()).toEqual(undefined);

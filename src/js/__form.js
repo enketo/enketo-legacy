@@ -1389,7 +1389,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//index = data.node($(this).prop('nodeName')).get().index($(this));
 			name = that.generateName($(this));
 			index = data.node(name).get().index($(this));
-			console.debug('calling input.setVal with name: '+name+', index: '+index+', value: '+value);
+			//console.debug('calling input.setVal with name: '+name+', index: '+index+', value: '+value);
 			that.input.setVal(name, index, value);
 		});
 		return;

@@ -106,7 +106,7 @@ class Data extends CI_Controller {
 		);
 
 		//debugging
-		//curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
 		//add POST content
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);

@@ -249,9 +249,9 @@ function submitEditedForm() {
 		return;
 	}
 	//a temporary quick and dirty user feedback box (to be replaced after bootstrap)
-	gui.alert('You will be redirected to formhub when it succeeds. '+
-		'If it fails, please click submit button again.'+
-		'<img style="display:block;margin-left: 224px" src="../images/ajax-loader.gif"/>', 'Submitting...', 'ui-icon-info');
+	gui.alert('Please wait. You will be automatically redirected after it succeeds. '+
+		'(If it fails, please click submit button again.)'+
+		'<img style="display:block;margin: 10px 0 224px 0;" src="../images/ajax-loader.gif"/>', 'Submitting...', 'ui-icon-info');
 	name = (Math.floor(Math.random()*100001)).toString();
 	console.debug('temporary record name: '+name);
 	record = { 'name': name,'data': form.getDataStr(true, true)};

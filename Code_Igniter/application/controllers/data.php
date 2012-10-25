@@ -57,6 +57,7 @@ class Data extends CI_Controller {
 
 	public function submission()
 	{
+		$time_start = time();
 		$message = '';
 		$http_code = 0;
 		$subdomain = get_subdomain();
@@ -127,7 +128,7 @@ class Data extends CI_Controller {
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		//close connection
 		curl_close($ch);
-
+		log_message('debug', 'data submission took '.(time()-$time_start).' seconds.');
 		$this->output->set_status_header($http_code, $response);
 	}
 

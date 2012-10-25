@@ -196,7 +196,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 				contentType: false,
 				processData: false,
 				//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
-				timeout: 10*1000,
+				timeout: 25*1000,
 				complete: function(jqXHR, response){
 					that.processOpenRosaResponse(jqXHR.status, record.name, last);
 					/**

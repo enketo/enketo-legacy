@@ -21,9 +21,14 @@
 <? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>
 
 
-	</head>
+</head>
+<body class="">
 
-	<? require 'elements/header++.php'; ?>
+<? 	
+	require 'elements/header.php'; 
+	require 'elements/dialogs.php'; 
+?>
+
 	<div class="dialog" id="dialog-launch" style="display: none;">
 		<p>
 			<form onsubmit="return false;">
@@ -54,85 +59,86 @@
 	</div>
 
 
-	<div id="container">
+	<div class="main" id="wrap-survey-form">
+		
+		<ul class="nav nav-tabs">
+			<li><a href="#upload" data-toggle="tab">upload</a></li>
+			<li><a href="#survey-form" data-toggle="tab">form</a></li>
+			<li><a href="#data" data-toggle="tab">data</a></li>
+			<li><a href="#report" data-toggle="tab">report</a></li>
+			<li><a href="#html5-form-source" data-toggle="tab">source</a></li>
+		</ul>
 
-		<div class="main ui-widget" id="wrap-survey-form">
+		<div class="tab-content">
+			
+			<article id="upload" class="tab-pane paper">
+				<h2 class="ui-widget-header ui-corner-all">JavaRosa XML Form to Load</h2>
+				<form id="upload-form" action="transform/transform_post_jr_form" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+					<div id="input-switcher">
+						<a href="#" id="xml_file">file</a>|<a href="#" id="server_url">url</a></div>
+					<label>
+						<span>Select XML Form File (or drag it)</span>
+						<div class="fakefileinput"></div>
+						<div><input type="file" name="xml_file" /></div>
+					</label>
+					<label>
+						<span>Enter full web address to server</span>
+						<!-- add hint: Note that uploading a file is a good way to test forms, but in order to launch the
+						survey for data entry in Enketo, it has to be provided as a url-->
+						<input type="text" name="server_url" placeholder="e.g. http://formhub.org/formhub_u"/>
+					</label>
+					<!--<input type="hidden" name="xml_url"/>-->
+					<input type="hidden" name="form_id"/>
+					<!--<input type="submit">Transform and Test!</button>-->
+					<img style="display: none;" class="loading" src="images/ajax-loader.gif" />
+					<div class="hurry"><a href="launch?server=http%3A%2F%2Fformhub.org%2Fformhub_u" title="Check forms on http://formhub.org/formhub_u">Pssst, in a hurry?</a></div>
+				</form>
+				<div id="form-list" class="" style="display:none;">
+					<ol>
+					</ol>
+				</div>
+			</article>
 
-			<div class="ui-widget-content tabs-nohdr ui-corner-all" id="tabs">
-				<ul>
-					<li><a href="#upload">upload</a></li>
-					<li><a href="#survey-form">form</a></li>
-					<li><a href="#data">data</a></li>
-					<li><a href="#report">report</a></li>
-					<li><a href="#html5-form-source">source</a></li>
-				</ul>
-				<article id="upload" class="ui-corner-all">
-					<h2 class="ui-widget-header ui-corner-all">JavaRosa XML Form to Load</h2>
+			<article id="survey-form" class="tab-pane paper">
+					<div>no form loaded yet</div>
+			</article>
 
-					<form id="upload-form" action="transform/transform_post_jr_form" method="post" enctype="multipart/form-data" accept-charset="utf-8">
-						<div id="input-switcher">
-							<a href="#" id="xml_file">file</a>|<a href="#" id="server_url">url</a></div>
-						<label>
-							<span>Select XML Form File (or drag it)</span>
-							<div class="fakefileinput"></div>
-							<div><input type="file" name="xml_file" /></div>
-						</label>
-						<label>
-							<span>Enter full web address to server</span>
-							<!-- add hint: Note that uploading a file is a good way to test forms, but in order to launch the
-							survey for data entry in Enketo, it has to be provided as a url-->
-							<input type="text" name="server_url" placeholder="e.g. http://formhub.org/formhub_u"/>
-						</label>
-						<!--<input type="hidden" name="xml_url"/>-->
-						<input type="hidden" name="form_id"/>
-						<!--<input type="submit">Transform and Test!</button>-->
-						<img style="display: none;" class="loading" src="images/ajax-loader.gif" />
-						<div class="hurry"><a href="launch?server=http%3A%2F%2Fformhub.org%2Fformhub_u" title="Check forms on http://formhub.org/formhub_u">Pssst, in a hurry?</a></div>
-					</form>
-					<div id="form-list" class="" style="display:none;">
-						<ol>
-						</ol>
-					</div>
+			<article id="data" class="tab-pane paper">
+					<p>The data shown is automatically updated when a form value changes.</p>
+					<label id="data-template-show">show templates<input type="checkbox" value="show"></label>
+					<textarea class="source" readonly="readonly"></textarea>
+			</article>
 
-				</article>
-				<article id="survey-form">
-						<div></div>
-				</article>
-				<article id="data"
-						<p>The data shown is automatically updated when a form value changes.</p>
-						<label id="data-template-show">show templates<input type="checkbox" value="show"></label>
-						<textarea class="source" readonly="readonly"></textarea>
-				</article>
+			<article id="report" class="tab-pane paper">
+				<section id="xsltmessages">
+					<h2 class="ui-widget-header ui-corner-all">Transformation Report</h2>
+					<div></div>
+				</section>
+				<section id="html5validationmessages">
+					<h2 class="ui-widget-header ui-corner-all">HTML5 Validation Report</h2>
+					<div></div>
+				</section>
+				<section id="jrvalidationmessages">
+					<h2 class="ui-widget-header ui-corner-all">JavaRosa XForm Validation Report</h2>
+					<div></div>
+				</section>
+				<section id="xmlerrors">
+					<h2 class="ui-widget-header ui-corner-all">XML Load Errors</h2>
+					<div></div>
+				</section>
+				<section id="jserrors">
+					<h2 class="ui-widget-header ui-corner-all">JavaScript Errors</h2>
+					<div></div>
+				</section>
+			</article>
 
-				<article id="report">
-					<section id="xsltmessages">
-						<h2 class="ui-widget-header ui-corner-all">Transformation Report</h2>
-						<div></div>
-					</section>
-					<section id="html5validationmessages">
-						<h2 class="ui-widget-header ui-corner-all">HTML5 Validation Report</h2>
-						<div></div>
-					</section>
-					<section id="jrvalidationmessages">
-						<h2 class="ui-widget-header ui-corner-all">JavaRosa XForm Validation Report</h2>
-						<div></div>
-					</section>
-					<section id="xmlerrors">
-						<h2 class="ui-widget-header ui-corner-all">XML Load Errors</h2>
-						<div></div>
-					</section>
-					<section id="jserrors">
-						<h2 class="ui-widget-header ui-corner-all">JavaScript Errors</h2>
-						<div></div>
-					</section>
-				</article>
-				<article id="html5-form-source">
-					<h2 class="ui-widget-header ui-corner-all">HTML5 form source code</h2>
-					<form action="html5validate/" method="post" enctype="multipart/form-data" accept-charset="utf-8">
-						<textarea name="content" class="source" readonly="readonly"></textarea>
-					</form>
-				</article>
-			</div>
+			<article id="html5-form-source" class="tab-pane paper">
+				<h2 class="ui-widget-header ui-corner-all">HTML5 form source code</h2>
+				<form action="html5validate/" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+					<textarea name="content" class="source" readonly="readonly"></textarea>
+				</form>
+			</article>
+
 		</div>
 	</div>
 

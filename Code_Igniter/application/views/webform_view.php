@@ -21,100 +21,32 @@
 	<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>
 
 	</head>
-
-	<? //require 'elements/header++.php'; ?>
-
 	<body>
-		
+
 		<div id="overlay"></div>
-		<header style="height: 0;"></header>
-		<!--<div id="status">
-			<span id="status-connection" title=""></span>
-			<span id="status-editing" title=""></span>
-			<span id="status-upload" title=""></span>
-		</div>--> 
-			
-		<div id="feedback-bar" class="alert">			
-			<i class="icon-info-sign"></i>
-			<a href="#" class="close">&times;</a>
-		</div>
 		
-		<div id="dialog-confirm" class="modal hide fade">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3></h3>
-			</div>
-			<div class="modal-body">
-				<p class="alert alert-block alert-error"></p>
-				<p class="msg"></p>
-			</div>
-			<div class="modal-footer">
-    			<button class="negative btn">Close</button>
-    			<button class="positive btn btn-primary">Confirm</button>
-  			</div>
-		</div>
+		<header style="height: 0;"></header>
+		
+		<? require 'elements/dialogs.php'; ?>
 
-		<div id="dialog-alert" class="modal hide fade ">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3></h3>
+		<article class="main">
+			<div class="form-wrapper paper" >
+				<?= $form ?>	
+				<button id="submit-form" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
 			</div>
-			<div class="modal-body">
-				<p class="alert alert-block alert-error"></p>
-			</div>
-			<div class="modal-footer">
-    			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-  			</div>
-		</div>
-
-		<div class="dialog" id="dialog-save" style="display: none;">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3></h3>
-			</div>
-			<div class="modal-body">
-				<form onsubmit="return false;">
-					<span class="dialog-msg"></span>
-					<span class="dialog-error ui-state-error"></span>
-					<label>name:<input name="record-name" type="text"/></label>
-					<label><input name="record-final" type="checkbox" value="true"/><span>final</span></label>
-				</form>
-			</div>
-			<div class="modal-footer">
-    			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-  			</div>
-		</div>
-
-		<!--<div id="container">-->
-			<article class="main">
-				<!--<div class="ui-widget">-->
-				<div class="form-wrapper" >
-					<?= $form ?>
-						<!--
-						<h2 class="ui-widget-header ui-corner-all"><span id="survey-title" ></span></h2>
-						<form name="survey-form" id="survey-form" class="ui-helper-clearfix"></form>
-						-->
-					<!--</div>-->
-				<!--</div>	-->
-					<button id="submit-form" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
-				</div>
-			</article>
-		<!--</div>-->
+		</article>
 
 		<div class="drawer left closed alert-success">
 			<div class="handle right"></div>
-			<!--<a id="queue" href="#" title="click to export to file">-->
 			<div class="content">
 				<span id="status"></span><span>Submissions queued: </span><span id="queue-length">0</span>
 				<!--<span id="status-offline-launch"></span>-->
 				<button id="drawer-export" class="btn btn-mini">Export</button>
-			<!--</a>-->
 			</div>	
 		</div>
 
 		<div id="branding">
 			<a href="http://aidwebsolutions.com" target="_blank">enketo forms</a> for <a href="http://formhub.org" target="_blank">formhub</a></div>
-
 		<? require 'elements/footer++.php' ?>
 
 

@@ -73,7 +73,6 @@ GUI.prototype.setup = function(){
 	"use strict";
 	// final setup of GUI object
 	$(window).trigger('resize');
-	$('.ui-corner-all').removeClass('ui-corner-all'); //TEMPORARY
 };
 	
 /**
@@ -164,17 +163,17 @@ GUI.prototype.setEventHandlers = function(){
 		//	.css('height',$('#form-controls').height()).css('top', $('header').outerHeight()+$('#container').outerHeight());
 		
 		// hide logo if the navigation menu starts overlapping
-		if ($('nav').length > 0){
+		/*if ($('nav').length > 0){
 			var navLeft = $('nav').offset().left;
-			var logoRight = $('#logo').offset().left+$('#logo').outerWidth();
+			var logoRight = $('.brand').offset().left+$('.brand').outerWidth();
 			//console.log('nav left:'+navLeft+' logo right:'+logoRight); // DEBUG
 			if (navLeft < logoRight){
-				$('#logo').css('visibility', 'hidden');
+				$('.brand').css('visibility', 'hidden');
 			}
 			else {
-				$('#logo').css('visibility', 'visible');
+				$('.brand').css('visibility', 'visible');
 			}
-		}
+		}*/
 	});
 };
 	
@@ -196,7 +195,7 @@ GUI.prototype.nav = {
 				link = $(this).attr('data-ext-link');
 			}
 			else link = '#'+id;
-			$('<li class="ui-corner-tl ui-corner-tr"><a href="'+link+'" title="'+title+'" >'+display+'</a></li>')
+			$('<li class=""><a href="'+link+'" title="'+title+'" >'+display+'</a></li>')
 				.appendTo($('nav ul'));
 		
 		});

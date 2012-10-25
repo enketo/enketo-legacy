@@ -32,22 +32,17 @@ $(document).ready(function(){
 		return _error.apply(console, arguments);
 	};
 
-	//source = getGetVariable('source') || false;
-	//url = getGetVariable('formurl') || false;
-
 	if (!state.source){
 		$('#html5-form-source').hide();
 		$('li a[href="#html5-form-source"]').parent('li').remove();
 	}
-	$('#tabs').tabs();
+	//$('#tabs').tabs();
 	
-	$('li a[href="#upload"]').parent('li').hide();
-	$tabs = $('ul.ui-tabs-nav');
-	$tabs.hide();
-	
-	//gui.init();
-	gui.showFeedback('This is an incomplete pre-alpha preview to test the JavaRosa form functionality in Google Chrome. '+
-		'It is not ready for actual use.', 3);
+	//$('li a[href="#upload"]').parent('li').hide();
+	//$tabs = $('ul.ui-tabs-nav');
+	//$tabs.hide();
+	$('li a[href="#upload"]').tab('show');
+
 	//$('#form-controls #launch-form').button('disable');
 	$('.main .ui-tabs-nav').removeClass('ui-widget-header');
 	//$('.main .ui-tabs-nav li').width('141px');
@@ -459,7 +454,7 @@ function processResponse(xml){
 
 function processForm($response)
 {
-	$tabs.show();
+	//$tabs.show();
 	
 	var formStr = new XMLSerializer().serializeToString($response.find('form')[0]);
 	//data as string

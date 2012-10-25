@@ -229,6 +229,7 @@ function submitForm() {
 		resetForm(true);
 		$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
 		//attempt uploading the data (all data in localStorage)
+		//NOTE: THIS (true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
 		connection.uploadFromStore(true);
 	}
 	else{
@@ -247,6 +248,10 @@ function submitEditedForm() {
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
+	//a temporary quick and dirty user feedback box (to be replaced after bootstrap)
+	gui.alert('You will be redirected to formhub when it succeeds. '+
+		'If it fails, please click submit button again.'+
+		'<img style="display:block;margin-left: 224px" src="../images/ajax-loader.gif"/>', 'Submitting...', 'ui-icon-info');
 	name = (Math.floor(Math.random()*100001)).toString();
 	console.debug('temporary record name: '+name);
 	record = { 'name': name,'data': form.getDataStr(true, true)};
@@ -256,6 +261,8 @@ function submitEditedForm() {
 	$('form.jr').on('uploadsuccess', function(e, uploadedName){
 		console.debug('uploaded successfully: '+uploadedName);
 		if (uploadedName == name){
+			//temporary
+			gui.alert('You will be automatically redirected back to formhub.', 'Submission successful!', 'ui-icon-check');
 			location.href = RETURN_URL;
 		}
 	});

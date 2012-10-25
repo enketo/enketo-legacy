@@ -114,7 +114,7 @@ class Data extends CI_Controller {
 		log_message('debug', 'data submission from start to sending to OpenRosa server took '.(time()-$time_start).' seconds.');
 		//execute post
 		$result = curl_exec($ch);
-		
+		log_message('debug', 'data submission from start to receiving response from OpenRosa server took '.(time()-$time_start).' seconds.');
 		if (curl_errno($ch))
 		{
 			return 'curl_error:'.curl_error($ch).' number: '+curl_errno();

@@ -111,7 +111,7 @@ class Data extends CI_Controller {
 		//timeout high as it is dealt with in javascript
 		//curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 		
-		
+		log_message('debug', 'data submission from start to sending to OpenRosa server took '.(time()-$time_start).' seconds.');
 		//execute post
 		$result = curl_exec($ch);
 		

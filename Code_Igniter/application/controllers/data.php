@@ -57,6 +57,7 @@ class Data extends CI_Controller {
 
 	public function submission()
 	{
+		$time_start = time();
 		$message = '';
 		$http_code = 0;
 		$subdomain = get_subdomain();
@@ -108,12 +109,12 @@ class Data extends CI_Controller {
 		//add POST content
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
 		//timeout high as it is dealt with in javascript
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+		//curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 		
-		
+		//log_message('debug', 'data submission from start to sending to OpenRosa server took '.(time()-$time_start).' seconds.');
 		//execute post
 		$result = curl_exec($ch);
-		
+		//log_message('debug', 'data submission from start to receiving response from OpenRosa server took '.(time()-$time_start).' seconds.');
 		if (curl_errno($ch))
 		{
 			return 'curl_error:'.curl_error($ch).' number: '+curl_errno();
@@ -127,7 +128,7 @@ class Data extends CI_Controller {
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		//close connection
 		curl_close($ch);
-
+		log_message('debug', 'data submission took '.(time()-$time_start).' seconds.');
 		$this->output->set_status_header($http_code, $response);
 	}
 

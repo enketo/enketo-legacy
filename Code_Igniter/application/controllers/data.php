@@ -108,7 +108,7 @@ class Data extends CI_Controller {
 		//add POST content
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
 		//timeout high as it is dealt with in javascript
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+		//curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 		
 		
 		//execute post

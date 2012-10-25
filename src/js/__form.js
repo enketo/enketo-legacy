@@ -2171,7 +2171,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		'date' : function(o){
 			var today, year, month, day;
-			console.debug('date preloader called with current val: '+o.curVal);
+			//console.debug('date preloader called with current val: '+o.curVal);
 			if (o.curVal.length === 0){
 				today = new Date(data.evaluate('today()', 'string'));
 				year = today.getUTCFullYear().toString().pad(4);

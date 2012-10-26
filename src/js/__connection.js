@@ -196,7 +196,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 				contentType: false,
 				processData: false,
 				//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
-				timeout: 10*1000,
+				timeout: 60*1000,
 				complete: function(jqXHR, response){
 					that.processOpenRosaResponse(jqXHR.status, record.name, last);
 					/**
@@ -219,7 +219,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		contactAdmin = 'Contact the survey administrator please.',
 		serverDown = 'Sorry, the enketo server is down or being maintained. Please try again later or contact support@formhub.org please.',
 		statusMap = {
-			0: {success: false, msg: "Uploading of data failed (probably offline) and will be tried again later."},
+			0: {success: false, msg: "Uploading of data failed (maybe offline) and will be tried again later."},
 			200: {success:false, msg: "Data server did not accept data. "+contactSupport},
 			201: {success:true, msg: ""},
 			202: {success:true, msg: name+" may have had errors. "+contactAdmin},

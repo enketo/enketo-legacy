@@ -93,6 +93,7 @@ $paperwidth: 720px;
  ***************************/
 
 body, textarea{ 
+  background: $bg url(images/tex2res2.png) repeat;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   font-size: 1.1em;}
 
@@ -109,7 +110,14 @@ h2, h3, h4 {
   font-weight: bolder;
   margin-bottom: 10px;
   padding: 0 5px; */
-  color: $title;}
+  color: $title;
+  text-align: center;}
+
+progress{
+  text-align: center;}
+
+input{
+  min-height: 30px;}
 /*
 ul {
   list-style: disc;
@@ -194,7 +202,7 @@ article.page {
  ***************************/
 
 body {
-  background: $bg url(images/tex2res2.png) repeat;
+  
   
   /*overflow: hidden;*/ }
 /*
@@ -442,41 +450,136 @@ $tab-width: 18px;
   overflow: auto; }*/
 
 .main {
-  padding: 20px;
-  margin-left: auto;
-  margin-bottom: 20px;
-  margin-right: auto;
-  margin-top: 50px;
+  margin: 100px auto 20px auto;
   position: relative;
-  /*z-index: 0;*/
-  /*top: 80px;*/
   display: block;
-  /* align for good browsers */
-  text-align: left;
-  /* counter the body center */ 
+  text-align: left; 
+  max-width: $paperwidth;
+  article {
+    padding: 30px;
+    min-height: 300px; }
   ul.nav-tabs{
-      margin: 10px 0 0 0;
+      margin: 20px 0 0 0;
       li{
         margin: 0;
         a{
           background: none; } } } }
 
-article.main .jr {
-  padding: 1.5em;
-  min-height: 300px; }
+textarea.source {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  width: 100%;
+  height: 500px;
+  font-size: .8em;
+  padding: 5px; }
 
+label#data-template-show {
+  float:right;
+}
 
+#upload{
+  form{
+    text-align: center;
+    height: 150px;
+    #input-switcher{
+      position: absolute;
+      top: 130px;
+      left: ($paperwidth - 57px) / 2;
+      margin-top: 10px; }
+    label {
+      position: absolute;
+      top: 130px;
+      left: 5%;
+      text-align: center;
+      margin-top: 20px;
+      padding: 0 5%;
+      display: block;
+      z-index: 0;
+      width: 80%; }
+    label>span {
+      display: block; }
+    .fakefileinput span{
+      font: 12px sans-serif;
+      /*font-family: sans-serif;
+      font-size: 12px;*/
+      font-weight: 600;
+      vertical-align: middle;
+      opacity: 0.5;}
+    input, .fakefileinput {
+      position: absolute;
+      top: 20px;
+      left: 0px;
+      display: block;
+      width: 100%%;
+      margin: 10px 0 30px 0;
+      min-height: 30px;
+      padding: 1px;
+      font-size: .9em;
+      text-align: center;
+      border: 2px solid $shadow; }
+    input[type=file] {
+      z-index: 5;
+      opacity: 0; }
+    .hurry{
+      font-size: 13px;
+      margin-top: 180px;} }
+  #form-list{
+    margin-top: 20px;
+    ul{
+      margin: 4px;
+      list-style-type: none;
+       } }
+  /*:not(#form-list) a {
+    &:link{
+    padding: 0 10px;
+    font-size: 13px;
+    background: none;
+    border: none;
+    text-decoration: none; 
+    color: $overlay-bg;}
+    &:hover{
+      font-weight: normal;}
+    &:not(.active):hover {
+      color: $a-hvr;
+      text-decoration: underline; }
+    &.active {
+      color: $header-bg;
+      text-decoration: none; } }*/ }  
 
+/*input, .fakefileinput, textarea {
+  background-color: $header-txt;
+  
+   }*/
 
+.hint-new{
+  background-color: $shadow;
+  display: inline-block;
+  color: $overlay-bg;
+  margin: 0 5px;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+}
+
+#launch form{
+  /*a.advanced{
+    font-size: 13px;
+    display:block;
+    text-align: center;
+    margin: 10px 0 10px 0;}*/
+    margin-top: 20px; 
+  input{
+    width: 300px; }
+  /*fieldset.advanced{
+    display:none; }*/}
+/*
 .main {
-  article {
-    padding: 1.5em;
-    min-height: 300px; }
-    max-width: $paperwidth;
-    /*&#wrap-collation, &#wrap-charts {
-    max-width: 95%; }*/
+
+  
     ul, ol {
-      /*list-style: disc;*/
+      
       margin-left: 30px;
       margin-bottom: 25px; }
     ul li, ol li {
@@ -484,15 +587,7 @@ article.main .jr {
     ul li span.ui-icon, ol li span.ui-icon {
       float: left;
       margin-left: -25px; }
-    textarea.source {
-      box-sizing: border-box;
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-      width: 100%;
-      height: 500px;
-      font-size: .8em;
-      padding: 5px; }
+    
     label#data-template-show {
       font-size: .8em;
       float: right;
@@ -501,10 +596,10 @@ article.main .jr {
         float: left;
         margin-right: 8px; } }
 
- /* .ui-widget-header {
+ .ui-widget-header {
     padding-top: 10px;
     padding-bottom: 10px;
-    margin: 3px 3px 30px 3px; }*/ }
+    margin: 3px 3px 30px 3px; } }*/
 
 /*
 .dialog {
@@ -649,7 +744,7 @@ footer.ui-widget {
   width: 50%;
   float: left;
   height: 100%; }
-
+/*
 #settings {
   h3 {
     text-align: left; }
@@ -668,10 +763,9 @@ footer.ui-widget {
 #records-saved {
   width: 45%;
   float: left;
-  /*display: inline;*/
-  /* doesn't make sense right? with float*/
+
   h3 {
-    /*margin-left: 30px;*/ }
+    }
   .scroll-list{
     border-color: white;
     min-height: 150px;
@@ -691,12 +785,11 @@ footer.ui-widget {
 
 .scroll-list {
   position: relative;
-  border: 1px solid; /* white;*/
-  /*width: 100%;
-  height: 100%; */
+  border: 1px solid; 
+
   margin: 0;
   padding: 15px;
-  /*height: 300px;*/ 
+
   >div {
     position: relative;
     width: 100%;
@@ -717,7 +810,7 @@ footer.ui-widget {
         height: 1em;
         font-size: 0.8em;
         overflow: hidden;
-        /* for very long names */
+      
         .date {
           font-size: .6em;
           float: right; }
@@ -730,8 +823,7 @@ footer.ui-widget {
 #records-summary {
   margin: 0;
   margin-top: 5px;
-  /*padding: 0 15px;
-  width: 100%*/
+
   font-size: 0.6em;
   text-align: center;
   .ui-icon {
@@ -745,22 +837,22 @@ footer.ui-widget {
     width: 10%;
     height: 100%; }
   &.right {
-    /*right column of records page*/
+
     width: 45%;
     float: right;
     text-align: center;
     margin-top: 30px;
     margin-right: -10px;
-    /*visual correction due to absence of border, stricly speaking not correct*/ }
+     }
   .ui-icon {
     display: inline-block;
     float: none; } }
 
 #records-buttons {
-  /*width: auto;*/
+
   margin: 20% auto 5% auto;
   button {
-    /*float: left;*/ } }
+     } }
 
 #records-force-upload-info, #records-export-info {
   display: none;
@@ -769,7 +861,7 @@ footer.ui-widget {
   line-height: 1.5em; }
 
 #slider-wrap {
-  /*float:left;*/
+
   width: 25px;
   border: 1px solid;
   margin: 0 auto; }
@@ -787,13 +879,13 @@ footer.ui-widget {
     position: absolute;
     width: 100%; }
   .ui-slider-handle {
-    /*left: 1px; */
+
     left: 0px;
     margin-left: 0;
     margin-right: 0;
     background-image: none;
     height: 10px;
-    /*margin:0 auto;*/
+ 
     display: block;
     position: absolute; } }
 
@@ -802,7 +894,7 @@ footer.ui-widget {
 
 .ui-slider-handle .ui-state-default {
   background-image: none; }
-
+*/
 /*
 	.scroll-bar {height: 400px;}
 	.scroll-bar-wrap { clear: left; padding: 0 4px 0 2px; margin: 0 1px 1px 50%; height: 400px; width: 2em;}
@@ -891,11 +983,11 @@ footer.ui-widget {
     text-decoration: none; } }
 
 .form-wrapper{
-  /*@include paper;*/
   margin: 0 0 40px 0;
-  padding: 0;
-  #submit-form, #submit-edited-data{
-    margin: 10px 0 45px $paperwidth / 2 - (0.5*99);}}
+  /*padding: 0;*/
+  #submit-form, #submit-edited-data, #validate-form, #launch-form{
+    display: block;
+    margin: 10px auto 45px auto; } }
 
 .jr {
   line-height: 1.1em;  
@@ -1039,10 +1131,7 @@ label.with-media {
   margin-top: -17px; }
 
 
-input, .fakefileinput, textarea {
-  background-color: $header-txt;
-  border: 2px solid $shadow;
-  min-height: 30px; }
+/**/
 
 .jr-appearance-compact label {
   display: inline;
@@ -1072,56 +1161,7 @@ input, .fakefileinput, textarea {
   /*color: $shadow*/
   opacity: 0.5; }
 
-#upload form{
-  text-align: center;
-  label {
-    position: absolute;
-    top: 120px;
-    left: 5%;
-    text-align: center;
-    margin-top: 20px;
-    padding: 0 5%;
-    display: block;
-    z-index: 0;
-    width: 80%; }
-  label>span {
-    display: block; }
-  input, .fakefileinput {
-    position: absolute;
-    top: 20px;
-    left: 0px;
-    display: block;
-    width: 99%;
-    margin: 10px 0 30px 0;
-    height: 30px;
-    padding: 1px;
-    font-size: .9em;
-    text-align: center; }
-  input[type=file] {
-    /*height: 0px;
-    width: 0px;
-    overflow: hidden;*/
-    z-index: 5;
-    opacity: 0; }
-  .hurry{
-    margin-top: 180px;
-    }
-  :not(#form-list) a {
-    &:link{
-    padding: 0 10px;
-    font-size: 13px;
-    background: none;
-    border: none;
-    text-decoration: none; 
-    color: $overlay-bg;}
-    &:hover{
-      font-weight: normal;}
-    &:not(.active):hover {
-      color: $a-hvr;
-      text-decoration: underline; }
-    &.active {
-      color: $header-bg;
-      text-decoration: none; } } }  
+
 /*
 .ui-datepicker {
   margin-left: -270px;

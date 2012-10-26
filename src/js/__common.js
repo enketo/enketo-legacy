@@ -343,17 +343,18 @@ GUI.prototype.hideFeedback = function(){
  * @param {string=} heading
  * @param {string=} icon css class of icon
  */
-GUI.prototype.alert = function(message, heading, icon){
+GUI.prototype.alert = function(message, heading, level){
 	"use strict";
-	var closeFn,
+	var closeFn, cls,
 		$alert = $('#dialog-alert');
 
 	heading = heading || 'Alert';
-	//icon = icon || 'icon-exclamation-sign';
+	level = level || 'error';
+	cls = (level === 'normal') ? '' : 'alert alert-block alert-'+level;
 
 	//write content into alert dialog
 	$alert.find('.modal-header h3').text(heading);
-	$alert.find('.modal-body p').html(message).capitalizeStart();
+	$alert.find('.modal-body p').removeClass().addClass(cls).html(message).capitalizeStart();
 
 	$alert.modal({
 		keyboard: true,

@@ -29,8 +29,8 @@
 		
 		<? require 'elements/dialogs.php'; ?>
 
-		<article class="main">
-			<div class="form-wrapper paper" >
+		<div class="main">
+			<article class="form-wrapper paper" >
 				<?= $form ?>	
 				<button id="submit-form" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
 			</div>

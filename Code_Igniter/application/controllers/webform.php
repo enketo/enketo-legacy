@@ -126,9 +126,11 @@ class Webform extends CI_Controller {
 		}
 	}
 
+
+
 	/**
-	 * function that receives data by POST and opens an edit-view of the form 
-	 * the edit-view is a (iframable?) simplified webform view without any offline capabilities 
+	 * function that opens an edit-view of the form with previously POSTed instance-to-edit and return url (from OpenRosa server)
+	 * the edit-view is a simplified webform view without any offline capabilities 
 	 * (no applicationCache, no localStorage)
 	 **/
 	public function edit()
@@ -152,8 +154,7 @@ class Webform extends CI_Controller {
 		}
 		if (empty($instance_id)) // empty($return_url)
 		{
-			show_error('No instance provided to edit and/or no return url provided to return to.', 404);
-			return;
+			return show_error('No instance provided to edit and/or no return url provided to return to.', 404);
 			//$instance = '<data><somedata>somedata</somedata><somedata>someotherdata</somedata></data>';
 			// test instance for household survey with missing nodes and multiple repeats
 			//$edit_obj->instance_xml = '<household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions><household_member><hh_member_age>001</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>002</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>003</hh_member_age><hh_member_gender/></household_member>            <hh_ownership/></sectionA><meta><instanceID>uuid:ef0f40d039a24103beecc13ae526b98a</instanceID></meta></household_survey>';
@@ -216,7 +217,77 @@ class Webform extends CI_Controller {
 				'/js-source/__debug.js'
 			));
 		}
-		$this->load->view('webform_edit_view',$data);
+		$this->load->view('webform_basic_view',$data);
+	}
+
+	/**
+	 * function that opens an iframeable-view of the form which is a simplified webform view without any offline capabilities 
+	 * (no applicationCache, no localStorage)
+	 **/
+	public function iframe()
+	{
+		log_message('debug', 'iframe view controller started');
+		
+		if (!isset($this->subdomain))
+		{
+			show_error('Edit view should be launched from survey subdomain', 404);
+			return;
+		}
+		if (!$this->Survey_model->is_launched_survey())
+		{
+			show_error('This survey has not been launched in enketo', 404);
+			return;
+		}
+		if ($this->Survey_model->has_offline_launch_enabled())
+		{
+			return show_error('The edit view can only be launched in offline mode', 404);
+		}
+	    
+		$this->server_url= $this->Survey_model->get_server_url();
+		$this->form_id = $this->Survey_model->get_form_id();
+		$form = $this->_get_form();
+
+		if ($form === FALSE)
+		{
+			return show_error('Could not find server url and/or form ID in enketo database.', 404);	
+		}
+		
+		if ($form === NULL)
+		{
+			return show_error('An error occurred during transformation or processing instances. ', 404);
+		}
+	
+		$data = array(
+			'offline'=>FALSE, 
+			'title_component'=>'webform iframe', 
+			'html_title'=> $form->title,
+			'form'=> $form->html,
+			'form_data'=> $form->default_instance,
+			'form_data_to_edit' => NULL,
+			'return_url' => NULL,
+			'stylesheets'=> $this->default_stylesheets
+		);
+		$scripts = $this->default_scripts;
+
+		if (ENVIRONMENT === 'production')
+		{
+			$data['scripts'] = array_merge($scripts, array(
+				'/js-min/webform-iframe-all-min.js'
+			));
+		}
+		else
+		{		
+			$data['scripts'] = array_merge($scripts, array(
+				'/js-source/__common.js',
+				//'/js-source/__storage.js',
+				'/js-source/__form.js',
+				'/js-source/__connection.js',
+				'/js-source/__survey_controls.js',
+				'/js-source/__webform_iframe.js',
+				'/js-source/__debug.js'
+			));
+		}
+		$this->load->view('webform_basic_view',$data);
 	}
 
 	private function _get_form()
@@ -244,7 +315,7 @@ class Webform extends CI_Controller {
 
 		return (!empty($edit_o->instance_xml) && !empty($edit_o->return_url)) ? $in : NULL;
 	}
-	
+
 	//public function update_list()
 	//{
 	//	$this->load->model('Survey_model', '', TRUE);

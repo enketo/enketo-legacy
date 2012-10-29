@@ -15,9 +15,12 @@
 	<? endforeach; ?>
 		
 		<script type="text/javascript">
-			var jrDataStr = '<?= $form_data ?>';
-			var jrDataStrToEdit = '<?= addcslashes($form_data_to_edit, "\\\'\"&\n\r") ?>';
+			var jrDataStr = '<? echo $form_data ?>';
+		<? if (isset($form_data_to_edit) && isset($return_url)): ?>
+			var jrDataStrToEdit = '<?= $form_data_to_edit ?>';
+			//' addcslashes($form_data_to_edit, "\\\'\"&\n\r")';'
 			var RETURN_URL = '<?= $return_url ?>';
+		<? endif; ?>
 		</script>
 	
 	<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>

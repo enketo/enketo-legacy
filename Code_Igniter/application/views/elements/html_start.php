@@ -9,7 +9,7 @@
 		</title>-->
 		
 		
-		<link rel="icon" type="image/png" href="images/favicon.png">
+		<link rel="icon" type="image/png" href="/css/images/favicon.png">
 		
 		<meta charset="utf-8" />
 		<meta name="author" content="Martijn van de Rijdt (Aid Web Solutions)" />

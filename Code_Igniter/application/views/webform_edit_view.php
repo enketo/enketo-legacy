@@ -23,47 +23,27 @@
 	<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>
 
 	</head>
-
 	<body>
 		
-		<div id="overlay"></div>
 		<header style="height: 0;"></header>
 			
-		<div id="feedback-bar" class="ui-widget ui-widget-content ui-state-highlight">			
-			<span class="ui-icon ui-icon-info" ></span>
-			<a href="#" id="feedback-bar-close" class="custom-button" ></a>
-		</div>
-		
-		<div class="dialog" id="dialog-confirm" style="display: none;">
-			<p>
-				<span class="ui-icon ui-icon-alert"></span>
-				<span class="dialog-msg"></span>
-			</p>
-		</div>
-		<div class="dialog" id="dialog-alert" style="display: none;">
-			<p>
-				<span class="ui-icon ui-icon-alert"></span>
-				<span id="dialog-alert-msg"></span>
-			</p>
-		</div>
+		<? require 'elements/dialogs.php'; ?>
 
-		<div class="dialog" id="dialog-save" style="display: none;">
-			<p>
-				<form onsubmit="return false;">
-					<span class="dialog-msg"></span>
-					<span class="dialog-error ui-state-error"></span>
-					<label>name:<input name="record-name" type="text"/></label>
-					<label><input name="record-final" type="checkbox" value="true"/><span>final</span></label>
-				</form>
-			</p>
-		</div>
-
-		<article class="main">
-			<div class="form-wrapper" >
+		<div class="main">
+			<article class="form-wrapper paper" >
 				<?= $form ?>
-				<button id="submit-edited-data" >Submit</button>
+				<button id="submit-edited-data" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
 			</div>
 		</article>
+
+		
+
+
+
+
+
+
+
 
 		<div id="branding">
 			<a href="http://aidwebsolutions.com" target="_blank">enketo forms</a> for <a href="http://formhub.org" target="_blank">formhub</a>

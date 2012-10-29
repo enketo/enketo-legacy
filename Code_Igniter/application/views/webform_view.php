@@ -18,12 +18,12 @@
 			var jrDataStr = '<?= $form_data ?>';
 		</script>
 	
+	
+
 	<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>
 
 	</head>
 	<body>
-
-		<div id="overlay"></div>
 		
 		<header style="height: 0;"></header>
 		
@@ -47,7 +47,5 @@
 
 		<div id="branding">
 			<a href="http://aidwebsolutions.com" target="_blank">enketo forms</a> for <a href="http://formhub.org" target="_blank">formhub</a></div>
+
 		<? require 'elements/footer++.php' ?>
-
-
-

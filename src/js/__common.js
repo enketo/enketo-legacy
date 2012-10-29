@@ -82,19 +82,16 @@ GUI.prototype.setEventHandlers = function(){
 	"use strict";
 	var that=this;
 	
-	// close 'buttons' on page and feedback bar
 	$('#feedback-bar .close')
 		.click(function(event){
 			event.preventDefault();
 			that.hideFeedback();
 		});
-	$('#page-close').button({'icons':{'primary': "ui-icon-closethick"}, 'text': false})
-		.click(function(event){
-			event.preventDefault();
-			that.pages().close();
-		});
-	// override style of some buttons and give them a 'custom-button class'
-	//$('#feedback-bar-close, #page-close').removeClass().addClass('custom-button ui-widget-header ui-corner-all');
+
+	$('#page a.close').click(function(event){
+		event.preventDefault();
+		that.pages().close();
+	});
 	
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
 	$(document).on('click', 'a[href^="#"]:not([href="#"]):not(nav ul li a)', function(event){
@@ -113,8 +110,8 @@ GUI.prototype.setEventHandlers = function(){
 			event.preventDefault();
 			var targetPage = $(this).attr('href').substr(1);
 			that.pages().open(targetPage);
-			$(this).closest('li').addClass('nav-state-active');//.css('border-color', headerBorderColor);
-			//$(this).css('color', headerHighlightColor);
+			$(this).closest('li').addClass('active');
+			//$(this).closest('li').addClass('nav-state-active');//.css('border-color', headerBorderColor);
 		});
 	
 	// handlers for status icons in header
@@ -202,7 +199,7 @@ GUI.prototype.nav = {
 	},
 	reset : function(){
 		"use strict";
-		$('nav ul li').removeClass('nav-state-active');//.css('border-color', headerBackgroundColor);
+		$('nav ul li').removeClass('active');//.css('border-color', headerBackgroundColor);
 		//$('nav ul li a').css('color', buttonBackgroundColorDefault);
 	}
 };
@@ -256,19 +253,19 @@ GUI.prototype.pages = function(){
 			this.close();
 		}
 			
-		$('#page-content').prepend($page.show()).trigger('change');
-		$('#overlay').show();
+		$('#page .content').prepend($page.show()).trigger('change');
+		//$('#overlay').show();
 
 		//for some reason, the scrollbar needs to be added after a short delay (default duration of show() maybe)
 		//similarly adding the event handler needs to be done a delay otherwise it picks up an even(?) instantly
 		//addScrollBar should be called each time page loads because record list will change
-		setTimeout(function(){
+		/*setTimeout(function(){
 			$page.find('.scroll-list').addScrollBar();
 			$('#overlay, header').bind('click.pageEvents', function(){
 				//triggers a click of the page close button
 				$('#page-close').trigger('click');
 			});
-		}, 50);
+		}, 50);*/
 		
 		// if the page is visible as well as the feedbackbar the display() method should be called if the window is resized
 		$(window).bind('resize.pageEvents', function(){

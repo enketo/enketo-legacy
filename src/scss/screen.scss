@@ -23,6 +23,7 @@ $bg: #ddd;
 $groupline: #bbbbbb;
 $title: #CE4F07;
 $border: #D6E9C6;
+/*$inverse: #999999;*/
 
 $paperwidth: 720px;
 
@@ -689,61 +690,49 @@ footer.ui-widget {
     right: 20px; } }
 
 
-#page.ui-widget-header {
+#page {
   position: absolute;
   z-index: 12;
   top: -320px;
   /* invisible initially (header top: 80 - #page height: 340 - #page paddingx2)*/
   min-height: 250px;
   width: 100%;
-  background-image: none;
+  background-image: url(images/tex2res4.png);
   /*opacity: 0.8;*/
   /* causes problem in opera with input form elements */
   border-left: none;
-  border-right: none; }
-
-.ui-widget-header #page-content {
-  margin: 2em;
-  padding: 3em;
-  border: solid 1px $highlight-bg;
-  font-weight: normal;
-  color: $highlight-bg;
-  background-color: $overlay-bg;
-  -webkit-box-shadow: inset 0 0 8px $header-bg;
-  -moz-box-shadow: inset 0 0 5px $header-bg;
-  -o-box-shadow: inset 0 0 5px $header-bg;
-  box-shadow: inner 0 0 5px $header-bg;
-  p {
-    &:first-child {
-      margin-top: 0; }
-    &:last-child {
-      margin-bottom: 0; } } }
-
-#page {
-  a {
-    color: $button-bg;
-    text-decoration: none;
-    &:link{
-      color: $button-bg; }
-    &:hover, &:focus{
-      text-decoration: underline;
-      color: $highlight-bg;} 
-    &:active {
-      color: $header-txt;
-      text-decoration: none; } }
-  .ui-icon {
+  border-right: none; 
+  .content {
+    margin: 2em;
+    p {
+      &:first-child {
+        margin-top: 0; }
+      &:last-child {
+        margin-bottom: 0; } }
+    /*a {
+      color: $button-bg;
+      text-decoration: none;
+      &:link{
+        color: $button-bg; }
+      &:hover, &:focus{
+        text-decoration: underline;
+        color: $highlight-bg;} 
+      &:active {
+        color: $header-txt;
+        text-decoration: none; } } } 
+    /*.ui-icon {
+      float: left;
+      margin-right: 10px; } }*/ }
+  .close {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    opacity: 1;
+    text-shadow: none; }
+  .column {
+    width: 50%;
     float: left;
-    margin-right: 10px; } }
-
-#page-close {
-  position: absolute;
-  right: 20px;
-  bottom: 20px; }
-
-#page .column {
-  width: 50%;
-  float: left;
-  height: 100%; }
+    height: 100%; } }
 /*
 #settings {
   h3 {

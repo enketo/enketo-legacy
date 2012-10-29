@@ -26,15 +26,9 @@
 
 <? 	
 	require 'elements/header.php'; 
+	require 'elements/page.php';
 	require 'elements/dialogs.php'; 
 ?>
-
-	<div class="dialog" id="dialog-launch" style="display: none;">
-		<p>
-			
-		</p>
-	</div>
-
 
 	<div class="main" id="wrap-survey-form">
 		
@@ -139,7 +133,7 @@
 							</label>
 							<div class="controls">
 								<input id="email" name="email" type="text" placeholder="optional" />
-								<span class="input-append hint-new" title="You will receive a confirmation email with the direct link to the survey. In the future your email address will also be used for authentication if you would like to change the settings you are now entering."></span>
+								<span class="input-append hint-new" title="Not yet functional. You will receive a confirmation email with the direct link to the survey. In the future your email address will also be used for authentication if you would like to change the settings you are now entering."></span>
 							</div>
 						</fieldset>
 						<!--<label>
@@ -169,15 +163,15 @@
 
 	<article id="about" data-title="about this application" class="page">
 		<p>
-		    Enketo facilitates data collection and entry using an open-source form format (JavaRosa). It is being developed by <a target="_blank" href="http://www.aidwebsolutions.com" title="go to Aid Web Solutions web site"
+		    Enketo facilitates data collection and data entry using an open-source form format (OpenRosa). It is being developed by <a target="_blank" href="http://www.aidwebsolutions.com" title="go to Aid Web Solutions web site"
 		    target=_blank> Aid Web Solutions</a> to demonstrate the potential of offline capable
 		    web applications to cope with intermittent Internet connections. 
 		</p>
 		<p>
 		   The Enketo launch area allows survey administrators to test forms and afterwards 'launch' them on a unique URL for actual data entry. The entry component will be offline-capable. The following are the main items left to do for full JavaRosa compatibility:
 		</p> 
-		<div class="ui-helper-clearfix">   
-		    <div class="column ui-corner-all">
+		<div class="clearfix">   
+		    <div class="column">
 			    <ul style="line-height: 1.5em">
 			    	<li>support for cascading selections</li>
 			    	<li>itext(path/to/node) support</li>

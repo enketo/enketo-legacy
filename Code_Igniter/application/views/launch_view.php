@@ -53,7 +53,7 @@
 					</div>
 					<label>
 						<!--<span>Select XML Form File (or drag it)</span>-->
-						<div class="fakefileinput"><span>Select XML Form File or drag it here</span></div>
+						<div class="fakefileinput uneditable-input"><span>Select XML Form File or drag it here</span></div>
 						<div><input type="file" name="xml_file" /></div>
 					</label>
 					<label>

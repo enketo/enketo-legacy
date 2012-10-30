@@ -2185,40 +2185,61 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		'property' : function(o){
 			// of = 'deviceid', 'subscriberid', 'simserial', 'phonenumber'
 			// return '' except for deviceid?
-			return 'no device properties in enketo';
+			if (o.curVal.length === 0){
+				return 'no device properties in enketo';
+			}
+			return o.curVal;
 		},
 		'context' : function(o){
 			// 'application', 'user'??
-			return (o.param == 'application') ? 'enketo' : '';
+			if (o.curVal.length === 0){
+				return (o.param == 'application') ? 'enketo' : o.param+' not supported in enketo';
+			}
+			return o.curVal;
 		},
 		'patient' : function(o){
-			return 'patient preload not supported in enketo';
+			if (o.curVal.length === 0){
+				return 'patient preload not supported in enketo';
+			}
+			return o.curVal;
 		},
 		'user' : function(o){
 			//uuid, user_id, user_type
 			//if (o.param == 'uuid'){
 			//	return (o.curVal.length > 1) ? o.curVal : data.evaluate('uuid()', 'string');
 			//}
-			return 'user preload item not supported in enketo yet';
+			if (o.curVal.length === 0){
+				return 'user preload item not supported in enketo yet';
+			}
+			return o.curVal;
 		},
 		'uid' : function(o){
 			//general 
-			return 'no uid yet in enketo';
+			if (o.curVal.length === 0){
+				return 'no uid yet in enketo';
+			}
+			return o.curVal;
 		},
 		'browser' : function(o){
 			//console.debug('evaluation browser preload');
-			if (o.param == 'name'){
-				
-				var a = ($.browser.webkit) ? 'webkit' : ($.browser.mozilla) ? 'mozilla' : ($.browser.opera) ? 'opera' : ($.browser.msie) ? 'msie' : 'unknown';
-				//console.debug(a);
-				return a;
+			if (o.curVal.length === 0){
+				if (o.param == 'name'){	
+					var a = ($.browser.webkit) ? 'webkit' : ($.browser.mozilla) ? 'mozilla' : ($.browser.opera) ? 'opera' : ($.browser.msie) ? 'msie' : 'unknown';
+					//console.debug(a);
+					return a;
+				}
+				if (o.param == 'version'){
+					return $.browser.version;
+				}
+				return o.param+' not supported in enketo';
 			}
-			if (o.param == 'version'){
-				return $.browser.version;
-			}
+			return o.curVal;
 		},
 		'os': function(o){
-			return 'not known';
+			if (o.curVal.length === 0){
+				return 'not known';
+			}
+			return o.curVal;
 		},
 		//Not according to spec yet, this will be added to spec but name may change
 		'instance' : function(o){

@@ -250,7 +250,7 @@ describe("Output functionality ", function(){
 });
 
 describe("Preload and MetaData functionality", function(){
-	var	form;
+	var	form, t;
 
 	it("ignores a calculate binding on [ROOT]/meta/instanceID", function(){
 		form = new Form(formStr2, dataStr2);
@@ -258,7 +258,7 @@ describe("Preload and MetaData functionality", function(){
 		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0].length).toEqual(41);
 	});
 
-	it("generates an instanceID on meta/instanceID even though no preload binding is present", function(){
+	it("generates an instanceID on meta/instanceID WITHOUT preload binding", function(){
 		form = new Form(formStr2, dataStr2);
 		form.init();
 		form.getFormO().$.find('fieldset#jr-preload-items').remove();
@@ -266,7 +266,7 @@ describe("Preload and MetaData functionality", function(){
 		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0].length).toEqual(41);
 	});
 
-	it("generates an instanceID if instance preloader is present", function(){
+	it("generates an instanceID WITH preload binding", function(){
 		form = new Form(formStr3, dataStr2);
 		form.init();
 		expect(form.getFormO().$
@@ -281,7 +281,7 @@ describe("Preload and MetaData functionality", function(){
 		expect(form.getDataO().node('/random/meta/instanceID').getVal()[0]).toEqual('c13fe058-3349-4736-9645-8723d2806c8b');
 	});
 
-	it("generates a timeStart on meta/timeStart even though no preload binding is present", function(){
+	it("generates a timeStart on meta/timeStart WITHOUT preload binding", function(){
 		form = new Form(formStr2, dataStr2);
 		form.init();
 		form.getFormO().$.find('fieldset#jr-preload-items').remove();
@@ -289,7 +289,7 @@ describe("Preload and MetaData functionality", function(){
 		expect(form.getDataO().node('/random/meta/timeStart').getVal()[0].length > 10).toBe(true);
 	});
 
-	it("generates a timeEnd on init and updates this after a beforesave event even though no preload binding is present", function(){
+	it("generates a timeEnd on init and updates this after a beforesave event WITHOUT preload binding", function(){
 		var timeEnd, timeEndNew;
 		//jasmine.Clock.useMock();
 		form = new Form(formStr2, dataStr2);
@@ -313,7 +313,46 @@ describe("Preload and MetaData functionality", function(){
 		//TODO FIX THIS PROPERLY
 	});
 
-	//TODO add similar to last tests if preloader IS present
+	function testPreloadExistingValue(node){
+		it("obtains unchanged preload value of item (WITH preload binding): "+node.selector+"", function() {
+			form = new Form(formStr5, dataStr5a);
+			form.init();
+			expect(form.getDataO().node(node.selector).getVal()[0]).toEqual(node.result);
+		});
+	}
+
+	function testPreloadNonExistingValue(node){
+		it("has populated previously empty preload item (WITH preload binding): "+node.selector+"", function() {
+			form = new Form(formStr5, dataStr5b);
+			form.init();
+			expect(form.getDataO().node(node.selector).getVal()[0].length > 0).toBe(true);
+		});
+	}
+
+	t=[
+		['/widgets/start_time', 'Tue, 30 Oct 2012 14:44:57 GMT'],
+		['/widgets/date_today', 'Tue, 30 Oct 2012 00:00:00 GMT'],
+		['/widgets/deviceid', 'some value'],
+		['/widgets/subscriberid', 'some value'],
+		['/widgets/my_simid', '2332'],
+		['/widgets/my_phonenumber', '234234324'],
+		['/widgets/application', 'some context'],
+		['/widgets/patient', 'this one'],
+		['/widgets/user', 'John Doe'],
+		['/widgets/uid', 'John Doe'],
+		['/widgets/browser_name', 'fake'],
+		['/widgets/browser_version', 'xx'],
+		['/widgets/os_name', 'fake'],
+		['/widgets/os_version', 'xx'],
+		['/widgets/meta/instanceID', 'uuid:56c19c6c-08e6-490f-a783-e7f3db788ba8']
+	];
+	
+	for (i = 0 ; i<t.length ; i++){
+		testPreloadExistingValue({selector: t[i][0], result:t[i][1]});
+		testPreloadNonExistingValue({selector: t[i][0]});
+	}
+	testPreloadExistingValue({selector:'/widgets/unknown', result:'some value'});
+	testPreloadNonExistingValue({selector: '/widgets/end_time'});
 });
 
 describe("Loading instance values into html input fields functionality", function(){

@@ -56,7 +56,7 @@ class Form_model extends CI_Model {
         {
             //log_message('debug', 'received: '.$url['manifest']);
             $manifest = $this->_load_xml($url['manifest']);
-            $manifest_sxe = simplexml_import_dom($manifest['doc']);
+            $manifest_sxe = ($manifest['doc']) ? simplexml_import_dom($manifest['doc']) : NULL;
             //log_message('debug', $manifest_sxe->asXML()); 
         }
         else 
@@ -494,38 +494,35 @@ class Form_model extends CI_Model {
     	//return $result;
     }
 
-    //function to remove comments from $data OBSOLETE, DONE IN XSLT?
-    //private function _remove_comments(&$data){
-        
-    //}
-
     //function to replace media (img, video audio) urls with urls from the manifest
     private function _fix_media_urls($manifest, &$result){
         //log_message('debug', 'going to fix media urls');
-        //log_message('debug', 'manifest'.$manifest.asXML());
         if (isset($manifest) && $manifest !== FALSE)
         {
-            //$media_arr = array();
-            //log_message('debug', 'checking mediaFile elements');
-            foreach ($manifest->mediaFile as $m)
+            foreach ($result->xpath('/root/form/descendant::*[@src]') as $el)
             {
-                //$media_arr[$m->filename] => $m->downloadUrl;
-                //log_message('debug', 'filename: '.$m->filename);
-                //log_message('debug', 'downloadUrl: '.$m->downloadUrl);
-                foreach ( $result->xpath('/root/form/descendant::*[@src="'.$m->filename.'"]') as $el)
+                $src = (string) $el['src'];
+                $el['src'] = '';
+                foreach ( $manifest->mediaFile as $m )
                 {
-                    $el['src'] = $m->downloadUrl;
-                }
-                //better to prepend as first child of form (but so easy in jquery...)
+                    if ($src == $m->filename)
+                    {
+                        $el['src'] = $m->downloadUrl;
+                        break;
+                    }
+                }    
+            }
+            foreach ( $manifest->mediaFile as $m )
+            {
                 if ($m->filename == 'form_logo.png')
                 {
                     $logo = $result->form->section[0]->addChild('img');
                     $logo->addAttribute('src', $m->downloadUrl);
                     $logo->addAttribute('alt', 'form logo');
+                    break;
                 }
             }
         }
-        //return $result;
     }
 
     //very basic function to create valid html5 lang attributes (and to add language names)

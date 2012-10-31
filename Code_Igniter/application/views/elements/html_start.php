@@ -4,10 +4,9 @@
 
 <html lang="en" <?= (isset($offline) && $offline) ? 'manifest="manifest"' : '' ?> class="no-js">
 	<head>
-		<!--<title>
-			 enketo - advanced (offline-enabled) web surveys
-		</title>-->
-		
+		<title>
+			<?= (isset($html_title) && strlen($html_title) > 0) ? $html_title : $title_component ?> - enketo
+		</title>
 		
 		<link rel="icon" type="image/png" href="/css/images/favicon.png">
 		

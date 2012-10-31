@@ -2,8 +2,7 @@
 	require 'elements/html_start.php'; 
 	$this->load->helper('subdomain'); 
 ?>
-	<title><?= $html_title ?> - enketo</title>
-
+	
 	<? foreach ($stylesheets as $css): ?>
 		<link href="<?= $css; ?>" media="screen" rel="stylesheet" type="text/css" />
 	<? endforeach; ?>

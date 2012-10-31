@@ -144,32 +144,32 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	//odd function to modify date strings (et. al.?) just before they are submitted or exported
-	this.prepareForSubmission = function(dataStr){
-		var name, value,
-			formData = new DataXML(dataStr); //$($.parseXML(dataStr));
-		//console.debug(formData.);
-		//convert dates
-		$form.find('[data-type-xml="date"], [data-type-xml="dateTime"]').each(function(){
-			name = $(this).attr('name');
-			//console.debug('found date element with name: '+name);
-			formData.node(name).get().each(function(){
-				console.debug('found date DATA node with name: '+name);
-				value = $(this).text().trim();
-				if (value.length > 0){
-					console.debug('converting date string: '+value);
-					value = new Date(value).toJrString();
-					//console.debug('jrDateString: '+value);
-					//bypassing validation & conversion of Nodeset sub-class
-					$(this).text(value);
-				}
-			});
-		});
+//	this.prepareForSubmission = function(dataStr){
+//		var name, value,
+//			formData = new DataXML(dataStr); //$($.parseXML(dataStr));
+//		//console.debug(formData.);
+//		//convert dates
+//		$form.find('[data-type-xml="date"], [data-type-xml="dateTime"]').each(function(){
+//			name = $(this).attr('name');
+//			//console.debug('found date element with name: '+name);
+//			formData.node(name).get().each(function(){
+//				console.debug('found date DATA node with name: '+name);
+//				value = $(this).text().trim();
+//				if (value.length > 0){
+//					console.debug('converting date string: '+value);
+//					value = new Date(value).toJrString();
+//					//console.debug('jrDateString: '+value);
+//					//bypassing validation & conversion of Nodeset sub-class
+//					$(this).text(value);
+//				}
+//			});
+//		});//
 
-		$form.find('[type="time"]').each(function(){
+//		$form.find('[type="time"]').each(function(){//
 
-		});
-		return formData.getStr(false, true);
-	};
+//		});
+//		return formData.getStr(false, true);
+//	};
 	
 /**
  * Function: DataXML
@@ -524,7 +524,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return ( new Date(x).toString() !== 'Invalid Date' );
 				},
 				convert : function(x){
-					var date, segments,
+					var date;/*, segments,
 						pattern = /([0-9]{4})([\-]|[\/])([0-9]{2})([\-]|[\/])([0-9]{2})/;
 					segments = (pattern.exec(x));
 					//the 'flaw' in the code below is that "2012-02-30" will return a valid date of 2012-03-02
@@ -533,9 +533,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (segments && Number(segments[1]) > 0 && Number(segments[3]) >=0 && Number(segments[3]) < 12 && Number(segments[5]) < 32){
 						date = new Date(Number(segments[1]), (Number(segments[3])-1), Number(segments[5]));
 					}
-					else date = new Date(x);
-					date.setUTCHours(0,0,0,0);
-					return date.toUTCString();//.getUTCFullYear(), datetime.getUTCMonth(), datetime.getUTCDate());
+					else*/ date = new Date(x);
+					//date.setUTCHours(0,0,0,0);
+					//return date.toUTCString();//.getUTCFullYear(), datetime.getUTCMonth(), datetime.getUTCDate());
+					return date.getUTCFullYear().toString().pad(4)+'-'+(date.getUTCMonth()+1).toString().pad(2)+'-'+date.getUTCDate().toString().pad(2);
 				}
 			},
 			'datetime' : {
@@ -544,22 +545,22 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return ( new Date(x.toString()).toString() !== 'Invalid Date');
 				},
 				convert : function(x){
-					var date, timezone, segments, dateS, timeS,
-						pattern = /([0-9]{4}\-[0-9]{1,2}\-[0-9]{1,2})([T]|[\s])([0-9:.]+)([0-9+\-]*)/;
+					var date,// timezone, segments, dateS, timeS,
+						patternCorrect = /([0-9]{4}\-[0-9]{2}\-[0-9]{2})([T]|[\s])([0-9]){2}:([0-9]){2}([0-9:.]*)(\+|\-)([0-9]{2}):([0-9]{2})$/,
+						patternAlmostCorrect = /([0-9]{4}\-[0-9]{2}\-[0-9]{2})([T]|[\s])([0-9]){2}:([0-9]){2}([0-9:.]*)(\+|\-)([0-9]{2})$/;  
 					//console.debug('datetime conversion function received: '+x+' type:'+ typeof x);
-					if (pattern.test(x)){
-						segments = pattern.exec(x);
-						dateS = segments[1].split('-');
-						timeS = segments[3].split(':');
-						timeS[2] = (timeS[2]) ? timeS[2].split('.')[0] : 0; //ignores milliseconds
-						timezone = Number(segments[4]);
-						timeS[0] = (Number(timeS[0])+timezone).toString(); 
-
-						return new Date(Date.UTC(
-							Number(dateS[0]), Number(dateS[1])-1, Number(dateS[2]), Number(timeS[0]), 
-							Number(timeS[1]), Number(timeS[2]))).toUTCString();
+					/* 
+					 * if the pattern is right, or almost right but needs a small correction for JavaScript to handle it,
+					 * do not risk changing the time zone by calling toISOLocalString()
+					 */
+					if (new Date(x).toString() !== 'Invalid Date' && patternCorrect.test(x)){
+						return x;
 					}
-					return new Date(x).toUTCString();
+					if (new Date(x).toString() == 'Invalid Date' && patternAlmostCorrect.test(x)){
+						return x+':00';
+					}
+					date = new Date(x);
+					return (date.toString() !== 'Invalid Date') ? date.toISOLocalString() : date.toString();
 				}
 			},
 			'time' : {
@@ -683,7 +684,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$input = $form.find('[name="'+path+'"]').eq(0);
 			
 			xmlDataType = ($input.length > 0) ? form.input.getXmlType($input) : 'string';
-			
+			console.debug('xml datatype: '+xmlDataType);
 			target = that.node(path, index);
 			$target = target.get();
 
@@ -1252,7 +1253,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return $node.attr('data-name');//.substr(0, indexSuffix);
 				//}
 			}
-			if ($node.attr('name').length > 0){
+			if ($node.attr('name') && $node.attr('name').length > 0){
 				return $node.attr('name');
 			}
 			else return console.error('input node has no name');
@@ -1332,18 +1333,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				if ( type === 'date' || type === 'datetime'){
 					//convert current value (loaded from instance) to a value that a native datepicker understands
 					//TODO test for IE, FF, Safari when those browsers start including native datepickers
-					date = new Date(value);
+					value = data.node().convert(value, type);
+					/*date = new Date(data.node().convert(value, type));
 					if (date.toString() !== 'Invalid Date'){
 						value = date.getUTCFullYear().toString()+'-'+
 							(date.getUTCMonth()+1).toString().pad(2)+'-'+
 							date.getUTCDate().toString().pad(2);
 						if (type === 'datetime'){
-							value += ' '+date.getHours()+':'+date.getMinutes();
+							value += ' '+date.getHours().toString().pad(2)+':'+date.getMinutes().toString().pad(2);
 						}
 					}
 					else{
 						value = date.toString(); 
-					}
+					}*/
 					console.debug('converting date before setting input field to: '+value);
 				//	date = new Date(value);
 				//	value = (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear().toString().substring(2);
@@ -1358,8 +1360,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			
 			//console.debug('name of form element to set value of (if exists in form):'+name+', index:'+index+' new value: '+value);
-			////console.debug($inputNodes);
-			return $inputNodes.val(value);
+			//console.debug($inputNodes);
+			$inputNodes.val(value);
+			//console.debug('check new value: '+$inputNodes.val());
+			return;
 		}
 	};
 
@@ -1811,7 +1815,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//$form.find('.jr-group, .jr-repeat').addClass('ui-corner-all');
 		//$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');		
 		$form.find('.trigger').addClass('alert alert-block');// ui-corner-all');
- 
+		$form.find('.jr-constraint-msg').addClass('alert alert-error');
 		//improve looks when images, video or audio is used as label
 		$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend').children('img,video,audio').parent().addClass('ui-helper-clearfix with-media');
 	};
@@ -1821,9 +1825,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		init : function(){
 			this.compactWidget();
 			this.radioWidget();
-			//this.dateWidget();
-			//this.timeWidget();
-			//this.dateTimeWidget();
+			this.dateWidget();
+			this.timeWidget();
+			this.dateTimeWidget();
 			//this.selectOneWidget();
 			//this.selectMultiWidget();
 			this.pageBreakWidget();
@@ -1856,19 +1860,86 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//		$(this).val(dv).trigger('change');
 			//	}
 			//});*/
-			if(!Modernizr.inputtypes.date){
-				$form.find('input[type="date"]').datepicker({dateFormat: 'yy/mm/dd'});
-			}
+			//if(!Modernizr.inputtypes.date){
+			$form.find('input[type="date"]').datepicker({dateFormat: 'yy/mm/dd'}).each(function(){
+				var $fakeDate = $('<div class="input-append date" >'+
+					'<input class="novalidate input-small" type="text" value="'+$(this).val()+'" placeholder="yyyy-mm-dd" />'+
+					'<span class="add-on"><i class="icon-th"></i></span>'+'</div>'),
+					$that = $(this);
+				$(this).hide().after($fakeDate);//.parent('label').addClass('input-append date').attr('data-date-format', 'yyyy-mm-dd');
+				$fakeDate.datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true})
+					.find('input').on('change changeDate', function(ev){
+						//console.debug('converted date input to value: '+data.node().convert($(this).val(), 'date'));
+						$that.val(data.node().convert($(this).val(), 'date')).trigger('change');
+						return false;
+					});
+			});
+			//}
 		},
 		timeWidget : function(){
-			if(!Modernizr.inputtypes.time){
-				$form.find('input[type="time"]').timepicker({});
-			}
+			//if(!Modernizr.inputtypes.time){
+			$form.find('input[type="time"]').each(function(){
+				var curVal = $(this).val();
+				$(this)
+					.addClass('timepicker-default input-small')
+					.after('<span class="add-on"><i class="icon-time"></i></span>')
+					.parent('label').addClass('input-append bootstrap-timepicker-component')
+					.find('input[type="time"]').timepicker({
+						defaultTime: (curVal.length > 0) ? 'value' : 'current', 
+						showMeridian: false
+					})
+					//widget may change value to defaultTime, so need to switch back
+					.val(curVal);
+			});
 		}, 
 		dateTimeWidget : function(){
-			if(!Modernizr.inputtypes.datetime){
-				$form.find('input[type="datetime"]').datetimepicker({dateFormat: 'yy/mm/dd', timeFormat: 'hh:mm:ss'});
-			}
+			//if(!Modernizr.inputtypes.datetime){
+			$form.find('input[type="datetime"]').each(function(){//.datetimepicker({dateFormat: 'yy/mm/dd', timeFormat: 'hh:mm:ss'});
+				
+				var $dateTimeI = $(this),
+					/*
+						Loaded or default datetime values remain untouched until they are edited. This is done to preserve 
+						the timezone information (especially for instances-to-edit) if the values are not edited. However, 
+						values shown in the widget should reflect the local time representation of that value.
+					 */
+					val = ($(this).val().length > 0) ? new Date($(this).val()).toISOLocalString() : '',
+					vals = val.split('T'),
+					//times = (vals[1]) ? vals[1].split(':') : null,
+					dateVal = vals[0], 
+					timeVal = (vals[1] && vals[1].length > 4) ? vals[1].substring(0,5) : '',
+					$fakeDate = $('<div class="input-append date" >'+
+						'<input class="novalidate input-small" type="text" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
+						'<span class="add-on"><i class="icon-th"></i></span></div>'),
+					$fakeTime = $('<div class="input-append bootstrap-timepicker-component">'+
+						'<input class="novalidate timepicker-default input-small" type="time" value="'+timeVal+'"/>'+
+						'<span class="add-on"><i class="icon-time"></i></span></div>'),
+					$fakeDateI = $fakeDate.find('input'),
+					$fakeTimeI = $fakeTime.find('input');
+
+				$dateTimeI.hide().after($fakeDate).after($fakeTime);
+				$fakeDate.datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true});
+				$fakeTimeI.timepicker({defaultTime: (timeVal.length > 0) ? 'value' : 'current', showMeridian: false}).val(timeVal);
+				
+				$fakeDateI.on('change changeDate', function(){
+					changeVal();
+					return false;
+				});
+				$fakeTimeI.on('change', function(){
+					changeVal();
+					return false;
+				});
+				
+				function changeVal(){
+					if ($fakeDateI.val().length > 0 && $fakeTimeI.val().length > 0){
+						var d = $fakeDateI.val().split('-'),
+							t = $fakeTimeI.val().split(':');
+						console.log('changing datetime');
+						$dateTimeI.val(new Date(d[0], d[1]-1, d[2], t[0], t[1]).toISOLocalString()).trigger('change');
+					}
+				}
+			});
+				
+			//}
 		},
 		selectOneWidget : function(){
 			//note: in chrome size is at least 4 if multiple attr is present
@@ -2519,7 +2590,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//var visualNode;
 		//visualNode = (type == 'checkbox' || type == 'radio') ? node.parent().parent('fieldset') : node.parent('label');
 		//visualNode.removeClass('invalid');//.find('div.invalid').remove();
-		this.input.getWrapNodes(node).removeClass('invalid ui-state-error');
+		this.input.getWrapNodes(node).removeClass('invalid');
 	};
 
 	FormHTML.prototype.setInvalid = function(node){
@@ -2532,7 +2603,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 //			);
 //			visualNode.find('.invalid .active').show(); // THIS LINE CAN BE REMOVE WHEN SETLANG() IS REFACTORED USE CSS FOR DISPLAYING
 //		}
-		this.input.getWrapNodes(node).addClass('invalid ui-state-error');
+		this.input.getWrapNodes(node).addClass('invalid');
 	};
 
 	/**
@@ -2595,24 +2666,28 @@ function Form (formSelector, dataStr, dataStrToEdit){
 GUI.prototype.setCustomEventHandlers = function(){};
 
 /**
- * Converts a native Date UTC String to a JavaRosa style date string
- * @return {string} a date or datetime string formatted according to JavaRosa
+ * Converts a native Date UTC String to a RFC 3339-compliant date string with local offsets
+ * used in JavaRosa, so it replaces the Z in the ISOstring with a local offset
+ * @return {string} a datetime string formatted according to RC3339 with local offset
  */
-Date.prototype.toJrString = function(){
-	//2012-09-05T12:57:00.000-04 (ODK)
-	//2012-09-01 (ODK)
-	var timezone,
-		date=this,
-		jrDate = date.getUTCFullYear().toString().pad(4)+'-'+(date.getUTCMonth()+1).toString().pad(2)+'-'+date.getUTCDate().toString().pad(2);
-	//console.log('date: '+date.toString());
-	if ( date.getUTCMilliseconds() > 0 || date.getUTCSeconds() > 0 || date.getUTCMinutes() > 0 || date.getUTCHours()>0 ){
-		jrDate += 'T'+date.getHours().toString().pad(2)+':'+date.getMinutes().toString().pad(2)+':'+date.getSeconds().toString().pad(2)+
-			'.'+date.getMilliseconds().toString().pad(3);
-		timezone = date.getTimezoneOffset()/60;
-		jrDate += (timezone < 0) ? '+'+(-timezone).toString().pad(2) : '-'+timezone.toString().pad(2);
-		//(-date.getTimezoneOffset()/60);
+Date.prototype.toISOLocalString = function(){
+	//2012-09-05T12:57:00.000-04:00 (ODK)
+	var offset = {}, plus,
+		pad2 = function(x){
+			return (x<10) ? '0'+x : x;
+		};
+
+	if (this.toString() == 'Invalid Date'){
+		return this.toString();
 	}
-	return jrDate;
+
+	offset.minstotal = this.getTimezoneOffset();
+	offset.direction = (offset.minstotal < 0) ? '+' : '-';
+	offset.hrspart = pad2(Math.abs(Math.floor(offset.minstotal / 60 )));
+	offset.minspart = pad2(offset.minstotal % 60);
+
+	return new Date(this.getTime() - (offset.minstotal * 60 * 1000)).toISOString()
+		.replace('Z', offset.direction+offset.hrspart+':'+offset.minspart);
 };
 
 /**

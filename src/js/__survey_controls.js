@@ -287,9 +287,9 @@ function exportData(finalOnly){
 		gui.showFeedback('No data to export.');
 	}
 	else{
-		for (i = 0 ; i<dataArr.length ; i++){
-			dataArr[i] = form.prepareForSubmission(dataArr[i]);
-		}
+		//for (i = 0 ; i<dataArr.length ; i++){
+		//	dataArr[i] = form.prepareForSubmission(dataArr[i]);
+		//}
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		uriContent = "data:application/octet-stream," + encodeURIComponent(dataStr); /*data:application/octet-stream*/
 		newWindow = window.open(uriContent, 'exportedData');
@@ -316,9 +316,9 @@ function exportToFile(fileName, finalOnly){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
-		for (i = 0 ; i<dataArr.length ; i++){
-			dataArr[i] = form.prepareForSubmission(dataArr[i]);
-		}
+		//for (i = 0 ; i<dataArr.length ; i++){
+		//	dataArr[i] = form.prepareForSubmission(dataArr[i]);
+		//}
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		bb = new BlobBuilder();
 		bb.append(dataStr);

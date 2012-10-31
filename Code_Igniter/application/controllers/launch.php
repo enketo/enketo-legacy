@@ -37,9 +37,8 @@ class Launch extends CI_Controller {
 			$common_scripts = array(
 				'libraries/jquery.min.js',
 				'libraries/bootstrap/js/bootstrap.min.js',
-				//base_url('libraries/jquery-ui/js/jquery-ui.custom.min.js'),
-				//base_url('libraries/jquery-ui-timepicker-addon.js'),
-				//base_url('libraries/jquery.multiselect.min.js'),	
+				'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
+				'/libraries/eternicode-bootstrap-datepicker/js/bootstrap-datepicker.js',
 				'libraries/modernizr.min.js',
 				'libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 				'libraries/jquery.form.js',

@@ -37,7 +37,7 @@ var dataEditStr1 =
                 '<timeStart/>'+
                 '<timeEnd/>'+
             "</meta>"+
-            "<nodeA>value</nodeA>"+
+            "<nodeA>2012-02-05T15:34:00.000-04</nodeA>"+
             "<nodeB>b</nodeB>"+
             "<repeatGroup template=''>"+
                 "<nodeC>cdefault</nodeC>"+
@@ -74,8 +74,8 @@ var formStr1 =
             '<span id="jrCalculate">0</span>'+
             '<span id="jrPreload">0</span>'+
         '</div>'+
-        '<label><input name="/thedata/nodeA" type="text"/></label>'+
-        '<label><input name="/thedata/nodeB" type="text"/></label>'+
+        '<label><input name="/thedata/nodeA" type="datetime" data-type-xml="dateTime"/></label>'+
+        '<label><input name="/thedata/nodeB" type="text" data-type-xml="text" /></label>'+
         '<fieldset class="jr-group" name="/thedata/repeatGroup">'+
             '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
                 '<label><input name="/thedata/repeatGroup/nodeC" type="text"/></label>'+
@@ -233,9 +233,9 @@ var formStr4 =
 
 var dataStr5a =
     '<widgets id="testPreloads" version="1"  >'+
-        '<start_time>Tue, 30 Oct 2012 14:44:57 GMT</start_time>'+
-        '<end_time>Tue, 30 Oct 2012 14:44:57 GMT</end_time>'+
-        '<date_today>Tue, 30 Oct 2012 00:00:00 GMT</date_today>'+
+        '<start_time>2012-10-30T08:44:57.000-06</start_time>'+
+        '<end_time>2012-10-30T08:44:57.000-06:00</end_time>'+
+        '<date_today>2012-10-30</date_today>'+
         '<deviceid>some value</deviceid>'+
         '<subscriberid>some value</subscriberid>'+
         '<my_simid>2332</my_simid>'+

@@ -27,6 +27,13 @@ $border: #D6E9C6;
 
 $paperwidth: 720px;
 
+
+/** BOOTSTRAP PLUGINS **/
+@import url(/libraries/jdewit-bootstrap-timepicker/compiled/timepicker.css);
+@import url(/libraries/eternicode-bootstrap-datepicker/css/datepicker.css);
+//@import url(/libraries/datepicker/css/datepicker.css);
+/************************/
+
 .paper{
   /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
   position: relative;
@@ -1053,8 +1060,8 @@ footer.ui-widget {
     -moz-box-sizing: border-box;
     -ms-box-sizing: border-box;
     display: block;
-    margin: 8px 0 0 0;
-    font-size: .9em;
+    /*margin: 8px 0 0 0;
+    font-size: .9em;*/
     &[type="text"] {
       width: 100%; }
     &[type=date], &[type=number], &[type=email], &[type=password] {

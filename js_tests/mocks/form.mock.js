@@ -230,6 +230,126 @@ var formStr4 =
             '<input name="/nodename_bug/formhub/uuid" type="hidden" data-calculate="uuid()" data-type-xml="string"/>'+
         '</label></fieldset>'+
     '</form>';
+
+var dataStr5a =
+    '<widgets id="testPreloads" version="1"  >'+
+        '<start_time>Tue, 30 Oct 2012 14:44:57 GMT</start_time>'+
+        '<end_time>Tue, 30 Oct 2012 14:44:57 GMT</end_time>'+
+        '<date_today>Tue, 30 Oct 2012 00:00:00 GMT</date_today>'+
+        '<deviceid>some value</deviceid>'+
+        '<subscriberid>some value</subscriberid>'+
+        '<my_simid>2332</my_simid>'+
+        '<my_phonenumber>234234324</my_phonenumber>'+
+        '<application>some context</application>'+
+        '<patient>this one</patient>'+
+        '<user>John Doe</user>'+
+        '<uid>John Doe</uid>'+
+        '<browser_name>fake</browser_name>'+
+        '<browser_version>xx</browser_version>'+
+        '<os_name>fake</os_name>'+
+        '<os_version>xx</os_version>'+
+        '<unknown>some value</unknown>'+
+        '<meta>'+
+            '<instanceID>uuid:56c19c6c-08e6-490f-a783-e7f3db788ba8</instanceID>'+
+        '</meta>'+
+    '</widgets>';
+
+var dataStr5b =
+    '<widgets id="testPreloads" version="1"  >'+
+        '<start_time></start_time>'+
+        '<end_time></end_time>'+
+        '<date_today></date_today>'+
+        '<deviceid></deviceid>'+
+        '<subscriberid></subscriberid>'+
+        '<my_simid></my_simid>'+
+        '<my_phonenumber></my_phonenumber>'+
+        '<application></application>'+
+        '<patient></patient>'+
+        '<user></user>'+
+        '<uid></uid>'+
+        '<browser_name></browser_name>'+
+        '<browser_version></browser_version>'+
+        '<os_name></os_name>'+
+        '<os_version></os_version>'+
+        '<unknown></unknown>'+
+        '<meta>'+
+            '<instanceID></instanceID>'+
+        '</meta>'+
+    '</widgets>';
+
+var formStr5 =
+    '<form class="jr" id="testPreloads">'+
+        '<section class="form-logo"></section>'+
+        '<h2 id="form-title">Test: Preloads JavaRosa</h2>'+
+        '<div id="stats" style="display: none;">'+
+            '<span id="jrSelect">0</span>'+
+            '<span id="jrSelect1">0</span>'+
+            '<span id="jrItem">0</span>'+
+            '<span id="jrInput">0</span>'+
+            '<span id="jrUpload">0</span>'+
+            '<span id="jrTrigger">0</span>'+
+            '<span id="jrRepeat">0</span>'+
+            '<span id="jrRelevant">0</span>'+
+            '<span id="jrConstraint">0</span>'+
+            '<span id="jrCalculate">0</span>'+
+            '<span id="jrPreload">17</span>'+
+        '</div>'+
+        '<fieldset id="jr-preload-items" style="display:none;">'+
+            '<label>'+
+                '<input name="/widgets/start_time" type="hidden" data-preload="timestamp" data-preload-params="start" data-type-xml="dateTime"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/end_time" type="hidden" data-preload="timestamp" data-preload-params="end" data-type-xml="dateTime"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/date_today" type="hidden" data-preload="date" data-preload-params="today" data-type-xml="date"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/deviceid" type="hidden" data-preload="property" data-preload-params="deviceid" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/subscriberid" type="hidden" data-preload="property" data-preload-params="subscriberid" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/my_simid" type="hidden" data-preload="property" data-preload-params="simserial" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/my_phonenumber" type="hidden" data-preload="property" data-preload-params="phonenumber" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/application" type="hidden" data-preload="context" data-preload-params="application" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/patient" type="hidden" data-preload="patient" data-preload-params="" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/user" type="hidden" data-preload="user" data-preload-params="user_id" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/uid" type="hidden" data-preload="uid" data-preload-params="" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/browser_name" type="hidden" data-preload="browser" data-preload-params="name" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/browser_version" type="hidden" data-preload="browser" data-preload-params="version" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/os_name" type="hidden" data-preload="os" data-preload-params="name" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/os_version" type="hidden" data-preload="os" data-preload-params="version" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/unknown" type="hidden" data-preload="unknown" data-preload-params="nothing" data-type-xml="string"/>'+
+            '</label>'+
+            '<label>'+
+                '<input name="/widgets/meta/instanceID" type="hidden" data-preload="instance" data-preload-params="" data-type-xml="string"/>'+
+            '</label>'+
+        '</fieldset>'+
+    '</form>';
+
+
 /**
  * var jrDataStrToEdit = '<?xml version="1.0" ?><Data_Types id="data_types"><formhub><uuid>98063bc21324412f9cf1cb1c2a16c66e</uuid></formhub><text/><textarea>Lots of text
 with

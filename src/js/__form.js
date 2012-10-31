@@ -142,34 +142,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	this.isValid = function(){
 		return form.isValid();
 	};
-
-	//odd function to modify date strings (et. al.?) just before they are submitted or exported
-//	this.prepareForSubmission = function(dataStr){
-//		var name, value,
-//			formData = new DataXML(dataStr); //$($.parseXML(dataStr));
-//		//console.debug(formData.);
-//		//convert dates
-//		$form.find('[data-type-xml="date"], [data-type-xml="dateTime"]').each(function(){
-//			name = $(this).attr('name');
-//			//console.debug('found date element with name: '+name);
-//			formData.node(name).get().each(function(){
-//				console.debug('found date DATA node with name: '+name);
-//				value = $(this).text().trim();
-//				if (value.length > 0){
-//					console.debug('converting date string: '+value);
-//					value = new Date(value).toJrString();
-//					//console.debug('jrDateString: '+value);
-//					//bypassing validation & conversion of Nodeset sub-class
-//					$(this).text(value);
-//				}
-//			});
-//		});//
-
-//		$form.find('[type="time"]').each(function(){//
-
-//		});
-//		return formData.getStr(false, true);
-//	};
 	
 /**
  * Function: DataXML
@@ -657,12 +629,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
-		console.debug('loading instance values to be edited');
+		//console.debug('loading instance values to be edited');
 
 		nodesToLoad = instanceOfDataXML.node(null, null, filter).get();
 		
-		console.debug(nodesToLoad.length+' nodes found in data to be edited: ');
-		console.debug(nodesToLoad);
+		//console.debug(nodesToLoad.length+' nodes found in data to be edited: ');
+		//console.debug(nodesToLoad);
 
 		//first empty all form data nodes, to clear any default values except those inside templates
 		this.node(null, null, filter).get().each(function(){
@@ -672,19 +644,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		nodesToLoad.each(function(){
 			var name = $(this).prop('nodeName');
-			console.debug(name);
+			//console.debug(name);
 			path = form.generateName($(this));
-			console.debug('path: '+path);
+			//console.debug('path: '+path);
 			index = instanceOfDataXML.node(path).get().index($(this));
-			console.debug('index: '+index);
+			//console.debug('index: '+index);
 			value = $(this).text();
-			console.debug('value: '+value);
+			//console.debug('value: '+value);
 
 			//input is not populated in this function, so we take index 0 to get the XML data type
 			$input = $form.find('[name="'+path+'"]').eq(0);
 			
 			xmlDataType = ($input.length > 0) ? form.input.getXmlType($input) : 'string';
-			console.debug('xml datatype: '+xmlDataType);
+			//console.debug('xml datatype: '+xmlDataType);
 			target = that.node(path, index);
 			$target = target.get();
 
@@ -715,14 +687,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			}
 			else if ($(this).parent('meta').length === 1){
-					//if (that.get().children().eq(0).children('meta').length === 0){
-					//	meta = document.createElement('meta');
-					//	that.get().children().eq(0).append(meta);
-					//}
-					console.debug('cloning this direct child of <meta>:');
-					console.debug($(this).clone());
-					//metaChild = document.createElement(name);
-					//that.node('meta').get().append(metaChild).text(value);
+					//console.debug('cloning this direct child of <meta>:');
+					//console.debug($(this).clone());
 					$(this).clone().appendTo(that.get().children().eq(0).children('meta'));
 			}
 			else {
@@ -878,13 +844,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		if (incTempl === false){
 			$dataClone.find('[template]').remove();
-			////console.log('removed templates');
 		}
 		if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
 			$dataClone.children().eq(0).attr('xmlns', this.namespace);
 		}
-		////console.debug('dataClone in getStr:');
-		////console.debug($dataClone);
+
 		dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
 
 		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE NAMESPACE FROM STRING (AGAIN), BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
@@ -992,12 +956,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
-		////console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
+		//console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
 		//result = evaluator.evaluate(expr, context.documentElement, null, resultType, null);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
-			////console.log('evaluated: '+expr+' to: '+(result[resultTypes[type][1]] || 'resultnode(s)'));
-			////console.log(result); //NOTE THAT THIS USE OF THE CONSOLE THROWS AN ERROR IN FIREFOX when using native XPath!
+			//console.log('evaluated: '+expr+' to: '+(result[resultTypes[type][1]] || 'resultnode(s)'));
+			//console.log(result); //NOTE THAT THIS USE OF THE CONSOLE THROWS AN ERROR IN FIREFOX when using native XPath!
 			if (resTypeNum === 0){
 				for (resTypeNum in resultTypes){
 					resTypeNum = Number(resTypeNum);
@@ -1266,22 +1230,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			inputType = this.getInputType($node);
 			name = this.getName($node);
-			////console.debug('name provided by input.getName:'+name);
-			////console.debug('name of attribute name:'+$node.attr('name'));
-			//if (inputType === 'radio' && name !== $node.attr('name')){
-				//return parseInt( $node.attr('name').substring($node.attr('name').lastIndexOf('____')+4), 10);
-			//}
+
 			$wrapNode = this.getWrapNodes($node);
-			////console.debug('wrapnode:');
-			////console.debug($wrapNode);
+
 			if (inputType === 'radio' && name !== $node.attr('name')){
 				$wrapNodesSameName = this.getWrapNodes($form.find('[data-name="'+name+'"]'));
 			}
 			else {
 				$wrapNodesSameName = this.getWrapNodes($form.find('[name="'+name+'"]'));
-			}
-			////console.debug('wrapnodes with same name:');
-			////console.debug($wrapNodesSameName);	
+			}	
 
 			return $wrapNodesSameName.index($wrapNode);
 		},
@@ -1298,15 +1255,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			inputType = this.getInputType($node);
 			name = this.getName($node);
-			////console.debug('input type: '+inputType);
+			
 			if (inputType == 'radio'){
 				return this.getWrapNodes($node).find('input:checked').val() || '';
 			}
 			//checkbox values bug in jQuery as (node.val() should work)
 			if (inputType == 'checkbox'){
-				//console.debug(this.getWrapNodes($node));
+				
 				this.getWrapNodes($node).find('input[name="'+name+'"]:checked').each(function(){
-					//console.debug('found checkbox value: '+$(this).val());
+					
 					values.push($(this).val());
 				});
 				return values;
@@ -1334,35 +1291,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					//convert current value (loaded from instance) to a value that a native datepicker understands
 					//TODO test for IE, FF, Safari when those browsers start including native datepickers
 					value = data.node().convert(value, type);
-					/*date = new Date(data.node().convert(value, type));
-					if (date.toString() !== 'Invalid Date'){
-						value = date.getUTCFullYear().toString()+'-'+
-							(date.getUTCMonth()+1).toString().pad(2)+'-'+
-							date.getUTCDate().toString().pad(2);
-						if (type === 'datetime'){
-							value += ' '+date.getHours().toString().pad(2)+':'+date.getMinutes().toString().pad(2);
-						}
-					}
-					else{
-						value = date.toString(); 
-					}*/
+
 					console.debug('converting date before setting input field to: '+value);
-				//	date = new Date(value);
-				//	value = (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear().toString().substring(2);
-				//	value = (type === 'datetime') ? value + ' ' + date.getHours() + ':' + date.getMinutes() : value;
-				//	console.debug('to: '+value);
+
 				}
 			}
 
 			if (this.isMultiple($inputNodes.eq(0)) === true){
-				////console.log('control allows values will be split at spaces');
+				
 				value = value.split(' ');
 			}
 			
-			//console.debug('name of form element to set value of (if exists in form):'+name+', index:'+index+' new value: '+value);
-			//console.debug($inputNodes);
+
 			$inputNodes.val(value);
-			//console.debug('check new value: '+$inputNodes.val());
+			
 			return;
 		}
 	};
@@ -1489,22 +1431,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 		$form.tooltip(); //  use refresh() ??
 	};
-
-	//FormHTML.prototype.reset = function(){
-//		//var value1st;
-//		//ADD ?? checkForOpenForm(false);
-//		$form.reset();
-//		this.recordName.reset();
-//		this.recordStatus.reset();
-//		form.editStatus.set(false);//
-
-//		//$('#survey-title').text('New Survey');//
-
-//		//$('button#delete-form').hide();//
-
-//		//set the combobox with the list of files back to the first item
-//		
-//	};
 
 	FormHTML.prototype.editStatus = {
 		set : function(status){
@@ -1851,16 +1777,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//}); 
 		},
 		dateWidget : function(){
-			//$form.find('input[type="date"]').click(function(e){
-			//	e.preventDefault();
-			//}).datepicker({
-			//	onSelect: function(dateText){
-			//		var d = new Date(dateText),
-			//			dv = d.getFullYear().toString().pad(4)+'-'+(d.getMonth()+1).toString().pad(2)+'-'+d.getDate().toString().pad(2);
-			//		$(this).val(dv).trigger('change');
-			//	}
-			//});*/
-			//if(!Modernizr.inputtypes.date){
 			$form.find('input[type="date"]').each(function(){
 				var $p = $(this).parent('label'),
 					startView = ($p.hasClass('jr-appearance-month-year')) ? 'year' :
@@ -1882,10 +1798,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						return false;
 					});
 			});
-			//}
 		},
 		timeWidget : function(){
-			//if(!Modernizr.inputtypes.time){
+			//TODO USE $fakeTime instead for browsers with native timepicker (Opera?)
 			$form.find('input[type="time"]').each(function(){
 				var curVal = $(this).val();
 				$(this)
@@ -1901,7 +1816,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 		}, 
 		dateTimeWidget : function(){
-			//if(!Modernizr.inputtypes.datetime){
 			$form.find('input[type="datetime"]').each(function(){	
 				var $dateTimeI = $(this),
 					/*
@@ -1911,7 +1825,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					 */
 					val = ($(this).val().length > 0) ? new Date($(this).val()).toISOLocalString() : '',
 					vals = val.split('T'),
-					//times = (vals[1]) ? vals[1].split(':') : null,
 					dateVal = vals[0], 
 					timeVal = (vals[1] && vals[1].length > 4) ? vals[1].substring(0,5) : '',
 					$fakeDate = $('<div class="input-append date" >'+
@@ -1945,8 +1858,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					}
 				}
 			});
-				
-			//}
 		},
 		selectOneWidget : function(){
 			//note: in chrome size is at least 4 if multiple attr is present

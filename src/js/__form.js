@@ -1861,16 +1861,24 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//	}
 			//});*/
 			//if(!Modernizr.inputtypes.date){
-			$form.find('input[type="date"]').datepicker({dateFormat: 'yy/mm/dd'}).each(function(){
-				var $fakeDate = $('<div class="input-append date" >'+
-					'<input class="novalidate input-small" type="text" value="'+$(this).val()+'" placeholder="yyyy-mm-dd" />'+
-					'<span class="add-on"><i class="icon-th"></i></span>'+'</div>'),
+			$form.find('input[type="date"]').each(function(){
+				var $p = $(this).parent('label'),
+					startView = ($p.hasClass('jr-appearance-month-year')) ? 'year' :
+						($p.hasClass('jr-appearance-year')) ? 'decade' : 'month',
+					format = (startView === 'year') ? 'yyyy-mm' :
+						(startView === 'decade') ? 'yyyy' : 'yyyy-mm-dd',
+					$fakeDate = $('<div class="input-append date" >'+
+						'<input class="novalidate input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
+						'<span class="add-on"><i class="icon-th"></i></span>'+'</div>'),
 					$that = $(this);
-				$(this).hide().after($fakeDate);//.parent('label').addClass('input-append date').attr('data-date-format', 'yyyy-mm-dd');
-				$fakeDate.datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true})
+				$(this).hide().after($fakeDate);
+				console.debug('startView: '+startView);
+				$fakeDate.datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView})
 					.find('input').on('change changeDate', function(ev){
+						var value = $(this).val();
+						value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
 						//console.debug('converted date input to value: '+data.node().convert($(this).val(), 'date'));
-						$that.val(data.node().convert($(this).val(), 'date')).trigger('change');
+						$that.val(data.node().convert(value, 'date')).trigger('change');
 						return false;
 					});
 			});
@@ -1894,8 +1902,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}, 
 		dateTimeWidget : function(){
 			//if(!Modernizr.inputtypes.datetime){
-			$form.find('input[type="datetime"]').each(function(){//.datetimepicker({dateFormat: 'yy/mm/dd', timeFormat: 'hh:mm:ss'});
-				
+			$form.find('input[type="datetime"]').each(function(){	
 				var $dateTimeI = $(this),
 					/*
 						Loaded or default datetime values remain untouched until they are edited. This is done to preserve 

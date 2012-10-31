@@ -1,5 +1,5 @@
-@import url(/libraries/jdewit-bootstrap-timepicker/compiled/timepicker.css);
-@import url(/libraries/eternicode-bootstrap-datepicker/css/datepicker.css);
+@import url(../libraries/jdewit-bootstrap-timepicker/compiled/timepicker.css);
+@import url(../libraries/eternicode-bootstrap-datepicker/css/datepicker.css);
 /*@import "compass/reset";*/
 @font-face {
   font-family: 'Open Sans';

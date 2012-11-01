@@ -31,6 +31,8 @@ class Webform extends CI_Controller {
 			'/libraries/bootstrap/js/bootstrap.min.js',	
 			'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
 			'/libraries/eternicode-bootstrap-datepicker/js/bootstrap-datepicker.js',
+			'/libraries/silviomoreto-bootstrap-select/bootstrap-select.js',
+			'/libraries/davidstutz-bootstrap-multiselect/js/bootstrap-multiselect.js',
 			'/libraries/modernizr.min.js',
 			'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 			'/libraries/vkbeautify.js',
@@ -305,8 +307,8 @@ class Webform extends CI_Controller {
 		
 		$form->default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form->default_instance);
 		$form->default_instance = addslashes($form->default_instance);
-		$form->title = $transf_result->form->xpath('//h2[@id="form-title"]');
-		$form->title = $form->title[0];
+		$form->title = $transf_result->form->xpath('//h2[@id="form-title"]') || NULL;
+		$form->title = $form->title[0] || '';
 		return (!empty($form->html) && !empty($form->default_instance)) ? $form : NULL;
 	}
 

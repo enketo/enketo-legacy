@@ -557,7 +557,7 @@ label#data-template-show {
   
    }*/
 
-.hint-new{
+.hint{
   background-color: $shadow;
   display: inline-block;
   color: $overlay-bg;
@@ -926,7 +926,7 @@ footer.ui-widget {
 
 .jr-option-translations {
   display: none; }
-
+/*
 .jr h2.ui-widget-header {
   margin: 0;
   span{ 
@@ -934,16 +934,15 @@ footer.ui-widget {
     color: $header-brdr;
     font-size: 10px;
     line-height: 10px;
-    text-align: right;} }
+    text-align: right;} }*/
 
-.question-icons {
+/*.question-icons {
   float: right;
   margin: -5px -10px 0 0;
-  /*line-height: 15px;*/
   span {
     display: inline-block;
     text-align: right;
-    width: 18px; } }
+    width: 18px; } }*/
 
 #form-languages {
   margin-bottom: 8px;

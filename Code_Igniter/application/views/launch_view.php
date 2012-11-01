@@ -133,7 +133,7 @@
 							</label>
 							<div class="controls">
 								<input id="email" name="email" type="text" placeholder="optional" />
-								<span class="input-append hint-new" title="Not yet functional. You will receive a confirmation email with the direct link to the survey. In the future your email address will also be used for authentication if you would like to change the settings you are now entering."></span>
+								<span class="input-append hint" title="Not yet functional. You will receive a confirmation email with the direct link to the survey. In the future your email address will also be used for authentication if you would like to change the settings you are now entering."></span>
 							</div>
 						</fieldset>
 						<!--<label>
@@ -147,7 +147,7 @@
 							</label>
 							<div class="controls">
 								<input id="email" name="data_url" type="text" placeholder="optional"/>
-								<span class="input-append hint-new" title="Not yet functional. You can provide an in-app link to where the collated data or reports will be published."></span>
+								<span class="input-append hint" title="Not yet functional. You can provide an in-app link to where the collated data or reports will be published."></span>
 							</div>
 							<!--<label>submission url<span class="jr-hint">Normally this does not need to and should not be changed.</span><input name="submission_url" type="text"/></label>-->
 						</fieldset>

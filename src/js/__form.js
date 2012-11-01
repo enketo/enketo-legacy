@@ -1019,8 +1019,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	}
 
 	FormHTML.prototype.init = function(){
-		var icons, name, required;
-		//console.debug ('initializing HTML form');
+		var name, $required;
 
 		this.checkForErrors();
 
@@ -1028,32 +1027,27 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 		
-		icons = '<div class="question-icons"><span class="required"></span><span class="hint"></span></div>';
-		
-		//append icons
-		$form.find('label>input[type="checkbox"], label>input[type="radio"]').parent().parent('fieldset').prepend(icons);
-		$form.parent().find('label>select, label>textarea, :not(#jr-preload-items, #jr-calculated-items)>label>input')//, form>label>input')
-			.not('[type="checkbox"], [type="radio"]').parent().prepend(icons);
-
-		//this.input.getWrapNodes($form.parent().find('fieldset:not(#jr-preload-items, #jr-calculated-items) input, select, textarea'))
-		//	.prepend(icons);	
-
 		//add 'required field' clue
-		required = '<span class="required">*</span>';
+		$required = '<span class="required">*</span>';
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
-			.find('legend:eq(0)').append(required);
+			.find('legend:eq(0)').append($required);
 			//.find('.question-icons .required').addClass('ui-icon ui-icon-notice');
 		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
 			.not('[type="checkbox"], [type="radio"]').parent()
 			.each(function(){
-				$(this).children('span:not(.jr-option-translations):last').after(required);
+				$(this).children('span:not(.jr-option-translations):last').after($required);
 			});
-			//.find('.question-icons .required').addClass('ui-icon ui-icon-notice');
 
-		//this.input.getWrapNodes($form.find('[required]')).find('.question-icons .required').text('*');
+		//add 'hint' icon
+		$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea')
+			.after('<span class="input-append hint" />');
 
-		//groups of radiobuttons needs to have the same name which referes to the xpath in instance
-		//when a radio button is clone this will cause a problem. Therefore radiobuttons store their xpath in data-name.
+		/*
+			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
+			Repeated radiobuttons would all have the same name which means they wouldn't work right.
+			Therefore, radiobuttons store their path in data-name instead and cloned repeats will add a 
+			different name attribute.
+		 */
 		$form.find('input[type="radio"]').each(function(){
 			name = /**@type {string} */$(this).attr('name');
 			$(this).attr('data-name', name);
@@ -1061,9 +1055,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.find('h2').first().append('<span/>');
 
-		//this.setLangs();
-		//$form.find('.jr-hint, .jr-constraint-msg').hide();
-		//
 		this.repeat.init();
 		this.setAllVals();
 		this.widgets.init();
@@ -1402,10 +1393,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$('#form-languages a[lang="'+defaultLang+'"]').click();
 	};
 		
-	// called whenever language or ouput value changes
+	/**
+	 * setHints updates the hints. It is called whenever the language or output value is changed.
+	 */
 	FormHTML.prototype.setHints = function(){
 		var hint, $wrapNode;
-		////console.log('setting hints, lang is '+lang);
+		//console.log('setting hints, lang is '+lang);
 		$form.find('*>.jr-hint').parent().each(function(){
 			if ($(this).prop('nodeName').toLowerCase() !== 'label' && $(this).prop('nodeName').toLowerCase() !== 'fieldset' ){
 				$wrapNode = $(this).parent('fieldset');
@@ -1413,22 +1406,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			else{
 				$wrapNode = $(this);
 			}
-			//if ($wrapNode.length > 0){
+			
 			hint = ($wrapNode.length > 0 ) ? //&& lang !== 'undefined' && lang !== '') ? 
 				$(this).find('.jr-hint.active').text().trim() : $(this).find('span.jr-hint').text().trim();
-			//}
 			
-			////console.debug('hint: '+hint);
+			//console.debug('hint: '+hint);
 			if (hint.length > 0){
-				////console.debug('setting hint: '+hint);
+				//console.debug('setting hint: '+hint);
 				//$(this).find('input, select, textarea').attr('title', hint);
-				$wrapNode.find('.question-icons .hint').attr('title', hint).addClass('ui-icon ui-icon-help');
+				$wrapNode.find('.hint').attr('title', hint);
 			}
 			else{
-				$wrapNode.find('.question-icons .hint').removeAttr('title').removeClass('ui-icon ui-icon-help');
+				$wrapNode.find('.hint').removeAttr('title');
 			}
 		});
-		$form.tooltip(); //  use refresh() ??
+		$form.find('.hint[title]').tooltip(); //  use refresh() ??
 	};
 
 	FormHTML.prototype.editStatus = {
@@ -1516,7 +1508,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//console.debug('the clever selector created: '+cleverSelector.join());
 
 			$form.find(cleverSelector.join()).each(function(){
-				//VERY WRONG TO USE form HERE!!!! FIX THIS
+				//VERY WRONG TO USE form HERE!!!! FIX THIS like this: http://jsfiddle.net/MartijnR/DWqHu/41/
 				//one could argue that I should not use the input object here as a branch is not always an input (sometimes a group)		
 				//console.debug('input node with branching logic:');
 				//console.debug($(this));
@@ -1745,6 +1737,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend').children('img,video,audio').parent().addClass('ui-helper-clearfix with-media');
 	};
 
+	/**
+	 * Enhancements to the basic built-in html behaviour of form controls
+	 *
+	 * In the future it would probably be wise to standardize this. E.g. each form control widget needs to:
+	 * - load default values
+	 * - have a 'swap language' function responding to a 'changelanguage' event
+	 * - disable when its parent branch is hidden (also when hidden upon initialization)
+	 * - enable when its parent branch is hidden 
+	 *
+	 * Considering the ever-increasing code size of the widgets and their dependence on the UI library being used,
+	 * it would be good to move them to a separate javascript file. 
+	 * (If typeof widgets === undefined, widgets are not loaded)
+	 * 
+	 * @type {Object}
+	 */
 	FormHTML.prototype.widgets = {
 		//IMPORTANT! Widgets should be initalized after instance values have been loaded in $data as well as in input fields
 		init : function(){

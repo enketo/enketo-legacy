@@ -1337,7 +1337,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	FormHTML.prototype.setLangs = function(){
-		var lang, value, newLabel,
+		var lang, value, curLabel, newLabel,
 			that = this,
 			defaultLang = $form.find('#form-languages').attr('data-default-lang');
 		////console.log('found default language: '+defaultLang);
@@ -1359,13 +1359,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return;
 		}
 
-		//$form.find('#form-languages').addClass('ui-helper-clearfix');
 		$('#form-languages a').click(function(event){
 			event.preventDefault();
 			lang = $(this).attr('lang');
 			$('#form-languages a').removeClass('active');
 			$(this).addClass('active');
-			////console.log('going to hide langauges');
 
 			//$form.find('[lang]').not('.jr-hint, .jr-constraint-msg, jr-option-translations>*').show().not('[lang="'+lang+'"], [lang=""], #form-languages a').hide();
 			$form.find('[lang]').removeClass('active').filter('[lang="'+lang+'"], [lang=""]').addClass('active');
@@ -1378,13 +1376,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 
 			//swap language of <select> <option>s
-			$form.find('select>option').not('[value=""]').each(function(){
+			$form.find('select > option').not('[value=""]').each(function(){
+				curLabel = $(this).text();
 				value = $(this).attr('value');
-				////console.log('option value is '+value);
-				newLabel = $(this).parent('select').next('.jr-option-translations')
+				
+				newLabel = $(this).parent('select').siblings('.jr-option-translations')
 					.children('.active[data-option-value="'+value+'"]').text().trim();
-				////console.log('new option label is '+newLabel +' with length: '+newLabel.length);
-				newLabel = (typeof newLabel !== 'undefined' && newLabel.length > 0) ? newLabel : '[MISSING TRANSLATION]';
+				
+				newLabel = (typeof newLabel !== 'undefined' && newLabel.length > 0) ? newLabel : curLabel;
 				
 				$(this).text(newLabel);
 			});
@@ -1754,8 +1753,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.dateWidget();
 			this.timeWidget();
 			this.dateTimeWidget();
-			//this.selectOneWidget();
-			//this.selectMultiWidget();
+			this.selectOneWidget();
+			this.selectMultiWidget();
 			this.pageBreakWidget();
 			this.readonlyWidget();
 			this.gridWidget();
@@ -1860,31 +1859,28 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 		},
 		selectOneWidget : function(){
-			//note: in chrome size is at least 4 if multiple attr is present
-			$form.find('select:not([multiple])').attr('size', '1');//.find('[value=""]').remove();	
-			$('select:not([multiple])').multiselect({
-				'multiple': false,
-				'header': 'Select one option',
-				'noneSelectedText': 'Select one option',
-				'selectedList': 1,
-				'position': {
-					'my':'left top', 
-					'at': 'left bottom'
-				}//,
-				//selectedList: 1
-			});		
+			$form.find('select:not([multiple])').find('[value=""]').text('None selected'); 
+			function update(){
+				$form.find('select:not([multiple])').removeData('selectpicker').siblings('.bootstrap-select').remove();
+				$form.find('select:not([multiple])').selectpicker({
+					btnStyle: 'btn btn-small'
+				});
+			}
+			$form.on('changelanguage', update);
+			update();
 		},
 		selectMultiWidget : function(){
-			//note: in chrome size is at least 4 if multiple attr is present
-			$form.find('select[multiple]').attr('size', '5').find('[value=""]').remove(); //for html form
-
-			$('select[multiple]').multiselect({
-				'header': 'false', 
-				'position': {
-					'my':'left top', 
-					'at': 'left bottom'
-				}
-			});
+			$form.find('select[multiple]').find('[value=""]').remove(); 
+			function update(){
+				$('select[multiple]').removeData('multiselect').siblings('.bootstrap-multiselect').remove();
+				$('select[multiple]').multiselect({
+					container: '<div class="btn-group bootstrap-multiselect" />',
+					button: 'btn btn-small'
+				});
+				
+			}
+			$form.on('changelanguage', update);
+			update();
 		},
 		//transforms temporary page-break elements to triggers //REMOVE WHEN BETTER SOLUTION FOR PAGE BREAKS IS FOUND
 		pageBreakWidget : function(){

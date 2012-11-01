@@ -25,9 +25,7 @@ $(document).ready(function(){
 	state.init();
 	//state.setUrl();
 
-	//remove this probably (when adding to common.js):
 	$('[title]').tooltip();
-
 
 	_error = console.error;
 	console.error = function(){
@@ -65,11 +63,17 @@ $(document).ready(function(){
 			var serverUrl = $form.find('input[name="server_url"]').val() || '',
 				formId = $form.find('input[name="form_id"]').val() || '';
 				//xmlUrl = $form.find('input[name="xml_url"]').val() || '';
+			console.debug(serverUrl);
+			console.debug(formId);
 			// validate server url
-			if ( serverUrl !== '' ){
+			if ( serverUrl.length > 0 ){
 				if (isValidUrl(serverUrl)){
 					state.server = serverUrl;
 					state.setUrl();
+					if ( formId.length > 0 ){
+						state.id = formId;
+						state.setUrl();
+					}
 				}
 				else{
 					gui.alert('Not a valid server url');
@@ -78,11 +82,11 @@ $(document).ready(function(){
 					return false;
 				}
 			}
-			if ( formId !== '' ){
-				state.id = formId;
-				state.setUrl();
+			else{
+				resetForm();
+				return false;
 			}
-
+			
 			$('#upload .hurry').hide();
 			$('#upload-form progress').show();
 		},

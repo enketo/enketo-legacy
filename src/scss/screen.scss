@@ -39,7 +39,7 @@ $paperwidth: 720px;
   /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
   position: relative;
   /*width: 500px;*/
-  /*z-index: 10;*/
+
   padding: 50px;
   margin: 0 auto;
   background-color: #fff;
@@ -535,6 +535,7 @@ label#data-template-show {
       margin: 4px;
       list-style-type: none;
        } }
+
   /*:not(#form-list) a {
     &:link{
     padding: 0 10px;
@@ -968,9 +969,8 @@ footer.ui-widget {
     color: $a-hvr;
     text-decoration: none; } }
 
-.form-wrapper{
+.paper{
   margin: 0 0 40px 0;
-  /*padding: 0;*/
   #submit-form, #submit-edited-data, #validate-form, #launch-form{
     display: block;
     margin: 10px auto 45px auto; } }

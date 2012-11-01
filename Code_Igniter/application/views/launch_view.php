@@ -74,7 +74,7 @@
 				</div>
 			</article>
 
-			<article id="survey-form" class="tab-pane form-wrapper paper">
+			<article id="survey-form" class="tab-pane paper">
 					<form>no form loaded yet</form>
 					<button id="validate-form" class="btn btn-primary btn-large disabled">
 						<i class="icon-ok icon-white"></i> Validate

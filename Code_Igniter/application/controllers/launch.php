@@ -39,6 +39,8 @@ class Launch extends CI_Controller {
 				'libraries/bootstrap/js/bootstrap.min.js',
 				'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
 				'/libraries/eternicode-bootstrap-datepicker/js/bootstrap-datepicker.js',
+				'/libraries/silviomoreto-bootstrap-select/bootstrap-select.js',
+				'/libraries/davidstutz-bootstrap-multiselect/js/bootstrap-multiselect.js',
 				'libraries/modernizr.min.js',
 				'libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 				'libraries/jquery.form.js',

@@ -29,7 +29,7 @@
 		<? require 'elements/dialogs.php'; ?>
 
 		<div class="main">
-			<article class="form-wrapper paper" >
+			<article class="paper" >
 				<?= $form ?>	
 				<button id="submit-form" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
 			</div>

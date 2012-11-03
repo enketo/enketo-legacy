@@ -1028,7 +1028,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 		
 		//add 'required field' clue
-		$required = '<span class="required">*</span>';
+		$required = '<span class="required">*</span><br />';
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
 			.find('legend:eq(0)').append($required);
 			//.find('.question-icons .required').addClass('ui-icon ui-icon-notice');
@@ -1040,7 +1040,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		//add 'hint' icon
 		$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea')
-			.after('<span class="input-append hint" />');
+			.after('<span class="hint" >?</span>');
 
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
@@ -1331,7 +1331,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var lang, value, curLabel, newLabel,
 			that = this,
 			defaultLang = $form.find('#form-languages').attr('data-default-lang');
-		////console.log('found default language: '+defaultLang);
+		
 		$('#form-languages').detach().insertBefore($('form.jr').parent());
 		if (!defaultLang || defaultLang==='') {
 			defaultLang = $('#form-languages a:eq(0)').attr('lang');
@@ -1420,7 +1420,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$wrapNode.find('.hint').removeAttr('title');
 			}
 		});
-		$form.find('.hint[title]').tooltip(); //  use refresh() ??
+		$form.find('.hint[title]').tooltip({placement: 'right'}); //  use refresh() ??
 	};
 
 	FormHTML.prototype.editStatus = {
@@ -1733,6 +1733,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');		
 		$form.find('.trigger').addClass('alert alert-block');// ui-corner-all');
 		$form.find('.jr-constraint-msg').addClass('alert alert-error');
+		$form.find('label:not(.geo), fieldset').addClass('clearfix');
+		$form.find(':checkbox, :radio').each(function(){
+			var $p = $(this).parent('label'); 
+			$(this).detach().prependTo($p);
+		});
+
 		//improve looks when images, video or audio is used as label
 		$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend').children('img,video,audio').parent().addClass('ui-helper-clearfix with-media');
 	};
@@ -1842,7 +1848,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$fakeDateI = $fakeDate.find('input'),
 					$fakeTimeI = $fakeTime.find('input');
 
-				$dateTimeI.hide().after($fakeDate).after($fakeTime);
+				$dateTimeI.hide().after('<div class="datetimepicker" />');
+				$dateTimeI.siblings('.datetimepicker').append($fakeDate).append($fakeTime);
 				$fakeDate.datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true});
 				$fakeTimeI.timepicker({defaultTime: (timeVal.length > 0) ? 'value' : 'current', showMeridian: false}).val(timeVal);
 				
@@ -1870,7 +1877,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			function update(){
 				$form.find('select:not([multiple])').removeData('selectpicker').siblings('.bootstrap-select').remove();
 				$form.find('select:not([multiple])').selectpicker({
-					btnStyle: 'btn btn-small'
+					btnStyle: 'btn'
 				});
 			}
 			$form.on('changelanguage', update);
@@ -1882,9 +1889,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$('select[multiple]').removeData('multiselect').siblings('.bootstrap-multiselect').remove();
 				$('select[multiple]').multiselect({
 					container: '<div class="btn-group bootstrap-multiselect" />',
-					button: 'btn btn-small'
+					button: 'btn'
 				});
-				
+				$('select[multiple] ~ .bootstrap-multiselect .caret').addClass('pull-right');
 			}
 			$form.on('changelanguage', update);
 			update();
@@ -1933,11 +1940,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$geoWrap.addClass('geopoint');
 				
 				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
-					'<label>latitude (x.y &deg;)<input class="novalidate" name="lat" type="number" step="0.0001" /></label>'+
-					'<label>longitude (x.y &deg;)<input class="novalidate" name="long" type="number" step="0.0001" /></label>'+
-					'<label>altitude (m)<input class="novalidate" name="alt" type="number" step="0.1" /></label>'+
-					'<label>accuracy (m)<input class="novalidate" name="acc" type="number" step="0.1" /></label>'+
-					'<button name="geodetect" type="button">detect</button>'); 
+					'<label class="geo">latitude (x.y &deg;)<input class="novalidate" name="lat" type="number" step="0.0001" /></label>'+
+					'<label class="geo">longitude (x.y &deg;)<input class="novalidate" name="long" type="number" step="0.0001" /></label>'+
+					'<label class="geo">altitude (m)<input class="novalidate" name="alt" type="number" step="0.1" /></label>'+
+					'<label class="geo">accuracy (m)<input class="novalidate" name="acc" type="number" step="0.1" /></label>'+
+					'<button name="geodetect" type="button" class="btn btn-small">detect</button>'); 
 				$map = $geoWrap.find('.map-canvas');
 				$lat = $geoWrap.find('[name="lat"]');
 				$lng = $geoWrap.find('[name="long"]');
@@ -2452,10 +2459,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
 			}
 			
-			//console.log('data.set validation returned valid: '+valid);
+			console.log('data.set validation returned valid: '+valid);
 			//additional check for 'required'
 			valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
-
+			console.log('after "required" validation valid is: '+valid);
 			if (typeof valid !== 'undefined' && valid !== null){
 				return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
 			}
@@ -2730,20 +2737,20 @@ String.prototype.pad = function(digits){
 	//it corrects the margin-top of the first <label> sibling following a <legend>
 	//the whole form (or several) can be provides as the context
 	$.fn.fixLegends = function() {
-		var legendHeight;
-		////console.log('fixing legends');
-		return this.each(function(){
-			$(this).find('legend + label').each(function(){
-				//console.error('found legend');
-				legendHeight = ($(this).prev().find('.jr-constraint-msg.active').length > 0 && $(this).prev().height() < 36) ? 36 : 
-					($(this).prev().height() < 19) ? 19 : 
-					$(this).prev().height();
-				
-				$(this).animate({
-					'margin-top' : (legendHeight+6)+'px'
-				}, 600 );
-			});
-		});
+//		var legendHeight;
+//		//console.log('fixing legends');
+//		return this.each(function(){
+//			$(this).find('legend + label').each(function(){
+//				//console.error('found legend');
+//				legendHeight = ($(this).prev().find('.jr-constraint-msg.active').length > 0 && $(this).prev().height() < 36) ? 36 : 
+//					($(this).prev().height() < 19) ? 19 : 
+//					$(this).prev().height();
+//				
+//				$(this).animate({
+//					'margin-top' : (legendHeight+6)+'px'
+//				}, 600 );
+//			});
+//		});
 	};
 
 

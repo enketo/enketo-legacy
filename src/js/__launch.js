@@ -63,8 +63,6 @@ $(document).ready(function(){
 			var serverUrl = $form.find('input[name="server_url"]').val() || '',
 				formId = $form.find('input[name="form_id"]').val() || '';
 				//xmlUrl = $form.find('input[name="xml_url"]').val() || '';
-			console.debug(serverUrl);
-			console.debug(formId);
 			// validate server url
 			if ( serverUrl.length > 0 ){
 				if (isValidUrl(serverUrl)){

@@ -492,20 +492,23 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}, 
 			'date' : {
 				validate : function(x){
+					var pattern = (/([0-9]{4})([\-]|[\/])([0-9]{2})([\-]|[\/])([0-9]{2})/),
+						segments = pattern.exec(x);
+
 					//console.debug('datestring: '+x+ ' type: '+ typeof x + 'is valid? -> '+new Date(x.toString()).toString());
-					return ( new Date(x).toString() !== 'Invalid Date' );
+					//return ( new Date(x).toString() !== 'Invalid Date' || new Date(x+'T00:00:00.000Z') !== 'Invalid Date');
+					return (segments && segments.length === 6) ? (new Date(Number(segments[1]), Number(segments[3]) - 1, Number(segments[5])).toString() !== 'Invalid Date') : false;
 				},
 				convert : function(x){
-					var date;/*, segments,
-						pattern = /([0-9]{4})([\-]|[\/])([0-9]{2})([\-]|[\/])([0-9]{2})/;
-					segments = (pattern.exec(x));
-					//the 'flaw' in the code below is that "2012-02-30" will return a valid date of 2012-03-02
-					//this way of instantiating the date object (New Date(y,m,d)) is nevertheless preferred in order for it 
-					//to work in the Rhino engine and the webkit engine in PhantomJasmine
-					if (segments && Number(segments[1]) > 0 && Number(segments[3]) >=0 && Number(segments[3]) < 12 && Number(segments[5]) < 32){
-						date = new Date(Number(segments[1]), (Number(segments[3])-1), Number(segments[5]));
+					var pattern = /([0-9]{4})([\-]|[\/])([0-9]{2})([\-]|[\/])([0-9]{2})/,
+						segments = pattern.exec(x),
+						date = new Date(x);
+					if (new Date(x).toString() == 'Invalid Date'){
+						//this code is really only meant for the Rhino and PhantomJS engines, in browsers it may never be reached
+						if (segments && Number(segments[1]) > 0 && Number(segments[3]) >=0 && Number(segments[3]) < 12 && Number(segments[5]) < 32){
+							date = new Date(Number(segments[1]), (Number(segments[3])-1), Number(segments[5]));
+						}
 					}
-					else*/ date = new Date(x);
 					//date.setUTCHours(0,0,0,0);
 					//return date.toUTCString();//.getUTCFullYear(), datetime.getUTCMonth(), datetime.getUTCDate());
 					return date.getUTCFullYear().toString().pad(4)+'-'+(date.getUTCMonth()+1).toString().pad(2)+'-'+date.getUTCDate().toString().pad(2);

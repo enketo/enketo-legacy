@@ -76,7 +76,7 @@ progress{
   /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
 //  position: relative;
 //  margin: 0 auto;
-  background-color: #fff;
+    background-color: #fff;
 //  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
 //  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
 //  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
@@ -151,7 +151,7 @@ progress{
  
 #branding{
   position: fixed;
-  z-index: 0;
+  z-index: -5;
   width: 120px;
   bottom: 0px;
   right: 0px;

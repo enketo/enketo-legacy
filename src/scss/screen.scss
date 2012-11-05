@@ -13,6 +13,7 @@ $groupline: #bbbbbb;
 $shadow: #cccccc; /*light gray*/
 $title: #CE4F07;
 $border: #D6E9C6;
+$pagecolor: #333333;
 /*$inverse: #999999;*/
 
 @mixin transition-slow{
@@ -278,10 +279,8 @@ label#data-template-show {
   top: -100px;
   margin: 0;
   padding: 0;
-  /* invisible initially (header top: 80 - #feedback height - #feedback paddingx2)*/
   width: 100%;
   min-height: 35px;
-  /* small screens might need multiline feedback */
   height: auto;
   border-left: none;
   border-right: none;
@@ -308,12 +307,11 @@ label#data-template-show {
   position: absolute;
   z-index: 12;
   top: -320px;
-  /* invisible initially (header top: 80 - #page height: 340 - #page paddingx2)*/
   min-height: 250px;
   width: 100%;
-  background-image: url(images/tex2res4.png);
-  /*opacity: 0.8;*/
-  /* causes problem in opera with input form elements */
+  background-color: $pagecolor;
+  border-top: 1px solid #888;
+  border-bottom: 2px solid black;
   border-left: none;
   border-right: none; 
   .content {
@@ -527,8 +525,8 @@ $input-max-width: 80%;
     .repeat-number {
       height: 2em;
       display: block;
-      float: left;
-      margin: -8px -8px 0 0;
+      float: right;
+      margin: 8px 0 0 0;
       color: $title; } } 
   .jr-group{
     border-top: $line; /**/

@@ -1019,7 +1019,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	}
 
 	FormHTML.prototype.init = function(){
-		var name, $required;
+		var name, $required, $hint;
 
 		this.checkForErrors();
 
@@ -1027,20 +1027,26 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 		
-		//add 'required field' clue
-		$required = '<span class="required">*</span><br />';
+		//add 'required field' and 'hint'
+		$required = '<span class="required">*</span>';//<br />';
+		$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
+
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
 			.find('legend:eq(0)').append($required);
-			//.find('.question-icons .required').addClass('ui-icon ui-icon-notice');
 		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
 			.not('[type="checkbox"], [type="radio"]').parent()
 			.each(function(){
 				$(this).children('span:not(.jr-option-translations):last').after($required);
 			});
 
+
 		//add 'hint' icon
-		$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea')
-			.after('<span class="hint" >?</span>');
+		//$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea')
+		//	.after($hint);
+		$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea').before($hint);
+		$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
+
+		$form.find('select, input:not([type="checkbox"], [type="radio"]), textarea').before($('<br/>'));
 
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
@@ -1728,10 +1734,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//updatingCalcs = false;
 	};
 
-	FormHTML.prototype.bootstrapify = function(){
-		//$form.find('.jr-group, .jr-repeat').addClass('ui-corner-all');
-		//$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');		
-		$form.find('.trigger').addClass('alert alert-block');// ui-corner-all');
+	FormHTML.prototype.bootstrapify = function(){		
+		$form.find('.trigger').addClass('alert alert-block');
 		$form.find('.jr-constraint-msg').addClass('alert alert-error');
 		$form.find('label:not(.geo), fieldset').addClass('clearfix');
 		$form.find(':checkbox, :radio').each(function(){
@@ -1797,7 +1801,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						(startView === 'decade') ? 'yyyy' : 'yyyy-mm-dd',
 					$fakeDate = $('<div class="input-append date" >'+
 						'<input class="novalidate input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
-						'<span class="add-on"><i class="icon-th"></i></span>'+'</div>'),
+						'<span class="add-on"><i class="icon-calendar"></i></span>'+'</div>'),
 					$that = $(this);
 				$(this).hide().after($fakeDate);
 				console.debug('startView: '+startView);
@@ -1841,7 +1845,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					timeVal = (vals[1] && vals[1].length > 4) ? vals[1].substring(0,5) : '',
 					$fakeDate = $('<div class="input-append date" >'+
 						'<input class="novalidate input-small" type="text" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
-						'<span class="add-on"><i class="icon-th"></i></span></div>'),
+						'<span class="add-on"><i class="icon-calendar"></i></span></div>'),
 					$fakeTime = $('<div class="input-append bootstrap-timepicker-component">'+
 						'<input class="novalidate timepicker-default input-small" type="time" value="'+timeVal+'"/>'+
 						'<span class="add-on"><i class="icon-time"></i></span></div>'),

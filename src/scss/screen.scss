@@ -239,19 +239,19 @@ label#data-template-show {
        } } }  
 
 .hint{
-  $hwidth: 30px;
-  background-color: $shadow;
-  color: #777;
+  //$hwidth: 30px;
+  //background-color: $shadow;
+  //color: #777;
   display: inline-block;
-  margin: 12px 5px 0 5px;
-  padding: 0 0 0 2px;
-  width: $hwidth;
-  height: $hwidth;
-  border-radius: $hwidth/2;
-  font-size: 16px;
-  line-height: $hwidth;
-  font-weight: bolder;
-  text-align: center;
+  //margin: 12px 5px 0 5px;
+  //padding: 0 0 0 2px;
+  //width: $hwidth;
+  //height: $hwidth;
+  //border-radius: $hwidth/2;
+  //font-size: 16px;
+  //line-height: $hwidth;
+  //font-weight: bolder;
+  //text-align: center;
 }
 
 #launch form{

@@ -1472,12 +1472,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				var $that = $(this);
 				if(!$(this).hasClass('busy')){
 					if ($(this).hasClass('show')){
-						$(this).addClass('busy').removeClass('show').next().hide('blind', {}, 600, function(){
+						$(this).addClass('busy').removeClass('show').next().hide( 600, function(){
 							$that.removeClass('busy');
 						});
 					}
 					else{
-						$(this).addClass('busy show').next().show('blind', {}, 600, function(){
+						$(this).addClass('busy show').next().show(600, function(){
 							$that.removeClass('busy');
 							$that.next().fixLegends();
 						});
@@ -1569,10 +1569,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var type;
 			console.debug('enabling branch');
 
-			branchNode.prev('.jr-branch').hide('slow', function(){$(this).remove();});
+			branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
 			
 			//branchNode.removeAttr('disabled');
-			branchNode.removeClass('disabled').show('blind', {direction: 'up'}, 1000, function(){$(this).fixLegends();} );
+			branchNode.removeClass('disabled').show(1000, function(){$(this).fixLegends();} );
 
 			type = branchNode.prop('nodeName').toLowerCase();
 
@@ -1585,7 +1585,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			console.debug('disabling branch');
 			//add disabled class (to style) and hide
-			branchNode.addClass('disabled').hide(); //HUH??? Hide() DOESN"T WORK WITH PARAMETERS!
+			branchNode.addClass('disabled').hide(1000); //HUH??? Hide() DOESN"T WORK WITH PARAMETERS!
 			//NOTE: DATA IS NOT REMOVED WHICH IS WRONG!
 			
 			//if the branch was previously enabled

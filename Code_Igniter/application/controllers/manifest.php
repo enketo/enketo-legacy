@@ -217,8 +217,13 @@ class Manifest extends CI_Controller {
 			//return $this->_full_url_arr($resources, $base);
 			foreach ($resources as $index => $resource)
 			{
-				$resources[$index] = (strpos($resource, '"') === 0 && strrpos($resource, '"') === strlen($resource)) ?
-					$substr($resource, 1, strlen($resource) - 2) : $resource;
+				log_message('debug', 'resource was: '.$resource);
+				//if (strpos($resource, '"') === 0 && strrpos($resource, '"') === strlen($resource))
+				//{
+					//log_message('debug', 'resource was: '.$resource);
+					$resources[$index] = stripslashes($resource);
+				//	log_message('debug', 'resource is now: '.$resources[$index]);
+				//}
 				if (isset($base)){
 				//foreach ($resources as $index => $resource)
 				//{

@@ -198,13 +198,13 @@ class Manifest extends CI_Controller {
 	private function _get_resources_from_css($path, $base=NULL)
 	{
 		//SMALL PROBLEM: ALSO EXTRACTS RESOURCES THAT ARE COMMENTED OUT
-		//$pattern = '/url\((|\")([^\)]+)(|\")\)/';
-		$pattern = '/url\(([^)]+)\)/';
-		$index = 1; //match of 1st set of parentheses is what we want
+		$pattern = '/url\((|\'|\")([^\)]+)(|\'|\")\)/';///url\(([^)]+)\)/';
+		$index = 2; //match of 1st set of parentheses is what we want
 		return $this->_get_resources($path, $pattern, $index, $base);
 	}
 	
-	// generic function to extract resources from a url based on a given patternhttp://guitb-0.enketo.formhub.net/webform
+	// generic function to extract resources from a url based on a given pattern
+	// only goes one level deep
 	private function _get_resources($url, $pattern, $i, $base=NULL)
 	{
 
@@ -212,31 +212,29 @@ class Manifest extends CI_Controller {
 		
 		if (isset($content))
 		{
+			$this->data['hashes'] .= md5($content);
+
 			preg_match_all($pattern, $content, $result_array);
 			$resources = $result_array[$i];
-			//return $this->_full_url_arr($resources, $base);
+
 			foreach ($resources as $index => $resource)
 			{
-				log_message('debug', 'resource was: '.$resource);
-				//if (strpos($resource, '"') === 0 && strrpos($resource, '"') === strlen($resource))
-				//{
-					//log_message('debug', 'resource was: '.$resource);
-					$resources[$index] = trim($resource, '"');
-					$resources[$index] = trim($resource, "'");
-				//	log_message('debug', 'resource is now: '.$resources[$index]);
-				//}
 				if (isset($base)){
-				//foreach ($resources as $index => $resource)
-				//{
-					$resources[$index] = $base . $resources[$index];
-				//}
+					$resource = $base . $resource;
 				}
-			}
-			//add md5 of content and linked resources in content
-			$this->data['hashes'] .= md5($content);
-			foreach ($resources as $resource)
-			{
-				$this->data['hashes'] .= md5($this->_get_content($resource));
+
+				$content = $this->_get_content($resource);
+				
+				if (!empty($content))
+				{
+					$resources[$index] = $resource;
+					$this->data['hashes'] .= md5($content);
+				}
+				else
+				{
+					log_message('debug', 'resource: '.$resource.' could not be found, removed from manifest.');
+					unset($resources[$index]);
+				}
 			}
 			return $resources;
 		}

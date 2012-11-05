@@ -198,12 +198,13 @@ class Manifest extends CI_Controller {
 	private function _get_resources_from_css($path, $base=NULL)
 	{
 		//SMALL PROBLEM: ALSO EXTRACTS RESOURCES THAT ARE COMMENTED OUT
-		$pattern = '/url\((|\")([^\)]+)(|\")\)/';///url\(([^)]+)\)/';
-		$index = 2; //match of 1st set of parentheses is what we want
+		//$pattern = '/url\((|\")([^\)]+)(|\")\)/';
+		$pattern = '/url\(([^)]+)\)/';
+		$index = 1; //match of 1st set of parentheses is what we want
 		return $this->_get_resources($path, $pattern, $index, $base);
 	}
 	
-	// generic function to extract resources from a url based on a given pattern
+	// generic function to extract resources from a url based on a given patternhttp://guitb-0.enketo.formhub.net/webform
 	private function _get_resources($url, $pattern, $i, $base=NULL)
 	{
 
@@ -214,10 +215,15 @@ class Manifest extends CI_Controller {
 			preg_match_all($pattern, $content, $result_array);
 			$resources = $result_array[$i];
 			//return $this->_full_url_arr($resources, $base);
-			if (isset($base)){
-				foreach ($resources as $index => $resource)
-				{
+			foreach ($resources as $index => $resource)
+			{
+				$resources[$index] = (strpos($resource, '"') === 0 && strrpos($resource, '"') === strlen($resource)) ?
+					$substr($resource, 1, strlen($resource) - 2) : $resource;
+				if (isset($base)){
+				//foreach ($resources as $index => $resource)
+				//{
 					$resources[$index] = $base . $resource;
+				//}
 				}
 			}
 			//add md5 of content and linked resources in content

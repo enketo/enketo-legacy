@@ -2706,6 +2706,8 @@ String.prototype.pad = function(digits){
 				////console.log('type to reset: '+type);
 				switch (type){
 					case 'date':
+					case 'datetime':
+					case 'time':
 					case 'number':
 					case 'search':
 					case 'color':

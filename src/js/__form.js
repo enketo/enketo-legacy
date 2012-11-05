@@ -1940,13 +1940,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//function update(){alert('updating')}
 			$form.find('input[data-type-xml="geopoint"]').each(function(){ //.attr('placeholder', 'Awesome geopoint widget will follow in the future!');
-				var $lat, $lng, $alt, $acc, $button, $map, mapOptions, map, marker, inputVals,
+				var $lat, $lng, $alt, $acc, $search, $button, $map, mapOptions, map, marker, inputVals,
 					$inputOrigin = $(this),
 					$geoWrap = $(this).parent('label');
 				inputVals = $(this).val().split(' ');
 				$geoWrap.addClass('geopoint');
 				
 				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
+					'<input class="geo novalidate" name="search" type="text" placeholder="search"/>'+
 					'<label class="geo">latitude (x.y &deg;)<input class="novalidate" name="lat" type="number" step="0.0001" /></label>'+
 					'<label class="geo">longitude (x.y &deg;)<input class="novalidate" name="long" type="number" step="0.0001" /></label>'+
 					'<label class="geo">altitude (m)<input class="novalidate" name="alt" type="number" step="0.1" /></label>'+

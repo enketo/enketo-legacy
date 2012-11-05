@@ -127,13 +127,13 @@
 					<form onsubmit="return false;" class="form-horizontal">
 						<input name="server_url" type="hidden"/>
 						<input name="form_id" type="hidden"/>
-						<fieldset class="control-group">
+						<fieldset class="control-group input-append">
 							<label class="control-label" for="email">
 								<span>email</span> 
 							</label>
 							<div class="controls">
 								<input id="email" name="email" type="text" placeholder="optional" />
-								<span class="input-append hint" title="Not yet functional. You will receive a confirmation email with the direct link to the survey. In the future your email address will also be used for authentication if you would like to change the settings you are now entering.">?</span>
+								<span class="add-on hint" title="Not yet functional. You will receive a confirmation email with the direct link to the survey. In the future your email address will also be used for authentication if you would like to change the settings you are now entering."><i class="icon-question-sign"></i></span>
 							</div>
 						</fieldset>
 						<!--<label>
@@ -141,13 +141,13 @@
 							<input name="publicize" type="checkbox" value="true"/>make survey visible
 						</label>-->
 						<!--<a class="advanced" href="#" title="advanced options">show advanced options</a>-->
-						<fieldset class="advanced control-group">
+						<fieldset class="advanced control-group input-append">
 							<label class="control-label" for="data_url">
 								<span>data/report url</span>
 							</label>
 							<div class="controls">
 								<input id="email" name="data_url" type="text" placeholder="optional"/>
-								<span class="input-append hint" title="Not yet functional. You can provide an in-app link to where the collated data or reports will be published.">?</span>
+								<span class="add-on hint" title="Not yet functional. You can provide an in-app link to where the collated data or reports will be published."><i class="icon-question-sign"></i></span>
 							</div>
 							<!--<label>submission url<span class="jr-hint">Normally this does not need to and should not be changed.</span><input name="submission_url" type="text"/></label>-->
 						</fieldset>

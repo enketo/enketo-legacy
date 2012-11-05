@@ -81,8 +81,8 @@ class Webform extends CI_Controller {
 				'stylesheets'=> $this->default_stylesheets
 			);
 			$scripts = array_merge($this->default_scripts, array(
-				'libraries/FileSaver.min.js',
-				'libraries/BlobBuilder.min.js'
+				'/libraries/FileSaver.min.js',
+				'/libraries/BlobBuilder.min.js'
 				)
 			);
 
@@ -90,20 +90,20 @@ class Webform extends CI_Controller {
 			{
 				//$this->output->cache(60);
 				$data['scripts'] = array_merge($scripts, array(
-					'js-min/webform-all-min.js'
+					'/js-min/webform-all-min.js'
 				));
 			}
 			else
 			{		
 				$data['scripts'] = array_merge($scripts, array(
-					'js-source/__common.js',
-					'js-source/__storage.js',
-					'js-source/__form.js',
-					'js-source/__connection.js',
-					'js-source/__cache.js',
-					'js-source/__survey_controls.js',
-					'js-source/__webform.js',
-					'js-source/__debug.js'
+					'/js-source/__common.js',
+					'/js-source/__storage.js',
+					'/js-source/__form.js',
+					'/js-source/__connection.js',
+					'/js-source/__cache.js',
+					'/js-source/__survey_controls.js',
+					'/js-source/__webform.js',
+					'/js-source/__debug.js'
 				));
 			}
 			$this->load->view('webform_view', $data);

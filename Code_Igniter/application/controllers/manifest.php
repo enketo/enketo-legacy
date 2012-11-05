@@ -221,7 +221,8 @@ class Manifest extends CI_Controller {
 				//if (strpos($resource, '"') === 0 && strrpos($resource, '"') === strlen($resource))
 				//{
 					//log_message('debug', 'resource was: '.$resource);
-					$resources[$index] = stripslashes($resource);
+					$resources[$index] = trim($resource, '"');
+					$resources[$index] = trim($resource, "'");
 				//	log_message('debug', 'resource is now: '.$resources[$index]);
 				//}
 				if (isset($base)){

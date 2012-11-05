@@ -12,7 +12,9 @@ $bg: #ddd;
 $groupline: #bbbbbb;
 $shadow: #cccccc; /*light gray*/
 $title: #CE4F07;
-$border: #D6E9C6;
+$content_border: #E7E7E7;
+$drawer_border: #D6E9C6;
+
 $pagecolor: #333333;
 /*$inverse: #999999;*/
 
@@ -72,42 +74,45 @@ progress{
   
 .paper{
   /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
-  position: relative;
-  margin: 0 auto;
+//  position: relative;
+//  margin: 0 auto;
   background-color: #fff;
-  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
-  &:before, &:after{
-    position: absolute;
-    width: 40%;
-    height: 10px;
-    content: ' ';
-    left: 12px;
-    bottom: 12px;
-    background: transparent;
-    -webkit-transform: skew(-5deg) rotate(-5deg);
-    -moz-transform: skew(-5deg) rotate(-5deg);
-    -ms-transform: skew(-5deg) rotate(-5deg);
-    -o-transform: skew(-5deg) rotate(-5deg);
-    transform: skew(-5deg) rotate(-5deg);
-    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    z-index: -1;}
-  &:after{
-    left: auto;
-    right: 12px;
-    -webkit-transform: skew(5deg) rotate(5deg);
-    -moz-transform: skew(5deg) rotate(5deg);
-    -ms-transform: skew(5deg) rotate(5deg);
-    -o-transform: skew(5deg) rotate(5deg);
-    transform: skew(5deg) rotate(5deg);}}
+//  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+//  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+//  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+//  &:before, &:after{
+//    position: absolute;
+//    width: 40%;
+//    height: 10px;
+//    content: ' ';
+//    left: 12px;
+//    bottom: 12px;
+//    background: transparent;
+//    -webkit-transform: skew(-5deg) rotate(-5deg);
+//    -moz-transform: skew(-5deg) rotate(-5deg);
+//    -ms-transform: skew(-5deg) rotate(-5deg);
+//    -o-transform: skew(-5deg) rotate(-5deg);
+//    transform: skew(-5deg) rotate(-5deg);
+//    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+//    -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+//    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+//    z-index: -1;}
+//  &:after{
+//    left: auto;
+//    right: 12px;
+//    -webkit-transform: skew(5deg) rotate(5deg);
+//    -moz-transform: skew(5deg) rotate(5deg);
+//    -ms-transform: skew(5deg) rotate(5deg);
+//    -o-transform: skew(5deg) rotate(5deg);
+//    transform: skew(5deg) rotate(5deg);}}
+
+  border-radius: 7px;
+  border: 7px solid $content_border;}
 
 .drawer{
   position: fixed;
   z-index: 15;
-  border: 1px solid $border;
+  border: 1px solid $drawer_border;
   border-radius: 0 4px 4px 0;
   border-color: #aaaaaa;
   -moz-transition: margin 0.8s ease-out;
@@ -243,6 +248,7 @@ label#data-template-show {
   //background-color: $shadow;
   //color: #777;
   display: inline-block;
+  margin-left: 5px;
   //margin: 12px 5px 0 5px;
   //padding: 0 0 0 2px;
   //width: $hwidth;

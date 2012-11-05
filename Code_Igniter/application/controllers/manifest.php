@@ -228,7 +228,7 @@ class Manifest extends CI_Controller {
 				if (isset($base)){
 				//foreach ($resources as $index => $resource)
 				//{
-					$resources[$index] = $base . $resource;
+					$resources[$index] = $base . $resources[$index];
 				//}
 				}
 			}

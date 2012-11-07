@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0008'; //time();
+		private $hash_manual_override = '0011'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -198,32 +198,43 @@ class Manifest extends CI_Controller {
 	private function _get_resources_from_css($path, $base=NULL)
 	{
 		//SMALL PROBLEM: ALSO EXTRACTS RESOURCES THAT ARE COMMENTED OUT
-		$pattern = '/url\(([^)]+)\)/';
-		$index = 1; //match of 1st set of parentheses is what we want
+		$pattern = '/url\((|\'|\")([^\)]+)(|\'|\")\)/';///url\(([^)]+)\)/';
+		$index = 2; //match of 1st set of parentheses is what we want
 		return $this->_get_resources($path, $pattern, $index, $base);
 	}
 	
 	// generic function to extract resources from a url based on a given pattern
+	// only goes one level deep
 	private function _get_resources($url, $pattern, $i, $base=NULL)
 	{
+
 		$content = $this->_get_content($url);
 		
 		if (isset($content))
 		{
+			$this->data['hashes'] .= md5($content);
+
 			preg_match_all($pattern, $content, $result_array);
 			$resources = $result_array[$i];
-			//return $this->_full_url_arr($resources, $base);
-			if (isset($base)){
-				foreach ($resources as $index => $resource)
-				{
-					$resources[$index] = $base . $resource;
-				}
-			}
-			//add md5 of content and linked resources in content
-			$this->data['hashes'] .= md5($content);
-			foreach ($resources as $resource)
+
+			foreach ($resources as $index => $resource)
 			{
-				$this->data['hashes'] .= md5($this->_get_content($resource));
+				if (isset($base)){
+					$resource = $base . $resource;
+				}
+
+				$content = $this->_get_content($resource);
+				
+				if (!empty($content))
+				{
+					$resources[$index] = $resource;
+					$this->data['hashes'] .= md5($content);
+				}
+				else
+				{
+					log_message('debug', 'resource: '.$resource.' could not be found, removed from manifest.');
+					unset($resources[$index]);
+				}
 			}
 			return $resources;
 		}

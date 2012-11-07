@@ -97,7 +97,7 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                     <section class="form-logo">
                         <xsl:text> </xsl:text>
                     </section>
-	                <h2 id="form-title">
+	                <h3 id="form-title">
 	                    <xsl:choose>
                             <xsl:when test="/h:html/h:head/h:title">
                                 <xsl:value-of select="/h:html/h:head/h:title"/>
@@ -106,7 +106,7 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                                 <xsl:text>No Title</xsl:text>
                             </xsl:otherwise>
                         </xsl:choose>
-	                </h2>
+	                </h3>
                     <div id="stats" style="display: none;">
                         <span id="jrSelect"><xsl:value-of select="count(/h:html/h:body//xf:select)"/></span>
                         <span id="jrSelect1"><xsl:value-of select="count(/h:html/h:body//xf:select)"/></span>
@@ -208,9 +208,9 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 </xsl:if>
             </xsl:if>
             <xsl:if test="string(./xf:label/@ref) or string (./xf:label)">
-                <h3>
+                <h4>
                     <xsl:apply-templates select="xf:label" />
-                </h3>
+                </h4>
             </xsl:if>
             <xsl:apply-templates select="*[not(self::xf:label or self::xf:hint)]"/>
             <xsl:text>
@@ -261,9 +261,9 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 </xsl:attribute>
             </xsl:if>
             <xsl:if test="string(./xf:label/@ref) or string (./xf:label)">
-                <h3>
+                <h4>
                     <xsl:apply-templates select="xf:label" />
-                </h3>
+                </h4>
             </xsl:if>
 
             <xsl:apply-templates select="*[not(self::xf:label or self::xf:hint)]"/>

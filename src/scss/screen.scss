@@ -52,7 +52,8 @@ h2, h3, h4 {
   text-align: center;}
 
 progress{
-  text-align: center;}
+  display: block;
+  margin: 10px auto;}
 
 /*:not(.jr) input{
   min-height: 30px;}*/

@@ -171,7 +171,7 @@ class Webform extends CI_Controller {
 
 	    if(!$edit_obj)
 	    {
-	      return show_error("Couldn't find instance for subdomain ". $this->$subdomain . " and
+	      return show_error("Couldn't find instance for subdomain ". $this->subdomain . " and
 	          instance id " . $instance_id, 404);
 	    }
 

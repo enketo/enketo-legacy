@@ -45,7 +45,7 @@ class Webform extends CI_Controller {
 		);
 		$sub = get_subdomain();
 		$suf = $this->Survey_model->ONLINE_SUBDOMAIN_SUFFIX;
-		$this->subdomain = ($this->Survey_model->has_offline_launch_enabled()) ? substr($sub, 0, strlen($sub) - strlen($suf)) : $sub;
+		$this->subdomain = ($this->Survey_model->has_offline_launch_enabled()) ? $sub : substr($sub, 0, strlen($sub) - strlen($suf));
 	}
 
 	public function index()
@@ -315,8 +315,10 @@ class Webform extends CI_Controller {
 	private function _get_edit_obj($instance_id)
 	{
 		$edit_o = $this->Instance_model->get_instance($this->subdomain, $instance_id);
-		$edit_o->instance_xml = addslashes($edit_o->instance_xml);
-
+		if (!empty($edit_o))
+		{
+			$edit_o->instance_xml = addslashes($edit_o->instance_xml);
+		}
 		return (!empty($edit_o->instance_xml) && !empty($edit_o->return_url)) ? $edit_o : NULL;
 	}
 

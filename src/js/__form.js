@@ -1812,7 +1812,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					.addClass('timepicker-default input-small')
 					.after('<span class="add-on"><i class="icon-time"></i></span>')
 					.parent('label').addClass('input-append bootstrap-timepicker-component')
-					.find('input[type="time"]').timepicker({
+					.find('input[type="text"]').timepicker({
 						defaultTime: (curVal.length > 0) ? 'value' : 'current', 
 						showMeridian: false
 					})
@@ -1836,7 +1836,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						'<input class="novalidate input-small" type="text" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
 						'<span class="add-on"><i class="icon-calendar"></i></span></div>'),
 					$fakeTime = $('<div class="input-append bootstrap-timepicker-component">'+
-						'<input class="novalidate timepicker-default input-small" type="time" value="'+timeVal+'"/>'+
+						'<input class="novalidate timepicker-default input-small" type="text" value="'+timeVal+'"/>'+
 						'<span class="add-on"><i class="icon-time"></i></span></div>'),
 					$fakeDateI = $fakeDate.find('input'),
 					$fakeTimeI = $fakeTime.find('input');

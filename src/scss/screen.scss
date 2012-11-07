@@ -10,7 +10,7 @@ $groupline: #bbbbbb;
 $shadow: #cccccc; /*light gray*/
 $title: #CE4F07;
 $content_border: #E7E7E7;
-$drawer_border: #D6E9C6;
+$drawer_border: #aaaaaa;
 $pagecolor: #333333;
 
 @mixin transition-slow{
@@ -107,7 +107,6 @@ progress{
   z-index: 15;
   border: 1px solid $drawer_border;
   border-radius: 0 4px 4px 0;
-  border-color: #aaaaaa;
   -moz-transition: margin 0.8s ease-out;
   -webkit-transition: margin 0.8s ease-out;
   transition: margin 0.8s ease-out;
@@ -349,6 +348,7 @@ label#data-template-show {
   &:not(.active):hover {
     text-decoration: underline; }
   &.active {
+    color: $drawer_border;
     text-decoration: none; } } }
 
 .tab-content #form-languages {

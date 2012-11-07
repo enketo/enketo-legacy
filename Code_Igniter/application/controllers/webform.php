@@ -171,7 +171,7 @@ class Webform extends CI_Controller {
 
 	    if(!$edit_obj)
 	    {
-	      return show_error("Couldn't find instance for subdomain ". $subdomain . " and
+	      return show_error("Couldn't find instance for subdomain ". $this->$subdomain . " and
 	          instance id " . $instance_id, 404);
 	    }
 
@@ -317,7 +317,7 @@ class Webform extends CI_Controller {
 		$edit_o = $this->Instance_model->get_instance($this->subdomain, $instance_id);
 		$edit_o->instance_xml = addslashes($edit_o->instance_xml);
 
-		return (!empty($edit_o->instance_xml) && !empty($edit_o->return_url)) ? $in : NULL;
+		return (!empty($edit_o->instance_xml) && !empty($edit_o->return_url)) ? $edit_o : NULL;
 	}
 
 	//public function update_list()

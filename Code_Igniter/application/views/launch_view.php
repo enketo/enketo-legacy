@@ -163,19 +163,19 @@
 
 	<article id="about" data-title="about this application" class="page">
 		<p>
-		    Enketo facilitates data collection and data entry using an open-source form format (OpenRosa). It is being developed by <a target="_blank" href="http://www.aidwebsolutions.com" title="go to Aid Web Solutions web site"
+		    Enketo facilitates data collection and data entry using an open-source form format (OpenRosa). This free and open-source application is developed by <a target="_blank" href="http://www.aidwebsolutions.com" title="go to Aid Web Solutions web site"
 		    target=_blank> Aid Web Solutions</a> to demonstrate the potential of offline capable
 		    web applications to cope with intermittent Internet connections. 
 		</p>
 		<p>
-		   The Enketo launch area allows survey administrators to test forms and afterwards 'launch' them on a unique URL for actual data entry. The entry component will be offline-capable. The following are the main items left to do for full JavaRosa compatibility:
+		   The Enketo launch area allows survey administrators to test forms and afterwards 'launch' them on a unique URL for actual data entry. The entry component is offline-capable. The following are the main items left to do for full JavaRosa compatibility:
 		</p> 
 		<div class="clearfix">   
 		    <div class="column">
 			    <ul style="line-height: 1.5em">
 			    	<li>support for cascading selections</li>
 			    	<li>itext(path/to/node) support</li>
-			    	<li>widgets</li>
+			    	<li>support for authentication</li>
 			    </ul>
 			</div>
 			<!--<div class="column ui-corner-all ui-helper-clearfix">

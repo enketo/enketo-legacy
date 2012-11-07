@@ -1811,7 +1811,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				var $timeI = $(this),
 					$p = $(this).parent('label'),
 					timeVal = $(this).val(),
-					$fakeTimeI = $('<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'"/>'+
+					$fakeTimeI = $('<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
 						'<span class="add-on"><i class="icon-time"></i></span>');
 				
 				$p.addClass('widget input-append bootstrap-timepicker-component');
@@ -1844,7 +1844,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						'<input class="ignore input-small" type="text" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
 						'<span class="add-on"><i class="icon-calendar"></i></span></div>'),
 					$fakeTime = $('<div class="input-append bootstrap-timepicker-component">'+
-						'<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'"/>'+
+						'<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm"/>'+
 						'<span class="add-on"><i class="icon-time"></i></span></div>'),
 					$fakeDateI = $fakeDate.find('input'),
 					$fakeTimeI = $fakeTime.find('input');

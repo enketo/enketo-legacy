@@ -45,7 +45,8 @@
 		options = $.extend(defaults, options);
 		
 		var select = element,
-			button = $('<button style="width:' + options.width + '" class="dropdown-toggle ' + options.button + '" data-toggle="dropdown">' + options.text($('option:selected', select)) + ' <b class="caret"></b></button>')
+			//ADDED BY MARTIJN: changed button to a and add class btn & clearfix, add href
+			button = $('<a style="width:' + options.width + '" class="btn dropdown-toggle clearfix' + options.button + '" href="#"" data-toggle="dropdown">' + options.text($('option:selected', select)) + ' <b class="caret pull-right"></b></a>')
 				.dropdown(),
 			ul = $('<ul class="dropdown-menu"></ul>'),
 			container = $(options.container)
@@ -80,17 +81,21 @@
 		
 		$('li input[type="checkbox"]', ul).on('change', function(event) {
 			var checked = $(this).attr('checked') || false;
-			
+
 			if (checked) {
 				$(this).parents('li').addClass('active');
 			}
 			else {
 				$(this).parents('li').removeClass('active');
 			}
+			//ADDED BY MARTIJN: .trigger('change');
+			$('option[value="' + $(this).val() + '"]', select).attr('selected', checked).trigger('change');
 			
-			$('option[value="' + $(this).val() + '"]', select).attr('selected', checked);
-			
-			$(button).html(options.text($('option:selected', select)) + ' <b class="caret"></b>');
+			//ADDED BY MARTIJN: pull-right
+			$(button).html(options.text($('option:selected', select)) + ' <b class="caret pull-right"></b>');
+
+			//ADDED BY MARTIJN:
+			return false;
 		});
 		
 		$('li a', ul).on('click', function(event) {

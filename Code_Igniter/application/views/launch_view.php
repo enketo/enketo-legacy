@@ -46,7 +46,7 @@
 			<article id="upload" class="tab-pane paper">
 				<h3 class="ui-widget-header ui-corner-all">JavaRosa XML Form to Load</h3>
 				<form id="upload-form" action="transform/transform_post_jr_form" method="post" enctype="multipart/form-data" accept-charset="utf-8">
-					<progress style="display: none;"></progress>
+					<progress style="display: none;"></progress><br />
 					<div id="input-switcher" class="btn-group" data-toggle="buttons-radio">
 						<a type="button" href="#" id="xml_file" class="btn btn-mini">file</a> 
 						<a type="button" href="#" id="server_url" class="btn btn-mini">url</a>

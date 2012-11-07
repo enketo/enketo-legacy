@@ -1895,7 +1895,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			function update(){
 				$('select[multiple]').removeData('multiselect').siblings('.bootstrap-multiselect').remove();
 				$('select[multiple]').multiselect({
-					container: '<div class="btn-group bootstrap-multiselect" />',
+					container: '<div class="widget btn-group bootstrap-multiselect" />',
 					button: 'btn'
 				});
 				$('select[multiple] ~ .bootstrap-multiselect .caret').addClass('pull-right');
@@ -1940,11 +1940,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//function update(){alert('updating')}
 			$form.find('input[data-type-xml="geopoint"]').each(function(){ //.attr('placeholder', 'Awesome geopoint widget will follow in the future!');
-				var $lat, $lng, $alt, $acc, $search, $button, $map, mapOptions, map, marker, inputVals,
+				var $lat, $lng, $alt, $acc, $search, $button, $map, mapOptions, map, marker, inputVals, searchBox,
 					$inputOrigin = $(this),
 					$geoWrap = $(this).parent('label');
 				inputVals = $(this).val().split(' ');
-				$geoWrap.addClass('geopoint');
+				$geoWrap.addClass('geopoint widget');
 				
 				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
 					'<input class="geo novalidate" name="search" type="text" placeholder="search"/>'+
@@ -1958,9 +1958,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$lng = $geoWrap.find('[name="long"]');
 				$alt = $geoWrap.find('[name="alt"]');
 				$acc = $geoWrap.find('[name="acc"]');
+				$search = $geoWrap.find('[name="search"]');
 				$button = $geoWrap.find('button[name="geodetect"]');
 				
-				$geoWrap.find('input').not($inputOrigin).on('change change.bymap', function(event){
+				$geoWrap.find('input:not([name="search"])').not($inputOrigin).on('change change.bymap change.bysearch', function(event){
 					//console.debug('change event detected');
 					var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
 						lng = ($lng.val() !== '') ? $lng.val() : 0.0, 
@@ -1969,8 +1970,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					//event.preventDefault();
 					$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
 					//console.log(event);
-					if (event.namespace !== 'bymap'){
+					if (event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
 						updateMap(lat, lng);
+					}
+					if (event.namespace !== 'bysearch'){
+						$search.val('');
 					}
 					//event.stopPropagation();
 					return false;
@@ -1982,6 +1986,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//default map view
 				if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
 					updateMap(0,0,1);
+					//searchBox = new google.maps.places.SearchBox($search[0]);
 				}
 
 				if (inputVals[3]) $acc.val(inputVals[3]);
@@ -2003,6 +2008,60 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				if ($(this).val() === ''){
 					$button.click();
 				}
+
+				var geocoder = new google.maps.Geocoder();
+				$search.on('change', function(event){
+					event.stopImmediatePropagation();
+					//console.debug('search field click event');
+					var address = $(this).val();
+					geocoder.geocode(
+				        {
+							'address': address,
+							'bounds' : map.getBounds()
+						}, 
+				        function(results, status) { 
+				            if (status == google.maps.GeocoderStatus.OK) { 
+								$search.attr('placeholder', 'search');
+				                var loc = results[0].geometry.location;
+				                console.log(loc);
+				                updateMap(loc.lat(), loc.lng());
+				                updateInputs(loc.lat(), loc.lng(), null, null, 'change.bysearch'); 
+				            } 
+				            else {
+								$search.val('');
+								$search.attr('placeholder', address+' not found, try something else.');
+				            } 
+				        }
+				    );
+				    return false;
+				});
+
+//				google.maps.event.addListener(searchBox, 'places_changed', function() {
+//					var places = searchBox.getPlaces();
+//					console.log(places);
+//					var markers = [];
+//					var bounds = new google.maps.LatLngBounds();
+//					for (var i = 0, place; place = places[i]; i++) {
+//						var image = new google.maps.MarkerImage(
+//						    place.icon, new google.maps.Size(71, 71),
+//						    new google.maps.Point(0, 0), new google.maps.Point(17, 34),
+//						    new google.maps.Size(25, 25));//
+
+//						var marker = new google.maps.Marker({
+//						  map: map,
+//						  icon: image,
+//						  title: place.name,
+//						  position: place.geometry.location
+//					});//
+
+//					markers.push(marker);//
+
+//					bounds.extend(place.geometry.location);
+//					}//
+
+//					map.fitBounds(bounds);
+//					return false;
+//				});
 
 				/**
 				 * [updateMap description]
@@ -2454,25 +2513,27 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$('form.jr').attr('onsubmit', 'return false;');
 
 		$form.on('change validate', 'input, select, textarea', function(event){ 
-			n = that.input.getProps($(this));
-			//console.debug('change event detected trigger by element with following properties:');
-			//console.debug(n);
+			if ($(this).parents('.widget').length === 0){
+				n = that.input.getProps($(this));
+				//console.debug('change event detected trigger by element with following properties:');
+				//console.debug(n);
 
-			//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
-			if (event.type == 'validate'){
-				//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
-				valid = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
-			}
-			else{
-				valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
-			}
-			
-			console.log('data.set validation returned valid: '+valid);
-			//additional check for 'required'
-			valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
-			console.log('after "required" validation valid is: '+valid);
-			if (typeof valid !== 'undefined' && valid !== null){
-				return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
+				//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
+				if (event.type == 'validate'){
+					//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
+					valid = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
+				}
+				else{
+					valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
+				}
+				
+				console.log('data.set validation returned valid: '+valid);
+				//additional check for 'required'
+				valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
+				console.log('after "required" validation valid is: '+valid);
+				if (typeof valid !== 'undefined' && valid !== null){
+					return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
+				}
 			}
 		});	
 		

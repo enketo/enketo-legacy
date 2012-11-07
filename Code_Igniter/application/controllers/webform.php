@@ -36,7 +36,7 @@ class Webform extends CI_Controller {
 			'/libraries/modernizr.min.js',
 			'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 			'/libraries/vkbeautify.js',
-			"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
+			"http://maps.googleapis.com/maps/api/js?v=3.exp&key=".$this->config->item('google_maps_api_v3_key')."&sensor=false&libraries=places"
 		);
 		$this->default_stylesheets = array
 		(

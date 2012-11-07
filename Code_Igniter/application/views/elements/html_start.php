@@ -4,12 +4,11 @@
 
 <html lang="en" <?= (isset($offline) && $offline) ? 'manifest="manifest"' : '' ?> class="no-js">
 	<head>
-		<!--<title>
-			 enketo - advanced (offline-enabled) web surveys
-		</title>-->
+		<title>
+			<?= (isset($html_title) && strlen($html_title) > 0) ? $html_title : $title_component ?> - enketo
+		</title>
 		
-		
-		<link rel="icon" type="image/png" href="images/favicon.png">
+		<link rel="icon" type="image/png" href="/css/images/favicon.png">
 		
 		<meta charset="utf-8" />
 		<meta name="author" content="Martijn van de Rijdt (Aid Web Solutions)" />

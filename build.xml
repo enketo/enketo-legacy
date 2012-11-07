@@ -71,6 +71,25 @@
 
     </jscomp>
     
+     <jscomp compilationLevel="simple" warning="verbose" 
+            debug="false" output="public/js-min/webform-iframe-all-min.js">
+
+      <externs dir="${basedir}/src/js">
+        <file name="__extern.js"/>
+      </externs>
+
+      <sources dir="${basedir}/src/js">
+        <file name="__common.js"/>
+        <file name="__storage.js"/>
+        <file name="__form.js"/>
+        <file name="__connection.js"/>
+        <file name="__survey_controls.js"/>
+        <file name="__webform_edit.js"/>
+      </sources>
+
+    </jscomp>
+
+
   </target>
 
  <!-- <jsdoctoolkit jsdochome="/path/to/jsdoc_toolkit-1.4.0/" template="sunny" outputdir="/output/dir/">

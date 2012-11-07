@@ -1,0 +1,1212 @@
+@import "compass/reset";
+@font-face{
+  font-family: 'Open Sans';
+  src: local('☺'),
+        url(fonts/OpenSans-Regular.ttf) format('truetype');
+}
+
+/******* COLORS **********/
+$button-bg: #fece2f; /*dark yellow*/
+$highlight-bg: #FFF9E5; /*very light yellow*/
+$header-bg: #817865; /*brown*/
+$header-brdr: #494437; /*dark brown*/
+$header-txt: #ffffff; /*white*/
+$widget-bg: #feeebd; /*yellow*/
+$widget-brdr: #8e846b; /*lighter brown but similar to header-brdr*/
+$error-bg: #d34d17; /*red*/
+$overlay-bg: #5c5c5c; /*darker gray */
+$shadow: #cccccc; /*light gray*/
+$a-hvr: #381f00; /*very dark brown*/
+
+/******* new ********/
+$bg: #ddd;
+$groupline: #bbbbbb;
+$title: #CE4F07;
+
+@mixin paper{
+  /* from http://www.sitepoint.com/pure-css3-paper-curl/ by Craig Buckler */
+  position: relative;
+  /*width: 500px;*/
+  /*z-index: 10;*/
+  padding: 50px;
+  margin: 0 auto;
+  background-color: #fff;
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  &:before, &:after{
+    position: absolute;
+    width: 40%;
+    height: 10px;
+    content: ' ';
+    left: 12px;
+    bottom: 12px;
+    background: transparent;
+    -webkit-transform: skew(-5deg) rotate(-5deg);
+    -moz-transform: skew(-5deg) rotate(-5deg);
+    -ms-transform: skew(-5deg) rotate(-5deg);
+    -o-transform: skew(-5deg) rotate(-5deg);
+    transform: skew(-5deg) rotate(-5deg);
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    z-index: -1;}
+  &:after{
+    left: auto;
+    right: 12px;
+    -webkit-transform: skew(5deg) rotate(5deg);
+    -moz-transform: skew(5deg) rotate(5deg);
+    -ms-transform: skew(5deg) rotate(5deg);
+    -o-transform: skew(5deg) rotate(5deg);
+    transform: skew(5deg) rotate(5deg);}}
+
+/* Bootstrap color schemes */
+@mixin alert{
+  border: 1px solid #EED3D7;
+  color: #B94A48;
+  background-color: #F2DEDE;
+}
+@mixin warning{
+  border: 1px solid #FBEED5;
+  color: #C09853;
+  background-color: #FCF8E3;
+}
+@mixin information{
+  border: 1px solid #BCE8F1;
+  color: #3A87AD;
+  background-color: #D9EDF7;
+}
+@mixin success{
+  border: 1px solid #D6E9C6;
+  color: #468847;
+  background-color: #DFF0D8;
+}
+
+/***************************
+ ****BASIC GUI ELEMENTS ****
+ ***************************/
+
+body, .ui-widget,.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { 
+  font-family: 'Open Sans', Segoe UI, Arial, sans-serif; 
+  font-size: 1.1em;}
+
+p {
+  text-align: left;
+  margin-top: .9em;
+  margin-bottom: 2em;
+  line-height: 1.4em; } 
+
+
+h2, h3, h4 {
+  text-align: center;
+  font-weight: bolder;
+  margin-bottom: 10px;
+  padding: 0 5px; 
+  color: $title;}
+
+ul {
+  list-style: disc;
+  margin-left: 20px; }
+
+strong {
+  font-weight: bold; }
+
+button.close {
+  background: none;
+  border: none; }
+
+.center {
+  text-align: center; }
+
+div[id^="dialog"] p span.ui-icon {
+  float: left;
+  margin: .3em .7em 3em 0; }
+
+
+.capitalize {
+  text-transform: capitalize; }
+
+img.loading {
+  display: block;
+  margin: 15px 0 25px 48%; }
+
+#upload-form img.loading {
+  margin-top: 130px; }
+
+.level-0, .level-1, .info, .success {
+  color: $overlay-bg; }
+
+/*.level-1, .warning{}*/
+
+.level-2, .level-3, .error {
+  color: $error-bg; }
+
+.level-3 {
+  font-weight: bold; }
+
+.component {
+  font-size: 12px; }
+
+/* Tooltip CAN/SHOULD BE REMOVED AFTER JQUERY UI 1.9 PROBABLY
+----------------------------------*/
+
+.ui-tooltip {
+  padding: 8px;
+  position: absolute;
+  z-index: 9999;
+  font-size: 14px;
+  max-width: 50%;
+  -o-box-shadow: 0 0 5px $shadow;
+  -moz-box-shadow: 0 0 5px $shadow;
+  -webkit-box-shadow: 0 0 5px $shadow;
+  box-shadow: 0 0 5px $shadow; }
+
+/* Fades and background-images don't work well together in IE6, drop the image */
+
+* html .ui-tooltip {
+  background-image: none; }
+
+body .ui-tooltip {
+  border-width: 2px; }
+
+.custom-button {
+  height: 18px;
+  width: 19px;
+  border: none;
+  background: none; }
+
+.ui-widget {
+  /*font-size: 90%;*/ }
+
+.custom-button .ui-icon {
+  margin: 1px; }
+
+article.page {
+  display: none; }
+
+/***************************
+ ****      LAYOUT       ****
+ ***************************/
+
+body {
+  background: $bg url(images/tex2res2.png) repeat;
+  
+  /*overflow: hidden;*/ }
+
+#overlay {
+  display: none;
+  background-color: $overlay-bg;
+  position: absolute;
+  z-index: 12;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8; }
+
+header.ui-widget-header {
+  position: absolute;
+  z-index: 30;
+  top: 0px;
+  height: 80px;
+  width: 100%;
+  border-left: none;
+  border-right: none; }
+
+#logo {
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  img {
+    height: 40px; }
+  #component {
+    position: relative;
+    display: inline-block;
+    bottom: 0px;
+    font-size: 0.6em; } }
+
+.ui-widget-header nav {
+  position: absolute;
+  top: 17px;
+  right: 20px;
+  font-size: 1em;
+  padding: 0.2em;
+  zoom: 1;
+  ul {
+    margin: 0;
+    padding: 0.2em 0.2em 0;
+    li {
+      background: none;
+      float: left;
+      list-style: none;
+      margin: 0 0.2em 1px 0;
+      padding: 0;
+      position: relative;
+      top: 1px;
+      white-space: nowrap;
+      border-width: 1px;
+      border-style: solid;
+      border-color: $header-bg;
+      border-bottom: none;
+      a {
+        cursor: pointer;
+        float: left;
+        color: $button-bg;
+        padding: 0.5em 1em;
+        text-decoration: none;
+        &:link, &:visited {
+          cursor: pointer;
+          float: left;
+          padding: 0.5em 1em;
+          text-decoration: none; } }
+      &:hover:not(.nav-state-active) {
+        border-color: $highlight-bg; }
+      &.nav-state-active a {
+        border-color: $header-bg;
+        color: $highlight-bg; } } } }
+
+header {
+  #status {
+    position: absolute;
+    top: 55px;
+    left: 50%;
+    margin-left: -10px;
+    .ui-icon {
+      zoom: 125%;
+      float: left; } }
+  #survey-info {
+    color: $header-brdr;
+    margin-top: 5px;
+    font-weight: 200;
+    font-size: 0.6em;
+    text-align: center;
+    letter-spacing: .4em; } }
+
+.tabs-nohdr {
+  padding: 0;
+  background-image: none;
+  border-width: 0;
+  z-index: 5;
+  .ui-tabs-nav {
+    padding-left: 0;
+    background: $bg url(images/tex2res2.png) repeat;
+    margin-bottom: -1px;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    .ui-state-default{
+      background: none;
+      border: solid 1px $bg;}
+    .ui-state-hover{
+      background: none;
+      border: solid 1px $header-brdr;}
+    .ui-state-active{
+      background: $widget-bg none;
+      border: solid 1px $header-bg;
+      border-bottom-color: $widget-bg;} }
+  .ui-tabs-panel {
+    border-width: 1px 1px 1px 1px; } }
+
+$drawer-width: 300px;
+$tab-width: 18px;
+
+.drawer{
+  @include success;
+  position: fixed;
+  z-index: 15;
+  border-radius: 0 4px 4px 0;
+  border-color: #aaaaaa;
+  -moz-transition: margin 0.8s ease-out;
+  -webkit-transition: margin 0.8s ease-out;
+  transition: margin 0.8s ease-out;
+  font-size: 16px;
+  &.left{
+    bottom: 20%;
+    left: 0;
+    width: $drawer-width;
+    height: 80px;}
+  &.hide{
+    margin-left: $tab-width+2px-$drawer-width;}
+  .content{
+    padding: 20px;  }
+  .handle{
+    z-index: 101;
+    width: $tab-width;
+    height: 100%;
+    border-radius: 0 4px 4px 0;
+    /*background-color: #999999*/;
+    &.hasrecords{
+      /*background-color: #B94A48*/}
+    &.right{
+      float: right;
+      border-left: 3px ridge #ccc;
+      /*border-right: 1px dotted #aaa;*/}}
+  #status{
+    display: inline-block;
+    /*padding-bottom: 10px;
+    height: 1em;*/
+    &.offline{
+      color: red;}
+    &.waiting{
+      color: orange;}}
+  .queue-length{
+      }
+  #status-offline-launch{
+    display: block;
+  }
+  button#drawer-export{
+    display: block;
+  }}
+ 
+#branding{
+  position: fixed;
+  z-index: 0;
+  width: 120px;
+  bottom: 0px;
+  right: 0px;
+  padding: 15px;
+  text-align: center;
+  line-height: 1.3em;
+  color: #666;
+  font-size: 1.1em;
+  a:link, a:hover, a:visited{
+    text-decoration: none;
+    color: #666;}
+  a:hover{
+    color: #444;}}
+
+#bottom-bar{
+  background-color: #444; /*#2B2C30; */
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  border-left: none;
+  border-right: none;
+  background-image: none;
+  bottom: 0px;
+  width: 100%;
+  padding: 10px 0; 
+  #queue{
+    color: #BCBEC0;
+    display: block;
+    text-align: left;
+    width: 160px;
+    text-decoration: none;
+    margin: 0 0 -35px 10px;
+    #queue-length{
+      font-size: 36px;
+      display: block;
+      padding: 0 8px 0 0;
+      float: left; }}}
+
+#form-controls.ui-widget-header {
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  border-left: none;
+  border-right: none;
+  background-image: none;
+  &.right {
+    bottom: 35%;
+    right: 3%;
+    height: auto;
+    width: auto;
+    padding: 10px;
+    border-radius: 8px;
+    /* consistent with theme? */ }
+  &.bottom, &.mobile {
+    bottom: 0px;
+    width: 100%;
+    padding: 10px 0; }
+  button {}
+  &.right button {
+    display: block; }}
+
+#container {
+  position: absolute;
+  top: 80px;
+  width: 100%;
+  overflow: auto; }
+
+.main {
+  padding: 20px;
+  margin-left: auto;
+  margin-bottom: 20px;
+  margin-right: auto;
+  margin-top: 50px;
+  position: relative;
+  /*z-index: 0;*/
+  /*top: 80px;*/
+  display: block;
+  /* align for good browsers */
+  text-align: left;
+  /* counter the body center */ }
+
+article.main .jr {
+  padding: 1.5em;
+  min-height: 300px; }
+
+.main {
+  article {
+    padding: 1.5em;
+    min-height: 300px; }
+  max-width: 720px;
+  &#wrap-collation, &#wrap-charts {
+    max-width: 95%; }
+  ul, ol {
+    /*list-style: disc;*/
+    margin-left: 30px;
+    margin-bottom: 25px; }
+  ul li, ol li {
+    margin: 10px 0; }
+  ul li span.ui-icon, ol li span.ui-icon {
+    float: left;
+    margin-left: -25px; }
+  textarea.source {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    width: 100%;
+    height: 500px;
+    font-size: .8em;
+    padding: 5px; }
+  label#data-template-show {
+    font-size: .8em;
+    float: right;
+    margin: -15px 0 5px 0;
+    input {
+      float: left;
+      margin-right: 8px; } }
+  .ui-tabs-nav li.ui-state-active {
+    /*background: blue;*/ }
+  .ui-widget-header {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 3px 3px 30px 3px; } }
+
+/*#dialog-save{
+  #dialog-save-msg{
+    display: block;}
+  input[type="text"]{
+    display: block;
+    width: 100%;}  
+}*/
+
+.dialog {
+  display: none;
+  line-height: 1.5em;
+  .dialog-msg{
+    display: block;
+    margin-bottom: 5px;}
+  .dialog-error.ui-state-error{
+    display: block;
+    margin-bottom: 15px;}
+  input{
+    width: 100%;
+    display:block;
+    margin-bottom: 20px;}
+  input[type=checkbox]{
+    width: 1em;
+    float: left;
+    &+span{
+      display: block;
+    }
+    &:disabled+span{
+      opacity: 0.5; }}
+  label{
+    display:block;}
+  a.advanced{
+    font-size: 11px;
+    display:block;
+    text-align: center;
+    margin: 10px 0 10px 0;}
+  fieldset.advanced{
+    display:none; }
+  .hint{
+    display: inline-block;}
+  .launch-link{
+    margin: 25px 0 0 0;
+    text-align: center;
+    display: block;
+    font-weight: bold;
+    color: $overlay-bg;
+    font-size: 1.2em;
+    &:hover{
+      color: $header-brdr;}}}
+
+footer.ui-widget {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  font-size: 10px;
+  a {
+    text-decoration: none;
+    color: $overlay-bg; }
+  color: $overlay-bg; }
+
+/***************************
+ ** FEEDBACK BAR & PAGE **
+ ***************************/
+
+#feedback-bar {
+  position: fixed;
+  z-index: 13;
+  top: -35px;
+  /* invisible initially (header top: 80 - #feedback height - #feedback paddingx2)*/
+  width: 100%;
+  min-height: 35px;
+  /* small screens might need multiline feedback */
+  height: auto;
+  border-left: none;
+  border-right: none;
+  p {
+    position: relative;
+    margin: 0 50px;
+    text-align: center;
+    padding: .6em 0;
+    font-size: 0.9em;
+    border-top: 1px #ddd dashed;
+    &:first-child {
+      border-top: none; }
+    .ui-icon {
+      display: inline-block; } }
+  .ui-icon.ui-icon-info {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    margin-top: -8px; } }
+
+#feedback-bar-close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  margin-top: -8px; }
+
+#page.ui-widget-header {
+  position: absolute;
+  z-index: 12;
+  top: -320px;
+  /* invisible initially (header top: 80 - #page height: 340 - #page paddingx2)*/
+  min-height: 250px;
+  width: 100%;
+  background-image: none;
+  /*opacity: 0.8;*/
+  /* causes problem in opera with input form elements */
+  border-left: none;
+  border-right: none; }
+
+.ui-widget-header #page-content {
+  margin: 2em;
+  padding: 3em;
+  border: solid 1px $highlight-bg;
+  font-weight: normal;
+  color: $highlight-bg;
+  background-color: $overlay-bg;
+  -webkit-box-shadow: inset 0 0 8px $header-bg;
+  -moz-box-shadow: inset 0 0 5px $header-bg;
+  -o-box-shadow: inset 0 0 5px $header-bg;
+  box-shadow: inner 0 0 5px $header-bg;
+  p {
+    &:first-child {
+      margin-top: 0; }
+    &:last-child {
+      margin-bottom: 0; } } }
+
+#page {
+  a {
+    color: $button-bg;
+    text-decoration: none;
+    &:link{
+      color: $button-bg; }
+    &:hover, &:focus{
+      text-decoration: underline;
+      color: $highlight-bg;} 
+    &:active {
+      color: $header-txt;
+      text-decoration: none; } }
+  .ui-icon {
+    float: left;
+    margin-right: 10px; } }
+
+#page-close {
+  position: absolute;
+  right: 20px;
+  bottom: 20px; }
+
+#page .column {
+  width: 50%;
+  float: left;
+  height: 100%; }
+
+#settings {
+  h3 {
+    text-align: left; }
+  input {
+    display: block;
+    float: left;
+    margin-right: 10px;
+    margin-left: 0; }
+  label {
+    display: block;
+    margin-bottom: 5px; }
+  ul {
+    margin-left: 0;
+    list-style: none; } }
+
+#records-saved {
+  width: 45%;
+  float: left;
+  /*display: inline;*/
+  /* doesn't make sense right? with float*/
+  h3 {
+    /*margin-left: 30px;*/ }
+  .scroll-list{
+    border-color: white;
+    min-height: 150px;
+    max-height: 300px; 
+    overflow: auto;
+  } }
+
+#form-list{
+  ol{
+    margin: 0px;
+    li {
+      display: block;
+      text-align: center;
+      a{
+        font-size: 12px;
+        width: 100%; } } } }
+
+.scroll-list {
+  position: relative;
+  border: 1px solid; /* white;*/
+  /*width: 100%;
+  height: 100%; */
+  margin: 0;
+  padding: 15px;
+  /*height: 300px;*/ 
+  >div {
+    position: relative;
+    width: 100%;
+    height: 100%; 
+    ol {
+      position: relative;
+      top: 0;
+      left: 0;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      li {
+        list-style: none;
+        margin: 3px;
+        padding: 0.5em;
+        line-height: 1.3em;
+        height: 1em;
+        font-size: 0.8em;
+        overflow: hidden;
+        /* for very long names */
+        .date {
+          font-size: .6em;
+          float: right; }
+        .name {}
+        &.no-click {
+          font-style: italic;
+          text-align: center;
+          margin: 40px; } } } } }
+
+#records-summary {
+  margin: 0;
+  margin-top: 5px;
+  /*padding: 0 15px;
+  width: 100%*/
+  font-size: 0.6em;
+  text-align: center;
+  .ui-icon {
+    display: inline-block;
+    float: none; }
+  .ui-icon-pencil {
+    margin-left: 3em; } }
+
+#records .column {
+  &.middle {
+    width: 10%;
+    height: 100%; }
+  &.right {
+    /*right column of records page*/
+    width: 45%;
+    float: right;
+    text-align: center;
+    margin-top: 30px;
+    margin-right: -10px;
+    /*visual correction due to absence of border, stricly speaking not correct*/ }
+  .ui-icon {
+    display: inline-block;
+    float: none; } }
+
+#records-buttons {
+  /*width: auto;*/
+  margin: 20% auto 5% auto;
+  button {
+    /*float: left;*/ } }
+
+#records-force-upload-info, #records-export-info {
+  display: none;
+  font-size: .8em;
+  margin: 0 2em;
+  line-height: 1.5em; }
+
+#slider-wrap {
+  /*float:left;*/
+  width: 25px;
+  border: 1px solid;
+  margin: 0 auto; }
+
+#slider-vertical {
+  position: relative;
+  height: 100%;
+  background: none; }
+
+.ui-slider-vertical {
+  width: 100%;
+  border: none;
+  .ui-slider-range {
+    background: none;
+    position: absolute;
+    width: 100%; }
+  .ui-slider-handle {
+    /*left: 1px; */
+    left: 0px;
+    margin-left: 0;
+    margin-right: 0;
+    background-image: none;
+    height: 10px;
+    /*margin:0 auto;*/
+    display: block;
+    position: absolute; } }
+
+.ui-slider .ui-slider-handle {
+  width: 23px; }
+
+.ui-slider-handle .ui-state-default {
+  background-image: none; }
+
+/*
+	.scroll-bar {height: 400px;}
+	.scroll-bar-wrap { clear: left; padding: 0 4px 0 2px; margin: 0 1px 1px 50%; height: 400px; width: 2em;}
+	.scroll-bar-wrap .ui-slider { background: none; border:0; width: 2em; /*margin: 0 auto;  }
+	.scroll-bar-wrap .ui-handle-helper-parent { position: relative; width: 100%; height: 100%; /*margin: 0 auto; }
+	.scroll-bar-wrap .ui-slider-handle { top:.2em; width: 1.5em; }
+	.scroll-bar-wrap .ui-slider-handle .ui-icon { margin: -8px auto 0; position: relative; top: 50%; }
+*/
+
+/* these transitions should match */
+
+#feedback-bar, #main, #page {
+  -webkit-transition: all 1s ease-out;
+  -moz-transition: all 1s ease-out;
+  -o-transition: all 1s ease-out;
+  transition: all 1s ease-out; }
+
+/**************************
+****    SURVEY FORM    ****
+**************************/
+
+.jr [lang]:not(.active), .jr-hint {
+  display: none; }
+
+.jr-constraint-msg {
+  &.active {
+    display: block;
+    visibility: hidden;
+    min-height: 1em; }
+  &:not(.active) {
+    display: none; } }
+
+.invalid .jr-constraint-msg.active {
+  visibility: visible;
+  font-weight: bold;
+  font-style: italic;}
+
+.jr-option-translations {
+  display: none; }
+
+.jr h2.ui-widget-header {
+  margin: 0;
+  span{ 
+    display: block;
+    color: $header-brdr;
+    font-size: 10px;
+    line-height: 10px;
+    text-align: right;} }
+
+.question-icons {
+  float: right;
+  margin: -5px -10px 0 0;
+  /*line-height: 15px;*/
+  span {
+    display: inline-block;
+    text-align: right;
+    width: 18px; } }
+
+#form-languages {
+  margin-top: -18px;
+  margin-bottom: 18px;
+  margin-right: 10px;
+  font-size: 0.8em; }
+
+/* correction for when tabs are present */
+
+.ui-tabs-panel #form-languages {
+  margin-top: -35px;
+  margin-bottom: 45px;
+  margin-right: -15px; }
+
+#form-languages a {
+  &:link{
+  float: right;
+  padding-left: 10px;
+  border: none;
+  background: none;
+  font-weight: normal;
+  font-size: .8em;
+  color: $overlay-bg;}
+  &:not(.active):hover {
+    color: $a-hvr;
+    text-decoration: underline; }
+  &.active {
+    color: $a-hvr;
+    text-decoration: none; } }
+
+.form-wrapper{
+  @include paper;
+  margin: 0 0 40px 0;
+  padding: 0;
+  #submit-form, #submit-edited-data{
+    left: 50%;
+    margin: 10px 0 45px -56px;}}
+
+.jr {
+  line-height: 1.1em;  
+  .form-logo img {
+    position: relative;
+    left: 50%;
+    max-height: 200px;
+    width: 120px;
+    margin-left: -60px;
+    margin-bottom: 10px; }
+  h2{
+    text-align: center;
+    font-size: 24px;
+    padding-bottom: 15px;
+    border-bottom: solid 3px #ccc;
+  }
+  h3{
+    text-align: left;  }
+  label, fieldset {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding: 16px 14px; /* */
+    font-weight: bold; }
+  label + label {
+    /*border-top: 1px solid $shadow;*/ }
+  .geopoint{ 
+    height: 350px;
+    .map-canvas{
+      width: 340px;
+      height: 275px; 
+      margin-top: 10px;
+      float: right;
+      border: 1px solid $shadow;}
+    label{
+      border: none;
+      padding: 5px 0;}
+    button{
+      width: 130px;
+      margin-top: 10px;}}
+  fieldset:not(#jr-preload-items):not(.jr-group) + {
+    label, fieldset:not(.jr-group) {
+      /*border-top: 1px solid $shadow;*/ } }
+  label + fieldset:not(.jr-group) {
+    /*border-top: 1px solid $shadow;*/ }
+  span.repeat-number {
+    height: 2em;
+    display: block;
+    float: right;
+    margin-right: -8px;
+    margin-top: -8px;
+    color: $shadow; }
+  legend {
+    position: absolute;
+    top: 1.5em;
+    font-weight: bold;
+    ~ label {
+      border-top: none;
+      padding: .5em 0 .5em 0;
+      margin-left: 25px;
+      font-weight: normal; }
+    + label {
+      margin-top: 25px; } }
+  fieldset {
+    position: relative;
+    &.jr-group {
+      border-top: 2px solid $groupline; /**/
+      margin: .5em 0; }
+    &.jr-repeat {
+      border: 1px dotted $shadow;} }
+  label, legend, .trigger {
+    font-size: .8em; }
+  input, textarea {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    display: block;
+    margin: 8px 0 0 0;
+    font-size: .9em;
+    &[type="text"] {
+      width: 100%; }
+    &[type=date], &[type=number], &[type=email], &[type=password] {
+      width: 130px;
+      text-align: right; }
+    &[type=radio], &[type=checkbox] {
+      display: block;
+      /*****/
+      float: left;
+      /*****/
+      margin-top: 5px;
+      /****/
+      /*compensates for the label margin, fixes multi-line labels */
+      margin-left: -25px; } }
+  textarea{
+    width: 100%;
+    min-height: 5em;}
+  select {
+    display: block; }
+  fieldset {
+    .ui-button {
+      width: 27px;
+      height: 27px;
+      margin-top: 6px; }
+    .one-more {
+      margin: 0 -34px -5px 10px; }
+    .remove {
+      float: right;
+      margin-right: 0; } }
+  .trigger {
+    @include warning;
+    padding: 7px 12px;
+    margin: 1em 0; }
+  .required{
+    margin-left: 3px;
+    color: $title;}
+  .jr-appearance-page-break{
+    display: none;}} 
+
+
+label.with-media {
+  margin-top: 5px; }
+
+.with-media>span.active {
+  display: block;
+  width: 100%; }
+
+label.with-media {
+  img, video, audio {
+    max-width: 45%;
+    padding-right: 5%;
+    display: block;
+    float: right; } }
+
+.with-media input {
+  float: left;
+  width: 5%;
+  margin-top: -17px; }
+
+
+input, .fakefileinput, textarea {
+  background-color: $header-txt;
+  border: 2px solid $shadow;
+  min-height: 30px; }
+
+.jr-appearance-compact label {
+  display: inline;
+  span {
+    display: none; }
+  img {
+    float: left;
+    width: 120px;
+    height: 120px;
+    padding: 5px;
+    margin-top: 25px; }
+  input {
+    &[type=radio], &[type=checkbox] {
+      /*display: none;*/
+      margin-top: 35px; } } }
+
+.jr-branch {
+  border-top: 1px solid $shadow;
+  border-bottom: 1px solid $shadow;
+  background-color: $shadow;
+  height: 8px;
+  text-align: center;
+  margin: 10px 0;
+  opacity: 0.5; }
+
+.disabled {
+  /*color: $shadow*/
+  opacity: 0.5; }
+
+#upload form{
+  text-align: center;
+  label {
+    position: absolute;
+    top: 120px;
+    left: 5%;
+    text-align: center;
+    margin-top: 20px;
+    padding: 0 5%;
+    display: block;
+    z-index: 0;
+    width: 80%; }
+  label>span {
+    display: block; }
+  input, .fakefileinput {
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    display: block;
+    width: 99%;
+    margin: 10px 0 30px 0;
+    height: 30px;
+    padding: 1px;
+    font-size: .9em;
+    text-align: center; }
+  input[type=file] {
+    /*height: 0px;
+    width: 0px;
+    overflow: hidden;*/
+    z-index: 5;
+    opacity: 0; }
+  .hurry{
+    margin-top: 180px;
+    }
+  :not(#form-list) a {
+    &:link{
+    padding: 0 10px;
+    font-size: 13px;
+    background: none;
+    border: none;
+    text-decoration: none; 
+    color: $overlay-bg;}
+    &:hover{
+      font-weight: normal;}
+    &:not(.active):hover {
+      color: $a-hvr;
+      text-decoration: underline; }
+    &.active {
+      color: $header-bg;
+      text-decoration: none; } } }  
+
+.ui-datepicker {
+  margin-left: -270px;
+  margin-top: -100px;
+  font-size: 80%; }
+
+/* css for multi-select addon */
+
+button.ui-multiselect {
+  display: block; }
+
+.ui-multiselect {
+  padding: 2px 0 2px 4px;
+  text-align: left;
+  span.ui-icon {
+    float: right; } }
+
+.ui-multiselect-single .ui-multiselect-checkboxes {
+  input {
+    position: absolute !important;
+    top: auto !important;
+    left: -9999px; }
+  label {
+    padding: 5px !important; } }
+
+.ui-multiselect-header {
+  margin-bottom: 3px;
+  padding: 3px 0 3px 4px;
+  ul {
+    font-size: 0.9em;
+    li {
+      float: left;
+      padding: 0 10px 0 0; } }
+  a {
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline; } }
+  span.ui-icon {
+    float: left; }
+  li.ui-multiselect-close {
+    float: right;
+    text-align: right;
+    padding-right: 0; } }
+
+.ui-multiselect-menu {
+  display: none;
+  padding: 3px;
+  position: absolute;
+  z-index: 20; }
+
+.ui-multiselect-checkboxes {
+  position: relative;
+  overflow-y: scroll;
+  label {
+    cursor: default;
+    display: block;
+    border: 1px solid transparent;
+    padding: 3px 1px;
+    input {
+      position: relative;
+      top: 1px; } }
+  li {
+    clear: both;
+    font-size: 0.9em;
+    padding-right: 3px;
+    &.ui-multiselect-optgroup-label {
+      text-align: center;
+      font-weight: bold;
+      border-bottom: 1px solid;
+      a {
+        display: block;
+        padding: 3px;
+        margin: 1px 0;
+        text-decoration: none; } } } }
+
+/* remove label borders in IE6 because IE6 does not support transparency */
+
+* html .ui-multiselect-checkboxes label {
+  border: none; }
+
+/* css for timepicker */
+
+.ui-timepicker-div {
+  .ui-widget-header {
+    margin-bottom: 8px; }
+  dl {
+    text-align: left;
+    dt {
+      height: 25px;
+      margin-bottom: -25px; }
+    dd {
+      margin: 0 10px 10px 65px; } }
+  td {
+    font-size: 90%; } }
+
+.ui-tpicker-grid-label {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0; }
+

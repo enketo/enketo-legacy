@@ -67,15 +67,12 @@ GUI.prototype.init = function(){
 	$('footer').detach().appendTo('#container');
 	//this.nav.reset();
 	this.display();
-
-
 };
 
 GUI.prototype.setup = function(){
 	"use strict";
 	// final setup of GUI object
 	$(window).trigger('resize');
-	$('.ui-corner-all').removeClass('ui-corner-all'); //TEMPORARY
 };
 	
 /**
@@ -85,19 +82,16 @@ GUI.prototype.setEventHandlers = function(){
 	"use strict";
 	var that=this;
 	
-	// close 'buttons' on page and feedback bar
-	$('#feedback-bar-close').button({'icons':{'primary': "ui-icon-closethick"}, 'text': false})
+	$('#feedback-bar .close')
 		.click(function(event){
 			event.preventDefault();
 			that.hideFeedback();
 		});
-	$('#page-close').button({'icons':{'primary': "ui-icon-closethick"}, 'text': false})
-		.click(function(event){
-			event.preventDefault();
-			that.pages().close();
-		});
-	// override style of some buttons and give them a 'custom-button class'
-	$('#feedback-bar-close, #page-close').removeClass().addClass('custom-button ui-widget-header ui-corner-all');
+
+	$('#page a.close').click(function(event){
+		event.preventDefault();
+		that.pages().close();
+	});
 	
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
 	$(document).on('click', 'a[href^="#"]:not([href="#"]):not(nav ul li a)', function(event){
@@ -116,8 +110,8 @@ GUI.prototype.setEventHandlers = function(){
 			event.preventDefault();
 			var targetPage = $(this).attr('href').substr(1);
 			that.pages().open(targetPage);
-			$(this).closest('li').addClass('nav-state-active');//.css('border-color', headerBorderColor);
-			//$(this).css('color', headerHighlightColor);
+			$(this).closest('li').addClass('active');
+			//$(this).closest('li').addClass('nav-state-active');//.css('border-color', headerBorderColor);
 		});
 	
 	// handlers for status icons in header
@@ -166,17 +160,17 @@ GUI.prototype.setEventHandlers = function(){
 		//	.css('height',$('#form-controls').height()).css('top', $('header').outerHeight()+$('#container').outerHeight());
 		
 		// hide logo if the navigation menu starts overlapping
-		if ($('nav').length > 0){
+		/*if ($('nav').length > 0){
 			var navLeft = $('nav').offset().left;
-			var logoRight = $('#logo').offset().left+$('#logo').outerWidth();
+			var logoRight = $('.brand').offset().left+$('.brand').outerWidth();
 			//console.log('nav left:'+navLeft+' logo right:'+logoRight); // DEBUG
 			if (navLeft < logoRight){
-				$('#logo').css('visibility', 'hidden');
+				$('.brand').css('visibility', 'hidden');
 			}
 			else {
-				$('#logo').css('visibility', 'visible');
+				$('.brand').css('visibility', 'visible');
 			}
-		}
+		}*/
 	});
 };
 	
@@ -198,14 +192,14 @@ GUI.prototype.nav = {
 				link = $(this).attr('data-ext-link');
 			}
 			else link = '#'+id;
-			$('<li class="ui-corner-tl ui-corner-tr"><a href="'+link+'" title="'+title+'" >'+display+'</a></li>')
+			$('<li class=""><a href="'+link+'" title="'+title+'" >'+display+'</a></li>')
 				.appendTo($('nav ul'));
 		
 		});
 	},
 	reset : function(){
 		"use strict";
-		$('nav ul li').removeClass('nav-state-active');//.css('border-color', headerBackgroundColor);
+		$('nav ul li').removeClass('active');//.css('border-color', headerBackgroundColor);
 		//$('nav ul li a').css('color', buttonBackgroundColorDefault);
 	}
 };
@@ -259,19 +253,19 @@ GUI.prototype.pages = function(){
 			this.close();
 		}
 			
-		$('#page-content').prepend($page.show()).trigger('change');
-		$('#overlay').show();
+		$('#page .content').prepend($page.show()).trigger('change');
+		//$('#overlay').show();
 
 		//for some reason, the scrollbar needs to be added after a short delay (default duration of show() maybe)
 		//similarly adding the event handler needs to be done a delay otherwise it picks up an even(?) instantly
 		//addScrollBar should be called each time page loads because record list will change
-		setTimeout(function(){
+		/*setTimeout(function(){
 			$page.find('.scroll-list').addScrollBar();
 			$('#overlay, header').bind('click.pageEvents', function(){
 				//triggers a click of the page close button
 				$('#page-close').trigger('click');
 			});
-		}, 50);
+		}, 50);*/
 		
 		// if the page is visible as well as the feedbackbar the display() method should be called if the window is resized
 		$(window).bind('resize.pageEvents', function(){
@@ -346,36 +340,33 @@ GUI.prototype.hideFeedback = function(){
  * @param {string=} heading
  * @param {string=} icon css class of icon
  */
-GUI.prototype.alert = function(message, heading, icon){
+GUI.prototype.alert = function(message, heading, level){
 	"use strict";
-	var closeFn,
+	var closeFn, cls,
 		$alert = $('#dialog-alert');
 
 	heading = heading || 'Alert';
-	icon = icon || 'ui-icon-alert';
-
-	$alert.find('p .ui-icon:eq(0)').removeClass().addClass('ui-icon '+icon);
-	//to call when dialog closes
-	closeFn = function(){
-		$alert.dialog('destroy');
-		$alert.find('#dialog-alert-msg').text('');
-		//console.log('alert dialog destroyed');
-	};
+	level = level || 'error';
+	cls = (level === 'normal') ? '' : 'alert alert-block alert-'+level;
 
 	//write content into alert dialog
-	$alert.find('#dialog-alert-msg').html(message).capitalizeStart();
+	$alert.find('.modal-header h3').text(heading);
+	$alert.find('.modal-body p').removeClass().addClass(cls).html(message).capitalizeStart();
 
-	$alert.dialog({
-		'title': heading,
-		'modal': true,
-		'resizable': false,
-		'closeOnEscape': true,
-		'buttons': {
-			"Ok": closeFn
-		},
-		'beforeClose': closeFn,
-		'width': 500
+	$alert.modal({
+		keyboard: true,
+		show: true
 	});
+
+	$alert.on('hidden', function(){
+		$alert.find('.modal-header h3, .modal-body p').html('');
+	});
+
+	/* sample test code (for console):
+	
+		gui.alert('What did you just do???', 'Obtrusive alert dialog');
+
+	 */
 };
 	
 /**
@@ -387,21 +378,21 @@ GUI.prototype.alert = function(message, heading, icon){
  *                                                         also an object with parameters msg, heading and errorMsg.
  *   @param {Object=} choices - [type/description]
  */
-GUI.prototype.confirm = function(text, choices){
+GUI.prototype.confirm = function(texts, choices){
 	"use strict";
 	var msg, heading, errorMsg, closeFn, dialogName, $dialog;
 	
-	if (typeof text === 'string'){
-		msg = text;
+	if (typeof texts === 'string'){
+		msg = texts;
 	}
-	else if (typeof text.msg === 'string'){
-		msg = text.msg;
+	else if (typeof texts.msg === 'string'){
+		msg = texts.msg;
 	}
 	
 	msg = (typeof msg !== 'undefined') ? msg : 'Please confirm action';
-	heading = (typeof text.heading !== 'undefined') ? text.heading : 'Are you sure?';
-	//errorMsg = (typeof text.errorMsg !== 'undefined') ? text.errorMsg : '';
-	dialogName = (typeof text.dialog !== 'undefined') ? text.dialog : 'confirm';
+	heading = (typeof texts.heading !== 'undefined') ? texts.heading : 'Are you sure?';
+	errorMsg = (typeof texts.errorMsg !== 'undefined') ? texts.errorMsg : '';
+	dialogName = (typeof texts.dialog !== 'undefined') ? texts.dialog : 'confirm';
 	choices = (typeof choices !== 'undefined') ? choices : {};
 	choices.posButton = choices.posButton || 'Confirm';
 	choices.negButton = choices.negButton || 'Cancel';
@@ -409,49 +400,62 @@ GUI.prototype.confirm = function(text, choices){
 	choices.negAction = choices.negAction || function(){return false;};
 	choices.beforeAction = choices.beforeAction || function(){};
 
-	closeFn = function(){
-		$dialog.dialog('destroy');
-		$dialog.find('.dialog-msg, .dialog-error').text('');
-		console.debug('dialog destroyed');
-		//choices.afterAction.call();
-	};
-
 	$dialog = $('#dialog-'+dialogName);
 	
 	//write content into confirmation dialog
-	$dialog.find('.dialog-msg').html(msg).capitalizeStart();
-	//$dialog.find('.dialog-error').text(errorMsg).capitalizeStart();
+	$dialog.find('.modal-header h3').text(heading);
+	$dialog.find('.modal-body .msg').html(msg).capitalizeStart();
+	$dialog.find('.modal-body .alert-error').html(errorMsg);
 
 	//instantiate dialog
-	$dialog.dialog({
-		'open': choices.beforeAction,
-		'title': heading,
-		'resizable': false,
-		'modal': true,
-		'closeOnEscape': true,
-		'buttons': [
-			{
-				text: choices.posButton,
-				click: function(){
-					choices.posAction.call();
-					//console.log('error text: '+$dialog.find('.dialog-error').text());
-					if ($dialog.find('.dialog-error').text().length === 0){
-						closeFn.call();
-					}
-				}
-			},
-			{
-				text: choices.negButton,
-				click: function(){
-					choices.negAction.call();
-					closeFn.call();
-				}
-			}
-		],
-		'width': 500,
-		'beforeClose': closeFn
+	$dialog.modal({
+		keyboard: true,
+		show: true
 	});
 
+	//set eventhanders
+	$dialog.on('shown', function(){
+		choices.beforeAction.call();
+	});
+
+	$dialog.find('button.positive').on('click', function(){
+		choices.posAction.call();
+		$dialog.modal('hide');
+	}).text(choices.posButton);
+
+	$dialog.find('button.negative').on('click', function(){
+		choices.negAction.call();
+		$dialog.modal('hide');
+	}).text(choices.negButton);
+
+	$dialog.on('hide', function(){
+		//remove eventhandlers
+		$dialog.off('shown hidden hide');
+		$dialog.find('button.positive, button.negative').off('click');
+	});
+
+	$dialog.on('hidden', function(){
+		$dialog.find('.modal-body .msg, .modal-body .alert-error, button').text('');
+		//console.debug('dialog destroyed');
+	});
+
+	/* sample test code (for console):
+
+		gui.confirm({
+			msg: 'This is an obtrusive confirmation dialog asking you to make a decision',
+			heading: 'Please confirm this action',
+			errorMsg: 'Oh man, you messed up big time!'
+		},{
+			posButton: 'Confirmeer',
+			negButton: 'Annuleer',
+			posAction: function(){console.log('you just did something positive!')},
+			negAction: function(){console.log('you did something negative')},
+			beforeAction: function(){console.log('doing some preparatory work')}
+		})
+
+		gui.confirm('confirm this please');
+
+	 */
 };
 	
 GUI.prototype.updateStatus = {

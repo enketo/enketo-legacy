@@ -142,34 +142,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	this.isValid = function(){
 		return form.isValid();
 	};
-
-	//odd function to modify date strings (et. al.?) just before they are submitted or exported
-	this.prepareForSubmission = function(dataStr){
-		var name, value,
-			formData = new DataXML(dataStr); //$($.parseXML(dataStr));
-		//console.debug(formData.);
-		//convert dates
-		$form.find('[data-type-xml="date"], [data-type-xml="dateTime"]').each(function(){
-			name = $(this).attr('name');
-			//console.debug('found date element with name: '+name);
-			formData.node(name).get().each(function(){
-				console.debug('found date DATA node with name: '+name);
-				value = $(this).text().trim();
-				if (value.length > 0){
-					console.debug('converting date string: '+value);
-					value = new Date(value).toJrString();
-					//console.debug('jrDateString: '+value);
-					//bypassing validation & conversion of Nodeset sub-class
-					$(this).text(value);
-				}
-			});
-		});
-
-		$form.find('[type="time"]').each(function(){
-
-		});
-		return formData.getStr(false, true);
-	};
 	
 /**
  * Function: DataXML
@@ -447,7 +419,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$form.trigger('dataupdate', dataNode.prop('nodeName') );
 			}
 			else {
-				console.error('could not find node '+this.selector+' with index '+this.index+ 'to remove ');
+				console.error('could not find node '+this.selector+' with index '+this.index+ ' to remove ');
 			}
 		};
 
@@ -520,22 +492,26 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}, 
 			'date' : {
 				validate : function(x){
+					var pattern = (/([0-9]{4})([\-]|[\/])([0-9]{2})([\-]|[\/])([0-9]{2})/),
+						segments = pattern.exec(x);
+
 					//console.debug('datestring: '+x+ ' type: '+ typeof x + 'is valid? -> '+new Date(x.toString()).toString());
-					return ( new Date(x).toString() !== 'Invalid Date' );
+					//return ( new Date(x).toString() !== 'Invalid Date' || new Date(x+'T00:00:00.000Z') !== 'Invalid Date');
+					return (segments && segments.length === 6) ? (new Date(Number(segments[1]), Number(segments[3]) - 1, Number(segments[5])).toString() !== 'Invalid Date') : false;
 				},
 				convert : function(x){
-					var date, segments,
-						pattern = /([0-9]{4})([\-]|[\/])([0-9]{2})([\-]|[\/])([0-9]{2})/;
-					segments = (pattern.exec(x));
-					//the 'flaw' in the code below is that "2012-02-30" will return a valid date of 2012-03-02
-					//this way of instantiating the date object (New Date(y,m,d)) is nevertheless preferred in order for it 
-					//to work in the Rhino engine and the webkit engine in PhantomJasmine
-					if (segments && Number(segments[1]) > 0 && Number(segments[3]) >=0 && Number(segments[3]) < 12 && Number(segments[5]) < 32){
-						date = new Date(Number(segments[1]), (Number(segments[3])-1), Number(segments[5]));
+					var pattern = /([0-9]{4})([\-]|[\/])([0-9]{2})([\-]|[\/])([0-9]{2})/,
+						segments = pattern.exec(x),
+						date = new Date(x);
+					if (new Date(x).toString() == 'Invalid Date'){
+						//this code is really only meant for the Rhino and PhantomJS engines, in browsers it may never be reached
+						if (segments && Number(segments[1]) > 0 && Number(segments[3]) >=0 && Number(segments[3]) < 12 && Number(segments[5]) < 32){
+							date = new Date(Number(segments[1]), (Number(segments[3])-1), Number(segments[5]));
+						}
 					}
-					else date = new Date(x);
-					date.setUTCHours(0,0,0,0);
-					return date.toUTCString();//.getUTCFullYear(), datetime.getUTCMonth(), datetime.getUTCDate());
+					//date.setUTCHours(0,0,0,0);
+					//return date.toUTCString();//.getUTCFullYear(), datetime.getUTCMonth(), datetime.getUTCDate());
+					return date.getUTCFullYear().toString().pad(4)+'-'+(date.getUTCMonth()+1).toString().pad(2)+'-'+date.getUTCDate().toString().pad(2);
 				}
 			},
 			'datetime' : {
@@ -544,22 +520,22 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return ( new Date(x.toString()).toString() !== 'Invalid Date');
 				},
 				convert : function(x){
-					var date, timezone, segments, dateS, timeS,
-						pattern = /([0-9]{4}\-[0-9]{1,2}\-[0-9]{1,2})([T]|[\s])([0-9:.]+)([0-9+\-]*)/;
+					var date,// timezone, segments, dateS, timeS,
+						patternCorrect = /([0-9]{4}\-[0-9]{2}\-[0-9]{2})([T]|[\s])([0-9]){2}:([0-9]){2}([0-9:.]*)(\+|\-)([0-9]{2}):([0-9]{2})$/,
+						patternAlmostCorrect = /([0-9]{4}\-[0-9]{2}\-[0-9]{2})([T]|[\s])([0-9]){2}:([0-9]){2}([0-9:.]*)(\+|\-)([0-9]{2})$/;  
 					//console.debug('datetime conversion function received: '+x+' type:'+ typeof x);
-					if (pattern.test(x)){
-						segments = pattern.exec(x);
-						dateS = segments[1].split('-');
-						timeS = segments[3].split(':');
-						timeS[2] = (timeS[2]) ? timeS[2].split('.')[0] : 0; //ignores milliseconds
-						timezone = Number(segments[4]);
-						timeS[0] = (Number(timeS[0])+timezone).toString(); 
-
-						return new Date(Date.UTC(
-							Number(dateS[0]), Number(dateS[1])-1, Number(dateS[2]), Number(timeS[0]), 
-							Number(timeS[1]), Number(timeS[2]))).toUTCString();
+					/* 
+					 * if the pattern is right, or almost right but needs a small correction for JavaScript to handle it,
+					 * do not risk changing the time zone by calling toISOLocalString()
+					 */
+					if (new Date(x).toString() !== 'Invalid Date' && patternCorrect.test(x)){
+						return x;
 					}
-					return new Date(x).toUTCString();
+					if (new Date(x).toString() == 'Invalid Date' && patternAlmostCorrect.test(x)){
+						return x+':00';
+					}
+					date = new Date(x);
+					return (date.toString() !== 'Invalid Date') ? date.toISOLocalString() : date.toString();
 				}
 			},
 			'time' : {
@@ -656,12 +632,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
-		console.debug('loading instance values to be edited');
+		//console.debug('loading instance values to be edited');
 
 		nodesToLoad = instanceOfDataXML.node(null, null, filter).get();
 		
-		console.debug(nodesToLoad.length+' nodes found in data to be edited: ');
-		console.debug(nodesToLoad);
+		//console.debug(nodesToLoad.length+' nodes found in data to be edited: ');
+		//console.debug(nodesToLoad);
 
 		//first empty all form data nodes, to clear any default values except those inside templates
 		this.node(null, null, filter).get().each(function(){
@@ -671,19 +647,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		nodesToLoad.each(function(){
 			var name = $(this).prop('nodeName');
-			console.debug(name);
+			//console.debug(name);
 			path = form.generateName($(this));
-			console.debug('path: '+path);
+			//console.debug('path: '+path);
 			index = instanceOfDataXML.node(path).get().index($(this));
-			console.debug('index: '+index);
+			//console.debug('index: '+index);
 			value = $(this).text();
-			console.debug('value: '+value);
+			//console.debug('value: '+value);
 
 			//input is not populated in this function, so we take index 0 to get the XML data type
 			$input = $form.find('[name="'+path+'"]').eq(0);
 			
 			xmlDataType = ($input.length > 0) ? form.input.getXmlType($input) : 'string';
-			
+			//console.debug('xml datatype: '+xmlDataType);
 			target = that.node(path, index);
 			$target = target.get();
 
@@ -714,14 +690,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			}
 			else if ($(this).parent('meta').length === 1){
-					//if (that.get().children().eq(0).children('meta').length === 0){
-					//	meta = document.createElement('meta');
-					//	that.get().children().eq(0).append(meta);
-					//}
-					console.debug('cloning this direct child of <meta>:');
-					console.debug($(this).clone());
-					//metaChild = document.createElement(name);
-					//that.node('meta').get().append(metaChild).text(value);
+					//console.debug('cloning this direct child of <meta>:');
+					//console.debug($(this).clone());
 					$(this).clone().appendTo(that.get().children().eq(0).children('meta'));
 			}
 			else {
@@ -877,13 +847,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		if (incTempl === false){
 			$dataClone.find('[template]').remove();
-			////console.log('removed templates');
 		}
 		if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
 			$dataClone.children().eq(0).attr('xmlns', this.namespace);
 		}
-		////console.debug('dataClone in getStr:');
-		////console.debug($dataClone);
+
 		dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
 
 		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE NAMESPACE FROM STRING (AGAIN), BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
@@ -991,12 +959,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
-		////console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
+		//console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
 		//result = evaluator.evaluate(expr, context.documentElement, null, resultType, null);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
-			////console.log('evaluated: '+expr+' to: '+(result[resultTypes[type][1]] || 'resultnode(s)'));
-			////console.log(result); //NOTE THAT THIS USE OF THE CONSOLE THROWS AN ERROR IN FIREFOX when using native XPath!
+			//console.log('evaluated: '+expr+' to: '+(result[resultTypes[type][1]] || 'resultnode(s)'));
+			//console.log(result); //NOTE THAT THIS USE OF THE CONSOLE THROWS AN ERROR IN FIREFOX when using native XPath!
 			if (resTypeNum === 0){
 				for (resTypeNum in resultTypes){
 					resTypeNum = Number(resTypeNum);
@@ -1054,8 +1022,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	}
 
 	FormHTML.prototype.init = function(){
-		var icons, name, required;
-		//console.debug ('initializing HTML form');
+		var name, $required, $hint;
 
 		this.checkForErrors();
 
@@ -1063,32 +1030,33 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 		
-		icons = '<div class="question-icons"><span class="required"></span><span class="hint"></span></div>';
-		
-		//append icons
-		$form.find('label>input[type="checkbox"], label>input[type="radio"]').parent().parent('fieldset').prepend(icons);
-		$form.parent().find('label>select, label>textarea, :not(#jr-preload-items, #jr-calculated-items)>label>input')//, form>label>input')
-			.not('[type="checkbox"], [type="radio"]').parent().prepend(icons);
+		//add 'required field' and 'hint'
+		$required = '<span class="required">*</span>';//<br />';
+		$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
 
-		//this.input.getWrapNodes($form.parent().find('fieldset:not(#jr-preload-items, #jr-calculated-items) input, select, textarea'))
-		//	.prepend(icons);	
-
-		//add 'required field' clue
-		required = '<span class="required">*</span>';
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
-			.find('legend:eq(0)').append(required);
-			//.find('.question-icons .required').addClass('ui-icon ui-icon-notice');
+			.find('legend:eq(0)').append($required);
 		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
 			.not('[type="checkbox"], [type="radio"]').parent()
 			.each(function(){
-				$(this).children('span:not(.jr-option-translations):last').after(required);
+				$(this).children('span:not(.jr-option-translations):last').after($required);
 			});
-			//.find('.question-icons .required').addClass('ui-icon ui-icon-notice');
 
-		//this.input.getWrapNodes($form.find('[required]')).find('.question-icons .required').text('*');
 
-		//groups of radiobuttons needs to have the same name which referes to the xpath in instance
-		//when a radio button is clone this will cause a problem. Therefore radiobuttons store their xpath in data-name.
+		//add 'hint' icon
+		//$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea')
+		//	.after($hint);
+		$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea').before($hint);
+		$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
+
+		$form.find('select, input:not([type="checkbox"], [type="radio"]), textarea').before($('<br/>'));
+
+		/*
+			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
+			Repeated radiobuttons would all have the same name which means they wouldn't work right.
+			Therefore, radiobuttons store their path in data-name instead and cloned repeats will add a 
+			different name attribute.
+		 */
 		$form.find('input[type="radio"]').each(function(){
 			name = /**@type {string} */$(this).attr('name');
 			$(this).attr('data-name', name);
@@ -1096,13 +1064,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.find('h2').first().append('<span/>');
 
-		//this.setLangs();
-		//$form.find('.jr-hint, .jr-constraint-msg').hide();
-		//
 		this.repeat.init();
 		this.setAllVals();
-		this.beautify();
 		this.widgets.init();
+		this.bootstrapify();
 		this.branch.init();
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 		this.calcUpdate();
@@ -1252,7 +1217,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return $node.attr('data-name');//.substr(0, indexSuffix);
 				//}
 			}
-			if ($node.attr('name').length > 0){
+			if ($node.attr('name') && $node.attr('name').length > 0){
 				return $node.attr('name');
 			}
 			else return console.error('input node has no name');
@@ -1265,22 +1230,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			inputType = this.getInputType($node);
 			name = this.getName($node);
-			////console.debug('name provided by input.getName:'+name);
-			////console.debug('name of attribute name:'+$node.attr('name'));
-			//if (inputType === 'radio' && name !== $node.attr('name')){
-				//return parseInt( $node.attr('name').substring($node.attr('name').lastIndexOf('____')+4), 10);
-			//}
+
 			$wrapNode = this.getWrapNodes($node);
-			////console.debug('wrapnode:');
-			////console.debug($wrapNode);
+
 			if (inputType === 'radio' && name !== $node.attr('name')){
 				$wrapNodesSameName = this.getWrapNodes($form.find('[data-name="'+name+'"]'));
 			}
 			else {
 				$wrapNodesSameName = this.getWrapNodes($form.find('[name="'+name+'"]'));
-			}
-			////console.debug('wrapnodes with same name:');
-			////console.debug($wrapNodesSameName);	
+			}	
 
 			return $wrapNodesSameName.index($wrapNode);
 		},
@@ -1297,15 +1255,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			inputType = this.getInputType($node);
 			name = this.getName($node);
-			////console.debug('input type: '+inputType);
+			
 			if (inputType == 'radio'){
 				return this.getWrapNodes($node).find('input:checked').val() || '';
 			}
 			//checkbox values bug in jQuery as (node.val() should work)
 			if (inputType == 'checkbox'){
-				//console.debug(this.getWrapNodes($node));
+				
 				this.getWrapNodes($node).find('input[name="'+name+'"]:checked').each(function(){
-					//console.debug('found checkbox value: '+$(this).val());
+					
 					values.push($(this).val());
 				});
 				return values;
@@ -1332,34 +1290,22 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				if ( type === 'date' || type === 'datetime'){
 					//convert current value (loaded from instance) to a value that a native datepicker understands
 					//TODO test for IE, FF, Safari when those browsers start including native datepickers
-					date = new Date(value);
-					if (date.toString() !== 'Invalid Date'){
-						value = date.getUTCFullYear().toString()+'-'+
-							(date.getUTCMonth()+1).toString().pad(2)+'-'+
-							date.getUTCDate().toString().pad(2);
-						if (type === 'datetime'){
-							value += ' '+date.getHours()+':'+date.getMinutes();
-						}
-					}
-					else{
-						value = date.toString(); 
-					}
+					value = data.node().convert(value, type);
+
 					console.debug('converting date before setting input field to: '+value);
-				//	date = new Date(value);
-				//	value = (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear().toString().substring(2);
-				//	value = (type === 'datetime') ? value + ' ' + date.getHours() + ':' + date.getMinutes() : value;
-				//	console.debug('to: '+value);
+
 				}
 			}
 
 			if (this.isMultiple($inputNodes.eq(0)) === true){
-				////console.log('control allows values will be split at spaces');
+				
 				value = value.split(' ');
 			}
 			
-			//console.debug('name of form element to set value of (if exists in form):'+name+', index:'+index+' new value: '+value);
-			////console.debug($inputNodes);
-			return $inputNodes.val(value);
+
+			$inputNodes.val(value);
+			
+			return;
 		}
 	};
 
@@ -1391,10 +1337,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	FormHTML.prototype.setLangs = function(){
-		var lang, value, newLabel,
+		var lang, value, curLabel, newLabel,
 			that = this,
 			defaultLang = $form.find('#form-languages').attr('data-default-lang');
-		////console.log('found default language: '+defaultLang);
+		
 		$('#form-languages').detach().insertBefore($('form.jr').parent());
 		if (!defaultLang || defaultLang==='') {
 			defaultLang = $('#form-languages a:eq(0)').attr('lang');
@@ -1413,13 +1359,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return;
 		}
 
-		//$form.find('#form-languages').addClass('ui-helper-clearfix');
 		$('#form-languages a').click(function(event){
 			event.preventDefault();
 			lang = $(this).attr('lang');
 			$('#form-languages a').removeClass('active');
 			$(this).addClass('active');
-			////console.log('going to hide langauges');
 
 			//$form.find('[lang]').not('.jr-hint, .jr-constraint-msg, jr-option-translations>*').show().not('[lang="'+lang+'"], [lang=""], #form-languages a').hide();
 			$form.find('[lang]').removeClass('active').filter('[lang="'+lang+'"], [lang=""]').addClass('active');
@@ -1432,13 +1376,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 
 			//swap language of <select> <option>s
-			$form.find('select>option').not('[value=""]').each(function(){
+			$form.find('select > option').not('[value=""]').each(function(){
+				curLabel = $(this).text();
 				value = $(this).attr('value');
-				////console.log('option value is '+value);
-				newLabel = $(this).parent('select').next('.jr-option-translations')
+				
+				newLabel = $(this).parent('select').siblings('.jr-option-translations')
 					.children('.active[data-option-value="'+value+'"]').text().trim();
-				////console.log('new option label is '+newLabel +' with length: '+newLabel.length);
-				newLabel = (typeof newLabel !== 'undefined' && newLabel.length > 0) ? newLabel : '[MISSING TRANSLATION]';
+				
+				newLabel = (typeof newLabel !== 'undefined' && newLabel.length > 0) ? newLabel : curLabel;
 				
 				$(this).text(newLabel);
 			});
@@ -1457,10 +1402,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$('#form-languages a[lang="'+defaultLang+'"]').click();
 	};
 		
-	// called whenever language or ouput value changes
+	/**
+	 * setHints updates the hints. It is called whenever the language or output value is changed.
+	 */
 	FormHTML.prototype.setHints = function(){
 		var hint, $wrapNode;
-		////console.log('setting hints, lang is '+lang);
+		//console.log('setting hints, lang is '+lang);
 		$form.find('*>.jr-hint').parent().each(function(){
 			if ($(this).prop('nodeName').toLowerCase() !== 'label' && $(this).prop('nodeName').toLowerCase() !== 'fieldset' ){
 				$wrapNode = $(this).parent('fieldset');
@@ -1468,39 +1415,22 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			else{
 				$wrapNode = $(this);
 			}
-			//if ($wrapNode.length > 0){
+			
 			hint = ($wrapNode.length > 0 ) ? //&& lang !== 'undefined' && lang !== '') ? 
 				$(this).find('.jr-hint.active').text().trim() : $(this).find('span.jr-hint').text().trim();
-			//}
 			
-			////console.debug('hint: '+hint);
+			//console.debug('hint: '+hint);
 			if (hint.length > 0){
-				////console.debug('setting hint: '+hint);
+				//console.debug('setting hint: '+hint);
 				//$(this).find('input, select, textarea').attr('title', hint);
-				$wrapNode.find('.question-icons .hint').attr('title', hint).addClass('ui-icon ui-icon-help');
+				$wrapNode.find('.hint').attr('title', hint);
 			}
 			else{
-				$wrapNode.find('.question-icons .hint').removeAttr('title').removeClass('ui-icon ui-icon-help');
+				$wrapNode.find('.hint').removeAttr('title');
 			}
 		});
-		$form.tooltip(); //  use refresh() ??
+		$form.find('.hint[title]').tooltip({placement: 'right'}); //  use refresh() ??
 	};
-
-	//FormHTML.prototype.reset = function(){
-//		//var value1st;
-//		//ADD ?? checkForOpenForm(false);
-//		$form.reset();
-//		this.recordName.reset();
-//		this.recordStatus.reset();
-//		form.editStatus.set(false);//
-
-//		//$('#survey-title').text('New Survey');//
-
-//		//$('button#delete-form').hide();//
-
-//		//set the combobox with the list of files back to the first item
-//		
-//	};
 
 	FormHTML.prototype.editStatus = {
 		set : function(status){
@@ -1551,12 +1481,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				var $that = $(this);
 				if(!$(this).hasClass('busy')){
 					if ($(this).hasClass('show')){
-						$(this).addClass('busy').removeClass('show').next().hide('blind', {}, 600, function(){
+						$(this).addClass('busy').removeClass('show').next().hide( 600, function(){
 							$that.removeClass('busy');
 						});
 					}
 					else{
-						$(this).addClass('busy show').next().show('blind', {}, 600, function(){
+						$(this).addClass('busy show').next().show(600, function(){
 							$that.removeClass('busy');
 							$that.next().fixLegends();
 						});
@@ -1587,7 +1517,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//console.debug('the clever selector created: '+cleverSelector.join());
 
 			$form.find(cleverSelector.join()).each(function(){
-				//VERY WRONG TO USE form HERE!!!! FIX THIS
+				//VERY WRONG TO USE form HERE!!!! FIX THIS like this: http://jsfiddle.net/MartijnR/DWqHu/41/
 				//one could argue that I should not use the input object here as a branch is not always an input (sometimes a group)		
 				//console.debug('input node with branching logic:');
 				//console.debug($(this));
@@ -1648,10 +1578,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var type;
 			console.debug('enabling branch');
 
-			branchNode.prev('.jr-branch').hide('slow', function(){$(this).remove();});
+			branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
 			
 			//branchNode.removeAttr('disabled');
-			branchNode.removeClass('disabled').show('blind', {direction: 'up'}, 1000, function(){$(this).fixLegends();} );
+			branchNode.removeClass('disabled').show(1000, function(){$(this).fixLegends();} );
 
 			type = branchNode.prop('nodeName').toLowerCase();
 
@@ -1664,7 +1594,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			console.debug('disabling branch');
 			//add disabled class (to style) and hide
-			branchNode.addClass('disabled').hide(); //HUH??? Hide() DOESN"T WORK WITH PARAMETERS!
+			branchNode.addClass('disabled').hide(1000); //HUH??? Hide() DOESN"T WORK WITH PARAMETERS!
 			//NOTE: DATA IS NOT REMOVED WHICH IS WRONG!
 			
 			//if the branch was previously enabled
@@ -1749,8 +1679,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * 
 	 * Once the following is complete this function can and should be removed:
 	 * 
-	 * 1. ODK Collect starts supporting an instanceID preload item
-	 * 2. Pyxforms changes the instanceID binding from calculate to preload
+	 * 1. ODK Collect starts supporting an instanceID preload item (or automatic handling of meta->instanceID without binding)
+	 * 2. Pyxforms changes the instanceID binding from calculate to preload (or without binding)
 	 * 3. Formhub has re-generated all stored XML forms from the stored XLS forms with the updated pyxforms
 	 * 
 	 */
@@ -1807,15 +1737,34 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//updatingCalcs = false;
 	};
 
-	FormHTML.prototype.beautify = function(){
-		//$form.find('.jr-group, .jr-repeat').addClass('ui-corner-all');
-		//$form.find('h2#form-title').addClass('ui-widget-header ui-corner-all');		
-		$form.find('.trigger').addClass('ui-state-highlight');// ui-corner-all');
+	FormHTML.prototype.bootstrapify = function(){		
+		$form.find('.trigger').addClass('alert alert-block');
+		$form.find('.jr-constraint-msg').addClass('alert alert-error');
+		$form.find('label:not(.geo), fieldset').addClass('clearfix');
+		$form.find(':checkbox, :radio').each(function(){
+			var $p = $(this).parent('label'); 
+			$(this).detach().prependTo($p);
+		});
 
 		//improve looks when images, video or audio is used as label
 		$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend').children('img,video,audio').parent().addClass('ui-helper-clearfix with-media');
 	};
 
+	/**
+	 * Enhancements to the basic built-in html behaviour of form controls
+	 *
+	 * In the future it would probably be wise to standardize this. E.g. each form control widget needs to:
+	 * - load default values
+	 * - have a 'swap language' function responding to a 'changelanguage' event
+	 * - disable when its parent branch is hidden (also when hidden upon initialization)
+	 * - enable when its parent branch is hidden 
+	 *
+	 * Considering the ever-increasing code size of the widgets and their dependence on the UI library being used,
+	 * it would be good to move them to a separate javascript file. 
+	 * (If typeof widgets === undefined, widgets are not loaded)
+	 * 
+	 * @type {Object}
+	 */
 	FormHTML.prototype.widgets = {
 		//IMPORTANT! Widgets should be initalized after instance values have been loaded in $data as well as in input fields
 		init : function(){
@@ -1847,55 +1796,112 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//}); 
 		},
 		dateWidget : function(){
-			//$form.find('input[type="date"]').click(function(e){
-			//	e.preventDefault();
-			//}).datepicker({
-			//	onSelect: function(dateText){
-			//		var d = new Date(dateText),
-			//			dv = d.getFullYear().toString().pad(4)+'-'+(d.getMonth()+1).toString().pad(2)+'-'+d.getDate().toString().pad(2);
-			//		$(this).val(dv).trigger('change');
-			//	}
-			//});*/
-			if(!Modernizr.inputtypes.date){
-				$form.find('input[type="date"]').datepicker({dateFormat: 'yy/mm/dd'});
-			}
+			$form.find('input[type="date"]').each(function(){
+				var $p = $(this).parent('label'),
+					startView = ($p.hasClass('jr-appearance-month-year')) ? 'year' :
+						($p.hasClass('jr-appearance-year')) ? 'decade' : 'month',
+					format = (startView === 'year') ? 'yyyy-mm' :
+						(startView === 'decade') ? 'yyyy' : 'yyyy-mm-dd',
+					$fakeDate = $('<div class="input-append date" >'+
+						'<input class="novalidate input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
+						'<span class="add-on"><i class="icon-calendar"></i></span>'+'</div>'),
+					$that = $(this);
+				$(this).hide().after($fakeDate);
+				console.debug('startView: '+startView);
+				$fakeDate.datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView})
+					.find('input').on('change changeDate', function(ev){
+						var value = $(this).val();
+						value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
+						//console.debug('converted date input to value: '+data.node().convert($(this).val(), 'date'));
+						$that.val(data.node().convert(value, 'date')).trigger('change');
+						return false;
+					});
+			});
 		},
 		timeWidget : function(){
-			if(!Modernizr.inputtypes.time){
-				$form.find('input[type="time"]').timepicker({});
-			}
+			//TODO USE $fakeTime instead for browsers with native timepicker (Opera?)
+			$form.find('input[type="time"]').each(function(){
+				var curVal = $(this).val();
+				$(this)
+					.addClass('timepicker-default input-small')
+					.after('<span class="add-on"><i class="icon-time"></i></span>')
+					.parent('label').addClass('input-append bootstrap-timepicker-component')
+					.find('input[type="time"]').timepicker({
+						defaultTime: (curVal.length > 0) ? 'value' : 'current', 
+						showMeridian: false
+					})
+					//widget may change value to defaultTime, so need to switch back
+					.val(curVal);
+			});
 		}, 
 		dateTimeWidget : function(){
-			if(!Modernizr.inputtypes.datetime){
-				$form.find('input[type="datetime"]').datetimepicker({dateFormat: 'yy/mm/dd', timeFormat: 'hh:mm:ss'});
-			}
-		},
-		selectOneWidget : function(){
-			//note: in chrome size is at least 4 if multiple attr is present
-			$form.find('select:not([multiple])').attr('size', '1');//.find('[value=""]').remove();	
-			$('select:not([multiple])').multiselect({
-				'multiple': false,
-				'header': 'Select one option',
-				'noneSelectedText': 'Select one option',
-				'selectedList': 1,
-				'position': {
-					'my':'left top', 
-					'at': 'left bottom'
-				}//,
-				//selectedList: 1
-			});		
-		},
-		selectMultiWidget : function(){
-			//note: in chrome size is at least 4 if multiple attr is present
-			$form.find('select[multiple]').attr('size', '5').find('[value=""]').remove(); //for html form
+			$form.find('input[type="datetime"]').each(function(){	
+				var $dateTimeI = $(this),
+					/*
+						Loaded or default datetime values remain untouched until they are edited. This is done to preserve 
+						the timezone information (especially for instances-to-edit) if the values are not edited. However, 
+						values shown in the widget should reflect the local time representation of that value.
+					 */
+					val = ($(this).val().length > 0) ? new Date($(this).val()).toISOLocalString() : '',
+					vals = val.split('T'),
+					dateVal = vals[0], 
+					timeVal = (vals[1] && vals[1].length > 4) ? vals[1].substring(0,5) : '',
+					$fakeDate = $('<div class="input-append date" >'+
+						'<input class="novalidate input-small" type="text" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
+						'<span class="add-on"><i class="icon-calendar"></i></span></div>'),
+					$fakeTime = $('<div class="input-append bootstrap-timepicker-component">'+
+						'<input class="novalidate timepicker-default input-small" type="time" value="'+timeVal+'"/>'+
+						'<span class="add-on"><i class="icon-time"></i></span></div>'),
+					$fakeDateI = $fakeDate.find('input'),
+					$fakeTimeI = $fakeTime.find('input');
 
-			$('select[multiple]').multiselect({
-				'header': 'false', 
-				'position': {
-					'my':'left top', 
-					'at': 'left bottom'
+				$dateTimeI.hide().after('<div class="datetimepicker" />');
+				$dateTimeI.siblings('.datetimepicker').append($fakeDate).append($fakeTime);
+				$fakeDate.datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true});
+				$fakeTimeI.timepicker({defaultTime: (timeVal.length > 0) ? 'value' : 'current', showMeridian: false}).val(timeVal);
+				
+				$fakeDateI.on('change changeDate', function(){
+					changeVal();
+					return false;
+				});
+				$fakeTimeI.on('change', function(){
+					changeVal();
+					return false;
+				});
+				
+				function changeVal(){
+					if ($fakeDateI.val().length > 0 && $fakeTimeI.val().length > 0){
+						var d = $fakeDateI.val().split('-'),
+							t = $fakeTimeI.val().split(':');
+						console.log('changing datetime');
+						$dateTimeI.val(new Date(d[0], d[1]-1, d[2], t[0], t[1]).toISOLocalString()).trigger('change');
+					}
 				}
 			});
+		},
+		selectOneWidget : function(){
+			$form.find('select:not([multiple])').find('[value=""]').text('None selected'); 
+			function update(){
+				$form.find('select:not([multiple])').removeData('selectpicker').siblings('.bootstrap-select').remove();
+				$form.find('select:not([multiple])').selectpicker({
+					btnStyle: 'btn'
+				});
+			}
+			$form.on('changelanguage', update);
+			update();
+		},
+		selectMultiWidget : function(){
+			$form.find('select[multiple]').find('[value=""]').remove(); 
+			function update(){
+				$('select[multiple]').removeData('multiselect').siblings('.bootstrap-multiselect').remove();
+				$('select[multiple]').multiselect({
+					container: '<div class="widget btn-group bootstrap-multiselect" />',
+					button: 'btn'
+				});
+				$('select[multiple] ~ .bootstrap-multiselect .caret').addClass('pull-right');
+			}
+			$form.on('changelanguage', update);
+			update();
 		},
 		//transforms temporary page-break elements to triggers //REMOVE WHEN BETTER SOLUTION FOR PAGE BREAKS IS FOUND
 		pageBreakWidget : function(){
@@ -1914,7 +1920,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					relevant = $(this).find('input').attr('data-relevant'),
 					name = 'name="'+$(this).find('input').attr('name')+'"',
 					attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name;
-				$('<fieldset class="trigger ui-state-highlight" '+attributes+'></fieldset>') //ui-corner-all
+				$('<fieldset class="trigger" '+attributes+'></fieldset>') //ui-corner-all
 					.insertBefore($(this)).append(html).find('input').remove(); 
 				$(this).remove();
 			});
@@ -1934,26 +1940,28 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//function update(){alert('updating')}
 			$form.find('input[data-type-xml="geopoint"]').each(function(){ //.attr('placeholder', 'Awesome geopoint widget will follow in the future!');
-				var $lat, $lng, $alt, $acc, $button, $map, mapOptions, map, marker, inputVals,
+				var $lat, $lng, $alt, $acc, $search, $button, $map, mapOptions, map, marker, inputVals, searchBox,
 					$inputOrigin = $(this),
 					$geoWrap = $(this).parent('label');
 				inputVals = $(this).val().split(' ');
-				$geoWrap.addClass('geopoint');
+				$geoWrap.addClass('geopoint widget');
 				
 				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
-					'<label>latitude (x.y &deg;)<input class="novalidate" name="lat" type="number" step="0.0001" /></label>'+
-					'<label>longitude (x.y &deg;)<input class="novalidate" name="long" type="number" step="0.0001" /></label>'+
-					'<label>altitude (m)<input class="novalidate" name="alt" type="number" step="0.1" /></label>'+
-					'<label>accuracy (m)<input class="novalidate" name="acc" type="number" step="0.1" /></label>'+
-					'<button name="geodetect" type="button">detect</button>'); 
+					'<input class="geo novalidate" name="search" type="text" placeholder="search"/>'+
+					'<label class="geo">latitude (x.y &deg;)<input class="novalidate" name="lat" type="number" step="0.0001" /></label>'+
+					'<label class="geo">longitude (x.y &deg;)<input class="novalidate" name="long" type="number" step="0.0001" /></label>'+
+					'<label class="geo">altitude (m)<input class="novalidate" name="alt" type="number" step="0.1" /></label>'+
+					'<label class="geo">accuracy (m)<input class="novalidate" name="acc" type="number" step="0.1" /></label>'+
+					'<button name="geodetect" type="button" class="btn btn-small">detect</button>'); 
 				$map = $geoWrap.find('.map-canvas');
 				$lat = $geoWrap.find('[name="lat"]');
 				$lng = $geoWrap.find('[name="long"]');
 				$alt = $geoWrap.find('[name="alt"]');
 				$acc = $geoWrap.find('[name="acc"]');
+				$search = $geoWrap.find('[name="search"]');
 				$button = $geoWrap.find('button[name="geodetect"]');
 				
-				$geoWrap.find('input').not($inputOrigin).on('change change.bymap', function(event){
+				$geoWrap.find('input:not([name="search"])').not($inputOrigin).on('change change.bymap change.bysearch', function(event){
 					//console.debug('change event detected');
 					var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
 						lng = ($lng.val() !== '') ? $lng.val() : 0.0, 
@@ -1962,8 +1970,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					//event.preventDefault();
 					$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
 					//console.log(event);
-					if (event.namespace !== 'bymap'){
+					if (event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
 						updateMap(lat, lng);
+					}
+					if (event.namespace !== 'bysearch'){
+						$search.val('');
 					}
 					//event.stopPropagation();
 					return false;
@@ -1975,6 +1986,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//default map view
 				if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
 					updateMap(0,0,1);
+					//searchBox = new google.maps.places.SearchBox($search[0]);
 				}
 
 				if (inputVals[3]) $acc.val(inputVals[3]);
@@ -1996,6 +2008,60 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				if ($(this).val() === ''){
 					$button.click();
 				}
+
+				var geocoder = new google.maps.Geocoder();
+				$search.on('change', function(event){
+					event.stopImmediatePropagation();
+					//console.debug('search field click event');
+					var address = $(this).val();
+					geocoder.geocode(
+				        {
+							'address': address,
+							'bounds' : map.getBounds()
+						}, 
+				        function(results, status) { 
+				            if (status == google.maps.GeocoderStatus.OK) { 
+								$search.attr('placeholder', 'search');
+				                var loc = results[0].geometry.location;
+				                console.log(loc);
+				                updateMap(loc.lat(), loc.lng());
+				                updateInputs(loc.lat(), loc.lng(), null, null, 'change.bysearch'); 
+				            } 
+				            else {
+								$search.val('');
+								$search.attr('placeholder', address+' not found, try something else.');
+				            } 
+				        }
+				    );
+				    return false;
+				});
+
+//				google.maps.event.addListener(searchBox, 'places_changed', function() {
+//					var places = searchBox.getPlaces();
+//					console.log(places);
+//					var markers = [];
+//					var bounds = new google.maps.LatLngBounds();
+//					for (var i = 0, place; place = places[i]; i++) {
+//						var image = new google.maps.MarkerImage(
+//						    place.icon, new google.maps.Size(71, 71),
+//						    new google.maps.Point(0, 0), new google.maps.Point(17, 34),
+//						    new google.maps.Size(25, 25));//
+
+//						var marker = new google.maps.Marker({
+//						  map: map,
+//						  icon: image,
+//						  title: place.name,
+//						  position: place.geometry.location
+//					});//
+
+//					markers.push(marker);//
+
+//					bounds.extend(place.geometry.location);
+//					}//
+
+//					map.fitBounds(bounds);
+//					return false;
+//				});
 
 				/**
 				 * [updateMap description]
@@ -2273,9 +2339,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//console.debug('initializing repeats');
 			$form.find('fieldset.jr-repeat').prepend('<span class="repeat-number"></span>');
 			$form.find('fieldset.jr-repeat:not([data-repeat-fixed])')
-				.append('<button type="button" class="repeat"></button><button type="button" class="remove"></button>');
-			$form.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
-			$form.find('button.remove').button({'disabled': true, 'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
+				.append('<button type="button" class="btn repeat"><i class="icon-plus"></i></button>'+
+					'<button type="button" disabled="disabled" class="btn remove"><i class="icon-minus"></i></button>');
+			//$form.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
+			//$form.find('button.remove').button({'disabled': true, 'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
 
 			//MOVE HANDLERS to FormHTML.eventHandlers?
 			//delegated handlers (strictly speaking not required, but checked for doubling of events -> OK)
@@ -2344,13 +2411,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$clone.find('.clone').remove();
 			$clone.addClass('clone');//.removeClass('invalid ui-state-error');
 			//re-initialize buttons
-			$clone.find('button.remove').button({'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
-			$clone.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
+			//$clone.find('button.remove').button({'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
+			//$clone.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
 
 			$clone.insertAfter($node)
 				//.find('button').removeClass('ui-state-hover')
 				.parent('.jr-group').numberRepeats();
-			$clone.hide().show('highlight',{ },600); //animations that look okay: highlight, scale, slide
+			$clone.hide().show(600); //animations that look okay: highlight, scale, slide
 			//is this code actually working?
 			//clone.find('input, select, textarea').val(null);
 			$clone.clearInputs(ev);
@@ -2360,7 +2427,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//clone.find('fieldset.jr-repeat').addClass('clone');
 
 			//note: in http://formhub.org/formhub_u/forms/hh_polio_survey_cloned/form.xml a parent group of a repeat
-			//has the same ref attribute as teh nodeset attribute of the repeat. This would cause a problem determining 
+			//has the same ref attribute as the nodeset attribute of the repeat. This would cause a problem determining 
 			//the proper index if .jr-repeat was not included in the selector
 			index = $form.find('fieldset.jr-repeat[name="'+$node.attr('name')+'"]').index($node);
 			//parentIndex = $form.find('[name="'+$master.attr('name')+'"]').parent().index($parent);
@@ -2408,7 +2475,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		
 			//var parentSiblings = parent.siblings();
 		
-			node.hide('drop',{}, delay, function(){
+			node.hide(600, function(){
 				node.remove();
 				parentGroup.numberRepeats();
 
@@ -2421,19 +2488,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		toggleButtons : function(node){
 			//var constraint;
+			console.debug('toggling repeat buttons');
 			node = (typeof node == 'undefined' || node.length === 0 || !node) ?	node = $form : node;
 			
 			//first switch everything off and remove hover state
-			node.find('button.repeat, button.remove').button('disable').removeClass('ui-state-hover');
+			node.find('button.repeat, button.remove').attr('disabled', 'disabled');//button('disable').removeClass('ui-state-hover');
 		
 			//enable last + button if constraint is true or non-existing
 			//constraint = node.attr('data-constraint');
 			//if ((constraint.length > 0 && evalXpression(constraint) === true) || typeof constraint == 'undefined'){
-				node.find('fieldset.jr-repeat:last-child > button.repeat').button('enable');
+				node.find('fieldset.jr-repeat:last-child > button.repeat').removeAttr('disabled');//.button('enable');
 			//}
 			// the nth-child selector is a bit dangerous. It relies on this structure <fieldset class="jr-repeat"><h2></h2><label><label><label></fieldset>
 			// alternatively, we could allow the first repeat to be deleted as well (as long as it is not the ONLY repeat)
-			node.find('fieldset.jr-repeat:not(:nth-child(2)) > button.remove').button('enable'); //Improve this so that it enables all except first
+			node.find('fieldset.jr-repeat:not(:nth-child(2)) > button.remove').removeAttr('disabled');//button('enable'); //Improve this so that it enables all except first
 		}
 	};
 	
@@ -2445,25 +2513,27 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$('form.jr').attr('onsubmit', 'return false;');
 
 		$form.on('change validate', 'input, select, textarea', function(event){ 
-			n = that.input.getProps($(this));
-			//console.debug('change event detected trigger by element with following properties:');
-			//console.debug(n);
+			if ($(this).parents('.widget').length === 0){
+				n = that.input.getProps($(this));
+				//console.debug('change event detected trigger by element with following properties:');
+				//console.debug(n);
 
-			//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
-			if (event.type == 'validate'){
-				//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
-				valid = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
-			}
-			else{
-				valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
-			}
-			
-			//console.log('data.set validation returned valid: '+valid);
-			//additional check for 'required'
-			valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
-
-			if (typeof valid !== 'undefined' && valid !== null){
-				return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
+				//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
+				if (event.type == 'validate'){
+					//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
+					valid = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
+				}
+				else{
+					valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
+				}
+				
+				console.log('data.set validation returned valid: '+valid);
+				//additional check for 'required'
+				valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
+				console.log('after "required" validation valid is: '+valid);
+				if (typeof valid !== 'undefined' && valid !== null){
+					return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
+				}
 			}
 		});	
 		
@@ -2517,7 +2587,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//var visualNode;
 		//visualNode = (type == 'checkbox' || type == 'radio') ? node.parent().parent('fieldset') : node.parent('label');
 		//visualNode.removeClass('invalid');//.find('div.invalid').remove();
-		this.input.getWrapNodes(node).removeClass('invalid ui-state-error');
+		this.input.getWrapNodes(node).removeClass('invalid');
 	};
 
 	FormHTML.prototype.setInvalid = function(node){
@@ -2530,7 +2600,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 //			);
 //			visualNode.find('.invalid .active').show(); // THIS LINE CAN BE REMOVE WHEN SETLANG() IS REFACTORED USE CSS FOR DISPLAYING
 //		}
-		this.input.getWrapNodes(node).addClass('invalid ui-state-error');
+		this.input.getWrapNodes(node).addClass('invalid');
 	};
 
 	/**
@@ -2593,24 +2663,28 @@ function Form (formSelector, dataStr, dataStrToEdit){
 GUI.prototype.setCustomEventHandlers = function(){};
 
 /**
- * Converts a native Date UTC String to a JavaRosa style date string
- * @return {string} a date or datetime string formatted according to JavaRosa
+ * Converts a native Date UTC String to a RFC 3339-compliant date string with local offsets
+ * used in JavaRosa, so it replaces the Z in the ISOstring with a local offset
+ * @return {string} a datetime string formatted according to RC3339 with local offset
  */
-Date.prototype.toJrString = function(){
-	//2012-09-05T12:57:00.000-04 (ODK)
-	//2012-09-01 (ODK)
-	var timezone,
-		date=this,
-		jrDate = date.getUTCFullYear().toString().pad(4)+'-'+(date.getUTCMonth()+1).toString().pad(2)+'-'+date.getUTCDate().toString().pad(2);
-	//console.log('date: '+date.toString());
-	if ( date.getUTCMilliseconds() > 0 || date.getUTCSeconds() > 0 || date.getUTCMinutes() > 0 || date.getUTCHours()>0 ){
-		jrDate += 'T'+date.getHours().toString().pad(2)+':'+date.getMinutes().toString().pad(2)+':'+date.getSeconds().toString().pad(2)+
-			'.'+date.getMilliseconds().toString().pad(3);
-		timezone = date.getTimezoneOffset()/60;
-		jrDate += (timezone < 0) ? '+'+(-timezone).toString().pad(2) : '-'+timezone.toString().pad(2);
-		//(-date.getTimezoneOffset()/60);
+Date.prototype.toISOLocalString = function(){
+	//2012-09-05T12:57:00.000-04:00 (ODK)
+	var offset = {}, plus,
+		pad2 = function(x){
+			return (x<10) ? '0'+x : x;
+		};
+
+	if (this.toString() == 'Invalid Date'){
+		return this.toString();
 	}
-	return jrDate;
+
+	offset.minstotal = this.getTimezoneOffset();
+	offset.direction = (offset.minstotal < 0) ? '+' : '-';
+	offset.hrspart = pad2(Math.abs(Math.floor(offset.minstotal / 60 )));
+	offset.minspart = pad2(offset.minstotal % 60);
+
+	return new Date(this.getTime() - (offset.minstotal * 60 * 1000)).toISOString()
+		.replace('Z', offset.direction+offset.hrspart+':'+offset.minspart);
 };
 
 /**
@@ -2694,6 +2768,8 @@ String.prototype.pad = function(digits){
 				////console.log('type to reset: '+type);
 				switch (type){
 					case 'date':
+					case 'datetime':
+					case 'time':
 					case 'number':
 					case 'search':
 					case 'color':
@@ -2732,20 +2808,20 @@ String.prototype.pad = function(digits){
 	//it corrects the margin-top of the first <label> sibling following a <legend>
 	//the whole form (or several) can be provides as the context
 	$.fn.fixLegends = function() {
-		var legendHeight;
-		////console.log('fixing legends');
-		return this.each(function(){
-			$(this).find('legend + label').each(function(){
-				//console.error('found legend');
-				legendHeight = ($(this).prev().find('.jr-constraint-msg.active').length > 0 && $(this).prev().height() < 36) ? 36 : 
-					($(this).prev().height() < 19) ? 19 : 
-					$(this).prev().height();
-				
-				$(this).animate({
-					'margin-top' : (legendHeight+6)+'px'
-				}, 600 );
-			});
-		});
+//		var legendHeight;
+//		//console.log('fixing legends');
+//		return this.each(function(){
+//			$(this).find('legend + label').each(function(){
+//				//console.error('found legend');
+//				legendHeight = ($(this).prev().find('.jr-constraint-msg.active').length > 0 && $(this).prev().height() < 36) ? 36 : 
+//					($(this).prev().height() < 19) ? 19 : 
+//					$(this).prev().height();
+//				
+//				$(this).animate({
+//					'margin-top' : (legendHeight+6)+'px'
+//				}, 600 );
+//			});
+//		});
 	};
 
 

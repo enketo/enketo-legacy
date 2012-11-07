@@ -108,9 +108,11 @@ describe('Data node XML data type conversion & validation', function(){
 				
 				["/thedata/nodeA", null, null, 'val5565ghgyuyua', 'datetime', false], //Chrome turns val10 into a valid date..
 				["/thedata/nodeA", null, null, '2012-01-01T00:00:00-06', 'datetime', true],
-				//["/thedata/nodeA", null, null, '2012-12-32T00:00:00-06', 'datetime', false], fails, would be good if it didn't, but not critical
+				["/thedata/nodeA", null, null, '2012-12-32T00:00:00-06', 'datetime', false],
 				["/thedata/nodeA", null, null, '2012-12-31T23:59:59-06', 'datetime', true],
-				//["/thedata/nodeA", null, null, '2012-01-01T30:00:00-06', 'datetime', fails], fails, would be good if it didn't, but not critical
+				["/thedata/nodeA", null, null, '2012-12-31T23:59:59-06:30', 'datetime', true],
+				["/thedata/nodeA", null, null, '2012-12-31T23:59:59Z', 'datetime', true],
+				["/thedata/nodeA", null, null, '2012-01-01T30:00:00-06', 'datetime', false],
 				
 				["/thedata/nodeA", null, null, 'a', 'time', false],
 				["/thedata/nodeA", null, null, 'aa:bb', 'time', false],
@@ -330,8 +332,8 @@ describe("Preload and MetaData functionality", function(){
 	}
 
 	t=[
-		['/widgets/start_time', 'Tue, 30 Oct 2012 14:44:57 GMT'],
-		['/widgets/date_today', 'Tue, 30 Oct 2012 00:00:00 GMT'],
+		['/widgets/start_time', '2012-10-30T08:44:57.000-06:00'],
+		['/widgets/date_today', '2012-10-30'],
 		['/widgets/deviceid', 'some value'],
 		['/widgets/subscriberid', 'some value'],
 		['/widgets/my_simid', '2332'],
@@ -404,7 +406,7 @@ describe("Loading instance-to-edit functionality", function(){
 		});
 
 		it ("adds data from the instance-to-edit to the form instance", function(){
-			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('value');
+			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('2012-02-05T15:34:00.000-04:00');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
 	});
@@ -431,7 +433,7 @@ describe("Loading instance-to-edit functionality", function(){
 		});
 
 		it ("adds data from the instance-to-edit to the form instance", function(){
-			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('value');
+			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('2012-02-05T15:34:00.000-04:00');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
 

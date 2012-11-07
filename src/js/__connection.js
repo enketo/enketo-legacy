@@ -35,9 +35,11 @@ function Connection(){
 	//var tableFields, primaryKey;
 	//var tableName, version;
 	var that=this;
+	this.CONNECTION_URL = '/checkforconnection.php';
+	this.SUBMISSION_URL = '/data/submission';
 	this.currentOnlineStatus = false;
 	this.uploadOngoing = false;
-	
+
 	this.init = function(){
 		//console.log('initializing Connection object');
 		this.checkOnlineStatus();
@@ -78,7 +80,7 @@ Connection.prototype.checkOnlineStatus = function(){
 	if (navigator.onLine){
 		$.ajax({
 			type:'GET',
-			url: CONNECTION_URL,
+			url: this.CONNECTION_URL,
 			cache: false,
 			dataType: 'json',
 			timeout: 3000,
@@ -189,7 +191,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 			content.append('Date', new Date().toUTCString());
 			last = (this.uploadQueue.length === 0) ? true : false;
 			this.setOnlineStatus(null);
-			$.ajax(SUBMISSION_URL,{
+			$.ajax(this.SUBMISSION_URL,{
 				type: 'POST',
 				data: content,
 				cache: false,

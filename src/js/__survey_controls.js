@@ -287,9 +287,9 @@ function exportData(finalOnly){
 		gui.showFeedback('No data to export.');
 	}
 	else{
-		for (i = 0 ; i<dataArr.length ; i++){
-			dataArr[i] = form.prepareForSubmission(dataArr[i]);
-		}
+		//for (i = 0 ; i<dataArr.length ; i++){
+		//	dataArr[i] = form.prepareForSubmission(dataArr[i]);
+		//}
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		uriContent = "data:application/octet-stream," + encodeURIComponent(dataStr); /*data:application/octet-stream*/
 		newWindow = window.open(uriContent, 'exportedData');
@@ -316,9 +316,9 @@ function exportToFile(fileName, finalOnly){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
-		for (i = 0 ; i<dataArr.length ; i++){
-			dataArr[i] = form.prepareForSubmission(dataArr[i]);
-		}
+		//for (i = 0 ; i<dataArr.length ; i++){
+		//	dataArr[i] = form.prepareForSubmission(dataArr[i]);
+		//}
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		bb = new BlobBuilder();
 		bb.append(dataStr);
@@ -369,8 +369,8 @@ GUI.prototype.setCustomEventHandlers = function(){
 		.click(function(){
 			deleteForm(false);
 		});
-	$('button#submit-form')//.detach().appendTo($('form.jr'))
-		.button({'icons': {'primary':"ui-icon-check"}})
+	$('button#submit-form').button()//.detach().appendTo($('form.jr'))
+		//.button({'icons': {'primary':"ui-icon-check"}})
 			.click(function(){
 				form.validateForm();
 				submitForm();
@@ -396,7 +396,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	$('.drawer.left .handle.right').click(function(){
 		var $drawer = $(this).parent('.drawer');
 		console.debug('clicked handle');
-		$drawer.toggleClass('hide');
+		$drawer.toggleClass('closed');
 	});
 
 	$('#form-controls button').equalWidth();

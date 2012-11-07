@@ -8,8 +8,8 @@
     <meta name="keywords" content="">
     <meta name="robots" content="">
     
-    <script type="text/javascript" src="libraries/jquery.min.js"></script>
-	<script type="text/javascript" src="libraries/modernizr.min.js"></script>
+    <script type="text/javascript" src="/libraries/jquery.min.js"></script>
+	<script type="text/javascript" src="/libraries/modernizr.min.js"></script>
 	<script type="text/javascript">
 		var notSupported = [], and='';
 		if (!Modernizr.localstorage) notSupported.push('local data storage');
@@ -38,7 +38,7 @@
 			<li><a href="http://www.google.com/chrome/" title="Chrome download page">Chrome</a></li>
 			<li><a href="http://www.apple.com/safari/" title="Safari download page">Safari</a></li>
 			<li><a href="http://www.mozilla.com/" title="Firefox download page">Firefox</a></li>
-			<li><a href="http://www.opera.com/" title"Opera download page">Opera</a></li>
+			<li><a href="http://www.opera.com/" title="Opera download page">Opera</a></li>
 		</ul>
 	</p>
 	<h2>Why not Internet Explorer?</h2>

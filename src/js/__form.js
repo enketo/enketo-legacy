@@ -1019,6 +1019,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form = $(selector);
 		//used for testing
 		this.$ = $form;
+		this.branch = new this.Branch();
 	}
 
 	FormHTML.prototype.init = function(){
@@ -1084,72 +1085,72 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			paths = [],
 			total = {},
 			$stats = $form.find('#stats');
-		total.jrItem= parseInt($stats.find('[id="jrItem"]').text(), 10);
-		total.jrInput= parseInt($stats.find('[id="jrInput"]').text(), 10);
-		total.jrUpload = parseInt($stats.find('[id="jrUpload"]').text(), 10);
-		total.jrTrigger = parseInt($stats.find('[id="jrTrigger"]').text(), 10);
-		total.jrConstraint = parseInt($stats.find('[id="jrConstraint"]').text(), 10);
-		total.jrRelevant = parseInt($stats.find('[id="jrRelevant"]').text(), 10);
-		total.jrCalculate = parseInt($stats.find('[id="jrCalculate"]').text(), 10);
-		total.jrPreload = parseInt($stats.find('[id="jrPreload"]').text(), 10);
 
-		//console.log('checking for general transformation or xml form errors by comparing stats');
-		//$form.find('#stats span').each(function(){
-		//	total[$(this).attr('id')] = parseInt($(this).text(),10);
-		//});
-		/** @type {number} */
-		total.hRadio = $form.find('input[type="radio"]').length;
-		total.hCheck = $form.find('input[type="checkbox"]').length;
-		total.hSelect = $form.find('select').length;
-		total.hOption = $form.find('option[value!=""]').length;
-		total.hInputNotRadioCheck = $form.find('textarea, input:not([type="radio"],[type="checkbox"])').length;
-		total.hTrigger = $form.find('.trigger').length;
-		total.hRelevantNotRadioCheck = $form.find('[data-relevant]:not([type="radio"],[type="checkbox"])').length;
-		total.hRelevantRadioCheck = $form.find('input[data-relevant][type="radio"],input[data-relevant][type="checkbox"]').parent().parent('fieldset').length;
-		total.hConstraintNotRadioCheck = $form.find('[data-constraint]:not([type="radio"],[type="checkbox"])').length;
-		total.hConstraintRadioCheck = $form.find('input[data-constraint][type="radio"],input[data-constraint][type="checkbox"]').parent().parent('fieldset').length;
-		total.hCalculate = $form.find('[data-calculate]').length;
-		total.hPreload = $form.find('#jr-preload-items input').length;
+		if ($stats.length > 0){
+			total.jrItem= parseInt($stats.find('[id="jrItem"]').text(), 10);
+			total.jrInput= parseInt($stats.find('[id="jrInput"]').text(), 10);
+			total.jrUpload = parseInt($stats.find('[id="jrUpload"]').text(), 10);
+			total.jrTrigger = parseInt($stats.find('[id="jrTrigger"]').text(), 10);
+			total.jrConstraint = parseInt($stats.find('[id="jrConstraint"]').text(), 10);
+			total.jrRelevant = parseInt($stats.find('[id="jrRelevant"]').text(), 10);
+			total.jrCalculate = parseInt($stats.find('[id="jrCalculate"]').text(), 10);
+			total.jrPreload = parseInt($stats.find('[id="jrPreload"]').text(), 10);
 
-		//console.debug(total);
+			//console.log('checking for general transformation or xml form errors by comparing stats');
+			//$form.find('#stats span').each(function(){
+			//	total[$(this).attr('id')] = parseInt($(this).text(),10);
+			//});
+			/** @type {number} */
+			total.hRadio = $form.find('input[type="radio"]').length;
+			total.hCheck = $form.find('input[type="checkbox"]').length;
+			total.hSelect = $form.find('select').length;
+			total.hOption = $form.find('option[value!=""]').length;
+			total.hInputNotRadioCheck = $form.find('textarea, input:not([type="radio"],[type="checkbox"])').length;
+			total.hTrigger = $form.find('.trigger').length;
+			total.hRelevantNotRadioCheck = $form.find('[data-relevant]:not([type="radio"],[type="checkbox"])').length;
+			total.hRelevantRadioCheck = $form.find('input[data-relevant][type="radio"],input[data-relevant][type="checkbox"]').parent().parent('fieldset').length;
+			total.hConstraintNotRadioCheck = $form.find('[data-constraint]:not([type="radio"],[type="checkbox"])').length;
+			total.hConstraintRadioCheck = $form.find('input[data-constraint][type="radio"],input[data-constraint][type="checkbox"]').parent().parent('fieldset').length;
+			total.hCalculate = $form.find('[data-calculate]').length;
+			total.hPreload = $form.find('#jr-preload-items input').length;
 
-		if ( total.jrItem !== ( total.hOption + total.hRadio + total.hCheck )  ) {
-			console.error(' total select fields differs between XML form and HTML form');
-		}
-		if ( ( total.jrInput + total.jrUpload ) !== ( total.hInputNotRadioCheck - total.hCalculate - total.hPreload ) ){
-			console.error(' total amount of input/upload fields differs between XML form and HTML form');
-		}
-		if ( total.jrTrigger != total.hTrigger ){
-			console.error(' total triggers differs between XML form and HTML form');
-		}
-		if ( total.jrRelevant != ( total.hRelevantNotRadioCheck + total.hRelevantRadioCheck)){
-			console.error(' total amount of branches differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form)');
-		}
-		if ( total.jrConstraint != ( total.hConstraintNotRadioCheck + total.hConstraintRadioCheck)){
-			console.error(' total amount of constraints differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form).'+
-				' Note that constraints on &lt;trigger&gt; elements are ignored in the transformation and could cause this error too.');
-		}
-		if ( total.jrCalculate != total.hCalculate ){
-			console.error(' total amount of calculated items differs between XML form and HTML form');
-		}
-		if ( total.jrPreload != total.hPreload ){
-			console.error(' total amount of preload items differs between XML form and HTML form');
-		}
-		//probably resource intensive: check if all nodes mentioned in name attributes exist in $data
-		
-		$form.find('[name]').each(function(){
-			if ($.inArray($(this).attr('name'), paths)) {
-				paths.push($(this).attr('name'));
+			if ( total.jrItem !== ( total.hOption + total.hRadio + total.hCheck )  ) {
+				console.error(' total select fields differs between XML form and HTML form');
 			}
-		});
-		//s//console.debug(paths);
-		for (i=0 ; i<paths.length ; i++){
-			////console.debug('checking: '+paths[i]);
-			if (data.node(paths[i]).get().length < 1){
-				console.error('Found name attribute: '+paths[i]+' that does not have a corresponding data node. Transformation error or XML form error (relative nodesets perhaps?');
+			if ( ( total.jrInput + total.jrUpload ) !== ( total.hInputNotRadioCheck - total.hCalculate - total.hPreload ) ){
+				console.error(' total amount of input/upload fields differs between XML form and HTML form');
+			}
+			if ( total.jrTrigger != total.hTrigger ){
+				console.error(' total triggers differs between XML form and HTML form');
+			}
+			if ( total.jrRelevant != ( total.hRelevantNotRadioCheck + total.hRelevantRadioCheck)){
+				console.error(' total amount of branches differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form)');
+			}
+			if ( total.jrConstraint != ( total.hConstraintNotRadioCheck + total.hConstraintRadioCheck)){
+				console.error(' total amount of constraints differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form).'+
+					' Note that constraints on &lt;trigger&gt; elements are ignored in the transformation and could cause this error too.');
+			}
+			if ( total.jrCalculate != total.hCalculate ){
+				console.error(' total amount of calculated items differs between XML form and HTML form');
+			}
+			if ( total.jrPreload != total.hPreload ){
+				console.error(' total amount of preload items differs between XML form and HTML form');
+			}
+			//probably resource intensive: check if all nodes mentioned in name attributes exist in $data
+			
+			$form.find('[name]').each(function(){
+				if ($.inArray($(this).attr('name'), paths)) {
+					paths.push($(this).attr('name'));
+				}
+			});
+			//s//console.debug(paths);
+			for (i=0 ; i<paths.length ; i++){
+				////console.debug('checking: '+paths[i]);
+				if (data.node(paths[i]).get().length < 1){
+					console.error('Found name attribute: '+paths[i]+' that does not have a corresponding data node. Transformation error or XML form error (relative nodesets perhaps?');
+				}
 			}
 		}
-
 	};
 
 	//this may not be the most efficient. Could also be implemented like Data.Nodeset;
@@ -1474,8 +1475,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	// If this becomes more complex it is probably better to create a branch object:
 	// branch.anim, branch.filter, branch.duration, branch.update, branch.init() //for eventhandlers
 	// this would actually be more consistent too as it's more modular like widgets, repeats, preloads
-	FormHTML.prototype.branch = {
-		init: function(){
+	/**
+	 * Branch Class (inherits properties of FormHTML Class) is used to manage braching
+	 *
+	 * @constructor
+	 */
+	FormHTML.prototype.Branch = function(){
+
+		/**
+		 * Initializes branches, sets delegated event handlers
+		 */
+		this.init = function(){
 			//console.debug('initializing branches');
 			$form.on('click', '.jr-branch', function(event){
 				var $that = $(this);
@@ -1491,17 +1501,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 							$that.next().fixLegends();
 						});
 					}
-				}
-				
+				}	
 			});
 			this.update();
-		},
+		};
 		/**
-		 * updates branches based on changed input fields
+		 * Updates branches based on changed input fields
+		 * 
 		 * @param  {string=} changedNodeNames [description]
 		 * @return {?boolean}                  [description]
 		 */
-		update: function(changedNodeNames){
+		this.update = function(changedNodeNames){
 			var i, p, branchNode, result, namesArr, cleverSelector,			
 				alreadyCovered = {},
 				that=this;
@@ -1512,35 +1522,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			for (i=0 ; i<namesArr.length ; i++){
 				cleverSelector.push('[data-relevant*="'+namesArr[i]+'"]');
 			}
-
-			//console.debug('Updating branches for expressions that contain: '+namesArr.join());
 			//console.debug('the clever selector created: '+cleverSelector.join());
 
 			$form.find(cleverSelector.join()).each(function(){
-				//VERY WRONG TO USE form HERE!!!! FIX THIS like this: http://jsfiddle.net/MartijnR/DWqHu/41/
-				//one could argue that I should not use the input object here as a branch is not always an input (sometimes a group)		
-				//console.debug('input node with branching logic:');
-				//console.debug($(this));
-				p = form.input.getProps($(this));
-				branchNode = form.input.getWrapNodes($(this));
-				
-				//name = $(this).attr('name');
+
+				p = that.input.getProps($(this));
+				branchNode = that.input.getWrapNodes($(this));
 				
 				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[p.path]){
 					return;
 				}
-				//console.debug('properties of branch input node:');
-				//console.debug(p);
-				////console.debug(branchNode);
-
-				//type = $(this).prop('nodeName').toLowerCase();
-				//type = (type == 'input') ? $(this).attr('type').toLowerCase() : type;
-				
-				//expr = $(this).attr('data-relevant'); //"5 = 5";
-
-				//branchNode = (type == 'fieldset') ? $(this) : 
-				//	(type == 'radio' || type == 'checkbox') ? $(this).parent().parent('fieldset') : $(this).parent('label');
-
 				if(branchNode.length !== 1){
 					console.error('could not find branch node');
 					return;
@@ -1571,39 +1562,41 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		/**
 		 * Enables and reveals a branch node/group
-		 * @param  {jQuery} branchNode [description]
+		 * 
+		 * @param  {jQuery} branchNode The jQuery object to reveal and enable
 		 * @return {jQuery}            [description]
 		 */
-		enable : function(branchNode){
+		this.enable = function(branchNode){
 			var type;
 			console.debug('enabling branch');
 
 			branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
 			
-			//branchNode.removeAttr('disabled');
 			branchNode.removeClass('disabled').show(1000, function(){$(this).fixLegends();} );
 
 			type = branchNode.prop('nodeName').toLowerCase();
 
 			return (type == 'label') ? branchNode.children('input, select, textarea')
 				.removeAttr('disabled') : branchNode.removeAttr('disabled');
-		},
-		disable : function(branchNode){
+		};
+		/**
+		 * Disables and hides a branch node/group
+		 * 
+		 * @param  {jQuery} branchNode The jQuery object to hide and disable
+		 * @return {jQuery}            [description]
+		 */
+		this.disable = function(branchNode){
 			var type, 
-				branchClue = '<div class="jr-branch"></div>'; //ui-corner-all
+				branchClue = '<div class="jr-branch"></div>'; 
 
 			console.debug('disabling branch');
-			//add disabled class (to style) and hide
-			branchNode.addClass('disabled').hide(1000); //HUH??? Hide() DOESN"T WORK WITH PARAMETERS!
-			//NOTE: DATA IS NOT REMOVED WHICH IS WRONG!
+			branchNode.addClass('disabled').hide(1000); 
 			
 			//if the branch was previously enabled
 			if (branchNode.prev('.jr-branch').length === 0){
 				branchNode.before(branchClue);
-				//if the branch was hidden upon loading, then shown and then hidden again
+				//if the branch was hidden upon form initialization, then shown and then hidden again
 				//difficult to detect. Maybe better to just replace clearInputs with setDefaults	
-				////console.debug('going to clear branch:');
-				////console.debug(branchNode);
 				branchNode.clearInputs('change');
 			}
 
@@ -1616,23 +1609,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			return (type == 'label') ? branchNode.children('input, select, textarea')
 				.attr('disabled', 'disabled') : branchNode.attr('disabled', 'disabled');
-	
-		}
+		};
 	};
 
-/**
- * Function: outputUpdate
- * 
- * description
- * 
- * Parameters:
- * 
- * @param {string=} changedNodeNames - [type/description]
- * 
- * Returns:
- * 
- *   return description
- */
+	$.extend(FormHTML.prototype.Branch.prototype, FormHTML.prototype);
+
+
+	/**
+	 * Updates output values, optionally filtered by those values that contain a changed node name
+	 * 
+	 * @param  {string=} changedNodeNames Space-separated node names that (may have changed)
+	 */
 	FormHTML.prototype.outputUpdate = function(changedNodeNames){
 		var i, $inputNode, contextPath, contextIndex, expr, namesArr, cleverSelector, 
 			that=this,
@@ -1644,8 +1631,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * delay in executing the code below, the issue was resolved. To be properly fixed later...
 		 */	
 		setTimeout(function(){
-
-			console.log('updating active outputs that contain: '+changedNodeNames);
+			//console.log('updating active outputs that contain: '+changedNodeNames);
 			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 			cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
 			for (i=0 ; i<namesArr.length ; i++){
@@ -2121,8 +2107,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				 * [updateInputs description]
 				 * @param  {number} lat [description]
 				 * @param  {number} lng [description]
-				 * @param  {(string|number)} alt [description]
-				 * @param  {(string|number)} acc [description]
+				 * @param  {?(string|number)} alt [description]
+				 * @param  {?(string|number)} acc [description]
 				 * @param  {string=} ev  [description]
 				 */
 				function updateInputs(lat, lng, alt, acc, ev){
@@ -2527,10 +2513,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
 				}
 				
-				console.log('data.set validation returned valid: '+valid);
+				//console.log('data.set validation returned valid: '+valid);
 				//additional check for 'required'
 				valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
-				console.log('after "required" validation valid is: '+valid);
+				//console.log('after "required" validation valid is: '+valid);
 				if (typeof valid !== 'undefined' && valid !== null){
 					return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
 				}

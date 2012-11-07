@@ -349,6 +349,45 @@ var formStr5 =
         '</fieldset>'+
     '</form>';
 
+var dataStr6 =
+    '<data id="TestGroupBranch" version="3" xmlns="http://rapaide.com/testGroupBranch">'+
+        '<nodeA/>'+
+            '<group>'+
+                '<nodeB/>'+
+            '</group>'+
+        '<nodeC/>'+
+    '</data>';
+
+var formStr6 =
+    '<form class="jr" id="TestGroupBranch">'+
+        '<div id="form-languages" style="display:none;" data-default-lang="">'+
+            '<a href="#" lang="en">'+
+                '<span>English</span>'+
+            '</a>'+
+        '</div>'+
+        '<fieldset class="">'+
+            '<label>'+
+                '<span lang="en">Enter yes to reveal group</span>'+
+                '<input name="/data/nodeA" type="text" data-type-xml="string"/>'+
+            '</label>'+
+        '</fieldset>'+
+        '<fieldset class="jr-group " name="/data/group" data-relevant="/data/nodeA = &quot;yes&quot">'+
+            '<h4><span lang="en">Group with relevant binding</span></h4>'+
+            '<label>'+
+                '<span lang="en">Enter 2 to reveal select1</span>'+
+                '<input name="/data/group/nodeB" type="number" data-type-xml="int"/>'+
+            '</label>'+
+        '</fieldset>'+
+        '<label class="jr-appearance-minimal">'+
+            '<span lang="en">Select 1 option</span>'+
+            '<select name="/data/nodeC" data-relevant="/data/group/nodeB = 2">'+
+                '<option value="">...</option>'+
+                '<option value="r">option 1</option>'+
+                '<option value="g">option 2</option>'+
+                '<option value="b">option 3</option>'+
+            '</select>'+
+        '</label>'+
+    '</form>';
 
 /**
  * var jrDataStrToEdit = '<?xml version="1.0" ?><Data_Types id="data_types"><formhub><uuid>98063bc21324412f9cf1cb1c2a16c66e</uuid></formhub><text/><textarea>Lots of text

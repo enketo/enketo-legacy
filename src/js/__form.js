@@ -1429,7 +1429,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$wrapNode.find('.hint').removeAttr('title');
 			}
 		});
-		$form.find('.hint[title]').tooltip({placement: 'right'}); //  use refresh() ??
+		$form.find('.hint[title]').tooltip('destroy').tooltip({placement: 'right'}); 
 	};
 
 	FormHTML.prototype.editStatus = {

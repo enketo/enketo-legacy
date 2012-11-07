@@ -507,8 +507,37 @@ describe('branching functionality', function(){
 		form.getFormO().$.find('[name="/data/group/nodeB"]').val(2).trigger('change');
 		expect(form.getFormO().$.find('[name="/data/nodeC"]').parents('.disabled').length).toEqual(0);
 	});
-
 });
 
+describe('required field validation', function(){
+	var form, $numberInput;
+
+	beforeEach(function() {
+		jQuery.fx.off = true;//turn jQuery animations off
+		form = new Form(formStr6, dataStr6);
+		form.init();
+		$numberInput = form.getFormO().$.find('[name="/data/group/nodeB"]');
+	});
+
+	it ("validates a DISABLED and required number field without a value", function(){
+		$numberInput.val('').trigger('change');
+		expect(form.getFormO().input.getWrapNodes($numberInput).hasClass('invalid')).toBe(false);
+	});
+
+	//see issue #144
+	it ("validates an enabled and required number field with value 0 and 1", function(){
+		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
+		$numberInput.val(0).trigger('change');
+		expect(form.getFormO().input.getWrapNodes($numberInput).hasClass('invalid')).toBe(false);
+		$numberInput.val(1).trigger('change');
+		expect(form.getFormO().input.getWrapNodes($numberInput).hasClass('invalid')).toBe(false);
+	});
+
+	it ("invalidates an enabled and required number field without a value", function(){
+		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
+		$numberInput.val('').trigger('change');
+		expect(form.getFormO().input.getWrapNodes($numberInput).hasClass('invalid')).toBe(true);
+	});
+});
 
 //TODO load a large complex form and detect console errors

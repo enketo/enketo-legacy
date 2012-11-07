@@ -1740,10 +1740,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * Enhancements to the basic built-in html behaviour of form controls
 	 *
 	 * In the future it would probably be wise to standardize this. E.g. each form control widget needs to:
+	 * - have a widget class attribute
 	 * - load default values
 	 * - have a 'swap language' function responding to a 'changelanguage' event
 	 * - disable when its parent branch is hidden (also when hidden upon initialization)
-	 * - enable when its parent branch is hidden 
+	 * - enable when its parent branch is revealed 
+	 * - allow setting an empty value (that empties node in instance)
 	 *
 	 * Considering the ever-increasing code size of the widgets and their dependence on the UI library being used,
 	 * it would be good to move them to a separate javascript file. 
@@ -1783,43 +1785,49 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		dateWidget : function(){
 			$form.find('input[type="date"]').each(function(){
-				var $p = $(this).parent('label'),
+				var $dateI = $(this),
+					$p = $(this).parent('label'),
 					startView = ($p.hasClass('jr-appearance-month-year')) ? 'year' :
 						($p.hasClass('jr-appearance-year')) ? 'decade' : 'month',
 					format = (startView === 'year') ? 'yyyy-mm' :
 						(startView === 'decade') ? 'yyyy' : 'yyyy-mm-dd',
-					$fakeDate = $('<div class="input-append date" >'+
-						'<input class="novalidate input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
-						'<span class="add-on"><i class="icon-calendar"></i></span>'+'</div>'),
-					$that = $(this);
-				$(this).hide().after($fakeDate);
-				console.debug('startView: '+startView);
-				$fakeDate.datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView})
-					.find('input').on('change changeDate', function(ev){
-						var value = $(this).val();
-						value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
-						//console.debug('converted date input to value: '+data.node().convert($(this).val(), 'date'));
-						$that.val(data.node().convert(value, 'date')).trigger('change');
-						return false;
-					});
+					$fakeDateI = $('<input class="ignore input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
+						'<span class="add-on"><i class="icon-calendar"></i></span>'+'</div>');
+				$p.addClass('widget input-append date');
+				$dateI.hide().after($fakeDateI);
+				//console.debug('startView: '+startView);
+				$fakeDateI.parent().datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView});
+				$fakeDateI.on('change changeDate', function(ev){
+					var value = $(this).val();
+					value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
+					//console.debug('converted date input to value: '+data.node().convert(value, 'date'));
+					$dateI.val(data.node().convert(value, 'date')).trigger('change');
+					return false;
+				});
 			});
 		},
 		timeWidget : function(){
-			//TODO USE $fakeTime instead for browsers with native timepicker (Opera?)
 			$form.find('input[type="time"]').each(function(){
-				var curVal = $(this).val();
-				$(this)
-					.addClass('timepicker-default input-small')
-					.after('<span class="add-on"><i class="icon-time"></i></span>')
-					.parent('label').addClass('input-append bootstrap-timepicker-component')
-					.find('input[type="text"]').timepicker({
-						defaultTime: (curVal.length > 0) ? 'value' : 'current', 
-						showMeridian: false
-					})
-					//widget may change value to defaultTime, so need to switch back
-					.val(curVal);
+				var $timeI = $(this),
+					$p = $(this).parent('label'),
+					timeVal = $(this).val(),
+					$fakeTimeI = $('<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'"/>'+
+						'<span class="add-on"><i class="icon-time"></i></span>');
+				
+				$p.addClass('widget input-append bootstrap-timepicker-component');
+				$timeI.hide().after($fakeTimeI);
+				$fakeTimeI.timepicker({
+					defaultTime: (timeVal.length > 0) ? 'value' : 'current',
+					showMeridian: false
+				}).val(timeVal);
+
+				$fakeTimeI.on('change', function(){
+					$timeI.val($(this).val()).trigger('change');
+					return false;
+				});
 			});
 		}, 
+		//Note: this widget doesn't offer a way to reset a datetime value in the instance to empty
 		dateTimeWidget : function(){
 			$form.find('input[type="datetime"]').each(function(){	
 				var $dateTimeI = $(this),
@@ -1833,10 +1841,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					dateVal = vals[0], 
 					timeVal = (vals[1] && vals[1].length > 4) ? vals[1].substring(0,5) : '',
 					$fakeDate = $('<div class="input-append date" >'+
-						'<input class="novalidate input-small" type="text" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
+						'<input class="ignore input-small" type="text" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
 						'<span class="add-on"><i class="icon-calendar"></i></span></div>'),
 					$fakeTime = $('<div class="input-append bootstrap-timepicker-component">'+
-						'<input class="novalidate timepicker-default input-small" type="text" value="'+timeVal+'"/>'+
+						'<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'"/>'+
 						'<span class="add-on"><i class="icon-time"></i></span></div>'),
 					$fakeDateI = $fakeDate.find('input'),
 					$fakeTimeI = $fakeTime.find('input');
@@ -1933,11 +1941,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$geoWrap.addClass('geopoint widget');
 				
 				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
-					'<input class="geo novalidate" name="search" type="text" placeholder="search"/>'+
-					'<label class="geo">latitude (x.y &deg;)<input class="novalidate" name="lat" type="number" step="0.0001" /></label>'+
-					'<label class="geo">longitude (x.y &deg;)<input class="novalidate" name="long" type="number" step="0.0001" /></label>'+
-					'<label class="geo">altitude (m)<input class="novalidate" name="alt" type="number" step="0.1" /></label>'+
-					'<label class="geo">accuracy (m)<input class="novalidate" name="acc" type="number" step="0.1" /></label>'+
+					'<input class="geo ignore" name="search" type="text" placeholder="search"/>'+
+					'<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
+					'<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
+					'<label class="geo">altitude (m)<input class="ignore" name="alt" type="number" step="0.1" /></label>'+
+					'<label class="geo">accuracy (m)<input class="ignore" name="acc" type="number" step="0.1" /></label>'+
 					'<button name="geodetect" type="button" class="btn btn-small">detect</button>'); 
 				$map = $geoWrap.find('.map-canvas');
 				$lat = $geoWrap.find('[name="lat"]');
@@ -2498,29 +2506,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//first prevent default submission, e.g. when text field is filled in and Enter key is pressed
 		$('form.jr').attr('onsubmit', 'return false;');
 
-		$form.on('change validate', 'input, select, textarea', function(event){ 
-			if ($(this).parents('.widget').length === 0){
-				n = that.input.getProps($(this));
-				//console.debug('change event detected trigger by element with following properties:');
-				//console.debug(n);
+		$form.on('change validate', 'input:not(.ignore), select:not(.ignore), textarea:not(.ignore)', function(event){
+			n = that.input.getProps($(this));
 
-				//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
-				if (event.type == 'validate'){
-					//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
-					valid = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
-				}
-				else{
-					valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
-				}
-				
-				//console.log('data.set validation returned valid: '+valid);
-				//additional check for 'required'
-				valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
-				//console.log('after "required" validation valid is: '+valid);
-				if (typeof valid !== 'undefined' && valid !== null){
-					return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
-				}
+			//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
+			if (event.type == 'validate'){
+				//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
+				valid = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
 			}
+			else{
+				valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
+			}
+			
+			//console.log('data.set validation returned valid: '+valid);
+			//additional check for 'required'
+			valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
+			//console.log('after "required" validation valid is: '+valid);
+			if (typeof valid !== 'undefined' && valid !== null){
+				return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
+			}			
 		});	
 		
 		//nodeNames is comma-separated list as a string
@@ -2626,7 +2630,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 		//the above still leaves out elements that are not disabled directly but have disabled parents
 		//this is dealt with in the validate event handler
-		$form.find('input, select, textarea').not('.novalidate').trigger('validate');
+		$form.find('input, select, textarea').not('.ignore').trigger('validate');
 		return this.isValid();
 	};
 

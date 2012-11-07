@@ -426,7 +426,7 @@ $input-max-width: 80%;
   }}
   label, legend, .trigger {
     font-size: .8em; }
-  input:not([type="radio"]):not([type="checkbox"]), textarea, .bootstrap-select, .bootstrap-multiselect{
+  :not(.widget) input:not([type="radio"]):not([type="checkbox"]), textarea{
     float: left;
     display: inline-block;
     margin: 8px 0 0 0;
@@ -494,19 +494,19 @@ $input-max-width: 80%;
     text-align: center;
     margin: 10px 0;
     opacity: 0.5; }
-  .date input{
-    float: left;
-    width: $input-min-width;}
+  .date, .bootstrap-timepicker-component {
+    &.input-append .active{
+      background: none;
+      width: $input-min-width;}
+    input{
+      width: $input-min-width;} }
   .datetimepicker{
     float: left;
     .bootstrap-timepicker-component{
-      display: inline-block;
-      }
+      display: inline-block;}
     .date{
       display: inline-block;
-      margin-right: 10px;
-      /*input{
-        width: $input-min-width;} */} }
+      margin-right: 10px; } }
   .geopoint{ 
     position: relative;
     height: 370px;
@@ -560,10 +560,6 @@ $input-max-width: 80%;
       height: 40px;
       width: $input-min-width + 16px;
       margin-top: 10px;} }
-  .bootstrap-timepicker-component{
-    &.input-append .active{
-      background: none;
-      border: none; } }
   .bootstrap-select .dropdown-toggle{
     line-height: $input-height;
     min-width: $input-min-width - 14px;

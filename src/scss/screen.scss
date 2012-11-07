@@ -426,7 +426,7 @@ $input-max-width: 80%;
   }}
   label, legend, .trigger {
     font-size: .8em; }
-  :not(.widget) input:not([type="radio"]):not([type="checkbox"]), textarea{
+  input:not([type="radio"]):not([type="checkbox"]), textarea{
     float: left;
     display: inline-block;
     margin: 8px 0 0 0;
@@ -512,11 +512,7 @@ $input-max-width: 80%;
     height: 370px;
     $map-height: 275px;
     .map-canvas, input[name="search"]{
-      width: 380px;
-      //float: right;
-      //border: 1px solid #ccc;
-      //box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-      /*border: 1px solid $shadow;*/ }
+      width: 380px; }
     .map-canvas{
       position: absolute;
       right: 0;

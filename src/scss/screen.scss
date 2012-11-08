@@ -194,7 +194,9 @@ label#data-template-show {
     text-align: center;
     height: 150px;
     #input-switcher{
-      margin-top: 10px; }
+      position: absolute;
+      top: 30px;
+      left: 275px;}
     label {
       text-align: center;
       margin-top: 20px;

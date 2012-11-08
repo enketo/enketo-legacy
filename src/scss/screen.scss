@@ -1,4 +1,3 @@
-/*@import "compass/reset";*/
 @font-face{
   font-family: 'Open Sans';
   src: local('☺'),
@@ -6,17 +5,13 @@
 }
 
 /******* COLORS **********/
-$overlay-bg: #5c5c5c; /*darker gray *///
-$a-hvr: #381f00; /*very dark brown*/
 $bg: #ddd;
 $groupline: #bbbbbb;
 $shadow: #cccccc; /*light gray*/
 $title: #CE4F07;
 $content_border: #E7E7E7;
-$drawer_border: #D6E9C6;
-
+$drawer_border: #aaaaaa;
 $pagecolor: #333333;
-/*$inverse: #999999;*/
 
 @mixin transition-slow{
   -webkit-transition: all 1s ease-out;
@@ -36,8 +31,6 @@ $pagecolor: #333333;
 /** BOOTSTRAP PLUGINS **/
 @import url(../libraries/jdewit-bootstrap-timepicker/compiled/timepicker.css);
 @import url(../libraries/eternicode-bootstrap-datepicker/css/datepicker.css);
-//@import url(../libraries/silviomoreto-bootstrap-select/bootstrap-select.css);
-//@import url(../libraries/davidstutz-bootstrap-multiselect/css/bootstrap-multiselect.css);
 /************************/
 
 
@@ -59,7 +52,8 @@ h2, h3, h4 {
   text-align: center;}
 
 progress{
-  text-align: center;}
+  display: block;
+  margin: 10px auto;}
 
 /*:not(.jr) input{
   min-height: 30px;}*/
@@ -114,7 +108,6 @@ progress{
   z-index: 15;
   border: 1px solid $drawer_border;
   border-radius: 0 4px 4px 0;
-  border-color: #aaaaaa;
   -moz-transition: margin 0.8s ease-out;
   -webkit-transition: margin 0.8s ease-out;
   transition: margin 0.8s ease-out;
@@ -201,14 +194,8 @@ label#data-template-show {
     text-align: center;
     height: 150px;
     #input-switcher{
-      //position: absolute;
-      //top: 130px;
-      //left: ($content-width - 57px) / 2;
       margin-top: 10px; }
     label {
-      //position: absolute;
-      //top: 130px;
-      //left: 5%;
       text-align: center;
       margin-top: 20px;
       padding: 0 5%;
@@ -218,10 +205,7 @@ label#data-template-show {
     label>span {
       display: block; }
     .fakefileinput span{
-      /*font: 12px sans-serif;
-      font-weight: 600;*/
-      vertical-align: middle;
-      /*opacity: 0.5;*/}
+      vertical-align: middle;}
     input, .fakefileinput {
       position: absolute;
       top: 50px;
@@ -267,21 +251,12 @@ label#data-template-show {
   input{
     width: 300px; } }
 
-/*footer.ui-widget {
-  margin-top: 15px;
-  margin-bottom: 20px;
-  font-size: 10px;
-  a {
-    text-decoration: none;
-    color: $overlay-bg; }
-  color: $overlay-bg; }
- */
-
 /***************************
  ** FEEDBACK BAR & PAGE **
  ***************************/
 
 #feedback-bar {
+  @include transition-slow;
   position: fixed;
   z-index: 13;
   top: -100px;
@@ -315,37 +290,31 @@ label#data-template-show {
 }
 
 #page {
+  $border: 1px solid #888;
+  @include transition-slow;
   position: absolute;
   z-index: 12;
   top: -320px;
   min-height: 250px;
   width: 100%;
   background-color: $pagecolor;
-  border-top: 1px solid #888;
-  border-bottom: 2px solid black;
-  border-left: none;
-  border-right: none; 
+  border: none;
+  border-top: $border;
+  hr {
+    position: absolute;
+    margin: 0;
+    bottom: 1px;
+    height: 1px;
+    width: 100%;
+    border: none;
+    border-top: $border;}
   .content {
     margin: 2em;
     p {
       &:first-child {
         margin-top: 0; }
       &:last-child {
-        margin-bottom: 0; } }
-    /*a {
-      color: $button-bg;
-      text-decoration: none;
-      &:link{
-        color: $button-bg; }
-      &:hover, &:focus{
-        text-decoration: underline;
-        color: $highlight-bg;} 
-      &:active {
-        color: $header-txt;
-        text-decoration: none; } } } 
-    /*.ui-icon {
-      float: left;
-      margin-right: 10px; } }*/ }
+        margin-bottom: 0; } } }
   .close {
     position: absolute;
     right: 20px;
@@ -356,125 +325,6 @@ label#data-template-show {
     width: 50%;
     float: left;
     height: 100%; } }
-/*
-#settings {
-  h3 {
-    text-align: left; }
-  input {
-    display: block;
-    float: left;
-    margin-right: 10px;
-    margin-left: 0; }
-  label {
-    display: block;
-    margin-bottom: 5px; }
-  ul {
-    margin-left: 0;
-    list-style: none; } }
-
-#records-saved {
-  width: 45%;
-  float: left;
-
-  h3 {
-    }
-  .scroll-list{
-    border-color: white;
-    min-height: 150px;
-    max-height: 300px; 
-    overflow: auto;
-  } }
-
-#form-list{
-  ol{
-    margin: 0px;
-    li {
-      display: block;
-      text-align: center;
-      a{
-        font-size: 12px;
-        width: 100%; } } } }
-
-.scroll-list {
-  position: relative;
-  border: 1px solid; 
-
-  margin: 0;
-  padding: 15px;
-
-  >div {
-    position: relative;
-    width: 100%;
-    height: 100%; 
-    ol {
-      position: relative;
-      top: 0;
-      left: 0;
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      li {
-        list-style: none;
-        margin: 3px;
-        padding: 0.5em;
-        line-height: 1.3em;
-        height: 1em;
-        font-size: 0.8em;
-        overflow: hidden;
-      
-        .date {
-          font-size: .6em;
-          float: right; }
-        .name {}
-        &.no-click {
-          font-style: italic;
-          text-align: center;
-          margin: 40px; } } } } }
-
-#records-summary {
-  margin: 0;
-  margin-top: 5px;
-
-  font-size: 0.6em;
-  text-align: center;
-  .ui-icon {
-    display: inline-block;
-    float: none; }
-  .ui-icon-pencil {
-    margin-left: 3em; } }
-
-#records .column {
-  &.middle {
-    width: 10%;
-    height: 100%; }
-  &.right {
-
-    width: 45%;
-    float: right;
-    text-align: center;
-    margin-top: 30px;
-    margin-right: -10px;
-     }
-  .ui-icon {
-    display: inline-block;
-    float: none; } }
-
-#records-buttons {
-
-  margin: 20% auto 5% auto;
-  button {
-     } }
-
-#records-force-upload-info, #records-export-info {
-  display: none;
-  font-size: .8em;
-  margin: 0 2em;
-  line-height: 1.5em; }
-
-/* these transitions should match */
-#feedback-bar, #main, #page {
-    @include transition-slow }
 
 /**************************
 ****    SURVEY FORM    ****
@@ -495,13 +345,11 @@ label#data-template-show {
   a {
   &:link{
   float: right;
-  padding-left: 10px;
-  color: $overlay-bg;}
+  padding-left: 10px;}
   &:not(.active):hover {
-    color: $a-hvr;
     text-decoration: underline; }
   &.active {
-    color: $a-hvr;
+    color: $drawer_border;
     text-decoration: none; } } }
 
 .tab-content #form-languages {
@@ -579,7 +427,7 @@ $input-max-width: 80%;
   }}
   label, legend, .trigger {
     font-size: .8em; }
-  input:not([type="radio"]):not([type="checkbox"]), textarea, .bootstrap-select, .bootstrap-multiselect{
+  input:not([type="radio"]):not([type="checkbox"]), textarea{
     float: left;
     display: inline-block;
     margin: 8px 0 0 0;
@@ -647,29 +495,25 @@ $input-max-width: 80%;
     text-align: center;
     margin: 10px 0;
     opacity: 0.5; }
-  .date input{
-    float: left;
-    width: $input-min-width;}
+  .date, .bootstrap-timepicker-component {
+    &.input-append .active{
+      background: none;
+      width: $input-min-width;}
+    input{
+      width: $input-min-width;} }
   .datetimepicker{
     float: left;
     .bootstrap-timepicker-component{
-      display: inline-block;
-      }
+      display: inline-block;}
     .date{
       display: inline-block;
-      margin-right: 10px;
-      /*input{
-        width: $input-min-width;} */} }
+      margin-right: 10px; } }
   .geopoint{ 
     position: relative;
     height: 370px;
     $map-height: 275px;
     .map-canvas, input[name="search"]{
-      width: 380px;
-      //float: right;
-      //border: 1px solid #ccc;
-      //box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-      /*border: 1px solid $shadow;*/ }
+      width: 380px; }
     .map-canvas{
       position: absolute;
       right: 0;
@@ -713,10 +557,6 @@ $input-max-width: 80%;
       height: 40px;
       width: $input-min-width + 16px;
       margin-top: 10px;} }
-  .bootstrap-timepicker-component{
-    &.input-append .active{
-      background: none;
-      border: none; } }
   .bootstrap-select .dropdown-toggle{
     line-height: $input-height;
     min-width: $input-min-width - 14px;

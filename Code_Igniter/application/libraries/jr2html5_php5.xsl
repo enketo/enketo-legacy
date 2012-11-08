@@ -78,7 +78,7 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 </script>
             </head>-->
             <root>
-	            <form class="jr">
+	            <form class="jr" autocomplete="off">
 	                <xsl:attribute name="id">
                         <xsl:choose>
                             <xsl:when test="/h:html/h:head/xf:model/xf:instance[1]/child::node()/@id">
@@ -388,6 +388,7 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 </xsl:choose>
             </xsl:variable>
             <xsl:element name="{$element}">
+                <xsl:attribute name="autocomplete">off</xsl:attribute>
                 <!-- ****** ACCEPT ****** -->
                 <xsl:if test="$html_type = 'file'">
                     <xsl:if test="@mediatype">

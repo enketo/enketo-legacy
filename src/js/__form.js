@@ -1019,6 +1019,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form = $(selector);
 		//used for testing
 		this.$ = $form;
+		this.branch = new this.Branch();
 	}
 
 	FormHTML.prototype.init = function(){
@@ -1084,72 +1085,72 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			paths = [],
 			total = {},
 			$stats = $form.find('#stats');
-		total.jrItem= parseInt($stats.find('[id="jrItem"]').text(), 10);
-		total.jrInput= parseInt($stats.find('[id="jrInput"]').text(), 10);
-		total.jrUpload = parseInt($stats.find('[id="jrUpload"]').text(), 10);
-		total.jrTrigger = parseInt($stats.find('[id="jrTrigger"]').text(), 10);
-		total.jrConstraint = parseInt($stats.find('[id="jrConstraint"]').text(), 10);
-		total.jrRelevant = parseInt($stats.find('[id="jrRelevant"]').text(), 10);
-		total.jrCalculate = parseInt($stats.find('[id="jrCalculate"]').text(), 10);
-		total.jrPreload = parseInt($stats.find('[id="jrPreload"]').text(), 10);
 
-		//console.log('checking for general transformation or xml form errors by comparing stats');
-		//$form.find('#stats span').each(function(){
-		//	total[$(this).attr('id')] = parseInt($(this).text(),10);
-		//});
-		/** @type {number} */
-		total.hRadio = $form.find('input[type="radio"]').length;
-		total.hCheck = $form.find('input[type="checkbox"]').length;
-		total.hSelect = $form.find('select').length;
-		total.hOption = $form.find('option[value!=""]').length;
-		total.hInputNotRadioCheck = $form.find('textarea, input:not([type="radio"],[type="checkbox"])').length;
-		total.hTrigger = $form.find('.trigger').length;
-		total.hRelevantNotRadioCheck = $form.find('[data-relevant]:not([type="radio"],[type="checkbox"])').length;
-		total.hRelevantRadioCheck = $form.find('input[data-relevant][type="radio"],input[data-relevant][type="checkbox"]').parent().parent('fieldset').length;
-		total.hConstraintNotRadioCheck = $form.find('[data-constraint]:not([type="radio"],[type="checkbox"])').length;
-		total.hConstraintRadioCheck = $form.find('input[data-constraint][type="radio"],input[data-constraint][type="checkbox"]').parent().parent('fieldset').length;
-		total.hCalculate = $form.find('[data-calculate]').length;
-		total.hPreload = $form.find('#jr-preload-items input').length;
+		if ($stats.length > 0){
+			total.jrItem= parseInt($stats.find('[id="jrItem"]').text(), 10);
+			total.jrInput= parseInt($stats.find('[id="jrInput"]').text(), 10);
+			total.jrUpload = parseInt($stats.find('[id="jrUpload"]').text(), 10);
+			total.jrTrigger = parseInt($stats.find('[id="jrTrigger"]').text(), 10);
+			total.jrConstraint = parseInt($stats.find('[id="jrConstraint"]').text(), 10);
+			total.jrRelevant = parseInt($stats.find('[id="jrRelevant"]').text(), 10);
+			total.jrCalculate = parseInt($stats.find('[id="jrCalculate"]').text(), 10);
+			total.jrPreload = parseInt($stats.find('[id="jrPreload"]').text(), 10);
 
-		//console.debug(total);
+			//console.log('checking for general transformation or xml form errors by comparing stats');
+			//$form.find('#stats span').each(function(){
+			//	total[$(this).attr('id')] = parseInt($(this).text(),10);
+			//});
+			/** @type {number} */
+			total.hRadio = $form.find('input[type="radio"]').length;
+			total.hCheck = $form.find('input[type="checkbox"]').length;
+			total.hSelect = $form.find('select').length;
+			total.hOption = $form.find('option[value!=""]').length;
+			total.hInputNotRadioCheck = $form.find('textarea, input:not([type="radio"],[type="checkbox"])').length;
+			total.hTrigger = $form.find('.trigger').length;
+			total.hRelevantNotRadioCheck = $form.find('[data-relevant]:not([type="radio"],[type="checkbox"])').length;
+			total.hRelevantRadioCheck = $form.find('input[data-relevant][type="radio"],input[data-relevant][type="checkbox"]').parent().parent('fieldset').length;
+			total.hConstraintNotRadioCheck = $form.find('[data-constraint]:not([type="radio"],[type="checkbox"])').length;
+			total.hConstraintRadioCheck = $form.find('input[data-constraint][type="radio"],input[data-constraint][type="checkbox"]').parent().parent('fieldset').length;
+			total.hCalculate = $form.find('[data-calculate]').length;
+			total.hPreload = $form.find('#jr-preload-items input').length;
 
-		if ( total.jrItem !== ( total.hOption + total.hRadio + total.hCheck )  ) {
-			console.error(' total select fields differs between XML form and HTML form');
-		}
-		if ( ( total.jrInput + total.jrUpload ) !== ( total.hInputNotRadioCheck - total.hCalculate - total.hPreload ) ){
-			console.error(' total amount of input/upload fields differs between XML form and HTML form');
-		}
-		if ( total.jrTrigger != total.hTrigger ){
-			console.error(' total triggers differs between XML form and HTML form');
-		}
-		if ( total.jrRelevant != ( total.hRelevantNotRadioCheck + total.hRelevantRadioCheck)){
-			console.error(' total amount of branches differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form)');
-		}
-		if ( total.jrConstraint != ( total.hConstraintNotRadioCheck + total.hConstraintRadioCheck)){
-			console.error(' total amount of constraints differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form).'+
-				' Note that constraints on &lt;trigger&gt; elements are ignored in the transformation and could cause this error too.');
-		}
-		if ( total.jrCalculate != total.hCalculate ){
-			console.error(' total amount of calculated items differs between XML form and HTML form');
-		}
-		if ( total.jrPreload != total.hPreload ){
-			console.error(' total amount of preload items differs between XML form and HTML form');
-		}
-		//probably resource intensive: check if all nodes mentioned in name attributes exist in $data
-		
-		$form.find('[name]').each(function(){
-			if ($.inArray($(this).attr('name'), paths)) {
-				paths.push($(this).attr('name'));
+			if ( total.jrItem !== ( total.hOption + total.hRadio + total.hCheck )  ) {
+				console.error(' total select fields differs between XML form and HTML form');
 			}
-		});
-		//s//console.debug(paths);
-		for (i=0 ; i<paths.length ; i++){
-			////console.debug('checking: '+paths[i]);
-			if (data.node(paths[i]).get().length < 1){
-				console.error('Found name attribute: '+paths[i]+' that does not have a corresponding data node. Transformation error or XML form error (relative nodesets perhaps?');
+			if ( ( total.jrInput + total.jrUpload ) !== ( total.hInputNotRadioCheck - total.hCalculate - total.hPreload ) ){
+				console.error(' total amount of input/upload fields differs between XML form and HTML form');
+			}
+			if ( total.jrTrigger != total.hTrigger ){
+				console.error(' total triggers differs between XML form and HTML form');
+			}
+			if ( total.jrRelevant != ( total.hRelevantNotRadioCheck + total.hRelevantRadioCheck)){
+				console.error(' total amount of branches differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form)');
+			}
+			if ( total.jrConstraint != ( total.hConstraintNotRadioCheck + total.hConstraintRadioCheck)){
+				console.error(' total amount of constraints differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form).'+
+					' Note that constraints on &lt;trigger&gt; elements are ignored in the transformation and could cause this error too.');
+			}
+			if ( total.jrCalculate != total.hCalculate ){
+				console.error(' total amount of calculated items differs between XML form and HTML form');
+			}
+			if ( total.jrPreload != total.hPreload ){
+				console.error(' total amount of preload items differs between XML form and HTML form');
+			}
+			//probably resource intensive: check if all nodes mentioned in name attributes exist in $data
+			
+			$form.find('[name]').each(function(){
+				if ($.inArray($(this).attr('name'), paths)) {
+					paths.push($(this).attr('name'));
+				}
+			});
+			//s//console.debug(paths);
+			for (i=0 ; i<paths.length ; i++){
+				////console.debug('checking: '+paths[i]);
+				if (data.node(paths[i]).get().length < 1){
+					console.error('Found name attribute: '+paths[i]+' that does not have a corresponding data node. Transformation error or XML form error (relative nodesets perhaps?');
+				}
 			}
 		}
-
 	};
 
 	//this may not be the most efficient. Could also be implemented like Data.Nodeset;
@@ -1429,7 +1430,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$wrapNode.find('.hint').removeAttr('title');
 			}
 		});
-		$form.find('.hint[title]').tooltip({placement: 'right'}); //  use refresh() ??
+		$form.find('.hint[title]').tooltip('destroy').tooltip({placement: 'right'}); 
 	};
 
 	FormHTML.prototype.editStatus = {
@@ -1474,8 +1475,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	// If this becomes more complex it is probably better to create a branch object:
 	// branch.anim, branch.filter, branch.duration, branch.update, branch.init() //for eventhandlers
 	// this would actually be more consistent too as it's more modular like widgets, repeats, preloads
-	FormHTML.prototype.branch = {
-		init: function(){
+	/**
+	 * Branch Class (inherits properties of FormHTML Class) is used to manage braching
+	 *
+	 * @constructor
+	 */
+	FormHTML.prototype.Branch = function(){
+
+		/**
+		 * Initializes branches, sets delegated event handlers
+		 */
+		this.init = function(){
 			//console.debug('initializing branches');
 			$form.on('click', '.jr-branch', function(event){
 				var $that = $(this);
@@ -1491,17 +1501,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 							$that.next().fixLegends();
 						});
 					}
-				}
-				
+				}	
 			});
 			this.update();
-		},
+		};
 		/**
-		 * updates branches based on changed input fields
+		 * Updates branches based on changed input fields
+		 * 
 		 * @param  {string=} changedNodeNames [description]
 		 * @return {?boolean}                  [description]
 		 */
-		update: function(changedNodeNames){
+		this.update = function(changedNodeNames){
 			var i, p, branchNode, result, namesArr, cleverSelector,			
 				alreadyCovered = {},
 				that=this;
@@ -1512,35 +1522,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			for (i=0 ; i<namesArr.length ; i++){
 				cleverSelector.push('[data-relevant*="'+namesArr[i]+'"]');
 			}
-
-			//console.debug('Updating branches for expressions that contain: '+namesArr.join());
 			//console.debug('the clever selector created: '+cleverSelector.join());
 
 			$form.find(cleverSelector.join()).each(function(){
-				//VERY WRONG TO USE form HERE!!!! FIX THIS like this: http://jsfiddle.net/MartijnR/DWqHu/41/
-				//one could argue that I should not use the input object here as a branch is not always an input (sometimes a group)		
-				//console.debug('input node with branching logic:');
-				//console.debug($(this));
-				p = form.input.getProps($(this));
-				branchNode = form.input.getWrapNodes($(this));
-				
-				//name = $(this).attr('name');
+
+				p = that.input.getProps($(this));
+				branchNode = that.input.getWrapNodes($(this));
 				
 				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[p.path]){
 					return;
 				}
-				//console.debug('properties of branch input node:');
-				//console.debug(p);
-				////console.debug(branchNode);
-
-				//type = $(this).prop('nodeName').toLowerCase();
-				//type = (type == 'input') ? $(this).attr('type').toLowerCase() : type;
-				
-				//expr = $(this).attr('data-relevant'); //"5 = 5";
-
-				//branchNode = (type == 'fieldset') ? $(this) : 
-				//	(type == 'radio' || type == 'checkbox') ? $(this).parent().parent('fieldset') : $(this).parent('label');
-
 				if(branchNode.length !== 1){
 					console.error('could not find branch node');
 					return;
@@ -1571,39 +1562,41 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		/**
 		 * Enables and reveals a branch node/group
-		 * @param  {jQuery} branchNode [description]
+		 * 
+		 * @param  {jQuery} branchNode The jQuery object to reveal and enable
 		 * @return {jQuery}            [description]
 		 */
-		enable : function(branchNode){
+		this.enable = function(branchNode){
 			var type;
 			console.debug('enabling branch');
 
 			branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
 			
-			//branchNode.removeAttr('disabled');
 			branchNode.removeClass('disabled').show(1000, function(){$(this).fixLegends();} );
 
 			type = branchNode.prop('nodeName').toLowerCase();
 
 			return (type == 'label') ? branchNode.children('input, select, textarea')
 				.removeAttr('disabled') : branchNode.removeAttr('disabled');
-		},
-		disable : function(branchNode){
+		};
+		/**
+		 * Disables and hides a branch node/group
+		 * 
+		 * @param  {jQuery} branchNode The jQuery object to hide and disable
+		 * @return {jQuery}            [description]
+		 */
+		this.disable = function(branchNode){
 			var type, 
-				branchClue = '<div class="jr-branch"></div>'; //ui-corner-all
+				branchClue = '<div class="jr-branch"></div>'; 
 
 			console.debug('disabling branch');
-			//add disabled class (to style) and hide
-			branchNode.addClass('disabled').hide(1000); //HUH??? Hide() DOESN"T WORK WITH PARAMETERS!
-			//NOTE: DATA IS NOT REMOVED WHICH IS WRONG!
+			branchNode.addClass('disabled').hide(1000); 
 			
 			//if the branch was previously enabled
 			if (branchNode.prev('.jr-branch').length === 0){
 				branchNode.before(branchClue);
-				//if the branch was hidden upon loading, then shown and then hidden again
+				//if the branch was hidden upon form initialization, then shown and then hidden again
 				//difficult to detect. Maybe better to just replace clearInputs with setDefaults	
-				////console.debug('going to clear branch:');
-				////console.debug(branchNode);
 				branchNode.clearInputs('change');
 			}
 
@@ -1616,23 +1609,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			return (type == 'label') ? branchNode.children('input, select, textarea')
 				.attr('disabled', 'disabled') : branchNode.attr('disabled', 'disabled');
-	
-		}
+		};
 	};
 
-/**
- * Function: outputUpdate
- * 
- * description
- * 
- * Parameters:
- * 
- * @param {string=} changedNodeNames - [type/description]
- * 
- * Returns:
- * 
- *   return description
- */
+	$.extend(FormHTML.prototype.Branch.prototype, FormHTML.prototype);
+
+
+	/**
+	 * Updates output values, optionally filtered by those values that contain a changed node name
+	 * 
+	 * @param  {string=} changedNodeNames Space-separated node names that (may have changed)
+	 */
 	FormHTML.prototype.outputUpdate = function(changedNodeNames){
 		var i, $inputNode, contextPath, contextIndex, expr, namesArr, cleverSelector, 
 			that=this,
@@ -1644,8 +1631,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * delay in executing the code below, the issue was resolved. To be properly fixed later...
 		 */	
 		setTimeout(function(){
-
-			console.log('updating active outputs that contain: '+changedNodeNames);
+			//console.log('updating active outputs that contain: '+changedNodeNames);
 			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 			cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
 			for (i=0 ; i<namesArr.length ; i++){
@@ -1754,10 +1740,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * Enhancements to the basic built-in html behaviour of form controls
 	 *
 	 * In the future it would probably be wise to standardize this. E.g. each form control widget needs to:
+	 * - have a widget class attribute
 	 * - load default values
 	 * - have a 'swap language' function responding to a 'changelanguage' event
 	 * - disable when its parent branch is hidden (also when hidden upon initialization)
-	 * - enable when its parent branch is hidden 
+	 * - enable when its parent branch is revealed 
+	 * - allow setting an empty value (that empties node in instance)
 	 *
 	 * Considering the ever-increasing code size of the widgets and their dependence on the UI library being used,
 	 * it would be good to move them to a separate javascript file. 
@@ -1797,43 +1785,49 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		dateWidget : function(){
 			$form.find('input[type="date"]').each(function(){
-				var $p = $(this).parent('label'),
+				var $dateI = $(this),
+					$p = $(this).parent('label'),
 					startView = ($p.hasClass('jr-appearance-month-year')) ? 'year' :
 						($p.hasClass('jr-appearance-year')) ? 'decade' : 'month',
 					format = (startView === 'year') ? 'yyyy-mm' :
 						(startView === 'decade') ? 'yyyy' : 'yyyy-mm-dd',
-					$fakeDate = $('<div class="input-append date" >'+
-						'<input class="novalidate input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
-						'<span class="add-on"><i class="icon-calendar"></i></span>'+'</div>'),
-					$that = $(this);
-				$(this).hide().after($fakeDate);
-				console.debug('startView: '+startView);
-				$fakeDate.datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView})
-					.find('input').on('change changeDate', function(ev){
-						var value = $(this).val();
-						value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
-						//console.debug('converted date input to value: '+data.node().convert($(this).val(), 'date'));
-						$that.val(data.node().convert(value, 'date')).trigger('change');
-						return false;
-					});
+					$fakeDateI = $('<input class="ignore input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
+						'<span class="add-on"><i class="icon-calendar"></i></span>'+'</div>');
+				$p.addClass('widget input-append date');
+				$dateI.hide().after($fakeDateI);
+				//console.debug('startView: '+startView);
+				$fakeDateI.parent().datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView});
+				$fakeDateI.on('change changeDate', function(ev){
+					var value = $(this).val();
+					value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
+					//console.debug('converted date input to value: '+data.node().convert(value, 'date'));
+					$dateI.val(data.node().convert(value, 'date')).trigger('change');
+					return false;
+				});
 			});
 		},
 		timeWidget : function(){
-			//TODO USE $fakeTime instead for browsers with native timepicker (Opera?)
 			$form.find('input[type="time"]').each(function(){
-				var curVal = $(this).val();
-				$(this)
-					.addClass('timepicker-default input-small')
-					.after('<span class="add-on"><i class="icon-time"></i></span>')
-					.parent('label').addClass('input-append bootstrap-timepicker-component')
-					.find('input[type="time"]').timepicker({
-						defaultTime: (curVal.length > 0) ? 'value' : 'current', 
-						showMeridian: false
-					})
-					//widget may change value to defaultTime, so need to switch back
-					.val(curVal);
+				var $timeI = $(this),
+					$p = $(this).parent('label'),
+					timeVal = $(this).val(),
+					$fakeTimeI = $('<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
+						'<span class="add-on"><i class="icon-time"></i></span>');
+				
+				$p.addClass('widget input-append bootstrap-timepicker-component');
+				$timeI.hide().after($fakeTimeI);
+				$fakeTimeI.timepicker({
+					defaultTime: (timeVal.length > 0) ? 'value' : 'current',
+					showMeridian: false
+				}).val(timeVal);
+
+				$fakeTimeI.on('change', function(){
+					$timeI.val($(this).val()).trigger('change');
+					return false;
+				});
 			});
 		}, 
+		//Note: this widget doesn't offer a way to reset a datetime value in the instance to empty
 		dateTimeWidget : function(){
 			$form.find('input[type="datetime"]').each(function(){	
 				var $dateTimeI = $(this),
@@ -1847,10 +1841,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					dateVal = vals[0], 
 					timeVal = (vals[1] && vals[1].length > 4) ? vals[1].substring(0,5) : '',
 					$fakeDate = $('<div class="input-append date" >'+
-						'<input class="novalidate input-small" type="text" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
+						'<input class="ignore input-small" type="text" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
 						'<span class="add-on"><i class="icon-calendar"></i></span></div>'),
 					$fakeTime = $('<div class="input-append bootstrap-timepicker-component">'+
-						'<input class="novalidate timepicker-default input-small" type="time" value="'+timeVal+'"/>'+
+						'<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm"/>'+
 						'<span class="add-on"><i class="icon-time"></i></span></div>'),
 					$fakeDateI = $fakeDate.find('input'),
 					$fakeTimeI = $fakeTime.find('input');
@@ -1947,11 +1941,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$geoWrap.addClass('geopoint widget');
 				
 				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
-					'<input class="geo novalidate" name="search" type="text" placeholder="search"/>'+
-					'<label class="geo">latitude (x.y &deg;)<input class="novalidate" name="lat" type="number" step="0.0001" /></label>'+
-					'<label class="geo">longitude (x.y &deg;)<input class="novalidate" name="long" type="number" step="0.0001" /></label>'+
-					'<label class="geo">altitude (m)<input class="novalidate" name="alt" type="number" step="0.1" /></label>'+
-					'<label class="geo">accuracy (m)<input class="novalidate" name="acc" type="number" step="0.1" /></label>'+
+					'<input class="geo ignore" name="search" type="text" placeholder="search"/>'+
+					'<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
+					'<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
+					'<label class="geo">altitude (m)<input class="ignore" name="alt" type="number" step="0.1" /></label>'+
+					'<label class="geo">accuracy (m)<input class="ignore" name="acc" type="number" step="0.1" /></label>'+
 					'<button name="geodetect" type="button" class="btn btn-small">detect</button>'); 
 				$map = $geoWrap.find('.map-canvas');
 				$lat = $geoWrap.find('[name="lat"]');
@@ -2121,8 +2115,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				 * [updateInputs description]
 				 * @param  {number} lat [description]
 				 * @param  {number} lng [description]
-				 * @param  {(string|number)} alt [description]
-				 * @param  {(string|number)} acc [description]
+				 * @param  {?(string|number)} alt [description]
+				 * @param  {?(string|number)} acc [description]
 				 * @param  {string=} ev  [description]
 				 */
 				function updateInputs(lat, lng, alt, acc, ev){
@@ -2512,29 +2506,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//first prevent default submission, e.g. when text field is filled in and Enter key is pressed
 		$('form.jr').attr('onsubmit', 'return false;');
 
-		$form.on('change validate', 'input, select, textarea', function(event){ 
-			if ($(this).parents('.widget').length === 0){
-				n = that.input.getProps($(this));
-				//console.debug('change event detected trigger by element with following properties:');
-				//console.debug(n);
+		$form.on('change validate', 'input:not(.ignore), select:not(.ignore), textarea:not(.ignore)', function(event){
+			n = that.input.getProps($(this));
 
-				//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
-				if (event.type == 'validate'){
-					//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
-					valid = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
-				}
-				else{
-					valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
-				}
-				
-				console.log('data.set validation returned valid: '+valid);
-				//additional check for 'required'
-				valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
-				console.log('after "required" validation valid is: '+valid);
-				if (typeof valid !== 'undefined' && valid !== null){
-					return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
-				}
+			//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
+			if (event.type == 'validate'){
+				//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
+				valid = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
 			}
+			else{
+				valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
+			}
+			
+			//console.log('data.set validation returned valid: '+valid);
+			//additional check for 'required'
+			valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
+			//console.log('after "required" validation valid is: '+valid);
+			if (typeof valid !== 'undefined' && valid !== null){
+				return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
+			}			
 		});	
 		
 		//nodeNames is comma-separated list as a string
@@ -2640,7 +2630,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 		//the above still leaves out elements that are not disabled directly but have disabled parents
 		//this is dealt with in the validate event handler
-		$form.find('input, select, textarea').not('.novalidate').trigger('validate');
+		$form.find('input, select, textarea').not('.ignore').trigger('validate');
 		return this.isValid();
 	};
 

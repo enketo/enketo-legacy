@@ -468,8 +468,76 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]').eq(index).length).toEqual(0);
 			expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index-1).val()).toEqual('c2');
 		});
+	});
+});
 
+describe('branching functionality', function(){
+	var form;
+
+	beforeEach(function() {
+		//turn jQuery animations off
+		jQuery.fx.off = true;
 	});
 
+	it ("hides irrelevant branches upon initialization", function(){
+		form = new Form(formStr6, dataStr6);
+		form.init();
+		expect(form.getFormO().$.find('[name="/data/group"]').hasClass('disabled')).toBe(true);
+		expect(form.getFormO().$.find('[name="/data/nodeC"]').parents('.disabled').length).toEqual(1);
+	});
+
+	it ("reveals a group branch when the relevant condition is met", function(){
+		form = new Form(formStr6, dataStr6);
+		form.init();
+		//first check incorrect value that does not meet relevant condition
+		form.getFormO().$.find('[name="/data/nodeA"]').val('no').trigger('change');
+		expect(form.getFormO().$.find('[name="/data/group"]').hasClass('disabled')).toBe(true);
+		//then check value that does meet relevant condition
+		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
+		expect(form.getFormO().$.find('[name="/data/group"]').hasClass('disabled')).toBe(false);
+	});
+
+	it ("reveals a question when the relevant condition is met", function(){
+		form = new Form(formStr6, dataStr6);
+		form.init();
+		//first check incorrect value that does not meet relevant condition
+		form.getFormO().$.find('[name="/data/group/nodeB"]').val(3).trigger('change');
+		expect(form.getFormO().$.find('[name="/data/nodeC"]').parents('.disabled').length).toEqual(1);
+		//then check value that does meet relevant condition
+		form.getFormO().$.find('[name="/data/group/nodeB"]').val(2).trigger('change');
+		expect(form.getFormO().$.find('[name="/data/nodeC"]').parents('.disabled').length).toEqual(0);
+	});
 });
+
+describe('required field validation', function(){
+	var form, $numberInput;
+
+	beforeEach(function() {
+		jQuery.fx.off = true;//turn jQuery animations off
+		form = new Form(formStr6, dataStr6);
+		form.init();
+		$numberInput = form.getFormO().$.find('[name="/data/group/nodeB"]');
+	});
+
+	it ("validates a DISABLED and required number field without a value", function(){
+		$numberInput.val('').trigger('change');
+		expect(form.getFormO().input.getWrapNodes($numberInput).hasClass('invalid')).toBe(false);
+	});
+
+	//see issue #144
+	it ("validates an enabled and required number field with value 0 and 1", function(){
+		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
+		$numberInput.val(0).trigger('change');
+		expect(form.getFormO().input.getWrapNodes($numberInput).hasClass('invalid')).toBe(false);
+		$numberInput.val(1).trigger('change');
+		expect(form.getFormO().input.getWrapNodes($numberInput).hasClass('invalid')).toBe(false);
+	});
+
+	it ("invalidates an enabled and required number field without a value", function(){
+		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
+		$numberInput.val('').trigger('change');
+		expect(form.getFormO().input.getWrapNodes($numberInput).hasClass('invalid')).toBe(true);
+	});
+});
+
 //TODO load a large complex form and detect console errors

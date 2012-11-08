@@ -17,8 +17,8 @@
  -->
 <!--
 *****************************************************************************************************
-XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK into valid HTMl5 forms
-(exception: when non-IANA lang attributes are used the form will not validate (not serious))
+XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
+(exception: when non-IANA lang attributes are used the form will not validate (but that's not serious))
 *****************************************************************************************************
 -->
 
@@ -532,15 +532,6 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 <xsl:if test="($binding/@required = 'true()') and (not(local-name() = 'bind'))">
                     <xsl:attribute name="required">
                         <xsl:text>required</xsl:text>
-                        <!--<xsl:choose>
-                            <xsl:when test="$binding/@required = 'true()'">required</xsl:when>
-                            <xsl:otherwise>
-                                <xsl:if test="not($binding/@required = 'false' or $binding/@required = 'false()' or binding/@required = '')">
-                                    <xsl:value-of select="$error" />
-                                    <xsl:message>ERROR [<xsl:value-of select="$nodeset"/>] unknown 'required' attribute (ignored).</xsl:message>
-                                </xsl:if>
-                            </xsl:otherwise>
-                        </xsl:choose>-->
                     </xsl:attribute>
                 </xsl:if>
 

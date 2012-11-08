@@ -1,6 +1,6 @@
 <article id="contact" data-title="provide feedback or ask a question" class="page">				
 	<p>
-		Please email <a href="mailto:info@aidwebsolutions.com">martijn@aidwebsolutions.com</a> for any comments, bug reports, 
+		Please send an <a href="mailto:<?= $this->config->item('support_email') ?>">email</a> for any comments, bug reports, 
 		questions, issues, as well as expressions of excitement or disappointment. 
 	</p>
 	<p>

@@ -26,6 +26,7 @@ var dataStr1 =
                 "<w2>3</w2>"+
                 "<w.3>5</w.3>"+
             "</someweights>"+
+            "<nodeF/>"+
         "</thedata>"+
     "</instance>";
 
@@ -61,19 +62,6 @@ var dataEditStr1 =
 
 var formStr1 =
     '<form>'+
-        '<div id="stats" style="display: none;">'+
-            '<span id="jrSelect">0</span>'+
-            '<span id="jrSelect1">0</span>'+
-            '<span id="jrItem">0</span>'+
-            '<span id="jrInput">3</span>'+
-            '<span id="jrUpload">0</span>'+
-            '<span id="jrTrigger">0</span>'+
-            '<span id="jrRepeat">0</span>'+
-            '<span id="jrRelevant">0</span>'+
-            '<span id="jrConstraint">0</span>'+
-            '<span id="jrCalculate">0</span>'+
-            '<span id="jrPreload">0</span>'+
-        '</div>'+
         '<label><input name="/thedata/nodeA" type="datetime" data-type-xml="dateTime"/></label>'+
         '<label><input name="/thedata/nodeB" type="text" data-type-xml="text" /></label>'+
         '<fieldset class="jr-group" name="/thedata/repeatGroup">'+
@@ -81,6 +69,7 @@ var formStr1 =
                 '<label><input name="/thedata/repeatGroup/nodeC" type="text"/></label>'+
             '</fieldset>'+
         '</fieldset>'+
+        '<label><textarea name="/thedata/nodeF" required="required"></textarea></label>'+
     '</form>';
 
 var dataStr2 =

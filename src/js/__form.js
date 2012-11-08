@@ -1269,7 +1269,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				});
 				return values;
 			}
-			return $node.val() || '';
+			return ($node.val()) ? $node.val().trim() : '';
 		},
 		setVal : function(name, index, value){
 			var $inputNodes, type, date;//, 

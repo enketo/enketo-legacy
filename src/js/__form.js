@@ -1930,9 +1930,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//algortithm could guess likely border values by using a regular expression search...
 		},
 		geopointWidget : function(){
-			console.log('initializing geopoint widget');
-
-			//function update(){alert('updating')}
+			//console.log('initializing geopoint widget');
 			$form.find('input[data-type-xml="geopoint"]').each(function(){ //.attr('placeholder', 'Awesome geopoint widget will follow in the future!');
 				var $lat, $lng, $alt, $acc, $search, $button, $map, mapOptions, map, marker, inputVals, searchBox,
 					$inputOrigin = $(this),

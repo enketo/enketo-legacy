@@ -314,7 +314,7 @@ GUI.prototype.showFeedback = function(message, duration){
 	if($('#feedback-bar p').html() !== message){//} || feedbackEl.find('p').length === 0){
 		$msg = $('<p></p>');
 		$msg.text(message); // encodes special characters
-		$('#feedback-bar').prepend($msg);
+		$('#feedback-bar').append($msg);
 	}
 	$('#feedback-bar').trigger('change');
 

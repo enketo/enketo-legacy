@@ -63,7 +63,6 @@ $(document).ready(function(){
 			//console.debug(data);\
 			var serverUrl = $form.find('input[name="server_url"]').val() || '',
 				formId = $form.find('input[name="form_id"]').val() || '';
-				//xmlUrl = $form.find('input[name="xml_url"]').val() || '';
 			// validate server url
 			if ( serverUrl.length > 0 ){
 				if (isValidUrl(serverUrl)){
@@ -81,11 +80,10 @@ $(document).ready(function(){
 					return false;
 				}
 			}
-			else{
+			/*else {
 				resetForm();
 				return false;
-			}
-			
+			}*/
 			$('#upload .hurry').hide();
 			$('#upload-form progress').show();
 		},

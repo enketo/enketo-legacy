@@ -356,16 +356,16 @@ GUI.prototype.setCustomEventHandlers = function(){
 	var settingsForm, that = this;
 	
 	// survey-form controls
-	$('button#save-form').button({'icons': {'primary':"ui-icon-disk"}})
+	$('button#save-form')//.button({'icons': {'primary':"ui-icon-disk"}})
 		.click(function(){
 			form.validateForm();
 			saveForm();
 		});
-	$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}})
+	$('button#reset-form')//.button({'icons': {'primary':"ui-icon-refresh"}})
 		.click(function(){
 			resetForm();
 		});
-	$('button#delete-form').button({'icons': {'primary':"ui-icon-trash"}, disabled:true})
+	$('button#delete-form')//.button({'icons': {'primary':"ui-icon-trash"}, disabled:true})
 		.click(function(){
 			deleteForm(false);
 		});
@@ -378,7 +378,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 		});
 
 	$('button#submit-edited-data')//.detach().appendTo($('form.jr'))
-		.button({'icons': {'primary':"ui-icon-check"}})
+		//.button({'icons': {'primary':"ui-icon-check"}})
 			.click(function(){
 				form.validateForm();
 				submitEditedForm();

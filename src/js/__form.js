@@ -1338,7 +1338,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	FormHTML.prototype.setLangs = function(){
-		var lang, value, curLabel, newLabel,
+		var lang, value, /** @type {string} */curLabel, /** @type {string} */ newLabel,
 			that = this,
 			defaultLang = $form.find('#form-languages').attr('data-default-lang');
 		
@@ -1378,7 +1378,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//swap language of <select> <option>s
 			$form.find('select > option').not('[value=""]').each(function(){
-				curLabel = $(this).text();
+				curLabel = /** @type {string} */ $(this).text();
 				value = $(this).attr('value');
 				
 				newLabel = $(this).parent('select').siblings('.jr-option-translations')
@@ -1564,7 +1564,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * Enables and reveals a branch node/group
 		 * 
 		 * @param  {jQuery} branchNode The jQuery object to reveal and enable
-		 * @return {jQuery}            [description]
 		 */
 		this.enable = function(branchNode){
 			var type;
@@ -1576,14 +1575,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			type = branchNode.prop('nodeName').toLowerCase();
 
-			return (type == 'label') ? branchNode.children('input, select, textarea')
-				.removeAttr('disabled') : branchNode.removeAttr('disabled');
+			if (type == 'label') {
+				branchNode.children('input, select, textarea').removeAttr('disabled');
+			}
+			else{
+				branchNode.removeAttr('disabled');
+			}
 		};
 		/**
 		 * Disables and hides a branch node/group
 		 * 
 		 * @param  {jQuery} branchNode The jQuery object to hide and disable
-		 * @return {jQuery}            [description]
 		 */
 		this.disable = function(branchNode){
 			var type, 
@@ -1607,8 +1609,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			type = branchNode.prop('nodeName').toLowerCase();
 
-			return (type == 'label') ? branchNode.children('input, select, textarea')
-				.attr('disabled', 'disabled') : branchNode.attr('disabled', 'disabled');
+			if (type == 'label'){
+				branchNode.children('input, select, textarea').attr('disabled', 'disabled');
+			}
+			else{
+				branchNode.attr('disabled', 'disabled');
+			}
 		};
 	};
 

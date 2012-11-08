@@ -51,9 +51,10 @@ $(document).ready(function(){
 	gui.setup();
 
 	$('#upload-form [name="xml_file"]').change(function(){
-		state.reset();
+		//state.reset();
 		$('#upload-form').submit();
-		$('#upload-form')[0].reset();
+		resetForm();
+		//$('#upload-form')[0].reset();
 	});
 
 	$('#upload-form').ajaxForm({

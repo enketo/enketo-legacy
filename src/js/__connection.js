@@ -187,7 +187,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 		else{
 			this.uploadOngoing = true;
 			content = new FormData();
-			content.append('xml_submission_data', form.prepareForSubmission(record.data));//dataXMLStr);
+			content.append('xml_submission_data', record.data);//dataXMLStr);
 			content.append('Date', new Date().toUTCString());
 			last = (this.uploadQueue.length === 0) ? true : false;
 			this.setOnlineStatus(null);

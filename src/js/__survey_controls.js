@@ -250,8 +250,8 @@ function submitEditedForm() {
 	}
 	//a temporary quick and dirty user feedback box (to be replaced after bootstrap)
 	gui.alert('Please wait. You will be automatically redirected after submission. '+
-		'(If it fails, please click submit button again.)'+
-		'<img style="display:block;margin-left: 224px; margin-top: 15px;" src="../images/ajax-loader.gif"/>', 'Submitting...', 'ui-icon-info');
+		'(If it fails, please click submit button again.)<br/>'+
+		'<progress style="text-align: center;"/>', 'Submitting...', 'ui-icon-info');
 	name = (Math.floor(Math.random()*100001)).toString();
 	console.debug('temporary record name: '+name);
 	record = { 'name': name,'data': form.getDataStr(true, true)};

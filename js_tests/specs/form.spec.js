@@ -521,9 +521,11 @@ describe('required field validation', function(){
 	});
 
 	//this fails in phantomJS...
-	it ("validates a DISABLED and required number field without a value", function(){
+	xit ("validates a DISABLED and required number field without a value", function(){
 		$numberInput.val('').trigger('change');
 		expect($numberLabel.length).toEqual(1);
+		expect($numberInput.val().length).toEqual(0);
+		expect($numberLabel.parents('.jr-group').attr('disabled')).toEqual('disabled');
 		expect($numberLabel.hasClass('invalid')).toBe(false);
 	});
 
@@ -543,12 +545,14 @@ describe('required field validation', function(){
 		expect($numberLabel.hasClass('invalid')).toBe(true);
 	});
 
-	it ("invalidates an enabled and required textarea that contains only a newline character", function(){
+	it ("invalidates an enabled and required textarea that contains only a newline character or other whitespace characters", function(){
 		form = new Form(formStr1, dataStr1);
 		form.init();
 		var $textarea = form.getFormO().$.find('[name="/thedata/nodeF"]');
 		$textarea.val('\n').trigger('change');
 		expect($textarea.length).toEqual(1);
+		expect($textarea.parent('label').hasClass('invalid')).toBe(true);
+		$textarea.val('  \n  \n\r \t ').trigger('change');
 		expect($textarea.parent('label').hasClass('invalid')).toBe(true);
 	});
 });

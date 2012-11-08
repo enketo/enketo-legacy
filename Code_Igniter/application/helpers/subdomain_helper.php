@@ -42,39 +42,22 @@ if ( ! function_exists('get_subdomain'))
 {
 	function get_subdomain($default = NULL)
 	{ 
-		$full_name = $_SERVER['SERVER_NAME'];
-		
-		$full_url = full_base_url(); //(isset($_SERVER['HTTPS'])) ? 'https://'.$full_name.'/' : 'http://'.$full_name.'/';
-		//log_message('debug', 'full url:'.$full_url);
-		//log_message('debug', 'base url: '.base_url());
+		$full_name = $_SERVER['SERVER_NAME'];		
+		$full_url = full_base_url(); 
 
 		if ($full_url != base_url())
-		{
-			// extract it => e.g. result = 'sub' 
-			// NOTE: does not work for multiple-level subdomains e.g.: sub1.sub2.example.com
-			// nor for domains such as co.uks//
-			//$subdomain_arr = explode('.', $//full_name, 2);
-			//$subdomain_name = $subdomain_arr[0];
-			//log_message('debug', $full_name);
-			
-			//log_message('debug', 'going to extract subdomain');
-			//$subdomain_name = substr($full_name, 0, strrpos($full_name, '.', -5));	
-			
-			//extracts only the lowest level subdomain - e.g. for 'a.b.example.com' -> returns 'a'
-			$subdomain_name = substr($full_name, 0, strpos($full_name, '.'));
+		{		
+			log_message('debug', 'full_name '.$full_name);
+			$base_name = substr(base_url(), strpos(base_url(), '://'), -1);
+			log_message('debug', 'base_name '.$base_name);
+			$subdomain_name = substr($full_name, 0, strpos($full_name, '.'.$base_name));
 			log_message('debug', 'subdomain extracted: '.$subdomain_name);
 		}
 	 
-		if ( !isset($subdomain_name) OR $subdomain_name == 'www')
+		if ( !isset($subdomain_name) || $subdomain_name === 'www' || $subdomain_name === '')
 		{
 			return $default;
 		}
-
-		//if the last character is '-' pretend it is not there
-		//if ( substr($subdomain_name, strlen($subdomain_name)-1) === '-')
-		//{
-		//	$subdomain_name = substr($subdomain_name, 0, strlen($subdomain_name) - 1) );
-		//}
 
 		return strtolower($subdomain_name);
 	}

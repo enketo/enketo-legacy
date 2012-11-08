@@ -9,11 +9,10 @@
 ?>
 	<div class="main">
 
-		<p style="margin-top: 50%; font-size: 12px; text-align: center; font-family: arial;">Just a whole lot of nothingness... read about the progress on the <a href="http://blog.aidwebsolutions.com/tag/enketo/">Aid Web Solutions Blog</a>.</p>
+		<p style="margin-top: 50%; font-size: 12px; text-align: center;">Please access enketo from the 'Enter Web Form' button provided in <a href="http://formhub.org" >formhub</a> on each form page.</p>
 
 	</div>
 
 <? require 'elements/page_contact.php'; ?>	
 
 <? require 'elements/footer++.php' ?>
-

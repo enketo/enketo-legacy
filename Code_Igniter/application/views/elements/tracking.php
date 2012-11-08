@@ -1,8 +1,9 @@
+<? $this->load->helper('url') ?>
 <script type="text/javascript">
-
+	
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6765789-11']);
-  _gaq.push(['_setDomainName', 'formhub.org']);
+  _gaq.push(['_setAccount', '<?= $this->config->item("google_analytics_key") ?>']);
+  _gaq.push(['_setDomainName', '<?= substr(base_url(), strpos(base_url(), "://"), -1) ?>']);
   _gaq.push(['_trackPageview']);
 
   (function() {

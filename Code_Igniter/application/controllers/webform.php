@@ -40,8 +40,9 @@ class Webform extends CI_Controller {
 		);
 		$this->default_stylesheets = array
 		(
-			'/libraries/bootstrap/css/bootstrap.min.css',
-			'/css/screen.css'
+			array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'screen'),
+			array( 'href' => '/css/screen.css', 'media' => 'screen'),
+			array( 'href' => '/css/print.css', 'media' => 'print')
 		);
 		$sub = get_subdomain();
 		$suf = $this->Survey_model->ONLINE_SUBDOMAIN_SUFFIX;
@@ -110,23 +111,7 @@ class Webform extends CI_Controller {
 		}
 		else 
 		{
-
-			$data = array('offline'=>FALSE, 'title_component'=>'');
-
-			if (ENVIRONMENT === 'production')
-			{
-				$data['scripts'] = array(
-					base_url('js-min/front-all-min.js')
-				);
-			}
-			else
-			{
-				$data['scripts'] = array_merge($this->default_scripts, array(
-					base_url('js-source/__common.js')
-				));
-			}
-
-			$this->load->view('front_view', $data);			
+			redirect('../../');
 		}
 	}
 

@@ -17,3 +17,11 @@
 		<!--[if lt IE 8]>
         	<script type="text/javascript">window.location = 'modern_browsers';</script>
 		<![endif]-->
+
+<? foreach ($stylesheets as $css): ?>
+	<link href="<?= $css['href']; ?>" media="<?= $css['media'] ?>" rel="stylesheet" type="text/css" />
+<? endforeach; ?>
+
+<? foreach ($scripts as $script): ?>
+	<script type="text/javascript" src="<?= $script; ?>"></script>
+<? endforeach; ?>

@@ -102,7 +102,7 @@ Cache.prototype.onErrors = function(e){
 		console.debug(e);
 		console.error('HTML5 cache error event'); // DEBUG
 		gui.showFeedback('There is a new version of this application or form available but an error occurs when'+
-			' trying to download it. Please send a bug report.');
+			' trying to download it. Please try to refresh the page or send a bug report.');
 		//gui.updateStatus.offlineLaunch(false);
 		//gui.alert('Application error (manifest error). Try to submit or export any locally saved data. Please report to formhub mentioning the url.');
 		// Possible to trigger cache problem for testing? ->

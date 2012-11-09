@@ -34,7 +34,7 @@ class Launch extends CI_Controller {
 		{
 			$data = array('offline'=>FALSE, 'title_component'=>'launch');
 			
-			$common_scripts = array(
+			$default_scripts = array(
 				'libraries/jquery.min.js',
 				'libraries/bootstrap/js/bootstrap.min.js',
 				'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
@@ -47,22 +47,29 @@ class Launch extends CI_Controller {
 				'libraries/vkbeautify.js',
 				"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
 			);
+			$default_stylesheets = array
+			(
+				array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'all'),
+				array( 'href' => '/css/screen.css', 'media' => 'all'),
+				array( 'href' => '/css/print.css', 'media' => 'print')
+			);
 
 			if (ENVIRONMENT === 'production')
 			{
-				$data['scripts'] = array_merge($common_scripts, array(
+				$data['scripts'] = array_merge($default_scripts, array(
 					'js-min/launch-all-min.js'
 				));
 			}
 			else
 			{
-				$data['scripts'] = array_merge($common_scripts, array(
+				$data['scripts'] = array_merge($default_scripts, array(
 					'js-source/__common.js',
 					'js-source/__form.js',
 					'js-source/__launch.js',
 					'js-source/__debug.js'
 				));
 			}
+			$data['stylesheets'] = $default_stylesheets;
 			$this->load->view('launch_view', $data);
 		}
 	}

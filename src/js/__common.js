@@ -582,15 +582,14 @@ function getGetVariable(variable) {
 function Print(){
 	"use strict";
 	this.setStyleSheet();
-
-	/*
-	$(window).on(########, function(){
-		this.styleToAll();
-		this.addPageBreaks();
-		this.styleReset();
-		window.print();
-	});
-	 */
+	//IE, FF:
+    if (typeof window.onbeforeprint !== 'undefined'){
+		$(window).on('beforeprint', this.printForm);
+    }
+    //Chrome, Safari:
+    else {
+		//$(window).on(##????##, this.printForm)
+    }
 }
 
 Print.prototype.setStyleSheet = function(){
@@ -619,6 +618,13 @@ Print.prototype.styleToAll = function (){
 Print.prototype.styleReset = function(){
 	this.styleSheet.media.mediaText = 'print';
 	this.$styleSheetLink.attr('media', 'print');
+};
+
+Print.prototype.printForm = function(){
+	this.styleToAll();
+	this.addPageBreaks();
+	this.styleReset();
+	window.print();
 };
 
 Print.prototype.addPageBreaks = function(){

@@ -1261,15 +1261,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				return this.getWrapNodes($node).find('input:checked').val() || '';
 			}
 			//checkbox values bug in jQuery as (node.val() should work)
-			if (inputType == 'checkbox'){
-				
-				this.getWrapNodes($node).find('input[name="'+name+'"]:checked').each(function(){
-					
+			if (inputType == 'checkbox'){		
+				this.getWrapNodes($node).find('input[name="'+name+'"]:checked').each(function(){	
 					values.push($(this).val());
 				});
 				return values;
 			}
-			return ($node.val()) ? $node.val().trim() : '';
+			return (!$node.val()) ? '' : ($.isArray($node.val())) ? $node.val() : $node.val().trim();
 		},
 		setVal : function(name, index, value){
 			var $inputNodes, type, date;//, 
@@ -1886,6 +1884,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$form.find('select:not([multiple])').selectpicker({
 					btnStyle: 'btn'
 				});
+				$form.find('.bootstrap-select input').addClass('ignore');
 			}
 			$form.on('changelanguage', update);
 			update();
@@ -1898,6 +1897,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					container: '<div class="widget btn-group bootstrap-multiselect" />',
 					button: 'btn'
 				});
+				$form.find('.bootstrap-multiselect input').addClass('ignore');
 				$('select[multiple] ~ .bootstrap-multiselect .caret').addClass('pull-right');
 			}
 			$form.on('changelanguage', update);

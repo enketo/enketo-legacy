@@ -582,6 +582,15 @@ function getGetVariable(variable) {
 function Print(){
 	"use strict";
 	this.setStyleSheet();
+
+	/*
+	$(window).on(########, function(){
+		this.styleToAll();
+		this.addPageBreaks();
+		this.styleReset();
+		window.print();
+	});
+	 */
 }
 
 Print.prototype.setStyleSheet = function(){
@@ -607,74 +616,10 @@ Print.prototype.styleReset = function(){
 	this.styleSheet.media.mediaText = 'print';
 };
 
-Print.prototype.displaySelects = function(){};
+Print.prototype.addPageBreaks = function(){
 
+};
 
-/*
- *
- *  Provides a central switch for application reporting
- *
- *  It is e.g. possible to output console.error to the user instead of to the console and use
- *  the url debug GET variable to switch back tot the console.
- *  Or it can be customized to switch e.g. console.log off completelt without having to comment out lines
- *  or it can be used to log to a variable/localStorage/sessionStorage and send a crash report to the server
- *  The possibilies to customize this are endless!
- *
- *  NOTE: NOT TESTED WHEN USING APPLICATION CACHE - THIS PROBABLY MESSES THINGS UP!
- */
- 
-/**
- * @constructor
- *
- * Function (Class): Report
- *
- * description
- *
- * Returns:
- *
- *   return description
- */
-//function Report(){
-//	"use strict";
-//	var output;
-//	var debug = getGetVariable('debug') || false;//
-
-//	// avoid windows console errors
-//	if (typeof(window.console) == "undefined") {console = {log: function(){}};}
-//	if (typeof(console.debug) == "undefined") {console.debug = console.log;}
-//
-//	console.log('Report object initialized with debug = '+debug);
-//
-//	this.error = function(message){
-//		output('error', message);
-//	};
-//
-//	this.log = function(message){
-//		output('log', message);
-//	};
-//
-//	this.debug = function(message){
-//		output('debug', message);
-//	};
-//
-//	output = function(type, message){
-//		// if in debug mode or if gui isn't available: just output to console
-//		if (typeof gui == 'undefined' || (typeof debug !== 'undefined' && debug == 'true') ){
-//			console[type](message);
-//		}
-//		// if gui is available and type = error
-//		else if (type === 'error'){
-//			console[type](message);
-//			//gui.alert('You discovered a bug in the application or an error in the form! (see javascript console) Please report this to rapaide@aidwebsolutions.com.');
-//		}
-//		// if gui is available
-//		else {
-//			//nada
-//		}
-//	};
-//}
-
-/************ JQuery Extensions **************/
 
 	
 (function($){

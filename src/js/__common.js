@@ -595,6 +595,7 @@ function Print(){
 
 Print.prototype.setStyleSheet = function(){
 	this.styleSheet = this.getStyleSheet();
+	this.$styleSheetLink = $('link[media="print"]:eq(0)');
 };
 
 Print.prototype.getStyleSheet = function(){
@@ -607,13 +608,17 @@ Print.prototype.getStyleSheet = function(){
 };
 
 Print.prototype.styleToAll = function (){
-	//sometimes, stylesheet setting fails upon loading
+	//sometimes, setStylesheet fails upon loading
 	if (!this.styleSheet) this.setStyleSheet();
+	//Chrome:
 	this.styleSheet.media.mediaText = 'all';
+	//Firefox:
+	this.$styleSheetLink.attr('media', 'all');
 };
 
 Print.prototype.styleReset = function(){
 	this.styleSheet.media.mediaText = 'print';
+	this.$styleSheetLink.attr('media', 'print');
 };
 
 Print.prototype.addPageBreaks = function(){

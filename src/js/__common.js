@@ -20,13 +20,13 @@
 // Copyright 2012 Martijn van de Rijdt
 /************ Global variables ***************/
 
-var /** @type {GUI}*/ gui, /** @type {Print} */ printO;
+var /** @type {GUI}*/ gui;
+var /** @type {Print} */ printO;
 var DEFAULT_SETTINGS = {};
 
 $(document).ready(function(){
 	"use strict";
 	gui = new GUI();
-	printO = new Print();
 	gui.init();
 	// avoid windows console errors
 	if (typeof console == "undefined") {console = {log: function(){}};}
@@ -36,6 +36,7 @@ $(document).ready(function(){
 		window.console.log = function(){};
 		window.console.debug = function(){};
 	}
+	printO = new Print();
 });
 
 
@@ -580,8 +581,12 @@ function getGetVariable(variable) {
  */
 function Print(){
 	"use strict";
-	this.styleSheet = this.getStyleSheet();
+	this.setStyleSheet();
 }
+
+Print.prototype.setStyleSheet = function(){
+	this.styleSheet = this.getStyleSheet();
+};
 
 Print.prototype.getStyleSheet = function(){
 	for (var i = 0 ; i < document.styleSheets.length ; i++){
@@ -593,6 +598,8 @@ Print.prototype.getStyleSheet = function(){
 };
 
 Print.prototype.styleToAll = function (){
+	//sometimes, stylesheet setting fails upon loading
+	if (!this.styleSheet) this.setStyleSheet();
 	this.styleSheet.media.mediaText = 'all';
 };
 
@@ -600,6 +607,7 @@ Print.prototype.styleReset = function(){
 	this.styleSheet.media.mediaText = 'print';
 };
 
+Print.prototype.displaySelects = function(){};
 
 
 /*

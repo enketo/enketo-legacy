@@ -1907,7 +1907,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		pageBreakWidget : function(){
 			$form.find('.jr-appearance-page-break input[readonly]').parent('label').each(function(){
 				var	name = 'name="'+$(this).find('input').attr('name')+'"';
-				$('<fieldset class="jr-appearance-page-break" '+name+'></fieldset>') //ui-corner-all
+				$('<hr class="page-break" '+name+'></hr>') //ui-corner-all
 					.insertBefore($(this)).find('input').remove(); 
 				$(this).remove();
 			});

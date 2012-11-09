@@ -20,12 +20,13 @@
 // Copyright 2012 Martijn van de Rijdt
 /************ Global variables ***************/
 
-var /**@type {GUI}*/ gui;
+var /** @type {GUI}*/ gui, /** @type {Print} */ printO;
 var DEFAULT_SETTINGS = {};
 
 $(document).ready(function(){
 	"use strict";
 	gui = new GUI();
+	printO = new Print();
 	gui.init();
 	// avoid windows console errors
 	if (typeof console == "undefined") {console = {log: function(){}};}
@@ -287,7 +288,6 @@ GUI.prototype.pages = function(){
 
 	return this;
 };
-
 
 /**
  * Shows an unobtrusive feedback message to the user.
@@ -574,6 +574,32 @@ function getGetVariable(variable) {
 	}
 	return false;
 }
+/**
+ * Class dealing with printing
+ * @constructor
+ */
+function Print(){
+	"use strict";
+	this.styleSheet = this.getStyleSheet();
+}
+
+Print.prototype.getStyleSheet = function(){
+	for (var i = 0 ; i < document.styleSheets.length ; i++){
+		if (document.styleSheets[i].media.mediaText === 'print'){
+			return document.styleSheets[i];
+		}
+	}
+	return null;
+};
+
+Print.prototype.styleToAll = function (){
+	this.styleSheet.media.mediaText = 'all';
+};
+
+Print.prototype.styleReset = function(){
+	this.styleSheet.media.mediaText = 'print';
+};
+
 
 
 /*

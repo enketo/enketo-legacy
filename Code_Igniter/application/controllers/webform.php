@@ -40,8 +40,8 @@ class Webform extends CI_Controller {
 		);
 		$this->default_stylesheets = array
 		(
-			array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'screen'),
-			array( 'href' => '/css/screen.css', 'media' => 'screen'),
+			array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'all'),
+			array( 'href' => '/css/screen.css', 'media' => 'all'),
 			array( 'href' => '/css/print.css', 'media' => 'print')
 		);
 		$sub = get_subdomain();

@@ -41,23 +41,9 @@ class Survey_model extends CI_Model {
         return TRUE;      
     }
     
-//    // returns true if the data of a particular survey is live / published
-//    public function is_live_survey_data($survey_subdomain = NULL)
-//    {
-//    	if (!isset($survey_subdomain))
-//    	{
-//    		$survey_subdomain = $this->subdomain;
-//    	}
-//    	$query = $this->db->get_where('surveys',array('subdomain'=>$survey_subdomain, 'data_live'=>TRUE), 1);
-//    	return ($query->num_rows() === 1) ? TRUE : FALSE;
-//    }
-    
     //returns true if a requested survey or template exists
     public function is_launched_survey()
-    {    
-        //$this->db->where('subdomain', $this->subdomain);
-    	//$query = $this->db->get('surveys', 1); 
-    	//return ($query->num_rows() === 1) ? TRUE : FALSE;	
+    {    	
         return ($this->_get_item('subdomain')) ? TRUE : FALSE;
     }
     
@@ -83,7 +69,6 @@ class Survey_model extends CI_Model {
 
     public function has_offline_launch_enabled()
     {
-        //return $this->_get_item('offline');
         return !$this->_has_subdomain_suffix();
     }
 
@@ -164,6 +149,11 @@ class Survey_model extends CI_Model {
 
     public function remove_test_entries(){
         return $this->_remove_item('server_url', 'http://testserver/bob');
+    }
+
+    public function number_surveys(){
+        $this->remove_test_entries();
+        return $this->_get_record_number();
     }
 
     /**
@@ -284,6 +274,12 @@ class Survey_model extends CI_Model {
         {
             return NULL;   
         }
+    }
+
+    private function _get_record_number()
+    {
+        $query = $this->db->get('surveys'); 
+        return $query->num_rows(); 
     }
 
     private function _update_item($field, $value)

@@ -18,9 +18,16 @@
 
 class Front extends CI_Controller {
 
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->model('Survey_model','',TRUE);
+	}
+
 	public function index()
 	{
 		$this->load->helper(array('url'));
+
 		$default_scripts = array
 		(
 			'/libraries/jquery.min.js',
@@ -33,7 +40,12 @@ class Front extends CI_Controller {
 			array( 'href' => '/css/screen.css', 'media' => 'screen'),
 			array( 'href' => '/css/print.css', 'media' => 'print')
 		);
-		$data = array('offline'=>FALSE, 'title_component'=>'survey', 'stylesheets' => $default_stylesheets);
+		$data = array(
+			'offline'=>FALSE, 
+			'title_component'=>'survey', 
+			'stylesheets' => $default_stylesheets,
+			'num_surveys' => $this->Survey_model->number_surveys()
+		);
 
 		if (ENVIRONMENT === 'production')
 		{
@@ -60,19 +72,24 @@ class Front extends CI_Controller {
 		}	
 	}
 
-	public function update_list()
+	public function number_launched()
 	{
-		$this->load->model('Survey_model', '', TRUE);
-		$success = $this->Survey_model->update_formlist();
-		if ($success === TRUE)
-		{
-			echo 'form list has been updated';
-		}
-		else 
-		{
-			echo 'error updating form list';
-		}
-	}
+		echo $this->Survey_model->number_surveys();
+	} 
+
+
+	//public function update_list()
+	//{
+	//	$success = $this->Survey_model->update_formlist();
+	//	if ($success === TRUE)
+	//	{
+	//		echo 'form list has been updated';
+	//	}
+	//	else 
+	//	{
+	//		echo 'error updating form list';
+	//	}
+	//}
 }
 
 

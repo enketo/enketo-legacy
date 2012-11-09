@@ -124,6 +124,17 @@ class Launch extends CI_Controller {
 		}
 	}
 
+	/**
+	 * For now this function just cleans test entries in the surveys table. In the future,
+	 * we could add removal of obsolete surveys (found to not be 'live' for extended period)
+	 */
+	public function clean()
+	{
+		$this->load->model('Survey_model', '', TRUE);
+		$number_deleted = $this->Survey_model->remove_test_entries();
+		echo $number_deleted.' test entries deleted.';
+	}
+
 
 }
 ?>

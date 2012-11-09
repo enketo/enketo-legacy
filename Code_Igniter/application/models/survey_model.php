@@ -162,6 +162,10 @@ class Survey_model extends CI_Model {
         return array('success'=>FALSE, 'reason'=>'unknown');
     }
 
+    public function remove_test_entries(){
+        return $this->_remove_item('server_url', 'http://testserver/bob');
+    }
+
     /**
      * @method _get_full_survey_url turns a subdomain into the full url where the survey is available
      * 
@@ -296,6 +300,12 @@ class Survey_model extends CI_Model {
         {
             return FALSE;   
         }
+    }
+
+    private function _remove_item($field, $value)
+    {
+        $this->db->delete('surveys', array($field => $value));
+        return $this->db->affected_rows();
     }
 
     private function _has_subdomain_suffix()

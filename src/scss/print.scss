@@ -17,10 +17,14 @@ body{
   margin: 0; }
 
 .drawer, 
+#feedback-bar,
+#dialog-alert,
+#dialog-confirm,
+#dialog-save,
 #form-languages,
 #branding,
 .paper #submit-form{
-  display: none;}
+  display: none !important;}
 
 .jr{
   .hint,

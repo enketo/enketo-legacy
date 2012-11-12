@@ -1793,21 +1793,37 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$p = $(this).parent('label'),
 					startView = ($p.hasClass('jr-appearance-month-year')) ? 'year' :
 						($p.hasClass('jr-appearance-year')) ? 'decade' : 'month',
+					targetEvent = ($p.hasClass('jr-appearance-month-year')) ? 'changeMonth' :
+						($p.hasClass('jr-appearance-year')) ? 'changeYear' : 'changeDate',
 					format = (startView === 'year') ? 'yyyy-mm' :
 						(startView === 'decade') ? 'yyyy' : 'yyyy-mm-dd',
-					$fakeDateI = $('<input class="ignore input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
-						'<span class="add-on"><i class="icon-calendar"></i></span>'+'</div>');
-				$p.addClass('widget input-append date');
-				$dateI.hide().after($fakeDateI);
-				//console.debug('startView: '+startView);
-				$fakeDateI.parent().datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView});
-				$fakeDateI.on('change changeDate', function(ev){
-					var value = $(this).val();
+					$fakeDate = $('<div class="widget input-append date"><input class="ignore input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
+						'<span class="add-on"><i class="icon-calendar"></i></span></div>'),
+					$fakeDateI = $fakeDate.find('input');
+				$dateI.hide().after($fakeDate);
+
+				$fakeDateI.on('change', function(){
+					console.debug('fakedate input field change detected');
+					var date,
+						value = $(this).val();
 					value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
-					//console.debug('converted date input to value: '+data.node().convert(value, 'date'));
 					$dateI.val(data.node().convert(value, 'date')).trigger('change');
+					date = new Date(value.split('-')[0], Number (value.split('-')[1]) - 1, value.split('-')[2]);
+					//the 'update' method only works for full dates, not yyyy-mm and yyyy dates, so this convoluted
+					//method is used by using setDate
+					$fakeDate.datepicker('setDate', new Date(date));
 					return false;
 				});
+
+				$fakeDate.datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView})
+					.on(targetEvent, function(e) {
+						//console.debug(e.type+' detected');
+						var dp = $(e.currentTarget).data('datepicker');
+						dp.date = e.date;
+						dp.setValue();
+						dp.hide();
+						$fakeDateI.trigger('change');
+					});
 			});
 		},
 		timeWidget : function(){

@@ -497,9 +497,6 @@ $input-max-width: 80%;
     margin: 10px 0;
     opacity: 0.5; }
   .date, .bootstrap-timepicker-component {
-    &.input-append .active{
-      background: none;
-      width: $input-min-width;}
     input{
       width: $input-min-width;} }
   .datetimepicker{

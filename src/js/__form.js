@@ -1831,11 +1831,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				var $timeI = $(this),
 					$p = $(this).parent('label'),
 					timeVal = $(this).val(),
-					$fakeTimeI = $('<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
-						'<span class="add-on"><i class="icon-time"></i></span>');
+					$fakeTime = $('<div class="widget input-append bootstrap-timepicker-component">'+
+						'<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
+						'<span class="add-on"><i class="icon-time"></i></span></div>'),
+					$fakeTimeI = $fakeTime.find('input');
 				
-				$p.addClass('widget input-append bootstrap-timepicker-component');
-				$timeI.hide().after($fakeTimeI);
+				$timeI.hide().after($fakeTime);
 				$fakeTimeI.timepicker({
 					defaultTime: (timeVal.length > 0) ? 'value' : 'current',
 					showMeridian: false

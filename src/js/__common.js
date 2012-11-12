@@ -581,15 +581,25 @@ function getGetVariable(variable) {
  */
 function Print(){
 	"use strict";
+	//var mpl,
+	//	that = this;
 	this.setStyleSheet();
-	//IE, FF:
+	//IE, FF, the 'proper' way:
     if (typeof window.onbeforeprint !== 'undefined'){
 		$(window).on('beforeprint', this.printForm);
     }
-    //Chrome, Safari:
-    else {
-		//$(window).on(##????##, this.printForm)
-    }
+    //Chrome, Safari, Opera: (this approach has problems)
+	//else {
+	//	mpl = window.matchMedia('print');
+	//	mpl.addListener(function(mql){
+	//		if (mql.matches && !that.ongoing){
+	//			that.ongoing = true;
+	//			that.printForm();
+	//			that.ongoing = false;
+	//		}
+	//		return false;
+	//	});
+	//}
 }
 
 Print.prototype.setStyleSheet = function(){
@@ -621,6 +631,7 @@ Print.prototype.styleReset = function(){
 };
 
 Print.prototype.printForm = function(){
+	console.debug('preparing form for printing');
 	this.styleToAll();
 	this.addPageBreaks();
 	this.styleReset();
@@ -628,7 +639,7 @@ Print.prototype.printForm = function(){
 };
 
 Print.prototype.addPageBreaks = function(){
-
+	// add Alex' code
 };
 
 

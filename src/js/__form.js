@@ -1049,6 +1049,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//	.after($hint);
 		$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea').before($hint);
 		$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
+		$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 
 		$form.find('select, input:not([type="checkbox"], [type="radio"]), textarea').before($('<br/>'));
 

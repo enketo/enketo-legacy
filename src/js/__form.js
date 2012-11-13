@@ -1567,7 +1567,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var type;
 			console.debug('enabling branch');
 
-			branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
+			//branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
 			
 			branchNode.removeClass('disabled').show(1000, function(){$(this).fixLegends();} );
 
@@ -1586,15 +1586,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @param  {jQuery} branchNode The jQuery object to hide and disable
 		 */
 		this.disable = function(branchNode){
-			var type, 
-				branchClue = '<div class="jr-branch"></div>'; 
+			var type;//, 
+				//branchClue = '<div class="jr-branch"></div>'; 
 
 			console.debug('disabling branch');
 			branchNode.addClass('disabled').hide(1000); 
 			
 			//if the branch was previously enabled
 			if (branchNode.prev('.jr-branch').length === 0){
-				branchNode.before(branchClue);
+				//branchNode.before(branchClue);
 				//if the branch was hidden upon form initialization, then shown and then hidden again
 				//difficult to detect. Maybe better to just replace clearInputs with setDefaults	
 				branchNode.clearInputs('change');

@@ -420,7 +420,7 @@ $input-max-width: 80%;
 //      margin-left: 25px;
         font-weight: normal; 
         &:hover{
-          background-color: lighten($title, 48%);;} }
+          background-color: lighten($title, 48%);} }
     + label {
 //      margin-top: 25px; } }
 //  fieldset {
@@ -428,6 +428,8 @@ $input-max-width: 80%;
   }}
   label, legend, .trigger {
     font-size: .8em; }
+  img{
+    float: right;}
   input:not([type="radio"]):not([type="checkbox"]), textarea{
     float: left;
     display: inline-block;
@@ -576,10 +578,11 @@ $input-max-width: 80%;
         font-size: 1em;
         input{
           margin: 5px 10px 1px 0; } } } }
-  .jr-appearance-field-list{
+  .jr-appearance-list-nolabel, .jr-appearance-label{
     legend{ 
       float: left;
       border: none;
+      line-height: 17px;
       width: 200px;
       min-height: 1px;}
     label{
@@ -588,18 +591,18 @@ $input-max-width: 80%;
       width: 100px;
       text-align: center;}
     input{
-      text-align: center;}
-    .jr-appearance-list-nolabel{
-      label span.active, img{
-          display: none;
-          float: none; } }
-    .jr-appearance-label{
-        input{
-          float: none;
-          display: none; } 
-        img{
-          display: inline-block;
-          float: none;} }
+      text-align: center;} }
+  .jr-appearance-list-nolabel{
+    label span.active, img{
+        display: none;
+        float: none; } }
+  .jr-appearance-label{
+      input{
+        float: none;
+        display: none; } 
+      img{
+        display: inline-block;
+        float: none;} } 
     /*fieldset{
       padding: 0;
       margin: 0;}
@@ -608,7 +611,27 @@ $input-max-width: 80%;
         display: none;} }
     td{
       label>span.active{
-        display: none; } }*/ } } 
+        display: none; } }*/ 
+  .jr-appearance-compact, .jr-appearance-quickcompact{
+    label{
+      float: left;
+      width: 120px; 
+      &:hover{
+        background: none;} }
+    input{
+      display: none;
+      ~ img{
+        border: 2px solid transparent;}
+      ~ img:hover{
+        border-color: lighten($title, 30%);}
+      &:checked ~ img, &:checked ~ img:hover{
+        border-color: $title; } } }
+  label>input[type="radio"]+img{
+    margin-top: -25px; }
+  .with-media{
+    > span.active{
+      display: block;
+      margin: -18px 0 0 40px;} } } 
 
 /*.with-media {
   margin-top: 5px; 

@@ -1735,9 +1735,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var $p = $(this).parent('label'); 
 			$(this).detach().prependTo($p);
 		});
-
-		//improve looks when images, video or audio is used as label
-		$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend').children('img,video,audio').parent().addClass('ui-helper-clearfix with-media');
 	};
 
 	/**
@@ -1759,9 +1756,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 */
 	FormHTML.prototype.widgets = {
 		//IMPORTANT! Widgets should be initalized after instance values have been loaded in $data as well as in input fields
-		init : function(){
-			this.compactWidget();
-			this.radioWidget();
+		init : function(){			
 			this.dateWidget();
 			this.timeWidget();
 			this.dateTimeWidget();
@@ -1775,17 +1770,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.geopointWidget();
 			this.barcodeWidget();
 			this.fileWidget();
-		},
-		compactWidget: function(){
-			//move this to css!
-			$form.find('.jr-appearance-compact>label>span').hide(); 
-		},
-		radioWidget: function(){
-			//$form.on('mouseup', 'input:radio:checked', function(){
-			//	console.debug($(this).prop('checked'));
-			//	//$(this).parent('label').clearInputs('change');
-			//	console.debug('clicked label of: '+$(this).attr('name'));
-			//}); 
+			this.mediaLabelWidget();
 		},
 		dateWidget : function(){
 			$form.find('input[type="date"]').each(function(){
@@ -1943,7 +1928,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 		},
 		tableWidget :function(){
-			$form.find('.jr-appearance-field-list').each(function(){
+			$form.find('.jr-appearance-field-list .jr-appearance-nolabel').each(function(){
 				$(this).find('fieldset label').addClass('column');
 //				var $row,
 //					$table = $('<table></table>'), 
@@ -2197,6 +2182,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		fileWidget : function(){
 			$form.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled');
+		},
+		mediaLabelWidget : function(){
+			//improve looks when images, video or audio is used as label
+			$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend')
+				.children('img,video,audio').parent().addClass('with-media');
 		}
 	};
 

@@ -248,6 +248,10 @@ label#data-template-show {
   //text-align: center;
 }
 
+/* fix for bug in tooltips when tooltip is inside a legend element*/
+.tooltip{
+  line-height: 18px !important;}
+
 #launch form{
   margin-top: 20px; 
   input{

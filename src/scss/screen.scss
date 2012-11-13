@@ -248,8 +248,11 @@ label#data-template-show {
   //text-align: center;
 }
 
-/* fix for bug in tooltips when tooltip is inside a legend element*/
+
 .tooltip{
+  /* fix for tooltips when places inside a label/legend element (All)*/
+  font-weight: normal !important;
+  /* fix for tooltips when placed inside a legend element (Safari)*/
   line-height: 18px !important;}
 
 #launch form{

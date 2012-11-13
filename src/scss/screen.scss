@@ -379,7 +379,6 @@ $input-max-width: 80%;
   h4{
     text-align: left;  }
   .jr-repeat {
-    /*border: 1px dotted $shadow;*/
     background-color: lighten($title, 55%);
     margin: 0 0 3px 0;
     padding: 0 10px 10px 10px;
@@ -429,8 +428,10 @@ $input-max-width: 80%;
   }}
   label, legend, .trigger {
     font-size: .8em; }
-  img{
-    float: right;}
+  img, audio, video{
+    float: right;
+    max-height: 300px;
+    max-width: 70%;}
   input:not([type="radio"]):not([type="checkbox"]), textarea{
     float: left;
     display: inline-block;
@@ -568,7 +569,7 @@ $input-max-width: 80%;
     font-weight: normal;
     line-height: $input-height;
     text-align: left;
-    min-width: $input-min-width + 16px;
+    min-width: $input-min-width -14px;
     ~ .dropdown-menu{
       a{
         }
@@ -612,27 +613,35 @@ $input-max-width: 80%;
         display: none;} }
     td{
       label>span.active{
-        display: none; } }*/ 
+        display: none; } }*/
+  .with-media{
+    > input[type="radio"], > input[type="checkbox"]{ 
+      ~ span.active:not(.jr-hint):not(.jr-constraint-msg){
+      display: block;
+      margin: -18px 0 0 40px;} } } 
   .jr-appearance-compact, .jr-appearance-quickcompact{
+    legend{
+      border: none;}
     label{
       float: left;
-      width: 120px; 
+      /*width: 120px; */
       &:hover{
-        background: none;} }
+        background: none;}
+      span.active:not(.jr-hint):not(.jr-constraint-msg){
+        display: none; } }
     input{
       display: none;
       ~ img{
+        max-width: 150px;
+        max-height: 150px;
         border: 2px solid transparent;}
       ~ img:hover{
         border-color: lighten($title, 30%);}
       &:checked ~ img, &:checked ~ img:hover{
         border-color: $title; } } }
-  label>input[type="radio"]+img{
-    margin-top: -25px; }
-  .with-media{
-    > span.active{
-      display: block;
-      margin: -18px 0 0 40px;} } } 
+  label>input[type="radio"]+img, label>input[type="checkbox"]+img{
+    /*margin-top: -25px;*/ } }
+  
 
 /*.with-media {
   margin-top: 5px; 

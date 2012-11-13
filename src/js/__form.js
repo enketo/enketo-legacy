@@ -2185,7 +2185,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		mediaLabelWidget : function(){
 			//improve looks when images, video or audio is used as label
-			$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend')
+			$('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact)>label, '+
+				'fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact)>legend')
 				.children('img,video,audio').parent().addClass('with-media');
 		}
 	};

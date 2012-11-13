@@ -1769,7 +1769,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.selectMultiWidget();
 			this.pageBreakWidget();
 			this.readonlyWidget();
-			this.gridWidget();
+			this.tableWidget();
 			this.spinnerWidget();
 			this.sliderWidget();
 			this.geopointWidget();
@@ -1942,7 +1942,44 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$(this).remove();
 			});
 		},
-		gridWidget :function(){
+		tableWidget :function(){
+			$form.find('.jr-appearance-field-list').each(function(){
+				$(this).find('fieldset label').addClass('column');
+//				var $row,
+//					$table = $('<table></table>'), 
+//					$thead = $('<thead></thead>'), 
+//					$tbody = $('<tbody></tbody>'),
+//					$header = $(this).find('.jr-appearance-label'),
+//					$content = $(this).find('.jr-appearance-list-nolabel'); 
+//				
+//				$row = createRow($header, 'th');
+//				$row.appendTo($thead);
+//				$thead.appendTo($table);//
+
+//				$content.each(function(){
+//					$row = createRow($(this), 'td');
+//					$row.appendTo($tbody);
+//				});//
+
+//				$tbody.appendTo($table);
+//				$table.appendTo($(this));//
+
+//				function createRow($fieldlist, cellType){
+//					var $cell,
+//						$row = $('<tr/>'),
+//						$legend = $fieldlist.find('legend');
+//					//legends have special built-in browser formatting so we remove them but keep the content
+//					$('<'+cellType+'>'+$legend.html()+'</'+cellType+'>').appendTo($row);
+//					$legend.remove();
+//					//everything else can stay intact but is moved to table cells
+//					$fieldlist.find('label').each(function(){
+//						$cell = $('<'+cellType+'/>');
+//						$(this).detach().appendTo($cell);
+//						$cell.appendTo($row);
+//					});
+//					return $row;
+//				}	
+			});	
 			//$form.find('.jr-appearance-compact label img').selectable();
 		},
 		spinnerWidget :function(){

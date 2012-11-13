@@ -575,9 +575,42 @@ $input-max-width: 80%;
         padding-left: 0px; 
         font-size: 1em;
         input{
-          margin: 5px 10px 1px 0; } } } } }
+          margin: 5px 10px 1px 0; } } } }
+  .jr-appearance-field-list{
+    legend{ 
+      float: left;
+      border: none;
+      width: 200px;
+      min-height: 1px;}
+    label{
+      float: left;
+      display: block;
+      width: 100px;
+      text-align: center;}
+    input{
+      text-align: center;}
+    .jr-appearance-list-nolabel{
+      label span.active, img{
+          display: none;
+          float: none; } }
+    .jr-appearance-label{
+        input{
+          float: none;
+          display: none; } 
+        img{
+          display: inline-block;
+          float: none;} }
+    /*fieldset{
+      padding: 0;
+      margin: 0;}
+    th{
+      input{
+        display: none;} }
+    td{
+      label>span.active{
+        display: none; } }*/ } } 
 
-.with-media {
+/*.with-media {
   margin-top: 5px; 
   >span.active {
     display: block;
@@ -604,6 +637,5 @@ $input-max-width: 80%;
     margin-top: 25px; }
   input {
     &[type=radio], &[type=checkbox] {
-      /*display: none;*/
-      margin-top: 35px; } } }
+      margin-top: 35px; } } }*/
 

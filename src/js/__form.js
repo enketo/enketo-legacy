@@ -1761,8 +1761,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.dateWidget();
 			this.timeWidget();
 			this.dateTimeWidget();
-			this.selectOneWidget();
-			this.selectMultiWidget();
+			this.selectWidget();
 			this.pageBreakWidget();
 			this.readonlyWidget();
 			this.tableWidget();
@@ -1880,31 +1879,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});
 		},
-		selectOneWidget : function(){
-			$form.find('select:not([multiple])').find('[value=""]').text('None selected'); 
-			function update(){
-				$form.find('select:not([multiple])').removeData('selectpicker').siblings('.bootstrap-select').remove();
-				$form.find('select:not([multiple])').selectpicker({
-					btnStyle: 'btn'
-				});
-				$form.find('.bootstrap-select input').addClass('ignore');
-			}
-			$form.on('changelanguage', update);
-			update();
-		},
-		selectMultiWidget : function(){
-			$form.find('select[multiple]').find('[value=""]').remove(); 
-			function update(){
-				$('select[multiple]').removeData('multiselect').siblings('.bootstrap-multiselect').remove();
-				$('select[multiple]').multiselect({
-					container: '<div class="widget btn-group bootstrap-multiselect" />',
-					button: 'btn'
-				});
-				$form.find('.bootstrap-multiselect input').addClass('ignore');
-				$('select[multiple] ~ .bootstrap-multiselect .caret').addClass('pull-right');
-			}
-			$form.on('changelanguage', update);
-			update();
+		selectWidget : function(){
+			$form.find('select option[value=""]').remove();
+			$form.find('select').selectpicker();
+			$form.on('changelanguage', function(){
+				$form.find('select').selectpicker('update');
+			});
 		},
 		//transforms temporary page-break elements to triggers //REMOVE WHEN BETTER SOLUTION FOR PAGE BREAKS IS FOUND
 		pageBreakWidget : function(){

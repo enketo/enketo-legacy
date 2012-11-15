@@ -37,6 +37,8 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
 
     <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/><!-- for xml: version="1.0" -->
 
+    <xsl:variable name="upper-case" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
+    <xsl:variable name="lower-case" select="'abcdefghijklmnopqrstuvwxyz'" />
     <xsl:variable name="undefined">undefined</xsl:variable>
     <xsl:variable name="warning">warning</xsl:variable>
     <xsl:variable name="error">error</xsl:variable>
@@ -274,7 +276,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
 
     <xsl:template name="appearance">
         <xsl:if test="@appearance">
-             <xsl:value-of select="concat('jr-appearance-', @appearance)"/>
+             <xsl:value-of select="concat('jr-appearance-', translate(@appearance, $upper-case, $lower-case))"/>
         </xsl:if>
     </xsl:template>
 
@@ -365,7 +367,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:call-template name="appearance" />
                 </xsl:variable>--> 
                 <xsl:attribute name="class">
-                    <!--<xsl:value-of select="$appearance" />--><xsl:call-template name="appearance" />
+                    <xsl:call-template name="appearance" />
                 </xsl:attribute>
             </xsl:if> 
             <!-- if "$html_type = 'radio' or $html_type = 'checkbox'"-->
@@ -377,9 +379,12 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 However, to support multiple languages and parse all of them (to be available offline)
                 they are placed in the label instead.-->
             <xsl:apply-templates select="xf:hint" />
+            <xsl:variable name="appearance">
+                <xsl:value-of select="translate(@appearance, $upper-case, $lower-case)"/>
+            </xsl:variable>
             <xsl:variable name="element">
                 <xsl:choose>
-                    <xsl:when test="$html_type = 'text' and @appearance = 'multi-line' or @appearance = 'multiline' or @appearance = 'text-area' or @appearance = 'big' or @appearance = 'big-text' or @appearance = 'textarea'">
+                    <xsl:when test="$html_type = 'text' and $appearance = 'multi-line' or $appearance = 'multiline' or $appearance = 'text-area' or $appearance = 'big' or $appearance = 'big-text' or $appearance = 'textarea'">
                         <xsl:value-of select="string('textarea')" />
                     </xsl:when>
                     <xsl:otherwise>
@@ -884,7 +889,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:otherwise>
                         <xsl:value-of select="@value"/>
                     </xsl:otherwise>
-                </xsl:choose>           
+                </xsl:choose>    
             </xsl:attribute>
             <xsl:text><!-- avoids self-closing tags on empty elements -->
             </xsl:text>

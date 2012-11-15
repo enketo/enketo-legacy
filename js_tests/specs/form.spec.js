@@ -7,13 +7,13 @@ EnvJasmine.load(EnvJasmine.jsDir + "__form.js");
 describe("Data node getter", function () {
     var i, t =
 		[
-			["", null, null, 18],
-			["", null, {}, 18],
+			["", null, null, 19],
+			["", null, {}, 19],
 			//["/", null, {}, 9], //issue with xfind, not important
-			[false, null, {}, 18],
-			[null, null, {}, 18],
-			[null, null, {noTemplate:true}, 18],
-			[null, null, {noTemplate:false}, 20],
+			[false, null, {}, 19],
+			[null, null, {}, 19],
+			[null, null, {noTemplate:true}, 19],
+			[null, null, {noTemplate:false}, 21],
 			[null, null, {onlyTemplate:true}, 1],
 			[null, null, {noEmpty:true}, 9],
 			[null, null, {noEmpty:true, noTemplate:false}, 10],
@@ -108,9 +108,11 @@ describe('Data node XML data type conversion & validation', function(){
 				
 				["/thedata/nodeA", null, null, 'val5565ghgyuyua', 'datetime', false], //Chrome turns val10 into a valid date..
 				["/thedata/nodeA", null, null, '2012-01-01T00:00:00-06', 'datetime', true],
-				//["/thedata/nodeA", null, null, '2012-12-32T00:00:00-06', 'datetime', false], fails, would be good if it didn't, but not critical
+				["/thedata/nodeA", null, null, '2012-12-32T00:00:00-06', 'datetime', false],
 				["/thedata/nodeA", null, null, '2012-12-31T23:59:59-06', 'datetime', true],
-				//["/thedata/nodeA", null, null, '2012-01-01T30:00:00-06', 'datetime', fails], fails, would be good if it didn't, but not critical
+				["/thedata/nodeA", null, null, '2012-12-31T23:59:59-06:30', 'datetime', true],
+				["/thedata/nodeA", null, null, '2012-12-31T23:59:59Z', 'datetime', true],
+				["/thedata/nodeA", null, null, '2012-01-01T30:00:00-06', 'datetime', false],
 				
 				["/thedata/nodeA", null, null, 'a', 'time', false],
 				["/thedata/nodeA", null, null, 'aa:bb', 'time', false],
@@ -330,8 +332,8 @@ describe("Preload and MetaData functionality", function(){
 	}
 
 	t=[
-		['/widgets/start_time', 'Tue, 30 Oct 2012 14:44:57 GMT'],
-		['/widgets/date_today', 'Tue, 30 Oct 2012 00:00:00 GMT'],
+		['/widgets/start_time', '2012-10-30T08:44:57.000-06:00'],
+		['/widgets/date_today', '2012-10-30'],
 		['/widgets/deviceid', 'some value'],
 		['/widgets/subscriberid', 'some value'],
 		['/widgets/my_simid', '2332'],
@@ -404,7 +406,7 @@ describe("Loading instance-to-edit functionality", function(){
 		});
 
 		it ("adds data from the instance-to-edit to the form instance", function(){
-			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('value');
+			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('2012-02-05T15:34:00.000-04:00');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
 	});
@@ -431,7 +433,7 @@ describe("Loading instance-to-edit functionality", function(){
 		});
 
 		it ("adds data from the instance-to-edit to the form instance", function(){
-			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('value');
+			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('2012-02-05T15:34:00.000-04:00');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
 
@@ -466,8 +468,93 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]').eq(index).length).toEqual(0);
 			expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index-1).val()).toEqual('c2');
 		});
+	});
+});
 
+describe('branching functionality', function(){
+	var form;
+
+	beforeEach(function() {
+		//turn jQuery animations off
+		jQuery.fx.off = true;
 	});
 
+	it ("hides irrelevant branches upon initialization", function(){
+		form = new Form(formStr6, dataStr6);
+		form.init();
+		expect(form.getFormO().$.find('[name="/data/group"]').hasClass('disabled')).toBe(true);
+		expect(form.getFormO().$.find('[name="/data/nodeC"]').parents('.disabled').length).toEqual(1);
+	});
+
+	it ("reveals a group branch when the relevant condition is met", function(){
+		form = new Form(formStr6, dataStr6);
+		form.init();
+		//first check incorrect value that does not meet relevant condition
+		form.getFormO().$.find('[name="/data/nodeA"]').val('no').trigger('change');
+		expect(form.getFormO().$.find('[name="/data/group"]').hasClass('disabled')).toBe(true);
+		//then check value that does meet relevant condition
+		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
+		expect(form.getFormO().$.find('[name="/data/group"]').hasClass('disabled')).toBe(false);
+	});
+
+	it ("reveals a question when the relevant condition is met", function(){
+		form = new Form(formStr6, dataStr6);
+		form.init();
+		//first check incorrect value that does not meet relevant condition
+		form.getFormO().$.find('[name="/data/group/nodeB"]').val(3).trigger('change');
+		expect(form.getFormO().$.find('[name="/data/nodeC"]').parents('.disabled').length).toEqual(1);
+		//then check value that does meet relevant condition
+		form.getFormO().$.find('[name="/data/group/nodeB"]').val(2).trigger('change');
+		expect(form.getFormO().$.find('[name="/data/nodeC"]').parents('.disabled').length).toEqual(0);
+	});
 });
+
+describe('required field validation', function(){
+	var form, $numberInput, $branch;
+
+	beforeEach(function() {
+		jQuery.fx.off = true;//turn jQuery animations off
+		form = new Form(formStr6, dataStr6);
+		form.init();
+		$numberInput = form.getFormO().$.find('[name="/data/group/nodeB"]');
+		$numberLabel = form.getFormO().input.getWrapNodes($numberInput);
+	});
+
+	//this fails in phantomJS...
+	xit ("validates a DISABLED and required number field without a value", function(){
+		$numberInput.val('').trigger('change');
+		expect($numberLabel.length).toEqual(1);
+		expect($numberInput.val().length).toEqual(0);
+		expect($numberLabel.parents('.jr-group').attr('disabled')).toEqual('disabled');
+		expect($numberLabel.hasClass('invalid')).toBe(false);
+	});
+
+	//see issue #144
+	it ("validates an enabled and required number field with value 0 and 1", function(){
+		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
+		expect($numberLabel.length).toEqual(1);
+		$numberInput.val(0).trigger('change');
+		expect($numberLabel.hasClass('invalid')).toBe(false);
+		$numberInput.val(1).trigger('change');
+		expect($numberLabel.hasClass('invalid')).toBe(false);
+	});
+
+	it ("invalidates an enabled and required number field without a value", function(){
+		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
+		$numberInput.val('').trigger('change');
+		expect($numberLabel.hasClass('invalid')).toBe(true);
+	});
+
+	it ("invalidates an enabled and required textarea that contains only a newline character or other whitespace characters", function(){
+		form = new Form(formStr1, dataStr1);
+		form.init();
+		var $textarea = form.getFormO().$.find('[name="/thedata/nodeF"]');
+		$textarea.val('\n').trigger('change');
+		expect($textarea.length).toEqual(1);
+		expect($textarea.parent('label').hasClass('invalid')).toBe(true);
+		$textarea.val('  \n  \n\r \t ').trigger('change');
+		expect($textarea.parent('label').hasClass('invalid')).toBe(true);
+	});
+});
+
 //TODO load a large complex form and detect console errors

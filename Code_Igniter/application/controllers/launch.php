@@ -34,33 +34,43 @@ class Launch extends CI_Controller {
 		{
 			$data = array('offline'=>FALSE, 'title_component'=>'launch');
 			
-			$common_scripts = array(
-				base_url('libraries/jquery.min.js'),
-				base_url('libraries/jquery-ui/js/jquery-ui.custom.min.js'),
-				base_url('libraries/jquery-ui-timepicker-addon.js'),
-				base_url('libraries/jquery.multiselect.min.js'),	
-				base_url('libraries/modernizr.min.js'),
-				base_url('libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js'),
-				base_url('libraries/jquery.form.js'),
-				base_url('libraries/vkbeautify.js'),
+			$default_scripts = array(
+				'libraries/jquery.min.js',
+				'libraries/bootstrap/js/bootstrap.min.js',
+				'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
+				'/libraries/eternicode-bootstrap-datepicker/js/bootstrap-datepicker.js',
+				'/libraries/bootstrap-select.js',
+				//'/libraries/silviomoreto-bootstrap-select/bootstrap-select.js',
+				//'/libraries/davidstutz-bootstrap-multiselect/js/bootstrap-multiselect.js',
+				'libraries/modernizr.min.js',
+				'libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
+				'libraries/jquery.form.js',
+				'libraries/vkbeautify.js',
 				"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
+			);
+			$default_stylesheets = array
+			(
+				array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'all'),
+				array( 'href' => '/css/screen.css', 'media' => 'all'),
+				array( 'href' => '/css/print.css', 'media' => 'print')
 			);
 
 			if (ENVIRONMENT === 'production')
 			{
-				$data['scripts'] = array_merge($common_scripts, array(
-					base_url('js-min/launch-all-min.js')
+				$data['scripts'] = array_merge($default_scripts, array(
+					'js-min/launch-all-min.js'
 				));
 			}
 			else
 			{
-				$data['scripts'] = array_merge($common_scripts, array(
-					base_url('js-source/__common.js'),
-					base_url('js-source/__form.js'),
-					base_url('js-source/__launch.js'),
-					base_url('js-source/__debug.js')
+				$data['scripts'] = array_merge($default_scripts, array(
+					'js-source/__common.js',
+					'js-source/__form.js',
+					'js-source/__launch.js',
+					'js-source/__debug.js'
 				));
 			}
+			$data['stylesheets'] = $default_stylesheets;
 			$this->load->view('launch_view', $data);
 		}
 	}
@@ -113,6 +123,17 @@ class Launch extends CI_Controller {
 			}
 
 		}
+	}
+
+	/**
+	 * For now this function just cleans test entries in the surveys table. In the future,
+	 * we could add removal of obsolete surveys (found to not be 'live' for extended period)
+	 */
+	public function clean()
+	{
+		$this->load->model('Survey_model', '', TRUE);
+		$number_deleted = $this->Survey_model->remove_test_entries();
+		echo $number_deleted.' test entries deleted.';
 	}
 
 

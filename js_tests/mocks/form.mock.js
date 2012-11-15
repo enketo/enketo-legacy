@@ -26,6 +26,7 @@ var dataStr1 =
                 "<w2>3</w2>"+
                 "<w.3>5</w.3>"+
             "</someweights>"+
+            "<nodeF/>"+
         "</thedata>"+
     "</instance>";
 
@@ -37,7 +38,7 @@ var dataEditStr1 =
                 '<timeStart/>'+
                 '<timeEnd/>'+
             "</meta>"+
-            "<nodeA>value</nodeA>"+
+            "<nodeA>2012-02-05T15:34:00.000-04</nodeA>"+
             "<nodeB>b</nodeB>"+
             "<repeatGroup template=''>"+
                 "<nodeC>cdefault</nodeC>"+
@@ -61,26 +62,14 @@ var dataEditStr1 =
 
 var formStr1 =
     '<form>'+
-        '<div id="stats" style="display: none;">'+
-            '<span id="jrSelect">0</span>'+
-            '<span id="jrSelect1">0</span>'+
-            '<span id="jrItem">0</span>'+
-            '<span id="jrInput">3</span>'+
-            '<span id="jrUpload">0</span>'+
-            '<span id="jrTrigger">0</span>'+
-            '<span id="jrRepeat">0</span>'+
-            '<span id="jrRelevant">0</span>'+
-            '<span id="jrConstraint">0</span>'+
-            '<span id="jrCalculate">0</span>'+
-            '<span id="jrPreload">0</span>'+
-        '</div>'+
-        '<label><input name="/thedata/nodeA" type="text"/></label>'+
-        '<label><input name="/thedata/nodeB" type="text"/></label>'+
+        '<label><input name="/thedata/nodeA" type="datetime" data-type-xml="dateTime"/></label>'+
+        '<label><input name="/thedata/nodeB" type="text" data-type-xml="text" /></label>'+
         '<fieldset class="jr-group" name="/thedata/repeatGroup">'+
             '<fieldset class="jr-repeat" name="/thedata/repeatGroup">'+
                 '<label><input name="/thedata/repeatGroup/nodeC" type="text"/></label>'+
             '</fieldset>'+
         '</fieldset>'+
+        '<label><textarea name="/thedata/nodeF" required="required"></textarea></label>'+
     '</form>';
 
 var dataStr2 =
@@ -233,9 +222,9 @@ var formStr4 =
 
 var dataStr5a =
     '<widgets id="testPreloads" version="1"  >'+
-        '<start_time>Tue, 30 Oct 2012 14:44:57 GMT</start_time>'+
-        '<end_time>Tue, 30 Oct 2012 14:44:57 GMT</end_time>'+
-        '<date_today>Tue, 30 Oct 2012 00:00:00 GMT</date_today>'+
+        '<start_time>2012-10-30T08:44:57.000-06</start_time>'+
+        '<end_time>2012-10-30T08:44:57.000-06:00</end_time>'+
+        '<date_today>2012-10-30</date_today>'+
         '<deviceid>some value</deviceid>'+
         '<subscriberid>some value</subscriberid>'+
         '<my_simid>2332</my_simid>'+
@@ -349,6 +338,45 @@ var formStr5 =
         '</fieldset>'+
     '</form>';
 
+var dataStr6 =
+    '<data id="TestGroupBranch" version="3" xmlns="http://rapaide.com/testGroupBranch">'+
+        '<nodeA/>'+
+            '<group>'+
+                '<nodeB/>'+
+            '</group>'+
+        '<nodeC/>'+
+    '</data>';
+
+var formStr6 =
+    '<form class="jr" id="TestGroupBranch">'+
+        '<div id="form-languages" style="display:none;" data-default-lang="">'+
+            '<a href="#" lang="en">'+
+                '<span>English</span>'+
+            '</a>'+
+        '</div>'+
+        '<fieldset class="">'+
+            '<label>'+
+                '<span lang="en">Enter yes to reveal group</span>'+
+                '<input name="/data/nodeA" type="text" data-type-xml="string"/>'+
+            '</label>'+
+        '</fieldset>'+
+        '<fieldset class="jr-group " name="/data/group" data-relevant="/data/nodeA = &quot;yes&quot">'+
+            '<h4><span lang="en">Group with relevant binding</span></h4>'+
+            '<label>'+
+                '<span lang="en">Enter 2 to reveal select1</span>'+
+                '<input name="/data/group/nodeB" type="number" data-type-xml="int" required="required"/>'+
+            '</label>'+
+        '</fieldset>'+
+        '<label class="jr-appearance-minimal">'+
+            '<span lang="en">Select 1 option</span>'+
+            '<select name="/data/nodeC" data-relevant="/data/group/nodeB = 2">'+
+                '<option value="">...</option>'+
+                '<option value="r">option 1</option>'+
+                '<option value="g">option 2</option>'+
+                '<option value="b">option 3</option>'+
+            '</select>'+
+        '</label>'+
+    '</form>';
 
 /**
  * var jrDataStrToEdit = '<?xml version="1.0" ?><Data_Types id="data_types"><formhub><uuid>98063bc21324412f9cf1cb1c2a16c66e</uuid></formhub><text/><textarea>Lots of text

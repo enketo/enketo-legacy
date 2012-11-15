@@ -25,8 +25,6 @@ var /**@type {Settings}*/settings,
 var /**@type {StorageLocal}*/ store;
 var MODERN_BROWSERS_URL = 'modern_browsers';
 var CACHE_CHECK_INTERVAL = 360*1000; //CHANGE TO 3600*1000
-var SUBMISSION_URL = 'data/submission';
-var CONNECTION_URL = 'checkforconnection.php';
 DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBackup':false };
 
 

@@ -18,41 +18,78 @@
 
 class Front extends CI_Controller {
 
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->model('Survey_model','',TRUE);
+	}
+
 	public function index()
 	{
 		$this->load->helper(array('url'));
-	
-		$data = array('offline'=>FALSE, 'title_component'=>'survey');
-		
+
+		$default_scripts = array
+		(
+			'/libraries/jquery.min.js',
+			'/libraries/bootstrap/js/bootstrap.min.js',
+			'/libraries/modernizr.min.js'
+		);
+		$default_stylesheets = array
+		(
+			array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'screen'),
+			array( 'href' => '/css/screen.css', 'media' => 'screen'),
+			array( 'href' => '/css/print.css', 'media' => 'print')
+		);
+		$data = array(
+			'offline'=>FALSE, 
+			'title_component'=>'survey', 
+			'stylesheets' => $default_stylesheets,
+			'num_surveys' => $this->Survey_model->number_surveys()
+		);
+
 		if (ENVIRONMENT === 'production')
 		{
-			$data['scripts'] = array(
-				base_url('js-min/front-all-min.js')
-			);
+			$data['scripts'] = array_merge($default_scripts, array(
+				'/js-min/front-all-min.js'
+			));
 		}
 		else
 		{
-			$data['scripts'] = array(
-				base_url('js-source/__common.js')
-			);
+			$data['scripts'] = array_merge($default_scripts, array(
+				'/js-source/__common.js'
+			));
 		}
 
-		$this->load->view('front_view', $data);			
+		$integrated = $this->config->item('integration_with_url') || '';
+		
+		if (strlen($integrated)>0)
+		{
+			$this->load->view('front_view_bare', $data);
+		}
+		else
+		{
+			$this->load->view('front_view', $data);
+		}	
 	}
 
-	public function update_list()
+	public function number_launched()
 	{
-		$this->load->model('Survey_model', '', TRUE);
-		$success = $this->Survey_model->update_formlist();
-		if ($success === TRUE)
-		{
-			echo 'form list has been updated';
-		}
-		else 
-		{
-			echo 'error updating form list';
-		}
-	}
+		echo $this->Survey_model->number_surveys();
+	} 
+
+
+	//public function update_list()
+	//{
+	//	$success = $this->Survey_model->update_formlist();
+	//	if ($success === TRUE)
+	//	{
+	//		echo 'form list has been updated';
+	//	}
+	//	else 
+	//	{
+	//		echo 'error updating form list';
+	//	}
+	//}
 }
 
 

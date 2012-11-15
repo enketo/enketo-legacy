@@ -25,6 +25,8 @@ $(document).ready(function(){
 	state.init();
 	//state.setUrl();
 
+	$('[title]').tooltip();
+
 	_error = console.error;
 	console.error = function(){
 		addJsError(arguments[0]);
@@ -32,34 +34,27 @@ $(document).ready(function(){
 		return _error.apply(console, arguments);
 	};
 
-	//source = getGetVariable('source') || false;
-	//url = getGetVariable('formurl') || false;
-
 	if (!state.source){
 		$('#html5-form-source').hide();
 		$('li a[href="#html5-form-source"]').parent('li').remove();
 	}
-	$('#tabs').tabs();
+	//$('#tabs').tabs();
 	
-	$('li a[href="#upload"]').parent('li').hide();
-	$tabs = $('ul.ui-tabs-nav');
-	$tabs.hide();
-	
-	//gui.init();
-	gui.showFeedback('This is an incomplete pre-alpha preview to test the JavaRosa form functionality in Google Chrome. '+
-		'It is not ready for actual use.', 3);
-	//$('#form-controls #launch-form').button('disable');
-	$('.main .ui-tabs-nav').removeClass('ui-widget-header');
-	//$('.main .ui-tabs-nav li').width('141px');
-	$('.main h2').addClass('ui-widget-header ui-corner-all');
+	//$('li a[href="#upload"]').parent('li').hide();
+	//$tabs = $('ul.ui-tabs-nav');
+	//$tabs.hide();
+	$('li a[href="#upload"]').tab('show');
+
+	//$('.main h2').addClass('ui-widget-header ui-corner-all');
 	//$('article').addClass('ui-corner-tr');
 
 	gui.setup();
 
 	$('#upload-form [name="xml_file"]').change(function(){
-		//console.log('file input change event detected');
-		//$(this).find('img.loading').show();
+		//state.reset();
 		$('#upload-form').submit();
+		resetForm();
+		//$('#upload-form')[0].reset();
 	});
 
 	$('#upload-form').ajaxForm({
@@ -68,12 +63,15 @@ $(document).ready(function(){
 			//console.debug(data);\
 			var serverUrl = $form.find('input[name="server_url"]').val() || '',
 				formId = $form.find('input[name="form_id"]').val() || '';
-				//xmlUrl = $form.find('input[name="xml_url"]').val() || '';
 			// validate server url
-			if ( serverUrl !== '' ){
+			if ( serverUrl.length > 0 ){
 				if (isValidUrl(serverUrl)){
 					state.server = serverUrl;
 					state.setUrl();
+					if ( formId.length > 0 ){
+						state.id = formId;
+						state.setUrl();
+					}
 				}
 				else{
 					gui.alert('Not a valid server url');
@@ -82,25 +80,12 @@ $(document).ready(function(){
 					return false;
 				}
 			}
-			if ( formId !== '' ){
-				state.id = formId;
-				state.setUrl();
-			}
-			// validate form url
-//			if ( xmlUrl !== '' ){
-//				if (isValidUrl(xmlUrl)){
-//					state.setIdFromUrl(xmlUrl);
-//					state.setUrl();
-//				}
-//				else{
-//					gui.alert('Sorry, the xml form url is not valid');
-//					resetForm();
-//					//cancel submissin
-//					return false;
-//				}
-//			}
-			$('#upload-form label, #input-switcher, #form-list, #upload .hurry').hide();
-			$('#upload-form img.loading').show();
+			/*else {
+				resetForm();
+				return false;
+			}*/
+			$('#upload .hurry').hide();
+			$('#upload-form progress').show();
 		},
 		'success': processResponse,
 		'error': function(){
@@ -109,74 +94,11 @@ $(document).ready(function(){
 		}
 	});
 
-//	$('#upload-form').submit(function(){
-//		var content,
-//			$form = $(this),
-//			url = $form.attr('action'),
-//			xmlFile = $form.find('input[name="xml_file"]').val() || '',
-//			serverUrl = $form.find('input[name="server_url"]').val() || '',
-//			xmlUrl = $form.find('input[name="xml_url"]').val() || '';//
-
-//		console.debug('submitting');
-//		//content.append('server_url', serverUrl);
-//		//content.append('xml_url', xmlUrl);//
-
-//		//if ( xmlFile !== ''){
-//		//	content.append('xml_file', xmlFile);
-//		//}
-//		//else
-//		if ( serverUrl !== ''){
-//			if (isValidUrl(serverUrl)){
-//				state.server = serverUrl;
-//				state.setUrl();
-//			}
-//			else{
-//				gui.alert('Not a valid server url');
-//				return resetForm();
-//			}
-//		}
-//		if (xmlUrl !== ''){
-//			if (isValidUrl(xmlUrl)){
-//				state.setIdFromUrl(xmlUrl);
-//				state.setUrl();
-//			}
-//			else{
-//				gui.alert('Sorry, the xml form url is not valid');
-//				return resetForm();
-//			}
-//		}
-//		content = new FormData($(this)[0]);
-//
-//		$.ajax(url, {
-//			type: 'POST',
-//			data: content,
-//			cache: false,
-//			contentType: false,
-//			processData: false,
-//			//dataType: 'text',
-//			'beforeSubmit': function(){
-//				$('#upload-form label, #input-switcher, #form-list').hide();
-//				$('#upload-form img.loading').show();
-//			},
-//			complete: processResponse,
-//			error: function(jqXHR, textStatus, errorThrown){
-//				return;
-//				//console.debug(jqXHR);
-//				//console.debug('status: '+textStatus);
-//				//console.debug('error: '+errorThrown);
-//				//alert('error');
-//				gui.showFeedback('Sorry, an error occured while communicating with the Enketo server.');
-//				resetForm();
-//			}
-//		});
-//	});
-
 	$('#upload-form #input-switcher a')
 		.hover(function(){
 			$(this).toggleClass('ui-state-hover');
 		})
 		.click(function(e){
-			console.debug('input switcher link clicked');
 			e.preventDefault();
 			$('#upload-form label').hide().find('input[name="'+$(this).attr('id')+'"]').parents('label').show();
 			$(this).siblings().removeClass('active');
@@ -204,7 +126,7 @@ $(document).ready(function(){
 		var content = new FormData();
 		content.append('level', 'error');
 		content.append('content', c);
-		$('#html5validationmessages div').html('<img class="loading" src="images/ajax-loader.gif" />');
+		$('#html5validationmessages div').html('<form style="text-align:center;"><progress></progress></form>');
 		$.ajax(url, {
 			type: 'POST',
 			data: content,
@@ -235,14 +157,15 @@ $(document).ready(function(){
 	
 	$('#upload-form #input-switcher a#server_url').click();
 
-	$('#dialog-launch form').submit(function(event){
+	$('#launch form').submit(function(event){
 		event.preventDefault();
 		console.debug('in ajax submit');
+		gui.alert('<form style="text-align:center;><progress></progress></form>', 'Requesting url...', 'normal');
 		$.ajax('launch/launchSurvey', {
 			type: 'POST',
 			data: $(this).serialize(),
 			error: function(response){
-				console.debug('an error occurred when sending survey launch data');
+				gui.alert('Ouch, an error occurred during the request. Please try again.');
 			},
 			success: function(response){
 				response = JSON.parse(response);
@@ -254,13 +177,13 @@ $(document).ready(function(){
 				console.log('form submission complete');
 				if (response['success']){
 					gui.alert('Form was succesfully launched at this address: '+
-						'<a class="launch-link" href="'+response['url']+'">'+response['url']+'</a>', 'Success!', 'ui-icon-check');
+						'<a class="launch-link" href="'+response['url']+'">'+response['url']+'</a>', 'Launched!', 'success');
 				}
 				else{
 					switch(response['reason']){
 						case 'existing':
 							gui.alert('This survey was launched before at this address: '+
-								'<a class="launch-link" href="'+response['url']+'">'+response['url']+'</a>', 'Exists already!', 'ui-icon-lightbulb');
+								'<a class="launch-link" href="'+response['url']+'">'+response['url']+'</a>', 'Launched!', 'success');
 							break;
 						case 'empty':
 							gui.alert('Server url and/or form id submitted to the server found to be empty.', 'Failed');
@@ -386,31 +309,50 @@ State.prototype.setIdFromUrl = function(url){
 };
 
 State.prototype.reset = function(){
+	console.debug('resetting state');
 	this.server = null;
 	this.id = null;
 	this.setUrl();
 };
 
 GUI.prototype.setCustomEventHandlers = function(){
-	$('button#reset-form').button({'icons': {'primary':"ui-icon-refresh"}}).click(function(){
-		resetForm();
-	});
+	//$('button#reset-form').click(function(){
+	//	resetForm();
+	//});
 	
-	$('button#validate-form').button({'disabled':true, 'text': false, 'icons': {'primary':"ui-icon-check"}}).click(function(){
+	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
 		//$('form.jr').trigger('beforesave');
 		if (typeof form !== 'undefined'){
 			form.validateForm();
 		}
 	});
 
-	$('button#launch-form').button({'disabled': true, 'icons': {'primary':"ui-icon-arrowthick-1-e"}}).click(function(){
-		gui.launchConfirm();
-		//gui.alert('In the future this button will launch the form in Rapaide.survey ', 'Not functional yet');
+	$(document).on('click', 'button#launch-form:not(.disabled)', function(){
+		var dataUrl, errorMsg;
+		if (!state.server){
+			errorMsg = 'Requires a server url and ';
+		}
+		if (!state.id){
+			errorMsg = (errorMsg) ? errorMsg : 'Requires ';
+			errorMsg += 'a form to be selected first.';
+		}
+		dataUrl = $('#launch [name="data_url"]').val();
+		if (dataUrl.length > 0 && !isValidUrl(dataUrl)){
+			errorMsg = (errorMsg) ? errorMsg+'<br/>' : '';
+			errorMsg += 'The publication link is not a valid url';
+		}
+		if (errorMsg && errorMsg.length > 0){
+			$('#launch p.alert.alert-error').html(errorMsg).show();
+		}
+		else{
+			$('#launch [name="server_url"]').val(state.server);
+			$('#launch [name="form_id"]').val(state.id);
+			$('#launch p.alert.alert-error').empty().hide();
+			$('#launch form').submit();
+		}
 	});
 
-	$('#form-controls button:not(#validate-form)').equalWidth();
-
-	$('#dialog-launch a.advanced').click(function(event){
+	$('#launch a.advanced').click(function(event){
 		event.preventDefault();
 		if ($(this).hasClass('active')){
 			$(this).text('show advanced options').removeClass('active').siblings('fieldset.advanced').hide();
@@ -433,17 +375,18 @@ function resetForm(){
 	//$content.hide();
 	//$upload.show();
 	state.reset();
-	$('#upload-form')[0].reset();
+	//$('#upload-form')[0].reset();
 	$('#upload-form input[type="hidden"]').val('');
-	$('#upload-form img.loading, #form-list').hide();
+	$('#form-list ul').empty().hide();
+	$('#upload-form progress').hide();
 	$('#input-switcher, #upload .hurry').show().find('a#server_url').click();
 	$('#form-languages').remove();
-	gui.updateStatus.edit(false);
-	$('#survey-form div, #xsltmessages div, #html5validationmessages div, #jrvalidationmessages div, #xmlerrors div, #xslerrors div, #html5-form-source textarea, #data textarea').empty();
+	//gui.updateStatus.edit(false);
+	$('#survey-form form, #xsltmessages div, #html5validationmessages div, #jrvalidationmessages div, #xmlerrors div, #xslerrors div, #html5-form-source textarea, #data textarea').empty();
 	form = null;
-	$('#validate-form, #launch-form').button('disable');
-	$('#tabs li a[href="#upload"]').click();
-	$tabs.hide();
+	$('#validate-form').addClass('disabled');
+	$('.nav li a[href="#upload"]').tab('show');
+	//$tabs.hide();
 }
 
 function processResponse(xml){
@@ -459,7 +402,7 @@ function processResponse(xml){
 
 function processForm($response)
 {
-	$tabs.show();
+	//$tabs.show();
 	
 	var formStr = new XMLSerializer().serializeToString($response.find('form')[0]);
 	//data as string
@@ -471,29 +414,29 @@ function processForm($response)
 	var $xmlMsg = $response.find('xmlerrors message');
 	var $xslMsg = $response.find('xslformerrors message, xsldataerrors message');
 
-	$('#upload-form img.loading').hide();
+	$('#upload-form progress').hide();
 	
 	if(formStr.length > 0){
 		$('#html5-form-source textarea').empty().text(vkbeautify.xml(formStr));
 		$('#html5-form-source form').submit();
 		
 		//important to use append with string and not $object for some reason => JQuery bug?
-		$('#survey-form div').empty().append(formStr);
+		$('#survey-form form').replaceWith(formStr);
 		
 		form = new Form('form.jr:eq(0)', jrDataStr);
 		form.init();
 			
-		$('#tabs li a[href="#survey-form"]').click();
+		$('.nav a[href="#survey-form"]').tab('show');
 		
 		//set event handlers for changes in form input fields
 		$(document).on('change dataupdate', 'form.jr', updateData);
 
 		//enable buttons
-		$('#validate-form, #launch-form').button('enable');
+		$('#validate-form').removeClass('disabled');
 	}
 	else {
 		$('#survey-form div').empty();
-		$('#tabs li a[href="#report"]').click();
+		$('.nav li a[href="#report"]').tab('show');
 	}
 	
 	if (form && form.getDataStr().length > 0){
@@ -541,9 +484,10 @@ function processFormlist($response)
 	$response.find('formlist>li').each(function(){
 		formlistStr += new XMLSerializer().serializeToString($(this)[0]);
 	});
-	$('#form-list ol').empty().append(formlistStr);//html($response.find('li'));
-	$('#form-list ol li a').button();
-	$('#upload-form img.loading').hide();
+	$('#form-list ul').empty().append(formlistStr);//html($response.find('li'));
+	$('#form-list ul li a').addClass('btn btn-block');
+	//$('#form-list ol li a').button();
+	$('#upload-form progress').hide();
 	$('#form-list').show();//.addScrollbar();
 }
 
@@ -561,15 +505,16 @@ function updateData(){
 
 function parseMsgList(msgObj, targetEl){
 	"use strict";
-	var messageList = $('<ol></ol>');
+	var messageList = $('<ul></ul>');
 	msgObj.each(function(){
-		var level = '', liStr, icon = '', message = $(this).text(),
-			icons = {'level-0':'info', 'info':'info' , 'info warning':'info','success':'circle-check', 'level-1':'info', 'level-2':'alert','error': 'alert', 'level-3':'alert'};
-		
-		level += ($(this).attr('level')) ? 'level-'+$(this).attr('level') : $(this).attr('class');
-		icon = (icons[level]) ? 'ui-icon ui-icon-'+icons[level] : icon ;
-
-		liStr = '<li class="'+level+'"><span class="'+icon+'"></span>'+message+'</li>';
+		var level = '', liStr, cls, icon = '', message = $(this).text(),
+			//icons = {'level-0':'info-sign', 'info':'info-sign' , 'info warning':'info','success':'ok-sign', 'level-1':'info-sign', 'level-2':'minus-sign','error': 'minus-sign', 'level-3':'minus-sign'};
+			classes = {'0':'info', 'info warning':'warning', '1':'warning', '2':'error', '3':'error'};
+		//level += ($(this).attr('level')) ? 'level-'+$(this).attr('level') : $(this).attr('class');
+		level = $(this).attr('level') ? $(this).attr('level') : $(this).attr('class');
+		//icon = (icons[level]) ? 'icon-'+icons[level] : icon ;
+		cls = (classes[level]) ? "text-"+classes[level] : "muted";
+		liStr = '<li class="'+cls+'">'+message+'</li>';
 				
 		//avoid duplicate messages
 		if (messageList.find('li').filter(function(){return $(this).text() == message;}).length === 0) {
@@ -581,13 +526,13 @@ function parseMsgList(msgObj, targetEl){
 
 function addJsError(message){
 	"use strict";
-	if ($('#jserrors div ol').length !== 1){
-		$('#jserrors div').append('<ol></ol>');
+	if ($('#jserrors div ul').length !== 1){
+		$('#jserrors div').append('<ul></ul>');
 	}
-	$('#jserrors div ol').append('<li class="error"><span class="ui-icon ui-icon-alert"></span>'+message+'</li>');
+	$('#jserrors div ul').append('<li class="text-error">'+message+'</li>');
 }
 
-GUI.prototype.launchConfirm = function(){
+/*GUI.prototype.launchConfirm = function(){
 	"use strict";
 	var //afterFn,
 		$launchDialog = $('#dialog-launch'),
@@ -629,7 +574,7 @@ GUI.prototype.launchConfirm = function(){
 			//posDestroyAfter: false
 		}
 	);
-};
+};*/
 
 
 // function odkValidate(){

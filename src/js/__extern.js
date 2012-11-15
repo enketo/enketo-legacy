@@ -1,4 +1,6 @@
-var jrDataStr, jrDataStrToEdit, RETURN_URL;
+var jrDataStr, jrDataStrToEdit, RETURN_URL, supportEmail;
+
+
 
 
 /**
@@ -230,7 +232,7 @@ JSON.stringify = function(jsonObj, opt_replacer, opt_space) {};
  */
 
 /**
- * @fileoverview Externs for jQuery 1.7.2
+ * @fileoverview Externs for jQuery 1.8.2
  *
  * Note that some functions use different return types depending on the number
  * of parameters passed in. In these cases, you may need to annotate the type
@@ -248,6 +250,9 @@ JSON.stringify = function(jsonObj, opt_replacer, opt_space) {};
  */
 var jQuerySelector;
 
+/** @typedef {function()|Array.<function()>} */
+var jQueryCallback;
+
 /**
  * @constructor
  * @param {(jQuerySelector|Element|Object|Array.<Element>|jQuery|string|
@@ -261,8 +266,8 @@ function jQuery(arg1, arg2) {}
 /**
  * @constructor
  * @extends {jQuery}
- * @param {(jQuerySelector|Element|Array.<Element>|Object|jQuery|string|
- *     function())} arg1
+ * @param {(jQuerySelector|Element|Object|Array.<Element>|jQuery|string|
+ *     function())=} arg1
  * @param {(Element|jQuery|Document|
  *     Object.<string, (string|function(!jQuery.event=))>)=} arg2
  * @return {!jQuery}
@@ -671,7 +676,7 @@ jQuery.prototype.clone = function(withDataAndEvents, deepWithDataAndEvents) {};
 /**
  * @param {(jQuerySelector|jQuery|Element|string|Array.<string>)} arg1
  * @param {Element=} context
- * @return {(!jQuery|Array.<Element>)}
+ * @return {!jQuery}
  * @nosideeffects
  */
 jQuery.prototype.closest = function(arg1, context) {};
@@ -744,6 +749,7 @@ jQuery.prototype.dblclick = function(arg1, handler) {};
 
 /**
  * @constructor
+ * @implements {jQuery.Promise}
  * @param {function()=} opt_fn
  * @see http://api.jquery.com/category/deferred-object/
  */
@@ -774,40 +780,29 @@ $.deferred = function(opt_fn) {};
 $.Deferred = function(opt_fn) {};
 
 /**
- * @param {function()} alwaysCallbacks
- * @param {function()=} alwaysCallbacks2
+ * @override
+ * @param {jQueryCallback} alwaysCallbacks
+ * @param {jQueryCallback=} alwaysCallbacks2
  * @return {jQuery.deferred}
  */
 jQuery.deferred.prototype.always
     = function(alwaysCallbacks, alwaysCallbacks2) {};
 
 /**
- * @param {function()} doneCallbacks
- * @param {function()=} doneCallbacks2
+ * @override
+ * @param {jQueryCallback} doneCallbacks
+ * @param {jQueryCallback=} doneCallbacks2
  * @return {jQuery.deferred}
  */
 jQuery.deferred.prototype.done = function(doneCallbacks, doneCallbacks2) {};
 
 /**
- * @param {function()} failCallbacks
- * @param {function()=} failCallbacks2
+ * @override
+ * @param {jQueryCallback} failCallbacks
+ * @param {jQueryCallback=} failCallbacks2
  * @return {jQuery.deferred}
  */
 jQuery.deferred.prototype.fail = function(failCallbacks, failCallbacks2) {};
-
-/**
- * @deprecated
- * @return {boolean}
- * @nosideeffects
- */
-jQuery.deferred.prototype.isRejected = function() {};
-
-/**
- * @deprecated
- * @return {boolean}
- * @nosideeffects
- */
-jQuery.deferred.prototype.isResolved = function() {};
 
 /**
  * @param {...*} var_args
@@ -823,6 +818,7 @@ jQuery.deferred.prototype.notify = function(var_args) {};
 jQuery.deferred.prototype.notifyWith = function(context, var_args) {};
 
 /**
+ * @override
  * @param {function()=} doneFilter
  * @param {function()=} failFilter
  * @param {function()=} progressFilter
@@ -873,9 +869,10 @@ jQuery.deferred.prototype.resolveWith = function(context, args) {};
 jQuery.deferred.prototype.state = function() {};
 
 /**
- * @param {function()} doneCallbacks
- * @param {function()} failCallbacks
- * @param {function()=} progressCallbacks
+ * @override
+ * @param {jQueryCallback} doneCallbacks
+ * @param {jQueryCallback=} failCallbacks
+ * @param {jQueryCallback=} progressCallbacks
  * @return {jQuery.deferred}
  */
 jQuery.deferred.prototype.then
@@ -968,6 +965,7 @@ jQuery.prototype.eq = function(arg1) {};
 jQuery.error = function(message) {};
 
 /**
+ * @deprecated
  * @param {(function(!jQuery.event=)|Object.<string, *>)} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
@@ -1305,6 +1303,13 @@ $.hasData = function(elem) {};
  */
 jQuery.prototype.height = function(arg1) {};
 
+/**
+ * @param {(string|number|function())=} duration
+ * @param {(function()|string)=} arg2
+ * @param {function()=} callback
+ * @return {!jQuery}
+ */
+jQuery.prototype.hide = function(duration, arg2, callback) {};
 
 /** @param {boolean} hold */
 jQuery.holdReady = function(hold) {};
@@ -1490,6 +1495,15 @@ jQuery.prototype.jquery;
 jQuery.jqXHR = function () {};
 
 /**
+ * @override
+ * @param {jQueryCallback} alwaysCallbacks
+ * @param {jQueryCallback=} alwaysCallbacks2
+ * @return {jQuery.jqXHR}
+ */
+jQuery.jqXHR.prototype.always =
+    function(alwaysCallbacks, alwaysCallbacks2) {};
+
+/**
  * @deprecated
  * @param {function()} callback
  * @return {jQuery.jqXHR}
@@ -1498,8 +1512,8 @@ jQuery.jqXHR.prototype.complete = function (callback) {};
 
 /**
  * @override
- * @param {function()} doneCallbacks
- * @return {jQuery.Promise}
+ * @param {jQueryCallback} doneCallbacks
+ * @return {jQuery.jqXHR}
  */
 jQuery.jqXHR.prototype.done = function(doneCallbacks) {};
 
@@ -1512,32 +1526,25 @@ jQuery.jqXHR.prototype.error = function (callback) {};
 
 /**
  * @override
- * @param {function()} failCallbacks
- * @return {jQuery.Promise}
+ * @param {jQueryCallback} failCallbacks
+ * @return {jQuery.jqXHR}
  */
 jQuery.jqXHR.prototype.fail = function(failCallbacks) {};
 
 /**
  * @deprecated
  * @override
- * @return {boolean}
- * @nosideeffects
- */
-jQuery.jqXHR.prototype.isRejected = function() {};
-
-/**
- * @deprecated
- * @override
- * @return {boolean}
- * @nosideeffects
- */
-jQuery.jqXHR.prototype.isResolved = function() {};
-
-/**
- * @deprecated
- * @override
  */
 jQuery.jqXHR.prototype.onreadystatechange = function (callback) {};
+
+/**
+ * @param {function()=} doneFilter
+ * @param {function()=} failFilter
+ * @param {function()=} progressFilter
+ * @return {jQuery.jqXHR}
+ */
+jQuery.jqXHR.prototype.pipe =
+    function(doneFilter, failFilter, progressFilter) {};
 
 /**
  * @deprecated
@@ -1548,11 +1555,13 @@ jQuery.jqXHR.prototype.success = function (callback) {};
 
 /**
  * @override
- * @param {function()} doneCallbacks
- * @param {function()} failCallbacks
- * @return {jQuery.Promise}
+ * @param {jQueryCallback} doneCallbacks
+ * @param {jQueryCallback=} failCallbacks
+ * @param {jQueryCallback=} progressCallbacks
+ * @return {jQuery.jqXHR}
  */
-jQuery.jqXHR.prototype.then = function(doneCallbacks, failCallbacks) {};
+jQuery.jqXHR.prototype.then =
+    function(doneCallbacks, failCallbacks, progressCallbacks) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
@@ -1591,6 +1600,7 @@ jQuery.prototype.length;
 jQuery.prototype.live = function(arg1, arg2, handler) {};
 
 /**
+ * @deprecated
  * @param {(function(!jQuery.event=)|Object.<string, *>|string)} arg1
  * @param {(function(!jQuery.event=)|Object.<string,*>|string)=} arg2
  * @param {function(string,string,XMLHttpRequest)=} complete
@@ -1946,37 +1956,42 @@ jQuery.prototype.promise = function(type, target) {};
 jQuery.Promise = function () {};
 
 /**
- * @param {function()} doneCallbacks
+ * @param {jQueryCallback} alwaysCallbacks
+ * @param {jQueryCallback=} alwaysCallbacks2
+ * @return {jQuery.Promise}
+ */
+jQuery.Promise.prototype.always =
+    function(alwaysCallbacks, alwaysCallbacks2) {};
+
+/**
+ * @param {jQueryCallback} doneCallbacks
  * @return {jQuery.Promise}
  */
 jQuery.Promise.prototype.done = function(doneCallbacks) {};
 
 /**
- * @param {function()} failCallbacks
+ * @param {jQueryCallback} failCallbacks
  * @return {jQuery.Promise}
  */
 jQuery.Promise.prototype.fail = function(failCallbacks) {};
 
 /**
- * @deprecated
- * @return {boolean}
- * @nosideeffects
- */
-jQuery.Promise.prototype.isRejected = function() {};
-
-/**
- * @deprecated
- * @return {boolean}
- * @nosideeffects
- */
-jQuery.Promise.prototype.isResolved = function() {};
-
-/**
- * @param {function()} doneCallbacks
- * @param {function()} failCallbacks
+ * @param {function()=} doneFilter
+ * @param {function()=} failFilter
+ * @param {function()=} progressFilter
  * @return {jQuery.Promise}
  */
-jQuery.Promise.prototype.then = function(doneCallbacks, failCallbacks) {};
+jQuery.Promise.prototype.pipe =
+    function(doneFilter, failFilter, progressFilter) {};
+
+/**
+ * @param {jQueryCallback} doneCallbacks
+ * @param {jQueryCallback=} failCallbacks
+ * @param {jQueryCallback=} progressCallbacks
+ * @return {jQuery.Promise}
+ */
+jQuery.Promise.prototype.then =
+    function(doneCallbacks, failCallbacks, progressCallbacks) {};
 
 /**
  * @param {(string|Object.<string,*>)} arg1
@@ -2135,7 +2150,13 @@ jQuery.prototype.serialize = function() {};
  */
 jQuery.prototype.serializeArray = function() {};
 
-
+/**
+ * @param {(string|number|function())=} duration
+ * @param {(function()|string)=} arg2
+ * @param {function()=} callback
+ * @return {!jQuery}
+ */
+jQuery.prototype.show = function(duration, arg2, callback) {};
 
 /**
  * @param {jQuerySelector=} selector
@@ -2145,6 +2166,7 @@ jQuery.prototype.serializeArray = function() {};
 jQuery.prototype.siblings = function(selector) {};
 
 /**
+ * @deprecated
  * @return {number}
  * @nosideeffects
  */
@@ -2235,6 +2257,12 @@ jQuery.support.cssFloat;
 $.support.cssFloat;
 
 /** @type {boolean} */
+jQuery.support.fixedPosition;
+
+/** @type {boolean} */
+$.support.fixedPosition;
+
+/** @type {boolean} */
 jQuery.support.hrefNormalized;
 
 /** @type {boolean} */
@@ -2301,6 +2329,7 @@ jQuery.prototype.text = function(arg1) {};
 jQuery.prototype.toArray = function() {};
 
 /**
+ * @deprecated
  * @param {(function(!jQuery.event=)|string|number|function()|boolean)=} arg1
  * @param {(function(!jQuery.event=)|function()|string)=} arg2
  * @param {(function(!jQuery.event=)|function())=} arg3
@@ -2385,6 +2414,7 @@ jQuery.unique = function(arr) {};
 $.unique = function(arr) {};
 
 /**
+ * @deprecated
  * @param {(function(!jQuery.event=)|Object.<string, *>)} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
@@ -2419,7 +2449,7 @@ $.when = function(deferred, deferreds) {};
  * @return {(number|!jQuery)}
  */
 jQuery.prototype.width = function(arg1) {};
- 
+
 /**
  * @param {(string|jQuerySelector|Element|jQuery|function(number))} arg1
  * @return {!jQuery}
@@ -2438,7 +2468,6 @@ jQuery.prototype.wrapAll = function(wrappingElement) {};
  */
 jQuery.prototype.wrapInner = function(arg1) {};
 
-
 //********************************************
 //****** JQuery addons & UI stuff used in app: ********
 //********************************************
@@ -2448,326 +2477,24 @@ jQuery.prototype.wrapInner = function(arg1) {};
  **/
 jQuery.prototype.ajaxForm = function(obj){};
 
-/** @type {Object.<string, *>} */
-jQuery.datepicker = {};
-/** @type {Object.<string, *>} */
-jQuery.timepicker = {};
-/** @type {Object.<string, *>} */
-jQuery.datetimepicker = {};
+/** 
+ * @param {Object.<string, (string|boolean)>} options
+ */
+jQuery.prototype.datepicker = function (options){};
+/** 
+ * @param {Object.<string, (string|boolean)>} options
+ **/
+jQuery.prototype.timepicker = function (options){};
+/** @type {Object.<string, (string|boolean)>} */
+jQuery.prototype.datetimepicker = {};
+/** 
+ * @param {Object.<string, (string|boolean)>} options
+ */
+jQuery.prototype.selectpicker = function(options){};
 /** 
  *  @param {Object} obj
  * */
 jQuery.prototype.multiselect = function(obj){};
-/** 
- *  @param {Object=} obj
- */
-jQuery.prototype.tabs =function(obj){};
-
-/** 
- *  @param {(Object|string)=} a
- *  @param {Object=} a.icons 
- *  @param {string=} a.icons.primary
- *  @param {string=} a.icons.secondary
- *  @param {boolean=} a.text 
- *  @param {string=} a.label 
- *  @param {(boolean|string)=} a.disabled 
- *  @param { string=} b 
- *  @param { boolean=} c 
- *  @return {!jQuery}
- */
-jQuery.prototype.button =function(a,b,c){};
- 
-/**
- * @param {string=} effect 
- * @param {Object=} arg2
- * @param {(string|number|function())=} duration
- * @param {function()=} callback
- * @return {!jQuery}
- */
-jQuery.prototype.show = function(effect, arg2, duration, callback) {};
-
-/** 
- * @param {string=} effect 
- * @param {Object=} arg2
- * @param {(string|number|function())=} duration
- * @param {function()=} callback
- * @return {!jQuery}
- */
-jQuery.prototype.hide = function(effect, arg2, duration, callback) {};
-
-//@param {{disabled: boolean, autoOpen: boolean, buttons, closeOnEscape: boolean, dialogClass: string, draggable: boolean, height: number, hide: object, maxHeight: number, maxWidth: number, minHeight: number, minWidth: number, modal: boolean, resizable: boolean, show: string, stack: boolean, title: string, width: number, zindex:number, beforeClose, close, open}=} arg
-/** THIS DOESN"T WORK => HAVE CHANGED ALL PARAMETERS TO STRING IN SOURCE TO DEAL WITH THIS
- * @param { Object.<string, (boolean|number|Object.<string, (boolean, number, Object)>)>=} arg [description]
- * @return {!jQuery}
- */
-jQuery.prototype.dialog = function(arg){};
-
-/**
- * @param {(string|Object)=} a
- * @param {(string|number)=} b
- * @param {(string|number)=} c
- * @return {!jQuery}
- */
-jQuery.prototype.slider = function(a, b, c){};
-
-/**
- * @param {(string|Object)=} arg
- * @return {!jQuery}
- */
-jQuery.prototype.mousewheel = function(arg){};
-
-/*
- * Copyright 2010 The Closure Compiler Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @fileoverview Externs for jQuery Tooltip plugin 1.3
- * @see http://bassistance.de/jquery-plugins/jquery-plugin-tooltip/
- * @externs
- */
-
-/** @type {Object.<string, *>} */
-jQuery.tooltip = {};
-
-/** @type {boolean} */
-jQuery.tooltip.blocked;
-
-/** @type {jQuery.tooltip.settings} */
-jQuery.tooltip.defaults;
-
-/** @return {undefined} */
-jQuery.tooltip.block = function() {};
-
-/**
- * @private
- * @constructor
- */
-jQuery.tooltip.settings = function() {};
-
-/** @type {number} */
-jQuery.tooltip.settings.prototype.delay;
-
-/** @type {(string|number)} */
-jQuery.tooltip.settings.prototype.fade;
-
-/** @type {boolean} */
-jQuery.tooltip.settings.prototype.fixPNG;
-
-/** @type {boolean} */
-jQuery.tooltip.settings.prototype.track;
-
-/** @type {boolean} */
-jQuery.tooltip.settings.prototype.showURL;
-
-/** @type {String} */
-jQuery.tooltip.settings.prototype.extraClass;
-
-/** @type {number} */
-jQuery.tooltip.settings.prototype.top;
-
-/** @type {number} */
-jQuery.tooltip.settings.prototype.left;
-
-/** @type {string} */
-jQuery.tooltip.settings.prototype.id;
-
-/**
- * @return {(string|Element)}
- * @this {Element}
- */
-jQuery.tooltip.settings.prototype.bodyHandler = function() {};
-
-/** @type {boolean} */
-jQuery.tooltip.settings.prototype.showBody;
-
-/**
- * @param {jQuery.tooltip.settings=} settings
- * @return {jQuery}
- */
-jQuery.prototype.tooltip = function(settings) {};
-
-////////var jQueryObject = {};////////
-
-////////// Undocumented jQuery externs called by ui
-/////////**
-//////// * @param {Element} elem
-//////// * @param {string} name
-//////// * @param {boolean=} force
-//////// * @return {string}
-//////// * @nosideeffects
-//////// */
-////////jQueryObject.prototype.curCSS = function(elem, name, force) {};////////
-
-/////////** @const */
-////////jQuery.expr;////////
-
-/////////** @type {Object.<string, function(Element, RegExp)>} */
-////////jQuery.expr[":"];////////
-
-/////////**
-//////// * @param {Element} elem
-//////// * @return {boolean}
-//////// */
-////////jQuery.expr.hidden = function(elem) {};////////
-
-/////////** @type {Object.<string, function(Element, RegExp)>} */
-////////jQuery.expr.filters;////////
-
-////////// UI extensions to jQuery
-/////////** @return {Element} */
-////////jQueryObject.prototype.scrollParent = function() {};////////
-
-/////////**
-//////// * @param {number=} zIndex
-//////// * @return {number}
-//////// */
-////////jQueryObject.prototype.zIndex = function(zIndex) {};////////
-
-/////////** @return {jQueryObject} */
-////////jQueryObject.prototype.disableSelection = function() {};////////
-
-/////////** @return {jQueryObject} */
-////////jQueryObject.prototype.enableSelection = function() {};////////
-
-////////// UI extensions to jQuery selectors
-/////////**
-//////// * @param {Element} elem
-//////// * @param {number} i
-//////// * @param {RegExp} match
-//////// * @return {*}
-//////// */
-////////jQuery.expr[":"].data = function(elem, i, match) {};////////
-
-/////////**
-//////// * @param {Element} element
-//////// * @return {boolean}
-//////// * @nosideeffects
-//////// */
-////////jQuery.expr[":"].focusable = function(element) {};////////
-
-/////////**
-//////// * @param {Element} element
-//////// * @return {boolean}
-//////// * @nosideeffects
-//////// */
-////////jQuery.expr[":"].tabbable = function(element) {};////////
-
-//////////UI Namespace
-////////jQuery.ui;////////
-
-////////// jquery.ui.core.js externs
-/////////** @type {string} */
-////////jQuery.ui.version;////////
-
-/////////** @enum */
-////////jQuery.ui.keyCode = {
-////////  ALT: 18,
-////////  BACKSPACE: 8,
-////////  CAPS_LOCK: 20,
-////////  COMMA: 188,
-////////  COMMAND: 91,
-////////  COMMAND_LEFT: 91, // COMMAND
-////////  COMMAND_RIGHT: 93,
-////////  CONTROL: 17,
-////////  DELETE: 46,
-////////  DOWN: 40,
-////////  END: 35,
-////////  ENTER: 13,
-////////  ESCAPE: 27,
-////////  HOME: 36,
-////////  INSERT: 45,
-////////  LEFT: 37,
-////////  MENU: 93, // COMMAND_RIGHT
-////////  NUMPAD_ADD: 107,
-////////  NUMPAD_DECIMAL: 110,
-////////  NUMPAD_DIVIDE: 111,
-////////  NUMPAD_ENTER: 108,
-////////  NUMPAD_MULTIPLY: 106,
-////////  NUMPAD_SUBTRACT: 109,
-////////  PAGE_DOWN: 34,
-////////  PAGE_UP: 33,
-////////  PERIOD: 190,
-////////  RIGHT: 39,
-////////  SHIFT: 16,
-////////  SPACE: 32,
-////////  TAB: 9,
-////////  UP: 38,
-////////  WINDOWS: 91 // COMMAND
-////////}////////
-
-/////////** @deprecated */
-////////jQuery.ui.plugin;////////
-
-/////////**
-//////// * @param {string} module
-//////// * @param {Object.<string, *>} option
-//////// * @param {Object.<string, Array.<*>>} set
-//////// * @deprecated
-//////// */
-////////jQuery.ui.plugin.add = function(module, option, set) {};////////
-
-/////////**
-//////// * @param {jQueryObject} instance
-//////// * @param {string} name
-//////// * @param {...*} args
-//////// * @deprecated
-//////// */
-////////jQuery.ui.plugin.call = function(instance, name, args) {};////////
-
-/////////**
-//////// * @param {Element} container
-//////// * @param {Element} contained
-//////// * @return {boolean}
-//////// * @nosideeffects
-//////// * @deprecated
-//////// */
-////////jQuery.ui.contains = function(container, contained) {};////////
-
-/////////**
-//////// * @param {Element} el
-//////// * @param {string=} a
-//////// * @return {boolean}
-//////// * @nosideeffects
-//////// * @deprecated
-//////// */
-////////jQuery.ui.hasScroll = function(el, a) {};////////
-
-/////////**
-//////// * @param {number} x
-//////// * @param {number} reference
-//////// * @param {number} size
-//////// * @return {boolean}
-//////// * @nosideeffects
-//////// * @deprecated
-//////// */
-////////jQuery.ui.isOverAxis = function(x, reference, size) {};////////
-
-/////////**
-//////// * @param {number} y
-//////// * @param {number} x
-//////// * @param {number} top
-//////// * @param {number} left
-//////// * @param {number} height
-//////// * @param {number} width
-//////// * @return {boolean}
-//////// * @nosideeffects
-//////// * @deprecated
-//////// */
-////////jQuery.ui.isOver = function(y, x, top, left, height, width) {};
-//
-//
 
 
 /*
@@ -8097,3 +7824,243 @@ google.maps.weather.WindSpeedUnit = {
   METERS_PER_SECOND: '',
   MILES_PER_HOUR: ''
 };
+
+
+/**
+ * @fileoverview Externs for Twitter Bootstrap
+ * @see http://twitter.github.com/bootstrap/
+ * 
+ * @author Qamal Kosim-Satyaputra
+ * @externs
+ */
+
+
+
+// --- Modal ---
+
+///** @constructor */
+//jQuery.modal.options = function() {};//
+
+///** @type {boolean} */
+//jQuery.modal.options.prototype.backdrop;//
+
+///** @type {boolean} */
+//jQuery.modal.options.prototype.keyboard;//
+
+///** @type {boolean} */
+//jQuery.modal.options.prototype.show;
+
+/**
+ * @param {(string|Object.<string, boolean>)=} opt_eventOrOptions
+ * @return {jQuery}
+ */
+jQuery.prototype.modal = function(opt_eventOrOptions) {};
+
+
+
+// --- Dropdown ---
+
+
+
+/**
+ * @return {jQuery}
+ */
+jQuery.prototype.dropdown = function() {};
+
+
+
+// --- Scroll Spy ---
+
+
+
+///** @constructor */
+//jQuery.scrollspy.options = function() {};//
+
+///** @type {number} */
+//jQuery.scrollspy.options.prototype.offset;
+
+/**
+ * @param {Object.<string, number>=} opt_options
+ * @return {jQuery}
+ */
+jQuery.prototype.scrollspy = function(opt_options) {};
+
+
+
+// --- Tabs ---
+
+
+
+/**
+ * @param {string=} opt_event
+ * @return {jQuery}
+ */
+jQuery.prototype.tab = function(opt_event) {};
+
+
+
+// --- Tooltips ---
+
+
+
+/** @constructor */
+//jQuery.tooltip.options = function() {};
+//
+/**
+ * @param {(string|Object.<string, (string|boolean|number)>)=} opt_eventOrOptions
+ * @return {jQuery}
+ */
+jQuery.prototype.tooltip = function(opt_eventOrOptions) {};
+
+///** @type {boolean} */
+//jQuery.tooltip.prototype.animation;//
+
+///** @type {(string|function)} */
+//jQuery.tooltip.prototype.placement;//
+
+///** @type {string} */
+//jQuery.tooltip.prototype.selector;//
+
+///** @type {string|function} */
+//jQuery.tooltip.prototype.title;//
+
+///** @type {string} */
+//jQuery.tooltip.prototype.trigger;//
+
+///** @type {number|{show: number, hide: number}} */
+//jQuery.tooltip.prototype.delay;
+
+
+// --- Popovers ---
+
+
+
+/** @constructor */
+//jQuery.popover.options = function() {};
+
+///** @type {boolean} */
+//jQuery.popover.prototype.animation;//
+
+///** @type {string|function} */
+//jQuery.popover.prototype.placement;//
+
+///** @type {string} */
+//jQuery.popover.prototype.selector;//
+
+///** @type {string} */
+//jQuery.popover.prototype.trigger;//
+
+///** @type {string|function} */
+//jQuery.popover.prototype.title;//
+
+///** @type {string|function} */
+//jQuery.popover.prototype.content;//
+
+///** @type {number|{show: number, hide: number}} */
+//jQuery.popover.prototype.delay;
+
+/**
+ * @param {(string|Object.<string, (string|number|Object.<string, number>)>)=} opt_eventOrOptions
+ * @return {jQuery}
+ */
+jQuery.prototype.popover = function(opt_eventOrOptions) {};
+
+
+
+// --- Alerts ---
+
+
+
+/**
+ * @param {string=} opt_event
+ * @return {jQuery}
+ */
+jQuery.prototype.alert = function(opt_event) {};
+
+
+
+// --- Buttons ---
+
+
+
+/**
+ * @param {string=} opt_state
+ * @return {jQuery}
+ */
+jQuery.prototype.button = function(opt_state) {};
+
+
+
+// --- Collapse ---
+
+
+
+/** @constructor */
+//jQuery.collapse.options = function() {};//
+
+///** @type {jQuerySelector} */
+//jQuery.collapse.options.prototype.parent;//
+
+///** @type {boolean} */
+//jQuery.collapse.options.prototype.toggle;
+
+/**
+ * @param {(string|Object.<string, boolean>)=} opt_eventOrOptions
+ */
+jQuery.prototype.collapse = function(opt_eventOrOptions) {};
+
+
+
+// --- Carousel ---
+
+
+
+///** @constructor */
+//jQuery.carousel.options = function() {};//
+
+///** @type {number} */
+//jQuery.carousel.options.prototype.interval;//
+
+///** @type {string} */
+//jQuery.carousel.options.prototype.pause;
+
+/**
+ * @param {(string|Object.<string, (number|string)>)=} opt_eventOrOptions
+ */
+jQuery.prototype.carousel = function(opt_eventOrOptions) {};
+
+
+// --- Typeahead ---
+
+
+
+///** @constructor */
+//jQuery.typeahead.options = function() {};//
+
+///** @type {Array} */
+//jQuery.typeahead.options.prototype.source;//
+
+///** @type {number} */
+//jQuery.typeahead.options.prototype.items;//
+
+///** @type {function} */
+//jQuery.typeahead.options.prototype.matcher;//
+
+///** @type {function} */
+//jQuery.typeahead.options.prototype.sorter;//
+
+///** @type {function} */
+//jQuery.typeahead.options.prototype.highlighter;
+
+/**
+ * @param {(string|Object.<string, number>)=} opt_options
+ * @return {jQuery}
+ */
+jQuery.prototype.typeahead = function(opt_options) {};
+
+/**
+ * @param {jQuery|jQuerySelector} element
+ * @param {Object.<string, number>} opt_options
+ * @return {jQuery}
+ */
+jQuery.prototype.typeahead.Constructor = function(element, opt_options) {};

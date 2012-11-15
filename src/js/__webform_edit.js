@@ -21,8 +21,7 @@ var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var	currentOnlineStatus = false;
 var settings, store; //leave, though not used, to prevent compilation error
-var CONNECTION_URL = '../checkforconnection.php';
-var SUBMISSION_URL = '../data/submission';
+
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 // !Document.ready()

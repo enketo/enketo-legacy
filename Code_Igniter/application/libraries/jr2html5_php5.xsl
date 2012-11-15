@@ -17,8 +17,8 @@
  -->
 <!--
 *****************************************************************************************************
-XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK into valid HTMl5 forms
-(exception: when non-IANA lang attributes are used the form will not validate (not serious))
+XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
+(exception: when non-IANA lang attributes are used the form will not validate (but that's not serious))
 *****************************************************************************************************
 -->
 
@@ -78,7 +78,7 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 </script>
             </head>-->
             <root>
-	            <form class="jr">
+	            <form class="jr" autocomplete="off">
 	                <xsl:attribute name="id">
                         <xsl:choose>
                             <xsl:when test="/h:html/h:head/xf:model/xf:instance[1]/child::node()/@id">
@@ -97,7 +97,7 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                     <section class="form-logo">
                         <xsl:text> </xsl:text>
                     </section>
-	                <h2 id="form-title">
+	                <h3 id="form-title">
 	                    <xsl:choose>
                             <xsl:when test="/h:html/h:head/h:title">
                                 <xsl:value-of select="/h:html/h:head/h:title"/>
@@ -106,7 +106,7 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                                 <xsl:text>No Title</xsl:text>
                             </xsl:otherwise>
                         </xsl:choose>
-	                </h2>
+	                </h3>
                     <div id="stats" style="display: none;">
                         <span id="jrSelect"><xsl:value-of select="count(/h:html/h:body//xf:select)"/></span>
                         <span id="jrSelect1"><xsl:value-of select="count(/h:html/h:body//xf:select)"/></span>
@@ -208,9 +208,9 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 </xsl:if>
             </xsl:if>
             <xsl:if test="string(./xf:label/@ref) or string (./xf:label)">
-                <h3>
+                <h4>
                     <xsl:apply-templates select="xf:label" />
-                </h3>
+                </h4>
             </xsl:if>
             <xsl:apply-templates select="*[not(self::xf:label or self::xf:hint)]"/>
             <xsl:text>
@@ -261,9 +261,9 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 </xsl:attribute>
             </xsl:if>
             <xsl:if test="string(./xf:label/@ref) or string (./xf:label)">
-                <h3>
+                <h4>
                     <xsl:apply-templates select="xf:label" />
-                </h3>
+                </h4>
             </xsl:if>
 
             <xsl:apply-templates select="*[not(self::xf:label or self::xf:hint)]"/>
@@ -379,7 +379,7 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
             <xsl:apply-templates select="xf:hint" />
             <xsl:variable name="element">
                 <xsl:choose>
-                    <xsl:when test="$html_type = 'text' and @appearance = 'text-area' or @appearance = 'big' or @appearance = 'big-text' or @appearance = 'textarea'">
+                    <xsl:when test="$html_type = 'text' and @appearance = 'multi-line' or @appearance = 'multiline' or @appearance = 'text-area' or @appearance = 'big' or @appearance = 'big-text' or @appearance = 'textarea'">
                         <xsl:value-of select="string('textarea')" />
                     </xsl:when>
                     <xsl:otherwise>
@@ -388,6 +388,7 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 </xsl:choose>
             </xsl:variable>
             <xsl:element name="{$element}">
+                <xsl:attribute name="autocomplete">off</xsl:attribute>
                 <!-- ****** ACCEPT ****** -->
                 <xsl:if test="$html_type = 'file'">
                     <xsl:if test="@mediatype">
@@ -531,15 +532,6 @@ XSLT Stylesheet that transforms javarosa style (X)Forms used by Kobo and ODK int
                 <xsl:if test="($binding/@required = 'true()') and (not(local-name() = 'bind'))">
                     <xsl:attribute name="required">
                         <xsl:text>required</xsl:text>
-                        <!--<xsl:choose>
-                            <xsl:when test="$binding/@required = 'true()'">required</xsl:when>
-                            <xsl:otherwise>
-                                <xsl:if test="not($binding/@required = 'false' or $binding/@required = 'false()' or binding/@required = '')">
-                                    <xsl:value-of select="$error" />
-                                    <xsl:message>ERROR [<xsl:value-of select="$nodeset"/>] unknown 'required' attribute (ignored).</xsl:message>
-                                </xsl:if>
-                            </xsl:otherwise>
-                        </xsl:choose>-->
                     </xsl:attribute>
                 </xsl:if>
 

@@ -32,9 +32,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 - `sudo git pull https://github.com/modilabs/enketo.git` (or `sudo git pull https://github.com/MartijnR/enketo.git` )
 - `sudo git submodule update --init`
 - enter database info in /var/www/enketo/Code_Igniter/application/config/database.php (username, password, database)
-- enter domain info in $config['base_url'] /var/www/enketo/Code_Igniter/application/config/config.php
-- replace /var/www/enketo/Code_Igniter/application/views/elements/tracking.php with your own tracking code
-- add your own Google Maps API v3 key in /var/www/enketo/Code_Igniter/application/views/elements/enketo.php
+- enter other info in /var/www/enketo/Code_Igniter/application/config/enketo.php
 - set environment in index.php to 'production' if it isn't already
 - change permissions `sudo chmod 777 /var/www/enketo/Code_Igniter/application/cache` and `sudo chmod 777 /var/www/enketo/Code_Igniter/application/logs` (double-check that this actually works, may require `sudo chown -R ubuntu enketo` first)
 - open /etc/apache2/sites-available/default for editing:

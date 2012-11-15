@@ -6,7 +6,7 @@
         }
         this.$element = $(element);
         this.$newElement = null;
-        this.selectClass = options.btnStyle || '';
+        this.selectClass = options.btnStyle || 'btn';
         this.init();
     };
 

@@ -217,11 +217,13 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	var i, waswere, namesStr,
 		msg = '',
 		names=[],
-		contactSupport = 'Contact support@formhub.org please.',
+		contactSupport = 'Contact '+supportEmail+' please.',
 		contactAdmin = 'Contact the survey administrator please.',
-		serverDown = 'Sorry, the enketo server is down or being maintained. Please try again later or contact support@formhub.org please.',
+		serverDown = 'Sorry, the enketo server is down or being maintained. Please try again later or contact '+supportEmail+' please.',
 		statusMap = {
-			0: {success: false, msg: "Uploading of data failed (maybe offline) and will be tried again later."},
+			0: {success: false, msg: (typeof jrDataStrToEdit !== 'undefined') ?
+				"Uploading of data failed. Please try again." :
+				"Uploading of data failed (maybe offline) and will be tried again later." },
 			200: {success:false, msg: "Data server did not accept data. "+contactSupport},
 			201: {success:true, msg: ""},
 			202: {success:true, msg: name+" may have had errors. "+contactAdmin},
@@ -230,7 +232,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			403: {success:false, msg: "You are not allowed to post data to this data server. "+contactAdmin},
 			404: {success:false, msg: "Submission service on data server not found or not properly configured."},
 			'4xx': {success:false, msg: "Unknown submission problem on data server."},
-			413: {success:false, msg: "Data is too large. Please export the data and contact support@formhub.org."},
+			413: {success:false, msg: "Data is too large. Please export the data and contact "+supportEmail+"."},
 			500: {success:false, msg: serverDown},
 			503: {success:false, msg: serverDown},
 			'5xx':{success:false, msg: serverDown}
@@ -299,7 +301,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			//console.debug('going to give upload feedback to user');
 			//if ($('.drawer.left').length > 0){
 				//show drawer if currently hidden
-				$('.drawer.left.hide .handle').click();
+				$('.drawer.left.closed .handle').click();
 			//}
 			//else {
 				gui.alert(msg, 'Failed data submission');

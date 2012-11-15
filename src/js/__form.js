@@ -1049,6 +1049,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//	.after($hint);
 		$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea').before($hint);
 		$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
+		$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 
 		$form.find('select, input:not([type="checkbox"], [type="radio"]), textarea').before($('<br/>'));
 
@@ -1261,15 +1262,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				return this.getWrapNodes($node).find('input:checked').val() || '';
 			}
 			//checkbox values bug in jQuery as (node.val() should work)
-			if (inputType == 'checkbox'){
-				
-				this.getWrapNodes($node).find('input[name="'+name+'"]:checked').each(function(){
-					
+			if (inputType == 'checkbox'){		
+				this.getWrapNodes($node).find('input[name="'+name+'"]:checked').each(function(){	
 					values.push($(this).val());
 				});
 				return values;
 			}
-			return ($node.val()) ? $node.val().trim() : '';
+			return (!$node.val()) ? '' : ($.isArray($node.val())) ? $node.val() : $node.val().trim();
 		},
 		setVal : function(name, index, value){
 			var $inputNodes, type, date;//, 
@@ -1569,7 +1568,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var type;
 			console.debug('enabling branch');
 
-			branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
+			//branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
 			
 			branchNode.removeClass('disabled').show(1000, function(){$(this).fixLegends();} );
 
@@ -1588,15 +1587,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @param  {jQuery} branchNode The jQuery object to hide and disable
 		 */
 		this.disable = function(branchNode){
-			var type, 
-				branchClue = '<div class="jr-branch"></div>'; 
+			var type;//, 
+				//branchClue = '<div class="jr-branch"></div>'; 
 
 			console.debug('disabling branch');
 			branchNode.addClass('disabled').hide(1000); 
 			
 			//if the branch was previously enabled
 			if (branchNode.prev('.jr-branch').length === 0){
-				branchNode.before(branchClue);
+				//branchNode.before(branchClue);
 				//if the branch was hidden upon form initialization, then shown and then hidden again
 				//difficult to detect. Maybe better to just replace clearInputs with setDefaults	
 				branchNode.clearInputs('change');
@@ -1737,9 +1736,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var $p = $(this).parent('label'); 
 			$(this).detach().prependTo($p);
 		});
-
-		//improve looks when images, video or audio is used as label
-		$('fieldset:not(.jr-appearance-compact)>label, fieldset:not(.jr-appearance-compact)>legend').children('img,video,audio').parent().addClass('ui-helper-clearfix with-media');
 	};
 
 	/**
@@ -1761,33 +1757,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 */
 	FormHTML.prototype.widgets = {
 		//IMPORTANT! Widgets should be initalized after instance values have been loaded in $data as well as in input fields
-		init : function(){
-			this.compactWidget();
-			this.radioWidget();
+		init : function(){			
 			this.dateWidget();
 			this.timeWidget();
 			this.dateTimeWidget();
-			this.selectOneWidget();
-			this.selectMultiWidget();
+			this.selectWidget();
 			this.pageBreakWidget();
 			this.readonlyWidget();
-			this.gridWidget();
+			this.tableWidget();
 			this.spinnerWidget();
 			this.sliderWidget();
 			this.geopointWidget();
 			this.barcodeWidget();
 			this.fileWidget();
-		},
-		compactWidget: function(){
-			//move this to css!
-			$form.find('.jr-appearance-compact>label>span').hide(); 
-		},
-		radioWidget: function(){
-			//$form.on('mouseup', 'input:radio:checked', function(){
-			//	console.debug($(this).prop('checked'));
-			//	//$(this).parent('label').clearInputs('change');
-			//	console.debug('clicked label of: '+$(this).attr('name'));
-			//}); 
+			this.mediaLabelWidget();
 		},
 		dateWidget : function(){
 			$form.find('input[type="date"]').each(function(){
@@ -1795,21 +1778,37 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$p = $(this).parent('label'),
 					startView = ($p.hasClass('jr-appearance-month-year')) ? 'year' :
 						($p.hasClass('jr-appearance-year')) ? 'decade' : 'month',
+					targetEvent = ($p.hasClass('jr-appearance-month-year')) ? 'changeMonth' :
+						($p.hasClass('jr-appearance-year')) ? 'changeYear' : 'changeDate',
 					format = (startView === 'year') ? 'yyyy-mm' :
 						(startView === 'decade') ? 'yyyy' : 'yyyy-mm-dd',
-					$fakeDateI = $('<input class="ignore input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
-						'<span class="add-on"><i class="icon-calendar"></i></span>'+'</div>');
-				$p.addClass('widget input-append date');
-				$dateI.hide().after($fakeDateI);
-				//console.debug('startView: '+startView);
-				$fakeDateI.parent().datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView});
-				$fakeDateI.on('change changeDate', function(ev){
-					var value = $(this).val();
+					$fakeDate = $('<div class="widget input-append date"><input class="ignore input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
+						'<span class="add-on"><i class="icon-calendar"></i></span></div>'),
+					$fakeDateI = $fakeDate.find('input');
+				$dateI.hide().after($fakeDate);
+
+				$fakeDateI.on('change', function(){
+					console.debug('fakedate input field change detected');
+					var date,
+						value = $(this).val();
 					value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
-					//console.debug('converted date input to value: '+data.node().convert(value, 'date'));
 					$dateI.val(data.node().convert(value, 'date')).trigger('change');
+					date = new Date(value.split('-')[0], Number (value.split('-')[1]) - 1, value.split('-')[2]);
+					//the 'update' method only works for full dates, not yyyy-mm and yyyy dates, so this convoluted
+					//method is used by using setDate
+					$fakeDate.datepicker('setDate', new Date(date));
 					return false;
 				});
+
+				$fakeDate.datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView})
+					.on(targetEvent, function(e) {
+						//console.debug(e.type+' detected');
+						var dp = $(e.currentTarget).data('datepicker');
+						dp.date = e.date;
+						dp.setValue();
+						dp.hide();
+						$fakeDateI.trigger('change');
+					});
 			});
 		},
 		timeWidget : function(){
@@ -1817,11 +1816,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				var $timeI = $(this),
 					$p = $(this).parent('label'),
 					timeVal = $(this).val(),
-					$fakeTimeI = $('<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
-						'<span class="add-on"><i class="icon-time"></i></span>');
+					$fakeTime = $('<div class="widget input-append bootstrap-timepicker-component">'+
+						'<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
+						'<span class="add-on"><i class="icon-time"></i></span></div>'),
+					$fakeTimeI = $fakeTime.find('input');
 				
-				$p.addClass('widget input-append bootstrap-timepicker-component');
-				$timeI.hide().after($fakeTimeI);
+				$timeI.hide().after($fakeTime);
 				$fakeTimeI.timepicker({
 					defaultTime: (timeVal.length > 0) ? 'value' : 'current',
 					showMeridian: false
@@ -1879,35 +1879,18 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});
 		},
-		selectOneWidget : function(){
-			$form.find('select:not([multiple])').find('[value=""]').text('None selected'); 
-			function update(){
-				$form.find('select:not([multiple])').removeData('selectpicker').siblings('.bootstrap-select').remove();
-				$form.find('select:not([multiple])').selectpicker({
-					btnStyle: 'btn'
-				});
-			}
-			$form.on('changelanguage', update);
-			update();
-		},
-		selectMultiWidget : function(){
-			$form.find('select[multiple]').find('[value=""]').remove(); 
-			function update(){
-				$('select[multiple]').removeData('multiselect').siblings('.bootstrap-multiselect').remove();
-				$('select[multiple]').multiselect({
-					container: '<div class="widget btn-group bootstrap-multiselect" />',
-					button: 'btn'
-				});
-				$('select[multiple] ~ .bootstrap-multiselect .caret').addClass('pull-right');
-			}
-			$form.on('changelanguage', update);
-			update();
+		selectWidget : function(){
+			$form.find('select option[value=""]').remove();
+			$form.find('select').selectpicker();
+			$form.on('changelanguage', function(){
+				$form.find('select').selectpicker('update');
+			});
 		},
 		//transforms temporary page-break elements to triggers //REMOVE WHEN BETTER SOLUTION FOR PAGE BREAKS IS FOUND
 		pageBreakWidget : function(){
 			$form.find('.jr-appearance-page-break input[readonly]').parent('label').each(function(){
 				var	name = 'name="'+$(this).find('input').attr('name')+'"';
-				$('<fieldset class="jr-appearance-page-break" '+name+'></fieldset>') //ui-corner-all
+				$('<hr class="manual page-break" '+name+'></hr>') //ui-corner-all
 					.insertBefore($(this)).find('input').remove(); 
 				$(this).remove();
 			});
@@ -1925,7 +1908,44 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$(this).remove();
 			});
 		},
-		gridWidget :function(){
+		tableWidget :function(){
+			$form.find('.jr-appearance-field-list .jr-appearance-nolabel').each(function(){
+				$(this).find('fieldset label').addClass('column');
+//				var $row,
+//					$table = $('<table></table>'), 
+//					$thead = $('<thead></thead>'), 
+//					$tbody = $('<tbody></tbody>'),
+//					$header = $(this).find('.jr-appearance-label'),
+//					$content = $(this).find('.jr-appearance-list-nolabel'); 
+//				
+//				$row = createRow($header, 'th');
+//				$row.appendTo($thead);
+//				$thead.appendTo($table);//
+
+//				$content.each(function(){
+//					$row = createRow($(this), 'td');
+//					$row.appendTo($tbody);
+//				});//
+
+//				$tbody.appendTo($table);
+//				$table.appendTo($(this));//
+
+//				function createRow($fieldlist, cellType){
+//					var $cell,
+//						$row = $('<tr/>'),
+//						$legend = $fieldlist.find('legend');
+//					//legends have special built-in browser formatting so we remove them but keep the content
+//					$('<'+cellType+'>'+$legend.html()+'</'+cellType+'>').appendTo($row);
+//					$legend.remove();
+//					//everything else can stay intact but is moved to table cells
+//					$fieldlist.find('label').each(function(){
+//						$cell = $('<'+cellType+'/>');
+//						$(this).detach().appendTo($cell);
+//						$cell.appendTo($row);
+//					});
+//					return $row;
+//				}	
+			});	
 			//$form.find('.jr-appearance-compact label img').selectable();
 		},
 		spinnerWidget :function(){
@@ -2143,6 +2163,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		fileWidget : function(){
 			$form.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled');
+		},
+		mediaLabelWidget : function(){
+			//improve looks when images, video or audio is used as label
+			$('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact)>label, '+
+				'fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact)>legend')
+				.children('img,video,audio').parent().addClass('with-media');
 		}
 	};
 

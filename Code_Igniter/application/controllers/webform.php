@@ -31,8 +31,9 @@ class Webform extends CI_Controller {
 			'/libraries/bootstrap/js/bootstrap.min.js',	
 			'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
 			'/libraries/eternicode-bootstrap-datepicker/js/bootstrap-datepicker.js',
-			'/libraries/silviomoreto-bootstrap-select/bootstrap-select.js',
-			'/libraries/davidstutz-bootstrap-multiselect/js/bootstrap-multiselect.js',
+			'/libraries/bootstrap-select.js',
+			//'/libraries/silviomoreto-bootstrap-select/bootstrap-select.js',
+			//'/libraries/davidstutz-bootstrap-multiselect/js/bootstrap-multiselect.js',
 			'/libraries/modernizr.min.js',
 			'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 			'/libraries/vkbeautify.js',
@@ -40,8 +41,8 @@ class Webform extends CI_Controller {
 		);
 		$this->default_stylesheets = array
 		(
-			array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'screen'),
-			array( 'href' => '/css/screen.css', 'media' => 'screen'),
+			array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'all'),
+			array( 'href' => '/css/screen.css', 'media' => 'all'),
 			array( 'href' => '/css/print.css', 'media' => 'print')
 		);
 		$sub = get_subdomain();
@@ -287,13 +288,16 @@ class Webform extends CI_Controller {
 		}
 
 		$transf_result = $this->Form_model->transform($this->server_url, $this->form_id, FALSE);
+	
+		$title = $transf_result->form->xpath('//h3[@id="form-title"]');
+		$form->title = (!empty($title[0])) ? $title[0] : '';
+
 		$form->html = $transf_result->form->asXML();
-		$form->default_instance = $transf_result->instance->asXML();
 		
+		$form->default_instance = $transf_result->instance->asXML();
 		$form->default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form->default_instance);
 		$form->default_instance = addslashes($form->default_instance);
-		$form->title = $transf_result->form->xpath('//h2[@id="form-title"]') || NULL;
-		$form->title = $form->title[0] || '';
+		
 		return (!empty($form->html) && !empty($form->default_instance)) ? $form : NULL;
 	}
 

@@ -45,7 +45,7 @@ $content-width: 720px;
 body{ 
   background: $bg url(images/tex2res2.png) repeat;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-  font-size: 1.1em;}
+  font-size: 1.2em;}
 
 h2, h3, h4 {
   color: $title;
@@ -248,6 +248,13 @@ label#data-template-show {
   //text-align: center;
 }
 
+
+.tooltip{
+  /* fix for tooltips when places inside a label/legend element (All)*/
+  font-weight: normal !important;
+  /* fix for tooltips when placed inside a legend element (Safari)*/
+  line-height: 18px !important;}
+
 #launch form{
   margin-top: 20px; 
   input{
@@ -275,9 +282,8 @@ label#data-template-show {
     text-align: center;
     padding: .6em 0;
     font-size: 0.9em;
-    border-top: 1px #ddd dashed;
-    &:first-child {
-      border-top: none; } }
+    &+p {
+      border-top: 1px #ddd dashed; } }
   i, .close {
     position: absolute;
     top: 50%;
@@ -335,7 +341,7 @@ label#data-template-show {
   margin: 0 0 40px 0;
   #submit-form, #submit-edited-data, #validate-form, #launch-form{
     display: block;
-    margin: 10px auto 45px auto; } }
+    margin: 45px auto 5px auto; } }
 
 .jr [lang]:not(.active), .jr-hint, .jr-option-translations, .jr-appearance-page-break, .jr-constraint-msg.alert-error {
   display: none; }
@@ -366,6 +372,7 @@ $input-max-width: 80%;
   //line-height: 1.1em;  
   .form-logo img {
     position: relative;
+    float: none;
     left: 50%;
     max-height: 200px;
     width: 120px;
@@ -379,7 +386,6 @@ $input-max-width: 80%;
   h4{
     text-align: left;  }
   .jr-repeat {
-    /*border: 1px dotted $shadow;*/
     background-color: lighten($title, 55%);
     margin: 0 0 3px 0;
     padding: 0 10px 10px 10px;
@@ -421,7 +427,7 @@ $input-max-width: 80%;
 //      margin-left: 25px;
         font-weight: normal; 
         &:hover{
-          background-color: lighten($title, 48%);;} }
+          background-color: lighten($title, 48%);} }
     + label {
 //      margin-top: 25px; } }
 //  fieldset {
@@ -429,6 +435,10 @@ $input-max-width: 80%;
   }}
   label, legend, .trigger {
     font-size: .8em; }
+  img, audio, video{
+    float: right;
+    max-height: 300px;
+    max-width: 70%;}
   input:not([type="radio"]):not([type="checkbox"]), textarea{
     float: left;
     display: inline-block;
@@ -498,9 +508,6 @@ $input-max-width: 80%;
     margin: 10px 0;
     opacity: 0.5; }
   .date, .bootstrap-timepicker-component {
-    &.input-append .active{
-      background: none;
-      width: $input-min-width;}
     input{
       width: $input-min-width;} }
   .datetimepicker{
@@ -529,12 +536,7 @@ $input-max-width: 80%;
       position: absolute;
       bottom: 0;
       right: 0;
-      text-align: center;
-      //border-top-left-radius: 0;
-      //border-top-right-radius: 0;
-      //margin-top: 0;
-      //border-top: 1px solid #ccc;
-      }
+      text-align: center; }
     label.geo{
       position: absolute;
       border: none;
@@ -559,29 +561,89 @@ $input-max-width: 80%;
       height: 40px;
       width: $input-min-width + 16px;
       margin-top: 10px;} }
-  .bootstrap-select .dropdown-toggle{
+  .bootstrap-select{
+    margin-top: 15px;
+    .dropdown-toggle{
     line-height: $input-height;
     min-width: $input-min-width - 14px;
-    font-size: 14px;
     font-weight: normal;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
-  .bootstrap-multiselect .dropdown-toggle{
-    font-weight: normal;
-    line-height: $input-height;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     text-align: left;
-    min-width: $input-min-width + 16px;
+    min-width: $input-min-width -14px;
+    a .filter-option{
+      padding-right: 10px;}
     ~ .dropdown-menu{
-      a{
-        }
       label{
         font-weight: normal;
         padding-top: 0px;
         padding-left: 0px; 
         font-size: 1em;
-        input{
+        input[type="checkbox"]{
           margin: 5px 10px 1px 0; } } } } }
+  .jr-appearance-list-nolabel, .jr-appearance-label{
+    legend{ 
+      float: left;
+      border: none;
+      line-height: 17px;
+      width: 200px;
+      min-height: 1px;}
+    label{
+      float: left;
+      display: block;
+      width: 100px;
+      text-align: center;}
+    input{
+      text-align: center;} }
+  .jr-appearance-list-nolabel{
+    label span.active, img{
+        display: none;
+        float: none; } }
+  .jr-appearance-label{
+      input{
+        float: none;
+        display: none; } 
+      img{
+        display: inline-block;
+        float: none;} } 
+    /*fieldset{
+      padding: 0;
+      margin: 0;}
+    th{
+      input{
+        display: none;} }
+    td{
+      label>span.active{
+        display: none; } }*/
+  .with-media{
+    > input[type="radio"], > input[type="checkbox"]{ 
+      ~ span.active:not(.jr-hint):not(.jr-constraint-msg){
+      display: block;
+      margin: -18px 0 0 40px;} } } 
+  .jr-appearance-compact, .jr-appearance-quickcompact{
+    legend{
+      border: none;}
+    label{
+      float: left;
+      /*width: 120px; */
+      &:hover{
+        background: none;}
+      span.active:not(.jr-hint):not(.jr-constraint-msg){
+        display: none; } }
+    input{
+      display: none;
+      ~ img{
+        max-width: 150px;
+        max-height: 150px;
+        border: 2px solid transparent;}
+      ~ img:hover{
+        border-color: lighten($title, 30%);}
+      &:checked ~ img, &:checked ~ img:hover{
+        border-color: $title; } } }
+  label>input[type="radio"]+img, label>input[type="checkbox"]+img{
+    /*margin-top: -25px;*/ } }
+  
 
-.with-media {
+/*.with-media {
   margin-top: 5px; 
   >span.active {
     display: block;
@@ -608,6 +670,5 @@ $input-max-width: 80%;
     margin-top: 25px; }
   input {
     &[type=radio], &[type=checkbox] {
-      /*display: none;*/
-      margin-top: 35px; } } }
+      margin-top: 35px; } } }*/
 

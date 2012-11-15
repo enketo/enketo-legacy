@@ -7,6 +7,7 @@
 			var jrDataStrToEdit = '<?= $form_data_to_edit ?>';
 			var RETURN_URL = '<?= $return_url ?>';
 		<? endif; ?>
+			var supportEmail = '<?= $this->config->item("support_email") ?>';
 		</script>
 	
 	</head>

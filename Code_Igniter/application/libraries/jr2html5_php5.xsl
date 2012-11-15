@@ -379,7 +379,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
             <xsl:apply-templates select="xf:hint" />
             <xsl:variable name="element">
                 <xsl:choose>
-                    <xsl:when test="$html_type = 'text' and @appearance = 'text-area' or @appearance = 'big' or @appearance = 'big-text' or @appearance = 'textarea'">
+                    <xsl:when test="$html_type = 'text' and @appearance = 'multi-line' or @appearance = 'multiline' or @appearance = 'text-area' or @appearance = 'big' or @appearance = 'big-text' or @appearance = 'textarea'">
                         <xsl:value-of select="string('textarea')" />
                     </xsl:when>
                     <xsl:otherwise>

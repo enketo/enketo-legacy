@@ -13,7 +13,8 @@
 		<meta charset="utf-8" />
 		<meta name="author" content="Martijn van de Rijdt (Aid Web Solutions)" />
 		<meta name="copyright" content="2012 (c) Martijn van de Rijdt"/>
-		
+		<? $robots = ( !isset($robots) && !empty($_GET['robots']) && $_GET['robots'] == 'true' ) ? 'index, follow' : 'noindex' ?>
+		<meta name="robots" content="<?= $robots ?>"/>
 		<!--[if lt IE 8]>
         	<script type="text/javascript">window.location = 'modern_browsers';</script>
 		<![endif]-->

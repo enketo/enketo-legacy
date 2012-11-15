@@ -20,7 +20,8 @@
 // Copyright 2012 Martijn van de Rijdt
 /************ Global variables ***************/
 
-var /**@type {GUI}*/ gui;
+var /** @type {GUI}*/ gui;
+var /** @type {Print} */ printO;
 var DEFAULT_SETTINGS = {};
 
 $(document).ready(function(){
@@ -35,6 +36,7 @@ $(document).ready(function(){
 		window.console.log = function(){};
 		window.console.debug = function(){};
 	}
+	printO = new Print();
 });
 
 
@@ -288,7 +290,6 @@ GUI.prototype.pages = function(){
 	return this;
 };
 
-
 /**
  * Shows an unobtrusive feedback message to the user.
  *
@@ -314,7 +315,7 @@ GUI.prototype.showFeedback = function(message, duration){
 	if($('#feedback-bar p').html() !== message){//} || feedbackEl.find('p').length === 0){
 		$msg = $('<p></p>');
 		$msg.text(message); // encodes special characters
-		$('#feedback-bar').prepend($msg);
+		$('#feedback-bar').append($msg);
 	}
 	$('#feedback-bar').trigger('change');
 
@@ -574,73 +575,73 @@ function getGetVariable(variable) {
 	}
 	return false;
 }
-
-
-/*
- *
- *  Provides a central switch for application reporting
- *
- *  It is e.g. possible to output console.error to the user instead of to the console and use
- *  the url debug GET variable to switch back tot the console.
- *  Or it can be customized to switch e.g. console.log off completelt without having to comment out lines
- *  or it can be used to log to a variable/localStorage/sessionStorage and send a crash report to the server
- *  The possibilies to customize this are endless!
- *
- *  NOTE: NOT TESTED WHEN USING APPLICATION CACHE - THIS PROBABLY MESSES THINGS UP!
- */
- 
 /**
+ * Class dealing with printing
  * @constructor
- *
- * Function (Class): Report
- *
- * description
- *
- * Returns:
- *
- *   return description
  */
-//function Report(){
-//	"use strict";
-//	var output;
-//	var debug = getGetVariable('debug') || false;//
+function Print(){
+	"use strict";
+	//var mpl,
+	//	that = this;
+	this.setStyleSheet();
+	//IE, FF, the 'proper' way:
+    if (typeof window.onbeforeprint !== 'undefined'){
+		$(window).on('beforeprint', this.printForm);
+    }
+    //Chrome, Safari, Opera: (this approach has problems)
+	//else {
+	//	mpl = window.matchMedia('print');
+	//	mpl.addListener(function(mql){
+	//		if (mql.matches && !that.ongoing){
+	//			that.ongoing = true;
+	//			that.printForm();
+	//			that.ongoing = false;
+	//		}
+	//		return false;
+	//	});
+	//}
+}
 
-//	// avoid windows console errors
-//	if (typeof(window.console) == "undefined") {console = {log: function(){}};}
-//	if (typeof(console.debug) == "undefined") {console.debug = console.log;}
-//
-//	console.log('Report object initialized with debug = '+debug);
-//
-//	this.error = function(message){
-//		output('error', message);
-//	};
-//
-//	this.log = function(message){
-//		output('log', message);
-//	};
-//
-//	this.debug = function(message){
-//		output('debug', message);
-//	};
-//
-//	output = function(type, message){
-//		// if in debug mode or if gui isn't available: just output to console
-//		if (typeof gui == 'undefined' || (typeof debug !== 'undefined' && debug == 'true') ){
-//			console[type](message);
-//		}
-//		// if gui is available and type = error
-//		else if (type === 'error'){
-//			console[type](message);
-//			//gui.alert('You discovered a bug in the application or an error in the form! (see javascript console) Please report this to rapaide@aidwebsolutions.com.');
-//		}
-//		// if gui is available
-//		else {
-//			//nada
-//		}
-//	};
-//}
+Print.prototype.setStyleSheet = function(){
+	this.styleSheet = this.getStyleSheet();
+	this.$styleSheetLink = $('link[media="print"]:eq(0)');
+};
 
-/************ JQuery Extensions **************/
+Print.prototype.getStyleSheet = function(){
+	for (var i = 0 ; i < document.styleSheets.length ; i++){
+		if (document.styleSheets[i].media.mediaText === 'print'){
+			return document.styleSheets[i];
+		}
+	}
+	return null;
+};
+
+Print.prototype.styleToAll = function (){
+	//sometimes, setStylesheet fails upon loading
+	if (!this.styleSheet) this.setStyleSheet();
+	//Chrome:
+	this.styleSheet.media.mediaText = 'all';
+	//Firefox:
+	this.$styleSheetLink.attr('media', 'all');
+};
+
+Print.prototype.styleReset = function(){
+	this.styleSheet.media.mediaText = 'print';
+	this.$styleSheetLink.attr('media', 'print');
+};
+
+Print.prototype.printForm = function(){
+	console.debug('preparing form for printing');
+	this.styleToAll();
+	this.addPageBreaks();
+	this.styleReset();
+	window.print();
+};
+
+Print.prototype.addPageBreaks = function(){
+	// add Alex' code
+};
+
 
 	
 (function($){

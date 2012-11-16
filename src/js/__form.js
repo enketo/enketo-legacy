@@ -33,18 +33,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	"use strict";
 	var data, dataToEdit, form, $form, $formClone;
  
-	//*** FOR DEBUGGING and TESTING, OTHERWISE DISABLE***
+	//*** FOR DEBUGGING and UNIT TESTS ONLY ***
 	this.ex = function(expr, type, selector, index){return data.evaluate(expr, type, selector, index);};
 	this.sfv = function(){return form.setAllVals();};
-	//this.getDataO = function(){return data.get();};
 	this.data = function(dataStr){return new DataXML(dataStr);};
 	this.getDataO = function(){return data;};
 	this.getDataEditO = function(){return dataToEdit.get();};
 	this.form = function(selector){return new FormHTML(selector);};
 	this.getFormO = function(){return form;};
-	this.getDataXML = function(){return data.getXML();};
-	this.validateAll = function(){return form.validateAll();};
-	this.outputUpdate = function(){return form.outputUpdate();};
+	//this.getDataXML = function(){return data.getXML();};
+	//this.validateAll = function(){return form.validateAll();};
+	//this.outputUpdate = function(){return form.outputUpdate();};
 	//***************************************
 
 /**
@@ -1757,17 +1756,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 */
 	FormHTML.prototype.widgets = {
 		//IMPORTANT! Widgets should be initalized after instance values have been loaded in $data as well as in input fields
-		init : function(){			
-			this.dateWidget();
-			this.timeWidget();
-			this.dateTimeWidget();
-			this.selectWidget();
+		init : function(){
+			if (!Modernizr.touch){
+				this.dateWidget();
+				this.timeWidget();
+				this.dateTimeWidget();
+				this.selectWidget();
+				this.geopointWidget();
+			}	
 			this.pageBreakWidget();
 			this.readonlyWidget();
 			this.tableWidget();
 			this.spinnerWidget();
-			this.sliderWidget();
-			this.geopointWidget();
+			this.sliderWidget();	
 			this.barcodeWidget();
 			this.fileWidget();
 			this.mediaLabelWidget();

@@ -1,1 +1,8 @@
-body{background:none}.main{margin:0}
+body {
+  background: none;
+  margin: 0 !important;
+}
+
+.main {
+  margin: 0;
+}

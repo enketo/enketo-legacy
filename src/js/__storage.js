@@ -353,7 +353,7 @@ function isNumber(n){
 
 /**
  * Settings class depends on Store Class
- *
+ * TODO MAKE THIS CLASS FUNCTION WITHOUT STORAGE TOO (GLOBAL VAR)
  * @constructor
  */
 function Settings(){

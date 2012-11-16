@@ -41,6 +41,7 @@ class Webform extends CI_Controller {
 		(
 			//array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'all'),
 			array( 'href' => '/css/styles.css', 'media' => 'all'),
+			array( 'href' => '/css/mobile.css', 'media' => 'screen and (max-width: 700px)'),
 			array( 'href' => '/css/print.css', 'media' => 'print')
 		);
 		$sub = get_subdomain();

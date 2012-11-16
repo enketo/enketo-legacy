@@ -1030,25 +1030,26 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 		
-		//add 'required field' and 'hint'
+		//add 'required field'
 		$required = '<span class="required">*</span>';//<br />';
-		$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
-
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
-			.find('legend:eq(0)').append($required);
+			.find('legend:eq(0) span:not(.jr-hint):last').after($required);
 		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
 			.not('[type="checkbox"], [type="radio"]').parent()
 			.each(function(){
-				$(this).children('span:not(.jr-option-translations):last').after($required);
+				$(this).children('span:not(.jr-option-translations, .jr-hint):last').after($required);
 			});
 
 
 		//add 'hint' icon
 		//$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea')
 		//	.after($hint);
-		$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea').before($hint);
-		$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
-		$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
+		if (!Modernizr.touch){
+			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
+			$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea').before($hint);
+			$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
+			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
+		}
 
 		$form.find('select, input:not([type="checkbox"], [type="radio"]), textarea').before($('<br/>'));
 
@@ -1910,8 +1911,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 		},
 		tableWidget :function(){
-			$form.find('.jr-appearance-field-list .jr-appearance-nolabel').each(function(){
-				$(this).find('fieldset label').addClass('column');
+			$form.find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label').parent().each(function(){
+				$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
+				$(this).find('label').toLargestWidth();
+				$(this).find('legend').toLargestWidth();
 //				var $row,
 //					$table = $('<table></table>'), 
 //					$thead = $('<thead></thead>'), 

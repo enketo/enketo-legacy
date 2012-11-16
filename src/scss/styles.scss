@@ -2,7 +2,7 @@
 @import "bootstrap";
 
 // Include responsive Bootstrap styles
-// @import "bootstrap-responsive";
+@import "bootstrap-responsive";
 
 /** BOOTSTRAP PLUGINS **/
 @import "../../public/libraries/jdewit-bootstrap-timepicker/timepicker";
@@ -337,6 +337,18 @@ $input-height: 30px;
 $input-min-width: 0.2 * $content-width;
 $input-max-width: 80%;
 
+/** CHANGE THIS TO MIX, REUSE in PRINT.CSS) **/
+html.touch{
+  .jr{
+    .jr-hint.active{
+      color: #888888;
+      display: block;
+      font-weight: normal;
+      font-size: 10px;
+      font-style: italic;
+      ~ br{
+        display: none; } } } } 
+
 .jr {
   .form-logo img {
     position: relative;
@@ -522,12 +534,14 @@ $input-max-width: 80%;
       float: left;
       border: none;
       line-height: 17px;
-      width: 200px;
+      max-width: 40%;
+      //border: 1px solid red;
       min-height: 1px;}
     label{
       float: left;
+      //border: 1px solid red;
       display: block;
-      width: 100px;
+      //width: 100px;
       text-align: center;}
     input{
       text-align: center;} }
@@ -536,9 +550,11 @@ $input-max-width: 80%;
         display: none;
         float: none; } }
   .jr-appearance-label{
+      label:hover{
+        background: none;}
       input{
-        float: none;
-        display: none; } 
+          float: none;
+          display: none; } 
       img{
         display: inline-block;
         float: none;} } 

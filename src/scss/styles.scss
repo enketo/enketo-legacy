@@ -128,7 +128,7 @@ progress{
     color: #444;} }
 
 .main {
-  margin: 100px auto 20px auto;
+  margin: 100px auto 60px auto;
   position: relative;
   display: block;
   text-align: left; 
@@ -307,7 +307,7 @@ label#data-template-show {
 ****    SURVEY FORM    ****
 **************************/
 .paper{
-  margin: 0 0 40px 0;
+  //margin: 0 0 40px 0;
   #submit-form, #submit-edited-data, #validate-form, #launch-form{
     display: block;
     margin: 45px auto 5px auto; } }
@@ -401,16 +401,13 @@ $input-max-width: 80%;
     &[type="text"]{
       width: $input-max-width }
     &[type=date], &[type=number], &[type=email], &[type=password] {
-      width: $input-min-width;
-      /*text-align: right;*/ }
+      width: $input-min-width;}
     &[type=radio], &[type=checkbox] {
       margin: 0 10px 1px 10px;} }
   textarea{
     width: $input-max-width;
     resize: vertical;
     min-height: 9em;}
-  /*select {
-    display: block; }*/
   fieldset {
     .one-more {
       margin: 0 -34px -5px 10px; }

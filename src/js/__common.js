@@ -36,6 +36,16 @@ $(document).ready(function(){
 		window.console.log = function(){};
 		window.console.debug = function(){};
 	}
+	//override Modernizr's detection (for development purposes)
+	if (getGetVariable('touch') == 'true'){
+		Modernizr.touch = true;
+		$('html').addClass('touch');
+	}
+	else if (getGetVariable('touch') == 'false'){
+		Modernizr.touch = false;
+		$('html').removeClass('touch');
+	}
+
 	printO = new Print();
 });
 
@@ -647,7 +657,7 @@ Print.prototype.addPageBreaks = function(){
 (function($){
 	"use strict";
 	// give a set of elements the same (longest) width
-	$.fn.equalWidth = function(){
+	$.fn.toLargestWidth = function(){
 		var largestWidth = 0;
 		return this.each(function(){
 			if ($(this).width() > largestWidth) {
@@ -655,6 +665,18 @@ Print.prototype.addPageBreaks = function(){
 			}
 		}).each(function(){
 			$(this).width(largestWidth);
+		});
+	};
+
+	$.fn.toSmallestWidth = function(){
+		var smallestWidth = 2000;
+		return this.each(function(){
+			console.log($(this).width());
+			if ($(this).width() < smallestWidth) {
+				smallestWidth = $(this).width();
+			}
+		}).each(function(){
+			$(this).width(smallestWidth);
 		});
 	};
 	

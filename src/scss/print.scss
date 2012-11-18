@@ -47,11 +47,13 @@ body{
     display: block;
     font-weight: normal;
     font-size: 10px;
-    font-style: italic;}
+    font-style: italic;
+    ~ br{
+      display: none; } }
   .required{
     float: right;
-    ~ br {
-      display: none; } }
+    /*~ br {
+      display: none; }*/ }
   div.jr-branch{
     display: none;}
   .jr-branch+fieldset.disabled,

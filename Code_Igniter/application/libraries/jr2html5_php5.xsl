@@ -746,10 +746,10 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                                 <xsl:value-of select="$binding/@relevant"/>
                             </xsl:attribute>
 		                </xsl:if>
-                        <!-- add empty first option for all selects -->
-                        <!--<xsl:if test="local-name() = 'select1'">-->
-                        <option value="">...</option>
-                        <!--</xsl:if>-->
+                        <!-- add empty first option for select1 -->
+                        <xsl:if test="local-name() = 'select1'">
+                            <option value="">...</option>
+                        </xsl:if>
                         <xsl:for-each select="exsl:node-set($options)/option">
                             <xsl:copy-of select="."/>
                         </xsl:for-each>

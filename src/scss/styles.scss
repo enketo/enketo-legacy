@@ -2,7 +2,7 @@
 @import "bootstrap";
 
 // Include responsive Bootstrap styles
-// @import "bootstrap-responsive";
+@import "bootstrap-responsive";
 
 /** BOOTSTRAP PLUGINS **/
 @import "../../public/libraries/jdewit-bootstrap-timepicker/timepicker";
@@ -128,7 +128,7 @@ progress{
     color: #444;} }
 
 .main {
-  margin: 100px auto 20px auto;
+  margin: 100px auto 60px auto;
   position: relative;
   display: block;
   text-align: left; 
@@ -307,7 +307,7 @@ label#data-template-show {
 ****    SURVEY FORM    ****
 **************************/
 .paper{
-  margin: 0 0 40px 0;
+  //margin: 0 0 40px 0;
   #submit-form, #submit-edited-data, #validate-form, #launch-form{
     display: block;
     margin: 45px auto 5px auto; } }
@@ -336,6 +336,18 @@ $line: 3px solid $groupline;
 $input-height: 30px;
 $input-min-width: 0.2 * $content-width;
 $input-max-width: 80%;
+
+/** CHANGE THIS TO MIX, REUSE in PRINT.CSS) **/
+html.touch{
+  .jr{
+    .jr-hint.active{
+      color: #888888;
+      display: block;
+      font-weight: normal;
+      font-size: 10px;
+      font-style: italic;
+      ~ br{
+        display: none; } } } } 
 
 .jr {
   .form-logo img {
@@ -401,16 +413,13 @@ $input-max-width: 80%;
     &[type="text"]{
       width: $input-max-width }
     &[type=date], &[type=number], &[type=email], &[type=password] {
-      width: $input-min-width;
-      /*text-align: right;*/ }
+      width: $input-min-width;}
     &[type=radio], &[type=checkbox] {
       margin: 0 10px 1px 10px;} }
   textarea{
     width: $input-max-width;
     resize: vertical;
     min-height: 9em;}
-  /*select {
-    display: block; }*/
   fieldset {
     .one-more {
       margin: 0 -34px -5px 10px; }
@@ -525,12 +534,14 @@ $input-max-width: 80%;
       float: left;
       border: none;
       line-height: 17px;
-      width: 200px;
+      max-width: 40%;
+      //border: 1px solid red;
       min-height: 1px;}
     label{
       float: left;
+      //border: 1px solid red;
       display: block;
-      width: 100px;
+      //width: 100px;
       text-align: center;}
     input{
       text-align: center;} }
@@ -539,9 +550,11 @@ $input-max-width: 80%;
         display: none;
         float: none; } }
   .jr-appearance-label{
+      label:hover{
+        background: none;}
       input{
-        float: none;
-        display: none; } 
+          float: none;
+          display: none; } 
       img{
         display: inline-block;
         float: none;} } 

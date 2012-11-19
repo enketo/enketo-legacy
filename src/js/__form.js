@@ -2493,37 +2493,28 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				repeatPath = node.attr('name'),
 				repeatIndex = $form.find('fieldset.jr-repeat[name="'+repeatPath+'"]').index(node),
 				parentGroup = node.parent('fieldset.jr-group');
-			//var parent = node.parent('fieldset.jr-repeat');
 		
-			//var parentSiblings = parent.siblings();
-		
-			node.hide(600, function(){
+			node.hide(delay, function(){
 				node.remove();
 				parentGroup.numberRepeats();
 
 				that.toggleButtons(parentGroup);
 				$form.trigger('changerepeat'); 
+				//now remove the data node
+				data.node(repeatPath, repeatIndex).remove();
 			});
-
-			//now remove the data node
-			data.node(repeatPath, repeatIndex).remove();
 		},
-		toggleButtons : function(node){
+		toggleButtons : function($node){
 			//var constraint;
 			console.debug('toggling repeat buttons');
-			node = (typeof node == 'undefined' || node.length === 0 || !node) ?	node = $form : node;
+			$node = (typeof $node == 'undefined' || $node.length === 0 || !$node) ?	$node = $form : $node;
 			
 			//first switch everything off and remove hover state
-			node.find('button.repeat, button.remove').attr('disabled', 'disabled');//button('disable').removeClass('ui-state-hover');
+			$node.find('button.repeat, button.remove').attr('disabled', 'disabled');//button('disable').removeClass('ui-state-hover');
 		
-			//enable last + button if constraint is true or non-existing
-			//constraint = node.attr('data-constraint');
-			//if ((constraint.length > 0 && evalXpression(constraint) === true) || typeof constraint == 'undefined'){
-				node.find('fieldset.jr-repeat:last-child > button.repeat').removeAttr('disabled');//.button('enable');
-			//}
-			// the nth-child selector is a bit dangerous. It relies on this structure <fieldset class="jr-repeat"><h2></h2><label><label><label></fieldset>
-			// alternatively, we could allow the first repeat to be deleted as well (as long as it is not the ONLY repeat)
-			node.find('fieldset.jr-repeat:not(:nth-child(2)) > button.remove').removeAttr('disabled');//button('enable'); //Improve this so that it enables all except first
+			//then enable the appropriate ones
+			$node.find('fieldset.jr-repeat:last-child > button.repeat').removeAttr('disabled');//.button('enable');
+			$node.find('button.remove:not(:eq(0))').removeAttr('disabled');
 		}
 	};
 	
@@ -2556,11 +2547,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});	
 		
 		//nodeNames is comma-separated list as a string
-		$form.on('dataupdate', function(event, nodeNames){
-			//nodeNames = nodeNames.split(',');
-			//console.debug('dataupdate detected on: '+nodeNames);
-			//console.debug(event);
-			
+		$form.on('dataupdate', function(event, nodeNames){			
 			that.calcUpdate(nodeNames); //EACH CALCUPDATE THAT CHANGES A VALUE TRIGGERS ANOTHER CALCUPDATE => VERY INEFFICIENT
 			that.branch.update(nodeNames);
 			that.outputUpdate(nodeNames);

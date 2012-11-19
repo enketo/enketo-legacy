@@ -2366,10 +2366,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('fieldset.jr-repeat:not([data-repeat-fixed])')
 				.append('<button type="button" class="btn repeat"><i class="icon-plus"></i></button>'+
 					'<button type="button" disabled="disabled" class="btn remove"><i class="icon-minus"></i></button>');
-			//$form.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
-			//$form.find('button.remove').button({'disabled': true, 'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
 
-			//MOVE HANDLERS to FormHTML.eventHandlers?
 			//delegated handlers (strictly speaking not required, but checked for doubling of events -> OK)
 			$form.on('click', 'button.repeat:enabled', function(){
 				//create a clone
@@ -2464,11 +2461,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					radioNames.push($(this).attr('data-name'));
 				}
 			});
-			//console.debug ('different radioNames in clone: '+radioNames.join());
+			console.debug ('different radioNames in clone: '+radioNames.join());
 			for (i=0; i<radioNames.length ;i++){
-				timestamp = new Date().getTime().toString();
-				//index of the clone is index of the master node + 1
-				//clone.find('input[type="radio"][name="'+radioNames[i]+'"]').attr('name', radioNames[i]+'____'+(index+1));
+				//amazingly, this executes so fast when compiled that the timestamp in milliseconds is
+				//not sufficient guarantee for uniqueness
+				timestamp = new Date().getTime().toString()+'_'+Math.floor((Math.random()*10000)+1);
 				$clone.find('input[type="radio"][data-name="'+radioNames[i]+'"]').attr('name', timestamp);
 			}
 

@@ -1,3 +1,5 @@
+$baseFontSize: 15px;
+
 // I gather this file is a starting point for the project.
 @import "bootstrap";
 
@@ -48,7 +50,8 @@ $content-width: 720px;
 body{ 
   background: $bg url(/images/tex2res2.png) repeat;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-  font-size: 1.2em;}
+  font-size: 100%;
+  /*font-size: 1.2em;*/}
 
 h2, h3, h4 {
   color: $title;
@@ -60,9 +63,9 @@ progress{
 
 .navbar{
   .brand{
-    font-size: 32px;
+    font-size: 2em;
     .component{
-      font-size: 13px;} } 
+      font-size: 0.4em;} } 
   nav{
     float:right; } }
   
@@ -79,7 +82,7 @@ progress{
   -moz-transition: margin 0.8s ease-out;
   -webkit-transition: margin 0.8s ease-out;
   transition: margin 0.8s ease-out;
-  font-size: 16px;
+  font-size: 1.1em;
   &.left{
     bottom: 20%;
     left: 0;
@@ -120,7 +123,7 @@ progress{
   text-align: center;
   line-height: 1.3em;
   color: #666;
-  font-size: 1.1em;
+  font-size: 1.3em;
   a:link, a:hover, a:visited{
     text-decoration: none;
     color: #666;}
@@ -189,7 +192,7 @@ label#data-template-show {
       z-index: 5;
       opacity: 0; }
     .hurry{
-      font-size: 13px;
+      font-size: .8em;
       margin-top: 180px;} }
   #form-list{
     margin-top: 20px;
@@ -249,7 +252,7 @@ label#data-template-show {
     margin: 0 50px;
     text-align: center;
     padding: .6em 0;
-    font-size: 0.9em;
+    font-size: 1.1em;
     &+p {
       border-top: 1px #ddd dashed; } }
   i, .close {
@@ -344,7 +347,7 @@ html.touch{
       color: #888888;
       display: block;
       font-weight: normal;
-      font-size: 10px;
+      font-size: .7em;
       font-style: italic;
       ~ br{
         display: none; } } } } 
@@ -396,7 +399,7 @@ html.touch{
         &:hover{
           background-color: lighten($title, 48%);} } }
   label, legend, .trigger {
-    font-size: .8em; }
+    font-size: 1em; }
   img, audio, video{
     float: right;
     max-height: 300px;

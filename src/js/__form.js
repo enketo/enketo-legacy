@@ -878,24 +878,24 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * are created (or evaluated).
 	 * 
 	 * @param  {string} expr  the XPath expression
-	 * @param  {jQuery} $repParents jQuery collection of repeat parents of the context input node
+	 * @param  {string} selector of the (context) node on which expression is evaluated
+	 * @param  {number} index of the node with the previous selector in the instance
 	 * @return {string} modified expression with injected positions (1-based) 
 	 */
-	DataXML.prototype.makeBugCompliant = function(expr, $repParents){
-		var i, repSelector, repIndex,
-			bcExpr = expr;
-		//console.debug('received expression: '+expr+' inside repeat: '+repSelector+' with 0-based index: '+repIndex);
+	DataXML.prototype.makeBugCompliant = function(expr, selector, index){
+		var i, repSelector, repIndex, $repParents,
+			attr = ($form.find('[name="'+selector+'"][type="radio"]').length > 0 && index > 0) ? 'data-name' : 'name';
+
+		$repParents = form.input.getWrapNodes($form.find('['+attr+'="'+selector+'"]')).eq(index).parents('.jr-repeat');
+		//console.debug('makeBugCompliant() received expression: '+expr+' inside repeat: '+repSelector);
 		for (i=0 ; i<$repParents.length ; i++){
 			repSelector = /** @type {string} */$repParents.eq(i).attr('name');
 			//console.log(repSelector);
 			repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').andSelf().index($repParents.eq(i)); 
-			//console.log(repIndex);
-			bcExpr = bcExpr.replace(repSelector, repSelector+'['+(repIndex+1)+']');
+			console.log('calculated repeat 0-based index: '+repIndex);
+			expr = expr.replace(repSelector, repSelector+'['+(repIndex+1)+']');
 		}
-		//if (expr !== bcExpr){
-			//console.debug('expr inside repeat made bug compliant, new expression: '+bcExpr);
-		//}
-		return bcExpr;
+		return expr;
 	};
 
 	/**
@@ -912,8 +912,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {?(number|string|boolean)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
-		var context, dataCleanClone, resTypeNum, resultTypes, result, $repParents;
-		
+		var context, dataCleanClone, resTypeNum, resultTypes, result, attr, $contextWrapNodes, $repParents;
+		console.debug('evaluating expr: '+expr+' with context selector: '+selector+' and 0-based index: '+index);
 		resTypeStr = resTypeStr || 'any';
 		index = index || 0;
 		dataCleanClone = new DataXML(this.getStr(false, false));
@@ -925,8 +925,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			 * If the expressions is bound to a node that is inside a repeat.... see makeBugCompliant()
 			 */
 			if ($form.find('[name="'+selector+'"]').parents('.jr-repeat').length > 0 ){
-				$repParents = $form.find('[name="'+selector+'"]').eq(index).parents('.jr-repeat');
-				expr = this.makeBugCompliant(expr, $repParents);
+				expr = this.makeBugCompliant(expr, selector, index);
 			}
 		}
 		else context = dataCleanClone.getXML();//dataCleanClone.get()[0];//.documentElement;
@@ -1511,7 +1510,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {?boolean}                  [description]
 		 */
 		this.update = function(changedNodeNames){
-			var i, p, branchNode, result, namesArr, cleverSelector,			
+			var i, p, branchNode, result, namesArr, cleverSelector,	
 				alreadyCovered = {},
 				that=this;
 			
@@ -1528,7 +1527,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				p = that.input.getProps($(this));
 				branchNode = that.input.getWrapNodes($(this));
 				
-				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[p.path]){
+				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
+				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[$(this).attr('name')]){
 					return;
 				}
 				if(branchNode.length !== 1){
@@ -1546,7 +1546,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return;
 				}
 			
-				alreadyCovered[p.path] = true;
+				alreadyCovered[$(this).attr('name')] = true;
+				console.debug(alreadyCovered);
 
 				//for mysterious reasons '===' operator fails after Advanced Compilation even though result has value true 
 				//and type boolean

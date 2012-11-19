@@ -378,6 +378,61 @@ var formStr6 =
         '</label>'+
     '</form>';
 
+var dataStr7 =
+    '<issue208 id="TestGroupBranch" version="3" xmlns="http://rapaide.com/testGroupBranch">'+
+        '<rep>'+
+            '<nodeA/>'+
+            '<nodeB/>'+
+        '</rep>'+
+    '</issue208>';
+
+var formStr7 =
+    '<form class="jr" id="TestGroupBranch">'+
+        '<div id="form-languages" style="display:none;" data-default-lang="">'+
+            '<a href="#" lang="en">'+
+                '<span>English</span>'+
+            '</a>'+
+        '</div>'+
+        '<fieldset class="jr-group " name="/issue208/rep">'+
+            '<fieldset class="jr-repeat " name="/issue208/rep">'+
+                '<fieldset>'+
+                    '<legend>'+
+                        '<span lang="en">Select</span>'+
+                    '</legend>'+
+                    '<label>'+
+                        '<span lang="en">Yes</span>'+
+                        '<input autocomplete="off" name="/issue208/rep/nodeA" type="radio" value="yes" data-type-xml="select1"/>'+
+                    '</label>'+
+                    '<label>'+
+                        '<span lang="en">No</span>'+
+                        '<input autocomplete="off" name="/issue208/rep/nodeA" type="radio" value="no" data-type-xml="select1"/>'+
+                    '</label>'+
+                    '<label>'+
+                        '<span lang="en">Dont know</span>'+
+                        '<input autocomplete="off" name="/issue208/rep/nodeA" type="radio" value="dkrf" data-type-xml="select1"/>'+
+                    '</label>'+
+                '</fieldset>'+
+                '<fieldset>'+
+                    '<legend>'+
+                        '<span lang="en">Select</span>'+
+                    '</legend>'+
+                    '<label>'+
+                        '<span lang="en">Yes</span>'+
+                        '<input autocomplete="off" name="/issue208/rep/nodeB" type="radio" value="yes" data-type-xml="select1" data-relevant="/issue208/rep/nodeA = &quot;yes&quot;"/>'+
+                    '</label>'+
+                    '<label>'+
+                        '<span lang="en">No</span>'+
+                        '<input autocomplete="off" name="/issue208/rep/nodeB" type="radio" value="no" data-type-xml="select1" data-relevant="/issue208/rep/nodeA = &quot;yes&quot;"/>'+
+                    '</label>'+
+                    '<label>'+
+                        '<span lang="en">Dont know</span>'+
+                        '<input autocomplete="off" name="/issue208/rep/nodeB" type="radio" value="dkrf" data-type-xml="select1" data-relevant="/issue208/rep/nodeA = &quot;yes&quot;"/>'+
+                    '</label>'+
+                '</fieldset>'+
+            '</fieldset>'+
+        '</fieldset>'+
+    '</form>';
+
 /**
  * var jrDataStrToEdit = '<?xml version="1.0" ?><Data_Types id="data_types"><formhub><uuid>98063bc21324412f9cf1cb1c2a16c66e</uuid></formhub><text/><textarea>Lots of text
 with

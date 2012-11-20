@@ -27,3 +27,13 @@
       padding-top: .5em; } 
     legend .jr-hint.active{
       padding-bottom: .6em; } } }
+
+@mixin font-sizes($base, $factor){
+  font-size: $factor * $base;
+  h1 { font-size: $factor * $base * 2.75; } 
+  h2 { font-size: $factor * $base * 2.25; } 
+  h3 { font-size: $factor * $base * 1.75; } 
+  h4 { font-size: $factor * $base * 1.25; } 
+  h5 { font-size: $factor * $base; }
+  h6 { font-size: $factor * $base * 0.85; } 
+}

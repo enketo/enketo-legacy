@@ -1728,7 +1728,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//updatingCalcs = false;
 	};
 
-	FormHTML.prototype.bootstrapify = function(){		
+	FormHTML.prototype.bootstrapify = function(){				
+		//if no constraintmessage was specified show an empty box
+		$form.find('label, legend').each(function(){
+			var $label = $(this);
+			if ($label.siblings('legend').length === 0 && 
+				$label.find('.jr-constraint-msg').length === 0 && 
+				($label.prop('nodeName').toLowerCase() == 'legend' || 
+					$label.children('input.ignore').length !== $label.children('input').length ) ){
+				$label.prepend('<span class="jr-constraint-msg" lang="" />');
+			}
+		});
 		$form.find('.trigger').addClass('alert alert-block');
 		$form.find('.jr-constraint-msg').addClass('alert alert-error');
 		$form.find('label:not(.geo), fieldset').addClass('clearfix');
@@ -1771,7 +1781,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.spinnerWidget();
 			this.sliderWidget();	
 			this.barcodeWidget();
-			//this.fileWidget();
+			this.fileWidget();
 			this.mediaLabelWidget();
 			this.radioWidget();
 		},

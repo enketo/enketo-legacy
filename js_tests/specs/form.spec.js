@@ -162,7 +162,7 @@ describe('Data node XML data type conversion & validation', function(){
 	it('sets a non-empty value to empty', function(){
 		var node = data.node('/thedata/nodeA', null, null);
 		data = form.data(dataStr1);
-		node.setVal('value', 'string');
+		node.setVal('value', null, 'string');
 		expect(node.setVal('')).toBe(true);
 	});
 });
@@ -208,10 +208,10 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 			['weighted-checklist(3, 3, /thedata/somenodes/A, /thedata/someweights/w2)', 'boolean', null, 0, true],
 			['weighted-checklist(9, 9, /thedata/somenodes/*, /thedata/someweights/*)', 'boolean', null, 0, true]
 		],
-		form = new Form("", ""),
-		data = form.data(dataStr1);
-	//just need to instantiate this to get $form variable without calling init()
-	form.form('<form></form>');
+		form = new Form(formStr1, dataStr1),
+		data;
+	form.init();
+	data = form.getDataO();
 
 	function test(expr, resultType, contextSelector, index, result){
 		it("evaluates XPath: "+expr, function(){
@@ -507,6 +507,29 @@ describe('branching functionality', function(){
 		form.getFormO().$.find('[name="/data/group/nodeB"]').val(2).trigger('change');
 		expect(form.getFormO().$.find('[name="/data/nodeC"]').parents('.disabled').length).toEqual(0);
 	});
+
+	/*
+	Issue 208 was a combination of two issues:
+		1. branch logic wasn't evaluated on repeated radiobuttons (only on the original) in branch.update()
+		2. position[i] wasn't properly injected in makeBugCompiant() if the context node was a radio button or checkbox
+	 */
+	it ('a) evaluates relevant logic on a repeated radio-button-question and b) injects the position correctly (issue 208)', function(){
+		var repeatSelector = 'fieldset.jr-repeat[name="/issue208/rep"]';
+		form = new Form(formStr7, dataStr7);
+		form.init();
+		form.getFormO().$.find(repeatSelector).eq(0).find('button.repeat').click();
+		expect(form.getFormO().$.find(repeatSelector).length).toEqual(2);
+		//check if initial state of 2nd question in 2nd repeat is disabled.
+		expect(form.getFormO().$.find(repeatSelector).eq(1)
+			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().attr('disabled')).toEqual('disabled');
+		//select 'yes' in first question of 2nd repeat
+		form.getDataO().node('/issue208/rep/nodeA', 1).setVal('yes', null, 'string');
+		//doublecheck if new value was set
+		expect(form.getDataO().node('/issue208/rep/nodeA', 1).getVal()[0]).toEqual('yes');
+		//check if 2nd question in 2nd repeat is now enabled
+		expect(form.getFormO().$.find(repeatSelector).eq(1)
+			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().attr('disabled')).toEqual(undefined);
+	});
 });
 
 describe('required field validation', function(){
@@ -556,5 +579,7 @@ describe('required field validation', function(){
 		expect($textarea.parent('label').hasClass('invalid')).toBe(true);
 	});
 });
+
+
 
 //TODO load a large complex form and detect console errors

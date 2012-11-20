@@ -1771,7 +1771,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.spinnerWidget();
 			this.sliderWidget();	
 			this.barcodeWidget();
-			this.fileWidget();
+			//this.fileWidget();
 			this.mediaLabelWidget();
 			this.radioWidget();
 		},

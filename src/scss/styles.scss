@@ -43,7 +43,7 @@ body{
   body{
     background: none;
     padding: 0 !important;
-    font-size: 1.1 * $baseFontSize;
+    @include font-sizes($baseFontSize, 1.1);
     line-height: 1.1 * $baseLineHeight;
     .main{ 
       margin: 0;
@@ -54,7 +54,7 @@ body{
   body{
     background: none;
     padding: 0 !important;
-    font-size: 1.2 * $baseFontSize;
+    @include font-sizes($baseFontSize, 1.2);
     line-height: 1.2 * $baseLineHeight;
     .main{ 
       margin: 0;
@@ -361,7 +361,7 @@ html.touch{
     width: 120px;
     margin: 0 0 10px -60px; }
   h3{
-    text-align: left;
+    //text-align: left;
     padding: 5px 0 15px 0;
     border-top: solid 9px #000;
     border-bottom: $line;
@@ -472,7 +472,7 @@ html.touch{
       margin-right: 10px; } }
   .geopoint{ 
     position: relative;
-    height: 370px;
+    height: 340px;
     $map-height: 275px;
     .map-canvas, input[name="search"]{
       width: 380px; }

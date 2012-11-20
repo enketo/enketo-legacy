@@ -449,6 +449,7 @@ html.touch{
   .invalid {
     .jr-constraint-msg.active.alert-error {
       display: block;
+      min-height: 30px;
       font-weight: bold;
       font-style: italic; } }
   .jr-branch {

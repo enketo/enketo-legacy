@@ -546,7 +546,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (segments.length < 2){
 						return false;
 					}
-					segments[2] = (segments[2]) ? segments[2] : 0;
+					segments[2] = (segments[2]) ? Number(segments[2].toString().split('.')[0]) : 0;
 						
 					return ( segments[0] < 24 && segments[0] >= 0 && segments[1] < 60 && segments[1] >= 0 && segments[2] < 60 && segments[2] >= 0 && date.toString() !== 'Invalid Date' );
 				},
@@ -1853,6 +1853,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}).val(timeVal);
 
 				$fakeTimeI.on('change', function(){
+					console.debug('detected change event on fake time input');
 					$timeI.val($(this).val()).trigger('change');
 					return false;
 				});

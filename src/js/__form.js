@@ -1067,7 +1067,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		this.repeat.init();
 		this.setAllVals();
-		this.widgets.init();
+		this.widgets.init(); //after setAllVals()
 		this.bootstrapify();
 		this.branch.init();
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
@@ -1301,7 +1301,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				value = value.split(' ');
 			}
 			
-
 			$inputNodes.val(value);
 			
 			return;
@@ -1765,7 +1764,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.dateTimeWidget();
 				this.selectWidget();
 				this.geopointWidget();
-			}	
+			}
 			this.pageBreakWidget();
 			this.readonlyWidget();
 			this.tableWidget();
@@ -1774,6 +1773,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.barcodeWidget();
 			this.fileWidget();
 			this.mediaLabelWidget();
+			this.radioWidget();
+		},
+		radioWidget: function(){
+			$form.on('click', 'label[data-checked="true"]', function(){
+				$(this).removeAttr('data-checked');
+				$(this).find('input').prop('checked', false).trigger('change');
+				return false;
+			});
+			$form.on('click', 'input[type="radio"]:checked', function(event){
+				$(this).parent('label').attr('data-checked', 'true');
+			});
+			//defaults
+			$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');
 		},
 		dateWidget : function(){
 			$form.find('input[type="date"]').each(function(){
@@ -2435,17 +2447,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$clone = $master.clone(false);//deep cloning with button events causes problems
 			//remove any clones inside this clone.. (cloned repeats within repeats..)
 			$clone.find('.clone').remove();
-			$clone.addClass('clone');//.removeClass('invalid ui-state-error');
-			//re-initialize buttons
-			//$clone.find('button.remove').button({'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
-			//$clone.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
+			$clone.addClass('clone');
 
 			$clone.insertAfter($node)
-				//.find('button').removeClass('ui-state-hover')
 				.parent('.jr-group').numberRepeats();
-			$clone.hide().show(600); //animations that look okay: highlight, scale, slide
-			//is this code actually working?
-			//clone.find('input, select, textarea').val(null);
+			$clone.hide().show(600); 
 			$clone.clearInputs(ev);
 			$clone.find('.invalid input, .invalid select, .invalid textarea').each(function(){
 				that.setValid($(this));
@@ -2531,7 +2537,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.on('change validate', 'input:not(.ignore), select:not(.ignore), textarea:not(.ignore)', function(event){
 			n = that.input.getProps($(this));
-
+			
 			//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
 			if (event.type == 'validate'){
 				//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
@@ -2568,7 +2574,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 
 		$form.on('changerepeat', function(event){
-			//set defaults of added repeats, setAllValls does not trigger change event
+			//set defaults of added repeats, setAllVals does not trigger change event
 			that.setAllVals();
 			//the cloned fields may have been marked as invalid, so after setting thee default values, validate the invalid ones
 			//that.validateInvalids();
@@ -2593,22 +2599,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	FormHTML.prototype.setValid = function(node){
-		//var visualNode;
-		//visualNode = (type == 'checkbox' || type == 'radio') ? node.parent().parent('fieldset') : node.parent('label');
-		//visualNode.removeClass('invalid');//.find('div.invalid').remove();
 		this.input.getWrapNodes(node).removeClass('invalid');
 	};
 
 	FormHTML.prototype.setInvalid = function(node){
-		//var visualNode;
-		//visualNode = (type == 'checkbox' || type == 'radio') ? node.parent().parent('fieldset') : node.parent('label');
-		//visualNode.addClass('invalid');
-//		if (!visualNode.children().first().hasClass('invalid')){
-//			visualNode.prepend(
-//				$('<div class="invalid"></div>').append(visualNode.find('.jr-constraint-msg'))
-//			);
-//			visualNode.find('.invalid .active').show(); // THIS LINE CAN BE REMOVE WHEN SETLANG() IS REFACTORED USE CSS FOR DISPLAYING
-//		}
 		this.input.getWrapNodes(node).addClass('invalid');
 	};
 

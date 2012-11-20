@@ -1,6 +1,3 @@
-$baseFontSize: 15px;
-$baseLineHeight: 20px;
-
 $bg: #ddd;
 $groupline: #bbbbbb;
 $shadow: #cccccc; /*light gray*/
@@ -14,39 +11,4 @@ $tab-width: 18px;
 $content-width: 720px;
 
 
-body{
-	background: $bg url(/images/tex2res2.png) repeat;
-	font-size: 100%;
-	line-height: 100%;
-	.main article{
-		padding: 3em;} }
-
-@media screen and (max-width: 720px){
-	body{
-		background: none;
-		padding: 0 !important;
-		.main{ 
-			margin: 0;} } }
-
-@media screen and (max-width: 600px){
-	body{
-		background: none;
-		padding: 0 !important;
-		font-size: 110%;
-		line-height:110%;
-		.main{ 
-			margin: 0;
-			article{
-				padding: 2em; } } } }
-
-@media screen and (max-width: 400px){
-	body{
-		background: none;
-		padding: 0 !important;
-		font-size: 120%;
-		line-height: 120%;
-		.main{ 
-			margin: 0;
-			article{
-				padding: 1em; } } } }
 

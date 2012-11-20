@@ -877,24 +877,24 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * are created (or evaluated).
 	 * 
 	 * @param  {string} expr  the XPath expression
-	 * @param  {jQuery} $repParents jQuery collection of repeat parents of the context input node
+	 * @param  {string} selector of the (context) node on which expression is evaluated
+	 * @param  {number} index of the node with the previous selector in the instance
 	 * @return {string} modified expression with injected positions (1-based) 
 	 */
-	DataXML.prototype.makeBugCompliant = function(expr, $repParents){
-		var i, repSelector, repIndex,
-			bcExpr = expr;
-		//console.debug('received expression: '+expr+' inside repeat: '+repSelector+' with 0-based index: '+repIndex);
+	DataXML.prototype.makeBugCompliant = function(expr, selector, index){
+		var i, repSelector, repIndex, $repParents,
+			attr = ($form.find('[name="'+selector+'"][type="radio"]').length > 0 && index > 0) ? 'data-name' : 'name';
+
+		$repParents = form.input.getWrapNodes($form.find('['+attr+'="'+selector+'"]')).eq(index).parents('.jr-repeat');
+		//console.debug('makeBugCompliant() received expression: '+expr+' inside repeat: '+repSelector);
 		for (i=0 ; i<$repParents.length ; i++){
 			repSelector = /** @type {string} */$repParents.eq(i).attr('name');
 			//console.log(repSelector);
 			repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').andSelf().index($repParents.eq(i)); 
-			//console.log(repIndex);
-			bcExpr = bcExpr.replace(repSelector, repSelector+'['+(repIndex+1)+']');
+			console.log('calculated repeat 0-based index: '+repIndex);
+			expr = expr.replace(repSelector, repSelector+'['+(repIndex+1)+']');
 		}
-		//if (expr !== bcExpr){
-			//console.debug('expr inside repeat made bug compliant, new expression: '+bcExpr);
-		//}
-		return bcExpr;
+		return expr;
 	};
 
 	/**
@@ -911,8 +911,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {?(number|string|boolean)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
-		var context, dataCleanClone, resTypeNum, resultTypes, result, $repParents;
-		
+		var context, dataCleanClone, resTypeNum, resultTypes, result, attr, $contextWrapNodes, $repParents;
+		console.debug('evaluating expr: '+expr+' with context selector: '+selector+' and 0-based index: '+index);
 		resTypeStr = resTypeStr || 'any';
 		index = index || 0;
 		dataCleanClone = new DataXML(this.getStr(false, false));
@@ -924,8 +924,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			 * If the expressions is bound to a node that is inside a repeat.... see makeBugCompliant()
 			 */
 			if ($form.find('[name="'+selector+'"]').parents('.jr-repeat').length > 0 ){
-				$repParents = $form.find('[name="'+selector+'"]').eq(index).parents('.jr-repeat');
-				expr = this.makeBugCompliant(expr, $repParents);
+				expr = this.makeBugCompliant(expr, selector, index);
 			}
 		}
 		else context = dataCleanClone.getXML();//dataCleanClone.get()[0];//.documentElement;
@@ -1511,7 +1510,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {?boolean}                  [description]
 		 */
 		this.update = function(changedNodeNames){
-			var i, p, branchNode, result, namesArr, cleverSelector,			
+			var i, p, branchNode, result, namesArr, cleverSelector,	
 				alreadyCovered = {},
 				that=this;
 			
@@ -1528,7 +1527,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				p = that.input.getProps($(this));
 				branchNode = that.input.getWrapNodes($(this));
 				
-				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[p.path]){
+				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
+				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[$(this).attr('name')]){
 					return;
 				}
 				if(branchNode.length !== 1){
@@ -1546,7 +1546,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return;
 				}
 			
-				alreadyCovered[p.path] = true;
+				alreadyCovered[$(this).attr('name')] = true;
+				console.debug(alreadyCovered);
 
 				//for mysterious reasons '===' operator fails after Advanced Compilation even though result has value true 
 				//and type boolean
@@ -2369,10 +2370,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('fieldset.jr-repeat:not([data-repeat-fixed])')
 				.append('<button type="button" class="btn repeat"><i class="icon-plus"></i></button>'+
 					'<button type="button" disabled="disabled" class="btn remove"><i class="icon-minus"></i></button>');
-			//$form.find('button.repeat').button({'text': false, 'icons': {'primary':"ui-icon-plusthick"}});
-			//$form.find('button.remove').button({'disabled': true, 'text':false, 'icons': {'primary':"ui-icon-minusthick"}});
 
-			//MOVE HANDLERS to FormHTML.eventHandlers?
 			//delegated handlers (strictly speaking not required, but checked for doubling of events -> OK)
 			$form.on('click', 'button.repeat:enabled', function(){
 				//create a clone
@@ -2467,11 +2465,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					radioNames.push($(this).attr('data-name'));
 				}
 			});
-			//console.debug ('different radioNames in clone: '+radioNames.join());
+			console.debug ('different radioNames in clone: '+radioNames.join());
 			for (i=0; i<radioNames.length ;i++){
-				timestamp = new Date().getTime().toString();
-				//index of the clone is index of the master node + 1
-				//clone.find('input[type="radio"][name="'+radioNames[i]+'"]').attr('name', radioNames[i]+'____'+(index+1));
+				//amazingly, this executes so fast when compiled that the timestamp in milliseconds is
+				//not sufficient guarantee for uniqueness
+				timestamp = new Date().getTime().toString()+'_'+Math.floor((Math.random()*10000)+1);
 				$clone.find('input[type="radio"][data-name="'+radioNames[i]+'"]').attr('name', timestamp);
 			}
 
@@ -2499,37 +2497,28 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				repeatPath = node.attr('name'),
 				repeatIndex = $form.find('fieldset.jr-repeat[name="'+repeatPath+'"]').index(node),
 				parentGroup = node.parent('fieldset.jr-group');
-			//var parent = node.parent('fieldset.jr-repeat');
 		
-			//var parentSiblings = parent.siblings();
-		
-			node.hide(600, function(){
+			node.hide(delay, function(){
 				node.remove();
 				parentGroup.numberRepeats();
 
 				that.toggleButtons(parentGroup);
 				$form.trigger('changerepeat'); 
+				//now remove the data node
+				data.node(repeatPath, repeatIndex).remove();
 			});
-
-			//now remove the data node
-			data.node(repeatPath, repeatIndex).remove();
 		},
-		toggleButtons : function(node){
+		toggleButtons : function($node){
 			//var constraint;
 			console.debug('toggling repeat buttons');
-			node = (typeof node == 'undefined' || node.length === 0 || !node) ?	node = $form : node;
+			$node = (typeof $node == 'undefined' || $node.length === 0 || !$node) ?	$node = $form : $node;
 			
 			//first switch everything off and remove hover state
-			node.find('button.repeat, button.remove').attr('disabled', 'disabled');//button('disable').removeClass('ui-state-hover');
+			$node.find('button.repeat, button.remove').attr('disabled', 'disabled');//button('disable').removeClass('ui-state-hover');
 		
-			//enable last + button if constraint is true or non-existing
-			//constraint = node.attr('data-constraint');
-			//if ((constraint.length > 0 && evalXpression(constraint) === true) || typeof constraint == 'undefined'){
-				node.find('fieldset.jr-repeat:last-child > button.repeat').removeAttr('disabled');//.button('enable');
-			//}
-			// the nth-child selector is a bit dangerous. It relies on this structure <fieldset class="jr-repeat"><h2></h2><label><label><label></fieldset>
-			// alternatively, we could allow the first repeat to be deleted as well (as long as it is not the ONLY repeat)
-			node.find('fieldset.jr-repeat:not(:nth-child(2)) > button.remove').removeAttr('disabled');//button('enable'); //Improve this so that it enables all except first
+			//then enable the appropriate ones
+			$node.find('fieldset.jr-repeat:last-child > button.repeat').removeAttr('disabled');//.button('enable');
+			$node.find('button.remove:not(:eq(0))').removeAttr('disabled');
 		}
 	};
 	
@@ -2562,11 +2551,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});	
 		
 		//nodeNames is comma-separated list as a string
-		$form.on('dataupdate', function(event, nodeNames){
-			//nodeNames = nodeNames.split(',');
-			//console.debug('dataupdate detected on: '+nodeNames);
-			//console.debug(event);
-			
+		$form.on('dataupdate', function(event, nodeNames){			
 			that.calcUpdate(nodeNames); //EACH CALCUPDATE THAT CHANGES A VALUE TRIGGERS ANOTHER CALCUPDATE => VERY INEFFICIENT
 			that.branch.update(nodeNames);
 			that.outputUpdate(nodeNames);

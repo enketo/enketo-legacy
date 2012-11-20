@@ -399,7 +399,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 		$drawer.toggleClass('closed');
 	});
 
-	$('#form-controls button').equalWidth();
+	$('#form-controls button').toLargestWidth();
 
 	$(document)
 		.on('click', '#records-saved li:not(.no-click)', function(event){

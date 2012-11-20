@@ -1,3 +1,6 @@
+@import "_variables";
+@import "_mixins";
+
 $very_dark: #444444;
 $dark: #666666;
 $medium: #888888;
@@ -5,16 +8,14 @@ $light: #aaaaaa;
 $very_light: #cccccc;
 
 body{
-  background: none; }
-
-.main{
-  margin: 0;
-  article{
-    padding: 3px; } }
-
-.paper{
-  border: none;
-  margin: 0; }
+  background: none; 
+  .main{
+    margin: 0;
+    article{
+      padding: 3px; } }
+  .paper{
+    border: none;
+    margin: 0; } }
 
 .drawer, 
 #feedback-bar,
@@ -25,6 +26,8 @@ body{
 #branding,
 .paper #submit-form{
   display: none !important;}
+
+@include hints-visible;
 
 .jr{
   .hint,
@@ -42,16 +45,10 @@ body{
     > input[type="radio"] ~ span.active, 
     > input[type="checkbox"] ~ span.active{
       display: inline; } } 
-  .jr-hint.active {
-    color: blue;
-    display: block;
-    font-weight: normal;
-    font-size: 10px;
-    font-style: italic;}
   .required{
     float: right;
-    ~ br {
-      display: none; } }
+    /*~ br {
+      display: none; }*/ }
   div.jr-branch{
     display: none;}
   .jr-branch+fieldset.disabled,

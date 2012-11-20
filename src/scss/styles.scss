@@ -1,8 +1,14 @@
+$baseFontSize: 16px;
+$baseLineHeight: 20px;
+
 // I gather this file is a starting point for the project.
 @import "bootstrap";
 
 // Include responsive Bootstrap styles
-// @import "bootstrap-responsive";
+@import "bootstrap-responsive";
+
+@import "_variables";
+@import "_mixins";
 
 /** BOOTSTRAP PLUGINS **/
 @import "../../public/libraries/jdewit-bootstrap-timepicker/timepicker";
@@ -14,41 +20,46 @@
         url(fonts/OpenSans-Regular.ttf) format('truetype');
 }
 
-/******* COLORS **********/
-$bg: #ddd;
-$groupline: #bbbbbb;
-$shadow: #cccccc; /*light gray*/
-$title: #CE4F07;
-$content_border: #E7E7E7;
-$drawer_border: #aaaaaa;
-$pagecolor: #333333;
-
-@mixin transition-slow{
-  -webkit-transition: all 1s ease-out;
-  -moz-transition: all 1s ease-out;
-  -o-transition: all 1s ease-out;
-  transition: all 1s ease-out; 
-}
-
-@mixin transition-fast{
-  -webkit-transition: all 0.6s ease-out;
-  -moz-transition: all 0.6s ease-out;
-  -o-transition: all 0.6s ease-out;
-  transition: all 0.6s ease-out; 
-}
-
 /****************************
  ****     GENERAL GUI    ****
  ****************************/
 
-$drawer-width: 300px;
-$tab-width: 18px;
-$content-width: 720px;
-
-body{ 
-  background: $bg url(/images/tex2res2.png) repeat;
+body{
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-  font-size: 1.2em;}
+  background: $bg url(/images/tex2res2.png) repeat;
+  font-size: $baseFontSize;
+  line-height: $baseLineHeight;
+  .main article{
+    padding: 3em;} }
+
+@media screen and (max-width: 720px){
+  body{
+    background: none;
+    padding: 0 !important;
+    .main{ 
+      margin: 0;} } }
+
+@media screen and (max-width: 600px){
+  body{
+    background: none;
+    padding: 0 !important;
+    font-size: 1.1 * $baseFontSize;
+    line-height: 1.1 * $baseLineHeight;
+    .main{ 
+      margin: 0;
+      article{
+        padding: 2em; } } } }
+
+@media screen and (max-width: 400px){
+  body{
+    background: none;
+    padding: 0 !important;
+    font-size: 1.2 * $baseFontSize;
+    line-height: 1.2 * $baseLineHeight;
+    .main{ 
+      margin: 0;
+      article{
+        padding: 1em; } } } }
 
 h2, h3, h4 {
   color: $title;
@@ -60,9 +71,9 @@ progress{
 
 .navbar{
   .brand{
-    font-size: 32px;
+    font-size: 2em;
     .component{
-      font-size: 13px;} } 
+      font-size: 0.4em;} } 
   nav{
     float:right; } }
   
@@ -79,7 +90,7 @@ progress{
   -moz-transition: margin 0.8s ease-out;
   -webkit-transition: margin 0.8s ease-out;
   transition: margin 0.8s ease-out;
-  font-size: 16px;
+  font-size: 1.1em;
   &.left{
     bottom: 20%;
     left: 0;
@@ -120,7 +131,7 @@ progress{
   text-align: center;
   line-height: 1.3em;
   color: #666;
-  font-size: 1.1em;
+  font-size: 1.3em;
   a:link, a:hover, a:visited{
     text-decoration: none;
     color: #666;}
@@ -128,13 +139,13 @@ progress{
     color: #444;} }
 
 .main {
-  margin: 100px auto 20px auto;
+  margin: 100px auto 60px auto;
   position: relative;
   display: block;
   text-align: left; 
   max-width: $content-width;
   article {
-    padding: 50px;
+    //padding: 50px;
     min-height: 300px; }
   ul.nav-tabs{
       margin: 20px 0 0 0;
@@ -189,7 +200,7 @@ label#data-template-show {
       z-index: 5;
       opacity: 0; }
     .hurry{
-      font-size: 13px;
+      font-size: .8em;
       margin-top: 180px;} }
   #form-list{
     margin-top: 20px;
@@ -249,7 +260,7 @@ label#data-template-show {
     margin: 0 50px;
     text-align: center;
     padding: .6em 0;
-    font-size: 0.9em;
+    font-size: 1.1em;
     &+p {
       border-top: 1px #ddd dashed; } }
   i, .close {
@@ -307,7 +318,7 @@ label#data-template-show {
 ****    SURVEY FORM    ****
 **************************/
 .paper{
-  margin: 0 0 40px 0;
+  //margin: 0 0 40px 0;
   #submit-form, #submit-edited-data, #validate-form, #launch-form{
     display: block;
     margin: 45px auto 5px auto; } }
@@ -336,6 +347,10 @@ $line: 3px solid $groupline;
 $input-height: 30px;
 $input-min-width: 0.2 * $content-width;
 $input-max-width: 80%;
+
+html.touch{
+  @include hints-visible;
+} 
 
 .jr {
   .form-logo img {
@@ -384,12 +399,12 @@ $input-max-width: 80%;
         &:hover{
           background-color: lighten($title, 48%);} } }
   label, legend, .trigger {
-    font-size: .8em; }
+    font-size: 1em; }
   img, audio, video{
     float: right;
     max-height: 300px;
     max-width: 70%;}
-  input:not([type="radio"]):not([type="checkbox"]), textarea{
+  input:not([type="radio"]):not([type="checkbox"]), textarea, select{
     float: left;
     display: inline-block;
     margin: 8px 0 0 0;
@@ -401,16 +416,13 @@ $input-max-width: 80%;
     &[type="text"]{
       width: $input-max-width }
     &[type=date], &[type=number], &[type=email], &[type=password] {
-      width: $input-min-width;
-      /*text-align: right;*/ }
+      width: $input-min-width;}
     &[type=radio], &[type=checkbox] {
       margin: 0 10px 1px 10px;} }
   textarea{
     width: $input-max-width;
     resize: vertical;
     min-height: 9em;}
-  /*select {
-    display: block; }*/
   fieldset {
     .one-more {
       margin: 0 -34px -5px 10px; }
@@ -525,12 +537,14 @@ $input-max-width: 80%;
       float: left;
       border: none;
       line-height: 17px;
-      width: 200px;
+      max-width: 40%;
+      //border: 1px solid red;
       min-height: 1px;}
     label{
       float: left;
+      //border: 1px solid red;
       display: block;
-      width: 100px;
+      //width: 100px;
       text-align: center;}
     input{
       text-align: center;} }
@@ -539,9 +553,11 @@ $input-max-width: 80%;
         display: none;
         float: none; } }
   .jr-appearance-label{
+      label:hover{
+        background: none;}
       input{
-        float: none;
-        display: none; } 
+          float: none;
+          display: none; } 
       img{
         display: inline-block;
         float: none;} } 

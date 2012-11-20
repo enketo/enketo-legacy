@@ -1,3 +1,6 @@
+@import "_variables";
+@import "_mixins";
+
 $very_dark: #444444;
 $dark: #666666;
 $medium: #888888;
@@ -26,6 +29,8 @@ body{
 .paper #submit-form{
   display: none !important;}
 
+@include hints-visible;
+
 .jr{
   .hint,
   .geopoint button,
@@ -42,14 +47,6 @@ body{
     > input[type="radio"] ~ span.active, 
     > input[type="checkbox"] ~ span.active{
       display: inline; } } 
-  .jr-hint.active {
-    color: blue;
-    display: block;
-    font-weight: normal;
-    font-size: 10px;
-    font-style: italic;
-    ~ br{
-      display: none; } }
   .required{
     float: right;
     /*~ br {

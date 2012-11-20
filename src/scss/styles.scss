@@ -1,10 +1,12 @@
-$baseFontSize: 15px;
-
 // I gather this file is a starting point for the project.
 @import "bootstrap";
 
 // Include responsive Bootstrap styles
 @import "bootstrap-responsive";
+
+@import "_variables";
+@import "_mixins";
+
 
 /** BOOTSTRAP PLUGINS **/
 @import "../../public/libraries/jdewit-bootstrap-timepicker/timepicker";
@@ -16,41 +18,14 @@ $baseFontSize: 15px;
         url(fonts/OpenSans-Regular.ttf) format('truetype');
 }
 
-/******* COLORS **********/
-$bg: #ddd;
-$groupline: #bbbbbb;
-$shadow: #cccccc; /*light gray*/
-$title: #CE4F07;
-$content_border: #E7E7E7;
-$drawer_border: #aaaaaa;
-$pagecolor: #333333;
-
-@mixin transition-slow{
-  -webkit-transition: all 1s ease-out;
-  -moz-transition: all 1s ease-out;
-  -o-transition: all 1s ease-out;
-  transition: all 1s ease-out; 
-}
-
-@mixin transition-fast{
-  -webkit-transition: all 0.6s ease-out;
-  -moz-transition: all 0.6s ease-out;
-  -o-transition: all 0.6s ease-out;
-  transition: all 0.6s ease-out; 
-}
-
 /****************************
  ****     GENERAL GUI    ****
  ****************************/
 
-$drawer-width: 300px;
-$tab-width: 18px;
-$content-width: 720px;
-
 body{ 
-  background: $bg url(/images/tex2res2.png) repeat;
+  
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-  font-size: 100%;
+  //font-size: 100%;
   /*font-size: 1.2em;*/}
 
 h2, h3, h4 {
@@ -137,7 +112,7 @@ progress{
   text-align: left; 
   max-width: $content-width;
   article {
-    padding: 50px;
+    //padding: 50px;
     min-height: 300px; }
   ul.nav-tabs{
       margin: 20px 0 0 0;
@@ -340,17 +315,9 @@ $input-height: 30px;
 $input-min-width: 0.2 * $content-width;
 $input-max-width: 80%;
 
-/** CHANGE THIS TO MIX, REUSE in PRINT.CSS) **/
 html.touch{
-  .jr{
-    .jr-hint.active{
-      color: #888888;
-      display: block;
-      font-weight: normal;
-      font-size: .7em;
-      font-style: italic;
-      ~ br{
-        display: none; } } } } 
+  @include hints-visible;
+} 
 
 .jr {
   .form-logo img {
@@ -404,7 +371,7 @@ html.touch{
     float: right;
     max-height: 300px;
     max-width: 70%;}
-  input:not([type="radio"]):not([type="checkbox"]), textarea{
+  input:not([type="radio"]):not([type="checkbox"]), textarea, select{
     float: left;
     display: inline-block;
     margin: 8px 0 0 0;

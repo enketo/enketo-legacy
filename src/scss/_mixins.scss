@@ -1,0 +1,29 @@
+@mixin transition-slow{
+  -webkit-transition: all 1s ease-out;
+  -moz-transition: all 1s ease-out;
+  -o-transition: all 1s ease-out;
+  transition: all 1s ease-out; 
+}
+
+@mixin transition-fast{
+  -webkit-transition: all 0.6s ease-out;
+  -moz-transition: all 0.6s ease-out;
+  -o-transition: all 0.6s ease-out;
+  transition: all 0.6s ease-out; 
+}
+
+@mixin hints-visible{
+  .jr{
+    .jr-hint.active{
+      color: #888888;
+      display: block;
+      line-height: 1.5em;
+      font-weight: normal;
+      font-size: .7em;
+      font-style: italic;
+      ~ br{
+        display: none; } }
+    label .jr-hint.active{
+      padding-top: .5em; } 
+    legend .jr-hint.active{
+      padding-bottom: .6em; } } }

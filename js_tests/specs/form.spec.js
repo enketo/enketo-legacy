@@ -126,6 +126,7 @@ describe('Data node XML data type conversion & validation', function(){
 				["/thedata/nodeA", null, null, '-01:00', 'time', false],
 				["/thedata/nodeA", null, null, '00:-01', 'time', false],
 				["/thedata/nodeA", null, null, '00:00:-01', 'time', false],
+				["/thedata/nodeA", null, null, '13:17:00.000-07', 'time', true],
 
 				["/thedata/nodeA", null, null, 'val2', 'barcode', true],
 

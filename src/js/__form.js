@@ -546,7 +546,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (segments.length < 2){
 						return false;
 					}
-					segments[2] = (segments[2]) ? segments[2] : 0;
+					segments[2] = (segments[2]) ? Number(segments[2].toString().split('.')[0]) : 0;
 						
 					return ( segments[0] < 24 && segments[0] >= 0 && segments[1] < 60 && segments[1] >= 0 && segments[2] < 60 && segments[2] >= 0 && date.toString() !== 'Invalid Date' );
 				},
@@ -1853,6 +1853,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}).val(timeVal);
 
 				$fakeTimeI.on('change', function(){
+					console.debug('detected change event on fake time input');
 					$timeI.val($(this).val()).trigger('change');
 					return false;
 				});
@@ -1984,29 +1985,31 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		geopointWidget : function(){
 			//console.log('initializing geopoint widget');
-			$form.find('input[data-type-xml="geopoint"]').each(function(){ //.attr('placeholder', 'Awesome geopoint widget will follow in the future!');
-				var $lat, $lng, $alt, $acc, $search, $button, $map, mapOptions, map, marker, inputVals, searchBox,
+			$form.find('input[data-type-xml="geopoint"]').each(function(){ 
+				var mapOptions, map, marker, searchBox,
 					$inputOrigin = $(this),
-					$geoWrap = $(this).parent('label');
-				inputVals = $(this).val().split(' ');
-				$geoWrap.addClass('geopoint widget');
+					//$geoWrap = $(this).parent('label');
+					inputVals = $(this).val().split(' '),
+				//$geoWrap.addClass('geopoint widget');
 				
-				$inputOrigin.hide().after('<div class="map-canvas"></div>'+
-					'<input class="geo ignore" name="search" type="text" placeholder="search"/>'+
-					'<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
-					'<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
-					'<label class="geo">altitude (m)<input class="ignore" name="alt" type="number" step="0.1" /></label>'+
-					'<label class="geo">accuracy (m)<input class="ignore" name="acc" type="number" step="0.1" /></label>'+
-					'<button name="geodetect" type="button" class="btn btn-small">detect</button>'); 
-				$map = $geoWrap.find('.map-canvas');
-				$lat = $geoWrap.find('[name="lat"]');
-				$lng = $geoWrap.find('[name="long"]');
-				$alt = $geoWrap.find('[name="alt"]');
-				$acc = $geoWrap.find('[name="acc"]');
-				$search = $geoWrap.find('[name="search"]');
-				$button = $geoWrap.find('button[name="geodetect"]');
+					$widget = $('<div class="geopoint widget"><div class="map-canvas"></div>'+
+						'<input class="geo ignore" name="search" type="text" placeholder="search"/>'+
+						'<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
+						'<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
+						'<label class="geo">altitude (m)<input class="ignore" name="alt" type="number" step="0.1" /></label>'+
+						'<label class="geo">accuracy (m)<input class="ignore" name="acc" type="number" step="0.1" /></label>'+
+						'<button name="geodetect" type="button" class="btn btn-small">detect</button></div>'),
+					$map = $widget.find('.map-canvas'),
+					$lat = $widget.find('[name="lat"]'),
+					$lng = $widget.find('[name="long"]'),
+					$alt = $widget.find('[name="alt"]'),
+					$acc = $widget.find('[name="acc"]'),
+					$search = $widget.find('[name="search"]'),
+					$button = $widget.find('button[name="geodetect"]');
+
+				$inputOrigin.hide().after($widget),
 				
-				$geoWrap.find('input:not([name="search"])').not($inputOrigin).on('change change.bymap change.bysearch', function(event){
+				$widget.find('input:not([name="search"])').on('change change.bymap change.bysearch', function(event){
 					//console.debug('change event detected');
 					var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
 						lng = ($lng.val() !== '') ? $lng.val() : 0.0, 

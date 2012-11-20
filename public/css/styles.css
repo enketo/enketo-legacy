@@ -6726,6 +6726,24 @@ body .main article {
     font-size: 17.6px;
     line-height: 22px;
   }
+  body h1 {
+    font-size: 48.4px;
+  }
+  body h2 {
+    font-size: 39.6px;
+  }
+  body h3 {
+    font-size: 30.8px;
+  }
+  body h4 {
+    font-size: 22px;
+  }
+  body h5 {
+    font-size: 17.6px;
+  }
+  body h6 {
+    font-size: 14.96px;
+  }
   body .main {
     margin: 0;
   }
@@ -6739,6 +6757,24 @@ body .main article {
     padding: 0 !important;
     font-size: 19.2px;
     line-height: 24px;
+  }
+  body h1 {
+    font-size: 52.8px;
+  }
+  body h2 {
+    font-size: 43.2px;
+  }
+  body h3 {
+    font-size: 33.6px;
+  }
+  body h4 {
+    font-size: 24px;
+  }
+  body h5 {
+    font-size: 19.2px;
+  }
+  body h6 {
+    font-size: 16.32px;
   }
   body .main {
     margin: 0;
@@ -7108,7 +7144,6 @@ html.touch .jr legend .jr-hint.active {
   margin: 0 0 10px -60px;
 }
 .jr h3 {
-  text-align: left;
   padding: 5px 0 15px 0;
   border-top: solid 9px #000;
   border-bottom: 3px solid #bbbbbb;
@@ -7249,7 +7284,7 @@ html.touch .jr legend .jr-hint.active {
 }
 .jr .geopoint {
   position: relative;
-  height: 370px;
+  height: 340px;
 }
 .jr .geopoint .map-canvas, .jr .geopoint input[name="search"] {
   width: 380px;

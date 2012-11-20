@@ -8,16 +8,14 @@ $light: #aaaaaa;
 $very_light: #cccccc;
 
 body{
-  background: none; }
-
-.main{
-  margin: 0;
-  article{
-    padding: 3px; } }
-
-.paper{
-  border: none;
-  margin: 0; }
+  background: none; 
+  .main{
+    margin: 0;
+    article{
+      padding: 3px; } }
+  .paper{
+    border: none;
+    margin: 0; } }
 
 .drawer, 
 #feedback-bar,

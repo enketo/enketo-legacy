@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+var CACHE_CHECK_INTERVAL = 360*1000; //CHANGE TO 3600*1000
+
 /**
  * @constructor
  * Function (CLass): Cache

@@ -2193,6 +2193,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		fileWidget : function(){
 			$form.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled');
+			/*
+				Some cool code to use for image previews:
+				$fileinput = $(this);
+				file = $fileinput[0].files[0];
+				src = window.URL.createObjectURL(file);
+				$img = $('<img src="'+src+'"/>');
+
+				see here a solution for chrome (VERY state of the art)
+				http://jsfiddle.net/MartijnR/rtU6f/10/
+
+				Good references:
+				http://www.html5rocks.com/en/tutorials/file/filesystem/#toc-filesystemurls
+				http://updates.html5rocks.com/2012/08/Integrating-input-type-file-with-the-Filesystem-API
+				http://html5-demos.appspot.com/static/filesystem/generatingResourceURIs.html
+			 */
 		},
 		mediaLabelWidget : function(){
 			//improve looks when images, video or audio is used as label

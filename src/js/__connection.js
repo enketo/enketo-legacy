@@ -120,18 +120,6 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 	this.currentOnlineStatus = newStatus;
 };
 
-//REMOVE THIS AS IT MAKES NO SENSE WHATSOEVER TO LET USERS CHANGE A CENTRAL FORM SETTING!
-//Connection.prototype.switchCache = function(active){
-//	if (typeof active !== 'boolean'){
-//		console.error('switchCache called without parameter');
-//		return;
-//	}
-//	$.ajax('webform/switch_cache', {
-//		type: 'POST',
-//		data: {cache: active}
-//	});
-//};
-
 /**
  * PROTECTION AGAINST CALLING FUNCTION TWICE to be tested, attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
  * @param  {boolean=} force       [description]
@@ -315,4 +303,43 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	//re-enable upload button
 };
 
+Connection.prototype.isValidUrl = function(url){
+	"use strict";
+	return (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/).test(url);
+};
 
+Connection.prototype.getFormList = function(serverURL, callback){
+	if (!connection.isValidUrl(serverURL)){
+		console.error('not a valid URL');
+		return;
+	}
+	$.ajax('/formlist/get_list', {
+		type: 'GET',
+		data: {server_url: serverURL},
+		cache: false,
+		contentType: false,
+		timeout: 60*1000,
+		complete: callback
+	});
+};
+
+Connection.prototype.getSurveyURL = function(serverURL, formId, callback){
+	if (!serverURL || !connection.isValidUrl(serverURL)){
+		console.error('not a valid URL');
+		callback.call('not a valid server URL');
+		return;
+	}
+	if (!formId || formId.length === 0){
+		console.error('not a valid formId');
+		callback.call('not a valid formId');
+		return;
+	}
+	$.ajax('/launch/launchSurvey', {
+		type: 'POST', //change to GET on server?
+		data: {server_url: serverURL, form_id: formId},
+		cache: false,
+		contentType: false,
+		timeout: 60*1000,
+		complete: callback
+	});
+};

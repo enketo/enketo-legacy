@@ -364,6 +364,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 
 };
 
+//REMOVE AS IT IS CONNECTION.JS NOW
 function isValidUrl(url){
 	"use strict";
 	return (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/).test(url);

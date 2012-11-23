@@ -34,6 +34,8 @@ class Transform extends CI_Controller {
 		show_404();
 	}
 	
+	//CHANGE THIS BY CHECKING ON THE CLIENT WHETHER A FORM LAUNCH IS REQUEST OR A FORM LIST
+	//SEE THE FORMLIST CONTROLLER FOR THE get_formlist()
 	public function transform_post_jr_form()
 	{
 		//$data_received = $this->input->post('xml_file'); //returns FALSE if there is no POST data

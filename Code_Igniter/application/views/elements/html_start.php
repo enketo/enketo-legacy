@@ -4,7 +4,7 @@
 
 <html lang="en" <?= (!empty($manifest)) ? 'manifest="'.$manifest.'"' : '' ?> class="no-js">
 	<head>
-		<title>f
+		<title>
 			<?= (isset($html_title) && strlen($html_title) > 0) ? $html_title : $title_component ?> - enketo
 		</title>
 		
@@ -15,7 +15,7 @@
 		<meta name="copyright" content="2012 (c) Martijn van de Rijdt"/>
 		<? $robots = ( !isset($robots) && !empty($_GET['robots']) && $_GET['robots'] == 'true' ) ? 'index, follow' : 'noindex' ?>
 		<meta name="robots" content="<?= $robots ?>"/>
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<!--[if lt IE 8]>
         	<script type="text/javascript">window.location = 'modern_browsers';</script>
 		<![endif]-->

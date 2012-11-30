@@ -74,7 +74,7 @@ class Webform extends CI_Controller {
 			}
 			
 			$data = array(
-				'offline'=>$offline, 
+				'manifest'=> ($offline) ? '/manifest/html/webform' : NULL, 
 				'title_component'=>'webform', 
 				'html_title'=>$form->title,
 				'form'=> $form->html,
@@ -175,7 +175,7 @@ class Webform extends CI_Controller {
 		}
 	
 		$data = array(
-			'offline'=>FALSE, 
+			//'offline'=>FALSE, 
 			'title_component'=>'webform edit', 
 			'html_title'=> $form->title,
 			'form'=> $form->html,
@@ -247,7 +247,7 @@ class Webform extends CI_Controller {
 		}
 	
 		$data = array(
-			'offline'=>FALSE, 
+			//'offline'=>FALSE, 
 			'title_component'=>'webform iframe', 
 			'html_title'=> $form->title,
 			'form'=> $form->html,

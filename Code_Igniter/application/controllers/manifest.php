@@ -57,7 +57,7 @@ class Manifest extends CI_Controller {
 	| pages to be cached (urls relative to sub.example.com/)
 	|--------------------------------------------------------------------------
 	*/	
-		private $pages = array('webform'); //, 'modern_browsers'); 
+		private $pages = array(); //, 'modern_browsers'); 
 	/*
 	|--------------------------------------------------------------------------	
 	| page to re-direct offline 404 requests to (html5 manifest 'fallback' section)
@@ -84,44 +84,35 @@ class Manifest extends CI_Controller {
 		parent::__construct();
 		$this->load->helper(array('url', 'json', 'subdomain', 'http'));
 		$this->load->model('Survey_model','',TRUE);
-		$this->_set_data();
-		//log_message('debug', 'array with manifest resources generated');
 	}
 
-	public function gears()
-	{	
-		// IE9 requires these additional resources for Gears function properly
-		//$this->data['cache'][] = base_url().'index.php';
-		
-		// convert html5 manifest properties into object with Gears properties
-		$g_data['manifest']['betaManifestVersion'] = 1;
-		$g_data['manifest']['version'] = $this->data['hashes'];
-		foreach ($this->data['cache'] as $resource)
+	public function html()
+	{
+		$pages = func_get_args();
+		foreach ($pages as $page)
 		{
-			$g_data['manifest']['entries'][] = array('url' => $resource);
+			if (!empty($page))
+			{
+				$this->pages[] = $page;
+			}
 		}
-		
-		// convert manifest object to pretty JSON format
-		$g_data['manifest'] = stripslashes(json_format(json_encode($g_data['manifest'])));
-			
-		$this->load->view('gears_manifest_view.php', $g_data);
-	}	
-	
+		$this->_set_data();
+		$this->load->view('html5_manifest_view.php', $this->data);
+	}
+
 	public function index()
 	{
-		//var_dump($this->data);
-		$this->load->view('html5_manifest_view.php', $this->data);
+		show_404();
 	}
 	
 	private function _set_data(){
-		//check if the survey exists (from subdomain) and is live
-		if ($this->Survey_model->is_launched_survey() && $this->Survey_model->is_live_survey() && $this->Survey_model->has_offline_launch_enabled()){
-			//convert to full urls
+		//if a subdomain is present, this manifest is meant for a survey and needs to be live, launched and offline-enabled
+		if ( (get_subdomain() && $this->Survey_model->is_launched_live_and_offline()) || !get_subdomain()){
 			$this->data['hashes'] = '';
 			$this->data['cache'] = $this->pages;	
 			foreach ($this->pages as $page)
 			{
-				//log_message('debug', 'checking resources on page: '.$page);
+				log_message('debug', 'checking resources on page: '.$this->_full_url($page));
 				$page_full_url = $this->_full_url($page);
 				$result = $this->_add_resources_to_cache($page_full_url);
 				if (!$result)

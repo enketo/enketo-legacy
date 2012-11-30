@@ -72,6 +72,11 @@ class Survey_model extends CI_Model {
         return !$this->_has_subdomain_suffix();
     }
 
+    public function is_launched_live_and_offline()
+    {
+        return $this->has_offline_launch_enabled() && $this->is_live_survey() && $this->is_launched_survey();
+    }
+
     public function switch_offline_launch($active)
     {
         $current = $this->_get_item('offline');

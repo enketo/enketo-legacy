@@ -25,7 +25,12 @@ class Formlist extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->helper(array('url'));
+		$this->load->helper(array('url', 'subdomain'));
+
+		if (get_subdomain())
+		{
+			show_404();
+		}
 
 		$default_scripts = array
 		(
@@ -40,7 +45,7 @@ class Formlist extends CI_Controller {
 		);
 
 		$data = array(
-			'offline'=>FALSE, 
+			'manifest'=>'/manifest/html/formlist', 
 			'title_component'=>'formlist', 
 			'stylesheets' => $default_stylesheets
 		);

@@ -32,7 +32,7 @@
 						<li><a class="url-helper" data-value="https" href="#">https://</a></li>
 						<li><a class="url-helper" data-value="formhub" href="#">formhub account</a></li>
 						<li><a class="url-helper" data-value="formhub_uni" href="#">formhub university</a></li>
-						<li><a class="url-helper" data-value="formhub_uni" href="#">appspot subdomain</a></li>
+						<li><a class="url-helper" data-value="appspot" href="#">appspot subdomain</a></li>
 					</ul>
 					<input id="server" type="url" placeholder="" />
 					<span class="addon btn btn-primary go"><i class="icon-refresh icon-white"></i></span>

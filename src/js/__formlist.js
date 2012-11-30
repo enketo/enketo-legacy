@@ -35,8 +35,9 @@ $(document).ready(function(){
 			var helper, placeholder, value;
 			$(this).parent().addClass('active').siblings().removeClass('active');
 			helper = $(this).attr('data-value');
-			placeholder = (helper === 'formhub' || helper === 'formhub_uni') ? 'enter formhub account' : 'e.g. formhub.org/johndoe';
-			value = (helper === 'formhub_uni') ? 'formhub_u' : (helper === 'formhub') ? '' : null;
+			placeholder = (helper === 'formhub' || helper === 'formhub_uni') ? 'enter formhub account' :
+				(helper === 'appspot') ? 'enter appspot subdomain' : 'e.g. formhub.org/johndoe';
+			value = (helper === 'formhub_uni') ? 'formhub_u' : (helper === 'formhub' || helper === 'appspot') ? '' : null;
 			
 			$('input#server').attr('placeholder', placeholder);
 			
@@ -96,15 +97,30 @@ function loadPreviousState(){
 }
 
 function createURL(){
-	var frag = $('input#server').val(),
-		type = $('.url-helper li.active > a').attr('data-value'),
-		protocol = (/^http(|s):\/\//.test(frag)) ? '' : (type === 'http' || type === 'https') ? type+'://' : null,
-		serverURL = (protocol !== null) ? protocol+frag : 'https://formhub.org/'+frag;
+	var serverURL, protocol,
+		frag = $('input#server').val(),
+		type = $('.url-helper li.active > a').attr('data-value');
 
 	if (!frag){
 		console.log('nothing to do');
 		return null;
 	}
+
+	switch (type){
+		case 'http':
+		case 'https':
+			protocol = (/^http(|s):\/\//.test(frag)) ? '' : type+'://';
+			serverURL = protocol + 'frag';
+			break;
+		case 'formhub_uni':
+		case 'formhub':
+			serverURL = 'https://formhub.org/'+frag;
+			break;
+		case 'appspot':
+			serverURL = 'https://'+frag+'.appspot.com';
+			break;
+	}
+
 	if (!connection.isValidUrl(serverURL)){
 		console.error('not a valid url: '+serverURL);
 		return null;

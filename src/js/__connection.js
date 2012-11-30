@@ -317,29 +317,33 @@ Connection.prototype.getFormList = function(serverURL, callback){
 		type: 'GET',
 		data: {server_url: serverURL},
 		cache: false,
-		contentType: false,
+		contentType: 'json',
 		timeout: 60*1000,
-		complete: callback
+		success: callback
 	});
 };
 
 Connection.prototype.getSurveyURL = function(serverURL, formId, callback){
 	if (!serverURL || !connection.isValidUrl(serverURL)){
 		console.error('not a valid URL');
-		callback.call('not a valid server URL');
+		callback('not a valid server URL');
 		return;
 	}
 	if (!formId || formId.length === 0){
 		console.error('not a valid formId');
-		callback.call('not a valid formId');
+		callback('not a valid formId');
 		return;
 	}
-	$.ajax('/launch/launchSurvey', {
+	$.ajax('/launch/get_survey_url', {
 		type: 'POST', //change to GET on server?
 		data: {server_url: serverURL, form_id: formId},
 		cache: false,
-		contentType: false,
 		timeout: 60*1000,
-		complete: callback
+		dataType: 'json',
+		success: function(resp, status){
+			resp.serverURL = serverURL;
+			resp.formId = formId;
+			callback(resp, status);
+		}
 	});
 };

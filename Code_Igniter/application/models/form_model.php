@@ -141,12 +141,37 @@ class Form_model extends CI_Model {
                 //$li->addAttribute('class', 'ui-corner-all');
                 $anchor = $li->addChild('a', $form->name); //$form);
                 $anchor -> addAttribute('id', $form->formID);
-                $anchor -> addAttribute('title', $form->descirptionText);
+                $anchor -> addAttribute('title', $form->descriptionText);
+                $anchor -> addAttribute('data-server', $server_url);
                 //$anchor -> addAttribute('data-manifest', $form->manifestUrl);
-                $anchor -> addAttribute('href', $form->downloadUrl);//$form["url"]);
+                //$anchor -> addAttribute('href', $form->downloadUrl);//$form["url"]);
             }   
         }
         //$result = $this->_add_errors($full_list['errors'], 'xmlerrors', $result);
+        return $result;
+    }
+
+    function get_formlist_JSON($server_url)
+    {
+        $result = array();
+        $xforms_sxe = $this->_get_formlist($server_url);
+
+        if($xforms_sxe)
+        {   
+            $this->load->model('Survey_model', '', TRUE);
+            foreach ($xforms_sxe->xform as $form)   //xpath('/forms/form') as $form)
+            {
+                $id = (string) $form->formID;
+                $url = $this->Survey_model->get_survey_url_if_launched($id, $server_url);
+                $result[] = array(
+                    'id' => $id, 
+                    'name' => (string) $form->name, 
+                    'title' => (string) $form->descriptionText,
+                    'url' => (!empty($url)) ? $url : '',
+                    'server'=>$server_url
+                );
+            }   
+        }
         return $result;
     }
 

@@ -147,6 +147,23 @@ class Survey_model extends CI_Model {
         return array('success'=>FALSE, 'reason'=>'unknown');
     }
 
+    //note that this function does not 'launch' the survey if it doesn't exist
+    public function get_survey_url_if_launched($form_id, $server_url)
+    {
+        $this->db->select('subdomain');
+        $this->db->where(array('form_id'=>$form_id, 'server_url'=>$server_url)); 
+        $query = $this->db->get('surveys', 1); 
+        if ($query->num_rows() === 1) 
+        {
+            $row = $query->row_array();
+            return $this->_get_full_survey_url($row['subdomain']);
+        }
+        else 
+        {
+            return NULL;   
+        }
+    }
+
     public function remove_test_entries(){
         return $this->_remove_item('server_url', 'http://testserver/bob');
     }

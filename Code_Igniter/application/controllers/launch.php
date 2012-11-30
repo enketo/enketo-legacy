@@ -73,12 +73,12 @@ class Launch extends CI_Controller {
 		}
 	}
 
+	// this function should be removed once formhub has changed to using get_survey_url()
 	public function launchSurvey()
-	{
-		
+	{	
 		$this->load->helper('subdomain');
 		$this->load->model('Survey_model', '', TRUE);
-		$this->load->model('Instance_model', '', TRUE);
+		//$this->load->model('Instance_model', '', TRUE);
 		$subdomain = get_subdomain();
 
 		if (isset($subdomain))
@@ -107,7 +107,43 @@ class Launch extends CI_Controller {
 			{
 				echo json_encode(array('success'=>FALSE, 'reason'=>'empty'));
 			}
+		}
+	}
 
+	public function get_survey_url()
+	{
+		$this->load->helper('subdomain');
+		$this->load->model('Survey_model', '', TRUE);
+		$subdomain = get_subdomain();
+
+		if (isset($subdomain))
+		{
+			show_404();
+		}
+		else 
+		{
+			extract($_POST);
+
+			//trim strings first??
+			if (!empty($server_url) && strlen(trim($server_url)) > 1 && !empty($form_id) && strlen(trim($form_id)) > 1)
+			{
+				$server_url = trim($server_url);
+				$form_id = trim($form_id);
+				
+				$submission_url = (strrpos($server_url, '/') === strlen($server_url)-1) ? 
+					$server_url.'submission' :$server_url.'/submission';
+
+				$data_url = (empty($data_url)) ? NULL : $data_url;
+				$email = (empty($email)) ? NULL : $email;
+
+				$result = $this->Survey_model->launch_survey($server_url, $form_id, $submission_url, $data_url, $email);
+
+				echo json_encode($result);
+			}	
+			else
+			{
+				echo json_encode(array('success'=>FALSE, 'reason'=>'empty'));
+			}
 		}
 	}
 

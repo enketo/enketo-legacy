@@ -59,7 +59,9 @@ $(document).ready(function(){
 			url = createURL();
 			if (url){
 				$('progress').show();
-				connection.getFormList(url, processFormlistResponse);
+				connection.getFormlist(url, {
+					success: processFormlistResponse
+				});
 			}
 		}
 	});
@@ -74,7 +76,9 @@ $(document).ready(function(){
 			console.log('going to request enketo url');
 			server = $(this).attr('data-server');
 			id = $(this).attr('id');
-			connection.getSurveyURL(server, id, processSurveyURLResponse);
+			connection.getSurveyURL(server, id, {
+				success: processSurveyURLResponse
+			});
 		}
 		else{
 			location.href=href;
@@ -86,7 +90,7 @@ $(document).ready(function(){
 });
 
 function loadPreviousState(){
-	var i,
+	var i, list,
 		server = store.getRecord('__current_server');
 	if (server){
 		$('.url-helper li').removeClass('active').find('[data-value="'+server.helper+'"]').parent('li').addClass('active');
@@ -121,7 +125,7 @@ function createURL(){
 			break;
 	}
 
-	if (!connection.isValidUrl(serverURL)){
+	if (!connection.isValidURL(serverURL)){
 		console.error('not a valid url: '+serverURL);
 		return null;
 	}
@@ -137,17 +141,22 @@ function processFormlistResponse(resp, msg){
 		//TODO the following two variables may have have changed before the response arrives. Do differently.
 		helper = $('.url-helper li.active > a').attr('data-value');
 		inputValue = $('input#server').val();
-		store.setRecord('__server_' + server, resp, null, true);
-		store.setRecord('__current_server', {'url': server, 'helper': helper, 'inputValue': inputValue}, null, true);
+		store.setRecord('__server_' + server, resp, false, true);
+		store.setRecord('__current_server', {'url': server, 'helper': helper, 'inputValue': inputValue}, false, true);
 	}
 	parseFormlist(resp);
 }
 
+/**
+ * [parseFormlist description]
+ * @param  {Object.<string, string>} list [description]
+ * @return {[type]}      [description]
+ */
 function parseFormlist(list){
-	var listHTML='';
+	var i, listHTML='';
 	if(list){
-		for (i=0; i<list.length; i++){
-			listHTML += '<li><a class="btn btn-block btn-info" id="'+list[i].id+'" title="'+list[i].title+'" '+
+		for (i in list){
+			listHTML += '<li><a class="btn btn-block btn-info" id="'+i+'" title="'+list[i].title+'" '+
 				'href="'+list[i].url+'" data-server="'+list[i].server+'" >'+list[i].name+'</a></li>';
 		}
 	}
@@ -160,14 +169,15 @@ function parseFormlist(list){
 }
 
 function processSurveyURLResponse(resp){
-	var url = resp.url || null,
+	var record,
+		url = resp.url || null,
 		server = resp.serverURL || null,
 		id = resp.formId || null;
 	console.debug(resp);
 	console.debug('processing link to:  '+url);
 	if (url && server && id){
 		record = store.getRecord('__server_'+server) || {};
-		record[id] = url;
+		record[id]['url'] = url;
 		store.setRecord('__server_'+server, record, false, true);
 		$('a[id="'+id+'"][data-server="'+server+'"]').attr('href', url).click();
 	}

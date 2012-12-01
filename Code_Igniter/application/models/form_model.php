@@ -127,29 +127,29 @@ class Form_model extends CI_Model {
         return ($xml['doc']) ? $xml['doc'] : null;
     }
    	
-    function get_formlist_HTML($server_url)
-    {
-        $result = new SimpleXMLElement('<root></root>');
-        $formlist = $result->addChild('formlist');
-        $xforms_sxe = $this->_get_formlist($server_url);
+//    function get_formlist_HTML($server_url)
+//    {
+//        $result = new SimpleXMLElement('<root></root>');
+//        $formlist = $result->addChild('formlist');
+//        $xforms_sxe = $this->_get_formlist($server_url);//
 
-        if($xforms_sxe)
-        {    
-            foreach ($xforms_sxe->xform as $form)   //xpath('/forms/form') as $form)
-            {
-                $li = $formlist->addChild('li');
-                //$li->addAttribute('class', 'ui-corner-all');
-                $anchor = $li->addChild('a', $form->name); //$form);
-                $anchor -> addAttribute('id', $form->formID);
-                $anchor -> addAttribute('title', $form->descriptionText);
-                $anchor -> addAttribute('data-server', $server_url);
-                //$anchor -> addAttribute('data-manifest', $form->manifestUrl);
-                //$anchor -> addAttribute('href', $form->downloadUrl);//$form["url"]);
-            }   
-        }
-        //$result = $this->_add_errors($full_list['errors'], 'xmlerrors', $result);
-        return $result;
-    }
+//        if($xforms_sxe)
+//        {    
+//            foreach ($xforms_sxe->xform as $form)   //xpath('/forms/form') as $form)
+//            {
+//                $li = $formlist->addChild('li');
+//                //$li->addAttribute('class', 'ui-corner-all');
+//                $anchor = $li->addChild('a', $form->name); //$form);
+//                $anchor -> addAttribute('id', $form->formID);
+//                $anchor -> addAttribute('title', $form->descriptionText);
+//                $anchor -> addAttribute('data-server', $server_url);
+//                //$anchor -> addAttribute('data-manifest', $form->manifestUrl);
+//                //$anchor -> addAttribute('href', $form->downloadUrl);//$form["url"]);
+//            }   
+//        }
+//        //$result = $this->_add_errors($full_list['errors'], 'xmlerrors', $result);
+//        return $result;
+//    }
 
     function get_formlist_JSON($server_url)
     {
@@ -163,8 +163,7 @@ class Form_model extends CI_Model {
             {
                 $id = (string) $form->formID;
                 $url = $this->Survey_model->get_survey_url_if_launched($id, $server_url);
-                $result[] = array(
-                    'id' => $id, 
+                $result[$id] = array(
                     'name' => (string) $form->name, 
                     'title' => (string) $form->descriptionText,
                     'url' => (!empty($url)) ? $url : '',

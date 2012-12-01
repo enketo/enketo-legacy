@@ -55,12 +55,19 @@ $(document).ready(function(){
 	});
 
 	$('.go').click(function(){
+		var props;
 		if ($('progress').css('display') === 'none'){
-			url = createURL();
-			if (url){
+			props = {
+				server: createURL(),
+				helper: $('.url-helper li.active > a').attr('data-value'),
+				inputValue: $('input#server').val()
+			};
+			if (props.server){
 				$('progress').show();
-				connection.getFormlist(url, {
-					success: processFormlistResponse
+				connection.getFormlist(props.server, {
+					success: function(resp, msg){
+						processFormlistResponse(resp, msg, props);
+					}
 				});
 			}
 		}
@@ -133,16 +140,12 @@ function createURL(){
 	return serverURL;
 }
 
-function processFormlistResponse(resp, msg){
-	var server, helper, inputValue;
+function processFormlistResponse(resp, msg, props){
+	var helper, inputValue;
 	console.log('processing formlist response');
-	if (resp && resp.length > 0){
-		server = resp[0].server; //same for each element of array
-		//TODO the following two variables may have have changed before the response arrives. Do differently.
-		helper = $('.url-helper li.active > a').attr('data-value');
-		inputValue = $('input#server').val();
-		store.setRecord('__server_' + server, resp, false, true);
-		store.setRecord('__current_server', {'url': server, 'helper': helper, 'inputValue': inputValue}, false, true);
+	if (typeof resp === 'object' && !$.isEmptyObject(resp)){
+		store.setRecord('__server_' + props.server, resp, false, true);
+		store.setRecord('__current_server', {'url': props.server, 'helper': props.helper, 'inputValue': props.inputValue}, false, true);
 	}
 	parseFormlist(resp);
 }

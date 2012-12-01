@@ -19,17 +19,17 @@ var /** @type {Connection} */connection;
 var /** @type {StorageLocal} */store;
 var /** @type {Settings}*/settings;
 
-$(document).ready(function(){
-	"use strict";
-	var url;
-
-	//window.addEventListener("load",function() {
+window.addEventListener("load",function() {
 	// Set a timeout...
 	setTimeout(function(){
 		// Hide the address bar!
 		window.scrollTo(0, 1);
 	}, 0);
-	//});
+});
+
+$(document).ready(function(){
+	"use strict";
+	var url;
 
 	connection = new Connection();
 	store = new StorageLocal();

@@ -1,5 +1,7 @@
 <? require 'elements/html_start.php' ?>		
-		
+	
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+
 	<style type="text/css">
 		/*header{display: none;}*/
 		.progress-space{height: 50px; text-align: center;}

@@ -25,7 +25,7 @@ class Launch extends CI_Controller {
 
 	// this alias function should be removed once formhub has changed to using get_survey_url()
 	public function launchSurvey(){
-		return call_user_func('get_survey_url');
+		$this->get_survey_url();
 	}
 
 	public function get_survey_url()

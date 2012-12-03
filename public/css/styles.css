@@ -6712,8 +6712,15 @@ body .main article {
 
 @media screen and (max-width: 720px) {
   body {
-    background: none;
     padding: 0 !important;
+  }
+  body header {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  body {
+    background: none;
   }
   body .main {
     margin: 0;
@@ -6721,8 +6728,15 @@ body .main article {
 }
 @media screen and (max-width: 600px) {
   body {
-    background: none;
     padding: 0 !important;
+  }
+  body header {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  body {
+    background: none;
     font-size: 17.6px;
     line-height: 22px;
   }
@@ -6753,8 +6767,15 @@ body .main article {
 }
 @media screen and (max-width: 400px) {
   body {
-    background: none;
     padding: 0 !important;
+  }
+  body header {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  body {
+    background: none;
     font-size: 19.2px;
     line-height: 24px;
   }
@@ -6793,6 +6814,9 @@ progress {
   margin: 10px auto;
 }
 
+.navbar.navbar-fixed-top {
+  margin-bottom: 0;
+}
 .navbar .brand {
   font-size: 2em;
 }
@@ -6975,13 +6999,10 @@ label#data-template-show {
   line-height: 18px !important;
 }
 
-#launch form {
-  margin-top: 20px;
-}
-#launch form input {
-  width: 300px;
-}
-
+/*#launch form{
+  margin-top: 20px; 
+  input{
+    width: 300px; } }*/
 /***************************
  ** FEEDBACK BAR & PAGE **
  ***************************/
@@ -7032,7 +7053,7 @@ label#data-template-show {
   -moz-transition: all 1s ease-out;
   -o-transition: all 1s ease-out;
   transition: all 1s ease-out;
-  position: absolute;
+  position: fixed;
   line-height: 30px;
   z-index: 12;
   top: -320px;

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global GUI, gui, Form, Modernizr, getGetVariable, vkbeautify*/
-var form, source, url, $tabs, $upload, _error, state,
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global GUI, gui, Form, Connection, Modernizr, getGetVariable, vkbeautify*/
+var form, source, url, $tabs, $upload, _error, state, connection,
 	error_msg = 'There were errors. Please see the "report" tab for details.',
 	templateShow = false;
 
@@ -24,6 +24,7 @@ $(document).ready(function(){
 	state = new State();
 	state.init();
 	//state.setUrl();
+	connection = new Connection();
 
 	$('[title]').tooltip();
 
@@ -57,7 +58,7 @@ $(document).ready(function(){
 		//$('#upload-form')[0].reset();
 	});
 
-	$('#upload-form').ajaxForm({
+	/*$('#upload-form').ajaxForm({
 		'dataType': 'xml',
 		'beforeSubmit': function(data, $form){
 			//console.debug(data);\
@@ -80,10 +81,6 @@ $(document).ready(function(){
 					return false;
 				}
 			}
-			/*else {
-				resetForm();
-				return false;
-			}*/
 			$('#upload .hurry').hide();
 			$('#upload-form progress').show();
 		},
@@ -93,6 +90,7 @@ $(document).ready(function(){
 			resetForm();
 		}
 	});
+	*/
 
 	$('#upload-form #input-switcher a')
 		.hover(function(){
@@ -364,6 +362,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 
 };
 
+//REMOVE AS IT IS CONNECTION.JS NOW
 function isValidUrl(url){
 	"use strict";
 	return (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/).test(url);

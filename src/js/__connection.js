@@ -120,18 +120,6 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 	this.currentOnlineStatus = newStatus;
 };
 
-//REMOVE THIS AS IT MAKES NO SENSE WHATSOEVER TO LET USERS CHANGE A CENTRAL FORM SETTING!
-//Connection.prototype.switchCache = function(active){
-//	if (typeof active !== 'boolean'){
-//		console.error('switchCache called without parameter');
-//		return;
-//	}
-//	$.ajax('webform/switch_cache', {
-//		type: 'POST',
-//		data: {cache: active}
-//	});
-//};
-
 /**
  * PROTECTION AGAINST CALLING FUNCTION TWICE to be tested, attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
  * @param  {boolean=} force       [description]
@@ -144,6 +132,7 @@ Connection.prototype.uploadFromStore = function(force, excludeName) {
 	// proceed if autoUpload is true or it is overridden, and if there is currently no ongoing upload, and if the browser is online
 	if ( this.uploadOngoing === false  && ( autoUpload === true || force ) ){
 		this.uploadResult = {win:[], fail:[]};
+		//TODO: remove dependency on store
 		this.uploadQueue = store.getSurveyDataArr(true, excludeName);
 		this.forced = force;
 		console.debug('upload queue length: '+this.uploadQueue.length);
@@ -315,4 +304,131 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	//re-enable upload button
 };
 
+Connection.prototype.isValidURL = function(url){
+	"use strict";
+	return (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/).test(url);
+};
 
+Connection.prototype.getFormlist = function(serverURL, callbacks){
+	callbacks = this.getCallbacks(callbacks);
+
+	if (!this.isValidURL(serverURL)){
+		callbacks.error(null, 'validationerror', 'not a valid URL');
+		return;
+	}
+	$.ajax('/formlist/get_list', {
+		type: 'GET',
+		data: {server_url: serverURL},
+		cache: false,
+		contentType: 'json',
+		timeout: 60*1000,
+		success: callbacks.success,
+		error: callbacks.error,
+		complete: callbacks.complete
+	});
+};
+
+Connection.prototype.getSurveyURL = function(serverURL, formId, callbacks){
+	callbacks = this.getCallbacks(callbacks);
+
+	if (!serverURL || !this.isValidURL(serverURL)){
+		callbacks.error(null, 'validationerror', 'not a valid server URL');
+		return;
+	}
+	if (!formId || formId.length === 0){
+		callbacks.error(null, 'validationerror', 'not a valid formId');
+		return;
+	}
+	$.ajax('/launch/get_survey_url', {
+		type: 'POST',
+		data: {server_url: serverURL, form_id: formId},
+		cache: false,
+		timeout: 60*1000,
+		dataType: 'json',
+		success: function(resp, status){
+			resp.serverURL = serverURL;
+			resp.formId = formId;
+			callbacks.success(resp, status);
+		},
+		error: callbacks.error,
+		complete: callbacks.complete
+	});
+};
+
+/**
+ * Obtains HTML Form from an XML file or from a server url and form id
+ * @param  {jQuery}   $form    the jQuery-wrapped form object with 3 input fields (xml_file, server_url, form_id)
+ * @param  {Object.<string, Function>=} callbacks [description]
+ */
+Connection.prototype.getFormHTML = function($form, callbacks){
+	var serverURL, formId,
+		formData = new FormData($form[0]);
+
+	callbacks = this.getCallbacks(callbacks);
+
+	serverURL = $form.find('input[name="server_url"]').val() || '',
+	formId = $form.find('input[name="form_id"]').val() || '';
+	
+	if (!this.isValidURL(serverURL)){
+		callbacks.error(null, 'validationerror', 'Not a valid server url');
+		return;
+	}
+
+	if (formId.length === 0){
+		callbacks.error(null, 'validationerror', 'No form id provided');
+		return;
+	}
+
+	$.ajax('/transform/get_html_form', {
+		type: 'POST',
+		cache: false,
+		contentType: false,
+		processData: false,
+		dataType: 'xml',
+		/*xhr: function() {  // custom xhr
+            myXhr = $.ajaxSettings.xhr();
+            if(myXhr.upload){ // check if upload property exists
+                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // for handling the progress of the upload
+            }
+            return myXhr;
+        },*/
+		data: formData,
+		success: callbacks.success,
+		error: callbacks.error,
+		complete: callbacks.complete
+	});
+};
+
+Connection.prototype.validateHTML = function(htmlStr, callbacks){
+	var content = new FormData();
+	
+	callbacks = this.getCallbacks(callbacks);
+
+	content.append('level', 'error');
+	content.append('content', htmlStr);
+
+	$.ajax('/html5validate/', {
+		type: 'POST',
+		data: content,
+		contentType: false,
+		processData: false,
+		success: callbacks.success,
+		error: callbacks.error,
+		complete: callbacks.complete
+	});
+};
+
+/**
+ * Sets defaults for optional callbacks if not provided
+ * @param  {Object.<string, Function>} callbacks [description]
+ * @return {Object.<string, Function>}           [description]
+ */
+Connection.prototype.getCallbacks = function(callbacks){
+	callbacks = callbacks || {};
+	callbacks.error = callbacks.error || function(jqXHR, textStatus, errorThrown){
+		console.error(textStatus+' : '+errorThrown);
+	};
+	callbacks.complete = callbacks.complete || function(){};
+	callbacks.success = callbacks.success || function(){console.log('success!');};
+	return callbacks;
+};

@@ -1735,7 +1735,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if ($label.siblings('legend').length === 0 && 
 				$label.find('.jr-constraint-msg').length === 0 && 
 				($label.prop('nodeName').toLowerCase() == 'legend' || 
-					$label.children('input.ignore').length !== $label.children('input').length ) ){
+					$label.children('input.ignore').length !== $label.children('input').length  ||
+					$label.children('select.ignore').length !== $label.children('select').length ||
+					$label.children('textarea.ignore').length !== $label.children('textarea').length ) ){
 				$label.prepend('<span class="jr-constraint-msg" lang="" />');
 			}
 		});
@@ -1906,7 +1908,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 		},
 		selectWidget : function(){
-			$form.find('select option[value=""]').remove();
+			//$form.find('select option[value=""]').remove(); issue with init value empty
 			$form.find('select').selectpicker();
 			$form.on('changelanguage', function(){
 				$form.find('select').selectpicker('update');
@@ -2193,6 +2195,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		fileWidget : function(){
 			$form.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled');
+			/*
+				Some cool code to use for image previews:
+				$fileinput = $(this);
+				file = $fileinput[0].files[0];
+				src = window.URL.createObjectURL(file);
+				$img = $('<img src="'+src+'"/>');
+
+				see here a solution for chrome (VERY state of the art)
+				http://jsfiddle.net/MartijnR/rtU6f/10/
+
+				Good references:
+				http://www.html5rocks.com/en/tutorials/file/filesystem/#toc-filesystemurls
+				http://updates.html5rocks.com/2012/08/Integrating-input-type-file-with-the-Filesystem-API
+				http://html5-demos.appspot.com/static/filesystem/generatingResourceURIs.html
+			 */
 		},
 		mediaLabelWidget : function(){
 			//improve looks when images, video or audio is used as label
@@ -2550,7 +2567,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.on('change validate', 'input:not(.ignore), select:not(.ignore), textarea:not(.ignore)', function(event){
 			n = that.input.getProps($(this));
-			
+			//console.log('node props: ', n);
 			//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
 			if (event.type == 'validate'){
 				//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)

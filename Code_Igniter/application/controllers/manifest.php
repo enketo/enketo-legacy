@@ -189,8 +189,8 @@ class Manifest extends CI_Controller {
 	private function _get_resources_from_css($path, $base=NULL)
 	{
 		//SMALL PROBLEM: ALSO EXTRACTS RESOURCES THAT ARE COMMENTED OUT
-		$pattern = '/url\((|\'|\")([^\)]+)(|\'|\")\)/';///url\(([^)]+)\)/';
-		$index = 2; //match of 1st set of parentheses is what we want
+		$pattern = '/url[\s]?\([\s]?[\'\"]?([^\)\'\"]+)[\'\"]?[\s]?\)/';///url\(([^)]+)\)/';
+		$index = 1; //match of 2nd set of parentheses is what we want
 		return $this->_get_resources($path, $pattern, $index, $base);
 	}
 	
@@ -198,7 +198,6 @@ class Manifest extends CI_Controller {
 	// only goes one level deep
 	private function _get_resources($url, $pattern, $i, $base=NULL)
 	{
-
 		$content = $this->_get_content($url);
 		
 		if (isset($content))
@@ -210,7 +209,7 @@ class Manifest extends CI_Controller {
 
 			foreach ($resources as $index => $resource)
 			{
-				if (isset($base)){
+				if (isset($base) && strpos($resource, '/') !== 0){
 					$resource = $base . $resource;
 				}
 
@@ -236,25 +235,28 @@ class Manifest extends CI_Controller {
 	}
 	
 	// get the content, if possible through path, otherwise url
-	private function _get_content($url)
+	private function _get_content($url_or_path)
 	{
-		//var_dump($url);
-		log_message('debug', 'getting content of '.$url);
-		if (strpos($url, 'http://')!==0 && strpos($url, 'https://')!==0)
+		log_message('debug', 'getting content of '.$url_or_path);
+		if (strpos($url_or_path, 'http://') !== 0 && strpos($url_or_path, 'https://') !== 0)
 		{
-			//log_message('debug', 'checking url: '.$url);
-			$abs_path = constant('FCPATH'). $url; //$this->_rel_url($url);
-			//log_message('debug', 'checking absolute path: '.$abs_path);
+			$rel_path = (strpos($url_or_path, '/') === 0) ? substr($url_or_path, 1) : $url_or_path;
+			$abs_path = constant('FCPATH'). $rel_path; 
+			//print('checking absolute path: '.$abs_path.'<br/>');
 			$content = (is_file($abs_path)) ? file_get_contents($abs_path) : NULL;
 		}
 		else
 		{
-			$content = (url_exists($url)) ? file_get_contents($url) : NULL;
+			//print ('checking url: '.$url.'<br/>');
+			$content = (url_exists($url_or_path)) ? file_get_contents($url_or_path) : NULL;
 		}
-
+		if (empty($content))
+		{
+			log_message('error', 'Manifest controller failed to get contents of '.$url_or_path);
+		}
 		return $content;
-		//log_message('error', 'Manifest controller failed to get contents of '.$url);
-		//return $content;
+		
+
 	}
 	
 	//returns a full url if relative url was provided

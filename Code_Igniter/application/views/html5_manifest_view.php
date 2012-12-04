@@ -4,14 +4,6 @@
 	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); //date in past
 	header("Cache-Control: no-cache");
 	header("Pragma: no-cache");
-	
-	//$hashes = "";
- 
-	//require 'vars.php';
-	//get the manifest resources (same for Gears and HTML5)
-	//require 'manifest_resources.php';
-	 
-	// var_dump($cache); //DEBUG
   
   //write the manifest content
   echo "CACHE MANIFEST\n";

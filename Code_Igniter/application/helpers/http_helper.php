@@ -75,7 +75,7 @@ if ( ! function_exists('url_exists'))
 		curl_setopt ($ch, CURLOPT_USERAGENT, $agent);
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt ($ch,CURLOPT_VERBOSE, FALSE);
-		curl_setopt ($ch, CURLOPT_TIMEOUT, 10);
+		curl_setopt ($ch, CURLOPT_TIMEOUT, 20);
 		curl_setopt ($ch,CURLOPT_SSL_VERIFYPEER, FALSE);
 		curl_setopt ($ch,CURLOPT_SSLVERSION, 3);
 		curl_setopt ($ch,CURLOPT_SSL_VERIFYHOST, FALSE);

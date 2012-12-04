@@ -20,14 +20,14 @@
 			<li><a href="#data" data-toggle="tab">data</a></li>
 			<li><a href="#report" data-toggle="tab">report</a></li>
 			<li><a href="#html5-form-source" data-toggle="tab">source</a></li>
-			<li><a href="#launch" data-toggle="tab">launch</a></li>
+			<!--<li><a href="#launch" data-toggle="tab">launch</a></li>-->
 		</ul>
 
 		<div class="tab-content">
 			
 			<article id="upload" class="tab-pane paper">
 				<h3 class="ui-widget-header ui-corner-all">JavaRosa XML Form to Load</h3>
-				<form id="upload-form" action="transform/transform_post_jr_form" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+				<form id="upload-form" enctype="multipart/form-data" accept-charset="utf-8">
 					<progress style="display: none;"></progress><br />
 					<div id="input-switcher" class="btn-group" data-toggle="buttons-radio">
 						<a type="button" href="#" id="xml_file" class="btn btn-mini">file</a> 
@@ -48,7 +48,7 @@
 					<input type="hidden" name="form_id"/>
 					<!--<input type="submit">Transform and Test!</button>-->
 					
-					<div class="hurry"><a href="launch?server=http%3A%2F%2Fformhub.org%2Fformhub_u" title="Check forms on http://formhub.org/formhub_u">Pssst, in a hurry?</a></div>
+					<div class="hurry"><a href="test?server=http%3A%2F%2Fformhub.org%2Fformhub_u" title="Check forms on http://formhub.org/formhub_u">Pssst, in a hurry?</a></div>
 				</form>
 				<div id="form-list" class="" style="display:none;">
 					<ul class="btn-group" data-toggle="buttons-radio">
@@ -100,7 +100,7 @@
 				</form>
 			</article>
 
-			<article id="launch" class="tab-pane paper">
+			<!--<article id="launch" class="tab-pane paper">
 				<h3>Ready to launch that form?</h3>
 				<p class="alert alert-error" style="display: none;"></p>
 				<p>You will receive a unique url on which your form will be accessible</p>
@@ -117,28 +117,27 @@
 								<input id="email" name="email" type="text" placeholder="optional" />
 								<span class="add-on hint" title="Not yet functional. You will receive a confirmation email with the direct link to the survey. In the future your email address will also be used for authentication if you would like to change the settings you are now entering."><i class="icon-question-sign"></i></span>
 							</div>
-						</fieldset>
+						</fieldset>-->
 						<!--<label>
 							<span class="jr-hint">If you would like to publicize your
 							<input name="publicize" type="checkbox" value="true"/>make survey visible
 						</label>-->
-						<!--<a class="advanced" href="#" title="advanced options">show advanced options</a>-->
-						<fieldset class="advanced control-group input-append">
+						<!--<fieldset class="advanced control-group input-append">
 							<label class="control-label" for="data_url">
 								<span>data/report url</span>
 							</label>
 							<div class="controls">
 								<input id="email" name="data_url" type="text" placeholder="optional"/>
 								<span class="add-on hint" title="Not yet functional. You can provide an in-app link to where the collated data or reports will be published."><i class="icon-question-sign"></i></span>
-							</div>
-							<!--<label>submission url<span class="jr-hint">Normally this does not need to and should not be changed.</span><input name="submission_url" type="text"/></label>-->
+							</div>-->
+							<!--<label>submission url<span class="jr-hint">Normally this does not need to and should not be changed.</span><input name="submission_url" type="text"/></label>--><!--
 						</fieldset>
 					</form>
 					<button id="launch-form" class="btn btn-primary btn-large">
 						<i class="icon-share icon-white"></i> Launch
 					</button>
 				</div>
-			</article>
+			</article>-->
 
 		</div>
 	</div>

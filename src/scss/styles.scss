@@ -1,10 +1,7 @@
 $baseFontSize: 16px;
 $baseLineHeight: 20px;
 
-// I gather this file is a starting point for the project.
 @import "bootstrap";
-
-// Include responsive Bootstrap styles
 @import "bootstrap-responsive";
 
 @import "_variables";
@@ -33,16 +30,16 @@ body{
     padding: 3em;} }
 
 @media screen and (max-width: 720px){
+  @include small-screen-paddings;
   body{
-    background: none;
-    padding: 0 !important;
+    background: none;    
     .main{ 
       margin: 0;} } }
 
 @media screen and (max-width: 600px){
+  @include small-screen-paddings;
   body{
     background: none;
-    padding: 0 !important;
     @include font-sizes($baseFontSize, 1.1);
     line-height: 1.1 * $baseLineHeight;
     .main{ 
@@ -51,9 +48,9 @@ body{
         padding: 2em; } } } }
 
 @media screen and (max-width: 400px){
+  @include small-screen-paddings;
   body{
     background: none;
-    padding: 0 !important;
     @include font-sizes($baseFontSize, 1.2);
     line-height: 1.2 * $baseLineHeight;
     .main{ 
@@ -70,6 +67,8 @@ progress{
   margin: 10px auto;}
 
 .navbar{
+  &.navbar-fixed-top{
+    margin-bottom: 0;}
   .brand{
     font-size: 2em;
     .component{
@@ -234,10 +233,10 @@ label#data-template-show {
   /* fix for tooltips when placed inside a legend element (Safari)*/
   line-height: 18px !important;}
 
-#launch form{
+/*#launch form{
   margin-top: 20px; 
   input{
-    width: 300px; } }
+    width: 300px; } }*/
 
 /***************************
  ** FEEDBACK BAR & PAGE **
@@ -279,7 +278,7 @@ label#data-template-show {
 #page {
   $border: 1px solid #888;
   @include transition-slow;
-  position: absolute;
+  position: fixed;
   line-height: 30px;
   z-index: 12;
   top: -320px;

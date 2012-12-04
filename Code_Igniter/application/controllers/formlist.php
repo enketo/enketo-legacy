@@ -25,7 +25,12 @@ class Formlist extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->helper(array('url'));
+		$this->load->helper(array('url', 'subdomain'));
+
+		if (get_subdomain())
+		{
+			show_404();
+		}
 
 		$default_scripts = array
 		(
@@ -40,7 +45,7 @@ class Formlist extends CI_Controller {
 		);
 
 		$data = array(
-			'offline'=>FALSE, 
+			'manifest'=>'/manifest/html/formlist', 
 			'title_component'=>'formlist', 
 			'stylesheets' => $default_stylesheets
 		);
@@ -71,10 +76,10 @@ class Formlist extends CI_Controller {
 		extract($_GET);
 		if (isset($server_url) && strlen($server_url) > 0)
 		{
-			$result = $this->Form_model->get_formlist_HTML($server_url);
+			$result = $this->Form_model->get_formlist_JSON($server_url);
 			$this->output
-				->set_content_type('text/xml')
-				->set_output($result->asXML()); 
+				->set_content_type('applicaton/json')
+				->set_output(json_encode($result)); 
 		}
 		else 
 		{

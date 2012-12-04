@@ -19,6 +19,14 @@ var /** @type {Connection} */connection;
 var /** @type {StorageLocal} */store;
 var /** @type {Settings}*/settings;
 
+window.addEventListener("load",function() {
+	// Set a timeout...
+	setTimeout(function(){
+		// Hide the address bar!
+		window.scrollTo(0, 1);
+	}, 0);
+});
+
 $(document).ready(function(){
 	"use strict";
 	var url;
@@ -30,79 +38,158 @@ $(document).ready(function(){
 
 	gui.setup();
 
-	$('.url-helper')
+	$('.url-helper a')
 		.click(function(){
-			var placeholder;
+			var helper, placeholder, value;
 			$(this).parent().addClass('active').siblings().removeClass('active');
-			placeholder = ($(this).attr('data-value') === 'formhub') ? 'enter formhub account' : 'e.g. formhub.org/johndoe';
-			$('input#server_id').attr('placeholder', placeholder);
+			helper = $(this).attr('data-value');
+			placeholder = (helper === 'formhub' || helper === 'formhub_uni') ? 'enter formhub account' :
+				(helper === 'appspot') ? 'enter appspot subdomain' : 'e.g. formhub.org/johndoe';
+			value = (helper === 'formhub_uni') ? 'formhub_u' : (helper === 'formhub' || helper === 'appspot') ? '' : null;
+			
+			$('input#server').attr('placeholder', placeholder);
+			
+			if (value !== null){
+				$('input#server').val(value).trigger('change');
+			}
 		})
 		.andSelf().find('[data-value="formhub"]').click();
 
-	$('input').change(function(){return false;});
+	$('input').change(function(){
+		if ($(this).val().length > 0){
+			$('.go').click();
+		}
+		return false;
+	});
 
 	$('.go').click(function(){
-		url = createURL();
-		if (url){
-			$('progress').show();
-			connection.getFormList(url, processFormlistResponse);
+		var props;
+		if ($('progress').css('display') === 'none'){
+			props = {
+				server: createURL(),
+				helper: $('.url-helper li.active > a').attr('data-value'),
+				inputValue: $('input#server').val()
+			};
+			if (props.server){
+				$('progress').show();
+				connection.getFormlist(props.server, {
+					success: function(resp, msg){
+						processFormlistResponse(resp, msg, props);
+					}
+				});
+			}
 		}
 	});
 
 	$('#form-list').on('click', 'a', function(){
 		console.log('caught click');
-		if ($(this).attr('href')){
-			return;
-		}
+		var server, id,
+			href = $(this).attr('href');
+			
 		//request a url first by launching this in enketo
-		else{
+		if ( !href || href === "" || href==="#" ){
 			console.log('going to request enketo url');
-			connection.getSurveyURL('http://formhub.org/martijnr', 'b2b_1', processLink);	
+			server = $(this).attr('data-server');
+			id = $(this).attr('id');
+			connection.getSurveyURL(server, id, {
+				success: processSurveyURLResponse
+			});
+		}
+		else{
+			location.href=href;
 		}
 		return false;
 	});
 
+	loadPreviousState();
 });
 
+function loadPreviousState(){
+	var i, list,
+		server = store.getRecord('__current_server');
+	if (server){
+		$('.url-helper li').removeClass('active').find('[data-value="'+server.helper+'"]').parent('li').addClass('active');
+		$('input#server').val(server.inputValue);
+		list = store.getRecord('__server_'+server.url);
+		parseFormlist(list);
+	}
+}
+
 function createURL(){
-	var frag = $('input#server_id').val(),
-		type = $('.active > .url-helper').attr('data-value'),
-		protocol = (/^http(|s):\/\//.test(frag)) ? '' : (type === 'http' || type === 'https') ? type+'://' : null,
-		serverURL = (protocol!==null) ? protocol+frag : 'https://formhub.org/'+frag;
+	var serverURL, protocol,
+		frag = $('input#server').val(),
+		type = $('.url-helper li.active > a').attr('data-value');
 
 	if (!frag){
 		console.log('nothing to do');
 		return null;
 	}
-	if (!connection.isValidUrl(serverURL)){
+
+	switch (type){
+		case 'http':
+		case 'https':
+			protocol = (/^http(|s):\/\//.test(frag)) ? '' : type+'://';
+			serverURL = protocol + 'frag';
+			break;
+		case 'formhub_uni':
+		case 'formhub':
+			serverURL = 'https://formhub.org/'+frag;
+			break;
+		case 'appspot':
+			serverURL = 'https://'+frag+'.appspot.com';
+			break;
+	}
+
+	if (!connection.isValidURL(serverURL)){
 		console.error('not a valid url: '+serverURL);
 		return null;
-	}	
+	}
 	console.log('server_url: '+serverURL);
 	return serverURL;
 }
 
-function processFormlistResponse(resp, msg){
+function processFormlistResponse(resp, msg, props){
+	var helper, inputValue;
 	console.log('processing formlist response');
-	var formlistStr='',
-		$xml = $(resp.responseXML);
-	if ($xml.find('formlist>li').length === 0){
-		gui.showFeedback('Formlist at server was found to be empty or the server is asleep.');
-		return;// resetForm();
+	if (typeof resp === 'object' && !$.isEmptyObject(resp)){
+		store.setRecord('__server_' + props.server, resp, false, true);
+		store.setRecord('__current_server', {'url': props.server, 'helper': props.helper, 'inputValue': props.inputValue}, false, true);
 	}
-	$xml.find('formlist>li').each(function(){
-		formlistStr += new XMLSerializer().serializeToString($(this)[0]);
-	});
-	console.log('formliststr', formlistStr);
-	$('#form-list ul').empty().append(formlistStr);
-	$('#form-list ul li a').addClass('btn btn-block');
-	$('progress').hide();
-	$('#form-list').show();
-
-	//A QUICK TEMPORARY HACK
-	$('#form-list a').removeAttr('href');
+	parseFormlist(resp);
 }
 
-function processLink(url){
-	console.log('processing link to:  '+url);
+/**
+ * [parseFormlist description]
+ * @param  {Object.<string, string>} list [description]
+ * @return {[type]}      [description]
+ */
+function parseFormlist(list){
+	var i, listHTML='';
+	if(list){
+		for (i in list){
+			listHTML += '<li><a class="btn btn-block btn-info" id="'+i+'" title="'+list[i].title+'" '+
+				'href="'+list[i].url+'" data-server="'+list[i].server+'" >'+list[i].name+'</a></li>';
+		}
+	}
+	else{
+		listHTML = '<p class="alert alert-error">Error occurred during creation of form list</p>';
+	}
+	$('#form-list').removeClass('empty').find('ul').empty().append(listHTML);
+	$('progress').hide();
+	$('#form-list').show();
+}
+
+function processSurveyURLResponse(resp){
+	var record,
+		url = resp.url || null,
+		server = resp.serverURL || null,
+		id = resp.formId || null;
+	console.debug(resp);
+	console.debug('processing link to:  '+url);
+	if (url && server && id){
+		record = store.getRecord('__server_'+server) || {};
+		record[id]['url'] = url;
+		store.setRecord('__server_'+server, record, false, true);
+		$('a[id="'+id+'"][data-server="'+server+'"]').attr('href', url).click();
+	}
 }

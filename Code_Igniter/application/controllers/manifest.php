@@ -189,8 +189,9 @@ class Manifest extends CI_Controller {
 	private function _get_resources_from_css($path, $base=NULL)
 	{
 		//SMALL PROBLEM: ALSO EXTRACTS RESOURCES THAT ARE COMMENTED OUT
+		//doesn't do @import-ed resources
 		$pattern = '/url[\s]?\([\s]?[\'\"]?([^\)\'\"]+)[\'\"]?[\s]?\)/';///url\(([^)]+)\)/';
-		$index = 1; //match of 2nd set of parentheses is what we want
+		$index = 1; //match of 1st set of parentheses is what we want
 		return $this->_get_resources($path, $pattern, $index, $base);
 	}
 	

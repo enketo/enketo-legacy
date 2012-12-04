@@ -31,12 +31,10 @@
  */
 function Connection(){
 	"use strict";
-	//var onlineStatus;
-	//var tableFields, primaryKey;
-	//var tableName, version;
 	var that=this;
 	this.CONNECTION_URL = '/checkforconnection.php';
 	this.SUBMISSION_URL = '/data/submission';
+	this.GETSURVEYURL_URL = '/launch/get_survey_url';
 	this.currentOnlineStatus = false;
 	this.uploadOngoing = false;
 
@@ -67,7 +65,6 @@ function Connection(){
 			$(window).trigger('online');
 		}, 10*1000);*/
 		$(window).trigger('online');
-		//setTableVars();
 	};
 }
 
@@ -165,6 +162,7 @@ Connection.prototype.uploadFromString = function(record) {
 	}
 };
 
+//TODO: add callbacks parameter to facilitate testing
 Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 	var record, content, last,
 		that = this;
@@ -202,6 +200,7 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 	}
 };
 
+//TODO: move this outside this class?
 Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	var i, waswere, namesStr,
 		msg = '',
@@ -226,8 +225,8 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			503: {success:false, msg: serverDown},
 			'5xx':{success:false, msg: serverDown}
 		};
-	//console.debug('name: '+name);
-	//console.debug(status);
+	//console.debug('name: '+name+' status: '+status);
+
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
 			if (typeof store !== 'undefined'){
@@ -278,7 +277,6 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	//else{
 	if (this.uploadResult.fail.length > 0){
 		//console.debug('upload failed');
-		
 		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
 		this.setOnlineStatus(false);
 		//$('.drawer.left #status').text('Offline.');
@@ -305,7 +303,6 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 };
 
 Connection.prototype.isValidURL = function(url){
-	"use strict";
 	return (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/).test(url);
 };
 
@@ -339,17 +336,14 @@ Connection.prototype.getSurveyURL = function(serverURL, formId, callbacks){
 		callbacks.error(null, 'validationerror', 'not a valid formId');
 		return;
 	}
-	$.ajax('/launch/get_survey_url', {
+	$.ajax({
+		url: this.GETSURVEYURL_URL,
 		type: 'POST',
 		data: {server_url: serverURL, form_id: formId},
 		cache: false,
 		timeout: 60*1000,
 		dataType: 'json',
-		success: function(resp, status){
-			resp.serverURL = serverURL;
-			resp.formId = formId;
-			callbacks.success(resp, status);
-		},
+		success: callbacks.success,
 		error: callbacks.error,
 		complete: callbacks.complete
 	});

@@ -92,7 +92,11 @@ $(document).ready(function(){
 			server = $(this).attr('data-server');
 			id = $(this).attr('id');
 			connection.getSurveyURL(server, id, {
-				success: processSurveyURLResponse
+				success: function(resp, msg){
+					resp.surveyURL = server;
+					resp.surveyId = id;
+					processSurveyURLResponse(resp, msg);
+				}
 			});
 		}
 		else{
@@ -191,5 +195,8 @@ function processSurveyURLResponse(resp){
 		record[id]['url'] = url;
 		store.setRecord('__server_'+server, record, false, true);
 		$('a[id="'+id+'"][data-server="'+server+'"]').attr('href', url).click();
+	}
+	else{
+		//TODO: add error handling
 	}
 }

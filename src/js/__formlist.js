@@ -38,6 +38,10 @@ $(document).ready(function(){
 
 	gui.setup();
 
+	/*** TEMPORARY FIX https://github.com/twitter/bootstrap/issues/4550 ***/
+	$('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+	/*********************/
+
 	$('.url-helper a')
 		.click(function(){
 			var helper, placeholder, value;

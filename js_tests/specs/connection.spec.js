@@ -50,5 +50,32 @@ describe("The Connection Class ...", function () {
 			});
 		});
 	});
+
+	describe("validates urls", function(){
+		var t = [
+			['htt://example.org', false],
+			[' http://example.org', false],
+			['example.org', false],
+			['www.example.org', false],
+			['http://example.o', false],
+			['http://example.o/ d', false],
+			['http://example.org', true],
+			['https://example.org', true],
+			['http://example.org/_-?', true],
+			['http://www.example.org', true],
+			['http://sub.example.org', true]
+		];
+
+		function test(url, result){
+			it("evaluates url: "+url+" to "+result, function() {
+				expect(connection.isValidURL(url)).toBe(result);
+			});
+		}
+
+		for (i = 0 ; i<t.length ; i++){
+			test(t[i][0], t[i][1]);
+		}
+
+	});
 	
 });

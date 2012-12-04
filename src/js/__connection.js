@@ -303,7 +303,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 };
 
 Connection.prototype.isValidURL = function(url){
-	return (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/).test(url);
+	return (/^(https?:\/\/)([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/).test(url);
 };
 
 Connection.prototype.getFormlist = function(serverURL, callbacks){

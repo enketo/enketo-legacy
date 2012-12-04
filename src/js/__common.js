@@ -526,21 +526,21 @@ GUI.prototype.display = function(){
 		$page = $('#page');
 	//the below can probably be simplified, is the this.page().isVisible check necessary at all?
 	if ($feedback.find('p').length > 0){
-		feedbackTop = $header.outerHeight(); // shows feedback-bar
+		feedbackTop = ($header.css('position') === 'fixed') ? $header.outerHeight() : 0; // shows feedback-bar
 		if (this.pages().isShowing()){
 			pageTop = $header.outerHeight() + $feedback.outerHeight(); // shows page
 		}
 		else{
-			pageTop = $header.outerHeight() + $feedback.outerHeight() - $page.outerHeight(); // hides page
+			pageTop = 0 - $page.outerHeight(); // hides page
 		}
 	}
 	else{
-		feedbackTop = $header.outerHeight() - $feedback.outerHeight();
+		feedbackTop = ($header.css('position') === 'fixed') ? $header.outerHeight() - $feedback.outerHeight() : 0 - $feedback.outerHeight();
 		if (this.pages().isShowing()){
 			pageTop = $header.outerHeight(); // shows page
 		}
 		else{
-			pageTop = $header.outerHeight() - $page.outerHeight();
+			pageTop = 0 - $page.outerHeight();
 		}
 	}
 	$feedback.css('top', feedbackTop);

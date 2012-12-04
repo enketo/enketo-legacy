@@ -37,3 +37,10 @@
   h5 { font-size: $factor * $base; }
   h6 { font-size: $factor * $base * 0.85; } 
 }
+
+@mixin small-screen-paddings{
+  body{
+    padding: 0 !important;
+    header{
+      padding-left: 20px;
+      padding-right: 20px; } } }

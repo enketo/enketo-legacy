@@ -63,7 +63,7 @@ class Manifest extends CI_Controller {
 	| page to re-direct offline 404 requests to (html5 manifest 'fallback' section)
 	|__________________________________________________________________________
 	*/ 
-		private $offline = 'offline';	
+		private $offline = '/offline';	
 	/*
 	|--------------------------------------------------------------------------
 	| pages to always retrieve from the server (html5 manifest 'network' section)

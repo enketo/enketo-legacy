@@ -45,7 +45,7 @@ class Formlist extends CI_Controller {
 		);
 
 		$data = array(
-			//'manifest'=>'/manifest/html/formlist', 
+			'manifest'=>'/manifest/html/formlist', 
 			'title_component'=>'formlist', 
 			'stylesheets' => $default_stylesheets
 		);

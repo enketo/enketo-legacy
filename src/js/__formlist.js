@@ -49,11 +49,10 @@ $(document).ready(function(){
 			helper = $(this).attr('data-value');
 			placeholder = (helper === 'formhub' || helper === 'formhub_uni') ? 'enter formhub account' :
 				(helper === 'appspot') ? 'enter appspot subdomain' : 'e.g. formhub.org/johndoe';
-			value = (helper === 'formhub_uni') ? 'formhub_u' : (helper === 'formhub' || helper === 'appspot') ? '' : null;
+			value = (helper === 'formhub_uni') ? 'formhub_u' : '';
 			
 			$('input#server').attr('placeholder', placeholder);
-			
-			if (value !== null){
+			if ( $('input#server').val() !== value ){
 				$('input#server').val(value).trigger('change');
 			}
 		})
@@ -97,8 +96,8 @@ $(document).ready(function(){
 			id = $(this).attr('id');
 			connection.getSurveyURL(server, id, {
 				success: function(resp, msg){
-					resp.surveyURL = server;
-					resp.surveyId = id;
+					resp.serverURL = server;
+					resp.formId = id;
 					processSurveyURLResponse(resp, msg);
 				}
 			});
@@ -137,7 +136,7 @@ function createURL(){
 		case 'http':
 		case 'https':
 			protocol = (/^http(|s):\/\//.test(frag)) ? '' : type+'://';
-			serverURL = protocol + 'frag';
+			serverURL = protocol + frag;
 			break;
 		case 'formhub_uni':
 		case 'formhub':

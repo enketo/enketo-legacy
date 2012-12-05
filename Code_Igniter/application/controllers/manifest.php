@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0012'; //time();
+		private $hash_manual_override = '0013'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -89,15 +89,23 @@ class Manifest extends CI_Controller {
 	public function html()
 	{
 		$pages = func_get_args();
-		foreach ($pages as $page)
+		
+		if(!empty($pages))
 		{
-			if (!empty($page))
+			foreach ($pages as $page)
 			{
-				$this->pages[] = $page;
+				if (!empty($page))
+				{
+					$this->pages[] = $page;
+				}
 			}
+			$this->_set_data();
+			$this->load->view('html5_manifest_view.php', $this->data);
 		}
-		$this->_set_data();
-		$this->load->view('html5_manifest_view.php', $this->data);
+		else
+		{
+			show_404();
+		}
 	}
 
 	public function index()

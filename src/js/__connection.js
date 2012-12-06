@@ -35,8 +35,10 @@ function Connection(){
 	this.CONNECTION_URL = '/checkforconnection.php';
 	this.SUBMISSION_URL = '/data/submission';
 	this.GETSURVEYURL_URL = '/launch/get_survey_url';
+	this.SUBMISSION_TRIES = 2;
 	this.currentOnlineStatus = false;
 	this.uploadOngoing = false;
+
 
 	this.init = function(){
 		//console.log('initializing Connection object');
@@ -180,11 +182,11 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 		else{
 			this.uploadOngoing = true;
 			content = new FormData();
-			content.append('xml_submission_data', record.data);//dataXMLStr);
+			content.append('xml_submission_data', record.data);
 			content.append('Date', new Date().toUTCString());
 			last = (this.uploadQueue.length === 0) ? true : false;
 			this.setOnlineStatus(null);
-			console.debug('calbacks: ', callbacks );
+			//console.debug('calbacks: ', callbacks );
 			$.ajax(this.SUBMISSION_URL,{
 				type: 'POST',
 				data: content,
@@ -227,12 +229,12 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			'5xx':{success:false, msg: serverDown}
 		};
 	console.debug('name: '+name+' status: '+status);
-	//TRIGGER EVENTS AND DEAL WITH STORE AND GUI OUTSIDE OF THIS CLASS
+	//TO DO: TRIGGER EVENTS AND DEAL WITH STORE AND GUI OUTSIDE OF THIS CLASS
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
 			if (typeof store !== 'undefined'){
 				store.removeRecord(name);
-				$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
+				//$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
 				console.log('tried to remove record with key: '+name);
 			}
 			$('form.jr').trigger('uploadsuccess', name);
@@ -272,35 +274,25 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		namesStr = names.join(', ');
 		gui.showFeedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
 		this.setOnlineStatus(true);
-		//$('.drawer.left #status').text('');
-		//gui.updateStatus.connection(true);
 	}
-	//else{
+
 	if (this.uploadResult.fail.length > 0){
 		//console.debug('upload failed');
 		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
 		this.setOnlineStatus(false);
-		//$('.drawer.left #status').text('Offline.');
 
 		if (this.forced === true){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
 			}
-			//console.debug('going to give upload feedback to user');
-			//if ($('.drawer.left').length > 0){
-				//show drawer if currently hidden
-				$('.drawer.left.closed .handle').click();
-			//}
-			//else {
-				gui.alert(msg, 'Failed data submission');
-			//}
+			$('.drawer.left.closed .handle').click();
+			gui.alert(msg, 'Failed data submission');
 		}
 		else{
 			// not sure if there should be a notification if forms fail automatic submission
 		}
 	}
 	this.uploadOngoing = false;
-	//re-enable upload button
 };
 
 Connection.prototype.isValidURL = function(url){

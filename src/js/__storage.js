@@ -139,6 +139,7 @@ function StorageLocal(){
 		try{
 			localStorage.removeItem(key);
 			//console.log('removed record with key:'+key) // DEBUG
+			$('form.jr').trigger('delete', JSON.stringify(this.getFormList()));
 			return true;
 		}
 		catch(e){

@@ -38,7 +38,7 @@
 |
 */
 
-$route['default_controller'] = "formlist";
+$route['default_controller'] = "front";
 $route['404_override'] = '';
 
 

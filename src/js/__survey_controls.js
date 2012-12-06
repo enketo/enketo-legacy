@@ -333,23 +333,23 @@ function exportToFile(fileName, finalOnly){
 //Settings.prototype['autoUpload'] = Settings.prototype.autoUpload;
 //Settings.prototype['buttonLocation'] = Settings.prototype.buttonLocation;
 
-Settings.prototype['autoUpload'] = function(val){
+//Settings.prototype['autoUpload'] = function(val){//
 
-};
+//};//
 
-Settings.prototype['buttonLocation'] = function(val){
-	"use strict";
-	//if ($(this).checked === true) {
-	//console.log('found radio input with required value'); // DEBUG
-	$('#form-controls').removeClass('bottom right mobile').addClass(val);
-	//if (el[i].value==='mobile'){
-	//	$('body').addClass('no-scroll');
-	//}
-	//else {
-	//	$('body').removeClass('no-scroll');
-	//}
-	$(window).trigger('resize');
-};
+//Settings.prototype['buttonLocation'] = function(val){
+//	"use strict";
+//	//if ($(this).checked === true) {
+//	//console.log('found radio input with required value'); // DEBUG
+//	$('#form-controls').removeClass('bottom right mobile').addClass(val);
+//	//if (el[i].value==='mobile'){
+//	//	$('body').addClass('no-scroll');
+//	//}
+//	//else {
+//	//	$('body').removeClass('no-scroll');
+//	//}
+//	$(window).trigger('resize');
+//};
 
 //Extend GUI
 //setCustomEventHandlers is called automatically by GUI.init();

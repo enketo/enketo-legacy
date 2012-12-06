@@ -258,14 +258,20 @@ function submitEditedForm() {
 	console.debug('temporary record name: '+name);
 	record = { 'name': name,'data': form.getDataStr(true, true)};
 	
-	connection.uploadRecords(record, true);
+	connection.uploadRecords(record);
 
 	$('form.jr').on('uploadsuccess', function(e, uploadedName){
 		console.debug('uploaded successfully: '+uploadedName);
 		if (uploadedName == name){
 			//temporary
-			gui.alert('You will be automatically redirected back to formhub.', 'Submission successful!', 'ui-icon-check');
-			location.href = RETURN_URL;
+			if (typeof RETURN_URL !== 'undefined'){
+				gui.alert('You will be automatically redirected back to formhub.', 'Submission successful!');
+				location.href = RETURN_URL;
+			}
+			//also use for iframed forms
+			else{
+				gui.alert('Done!', 'Submission successful!');
+			}
 		}
 	});
 }

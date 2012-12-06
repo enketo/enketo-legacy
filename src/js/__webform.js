@@ -73,4 +73,10 @@ $(document).ready(function() {
 
 	//trigger fake save event to update formlist on data page
 	$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
+
+	window.setInterval(function(){
+		//TODO: add second parameter to getSurveyDataArr() to
+		//getCurrentRecordName() to prevent currenty open record from being submitted
+		connection.uploadRecords(store.getSurveyDataArr(true));
+	}, 15*1000);
 });

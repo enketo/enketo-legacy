@@ -38,6 +38,10 @@ $(document).ready(function(){
 
 	gui.setup();
 
+	/*** TEMPORARY FIX? https://github.com/twitter/bootstrap/issues/4550 ***/
+	$('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+	/*********************/
+
 	$('.url-helper a')
 		.click(function(){
 			var helper, placeholder, value;
@@ -45,11 +49,10 @@ $(document).ready(function(){
 			helper = $(this).attr('data-value');
 			placeholder = (helper === 'formhub' || helper === 'formhub_uni') ? 'enter formhub account' :
 				(helper === 'appspot') ? 'enter appspot subdomain' : 'e.g. formhub.org/johndoe';
-			value = (helper === 'formhub_uni') ? 'formhub_u' : (helper === 'formhub' || helper === 'appspot') ? '' : null;
+			value = (helper === 'formhub_uni') ? 'formhub_u' : '';
 			
 			$('input#server').attr('placeholder', placeholder);
-			
-			if (value !== null){
+			if ( $('input#server').val() !== value ){
 				$('input#server').val(value).trigger('change');
 			}
 		})
@@ -92,7 +95,11 @@ $(document).ready(function(){
 			server = $(this).attr('data-server');
 			id = $(this).attr('id');
 			connection.getSurveyURL(server, id, {
-				success: processSurveyURLResponse
+				success: function(resp, msg){
+					resp.serverURL = server;
+					resp.formId = id;
+					processSurveyURLResponse(resp, msg);
+				}
 			});
 		}
 		else{
@@ -129,11 +136,11 @@ function createURL(){
 		case 'http':
 		case 'https':
 			protocol = (/^http(|s):\/\//.test(frag)) ? '' : type+'://';
-			serverURL = protocol + 'frag';
+			serverURL = protocol + frag;
 			break;
 		case 'formhub_uni':
 		case 'formhub':
-			serverURL = 'https://formhub.org/'+frag;
+			serverURL = 'http://formhub.org/'+frag;
 			break;
 		case 'appspot':
 			serverURL = 'https://'+frag+'.appspot.com';
@@ -160,8 +167,7 @@ function processFormlistResponse(resp, msg, props){
 
 /**
  * [parseFormlist description]
- * @param  {Object.<string, string>} list [description]
- * @return {[type]}      [description]
+ * @param  {?*} list [description]
  */
 function parseFormlist(list){
 	var i, listHTML='';
@@ -179,7 +185,12 @@ function parseFormlist(list){
 	$('#form-list').show();
 }
 
-function processSurveyURLResponse(resp){
+/**
+ * Adds urls to links
+ * @param  {?Object.<string, string>} resp [description]
+ * @param  {string} msg  [description]
+ */
+function processSurveyURLResponse(resp, msg){
 	var record,
 		url = resp.url || null,
 		server = resp.serverURL || null,
@@ -191,5 +202,8 @@ function processSurveyURLResponse(resp){
 		record[id]['url'] = url;
 		store.setRecord('__server_'+server, record, false, true);
 		$('a[id="'+id+'"][data-server="'+server+'"]').attr('href', url).click();
+	}
+	else{
+		//TODO: add error handling
 	}
 }

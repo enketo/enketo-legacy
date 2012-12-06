@@ -29,7 +29,7 @@
 					<button class="addon btn dropdown-toggle" data-toggle="dropdown">
 						<span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu url-helper" data-toggle="buttons-radio">	
+					<ul class="dropdown dropdown-menu url-helper" data-toggle="buttons-radio">	
 						<li><a class="url-helper" data-value="http" href="#">http://</a></li>
 						<li><a class="url-helper" data-value="https" href="#">https://</a></li>
 						<li><a class="url-helper" data-value="formhub" href="#">formhub account</a></li>

@@ -31,14 +31,14 @@
  */
 function Connection(){
 	"use strict";
-	//var onlineStatus;
-	//var tableFields, primaryKey;
-	//var tableName, version;
 	var that=this;
 	this.CONNECTION_URL = '/checkforconnection.php';
 	this.SUBMISSION_URL = '/data/submission';
+	this.GETSURVEYURL_URL = '/launch/get_survey_url';
+	this.SUBMISSION_TRIES = 2;
 	this.currentOnlineStatus = false;
 	this.uploadOngoing = false;
+
 
 	this.init = function(){
 		//console.log('initializing Connection object');
@@ -47,7 +47,7 @@ function Connection(){
 		window.setInterval(function(){
 			//console.log('setting status'); //DEBUG
 			that.checkOnlineStatus();
-			that.uploadFromStore();
+			//that.uploadFromStore();
 		}, 15*1000);
 		//window.addEventListener("offline", function(e){
 		//	console.log('offline event detected');
@@ -67,7 +67,6 @@ function Connection(){
 			$(window).trigger('online');
 		}, 10*1000);*/
 		$(window).trigger('online');
-		//setTableVars();
 	};
 }
 
@@ -121,53 +120,60 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 };
 
 /**
- * PROTECTION AGAINST CALLING FUNCTION TWICE to be tested, attempts to upload all finalized forms *** ADD with the oldest timeStamp first? ** to the server
- * @param  {boolean=} force       [description]
- * @param  {string=} excludeName [description]
+ * [uploadRecords description]
+ * @param  {(Array.<Object.<string, string>>|Object.<string, string>)} records   [description]
+ * @param  {boolean=} force     [description]
+ * @param  {Object.<string, Function>=} callbacks only used for testing
+ * @return {boolean}           [description]
  */
-Connection.prototype.uploadFromStore = function(force, excludeName) {
-	var i, name, result,
-		autoUpload = (typeof settings !== 'undefined' && ( settings.getOne('autoUpload') === 'true' || settings.getOne('autoUpload') === true) ) ? true : false;
-	//console.debug('upload called with uploadOngoing variable: '+uploadOngoing+' and autoUpload: '+autoUpload); // DEBUG
-	// proceed if autoUpload is true or it is overridden, and if there is currently no ongoing upload, and if the browser is online
-	if ( this.uploadOngoing === false  && ( autoUpload === true || force ) ){
+Connection.prototype.uploadRecords = function(records, force, callbacks){
+	force = (typeof force !== 'undefined') ? force : false;
+	records = (typeof records === 'object' && !$.isArray(records)) ? [records] : records;
+	callbacks = (typeof callbacks === 'undefined') ? null : callbacks;
+
+	if (records.length === 0){
+		return false;
+	}
+
+	if (!this.uploadOngoing){
 		this.uploadResult = {win:[], fail:[]};
-		//TODO: remove dependency on store
-		this.uploadQueue = store.getSurveyDataArr(true, excludeName);
+		this.uploadQueue = records;
 		this.forced = force;
 		console.debug('upload queue length: '+this.uploadQueue.length);
-
-		if (this.uploadQueue.length === 0 ){
-			return (force) ? gui.showFeedback('Nothing marked "final" to upload (or record is currently open).') : false;
-		}
-		this.uploadOne();
+		this.uploadOne(callbacks);
 	}
-	else{
-		//allow override of this.forced if called with force=true
-		this.forced = (force === true) ? true : this.forced;
-	}
+	return true;
 };
 
 /**
- * Function used to directly upload data (forced) bypassing local storage. It is used for submitting edited data
- * that was POSTed to webform/edit
- *
- * @param  {Object.<string, string>} record with name and data properties,  temporary name is used to trigger uploadsuccess event
+ * Uploads a record from the queue
+ * @param  {Object.<string, Function>=} callbacks [description]
  */
-Connection.prototype.uploadFromString = function(record) {
-	var result;
-	this.forced = true;
-	// proceed if f there is currently no ongoing upload
-	if ( this.uploadOngoing === false ){
-		this.uploadResult = {win:[], fail:[]};
-		this.uploadQueue = [record];
-		this.uploadOne();
-	}
-};
-
-Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
+Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 	var record, content, last,
 		that = this;
+
+	callbacks = (typeof callbacks === 'undefined' || !callbacks) ? {
+		complete: function(jqXHR, response){
+			that.processOpenRosaResponse(jqXHR.status, record.name, last);
+			/**
+			  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
+			  * as it duplicates 1 entry and omits the other but returns 201 for both...
+			  * so we wait for the previous POST to finish before sending the next
+			  */
+			that.uploadOne();
+		},
+		error: function(jqXHR, textStatus){
+			if (textStatus === 'timeout'){
+				console.debug('submission request timed out');
+			}
+			else{
+				console.error('error during submission', textStatus);
+			}
+		},
+		success: function(){}
+	} : {};
+	
 	if (this.uploadQueue.length > 0){
 		record = this.uploadQueue.pop();
 		if (this.getOnlineStatus() !== true){
@@ -176,10 +182,11 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 		else{
 			this.uploadOngoing = true;
 			content = new FormData();
-			content.append('xml_submission_data', record.data);//dataXMLStr);
+			content.append('xml_submission_data', record.data);
 			content.append('Date', new Date().toUTCString());
 			last = (this.uploadQueue.length === 0) ? true : false;
 			this.setOnlineStatus(null);
+			//console.debug('calbacks: ', callbacks );
 			$.ajax(this.SUBMISSION_URL,{
 				type: 'POST',
 				data: content,
@@ -188,20 +195,15 @@ Connection.prototype.uploadOne = function(){//dataXMLStr, name, last){
 				processData: false,
 				//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
 				timeout: 60*1000,
-				complete: function(jqXHR, response){
-					that.processOpenRosaResponse(jqXHR.status, record.name, last);
-					/**
-					  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
-					  * as it duplicates 1 entry and omits the other but returns 201 for both...
-					  * so we wait for the previous POST to finish before sending the next
-					  */
-					that.uploadOne();
-				}
+				complete: callbacks.complete,
+				error: callbacks.error,
+				success: callbacks.success
 			});
 		}
 	}
 };
 
+//TODO: move this outside this class?
 Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	var i, waswere, namesStr,
 		msg = '',
@@ -226,13 +228,13 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			503: {success:false, msg: serverDown},
 			'5xx':{success:false, msg: serverDown}
 		};
-	//console.debug('name: '+name);
-	//console.debug(status);
+	console.debug('name: '+name+' status: '+status);
+	//TO DO: TRIGGER EVENTS AND DEAL WITH STORE AND GUI OUTSIDE OF THIS CLASS
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
 			if (typeof store !== 'undefined'){
 				store.removeRecord(name);
-				$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
+				//$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
 				console.log('tried to remove record with key: '+name);
 			}
 			$('form.jr').trigger('uploadsuccess', name);
@@ -272,41 +274,29 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		namesStr = names.join(', ');
 		gui.showFeedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
 		this.setOnlineStatus(true);
-		//$('.drawer.left #status').text('');
-		//gui.updateStatus.connection(true);
 	}
-	//else{
+
 	if (this.uploadResult.fail.length > 0){
 		//console.debug('upload failed');
-		
 		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
 		this.setOnlineStatus(false);
-		//$('.drawer.left #status').text('Offline.');
 
 		if (this.forced === true){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
 			}
-			//console.debug('going to give upload feedback to user');
-			//if ($('.drawer.left').length > 0){
-				//show drawer if currently hidden
-				$('.drawer.left.closed .handle').click();
-			//}
-			//else {
-				gui.alert(msg, 'Failed data submission');
-			//}
+			$('.drawer.left.closed .handle').click();
+			gui.alert(msg, 'Failed data submission');
 		}
 		else{
 			// not sure if there should be a notification if forms fail automatic submission
 		}
 	}
 	this.uploadOngoing = false;
-	//re-enable upload button
 };
 
 Connection.prototype.isValidURL = function(url){
-	"use strict";
-	return (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/).test(url);
+	return (/^(https?:\/\/)([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/).test(url);
 };
 
 Connection.prototype.getFormlist = function(serverURL, callbacks){
@@ -339,17 +329,14 @@ Connection.prototype.getSurveyURL = function(serverURL, formId, callbacks){
 		callbacks.error(null, 'validationerror', 'not a valid formId');
 		return;
 	}
-	$.ajax('/launch/get_survey_url', {
+	$.ajax({
+		url: this.GETSURVEYURL_URL,
 		type: 'POST',
 		data: {server_url: serverURL, form_id: formId},
 		cache: false,
 		timeout: 60*1000,
 		dataType: 'json',
-		success: function(resp, status){
-			resp.serverURL = serverURL;
-			resp.formId = formId;
-			callbacks.success(resp, status);
-		},
+		success: callbacks.success,
 		error: callbacks.error,
 		complete: callbacks.complete
 	});
@@ -420,7 +407,7 @@ Connection.prototype.validateHTML = function(htmlStr, callbacks){
 
 /**
  * Sets defaults for optional callbacks if not provided
- * @param  {Object.<string, Function>} callbacks [description]
+ * @param  {Object.<string, Function>=} callbacks [description]
  * @return {Object.<string, Function>}           [description]
  */
 Connection.prototype.getCallbacks = function(callbacks){

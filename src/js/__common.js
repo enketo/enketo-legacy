@@ -18,7 +18,6 @@
 // CHANGE: it would be better to remove references to store and form in common.js
 //
 // Copyright 2012 Martijn van de Rijdt
-/************ Global variables ***************/
 
 var /** @type {GUI}*/ gui;
 var /** @type {Print} */ printO;

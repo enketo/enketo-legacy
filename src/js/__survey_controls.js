@@ -229,8 +229,10 @@ function submitForm() {
 		resetForm(true);
 		$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
 		//attempt uploading the data (all data in localStorage)
-		//NOTE: THIS (true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
-		connection.uploadFromStore(true);
+		//NOTE: THIS (force=true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
+		//connection.uploadFromStore(true);
+		//TODO: add second parameter getCurrentRecordName() to prevent currenty open record from being submitted
+		connection.uploadRecords(store.getSurveyDataArr(true), true);
 	}
 	else{
 		gui.alert('Error trying to save data locally before submit');
@@ -256,7 +258,7 @@ function submitEditedForm() {
 	console.debug('temporary record name: '+name);
 	record = { 'name': name,'data': form.getDataStr(true, true)};
 	
-	connection.uploadFromString(record);
+	connection.uploadRecords(record);
 
 	$('form.jr').on('uploadsuccess', function(e, uploadedName){
 		console.debug('uploaded successfully: '+uploadedName);
@@ -331,23 +333,23 @@ function exportToFile(fileName, finalOnly){
 //Settings.prototype['autoUpload'] = Settings.prototype.autoUpload;
 //Settings.prototype['buttonLocation'] = Settings.prototype.buttonLocation;
 
-Settings.prototype['autoUpload'] = function(val){
+//Settings.prototype['autoUpload'] = function(val){//
 
-};
+//};//
 
-Settings.prototype['buttonLocation'] = function(val){
-	"use strict";
-	//if ($(this).checked === true) {
-	//console.log('found radio input with required value'); // DEBUG
-	$('#form-controls').removeClass('bottom right mobile').addClass(val);
-	//if (el[i].value==='mobile'){
-	//	$('body').addClass('no-scroll');
-	//}
-	//else {
-	//	$('body').removeClass('no-scroll');
-	//}
-	$(window).trigger('resize');
-};
+//Settings.prototype['buttonLocation'] = function(val){
+//	"use strict";
+//	//if ($(this).checked === true) {
+//	//console.log('found radio input with required value'); // DEBUG
+//	$('#form-controls').removeClass('bottom right mobile').addClass(val);
+//	//if (el[i].value==='mobile'){
+//	//	$('body').addClass('no-scroll');
+//	//}
+//	//else {
+//	//	$('body').removeClass('no-scroll');
+//	//}
+//	$(window).trigger('resize');
+//};
 
 //Extend GUI
 //setCustomEventHandlers is called automatically by GUI.init();
@@ -411,25 +413,9 @@ GUI.prototype.setCustomEventHandlers = function(){
 		})
 		.on('mouseenter', '#records-saved li:not(.no-click)', function(){
 			$(this).addClass('ui-state-hover');
-			//$(this).mousedown(function(){
-//				$(this).addClass('ui-state-active');
-//			}).mouseup(function(){
-//				$(this).removeClass('ui-state-active');
-//			});
 		})
 		.on('mouseleave', '#records-saved li:not(.no-click)', function(){
 			$(this).removeClass('ui-state-hover');
-		});
-	
-	this.pages().get('records').find('button#records-force-upload').button({'icons': {'primary':"ui-icon-arrowthick-1-n"}})
-		.click(function(){
-			//gui.alert('Sorry, this button is not working yet.');
-			connection.uploadFromStore(true, form.getRecordName());
-		})
-		.hover(function(){
-			$('#records-force-upload-info').show();
-		}, function(){
-			$('#records-force-upload-info').hide();
 		});
 
 	//export/backup locally stored data

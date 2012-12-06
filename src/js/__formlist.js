@@ -140,7 +140,7 @@ function createURL(){
 			break;
 		case 'formhub_uni':
 		case 'formhub':
-			serverURL = 'https://formhub.org/'+frag;
+			serverURL = 'http://formhub.org/'+frag;
 			break;
 		case 'appspot':
 			serverURL = 'https://'+frag+'.appspot.com';
@@ -167,8 +167,7 @@ function processFormlistResponse(resp, msg, props){
 
 /**
  * [parseFormlist description]
- * @param  {Object.<string, string>} list [description]
- * @return {[type]}      [description]
+ * @param  {?*} list [description]
  */
 function parseFormlist(list){
 	var i, listHTML='';
@@ -186,7 +185,12 @@ function parseFormlist(list){
 	$('#form-list').show();
 }
 
-function processSurveyURLResponse(resp){
+/**
+ * Adds urls to links
+ * @param  {?Object.<string, string>} resp [description]
+ * @param  {string} msg  [description]
+ */
+function processSurveyURLResponse(resp, msg){
 	var record,
 		url = resp.url || null,
 		server = resp.serverURL || null,

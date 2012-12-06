@@ -85,7 +85,7 @@
         <file name="__form.js"/>
         <file name="__connection.js"/>
         <file name="__survey_controls.js"/>
-        <file name="__webform_edit.js"/>
+        <file name="__webform_iframe.js"/>
       </sources>
 
     </jscomp>

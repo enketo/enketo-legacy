@@ -258,7 +258,7 @@ function submitEditedForm() {
 	console.debug('temporary record name: '+name);
 	record = { 'name': name,'data': form.getDataStr(true, true)};
 	
-	connection.uploadRecords(record);
+	connection.uploadRecords(record, true);
 
 	$('form.jr').on('uploadsuccess', function(e, uploadedName){
 		console.debug('uploaded successfully: '+uploadedName);

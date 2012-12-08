@@ -57,6 +57,9 @@ function GUI(){
 	"use strict";
 }
 
+/**
+ * Initializes a GUI object.
+ */
 GUI.prototype.init = function(){
 	"use strict";
 		
@@ -80,9 +83,11 @@ GUI.prototype.init = function(){
 	this.display();
 };
 
+/**
+ * final setup of GUI object
+ */
 GUI.prototype.setup = function(){
 	"use strict";
-	// final setup of GUI object
 	$(window).trigger('resize');
 };
 	
@@ -93,16 +98,23 @@ GUI.prototype.setEventHandlers = function(){
 	"use strict";
 	var that=this;
 	
-	$('#feedback-bar .close')
-		.click(function(event){
-			event.preventDefault();
-			that.hideFeedback();
-		});
-
-	$('#page a.close').click(function(event){
-		event.preventDefault();
-		that.pages().close();
+	$(document).on('click', '#feedback-bar .close', function(event){
+		that.hideFeedback();
+		return false;
 	});
+
+	$(document).on('click', '.touch #feedback-bar', function(event){
+		that.hideFeedback();
+	});
+
+	$(document).on('click', '#page .close', function(event){
+		that.pages().close();
+		return false;
+	});
+
+	//$(document).on('click', '.touch #page', function(event){
+	//	that.pages().close();
+	//});
 	
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
 	$(document).on('click', 'a[href^="#"]:not([href="#"]):not(nav ul li a)', function(event){
@@ -144,45 +156,17 @@ GUI.prototype.setEventHandlers = function(){
 	});
 			
 	// more info on connection status after clicking icon
-	$('header #status-connection')
-		.click(function(event){
-			that.showFeedback($(this).attr('title'));
-			event.stopPropagation(); //prevent closing of simultaneously shown page when clicking icon
-			//event.cancelBubble(); //IE
-		});
-		
-	$(window).resize(function(){ //move this when feedback bar is shown?
-		
-		//console.log('resize event called, window width is '+$(window).width()); //DEBUG
-		
-		$('#container').css('top', $('header').outerHeight());
-		
-		// resizing scrollable container\
-		//if ($('#form-controls.bottom').length > 0){
-			$('body:not(.no-scroll) #container')
-				.height($(window).height()-$('header').outerHeight()-$('#form-controls.bottom').outerHeight());
-		//}
-		//else{
-		//	$('body:not(.no-scroll) #container')
-		//		.height($(window).height()-$('header').outerHeight());//-$('#bottom-bar').outerHeight());
-		//}
-		// replacing form controls in mobile setting // REPLACE: SHOULD MOVE WITH CSS
-		//$('body.no-scroll #form-controls')
-		//	.css('height',$('#form-controls').height()).css('top', $('header').outerHeight()+$('#container').outerHeight());
-		
-		// hide logo if the navigation menu starts overlapping
-		/*if ($('nav').length > 0){
-			var navLeft = $('nav').offset().left;
-			var logoRight = $('.brand').offset().left+$('.brand').outerWidth();
-			//console.log('nav left:'+navLeft+' logo right:'+logoRight); // DEBUG
-			if (navLeft < logoRight){
-				$('.brand').css('visibility', 'hidden');
-			}
-			else {
-				$('.brand').css('visibility', 'visible');
-			}
-		}*/
-	});
+	//$('header #status-connection')
+	//	.click(function(event){
+	//		that.showFeedback($(this).attr('title'));
+	//		event.stopPropagation(); //prevent closing of simultaneously shown page when clicking icon
+	//		//event.cancelBubble(); //IE
+	//	});
+	
+	//move this when feedback bar is shown?
+	//$(window).resize(function(){
+	//	$('#container').css('top', $('header').outerHeight());
+	//});
 };
 	
 GUI.prototype.nav = {
@@ -302,28 +286,23 @@ GUI.prototype.pages = function(){
 /**
  * Shows an unobtrusive feedback message to the user.
  *
- * @param {string=} message
- * @param {number=} duration
+ * @param {string} message
+ * @param {number=} duration duration in seconds for the message to show
  */
 GUI.prototype.showFeedback = function(message, duration){
-	"use strict"; // duration in seconds
+	"use strict";
 	var $msg,
 		that = this;
 	
-	if (!duration){
-		duration =  10 * 1000;// 10 seconds
-	}
-	else {
-		duration = duration*1000; // convert to milliseconds
-	}
+	duration = (duration) ? duration * 1000 : 10 * 1000;
 	
 	// max 2 messages displayed
 	$('#feedback-bar p').eq(1).remove();
 	
 	// if an already shown message isn't exactly the same
-	if($('#feedback-bar p').html() !== message){//} || feedbackEl.find('p').length === 0){
+	if($('#feedback-bar p').html() !== message){
 		$msg = $('<p></p>');
-		$msg.text(message); // encodes special characters
+		$msg.append(message);
 		$('#feedback-bar').append($msg);
 	}
 	$('#feedback-bar').trigger('change');
@@ -331,7 +310,7 @@ GUI.prototype.showFeedback = function(message, duration){
 	// automatically remove feedback after a period
 	setTimeout(function(){
 		if(typeof $msg !== 'undefined'){
-			$msg.remove(); //find('#feedback-bar-message').empty();
+			$msg.remove();
 		}
 		$('#feedback-bar').trigger('change');
 	}, duration);
@@ -340,7 +319,7 @@ GUI.prototype.showFeedback = function(message, duration){
 GUI.prototype.hideFeedback = function(){
 	"use strict";
 	$('#feedback-bar p').remove();
-	$('#feedback-bar').trigger('change'); //find('#feedback-bar-message').empty();
+	$('#feedback-bar').trigger('change');
 };
 
 /**
@@ -468,6 +447,11 @@ GUI.prototype.confirm = function(texts, choices){
 	 */
 };
 	
+/**
+ * Updates various statuses in the GUI (connection, form-edited, browsersupport)
+ *
+ * @type {Object}
+ */
 GUI.prototype.updateStatus = {
 	connection : function(online) {
 		"use strict";
@@ -497,28 +481,19 @@ GUI.prototype.updateStatus = {
 			$('header #status-editing').removeClass().attr('title', '');
 		}
 	},
-	support : function(supported){
-		"use strict";
-		//console.debug('"this" in updateStatus.supported:');
-		//console.debug(this);
-		//BAD BAD BAD to refer to gui here!!
-		var $page = gui.pages().get('settings');// : $('#settings');
-		if ($page.length > 0){
-			console.debug('updating browser support for '+supported);
-			$page.find('#settings-browserSupport-'+supported+' span.ui-icon').addClass('ui-icon-check');
-		}
-	},
+	support : function(supported){},
 	offlineLaunch: function(offlineCapable){
 		var status = (offlineCapable) ? 'Offline Launch: Yes' : 'Offline Launch: No';
 		$('.drawer #status-offline-launch').text(status);
 	}
 };
 
-
-//function to operate the sliders that reveal the feedback bar and page by changing their css 'top' property
+/**
+ * Makes sure sliders that reveal the feedback bar and page have the correct css 'top' property
+ */
 GUI.prototype.display = function(){
 	"use strict";
-	////console.log('display() called');
+	//console.log('display() called');
 	var feedbackTop, pageTop,
 		$header = $('header'),
 		$feedback = $('#feedback-bar'),
@@ -570,6 +545,26 @@ GUI.prototype.setSettings = function(settings){
 			$input.attr('checked', value).trigger('change');
 		}
 	});
+};
+
+/**
+ * Parses a list of forms
+ * @param  {?*} list array of object with form information
+ * @param { jQuery } $target jQuery-wrapped target node with a <ul> element as child to append formlist to
+ */
+GUI.prototype.parseFormlist = function(list, $target){
+	var i, listHTML='';
+	if(!$.isEmptyObject(list)){
+		for (i in list){
+			listHTML += '<li><a class="btn btn-block btn-info" id="'+i+'" title="'+list[i].title+'" '+
+				'href="'+list[i].url+'" data-server="'+list[i].server+'" >'+list[i].name+'</a></li>';
+		}
+	}
+	else{
+		listHTML = '<p class="alert alert-error">Error occurred during creation of form list or no forms found</p>';
+	}
+	$target.removeClass('empty').find('ul').empty().append(listHTML);
+	//$('#form-list').show();
 };
 
 function getGetVariable(variable) {

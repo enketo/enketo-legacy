@@ -66,10 +66,12 @@ $(document).ready(function(){
 	});
 
 	$('.go').click(function(){
-		var props;
+		var props,
+			frag = $('input#server').val(),
+			type = $('.url-helper li.active > a').attr('data-value');
 		if ($('progress').css('display') === 'none'){
 			props = {
-				server: createURL(),
+				server: connection.oRosaHelper.fragToServerURL(type, frag),
 				helper: $('.url-helper li.active > a').attr('data-value'),
 				inputValue: $('input#server').val()
 			};
@@ -118,41 +120,8 @@ function loadPreviousState(){
 		$('.url-helper li').removeClass('active').find('[data-value="'+server.helper+'"]').parent('li').addClass('active');
 		$('input#server').val(server.inputValue);
 		list = store.getRecord('__server_'+server.url);
-		parseFormlist(list);
+		gui.parseFormlist(list, $('#form-list'));
 	}
-}
-
-function createURL(){
-	var serverURL, protocol,
-		frag = $('input#server').val(),
-		type = $('.url-helper li.active > a').attr('data-value');
-
-	if (!frag){
-		console.log('nothing to do');
-		return null;
-	}
-
-	switch (type){
-		case 'http':
-		case 'https':
-			protocol = (/^http(|s):\/\//.test(frag)) ? '' : type+'://';
-			serverURL = protocol + frag;
-			break;
-		case 'formhub_uni':
-		case 'formhub':
-			serverURL = 'http://formhub.org/'+frag;
-			break;
-		case 'appspot':
-			serverURL = 'https://'+frag+'.appspot.com';
-			break;
-	}
-
-	if (!connection.isValidURL(serverURL)){
-		console.error('not a valid url: '+serverURL);
-		return null;
-	}
-	console.log('server_url: '+serverURL);
-	return serverURL;
 }
 
 function processFormlistResponse(resp, msg, props){
@@ -162,27 +131,8 @@ function processFormlistResponse(resp, msg, props){
 		store.setRecord('__server_' + props.server, resp, false, true);
 		store.setRecord('__current_server', {'url': props.server, 'helper': props.helper, 'inputValue': props.inputValue}, false, true);
 	}
-	parseFormlist(resp);
-}
-
-/**
- * [parseFormlist description]
- * @param  {?*} list [description]
- */
-function parseFormlist(list){
-	var i, listHTML='';
-	if(list){
-		for (i in list){
-			listHTML += '<li><a class="btn btn-block btn-info" id="'+i+'" title="'+list[i].title+'" '+
-				'href="'+list[i].url+'" data-server="'+list[i].server+'" >'+list[i].name+'</a></li>';
-		}
-	}
-	else{
-		listHTML = '<p class="alert alert-error">Error occurred during creation of form list</p>';
-	}
-	$('#form-list').removeClass('empty').find('ul').empty().append(listHTML);
 	$('progress').hide();
-	$('#form-list').show();
+	gui.parseFormlist(resp, $('#form-list'));
 }
 
 /**

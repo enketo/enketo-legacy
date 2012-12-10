@@ -28,8 +28,6 @@ DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBa
 
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
-// !Document.ready()
-/************ Document Ready ****************/
 $(document).ready(function() {
 	'use strict';
 	var message, choices;

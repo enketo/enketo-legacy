@@ -240,20 +240,21 @@ function submitForm() {
 }
 
 /**
- * used to submit a form with data that was loaded by POST
+ * Used to submit a form with data that was loaded by POST
  *
  */
 function submitEditedForm() {
-	var name, record, saveResult;
+	var name, record, saveResult, redirect, beforeMsg;
 	$('form.jr').trigger('beforesave');
 	if (!form.isValid()){
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
-	//a temporary quick and dirty user feedback box (to be replaced after bootstrap)
-	gui.alert('Please wait. You will be automatically redirected after submission. '+
-		'(If it fails, please click submit button again.)<br/>'+
-		'<progress style="text-align: center;"/>', 'Submitting...', 'ui-icon-info');
+	redirect = (typeof RETURN_URL !== 'undefined') ? true : false;
+	beforeMsg = (redirect) ? 'You will be automatically redirected after submission. ' : '';
+
+	gui.alert(beforeMsg + 'If it fails, please click submit button again.<br/>'+
+		'<progress style="text-align: center;"/>', 'Submitting...');
 	name = (Math.floor(Math.random()*100001)).toString();
 	console.debug('temporary record name: '+name);
 	record = { 'name': name,'data': form.getDataStr(true, true)};
@@ -263,21 +264,21 @@ function submitEditedForm() {
 	$('form.jr').on('uploadsuccess', function(e, uploadedName){
 		console.debug('uploaded successfully: '+uploadedName);
 		if (uploadedName == name){
-			//temporary
-			if (typeof RETURN_URL !== 'undefined'){
-				gui.alert('You will be automatically redirected back to formhub.', 'Submission successful!');
+			if (redirect){
+				gui.alert('You will now be redirected back to formhub.', 'Submission successful!');
 				location.href = RETURN_URL;
 			}
 			//also use for iframed forms
 			else{
 				gui.alert('Done!', 'Submission successful!');
+				resetForm(true);
 			}
 		}
 	});
 }
 
 /**
- * function to export or backup data. It depends on the browser whether this data is shown in a new browser window/tab
+ * Function to export or backup data. It depends on the browser whether this data is shown in a new browser window/tab
  * or is downloaded automatically. It is not possible to provide a file name.
  * @deprecated
  * @param  {boolean=} finalOnly [description]

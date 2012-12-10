@@ -406,6 +406,54 @@ Connection.prototype.validateHTML = function(htmlStr, callbacks){
 };
 
 /**
+ * Collection of helper functions for openRosa connectivity
+ * @type {Object}
+ */
+Connection.prototype.oRosaHelper = {
+	/**
+	 * Magically generates a well-formed serverURL from a type and fragment
+	 * @param  {string} type     type of server or account (http, https, formhub_uni, formhub, appspot)
+	 * @param  {string} fragment a user input for the given type
+	 * @return {string}          a full serverURL
+	 */
+	fragToServerURL: function(type, frag){
+		var serverURL, protocol;
+
+		if (!frag){
+			console.log('nothing to do');
+			return null;
+		}
+
+		//if (that.isValidURL(frag)){
+		//	return frag;
+		//}
+
+		switch (type){
+			case 'http':
+			case 'https':
+				protocol = (/^http(|s):\/\//.test(frag)) ? '' : type+'://';
+				serverURL = protocol + frag;
+				break;
+			case 'formhub_uni':
+			case 'formhub':
+				serverURL = 'http://formhub.org/'+frag;
+				break;
+			case 'appspot':
+				serverURL = 'https://'+frag+'.appspot.com';
+				break;
+		}
+
+		if (!connection.isValidURL(serverURL)){
+			console.error('not a valid url: '+serverURL);
+			return null;
+		}
+		console.log('server_url: '+serverURL);
+		return serverURL;
+	}
+};
+
+
+/**
  * Sets defaults for optional callbacks if not provided
  * @param  {Object.<string, Function>=} callbacks [description]
  * @return {Object.<string, Function>}           [description]

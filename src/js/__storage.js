@@ -54,7 +54,7 @@ function StorageLocal(){
 	/**
 	 * [setRecord description]
 	 * @param {string} newKey    [description]
-	 * @param {Object.<(string|number), (string|boolean|number)>} record     [description]
+	 * @param {*} record     [description]
 	 * @param {boolean=} del [description] used to change name of existing record and delete old record
 	 * @param {boolean=} overwrite [description] overwrite is only used when there is *another* record with the same new name (not when simply updating current form)
 	 * @param {?string=} oldKey    [description]
@@ -120,17 +120,13 @@ function StorageLocal(){
 	/**
 	 * Returns a form data record as an object. This is the only function that obtains records from the local storage.
 	 * @param  {string} key [description]
-	 * @return {*}     [description]
+	 * @return {?*}     [description]
 	 */
 	this.getRecord = function(key){
 		var record;
 		try{
-			//console.debug('record: '+localStorage.getItem(key));
 			record = JSON.parse(localStorage.getItem(key));
-			//console.debug('record after parse:');
-			//console.debug(record);
-			//console.log('found data:'+JSON.stringify(data)); //DEBUG
-			return record;//{key: key, data: record['data'], ready: record['ready'], lastSaved: record['lastSaved']};// returns null if item cannot be found
+			return record;
 		}
 		catch(e){
 			console.error('error with loading data from store: '+e.message);
@@ -143,6 +139,7 @@ function StorageLocal(){
 		try{
 			localStorage.removeItem(key);
 			//console.log('removed record with key:'+key) // DEBUG
+			$('form.jr').trigger('delete', JSON.stringify(this.getFormList()));
 			return true;
 		}
 		catch(e){

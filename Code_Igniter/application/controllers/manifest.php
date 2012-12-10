@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0011'; //time();
+		private $hash_manual_override = '0013'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -63,7 +63,7 @@ class Manifest extends CI_Controller {
 	| page to re-direct offline 404 requests to (html5 manifest 'fallback' section)
 	|__________________________________________________________________________
 	*/ 
-		private $offline = 'offline';	
+		private $offline = '/offline';	
 	/*
 	|--------------------------------------------------------------------------
 	| pages to always retrieve from the server (html5 manifest 'network' section)
@@ -89,15 +89,23 @@ class Manifest extends CI_Controller {
 	public function html()
 	{
 		$pages = func_get_args();
-		foreach ($pages as $page)
+		
+		if(!empty($pages))
 		{
-			if (!empty($page))
+			foreach ($pages as $page)
 			{
-				$this->pages[] = $page;
+				if (!empty($page))
+				{
+					$this->pages[] = $page;
+				}
 			}
+			$this->_set_data();
+			$this->load->view('html5_manifest_view.php', $this->data);
 		}
-		$this->_set_data();
-		$this->load->view('html5_manifest_view.php', $this->data);
+		else
+		{
+			show_404();
+		}
 	}
 
 	public function index()
@@ -189,8 +197,9 @@ class Manifest extends CI_Controller {
 	private function _get_resources_from_css($path, $base=NULL)
 	{
 		//SMALL PROBLEM: ALSO EXTRACTS RESOURCES THAT ARE COMMENTED OUT
+		//doesn't do @import-ed resources
 		$pattern = '/url[\s]?\([\s]?[\'\"]?([^\)\'\"]+)[\'\"]?[\s]?\)/';///url\(([^)]+)\)/';
-		$index = 1; //match of 2nd set of parentheses is what we want
+		$index = 1; //match of 1st set of parentheses is what we want
 		return $this->_get_resources($path, $pattern, $index, $base);
 	}
 	

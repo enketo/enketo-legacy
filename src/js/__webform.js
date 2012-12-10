@@ -28,8 +28,6 @@ DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBa
 
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
-// !Document.ready()
-/************ Document Ready ****************/
 $(document).ready(function() {
 	'use strict';
 	var message, choices;
@@ -73,4 +71,10 @@ $(document).ready(function() {
 
 	//trigger fake save event to update formlist on data page
 	$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
+
+	window.setInterval(function(){
+		//TODO: add second parameter to getSurveyDataArr() to
+		//getCurrentRecordName() to prevent currenty open record from being submitted
+		connection.uploadRecords(store.getSurveyDataArr(true));
+	}, 15*1000);
 });

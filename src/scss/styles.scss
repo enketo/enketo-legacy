@@ -1,5 +1,8 @@
 $baseFontSize: 16px;
 $baseLineHeight: 20px;
+$iconSpritePath: '/images/glyphicons-halflings.png'; //patches bug in bootstrap-sass
+$iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
+
 
 @import "bootstrap";
 @import "bootstrap-responsive";
@@ -14,7 +17,7 @@ $baseLineHeight: 20px;
 @font-face{
   font-family: 'Open Sans';
   src: local('☺'),
-        url(fonts/OpenSans-Regular.ttf) format('truetype');
+        url('fonts/OpenSans-Regular.ttf') format('truetype');
 }
 
 /****************************

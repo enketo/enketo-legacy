@@ -142,21 +142,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		return form.isValid();
 	};
 	
-/**
- * Function: DataXML
- *
- * description
- *
- * Parameters:
- *
- *   dataStr - [type/description]
- *
- * Returns:
- *
- *   return description
- * 
- *   @constructor
- */
+
+ 	/**
+ 	 * Inner Class dealing with the XML Instance (data) of a form
+ 	 * @constructor
+ 	 * @extends Form
+ 	 * @param {string} dataStr String of the default XML instance
+ 	 */
 	function DataXML(dataStr) {
 	
 		var $data, 
@@ -203,20 +195,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		
 		
 		/**
-		 * Function: Nodeset
-		 *
-		 * description
-		 *
-		 * Parameters:
-		 *
-		 *   @param {(string|null)=} selector - [type/description]
-		 *   @param {(string|number|null)=} index    - [type/description]
-		 *   @param {(Object|null)=} filter   - [type/description]
-		 *   @param filter.onlyTemplate
-		 *   @param filter.noTemplate
-		 *   @param filter.onlyLeaf
-		 *   @param filter.noEmpty
+		 *	Inner Class dealing with nodes and nodesets of the XML instance
+		 *	
+		 *   @param {(string|null)=} selector simpleXPath or jQuery selector
+		 *   @param {(string|number|null)=} index the index of the target node with that selector
+		 *   @param {(Object|null)=} filter filter object for the result nodeset
+		 *   @param {boolean=} filter.onlyTemplate only select template nodes (of repeats)
+		 *   @param {boolean=} filter.noTemplate exclude template nodes (of repeats)
+		 *   @param {boolean=} filter.onlyLeaf only include leaf nodes
+		 *   @param {boolean=} filter.noEmpty exclude empty nodes (and therefore only returns leaf nodes)
 		 *   @constructor
+		 *   @extends DataXML
 		 */
 		function Nodeset(selector, index, filter){
 			
@@ -239,43 +228,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 
 		/**
-		 * Function: get
-		 * 
 		 * Privileged method to find data nodes filtered by a jQuery or XPath selector and additional filter properties
 		 * Without parameters it returns a collection of all data nodes excluding template nodes and their children. Therefore, most
 		 * queries will not require filter properties. This function handles all (?) data queries in the application.
-		 * 
-		 * Parameters:
-		 * 
-		 *   selector - [Optional] String containing a JQuery selector or an XPath
-		 *   filter - [Optional] Object (filter) with the following optional boolean properties: "noTemplate"(default: false), "onlyTemplate", "noEmpty", "onlyEmpty".
-		 *   
-		 * Notes: 
-		 *    
-		 *   onlyTemplate = true - will negate any value for "noTemplate"
-		 *   noEmpty = true - returns only leaf nodes and therefore makes the "onlyLeaf" property obsolete
-		 *   noTemplate = false - returns all data nodes if no other properties or the selector are set.
-		 *   
-		 * Returns:
-		 * 
-		 *   Data nodes that match the selector and filter.
-		 *   
-		 * See Also:
-		 * 
-		 *   <xfind>
+		 *
+		 * @return {jQuery} jQuery-wrapped filtered instance nodes that match the selector and index
 		 */
 		Nodeset.prototype.get = function(){
 			var p, $nodes, val;
 			
-			// filter property error check
-			//for (p in this.filter){
-				//if (this.filter.hasOwnProperty(p)){
-					//if ($.inArray(p, ['onlyTemplate','noTemplate', 'noEmpty', 'onlyLeaf']) == -1){
-						//console.error('node.get() received invalid filter property: '+p);
-					//}
-				//}
-			//}
-			////console.debug('node.get() looking for node: '+this.selector);
 			// noTemplate is ignored if onlyTemplate === true
 			if (this.filter.onlyTemplate === true){
 				$nodes = $data.xfind(this.selector).filter('[template]');
@@ -997,21 +958,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 	};
 
-/**
- * Function: FormHTML
- * 
- * description
- * 
- * Parameters:
- * 
- *   selector - [type/description]
- * 
- * Returns:
- * 
- *   return description
- *   
- *   @constructor
- */
+	/**
+	 * Inner Class dealing with the HTML Form
+	 * @param {string} selector jQuery selector of form
+	 * @constructor
+	 * @extends Form
+	 */
 	function FormHTML (selector){
 		//there will be only one instance of FormHTML
 		$form = $(selector);

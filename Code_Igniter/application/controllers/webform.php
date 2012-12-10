@@ -39,9 +39,7 @@ class Webform extends CI_Controller {
 		);
 		$this->default_stylesheets = array
 		(
-			//array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'all'),
 			array( 'href' => '/css/styles.css', 'media' => 'all'),
-			array( 'href' => '/css/mobile.css', 'media' => 'screen and (max-width: 700px)'),
 			array( 'href' => '/css/print.css', 'media' => 'print')
 		);
 		$sub = get_subdomain();
@@ -70,7 +68,7 @@ class Webform extends CI_Controller {
 			}
 			if ($form ===  NULL)
 			{
-				return show_error('Form not available (or an error occurred). It is also possible that "require phone authentication" is switched on in your formhub account (under account settings) which is not supported in enketo yet.', 404);
+				return show_error('Form not reachable on the formhub server (or an error occurred). It is also possible that "require phone authentication" is switched on (in formub this setting is located under account settings) which is not supported in enketo yet.', 404);
 			}
 			
 			$data = array(

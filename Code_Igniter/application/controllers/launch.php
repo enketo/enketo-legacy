@@ -25,39 +25,7 @@ class Launch extends CI_Controller {
 
 	// this alias function should be removed once formhub has changed to using get_survey_url()
 	public function launchSurvey(){
-		//return call_user_func_array("get_survey_url", func_get_args());
-		$this->load->helper('subdomain');
-		$this->load->model('Survey_model', '', TRUE);
-		$subdomain = get_subdomain();
-
-		if (isset($subdomain))
-		{
-			show_404();
-		}
-		else 
-		{
-			extract($_POST);
-
-			if (!empty($server_url) && strlen(trim($server_url)) > 1 && !empty($form_id) && strlen(trim($form_id)) > 1)
-			{
-				$server_url = trim($server_url);
-				$form_id = trim($form_id);
-				
-				$submission_url = (strrpos($server_url, '/') === strlen($server_url)-1) ? 
-					$server_url.'submission' :$server_url.'/submission';
-
-				$data_url = (empty($data_url)) ? NULL : $data_url;
-				$email = (empty($email)) ? NULL : $email;
-
-				$result = $this->Survey_model->launch_survey($server_url, $form_id, $submission_url, $data_url, $email);
-
-				echo json_encode($result);
-			}	
-			else
-			{
-				echo json_encode(array('success'=>FALSE, 'reason'=>'empty'));
-			}
-		}
+		$this->get_survey_url();
 	}
 
 	public function get_survey_url()

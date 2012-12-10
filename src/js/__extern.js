@@ -1,8 +1,6 @@
 var jrDataStr, jrDataStrToEdit, RETURN_URL, supportEmail;
 
 
-
-
 /**
  * @type number
  */
@@ -17,7 +15,6 @@ vkbeautify.xml = function(str){};
 
 function history(){}
 /**
- * [pushState description]
  * @param  {Object.<string, (boolean|string)>} obj   [description]
  * @param  {string} title [description]
  * @param  {string} path  [description]
@@ -108,8 +105,8 @@ var console = {};
  */
 console.debug = function(var_args) {};
 
-/** this one is changed by Martijn
- * @param {string} var_args
+/** 
+ * @param {...*} var_args
  */
 console.error = function(var_args) {};
 

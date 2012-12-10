@@ -38,6 +38,10 @@ $(document).ready(function(){
 
 	gui.setup();
 
+	/*** TEMPORARY FIX? https://github.com/twitter/bootstrap/issues/4550 ***/
+	$('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+	/*********************/
+
 	$('.url-helper a')
 		.click(function(){
 			var helper, placeholder, value;
@@ -45,11 +49,10 @@ $(document).ready(function(){
 			helper = $(this).attr('data-value');
 			placeholder = (helper === 'formhub' || helper === 'formhub_uni') ? 'enter formhub account' :
 				(helper === 'appspot') ? 'enter appspot subdomain' : 'e.g. formhub.org/johndoe';
-			value = (helper === 'formhub_uni') ? 'formhub_u' : (helper === 'formhub' || helper === 'appspot') ? '' : null;
+			value = (helper === 'formhub_uni') ? 'formhub_u' : '';
 			
 			$('input#server').attr('placeholder', placeholder);
-			
-			if (value !== null){
+			if ( $('input#server').val() !== value ){
 				$('input#server').val(value).trigger('change');
 			}
 		})
@@ -63,10 +66,12 @@ $(document).ready(function(){
 	});
 
 	$('.go').click(function(){
-		var props;
+		var props,
+			frag = $('input#server').val(),
+			type = $('.url-helper li.active > a').attr('data-value');
 		if ($('progress').css('display') === 'none'){
 			props = {
-				server: createURL(),
+				server: connection.oRosaHelper.fragToServerURL(type, frag),
 				helper: $('.url-helper li.active > a').attr('data-value'),
 				inputValue: $('input#server').val()
 			};
@@ -92,7 +97,11 @@ $(document).ready(function(){
 			server = $(this).attr('data-server');
 			id = $(this).attr('id');
 			connection.getSurveyURL(server, id, {
-				success: processSurveyURLResponse
+				success: function(resp, msg){
+					resp.serverURL = server;
+					resp.formId = id;
+					processSurveyURLResponse(resp, msg);
+				}
 			});
 		}
 		else{
@@ -111,41 +120,8 @@ function loadPreviousState(){
 		$('.url-helper li').removeClass('active').find('[data-value="'+server.helper+'"]').parent('li').addClass('active');
 		$('input#server').val(server.inputValue);
 		list = store.getRecord('__server_'+server.url);
-		parseFormlist(list);
+		gui.parseFormlist(list, $('#form-list'));
 	}
-}
-
-function createURL(){
-	var serverURL, protocol,
-		frag = $('input#server').val(),
-		type = $('.url-helper li.active > a').attr('data-value');
-
-	if (!frag){
-		console.log('nothing to do');
-		return null;
-	}
-
-	switch (type){
-		case 'http':
-		case 'https':
-			protocol = (/^http(|s):\/\//.test(frag)) ? '' : type+'://';
-			serverURL = protocol + 'frag';
-			break;
-		case 'formhub_uni':
-		case 'formhub':
-			serverURL = 'https://formhub.org/'+frag;
-			break;
-		case 'appspot':
-			serverURL = 'https://'+frag+'.appspot.com';
-			break;
-	}
-
-	if (!connection.isValidURL(serverURL)){
-		console.error('not a valid url: '+serverURL);
-		return null;
-	}
-	console.log('server_url: '+serverURL);
-	return serverURL;
 }
 
 function processFormlistResponse(resp, msg, props){
@@ -155,31 +131,16 @@ function processFormlistResponse(resp, msg, props){
 		store.setRecord('__server_' + props.server, resp, false, true);
 		store.setRecord('__current_server', {'url': props.server, 'helper': props.helper, 'inputValue': props.inputValue}, false, true);
 	}
-	parseFormlist(resp);
+	$('progress').hide();
+	gui.parseFormlist(resp, $('#form-list'));
 }
 
 /**
- * [parseFormlist description]
- * @param  {Object.<string, string>} list [description]
- * @return {[type]}      [description]
+ * Adds urls to links
+ * @param  {?Object.<string, string>} resp [description]
+ * @param  {string} msg  [description]
  */
-function parseFormlist(list){
-	var i, listHTML='';
-	if(list){
-		for (i in list){
-			listHTML += '<li><a class="btn btn-block btn-info" id="'+i+'" title="'+list[i].title+'" '+
-				'href="'+list[i].url+'" data-server="'+list[i].server+'" >'+list[i].name+'</a></li>';
-		}
-	}
-	else{
-		listHTML = '<p class="alert alert-error">Error occurred during creation of form list</p>';
-	}
-	$('#form-list').removeClass('empty').find('ul').empty().append(listHTML);
-	$('progress').hide();
-	$('#form-list').show();
-}
-
-function processSurveyURLResponse(resp){
+function processSurveyURLResponse(resp, msg){
 	var record,
 		url = resp.url || null,
 		server = resp.serverURL || null,
@@ -191,5 +152,8 @@ function processSurveyURLResponse(resp){
 		record[id]['url'] = url;
 		store.setRecord('__server_'+server, record, false, true);
 		$('a[id="'+id+'"][data-server="'+server+'"]').attr('href', url).click();
+	}
+	else{
+		//TODO: add error handling
 	}
 }

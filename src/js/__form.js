@@ -83,8 +83,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
      * @param {boolean=} incTempl
      * @param {boolean=} incNs
      */
-	this.getDataStr = function(incTempl, incNs){
-		return data.getStr(incTempl, incNs);
+	this.getDataStr = function(incTempl, incNs, all){
+		return data.getStr(incTempl, incNs, all);
 	};
 	/**
      *
@@ -155,7 +155,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			that=this;
 
 		//looks only at start of string!
-		this.instanceSelectRegEx = /^instance\(\'([^\/:\s]+)\'\)/;
+		this.instanceSelectRegEx = /instance\(\'([^\/:\s]+)\'\)/g;
 		//console.debug('dataStr:'+dataStr); 
 		//seems wrong but using regular expression on string avoids persistant xmlns behaviour
 		//dataStr = dataStr.replace(/<[\/]?instance(>|\s+[^>]*>)/gi, '');
@@ -212,10 +212,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 */
 		function Nodeset(selector, index, filter){
 			var defaultSelector = '*';
-			this.selector = (typeof selector === 'string' && selector.length > 0) ? selector : defaultSelector; 
-			//this.selector = selector.replace(/^\/{1}/, "instance/"); 
-			//this.selector = '*:not(instance)';
 
+			this.selector = (typeof selector === 'string' && selector.length > 0) ? selector : defaultSelector; 
 			filter = (typeof filter !== 'undefined' && filter !== null) ? filter : {};
 			this.filter = filter;
 			this.filter.noTemplate = (typeof filter.noTemplate !== 'undefined') ? filter.noTemplate : true;
@@ -227,18 +225,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//to refer to non-first instance, the instance('id_literal')/path/to/node syntax can be used
 			if (this.selector !== defaultSelector && this.selector.indexOf('/') !== 0){
 				if( that.instanceSelectRegEx.test(this.selector) ){
-				//if (parts && parts.length > 1){
-					//this.context = 'model > instance[id="'+parts[1]+'"]';
-					//console.debug('context set to: ', this.context);
 					this.selector = this.selector.replace(that.instanceSelectRegEx, "model > instance#$1");
-					//console.debug('selector changed to )
 					return;
 				}
 			}
 			//default context is the first instance in the model
-			//this gets a bit fancy... if the above instance('id') syntax was found this.context is undefined
-			//if it is not found, the context becomes the first instance. This way the selector can remain intact
-			//this.context = 'model > instance:eq(0)';
 			this.selector = "model > instance:eq(0) "+this.selector;
 		}
 
@@ -295,10 +286,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 */
 		Nodeset.prototype.setVal = function(newVal, expr, xmlDataType){
 			var $target, curVal, success;
-			//index = (typeof index !== 'undefined') ? index : -1;
-			//is the .join(' ') an artefact that can be removed?
-			curVal = this.getVal()[0];//.join(' ');
-			//console.log('setting value of data node: '+this.selector+' with index: '+this.index);
+
+			curVal = this.getVal()[0];
 			
 			if (typeof newVal !== 'undefined' && newVal !== null){
 				newVal = ($.isArray(newVal)) ? newVal.join(' ') : newVal;
@@ -310,11 +299,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			else newVal = '';
 			newVal = this.convert(newVal, xmlDataType);
-			//value = data.type(value, type);
-			//console.debug('value(s) to set: '+newVal);
-			//console.debug('existing value(s): '+curVal);
 
-			$target = this.get();//.eq(index);
+			$target = this.get();
 
 			if ( $target.length === 1 && $.trim(newVal.toString()) !== $.trim(curVal.toString()) ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
 				//first change the value so that it can be evaluated in XPath (validated)
@@ -338,7 +324,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			////console.debug('validation result: '+this.validate());
 		};
 
-		/**for
+		/**
 		 * Function: getVal
 		 * 
 		 * Obtains the data value if a JQuery or XPath selector for a single node is provided.
@@ -360,25 +346,24 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return vals;
 		};
 		
-		//clone data node after all templates have been cloned (after initialization)
+		/**
+		 * clone data node after all templates have been cloned (after initialization)
+		 * @param  {jQuery} $precedingTargetNode the node after which to append the clone
+		 */
 		Nodeset.prototype.clone = function($precedingTargetNode){
 			var $dataNode, allClonedNodeNames;
 
 			$dataNode = this.get();
-			////console.debug(dataNode);
-			////console.debug(precedingTargetNode);
 			$precedingTargetNode = $precedingTargetNode || $dataNode;
+
 			if ($dataNode.length === 1 && $precedingTargetNode.length ===1){
 				$dataNode.clone().insertAfter($precedingTargetNode).find('*').andSelf().removeAttr('template');
-				//$('form.jr').trigger('dataupdate');
-				//since the dataNode (template) may have descendants as well that are used in evaluating e.g. 
-				//branching logic, we need to trigger a data update for each of the cloned nodes...
+
 				allClonedNodeNames = [$dataNode.prop('nodeName')];
 				$dataNode.find('*').each(function(){
 					allClonedNodeNames.push($(this).prop('nodeName'));
 				});
-				////console.log('nodenames in clone: ');
-				////console.log(allClonedNodeNames);
+
 				$form.trigger('dataupdate', allClonedNodeNames.join());
 			}
 			else{
@@ -386,6 +371,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 		};
 
+		/**
+		 * Remove a node
+		 */
 		Nodeset.prototype.remove = function(){
 			var dataNode = this.get();
 			if (dataNode.length > 0){
@@ -398,8 +386,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 		};
 
+		/**
+		 * Convert a value to a specified data type (though always stringified)
+		 * @param  {(string|number)} x  value to convert
+		 * @param  {string} xmlDataType name of xmlDataType
+		 * @return {string}             return string value of converted value
+		 */
 		Nodeset.prototype.convert = function(x, xmlDataType){
-			////console.debug('received xmlDataType for conversion: '+xmlDataType);
 			if (x.toString() === ''){
 				return x;
 			}
@@ -411,33 +404,36 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return x;
 		};
  
+		/**
+		 * Validate a value with an XPath Expression and/or xml data type
+		 * @param  {string} expr        XPath expression
+		 * @param  {string} xmlDataType name of xml data type
+		 * @return {boolean}            returns true if both validations are true
+		 */
 		Nodeset.prototype.validate = function(expr, xmlDataType){
-			//var //i, result,
 			var typeValid, exprValid,
 				value = this.getVal()[0];
-			//	value = this.getVal(); //multiple acceptable???
-			
-			//for (i=0 ; i<values.length ; i++){
-			//	result.push({type: this.type.validate(values[i]), expr: true });
-				//ADD result of XPath constraint expr 
-			//} 
-			////console.log('xml data type = '+this.xmlDataType);
+
 			if (value.toString() === '') {
 				return true;
 			}
 
 			if (typeof xmlDataType == 'undefined' || xmlDataType === null || 
 				typeof this.types[xmlDataType.toLowerCase()] == 'undefined'){
-				//console.log('data type '+xmlDataType+' set to string');
 				xmlDataType = 'string';
 			}
 			typeValid = this.types[xmlDataType.toLowerCase()].validate(value);
-			//console.debug('type valid: '+typeValid);
+			
 			exprValid = (typeof expr !== 'undefined' && expr !== null && expr.length > 0) ? that.evaluate(expr, 'boolean', this.selector, this.index) : true;
 			//console.debug('constraint valid: '+exprValid);
 			return (typeValid && exprValid);
 		};
 
+		/**
+		 * xml data types
+		 * @namespace  types
+		 * @type {Object}
+		 */
 		Nodeset.prototype.types = {
 			'string' :{
 				//max length of type string is 255 chars. Convert (truncate) silently?
@@ -683,9 +679,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if (this.node('*>meta>deprecatedID').get().length !== 1){
 			var deprecatedIDXMLNode = $.parseXML("<deprecatedID/>").documentElement;
 			$(deprecatedIDXMLNode).appendTo(this.node('*>meta').get());
-			//console.debug('deprecatedID node added');
-			//console.debug(this.$);
-			//console.debug(this.node('*>meta>deprecatedID').get());
 		}
 		this.node('*>meta>deprecatedID').setVal(instanceID.getVal()[0], null, 'string');
 		instanceID.setVal('', null, 'string');
@@ -801,31 +794,23 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	/**
-	 * Function: getStr
-	 * 
-	 * Public function to get a string of the CLONED data object (used for Rapaide.launch component).
-	 * 
-	 * Parameters:
-	 * 
-	 *   incTempl - Boolean that indicates whether to include template nodes.
-	 *   
-	 * Returns:
-	 * 
-	 *   string of data xml object
+	 * Obtains a cleaned up string of the data instance(s)
+	 * @param  {boolean=} incTempl indicates whether repeat templates should be included in the return value (default: false)
+	 * @param  {boolean=} incNs    indicates whether namespaces should be included in return value (default: false)
+	 * @param  {boolean=} all	  indicates whether all instances should be included in the return value (default: false)
+	 * @return {string}           XML string
 	 */
-	DataXML.prototype.getStr = function(incTempl, incNs, instance){
+	DataXML.prototype.getStr = function(incTempl, incNs, all){
 		var $docRoot, $dataClone, dataStr;
 
-		instance = instance || null;
+		all =  all || false;
+		incTempl = incTempl || false;
+		incNs = incNs || true;
 
-		$docRoot = (instance) ? this.node("instance('"+instance+"') > :first").get() : this.node('> :first').get();
-
-		incTempl = (typeof incTempl !== 'undefined') ? incTempl : false;
-		incNs = (typeof incNs !== 'undefined') ? incNs : true;
+		$docRoot = (all) ? this.$.find(':first') : this.node('> :first').get();
 		
 		$dataClone = $('<root></root');
 		
-		//this.$.find(':first').clone().appendTo($dataClone);
 		$docRoot.clone().appendTo($dataClone);
 
 		if (incTempl === false){
@@ -848,7 +833,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 	/**
 	 * There is a bug in JavaRosa that has resulted in the usage of incorrect formulae on nodes inside repeat nodes. 
-	 * Those formulae use absolute path when relative paths should have been used. See more here:
+	 * Those formulae use absolute paths when relative paths should have been used. See more here:
 	 * https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations (point 3). 
 	 * Tools such as pyxform (and xls form?) also build forms in this incorrect manner. It will take time to 
 	 * correct this way of making forms so makeBugCompliant() aims to mimic the incorrect 
@@ -895,30 +880,38 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {?(number|string|boolean)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
-		var context, contextDoc, contextInstanceId, resTypeNum, resultTypes, result, attr, $contextWrapNodes, $repParents, instance;
+		var i, context, contextDoc, instances, id, resTypeNum, resultTypes, result, attr, 
+			$contextWrapNodes, $repParents;
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+' and 0-based index: '+index);
 		resTypeStr = resTypeStr || 'any';
 		index = index || 0;
-		//SEEMS LIKE THIS COULD BE A PERFORMANCE HOG AS IT IS CALLED MANY TIMES, 
-		//IS THERE ANY BETTER WAY TO EXCLUDE TEMPLATE NODES AND THEIR CHILDREN?
-		//dataCleanClone = new DataXML(this.getStr(false, false));
 
 		expr = expr.trim();
 
-		//if the expression starts with the instance('id') syntax, convert that syntax to XPath syntax
+		//SEEMS LIKE THE CONTEXT DOC (CLONE) CREATION COULD BE A PERFORMANCE HOG AS IT IS CALLED MANY TIMES, 
+		//IS THERE ANY BETTER WAY TO EXCLUDE TEMPLATE NODES AND THEIR CHILDREN?
+		contextDoc = new DataXML(this.getStr(false, false));
+
+		/* 
+		   If the expression contains the instance('id') syntax, a different context instance is required.
+		   However, the same expression may also contain absolute reference to the main data instance, 
+		   which means 2 different contexts would have to be supplied to the XPath Evaluator which is not
+		   possible. Alternatively, the XPath Evaluator becomes able to use a default instance and direct 
+		   the instance(id) references to a sibling instance context. The latter proved to be too hard for 
+		   this developer, so as a workaround, the following is used instead:
+		   The instance referred to in instance(id) is detached and appended to the main instance. The 
+		   instance(id) syntax is subsequently converted to /node()/instance[@id=id] XPath syntax.
+		 */
 		if (this.instanceSelectRegEx.test(expr)){
-			//console.debug('found instance(id) syntax!, changing contextDoc');
-			//expr = expr.replace(this.instanceSelectRegex, "/model/instance[id='$1']");
-			contextInstanceId = expr.match(this.instanceSelectRegEx)[1];
-			//console.debug('context instance id :'+contextInstanceId);
-			expr = expr.replace(this.instanceSelectRegEx, "");
-			//console.debug('expression converted to: '+expr);
-			contextDoc = new DataXML(this.getStr(false, false, contextInstanceId));
+			instances = expr.match(this.instanceSelectRegEx);
+			for (i=0 ; i<instances.length ; i++){
+				id = instances[i].match(/\'([^\'']+)\'/)[1];
+				expr = expr.replace(instances[i], '/node()/instance[@id="'+id+'"]');
+				this.$.find('instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
+			}
 		}
-		else{
-			contextDoc = new DataXML(this.getStr(false, false));
-		}
-		console.debug('contextDoc:', contextDoc.$);
+
+		//console.debug('contextDoc:', contextDoc.$);
 
 		if (typeof selector !== 'undefined' && selector !== null) {
 			console.debug('contextNode: ', contextDoc.$.xfind(selector).eq(index));
@@ -964,12 +957,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
-		console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
-		//result = evaluator.evaluate(expr, context.documentElement, null, resultType, null);
+		console.log('expr to test: '+expr);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
-			//console.log('evaluated: '+expr+' to: '+(result[resultTypes[type][1]] || 'resultnode(s)'));
-			//console.log(result); //NOTE THAT THIS USE OF THE CONSOLE THROWS AN ERROR IN FIREFOX when using native XPath!
 			if (resTypeNum === 0){
 				for (resTypeNum in resultTypes){
 					resTypeNum = Number(resTypeNum);
@@ -2279,7 +2269,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		setDataVal: function(node, val){
 			//console.debug('setting meta data value to: '+val);
-			node.setVal(val, 'string');
+			node.setVal(val, null, 'string');
 		},
 		'timestamp' : function(o){
 			var value,

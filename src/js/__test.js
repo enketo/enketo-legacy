@@ -69,7 +69,7 @@ $(document).ready(function(){
 
 		$('#upload-form progress').show();
 
-		if ( formId || $(this).find('[name="xml_file"]').val()){
+		if ( formId || $(this).find('[name="xml_file"]').val().length > 0){
 			connection.getFormHTML($(this), {
 				success: function(resp, textStatus, jqXHR){
 					state.server = (serverURL) ? serverURL : null;
@@ -335,7 +335,7 @@ function resetForm(){
 function processForm($response){
 	var formStr = new XMLSerializer().serializeToString($response.find('form')[0]);
 	//data as string
-	var jrDataStr = new XMLSerializer().serializeToString($response.find('instance')[0]);
+	var jrDataStr = new XMLSerializer().serializeToString($response.find('model')[0]);
 	//extract messages
 	var $xsltMsg = $response.find('xsltmessages message');
 	//var $html5Msg = $response.find('html5validatormessages message');

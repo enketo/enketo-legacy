@@ -348,22 +348,27 @@ Connection.prototype.getSurveyURL = function(serverURL, formId, callbacks){
  * @param  {Object.<string, Function>=} callbacks [description]
  */
 Connection.prototype.getFormHTML = function($form, callbacks){
-	var serverURL, formId,
+	var serverURL, formId, formFile,
 		formData = new FormData($form[0]);
 
 	callbacks = this.getCallbacks(callbacks);
 
-	serverURL = $form.find('input[name="server_url"]').val() || '',
+	serverURL = $form.find('input[name="server_url"]').val() || '';
 	formId = $form.find('input[name="form_id"]').val() || '';
+	formFile = $form.find('input[name="xml_file"]').val() || '';
 	
-	if (!this.isValidURL(serverURL)){
+	if (formFile === '' && !this.isValidURL(serverURL)){
 		callbacks.error(null, 'validationerror', 'Not a valid server url');
 		return;
 	}
 
-	if (formId.length === 0){
+	if (formFile === '' && formId.length === 0){
 		callbacks.error(null, 'validationerror', 'No form id provided');
 		return;
+	}
+
+	if (formFile === ''){
+		callbacks.error(null, 'validationerror', 'No form file provided');
 	}
 
 	$.ajax('/transform/get_html_form', {
@@ -451,7 +456,6 @@ Connection.prototype.oRosaHelper = {
 		return serverURL;
 	}
 };
-
 
 /**
  * Sets defaults for optional callbacks if not provided

@@ -816,7 +816,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 <xsl:variable name="refid"
                     select="substring(substring-after($ref, 'itext('),2,string-length(substring-after($ref, 'itext('))-3)"/>
                 <xsl:if test="not(//xf:itext/xf:translation/xf:text[@id=$refid])">
-                    <xsl:message>ERROR: itext(id) found with non-existing id: "<xsl:value-of select="$refid"/>". Maybe itext(path/to/node) construct was used, which is not yet supported.</xsl:message>
+                    <xsl:message>ERROR: itext(id) found with non-existing id: "<xsl:value-of select="$refid"/>". Maybe itext(path/to/node) construct was used, which is not supported.</xsl:message>
                 </xsl:if>
                 <!--<xsl:variable name="apos" select='"&apos;"' />
                 <xsl:choose> 

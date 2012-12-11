@@ -1,34 +1,38 @@
 var dataStr1 =
-    "<instance>"+
-        "<thedata id='something'>"+
-            "<meta/>"+
-            "<nodeA />"+
-            "<nodeB>b</nodeB>"+
-            "<repeatGroup template=''>"+
-                "<nodeC>cdefault</nodeC>"+
-            "</repeatGroup>"+
-            "<repeatGroup>"+
-                "<nodeC />"+
-            "</repeatGroup>"+
-            "<repeatGroup>"+
-                "<nodeC>c2</nodeC>"+
-            "</repeatGroup>"+
-            "<repeatGroup>"+
-                "<nodeC>c3</nodeC>"+
-            "</repeatGroup>"+
-            "<somenodes>"+
-                "<A>one</A>"+
-                "<B>one</B>"+
-                "<C>one</C>"+
-            "</somenodes>"+
-            "<someweights>"+
-                "<w1>1</w1>"+
-                "<w2>3</w2>"+
-                "<w.3>5</w.3>"+
-            "</someweights>"+
-            "<nodeF/>"+
-        "</thedata>"+
-    "</instance>";
+    "<model>"+
+        "<instance>"+
+            "<thedata id='something'>"+
+                "<meta>"+
+                    "<instanceID />"+
+                "</meta>"+
+                "<nodeA />"+
+                "<nodeB>b</nodeB>"+
+                "<repeatGroup template=''>"+
+                    "<nodeC>cdefault</nodeC>"+
+                "</repeatGroup>"+
+                "<repeatGroup>"+
+                    "<nodeC />"+
+                "</repeatGroup>"+
+                "<repeatGroup>"+
+                    "<nodeC>c2</nodeC>"+
+                "</repeatGroup>"+
+                "<repeatGroup>"+
+                    "<nodeC>c3</nodeC>"+
+                "</repeatGroup>"+
+                "<somenodes>"+
+                    "<A>one</A>"+
+                    "<B>one</B>"+
+                    "<C>one</C>"+
+                "</somenodes>"+
+                "<someweights>"+
+                    "<w1>1</w1>"+
+                    "<w2>3</w2>"+
+                    "<w.3>5</w.3>"+
+                "</someweights>"+
+                "<nodeF/>"+
+            "</thedata>"+
+        "</instance>"+
+    "</model>";
 
 var dataEditStr1 =
     "<instance>"+
@@ -73,19 +77,21 @@ var formStr1 =
     '</form>';
 
 var dataStr2 =
-    '<instance xmlns="http://www.w3.org/2002/xforms">'+
-        '<random id="random"><formhub><uuid/></formhub>'+
-          '<random__/>'+
-          '<note_random/>'+
-          '<uuid__/>'+
-          '<note_uuid/>'+
-          '<meta>'+
-            '<instanceID/>'+
-            '<timeStart/>'+
-            '<timeEnd/>'+
-          '</meta>'+
-        '</random>'+
-      '</instance>';
+     "<model>"+
+        '<instance xmlns="http://www.w3.org/2002/xforms">'+
+            '<random id="random"><formhub><uuid/></formhub>'+
+              '<random__/>'+
+              '<note_random/>'+
+              '<uuid__/>'+
+              '<note_uuid/>'+
+              '<meta>'+
+                '<instanceID/>'+
+                '<timeStart/>'+
+                '<timeEnd/>'+
+              '</meta>'+
+            '</random>'+
+          '</instance>'+
+          '</model>';
 
 
 var formStr2 =
@@ -136,6 +142,7 @@ var formStr2 =
     '</form>';
 
 var dataStr3 =
+    '<model>'+
     '<instance xmlns="http://www.w3.org/2002/xforms">'+
         '<random id="random"><formhub><uuid/></formhub>'+
           '<random__/>'+
@@ -146,7 +153,8 @@ var dataStr3 =
             '<instanceID>c13fe058-3349-4736-9645-8723d2806c8b</instanceID>'+
           '</meta>'+
         '</random>'+
-      '</instance>';
+      '</instance>'+
+    '</model>';
 
 var formStr3 =
     '<form class="jr">'+
@@ -193,12 +201,16 @@ var formStr3 =
     '</form>';
 
 var dataStr4 =
-    '<nodename_bug id=\"nodename_bug\"><formhub><uuid>70bdb2dd3cf144288a6a00b36399ed79</uuid></formhub>'+
-        '<hh>'+
-            '<hh>hi</hh>'+
-        '</hh>'+
-        '<meta><instanceID></instanceID></meta>'+
-    '</nodename_bug>';
+    '<model>'+
+        '<instance>'+
+            '<nodename_bug id=\"nodename_bug\"><formhub><uuid>70bdb2dd3cf144288a6a00b36399ed79</uuid></formhub>'+
+                '<hh>'+
+                    '<hh>hi</hh>'+
+                '</hh>'+
+                '<meta><instanceID></instanceID></meta>'+
+            '</nodename_bug>'+
+        '</instance>'+
+    '</model>';
 
 var formStr4 =
     '<form class="jr" id="nodename_bug">'+
@@ -221,50 +233,58 @@ var formStr4 =
     '</form>';
 
 var dataStr5a =
-    '<widgets id="testPreloads" version="1"  >'+
-        '<start_time>2012-10-30T08:44:57.000-06</start_time>'+
-        '<end_time>2012-10-30T08:44:57.000-06:00</end_time>'+
-        '<date_today>2012-10-30</date_today>'+
-        '<deviceid>some value</deviceid>'+
-        '<subscriberid>some value</subscriberid>'+
-        '<my_simid>2332</my_simid>'+
-        '<my_phonenumber>234234324</my_phonenumber>'+
-        '<application>some context</application>'+
-        '<patient>this one</patient>'+
-        '<user>John Doe</user>'+
-        '<uid>John Doe</uid>'+
-        '<browser_name>fake</browser_name>'+
-        '<browser_version>xx</browser_version>'+
-        '<os_name>fake</os_name>'+
-        '<os_version>xx</os_version>'+
-        '<unknown>some value</unknown>'+
-        '<meta>'+
-            '<instanceID>uuid:56c19c6c-08e6-490f-a783-e7f3db788ba8</instanceID>'+
-        '</meta>'+
-    '</widgets>';
+    '<model>'+
+        '<instance>'+
+            '<widgets id="testPreloads" version="1"  >'+
+                '<start_time>2012-10-30T08:44:57.000-06</start_time>'+
+                '<end_time>2012-10-30T08:44:57.000-06:00</end_time>'+
+                '<date_today>2012-10-30</date_today>'+
+                '<deviceid>some value</deviceid>'+
+                '<subscriberid>some value</subscriberid>'+
+                '<my_simid>2332</my_simid>'+
+                '<my_phonenumber>234234324</my_phonenumber>'+
+                '<application>some context</application>'+
+                '<patient>this one</patient>'+
+                '<user>John Doe</user>'+
+                '<uid>John Doe</uid>'+
+                '<browser_name>fake</browser_name>'+
+                '<browser_version>xx</browser_version>'+
+                '<os_name>fake</os_name>'+
+                '<os_version>xx</os_version>'+
+                '<unknown>some value</unknown>'+
+                '<meta>'+
+                    '<instanceID>uuid:56c19c6c-08e6-490f-a783-e7f3db788ba8</instanceID>'+
+                '</meta>'+
+            '</widgets>'+
+        '</instance>'+
+    '</model>';
 
 var dataStr5b =
-    '<widgets id="testPreloads" version="1"  >'+
-        '<start_time></start_time>'+
-        '<end_time></end_time>'+
-        '<date_today></date_today>'+
-        '<deviceid></deviceid>'+
-        '<subscriberid></subscriberid>'+
-        '<my_simid></my_simid>'+
-        '<my_phonenumber></my_phonenumber>'+
-        '<application></application>'+
-        '<patient></patient>'+
-        '<user></user>'+
-        '<uid></uid>'+
-        '<browser_name></browser_name>'+
-        '<browser_version></browser_version>'+
-        '<os_name></os_name>'+
-        '<os_version></os_version>'+
-        '<unknown></unknown>'+
-        '<meta>'+
-            '<instanceID></instanceID>'+
-        '</meta>'+
-    '</widgets>';
+    '<model>'+
+        '<instance>'+
+            '<widgets id="testPreloads" version="1"  >'+
+                '<start_time></start_time>'+
+                '<end_time></end_time>'+
+                '<date_today></date_today>'+
+                '<deviceid></deviceid>'+
+                '<subscriberid></subscriberid>'+
+                '<my_simid></my_simid>'+
+                '<my_phonenumber></my_phonenumber>'+
+                '<application></application>'+
+                '<patient></patient>'+
+                '<user></user>'+
+                '<uid></uid>'+
+                '<browser_name></browser_name>'+
+                '<browser_version></browser_version>'+
+                '<os_name></os_name>'+
+                '<os_version></os_version>'+
+                '<unknown></unknown>'+
+                '<meta>'+
+                    '<instanceID></instanceID>'+
+                '</meta>'+
+            '</widgets>'+
+        '</instance>'+
+    '</model>';
 
 var formStr5 =
     '<form class="jr" id="testPreloads">'+
@@ -339,13 +359,17 @@ var formStr5 =
     '</form>';
 
 var dataStr6 =
-    '<data id="TestGroupBranch" version="3" xmlns="http://rapaide.com/testGroupBranch">'+
-        '<nodeA/>'+
-            '<group>'+
-                '<nodeB/>'+
-            '</group>'+
-        '<nodeC/>'+
-    '</data>';
+    '<model>'+
+        '<instance>'+
+            '<data id="TestGroupBranch" version="3" xmlns="http://rapaide.com/testGroupBranch">'+
+                '<nodeA/>'+
+                    '<group>'+
+                        '<nodeB/>'+
+                    '</group>'+
+                '<nodeC/>'+
+            '</data>'+
+        '</instance>'+
+    '</model>';
 
 var formStr6 =
     '<form class="jr" id="TestGroupBranch">'+
@@ -379,12 +403,16 @@ var formStr6 =
     '</form>';
 
 var dataStr7 =
-    '<issue208 id="TestGroupBranch" version="3" xmlns="http://rapaide.com/testGroupBranch">'+
-        '<rep>'+
-            '<nodeA/>'+
-            '<nodeB/>'+
-        '</rep>'+
-    '</issue208>';
+    '<model>'+
+        '<instance>'+
+            '<issue208 id="TestGroupBranch" version="3" xmlns="http://rapaide.com/testGroupBranch">'+
+                '<rep>'+
+                    '<nodeA/>'+
+                    '<nodeB/>'+
+                '</rep>'+
+            '</issue208>'+
+        '</instance>'+
+    '</model>';
 
 var formStr7 =
     '<form class="jr" id="TestGroupBranch">'+
@@ -432,6 +460,34 @@ var formStr7 =
             '</fieldset>'+
         '</fieldset>'+
     '</form>';
+
+var dataStr8 =
+    '<model>'+
+        '<instance>'+
+            '<new_cascading_select id="cascading_select_test">'+
+              '<state>colorado</state>'+
+              '<county/>'+
+              '<city/>'+
+              '<meta>'+
+                '<instanceID/>'+
+              '</meta>'+
+            '</new_cascading_select>'+
+        '</instance>'+
+        '<instance id="cities">'+
+            '<root>'+
+              '<item>'+
+                '<itextId>static_instance-states-0</itextId>'+
+                '<name>denver</name>'+
+                '<state>colorado</state>'+
+              '</item>'+
+              '<item>'+
+                '<itextId>static_instance-states-1</itextId>'+
+                '<name>boulder</name>'+
+                '<state>colorado</state>'+
+              '</item>'+
+            '</root>'+
+        '</instance>'+
+    '</model>';
 
 /**
  * var jrDataStrToEdit = '<?xml version="1.0" ?><Data_Types id="data_types"><formhub><uuid>98063bc21324412f9cf1cb1c2a16c66e</uuid></formhub><text/><textarea>Lots of text

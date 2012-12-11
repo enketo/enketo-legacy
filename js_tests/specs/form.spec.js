@@ -7,17 +7,16 @@ EnvJasmine.load(EnvJasmine.jsDir + "__form.js");
 describe("Data node getter", function () {
     var i, t =
 		[
-			["", null, null, 19],
-			["", null, {}, 19],
+			["", null, null, 20],
+			["", null, {}, 20],
 			//["/", null, {}, 9], //issue with xfind, not important
-			[false, null, {}, 19],
-			[null, null, {}, 19],
-			[null, null, {noTemplate:true}, 19],
-			[null, null, {noTemplate:false}, 21],
+			[false, null, {}, 20],
+			[null, null, {}, 20],
+			[null, null, {noTemplate:true}, 20],
+			[null, null, {noTemplate:false}, 22],
 			[null, null, {onlyTemplate:true}, 1],
 			[null, null, {noEmpty:true}, 9],
 			[null, null, {noEmpty:true, noTemplate:false}, 10],
-
 			["/thedata/nodeA", null, null, 1],
 			["/thedata/nodeA", 1   , null, 0],
 			["/thedata/nodeA", null, {noEmpty:true}, 0], //"int"
@@ -25,11 +24,9 @@ describe("Data node getter", function () {
 			["/thedata/nodeA", null, {onlyTemplate:true}, 0],
 			["/thedata/nodeA", null, {noTemplate:true}, 1],
 			["/thedata/nodeA", null, {noTemplate:false}, 1],
-
 			["/thedata/repeatGroup", null, null, 3],
 			["/thedata/repeatGroup", null, {onlyTemplate:true}, 1],
 			["/thedata/repeatGroup", null, {noTemplate:false}, 4],
-
 			["//nodeC", null, null, 3],
 			["/thedata/repeatGroup/nodeC", null, null, 3],
 			["/thedata/repeatGroup/nodeC", 2   , null, 1],
@@ -41,17 +38,15 @@ describe("Data node getter", function () {
 		],
 		form = new Form("", ""),
 		data = form.data(dataStr1);
-		
-		function test(node){
-			it("obtains nodes (selector: "+node.selector+", index: "+node.index+", filter: "+JSON.stringify(node.filter)+")", function() {
-				expect(data.node(node.selector, node.index, node.filter).get().length).toEqual(node.result);
-			});
-		}
-
-		for (i = 0 ; i<t.length ; i++){
-			test({selector: t[i][0], index: t[i][1], filter: t[i][2], result: t[i][3]});
-		}
-
+	
+	function test(node){
+		it("obtains nodes (selector: "+node.selector+", index: "+node.index+", filter: "+JSON.stringify(node.filter)+")", function() {
+			expect(data.node(node.selector, node.index, node.filter).get().length).toEqual(node.result);
+		});
+	}
+	for (i = 0 ; i<t.length ; i++){
+		test({selector: t[i][0], index: t[i][1], filter: t[i][2], result: t[i][3]});
+	}
 });
 
 describe('Date node (&) value getter', function(){
@@ -145,18 +140,18 @@ describe('Data node XML data type conversion & validation', function(){
 				["/thedata/nodeA", null, null, '0 0 a', 'geopoint', false],
 				["/thedata/nodeA", null, null, '0 0 0 a', 'geopoint', false]
 
-				//TO DO binary (?)
+				//				//TO DO binary (?)
 			];
 		form.form('<form></form>');
 
-		function test(n){
+	function test(n){
 			it("converts and validates xml-type "+n.type+" with value: "+n.value, function(){
 				data = form.data(dataStr1);
 				expect(data.node(n.selector, n.index, n.filter).setVal(n.value, null, n.type)).toEqual(n.result);
 			});
 		}
 
-		for (i = 0 ; i<t.length ; i++){
+	for (i = 0 ; i<t.length ; i++){
 			test({selector: t[i][0], index: t[i][1], filter: t[i][2], value: t[i][3], type: t[i][4], result:t[i][5]});
 		}
 
@@ -199,7 +194,7 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 	var i, t =
 		[
 			["/thedata/nodeB", "string", null, 0, "b"],
-			["../nodeB", "string", "/thedata/nodeB", 0, "b"],
+			["../nodeB", "string", "/thedata/nodeA", 0, "b"],
 			["/thedata/nodeB", "boolean", null, 0, true],
 			["/thedata/notexist", "boolean", null, 0, false],
 			["/thedata/repeatGroup[2]/nodeC", "string", null, 0, "c2"],
@@ -379,21 +374,26 @@ describe("Loading instance values into html input fields functionality", functio
 
 describe("Loading instance-to-edit functionality", function(){
 	var form;
-
-	describe('when instanceID and deprecatedID nodes are not present in the form format', function(){
+	
+	describe('when a deprecatedID node is not present in the form format', function(){
 		form = new Form(formStr1, dataStr1, dataEditStr1);
 		form.init();
-
-		it ("adds an instanceID node", function(){
-			expect(form.getDataO().node('*>meta>instanceID').get().length).toEqual(1);
-		});
+		
+		window.setTimeout(function(){
+		
+		/*it ("adds an instanceID node", function(){
+			//expect(form.getDataO().node('*>meta>instanceID').get().length).toEqual(1);
+		});*/
 
 		it ("adds a deprecatedID node", function(){
-			expect(form.getDataO().node('*>meta>deprecatedID').get().length).toEqual(1);
+			delay();
+			console.debug('debprecate', form.getDataO().node('* > meta > deprecatedID').get());
+			expect(form.getDataO().node('* > meta > deprecatedID').get().length).toEqual(1);
 		});
 
 		//this is an important test even though it may not seem to be...
 		it ("includes the deprecatedID in the string to be submitted", function(){
+			delay();
 			expect(form.getDataO().getStr().indexOf('<deprecatedID>')).not.toEqual(-1);
 		});
 
@@ -401,7 +401,7 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getDataO().node('*>meta>deprecatedID').getVal()[0]).toEqual('7c990ed9-8aab-42ba-84f5-bf23277154ad');
 		});
 
-		it ("gives the added instanceID node a new value", function(){
+		it ("gives the instanceID node a new value", function(){
 			expect(form.getDataO().node('*>meta>instanceID').getVal()[0].length).toEqual(41);
 			expect(form.getDataO().node('*>meta>instanceID').getVal()[0]).not.toEqual('7c990ed9-8aab-42ba-84f5-bf23277154ad');
 		});
@@ -410,11 +410,16 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('2012-02-05T15:34:00.000-04:00');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
+
+		}, 1);
+
 	});
 	
 	describe('when instanceID and deprecatedID nodes are already present in the form format', function(){
 		form = new Form(formStr1, dataEditStr1, dataEditStr1);
 		form.init();
+
+		window.setTimeout(function(){
 
 		it ("does not NOT add another instanceID node", function(){
 			expect(form.getDataO().node('*>meta>instanceID').get().length).toEqual(1);
@@ -437,7 +442,7 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('2012-02-05T15:34:00.000-04:00');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
-
+		}, 1);
 	});
 
 	describe('repeat functionality', function(){
@@ -533,7 +538,7 @@ describe('branching functionality', function(){
 	});
 });
 
-describe('required field validation', function(){
+describe('Required field validation', function(){
 	var form, $numberInput, $branch;
 
 	beforeEach(function() {
@@ -581,6 +586,18 @@ describe('required field validation', function(){
 	});
 });
 
+describe('Cascading selects functionality', function(){
+	var form;
+
+	it('is able to address and instance by id in the ODK manner', function(){
+		form = new Form('', dataStr8);
+		form.init();
+		console.debug('data:', form.getDataO().$);
+		expect(form.getDataO().evaluate("instance('cities')/root/item/name", "string")).toEqual('denver');
+		expect(form.getDataO().evaluate("instance('cities')/root/item[state='colorado']/name", "string")).toEqual('denver');
+	});
+
+});
 
 
 //TODO load a large complex form and detect console errors

@@ -153,12 +153,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	
 		var $data, 
 			that=this;
+
+		//looks only at start of string!
+		this.instanceSelectRegEx = /^instance\(\'([^\/:\s]+)\'\)/;
 		//console.debug('dataStr:'+dataStr); 
 		//seems wrong but using regular expression on string avoids persistant xmlns behaviour
-		dataStr = dataStr.replace(/<[\/]?instance(>|\s+[^>]*>)/gi, '');
+		//dataStr = dataStr.replace(/<[\/]?instance(>|\s+[^>]*>)/gi, '');
 		////console.debug(dataStr);
 		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE ALL NAMESPACES FROM STRING, BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
-		//dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/,'');
+		dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/,'');
 
 		this.xml = $.parseXML(dataStr);
 		//$instance = $(xml);
@@ -208,12 +211,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 *   @extends DataXML
 		 */
 		function Nodeset(selector, index, filter){
-			
-			this.selector = (typeof selector !== 'undefined' && selector) ? selector : '*'; 
-					//this.selector = selector.replace(/^\/{1}/, "instance/"); 
-			
-				//this.selector = '*:not(instance)';
-			//}	
+			var defaultSelector = '*';
+			this.selector = (typeof selector === 'string' && selector.length > 0) ? selector : defaultSelector; 
+			//this.selector = selector.replace(/^\/{1}/, "instance/"); 
+			//this.selector = '*:not(instance)';
+
 			filter = (typeof filter !== 'undefined' && filter !== null) ? filter : {};
 			this.filter = filter;
 			this.filter.noTemplate = (typeof filter.noTemplate !== 'undefined') ? filter.noTemplate : true;
@@ -221,10 +223,23 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.filter.onlyTemplate = (typeof filter.onlyTemplate !== 'undefined') ? filter.onlyTemplate : false;
 			this.filter.noEmpty = (typeof filter.noEmpty !== 'undefined') ? filter.noEmpty : false;
 			this.index = index;
-			//this.xmlDataType = xmlDataType;
-			////console.debug('nodeset instance created with xmlDataType: '+this.xmlDataType);
 
-			//return this; //necessary?
+			//to refer to non-first instance, the instance('id_literal')/path/to/node syntax can be used
+			if (this.selector !== defaultSelector && this.selector.indexOf('/') !== 0){
+				if( that.instanceSelectRegEx.test(this.selector) ){
+				//if (parts && parts.length > 1){
+					//this.context = 'model > instance[id="'+parts[1]+'"]';
+					//console.debug('context set to: ', this.context);
+					this.selector = this.selector.replace(that.instanceSelectRegEx, "model > instance#$1");
+					//console.debug('selector changed to )
+					return;
+				}
+			}
+			//default context is the first instance in the model
+			//this gets a bit fancy... if the above instance('id') syntax was found this.context is undefined
+			//if it is not found, the context becomes the first instance. This way the selector can remain intact
+			//this.context = 'model > instance:eq(0)';
+			this.selector = "model > instance:eq(0) "+this.selector;
 		}
 
 		/**
@@ -235,7 +250,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {jQuery} jQuery-wrapped filtered instance nodes that match the selector and index
 		 */
 		Nodeset.prototype.get = function(){
-			var p, $nodes, val;
+			var p, $nodes, val, context;
 			
 			// noTemplate is ignored if onlyTemplate === true
 			if (this.filter.onlyTemplate === true){
@@ -668,6 +683,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if (this.node('*>meta>deprecatedID').get().length !== 1){
 			var deprecatedIDXMLNode = $.parseXML("<deprecatedID/>").documentElement;
 			$(deprecatedIDXMLNode).appendTo(this.node('*>meta').get());
+			//console.debug('deprecatedID node added');
+			//console.debug(this.$);
+			//console.debug(this.node('*>meta>deprecatedID').get());
 		}
 		this.node('*>meta>deprecatedID').setVal(instanceID.getVal()[0], null, 'string');
 		instanceID.setVal('', null, 'string');
@@ -795,15 +813,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * 
 	 *   string of data xml object
 	 */
-	DataXML.prototype.getStr = function(incTempl, incNs){
-		var $dataClone, dataStr;
+	DataXML.prototype.getStr = function(incTempl, incNs, instance){
+		var $docRoot, $dataClone, dataStr;
+
+		instance = instance || null;
+
+		$docRoot = (instance) ? this.node("instance('"+instance+"') > :first").get() : this.node('> :first').get();
 
 		incTempl = (typeof incTempl !== 'undefined') ? incTempl : false;
 		incNs = (typeof incNs !== 'undefined') ? incNs : true;
 		
 		$dataClone = $('<root></root');
 		
-		this.$.find(':first').clone().appendTo($dataClone);
+		//this.$.find(':first').clone().appendTo($dataClone);
+		$docRoot.clone().appendTo($dataClone);
 
 		if (incTempl === false){
 			$dataClone.find('[template]').remove();
@@ -872,15 +895,34 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {?(number|string|boolean)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
-		var context, dataCleanClone, resTypeNum, resultTypes, result, attr, $contextWrapNodes, $repParents;
+		var context, contextDoc, contextInstanceId, resTypeNum, resultTypes, result, attr, $contextWrapNodes, $repParents, instance;
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+' and 0-based index: '+index);
 		resTypeStr = resTypeStr || 'any';
 		index = index || 0;
-		dataCleanClone = new DataXML(this.getStr(false, false));
+		//SEEMS LIKE THIS COULD BE A PERFORMANCE HOG AS IT IS CALLED MANY TIMES, 
+		//IS THERE ANY BETTER WAY TO EXCLUDE TEMPLATE NODES AND THEIR CHILDREN?
+		//dataCleanClone = new DataXML(this.getStr(false, false));
+
+		expr = expr.trim();
+
+		//if the expression starts with the instance('id') syntax, convert that syntax to XPath syntax
+		if (this.instanceSelectRegEx.test(expr)){
+			//console.debug('found instance(id) syntax!, changing contextDoc');
+			//expr = expr.replace(this.instanceSelectRegex, "/model/instance[id='$1']");
+			contextInstanceId = expr.match(this.instanceSelectRegEx)[1];
+			//console.debug('context instance id :'+contextInstanceId);
+			expr = expr.replace(this.instanceSelectRegEx, "");
+			//console.debug('expression converted to: '+expr);
+			contextDoc = new DataXML(this.getStr(false, false, contextInstanceId));
+		}
+		else{
+			contextDoc = new DataXML(this.getStr(false, false));
+		}
+		console.debug('contextDoc:', contextDoc.$);
 
 		if (typeof selector !== 'undefined' && selector !== null) {
-
-			context = dataCleanClone.node(selector, index, {}).get()[0];
+			console.debug('contextNode: ', contextDoc.$.xfind(selector).eq(index));
+			context = contextDoc.$.xfind(selector).eq(index)[0];
 			/**
 			 * If the expressions is bound to a node that is inside a repeat.... see makeBugCompliant()
 			 */
@@ -888,8 +930,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				expr = this.makeBugCompliant(expr, selector, index);
 			}
 		}
-		else context = dataCleanClone.getXML();//dataCleanClone.get()[0];//.documentElement;
-		
+		else{
+			context = contextDoc.getXML();
+		}
+		//else context = dataCleanClone.getXML();//dataCleanClone.get()[0];//.documentElement;
+		console.debug('context', context);
+
 		resultTypes = { //REMOVE VALUES? NOT USED
 			0 : ['any', 'ANY_TYPE'], 
 			1 : ['number', 'NUMBER_TYPE', 'numberValue'],
@@ -918,7 +964,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
-		//console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
+		console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
 		//result = evaluator.evaluate(expr, context.documentElement, null, resultType, null);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
@@ -1587,6 +1633,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * It must have something to do with the DOM not having been built or something, because a 1 millisecond!!!
 		 * delay in executing the code below, the issue was resolved. To be properly fixed later...
 		 */	
+		//TODO: DOES THIS REQUIRE EVALUATE?? OR WOULD data.node(expr).getVal()[0] WORK TOO??
 		setTimeout(function(){
 			//console.log('updating active outputs that contain: '+changedNodeNames);
 			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
@@ -2606,7 +2653,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//other nodes may have the same XPath but because this function is used to determine the corresponding input name of a data node, index is not included 
 		var steps = [dataNode.prop('nodeName')],
 			parent = dataNode.parent();
-		while (parent.length == 1 && parent.prop('nodeName') !== '#document'){
+		while (parent.length == 1 && parent.prop('nodeName') !== 'instance'){
 			steps.push(parent.prop("nodeName"));
 			parent = parent.parent();
 		}
@@ -2832,14 +2879,16 @@ String.prototype.pad = function(digits){
 	 */
     $.fn.xfind = function(selector){
 			var parts, cur, i;
-			////console.debug('xfind plugin received selector: '+selector);
+			//console.debug('xfind plugin received selector: '+selector);
+			
 			// Convert the root / into a different context
-            //if ( !selector.indexOf("/") ) {
-            //        context = context.documentElement;
-            //        selector = selector.replace(/^\/\w*/, "");
-            //        if ( !selector )
-            //                return [ context ];
-            //}
+			//if ( !selector.indexOf("/") ) {
+			//	context = this.context.documentElement;
+			//	selector = selector.replace(/^\/\w*/, "");
+			//	if ( !selector ){
+			//		return [ context ];
+			//	}
+			//}
 
             // Convert // to " "
             selector = selector.replace(/\/\//g, " ");

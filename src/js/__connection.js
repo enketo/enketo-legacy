@@ -357,6 +357,11 @@ Connection.prototype.getFormHTML = function($form, callbacks){
 	formId = $form.find('input[name="form_id"]').val() || '';
 	formFile = $form.find('input[name="xml_file"]').val() || '';
 	
+	if (formFile === '' && serverURL === '' && formId === ''){
+		callbacks.error(null, 'validationerror', 'No form file or URLs provided');
+		return;
+	}
+
 	if (formFile === '' && !this.isValidURL(serverURL)){
 		callbacks.error(null, 'validationerror', 'Not a valid server url');
 		return;
@@ -365,10 +370,6 @@ Connection.prototype.getFormHTML = function($form, callbacks){
 	if (formFile === '' && formId.length === 0){
 		callbacks.error(null, 'validationerror', 'No form id provided');
 		return;
-	}
-
-	if (formFile === ''){
-		callbacks.error(null, 'validationerror', 'No form file provided');
 	}
 
 	$.ajax('/transform/get_html_form', {

@@ -1430,28 +1430,37 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @constructor
 	 */
 	FormHTML.prototype.Branch = function(){
-
 		/**
 		 * Initializes branches, sets delegated event handlers
 		 */
 		this.init = function(){
+			var $branchNode,
+				that=this;
 			//console.debug('initializing branches');
-			$form.on('click', '.jr-branch', function(event){
-				var $that = $(this);
-				if(!$(this).hasClass('busy')){
-					if ($(this).hasClass('show')){
-						$(this).addClass('busy').removeClass('show').next().hide( 600, function(){
-							$that.removeClass('busy');
-						});
-					}
-					else{
-						$(this).addClass('busy show').next().show(600, function(){
-							$that.removeClass('busy');
-							$that.next().fixLegends();
-						});
-					}
-				}	
+			//$form.on('click', '.jr-branch', function(event){
+			//	var $that = $(this);
+			//	if(!$(this).hasClass('busy')){
+			//		if ($(this).hasClass('show')){
+			//			$(this).addClass('busy').removeClass('show').next().hide( 600, function(){
+			//				$that.removeClass('busy');
+			//			});
+			//		}
+			//		else{
+			//			$(this).addClass('busy show').next().show(600, function(){
+			//				$that.removeClass('busy');
+			//				$that.next().fixLegends();
+			//			});
+			//		}
+			//	}	
+			//});
+			$form.find('[data-relevant]').each(function(){
+				$branchNode = that.input.getWrapNodes($(this));
+				if ($branchNode.length !== 1){
+					console.error('branchNode wrapper could not be identified for node: ', $(this));
+				}
+				$branchNode.addClass('jr-branch');
 			});
+
 			this.update();
 		};
 		/**
@@ -1463,7 +1472,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.update = function(changedNodeNames){
 			var i, p, branchNode, result, namesArr, cleverSelector,	
 				alreadyCovered = {},
-				that=this;
+				that = this;
 			
 			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 			cleverSelector = (namesArr.length > 0) ? [] : ['[data-relevant]'];
@@ -1539,23 +1548,24 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @param  {jQuery} branchNode The jQuery object to hide and disable
 		 */
 		this.disable = function(branchNode){
-			var type;//, 
+			var type,
+				that = this;//, 
 				//branchClue = '<div class="jr-branch"></div>'; 
 
 			console.debug('disabling branch');
 			branchNode.addClass('disabled').hide(1000); 
 			
 			//if the branch was previously enabled
-			if (branchNode.prev('.jr-branch').length === 0){
+			//if (branchNode.prev('.jr-branch').length === 0){
 				//branchNode.before(branchClue);
 				//if the branch was hidden upon form initialization, then shown and then hidden again
 				//difficult to detect. Maybe better to just replace clearInputs with setDefaults	
 				branchNode.clearInputs('change');
-			}
+			//}
 
 			//since all fields are emptied they can be marked as valid
 			//branchNode.find('input, select, textarea').each(function(){
-			//	this.setValid($(this));
+				//that.setValid($(this));
 			//});
 
 			type = branchNode.prop('nodeName').toLowerCase();
@@ -2580,12 +2590,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 	};
 
-	FormHTML.prototype.setValid = function(node){
-		this.input.getWrapNodes(node).removeClass('invalid');
+	FormHTML.prototype.setValid = function($node){
+		this.input.getWrapNodes($node).removeClass('invalid');
 	};
 
-	FormHTML.prototype.setInvalid = function(node){
-		this.input.getWrapNodes(node).addClass('invalid');
+	FormHTML.prototype.setInvalid = function($node){
+		this.input.getWrapNodes($node).addClass('invalid');
 	};
 
 	/**

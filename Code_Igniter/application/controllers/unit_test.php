@@ -70,7 +70,31 @@ class Unit_test extends CI_Controller {
 	//tests form model
 	public function form()
 	{
+		$this->load->model('Form_model', '', TRUE);
 
+		$xml_path = '../devinfo/Forms/gui_test_A.xml';		
+		$html_save_result_path = '../devinfo/Forms/gui_test_A_test_transform.html';
+		$result = $this->Form_model->transform(null, null, $xml_path);
+		$result_html = new DOMDocument;
+		$result_html->loadHTML($result->form->asXML());
+		$result_form = $result_html->saveHTML();
+		file_put_contents($html_save_result_path, $result_form);
+
+		$expected = new DOMDocument;
+    	$expected->loadHTMLFile('../devinfo/Forms/gui_test_A.html');
+    	$expected_form = $expected->saveHTML();
+		
+    	$test = ((string) $result_form == (string) $expected_form);
+
+		$this->unit->run($test, TRUE, 'in a complex test form (but without itemsets), the transformation is done correctly');
+
+		echo $this->unit->report();
+		//$diff = xdiff_string_diff($expected_form, $result_form, 1);
+		if (!$test)
+		{
+			echo 'transformation result:'.$result_form;
+			echo 'transformation expected:'.$expected_form;
+		}
 	}
 
 	//tests instance model

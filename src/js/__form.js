@@ -1077,6 +1077,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if ($stats.length > 0){
 			total.jrItem= parseInt($stats.find('[id="jrItem"]').text(), 10);
 			total.jrInput= parseInt($stats.find('[id="jrInput"]').text(), 10);
+			total.jrItemset= parseInt($stats.find('[id="jrItemset"]').text(), 10);
 			total.jrUpload = parseInt($stats.find('[id="jrUpload"]').text(), 10);
 			total.jrTrigger = parseInt($stats.find('[id="jrTrigger"]').text(), 10);
 			total.jrConstraint = parseInt($stats.find('[id="jrConstraint"]').text(), 10);
@@ -1092,6 +1093,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			total.hRadio = $form.find('input[type="radio"]').length;
 			total.hCheck = $form.find('input[type="checkbox"]').length;
 			total.hSelect = $form.find('select').length;
+			total.hItemset = $form.find('.itemset-template').length;
 			total.hOption = $form.find('option[value!=""]').length;
 			total.hInputNotRadioCheck = $form.find('textarea, input:not([type="radio"],[type="checkbox"])').length;
 			total.hTrigger = $form.find('.trigger').length;
@@ -1102,27 +1104,30 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			total.hCalculate = $form.find('[data-calculate]').length;
 			total.hPreload = $form.find('#jr-preload-items input').length;
 
-			if ( total.jrItem !== ( total.hOption + total.hRadio + total.hCheck )  ) {
-				console.error(' total select fields differs between XML form and HTML form');
+			if (total.jrItemset === 0 && (total.jrItem !== ( total.hOption + total.hRadio + total.hCheck ) ) ) {
+				console.error(' total number of select fields differs between XML form and HTML form');
+			}
+			if (total.jrItemset !== total.hItemset ) {
+				console.error(' total number of itemset fields differs between XML form ('+total.jrItemset+') and HTML form ('+total.hItemset+')');
 			}
 			if ( ( total.jrInput + total.jrUpload ) !== ( total.hInputNotRadioCheck - total.hCalculate - total.hPreload ) ){
-				console.error(' total amount of input/upload fields differs between XML form and HTML form');
+				console.error(' total number of input/upload fields differs between XML form and HTML form');
 			}
 			if ( total.jrTrigger != total.hTrigger ){
-				console.error(' total triggers differs between XML form and HTML form');
+				console.error(' total number of triggers differs between XML form and HTML form');
 			}
 			if ( total.jrRelevant != ( total.hRelevantNotRadioCheck + total.hRelevantRadioCheck)){
-				console.error(' total amount of branches differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form)');
+				console.error(' total number of branches differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form)');
 			}
 			if ( total.jrConstraint != ( total.hConstraintNotRadioCheck + total.hConstraintRadioCheck)){
-				console.error(' total amount of constraints differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form).'+
+				console.error(' total numberRepeats of constraints differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form).'+
 					' Note that constraints on &lt;trigger&gt; elements are ignored in the transformation and could cause this error too.');
 			}
 			if ( total.jrCalculate != total.hCalculate ){
-				console.error(' total amount of calculated items differs between XML form and HTML form');
+				console.error(' total number of calculated items differs between XML form and HTML form');
 			}
 			if ( total.jrPreload != total.hPreload ){
-				console.error(' total amount of preload items differs between XML form and HTML form');
+				console.error(' total number of preload items differs between XML form and HTML form');
 			}
 			//probably resource intensive: check if all nodes mentioned in name attributes exist in $data
 			

@@ -161,7 +161,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//dataStr = dataStr.replace(/<[\/]?instance(>|\s+[^>]*>)/gi, '');
 		////console.debug(dataStr);
 		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE ALL NAMESPACES FROM STRING, BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
-		dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/,'');
+		dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/g,'');
 
 		this.xml = $.parseXML(dataStr);
 		//$instance = $(xml);
@@ -226,6 +226,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (this.selector !== defaultSelector && this.selector.indexOf('/') !== 0){
 				if( that.instanceSelectRegEx.test(this.selector) ){
 					this.selector = this.selector.replace(that.instanceSelectRegEx, "model > instance#$1");
+					//console.debug('selector modified to: '+this.selector);
 					return;
 				}
 			}
@@ -880,9 +881,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {?(number|string|boolean)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
-		var i, context, contextDoc, instances, id, resTypeNum, resultTypes, result, attr, 
+		var i, j, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
-		console.debug('evaluating expr: '+expr+' with context selector: '+selector+' and 0-based index: '+index);
+		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
+			index+' and result type: '+resTypeStr);
 		resTypeStr = resTypeStr || 'any';
 		index = index || 0;
 
@@ -935,6 +937,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			2 : ['string', 'STRING_TYPE', 'stringValue'], 
 			3 : ['boolean', 'BOOLEAN_TYPE', 'booleanValue'], 
 			//NOTE: nodes are actually never requested in this function as DataXML.node().get() is used to return nodes	
+			//5 : ['nodes' , 'ORDERED_NODE_ITERATOR_TYPE'],
 			7 : ['nodes', 'ORDERED_NODE_SNAPSHOT_TYPE'], //works with iterateNext().textContent
 			9 : ['node', 'FIRST_ORDERED_NODE_TYPE']
 			//'node': ['FIRST_ORDERED_NODE_TYPE','singleNodeValue'], // does NOT work, just take first result of previous
@@ -957,7 +960,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
-		console.log('expr to test: '+expr);
+		console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
 			if (resTypeNum === 0){
@@ -966,7 +969,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					////console.log('checking if resultType = '+type+' is equal to actual result.resultType = '+result.resultType);
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum >0 && resTypeNum<4) ? result[resultTypes[resTypeNum][2]] : result;
-						console.debug('evaluated '+expr+' to: '+result);
+						console.debug('evaluated '+expr+' to: ', result);
 						return result;
 					}
 					//resultTypeValProp = resultTypes[type][1];
@@ -984,6 +987,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 				console.error('Expression: '+expr+' did not return any boolean, string or number value as expected');
 				//console.debug(result);
+			}
+			else if (resTypeNum === 7){
+				$result = $();
+				//console.log('raw result', result);
+				for (j=0 ; j<result.snapshotLength; j++){
+					//console.debug(result.snapshotItem(j));
+					$result.push(result.snapshotItem(j));
+				}
+				console.debug('evaluation returned nodes: ', $result);
+				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
 			return result[resultTypes[resTypeNum][2]];
@@ -1056,6 +1069,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.repeat.init();
 		this.setAllVals();
 		this.widgets.init(); //after setAllVals()
+		this.itemset.init();
 		this.bootstrapify();
 		this.branch.init();
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
@@ -1612,6 +1626,68 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 	$.extend(FormHTML.prototype.Branch.prototype, FormHTML.prototype);
 
+
+
+	FormHTML.prototype.itemset = {
+		init: function(){
+			var that=this;
+			$form.on('dataupdate', function(e, names){
+				console.debug('updating item sets that contain: ', names);
+				that.update(names);
+			});
+			this.update('all');
+			//TODO: create a clever filter (selector for update)
+			//TODO: set default values upon init
+			//TODO: selects
+			//TODO: translations for selects
+			//TODO: expressions still not properly evaluated
+		},
+		update: function(dataName){
+			var filter = (dataName === 'all') ? '' : '[data-items-path*="'+dataName+'"]';
+			console.debug('filter: '+filter);
+			$form.find('.itemset-template'+filter).each(function(){
+				var $htmlItem, $htmlItemLabels, value,
+					$template = $(this),
+					$labels = $template.siblings('.itemset-labels'),
+					itemsXpath = $template.attr('data-items-path'),
+					labelType = $labels.attr('data-label-type'),
+					labelRef = $labels.attr('data-label-ref'),
+					valueRef = $labels.attr('data-value-ref'),
+					$instanceItems = data.evaluate(itemsXpath, 'nodes');
+
+				$instanceItems.each(function(){
+					$htmlItem = $('<root/>');
+					$template
+						.clone().appendTo($htmlItem)
+						.removeClass('itemset-template')
+						.addClass('itemset')
+						.removeAttr('data-items-path');
+
+					$htmlItemLabels = (labelType === 'itext') ? 
+						$labels.find('[data-itext-id="'+$(this).find(labelRef).text()+'"]').clone() : 
+						$('<span lang="">'+$(this).find(labelRef).text()+'</span>');
+					/*
+					console.debug('label type: ', labelType);
+					console.debug('ref: ', labelRef);	
+					console.debug('instance item: ', $(this));
+					console.debug('itext id: ', $(this).find(labelRef).text());
+					console.debug('label children with itext id:', $labels.find('[data-itext-id="'+$(this).find(labelRef).text()+'"]'));
+					console.debug('item label to append: ', $htmlItemLabels);
+					console.debug('to:', $htmlItem.find(':first'));
+					*/
+					value = $(this).find(valueRef).text();
+
+					$htmlItem.find('[value]').attr('value', value)
+						.after($htmlItemLabels);
+					$labels.parent().find('option[value="'+value+'"]').remove();
+					$labels.parent().find('input[value="'+value+'"]').parent('label').remove();
+					$labels.siblings().find('.itemset').remove();
+					$labels.before($htmlItem.find(':first'));
+				});
+
+			});
+		}
+	};
 
 	/**
 	 * Updates output values, optionally filtered by those values that contain a changed node name

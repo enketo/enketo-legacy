@@ -73,7 +73,7 @@
             var textToShow,
                 selectedLabels = [];
             $select = $select || this.$element;
-            $select.find('option[selected]').each(function(){
+            $select.find('option:selected').each(function(){
                  selectedLabels.push($(this).text());
              });
             

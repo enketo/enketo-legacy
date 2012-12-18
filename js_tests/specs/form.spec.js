@@ -4,6 +4,11 @@ EnvJasmine.load(EnvJasmine.mocksDir + "form.mock.js");
 EnvJasmine.load(EnvJasmine.includeDir + "xpathjs_javarosa/build/xpathjs_javarosa.min.js");
 EnvJasmine.load(EnvJasmine.jsDir + "__form.js");
 
+loadForm = function(filename, editStr){
+	var strings = generated_forms[filename];
+	return new Form(strings.html_form, strings.xml_model, editStr);
+};
+
 describe("Data node getter", function () {
     var i, t =
 		[
@@ -145,15 +150,15 @@ describe('Data node XML data type conversion & validation', function(){
 		form.form('<form></form>');
 
 	function test(n){
-			it("converts and validates xml-type "+n.type+" with value: "+n.value, function(){
-				data = form.data(dataStr1);
-				expect(data.node(n.selector, n.index, n.filter).setVal(n.value, null, n.type)).toEqual(n.result);
-			});
-		}
+		it("converts and validates xml-type "+n.type+" with value: "+n.value, function(){
+			data = form.data(dataStr1);
+			expect(data.node(n.selector, n.index, n.filter).setVal(n.value, null, n.type)).toEqual(n.result);
+		});
+	}
 
 	for (i = 0 ; i<t.length ; i++){
-			test({selector: t[i][0], index: t[i][1], filter: t[i][2], value: t[i][3], type: t[i][4], result:t[i][5]});
-		}
+		test({selector: t[i][0], index: t[i][1], filter: t[i][2], value: t[i][3], type: t[i][4], result:t[i][5]});
+	}
 
 	it('sets a non-empty value to empty', function(){
 		var node = data.node('/thedata/nodeA', null, null);
@@ -378,22 +383,13 @@ describe("Loading instance-to-edit functionality", function(){
 	describe('when a deprecatedID node is not present in the form format', function(){
 		form = new Form(formStr1, dataStr1, dataEditStr1);
 		form.init();
-		
-		window.setTimeout(function(){
-		
-		/*it ("adds an instanceID node", function(){
-			//expect(form.getDataO().node('*>meta>instanceID').get().length).toEqual(1);
-		});*/
 
 		it ("adds a deprecatedID node", function(){
-			delay();
-			console.debug('debprecate', form.getDataO().node('* > meta > deprecatedID').get());
 			expect(form.getDataO().node('* > meta > deprecatedID').get().length).toEqual(1);
 		});
 
 		//this is an important test even though it may not seem to be...
 		it ("includes the deprecatedID in the string to be submitted", function(){
-			delay();
 			expect(form.getDataO().getStr().indexOf('<deprecatedID>')).not.toEqual(-1);
 		});
 
@@ -411,15 +407,11 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
 
-		}, 1);
-
 	});
 	
 	describe('when instanceID and deprecatedID nodes are already present in the form format', function(){
 		form = new Form(formStr1, dataEditStr1, dataEditStr1);
 		form.init();
-
-		window.setTimeout(function(){
 
 		it ("does not NOT add another instanceID node", function(){
 			expect(form.getDataO().node('*>meta>instanceID').get().length).toEqual(1);
@@ -442,7 +434,6 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('2012-02-05T15:34:00.000-04:00');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
-		}, 1);
 	});
 
 	describe('repeat functionality', function(){
@@ -521,7 +512,8 @@ describe('branching functionality', function(){
 	 */
 	it ('a) evaluates relevant logic on a repeated radio-button-question and b) injects the position correctly (issue 208)', function(){
 		var repeatSelector = 'fieldset.jr-repeat[name="/issue208/rep"]';
-		form = new Form(formStr7, dataStr7);
+		//form = new Form(formStr7, dataStr7);
+		form = loadForm('issue208.xml');
 		form.init();
 		form.getFormO().$.find(repeatSelector).eq(0).find('button.repeat').click();
 		expect(form.getFormO().$.find(repeatSelector).length).toEqual(2);
@@ -586,10 +578,10 @@ describe('Required field validation', function(){
 	});
 });
 
-describe('Cascading selects functionality', function(){
+describe('Itemset functionality', function(){
 	var form;
 
-	it('is able to address and instance by id in the ODK manner', function(){
+	it('is able to address an instance by id with the instance(id)/path/to/node syntax', function(){
 		form = new Form('', dataStr8);
 		form.init();
 		console.debug('data:', form.getDataO().$);
@@ -599,6 +591,154 @@ describe('Cascading selects functionality', function(){
 		expect(form.getDataO().evaluate("instance('cities')/root/item[state=/new_cascading_select/state and name=/new_cascading_select/city]", "nodes").length).toEqual(1);
 	});
 
+	describe('in a cascading select', function(){
+		var $items1, $items2, $items3, formHTMLO;
+		
+		
+		beforeEach(function() {
+			jQuery.fx.off = true;//turn jQuery animations off
+			form = loadForm('new_cascading_selections.xml');
+			form.init();
+
+			$items1Radio = function(){return form.getFormO().$.find(':not(.itemset-template) > input:radio[data-name="/new_cascading_selections/group1/country"]');};
+			$items2Radio = function(){return form.getFormO().$.find(':not(.itemset-template) > input:radio[data-name="/new_cascading_selections/group1/city"]');};
+			$items3Radio = function(){return form.getFormO().$.find(':not(.itemset-template) > input:radio[data-name="/new_cascading_selections/group1/neighborhood"]');};
+			$items1Select = function(){return form.getFormO().$.find('select[name="/new_cascading_selections/group2/country2"] > option:not(.itemset-template)');};
+			$items2Select = function(){return form.getFormO().$.find('select[name="/new_cascading_selections/group2/city2"] > option:not(.itemset-template)');};
+			$items3Select = function(){return form.getFormO().$.find('select[name="/new_cascading_selections/group2/neighborhood2"] > option:not(.itemset-template)');};
+
+			formHTMLO = form.getFormO();
+			spyOn(formHTMLO, 'itemsetUpdate').andCallThrough();
+		});
+
+		it('level 1: with <input type="radio"> elements has the expected amount of options', function(){
+			expect($items1Radio().length).toEqual(2);
+			expect($items1Radio().siblings().text()).toEqual('NederlandThe NetherlandsVerenigde StatenUnited States');
+			expect($items2Radio().length).toEqual(0);
+			expect($items3Radio().length).toEqual(0);
+		});
+		
+		it('level 2: with <input type="radio"> elements has the expected amount of options', function(){
+			//select first option in cascade
+			runs(function(){
+				form.getFormO().$.find('input:radio[data-name="/new_cascading_selections/group1/country"][value="nl"]')
+					.attr('checked', true).trigger('change');
+			});
+			
+			waitsFor(function(){return formHTMLO.itemsetUpdate.calls.length > 0;}, 'itemsetUpdate not called!', 1000);
+			
+			runs(function(){
+				expect($items1Radio().length).toEqual(2);
+				expect($items2Radio().length).toEqual(3);
+				expect($items2Radio().siblings().text()).toEqual('AmsterdamAmsterdamRotterdamRotterdamDrontenDronten');
+				expect($items3Radio().length).toEqual(0);
+			});
+		});
+
+		it('level 3: with <input type="radio"> elements has the expected amount of options', function(){
+			//select first option
+			runs(function(){
+				form.getFormO().$.find('input:radio[data-name="/new_cascading_selections/group1/country"][value="nl"]')
+					.attr('checked', true).trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.calls.length > 0;}, 'itemsetUpdate not called!', 1000);
+			
+			//select second option
+			runs(function(){
+				form.getFormO().$.find('input:radio[data-name="/new_cascading_selections/group1/city"][value="ams"]')
+					.attr('checked', true).trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.calls.length > 1;}, 'itemsetUpdate not called!', 1000);
+
+			runs(function(){
+				expect($items1Radio().length).toEqual(2);
+				expect($items2Radio().length).toEqual(3);
+				expect($items3Radio().length).toEqual(2);
+				expect($items3Radio().siblings().text()).toEqual('WesterparkWesterparkDe DamDam');
+			});
+
+			//select other first option to change itemset
+			runs(function(){
+				form.getFormO().$.find('input:radio[data-name="/new_cascading_selections/group1/country"][value="usa"]')
+					.attr('checked', true).trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.calls.length > 2;}, 'itemsetUpdate not called!', 1000);
+
+			runs(function(){
+				expect($items1Radio().length).toEqual(2);
+				expect($items2Radio().length).toEqual(3);
+				expect($items2Radio().siblings().text()).toEqual('DenverDenverNieuw AmsterdamNew York CityDe EngelenLos Angeles');
+				expect($items3Radio().length).toEqual(0);
+			});
+		});
+
+		it('level 1: with <select> <option> elements has the expected amount of options', function(){
+			expect($items1Select().length).toEqual(2);
+			//expect($items1Select().text()).toEqual('Verenigde StatenNederland');
+			expect($items2Select().length).toEqual(0);
+			expect($items3Select().length).toEqual(0);
+		});
+
+		it('level 2: with <select> <option> elements has the expected amount of options', function(){
+			//select first option in cascade
+			runs(function(){
+				form.getFormO().$.find('select[name="/new_cascading_selections/group2/country2"]').val("nl")
+					.trigger('change');
+			});
+			
+			waitsFor(function(){return formHTMLO.itemsetUpdate.calls.length > 0;}, 'itemsetUpdate not called!', 1000);
+			
+			runs(function(){
+				expect($items1Select().length).toEqual(2);
+				expect($items2Select().length).toEqual(3);
+				//expect($items2Select().text()).toEqual('AmsterdamRotterdamDronten');
+				expect($items3Select().length).toEqual(0);
+			});
+		});
+
+		it('level 3: with <select> <option> elements has the expected amount of options', function(){
+			//select first option in cascade
+			runs(function(){
+				form.getFormO().$.find('select[name="/new_cascading_selections/group2/country2"]').val("nl")
+					.trigger('change');
+			});
+			
+			waitsFor(function(){return formHTMLO.itemsetUpdate.calls.length > 0;}, 'itemsetUpdate not called!', 1000);
+			
+			//select second option
+			runs(function(){
+				form.getFormO().$.find('select[name="/new_cascading_selections/group2/city2"]').val("ams")
+					.trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.calls.length > 1;}, 'itemsetUpdate not called!', 1000);
+
+			runs(function(){
+				expect($items1Select().length).toEqual(2);
+				expect($items2Select().length).toEqual(3);
+				expect($items3Select().length).toEqual(2);
+				//expect($items3Select().text()).toEqual('WesterparkDe Dam');
+			});
+
+			//select other first option to change itemset
+			runs(function(){
+				form.getFormO().$.find('select[name="/new_cascading_selections/group2/country2"]').val("usa")
+					.trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.calls.length > 2;}, 'itemsetUpdate not called!', 1000);
+
+			runs(function(){
+				expect($items1Select().length).toEqual(2);
+				expect($items2Select().length).toEqual(3);
+				//expect($items2Select().text()).toEqual('DenverNieuw AmsterdamDe Engelen');
+				expect($items3Select().length).toEqual(0);
+			});
+		});
+	});
 });
 
 

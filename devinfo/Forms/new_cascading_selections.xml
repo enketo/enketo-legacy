@@ -5,12 +5,6 @@
     <model>
       <itext>
         <translation lang="Dutch">
-          <text id="static_instance-cities-2">
-            <value>Nieuw Amsterdam</value>
-          </text>
-          <text id="/new_cascading_selections/group6/country6/usa:label">
-            <value>Verenigde Staten</value>
-          </text>
           <text id="/new_cascading_selections/group4/country4/usa:label">
             <value>Verenigde Staten</value>
           </text>
@@ -29,8 +23,8 @@
           <text id="static_instance-cities-3">
             <value>De Engelen</value>
           </text>
-          <text id="/new_cascading_selections/group5/country5/nl:label">
-            <value>Nederland</value>
+          <text id="static_instance-cities-2">
+            <value>Nieuw Amsterdam</value>
           </text>
           <text id="static_instance-cities-1">
             <value>Denver</value>
@@ -47,14 +41,8 @@
           <text id="static_instance-cities-4">
             <value>Rotterdam</value>
           </text>
-          <text id="/new_cascading_selections/group6/country6/nl:label">
-            <value>Nederland</value>
-          </text>
           <text id="/new_cascading_selections/group2/country2/nl:label">
             <value>Nederland</value>
-          </text>
-          <text id="/new_cascading_selections/group5/country5/usa:label">
-            <value>Verenigde Staten</value>
           </text>
           <text id="/new_cascading_selections/group4/country4/nl:label">
             <value>Nederland</value>
@@ -94,12 +82,6 @@
           </text>
         </translation>
         <translation lang="English">
-          <text id="static_instance-cities-2">
-            <value>New York City</value>
-          </text>
-          <text id="/new_cascading_selections/group6/country6/usa:label">
-            <value>United States</value>
-          </text>
           <text id="/new_cascading_selections/group4/country4/usa:label">
             <value>United States</value>
           </text>
@@ -118,8 +100,8 @@
           <text id="static_instance-cities-3">
             <value>Los Angeles</value>
           </text>
-          <text id="/new_cascading_selections/group5/country5/nl:label">
-            <value>The Netherlands</value>
+          <text id="static_instance-cities-2">
+            <value>New York City</value>
           </text>
           <text id="static_instance-cities-1">
             <value>Denver</value>
@@ -136,14 +118,8 @@
           <text id="static_instance-cities-4">
             <value>Rotterdam</value>
           </text>
-          <text id="/new_cascading_selections/group6/country6/nl:label">
-            <value>The Netherlands</value>
-          </text>
           <text id="/new_cascading_selections/group2/country2/nl:label">
             <value>The Netherlands</value>
-          </text>
-          <text id="/new_cascading_selections/group5/country5/usa:label">
-            <value>United States</value>
           </text>
           <text id="/new_cascading_selections/group4/country4/nl:label">
             <value>The Netherlands</value>
@@ -205,16 +181,6 @@
             <city4>den</city4>
             <neighborhood4/>
           </group4>
-          <group5>
-            <country5/>
-            <city5/>
-            <neighborhood5/>
-          </group5>
-          <group6>
-            <country6/>
-            <city6/>
-            <neighborhood6/>
-          </group6>
           <meta>
             <instanceID/>
           </meta>
@@ -336,12 +302,6 @@
       <bind nodeset="/new_cascading_selections/group4/country4" type="select1"/>
       <bind nodeset="/new_cascading_selections/group4/city4" type="select1"/>
       <bind nodeset="/new_cascading_selections/group4/neighborhood4" type="select1"/>
-      <bind nodeset="/new_cascading_selections/group5/country5" type="select1"/>
-      <bind nodeset="/new_cascading_selections/group5/city5" type="select1"/>
-      <bind nodeset="/new_cascading_selections/group5/neighborhood5" type="select1"/>
-      <bind nodeset="/new_cascading_selections/group6/country6" type="select1"/>
-      <bind nodeset="/new_cascading_selections/group6/city6" type="select1"/>
-      <bind nodeset="/new_cascading_selections/group6/neighborhood6" type="select1"/>
       <bind calculate="concat('uuid:', uuid())" nodeset="/new_cascading_selections/meta/instanceID" readonly="true()" type="string"/>
     </model>
   </h:head>
@@ -437,54 +397,6 @@
       <select1 appearance="minimal" ref="/new_cascading_selections/group4/neighborhood4">
         <label>Neighborhood</label>
         <itemset nodeset="instance('neighborhoods')/root/item[country=/new_cascading_selections/group4/country4 and city=/new_cascading_selections/group4/city4]">
-          <value ref="name"/>
-          <label ref="jr:itext(itextId)"/>
-        </itemset>
-      </select1>
-    </group>
-    <group ref="/new_cascading_selections/group5">
-      <label>Cascading Selects with Radio Buttons Without iText Labels labels</label>
-      <select1 ref="/new_cascading_selections/group5/country5">
-        <label>Country</label>
-        <itemset nodeset="instance('countries')/root/item">
-          <value ref="name"/>
-          <label ref="jr:itext(itextId)"/>
-        </itemset>
-      </select1>
-      <select1 ref="/new_cascading_selections/group5/city5">
-        <label>City</label>
-        <itemset nodeset="instance('cities')/root/item[country=/new_cascading_selections/group5/country5]">
-          <value ref="name"/>
-          <label ref="jr:itext(itextId)"/>
-        </itemset>
-      </select1>
-      <select1 ref="/new_cascading_selections/group5/neighborhood5">
-        <label>Neighborhood</label>
-        <itemset nodeset="instance('neighborhoods')/root/item[country=/new_cascading_selections/group5/country5 and city=/new_cascading_selections/group5/city5]">
-          <value ref="name"/>
-          <label ref="jr:itext(itextId)"/>
-        </itemset>
-      </select1>
-    </group>
-    <group ref="/new_cascading_selections/group6">
-      <label>Cascading Selects with Pulldowns Without iText Labels</label>
-      <select1 appearance="minimal" ref="/new_cascading_selections/group6/country6">
-        <label>Country</label>
-        <itemset nodeset="instance('countries')/root/item">
-          <value ref="name"/>
-          <label ref="jr:itext(itextId)"/>
-        </itemset>
-      </select1>
-      <select1 appearance="minimal" ref="/new_cascading_selections/group6/city6">
-        <label>City</label>
-        <itemset nodeset="instance('cities')/root/item[country=/new_cascading_selections/group6/country6]">
-          <value ref="name"/>
-          <label ref="jr:itext(itextId)"/>
-        </itemset>
-      </select1>
-      <select1 appearance="minimal" ref="/new_cascading_selections/group6/neighborhood6">
-        <label>Neighborhood</label>
-        <itemset nodeset="instance('neighborhoods')/root/item[country=/new_cascading_selections/group6/country6 and city=/new_cascading_selections/group6/city6]">
           <value ref="name"/>
           <label ref="jr:itext(itextId)"/>
         </itemset>

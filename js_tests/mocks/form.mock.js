@@ -35,34 +35,35 @@ var dataStr1 =
     "</model>";
 
 var dataEditStr1 =
-    "<instance>"+
-        "<thedata id='something'>"+
-            "<meta>"+
-                '<instanceID>7c990ed9-8aab-42ba-84f5-bf23277154ad</instanceID>'+
-                '<timeStart/>'+
-                '<timeEnd/>'+
-            "</meta>"+
-            "<nodeA>2012-02-05T15:34:00.000-04</nodeA>"+
-            "<nodeB>b</nodeB>"+
-            "<repeatGroup template=''>"+
-                "<nodeC>cdefault</nodeC>"+
-            "</repeatGroup>"+
-            "<repeatGroup>"+
-                "<nodeC>some data</nodeC>"+
-            "</repeatGroup>"+
-            "<somenodes>"+
-                "<A>two</A>"+
-                "<B>three</B>"+
-                "<C>four</C>"+
-            "</somenodes>"+
-            "<someweights>"+
-                "<w1>1</w1>"+
-                "<w2>3</w2>"+
-                "<w.3>5</w.3>"+
-            "</someweights>"+
-        "</thedata>"+
-    "</instance>";
-
+    "<model>"+
+        "<instance>"+
+            "<thedata id='something'>"+
+                "<meta>"+
+                    '<instanceID>7c990ed9-8aab-42ba-84f5-bf23277154ad</instanceID>'+
+                    '<timeStart/>'+
+                    '<timeEnd/>'+
+                "</meta>"+
+                "<nodeA>2012-02-05T15:34:00.000-04</nodeA>"+
+                "<nodeB>b</nodeB>"+
+                "<repeatGroup template=''>"+
+                    "<nodeC>cdefault</nodeC>"+
+                "</repeatGroup>"+
+                "<repeatGroup>"+
+                    "<nodeC>some data</nodeC>"+
+                "</repeatGroup>"+
+                "<somenodes>"+
+                    "<A>two</A>"+
+                    "<B>three</B>"+
+                    "<C>four</C>"+
+                "</somenodes>"+
+                "<someweights>"+
+                    "<w1>1</w1>"+
+                    "<w2>3</w2>"+
+                    "<w.3>5</w.3>"+
+                "</someweights>"+
+            "</thedata>"+
+        "</instance>"+
+    "</model>";
 
 var formStr1 =
     '<form>'+
@@ -102,6 +103,7 @@ var formStr2 =
             '<span id="jrSelect">0</span>'+
             '<span id="jrSelect1">0</span>'+
             '<span id="jrItem">0</span>'+
+            '<span id="jrItemset">0</span>'+
             '<span id="jrInput">0</span>'+
             '<span id="jrUpload">0</span>'+
             '<span id="jrTrigger">2</span>'+
@@ -163,6 +165,7 @@ var formStr3 =
         '<div id="stats" style="display: none;">'+
             '<span id="jrSelect">0</span><span id="jrSelect1">0</span>'+
             '<span id="jrItem">0</span><span id="jrInput">0</span>'+
+            '<span id="jrItemset">0</span>'+
             '<span id="jrUpload">0</span><span id="jrTrigger">2</span>'+
             '<span id="jrRepeat">0</span><span id="jrRelevant">0</span>'+
             '<span id="jrConstraint">0</span><span id="jrCalculate">3</span>'+
@@ -219,6 +222,7 @@ var formStr4 =
         '<div id="stats" style="display: none;">'+
             '<span id="jrSelect">0</span><span id="jrSelect1">0</span>'+
             '<span id="jrItem">0</span><span id="jrInput">1</span>'+
+            '<span id="jrItemset">0</span>'+
             '<span id="jrUpload">0</span><span id="jrTrigger">0</span>'+
             '<span id="jrRepeat">0</span><span id="jrRelevant">0</span>'+
             '<span id="jrConstraint">0</span><span id="jrCalculate">1</span>'+
@@ -294,6 +298,7 @@ var formStr5 =
             '<span id="jrSelect">0</span>'+
             '<span id="jrSelect1">0</span>'+
             '<span id="jrItem">0</span>'+
+            '<span id="jrItemset">0</span>'+
             '<span id="jrInput">0</span>'+
             '<span id="jrUpload">0</span>'+
             '<span id="jrTrigger">0</span>'+
@@ -402,65 +407,6 @@ var formStr6 =
         '</label>'+
     '</form>';
 
-var dataStr7 =
-    '<model>'+
-        '<instance>'+
-            '<issue208 id="TestGroupBranch" version="3" xmlns="http://rapaide.com/testGroupBranch">'+
-                '<rep>'+
-                    '<nodeA/>'+
-                    '<nodeB/>'+
-                '</rep>'+
-            '</issue208>'+
-        '</instance>'+
-    '</model>';
-
-var formStr7 =
-    '<form class="jr" id="TestGroupBranch">'+
-        '<div id="form-languages" style="display:none;" data-default-lang="">'+
-            '<a href="#" lang="en">'+
-                '<span>English</span>'+
-            '</a>'+
-        '</div>'+
-        '<fieldset class="jr-group " name="/issue208/rep">'+
-            '<fieldset class="jr-repeat " name="/issue208/rep">'+
-                '<fieldset>'+
-                    '<legend>'+
-                        '<span lang="en">Select</span>'+
-                    '</legend>'+
-                    '<label>'+
-                        '<span lang="en">Yes</span>'+
-                        '<input autocomplete="off" name="/issue208/rep/nodeA" type="radio" value="yes" data-type-xml="select1"/>'+
-                    '</label>'+
-                    '<label>'+
-                        '<span lang="en">No</span>'+
-                        '<input autocomplete="off" name="/issue208/rep/nodeA" type="radio" value="no" data-type-xml="select1"/>'+
-                    '</label>'+
-                    '<label>'+
-                        '<span lang="en">Dont know</span>'+
-                        '<input autocomplete="off" name="/issue208/rep/nodeA" type="radio" value="dkrf" data-type-xml="select1"/>'+
-                    '</label>'+
-                '</fieldset>'+
-                '<fieldset>'+
-                    '<legend>'+
-                        '<span lang="en">Select</span>'+
-                    '</legend>'+
-                    '<label>'+
-                        '<span lang="en">Yes</span>'+
-                        '<input autocomplete="off" name="/issue208/rep/nodeB" type="radio" value="yes" data-type-xml="select1" data-relevant="/issue208/rep/nodeA = &quot;yes&quot;"/>'+
-                    '</label>'+
-                    '<label>'+
-                        '<span lang="en">No</span>'+
-                        '<input autocomplete="off" name="/issue208/rep/nodeB" type="radio" value="no" data-type-xml="select1" data-relevant="/issue208/rep/nodeA = &quot;yes&quot;"/>'+
-                    '</label>'+
-                    '<label>'+
-                        '<span lang="en">Dont know</span>'+
-                        '<input autocomplete="off" name="/issue208/rep/nodeB" type="radio" value="dkrf" data-type-xml="select1" data-relevant="/issue208/rep/nodeA = &quot;yes&quot;"/>'+
-                    '</label>'+
-                '</fieldset>'+
-            '</fieldset>'+
-        '</fieldset>'+
-    '</form>';
-
 var dataStr8 =
     '<model>'+
         '<instance>'+
@@ -488,10 +434,3 @@ var dataStr8 =
             '</root>'+
         '</instance>'+
     '</model>';
-
-/**
- * var jrDataStrToEdit = '<?xml version="1.0" ?><Data_Types id="data_types"><formhub><uuid>98063bc21324412f9cf1cb1c2a16c66e</uuid></formhub><text/><textarea>Lots of text
-with
-new 
-lines. Let's see if these new lines are persisten, when editing this data later.</textarea><pagebreak/><integ/><decim/><onecolor/><multicolor/><geop>39.761 -104.9284 0 22</geop><barc/><day/><now/><aud/><img/><vid/><meta><instanceID>uuid:96cc74a1-8fe9-4eeb-88fd-0371d5f76f94</instanceID></meta><meta><instanceID>uuid:c22ab3185bda403c81b8e7ed559217fa</instanceID></meta></Data_Types>';
- */

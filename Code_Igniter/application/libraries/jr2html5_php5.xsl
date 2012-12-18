@@ -473,6 +473,8 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     </xsl:attribute>
                 </xsl:otherwise>
             </xsl:choose>
+            <xsl:text>
+            </xsl:text>
         </span> 
     </xsl:template>
     
@@ -486,14 +488,17 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         <xsl:param name="string"/>
         <xsl:choose>
             <xsl:when test="contains($string, '[') and contains($string, ']')">
-                <xsl:call-template name="strip-filter">
-                    <xsl:with-param name="string" select="substring-before($string,'[')"/>
-                </xsl:call-template>
+                <xsl:value-of select="substring-before($string, '[')"/>  
             </xsl:when>
             <xsl:otherwise>
                 <xsl:value-of select="$string"/>
             </xsl:otherwise>
         </xsl:choose>
+        <xsl:if test="string-length(substring-after($string, ']')) > 0">
+            <xsl:call-template name="strip-filter">
+                <xsl:with-param name="string" select="substring-after($string,']')"/>
+            </xsl:call-template>
+        </xsl:if>
     </xsl:template>
     
     <!--
@@ -563,6 +568,8 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                         <xsl:copy-of select="." />
                     </xsl:for-each>
                 </xsl:if>
+                <xsl:text>
+                </xsl:text>
             </span>
             <xsl:if test="./xf:itemset">
                 <xsl:apply-templates select="xf:itemset" mode="labels"/>
@@ -586,6 +593,8 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 <xsl:apply-templates select="$binding/@jr:constraintMsg" />
                 <xsl:apply-templates select="xf:label" />
                 <xsl:apply-templates select="xf:hint" />
+                <xsl:text>
+                </xsl:text>
             </legend>
             <xsl:choose>
                 <xsl:when test="not(./xf:itemset)">

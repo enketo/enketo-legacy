@@ -62,9 +62,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		form = new FormHTML(formSelector);
 
 		data.init();
-		//console.debug('form data obj initialized');
-		//
+
 		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit.length > 0){
+			//the corrections below can be removed once the server side code is tested
+			if (!/^<model/.test(dataStrToEdit)){
+				if (!/<instance/.test(dataStrToEdit)){
+					dataStrToEdit = '<model><instance>'+dataStrToEdit+'</instance></model>';
+				}
+				else{
+					dataStrToEdit = '<model>'+dataStrToEdit+'</model>';
+				}
+			}
 			dataToEdit = new DataXML(dataStrToEdit);
 			dataToEdit.init();
 			data.load(dataToEdit);
@@ -154,8 +162,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var $data, 
 			that=this;
 
-		//looks only at start of string!
-		this.instanceSelectRegEx = /instance\(\'([^\/:\s]+)\'\)/g;
+		this.instanceSelectRegEx = /instance\([\'|\"]([^\/:\s]+)[\'|\"]\)/g;
 		//console.debug('dataStr:'+dataStr); 
 		//seems wrong but using regular expression on string avoids persistant xmlns behaviour
 		//dataStr = dataStr.replace(/<[\/]?instance(>|\s+[^>]*>)/gi, '');
@@ -683,7 +690,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 		this.node('*>meta>deprecatedID').setVal(instanceID.getVal()[0], null, 'string');
 		instanceID.setVal('', null, 'string');
-		console.debug('finished loading instance values to be edited');
 	};
 
 
@@ -907,7 +913,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if (this.instanceSelectRegEx.test(expr)){
 			instances = expr.match(this.instanceSelectRegEx);
 			for (i=0 ; i<instances.length ; i++){
-				id = instances[i].match(/\'([^\'']+)\'/)[1];
+				id = instances[i].match(/[\'|\"]([^\'']+)[\'|\"]/)[1];
 				expr = expr.replace(instances[i], '/node()/instance[@id="'+id+'"]');
 				this.$.find('instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
 			}
@@ -1625,10 +1631,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 
 	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
-		//TODO: write tests
 		//TODO: test with very large itemset
-		//TODO: test form with one language
-		//TODO: test when itext is not used
 		var that = this,
 			cleverSelector = [],
 			needToUpdateLangs = false;
@@ -1688,10 +1691,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					.removeAttr('data-items-path');
 				
 				$htmlItemLabels = (labelType === 'itext') ? 
-					$labels.find('[data-itext-id="'+$(this).find(labelRef).text()+'"]').clone() : 
-					$('<span lang="">'+$(this).find(labelRef).text()+'</span>');
+					$labels.find('[data-itext-id="'+$(this).children(labelRef).text()+'"]').clone() : 
+					$('<span class="active" lang="">'+$(this).children(labelRef).text()+'</span>');
 				
-				value = $(this).find(valueRef).text();
+				value = $(this).children(valueRef).text();
 				$htmlItem.find('[value]').attr('value', value);
 
 				if (templateNodeName === 'label'){
@@ -1708,7 +1711,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						.attr('data-option-value', value)
 						.attr('data-itext-id', '')
 						.appendTo($labels.siblings('.jr-option-translations'));
-					$template.after($htmlItem.find(':first'));
+					$template.siblings().andSelf().last().after($htmlItem.find(':first'));
 				}
 			});			
 		});

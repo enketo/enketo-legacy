@@ -232,7 +232,7 @@ State.prototype.init = function (){
 State.prototype.setUrl = function(){
 	var stateProps = {server: this.server, id: this.id, source: this.source, debug: this.debug},
 		urlAppend = '',
-		url = 'test';
+		url = 'formtester';
 	urlAppend = (this.server !== null && connection.isValidURL(this.server)) ? urlAppend+'server='+encodeURIComponent(this.server) : urlAppend;
 	urlAppend = (this.id !== null) ? urlAppend+'&id='+encodeURIComponent(this.id) : urlAppend;
 	urlAppend = (this.source == 'true' || this.source === true ) ? urlAppend+'&source='+encodeURIComponent(this.source) : urlAppend;

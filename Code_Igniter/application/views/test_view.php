@@ -50,7 +50,7 @@
 					
 					<div class="hurry"><a href="test?server=http%3A%2F%2Fformhub.org%2Fformhub_u" title="Check forms on http://formhub.org/formhub_u">Pssst, in a hurry?</a></div>
 				</form>
-				<div id="form-list" class="" style="display:none;">
+				<div id="form-list" class="formlist" style="display:none;">
 					<ul class="btn-group" data-toggle="buttons-radio">
 					</ul>
 				</div>

@@ -212,6 +212,16 @@ label#data-template-show {
       list-style-type: none;
        } } }  
 
+.formlist{
+  ul{
+    padding: 0; 
+    margin: 0;
+    list-style: none;
+    li {
+      margin: 10px 0;} }
+  &.empty p{
+    display: none;} }
+
 .hint{
   //$hwidth: 30px;
   //background-color: $shadow;

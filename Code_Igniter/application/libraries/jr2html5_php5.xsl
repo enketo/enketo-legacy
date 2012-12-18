@@ -419,16 +419,16 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                             <xsl:with-param name="binding" select="$binding"/>
                             <xsl:with-param name="nodeset" select="$nodeset"/>
                         </xsl:call-template>
-                        <xsl:attribute name="value">__VALUE__</xsl:attribute>
+                        <xsl:attribute name="value"></xsl:attribute>
                     </input>
                 </label>
             </xsl:when>
             <xsl:otherwise>
-                <option class="itemset-template" value="__VALUE__">
+                <option class="itemset-template" value="">
                     <xsl:attribute name="data-items-path">
                         <xsl:value-of select="@nodeset"/>
                     </xsl:attribute>
-                    <xsl:value-of select="'__LABEL__'"/>
+                    <xsl:value-of select="'...'"/>
                 </option>
             </xsl:otherwise>
         </xsl:choose>
@@ -556,21 +556,17 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                         <xsl:apply-templates select="xf:itemset" mode="templates"/>
                     </xsl:otherwise>
                 </xsl:choose>
-            </select>
-            <xsl:choose>
-                <xsl:when test="not(./xf:itemset)">
-                    <xsl:if test="$translated = 'true'">
-                        <span class="jr-option-translations" style="display:none;">
-                            <xsl:for-each select="exsl:node-set($options)/span">
-                                <xsl:copy-of select="." />
-                            </xsl:for-each>
-                        </span>
-                    </xsl:if>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:apply-templates select="xf:itemset" mode="labels"/>
-                </xsl:otherwise>
-            </xsl:choose>
+            </select>            
+            <span class="jr-option-translations" style="display:none;">
+                <xsl:if test="not(./xf:itemset) and $translated = 'true'">
+                    <xsl:for-each select="exsl:node-set($options)/span">
+                        <xsl:copy-of select="." />
+                    </xsl:for-each>
+                </xsl:if>
+            </span>
+            <xsl:if test="./xf:itemset">
+                <xsl:apply-templates select="xf:itemset" mode="labels"/>
+            </xsl:if>
         </label>
     </xsl:template>
     

@@ -595,6 +595,8 @@ describe('Cascading selects functionality', function(){
 		console.debug('data:', form.getDataO().$);
 		expect(form.getDataO().evaluate("instance('cities')/root/item/name", "string")).toEqual('denver');
 		expect(form.getDataO().evaluate("instance('cities')/root/item[state=/new_cascading_select/state]/name", "string")).toEqual('denver');
+		expect(form.getDataO().evaluate("instance('cities')/root/item[state=/new_cascading_select/state and 1<2]", "nodes").length).toEqual(2);
+		expect(form.getDataO().evaluate("instance('cities')/root/item[state=/new_cascading_select/state and name=/new_cascading_select/city]", "nodes").length).toEqual(1);
 	});
 
 });

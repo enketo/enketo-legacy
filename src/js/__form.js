@@ -365,7 +365,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					allClonedNodeNames.push($(this).prop('nodeName'));
 				});
 
-				$form.trigger('dataupdate', allClonedNodeNames.join());
+				$form.trigger('dataupdate', allClonedNodeNames.join(','));
 			}
 			else{
 				console.error ('node.clone() function did not receive origin and target nodes');
@@ -1067,9 +1067,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.find('h2').first().append('<span/>');
 
 		this.repeat.init();
+		this.itemsetUpdate();
 		this.setAllVals();
 		this.widgets.init(); //after setAllVals()
-		this.itemset.init();
 		this.bootstrapify();
 		this.branch.init();
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
@@ -1282,8 +1282,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			index = index || 0;
 			
 			if (this.getInputType($form.find('[data-name="'+name+'"]').eq(0)) == 'radio'){
-				//name = name+'____'+index;
-				//index = 0;
 				//why not use this.getIndex?
 				return this.getWrapNodes($form.find('[data-name="'+name+'"]')).eq(index).find('input[value="'+value+'"]').attr('checked', true);
 			}
@@ -1299,12 +1297,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					value = data.node().convert(value, type);
 
 					console.debug('converting date before setting input field to: '+value);
-
 				}
 			}
 
-			if (this.isMultiple($inputNodes.eq(0)) === true){
-				
+			if (this.isMultiple($inputNodes.eq(0)) === true){				
 				value = value.split(' ');
 			}
 			
@@ -1347,7 +1343,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			defaultLang = $form.find('#form-languages').attr('data-default-lang');
 		
 		$('#form-languages').detach().insertBefore($('form.jr').parent());
-		if (!defaultLang || defaultLang==='') {
+		if (!defaultLang || defaultLang === '') {
 			defaultLang = $('#form-languages a:eq(0)').attr('lang');
 		}
 		console.debug('default language is: '+defaultLang);
@@ -1361,6 +1357,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});
 			this.setHints();//defaultLang);
+			$form.trigger('changelanguage');
 			return;
 		}
 
@@ -1627,72 +1624,103 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	$.extend(FormHTML.prototype.Branch.prototype, FormHTML.prototype);
 
 
+	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
+		//TODO: write tests
+		//TODO: test with very large itemset
+		//TODO: test form with one language
+		//TODO: test when itext is not used
+		var that = this,
+			cleverSelector = [],
+			needToUpdateLangs = false;
 
-	FormHTML.prototype.itemset = {
-		init: function(){
-			var that=this;
-			$form.on('dataupdate', function(e, names){
-				console.debug('updating item sets that contain: ', names);
-				that.update(names);
-			});
-			this.update('all');
-			//TODO: create a clever filter (selector for update)
-			//TODO: set default values upon init
-			//TODO: selects
-			//TODO: translations for selects
-			//TODO: expressions still not properly evaluated
-		},
-		update: function(dataName){
-			var filter = (dataName === 'all') ? '' : '[data-items-path*="'+dataName+'"]';
-			console.debug('filter: '+filter);
-			$form.find('.itemset-template'+filter).each(function(){
-				var $htmlItem, $htmlItemLabels, value,
-					$template = $(this),
-					$labels = $template.siblings('.itemset-labels'),
-					itemsXpath = $template.attr('data-items-path'),
-					labelType = $labels.attr('data-label-type'),
-					labelRef = $labels.attr('data-label-ref'),
-					valueRef = $labels.attr('data-value-ref'),
-					$instanceItems = data.evaluate(itemsXpath, 'nodes');
-
-				$instanceItems.each(function(){
-					$htmlItem = $('<root/>');
-					$template
-						.clone().appendTo($htmlItem)
-						.removeClass('itemset-template')
-						.addClass('itemset')
-						.removeAttr('data-items-path');
-
-					$htmlItemLabels = (labelType === 'itext') ? 
-						$labels.find('[data-itext-id="'+$(this).find(labelRef).text()+'"]').clone() : 
-						$('<span lang="">'+$(this).find(labelRef).text()+'</span>');
-					/*
-					console.debug('label type: ', labelType);
-					console.debug('ref: ', labelRef);	
-					console.debug('instance item: ', $(this));
-					console.debug('itext id: ', $(this).find(labelRef).text());
-					console.debug('label children with itext id:', $labels.find('[data-itext-id="'+$(this).find(labelRef).text()+'"]'));
-					console.debug('item label to append: ', $htmlItemLabels);
-					console.debug('to:', $htmlItem.find(':first'));
-					*/
-					value = $(this).find(valueRef).text();
-
-					$htmlItem.find('[value]').attr('value', value)
-						.after($htmlItemLabels);
-					$labels.parent().find('option[value="'+value+'"]').remove();
-					$labels.parent().find('input[value="'+value+'"]').parent('label').remove();
-					$labels.siblings().find('.itemset').remove();
-					$labels.before($htmlItem.find(':first'));
-				});
-
+		if (typeof changedDataNodeNames == 'undefined'){
+			cleverSelector = ['.itemset-template'];
+		}
+		else{ 
+			$.each(changedDataNodeNames.split(','), function(index, value){
+				cleverSelector.push('.itemset-template[data-items-path*="'+value+'"]');
 			});
 		}
+
+		cleverSelector = cleverSelector.join(',');
+		
+		$form.find(cleverSelector).each(function(){
+			var $htmlItem, $htmlItemLabels, value, 
+				$template = $(this),
+				newItems = {},
+				prevItems = $template.data(),
+				templateNodeName = $(this).prop('nodeName').toLowerCase(),
+				$labels = $template.closest('label, select').siblings('.itemset-labels'),
+				itemsXpath = $template.attr('data-items-path'),
+				labelType = $labels.attr('data-label-type'),
+				labelRef = $labels.attr('data-label-ref'),
+				valueRef = $labels.attr('data-value-ref'),
+				$instanceItems = data.evaluate(itemsXpath, 'nodes');
+
+			// this property allows for more efficient 'itemschanged' detection
+			newItems.length = $instanceItems.length; 
+			//this may cause problems for large itemsets. Use md5 instead?
+			newItems.text = $instanceItems.text(); 
+
+			console.debug('previous items: ', prevItems);
+			console.debug('new items: ', newItems);
+
+			if (newItems.length === prevItems.length && newItems.text === prevItems.text){
+				console.debug('itemset unchanged');
+				return;
+			}
+
+			$template.data(newItems);
+			
+			//clear data values through inputs. Note: if a value exists, 
+			//this will trigger a dataupdate event which may call this update function again
+			$(this).closest('label > select, fieldset > label').parent()
+				.clearInputs('change')
+				.find(templateNodeName).not($template).remove();
+			$(this).parent('select').siblings('.jr-option-translations').empty();
+
+			$instanceItems.each(function(){
+				$htmlItem = $('<root/>');
+				$template
+					.clone().appendTo($htmlItem)
+					.removeClass('itemset-template')
+					.addClass('itemset')
+					.removeAttr('data-items-path');
+				
+				$htmlItemLabels = (labelType === 'itext') ? 
+					$labels.find('[data-itext-id="'+$(this).find(labelRef).text()+'"]').clone() : 
+					$('<span lang="">'+$(this).find(labelRef).text()+'</span>');
+				
+				value = $(this).find(valueRef).text();
+				$htmlItem.find('[value]').attr('value', value);
+
+				if (templateNodeName === 'label'){
+					$htmlItem.find('input')
+						.after($htmlItemLabels);
+					$labels.before($htmlItem.find(':first'));
+				}
+				else if (templateNodeName === 'option') { 
+					needToUpdateLangs = true;
+					if ($htmlItemLabels.length === 1){
+						$htmlItem.find('option').text($htmlItemLabels.text());
+					}
+					$htmlItemLabels
+						.attr('data-option-value', value)
+						.attr('data-itext-id', '')
+						.appendTo($labels.siblings('.jr-option-translations'));
+					$template.after($htmlItem.find(':first'));
+				}
+			});			
+		});
+		if (needToUpdateLangs){
+			that.setLangs();
+		}	
 	};
 
 	/**
 	 * Updates output values, optionally filtered by those values that contain a changed node name
 	 * 
-	 * @param  {string=} changedNodeNames Space-separated node names that (may have changed)
+	 * @param  {string=} changedNodeNames Comma-separated node names that (may have changed)
 	 */
 	FormHTML.prototype.outputUpdate = function(changedNodeNames){
 		var i, $inputNode, contextPath, contextIndex, expr, namesArr, cleverSelector, 
@@ -2661,6 +2689,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			that.calcUpdate(nodeNames); //EACH CALCUPDATE THAT CHANGES A VALUE TRIGGERS ANOTHER CALCUPDATE => VERY INEFFICIENT
 			that.branch.update(nodeNames);
 			that.outputUpdate(nodeNames);
+			that.itemsetUpdate(nodeNames);
 			//it is possible that a changed data value validates question that were previously invalidated
 			//that.validateInvalids();
 		});

@@ -467,7 +467,7 @@ var dataStr8 =
             '<new_cascading_select id="cascading_select_test">'+
               '<state>colorado</state>'+
               '<county/>'+
-              '<city/>'+
+              '<city>denver</city>'+
               '<meta>'+
                 '<instanceID/>'+
               '</meta>'+

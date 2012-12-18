@@ -333,17 +333,17 @@ label#data-template-show {
   height: 15px;
   font-size: 0.8em; 
   a {
-  &:link{
-  float: right;
-  padding-left: 10px;}
-  &:not(.active):hover {
-    text-decoration: underline; }
-  &.active {
-    color: $drawer_border;
-    text-decoration: none; } } }
+    &:link{
+      float: right;
+      padding-left: 10px;}
+    &:not(.active):hover {
+      text-decoration: underline; }
+    &.active {
+      color: $drawer_border;
+      text-decoration: none; } } }
 
 .tab-content #form-languages {
-  margin-top: -10px; } 
+  /*margin-top: -10px;*/ } 
 
 $line: 3px solid $groupline;
 $input-height: 30px;

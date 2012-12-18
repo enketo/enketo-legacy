@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-class Test extends CI_Controller {
+class Formtester extends CI_Controller {
  
 	public function index()
 	{

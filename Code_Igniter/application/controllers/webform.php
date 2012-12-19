@@ -95,14 +95,14 @@ class Webform extends CI_Controller {
 			else
 			{		
 				$data['scripts'] = array_merge($scripts, array(
-					'/js-source/__common.js',
-					'/js-source/__storage.js',
-					'/js-source/__form.js',
-					'/js-source/__connection.js',
-					'/js-source/__cache.js',
-					'/js-source/__survey_controls.js',
-					'/js-source/__webform.js',
-					'/js-source/__debug.js'
+					'/js-source/common.js',
+					'/js-source/storage.js',
+					'/js-source/form.js',
+					'/js-source/connection.js',
+					'/js-source/cache.js',
+					'/js-source/survey_controls.js',
+					'/js-source/webform.js',
+					'/js-source/debug.js'
 				));
 			}
 			$this->load->view('webform_view', $data);

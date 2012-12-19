@@ -1,3 +1,9 @@
+---
+layout: page
+title: Enketo installation instructions on Ubuntu
+nav: installation
+---
+
 Installation on bare Ubuntu 12.04 server (AWS)
 =======
 

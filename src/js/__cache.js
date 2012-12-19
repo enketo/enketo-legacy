@@ -38,7 +38,7 @@ Cache.prototype.init = function(){
 	}
 
 	appCache = window.applicationCache;
-		
+	//TODO: USE NOUPDATE EVENT INSTEAD!
 	setTimeout(function(){
 		if (appCache.status === 1){
 			gui.updateStatus.offlineLaunch(true);

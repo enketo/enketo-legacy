@@ -128,8 +128,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		return $form.find('#form-title').text();
 	 };
 
-	//restores form instance to pre-initialized state
-	this.reset = function(){
+	//restores html form to pre-initialized state
+	//does not affect data instance!
+	this.resetHTML = function(){
 		//form language selector was moved outside of <form> so has to be separately removed
 		$('#form-languages').remove();
 		$form.replaceWith($formClone);
@@ -158,30 +159,23 @@ function Form (formSelector, dataStr, dataStrToEdit){
  	 * @param {string} dataStr String of the default XML instance
  	 */
 	function DataXML(dataStr) {
-	
-		var $data, 
+		var $data,
 			that=this;
 
 		this.instanceSelectRegEx = /instance\([\'|\"]([^\/:\s]+)[\'|\"]\)/g;
-		//console.debug('dataStr:'+dataStr); 
-		//seems wrong but using regular expression on string avoids persistant xmlns behaviour
-		//dataStr = dataStr.replace(/<[\/]?instance(>|\s+[^>]*>)/gi, '');
-		////console.debug(dataStr);
-		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE ALL NAMESPACES FROM STRING, BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
+
+		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE ALL NAMESPACES FROM STRING, 
+		//BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
 		dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/g,'');
 
 		this.xml = $.parseXML(dataStr);
-		//$instance = $(xml);
-		//cleanDataStr = (new window.XMLSerializer()).serializeToString($instance.find('instance>*')[0]);
-		//xml = $.parseXML(cleanDataStr);
+
 		$data = $(this.xml);
 
-		//this.xml = xml;
 		this.$ = $data;
 
 		//replace browser-built-in-XPath Engine
-		XPathJS.bindDomLevel3XPath(); // move to Data if evalXpression moves to Data
-
+		XPathJS.bindDomLevel3XPath(); 
 
 		/**
 		 * Function: node
@@ -397,7 +391,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		/**
 		 * Convert a value to a specified data type (though always stringified)
 		 * @param  {(string|number)} x  value to convert
-		 * @param  {string} xmlDataType name of xmlDataType
+		 * @param  {?string=} xmlDataType name of xmlDataType
 		 * @return {string}             return string value of converted value
 		 */
 		Nodeset.prototype.convert = function(x, xmlDataType){
@@ -414,8 +408,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
  
 		/**
 		 * Validate a value with an XPath Expression and/or xml data type
-		 * @param  {string} expr        XPath expression
-		 * @param  {string} xmlDataType name of xml data type
+		 * @param  {?string=} expr        XPath expression
+		 * @param  {?string=} xmlDataType name of xml data type
 		 * @return {boolean}            returns true if both validations are true
 		 */
 		Nodeset.prototype.validate = function(expr, xmlDataType){
@@ -579,24 +573,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 *   -
 	 */
 	DataXML.prototype.init = function(){
-		var $root, val;
-		//console.log('initializing DataXML object');
+		var val;
+
 		//trimming values
 		this.node(null, null, {noEmpty: true, noTemplate: false}).get().each(function(){
-			////console.debug('value found'+ $(this).text());
 			val = /** @type {string} */$(this).text();
 			$(this).text($.trim(val));
 		});
-		$root = this.node(':first', 0).get();
-
-		//store namespace of root element
-		this.namespace = $root.attr('xmlns');
-		//console.debug('namespace of root element is:'+this.namespace);
-		//strip namespace from root element (first child of instance) 
-		$root.removeAttr('xmlns');
 
 		this.cloneAllTemplates();
-
 		return;
 	};
 
@@ -823,14 +808,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if (incTempl === false){
 			$dataClone.find('[template]').remove();
 		}
+		//disabled 
 		if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
-			$dataClone.children().eq(0).attr('xmlns', this.namespace);
+			//$dataClone.find('instance').attr('xmlns', this.namespace);
 		}
 
 		dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
-
-		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE NAMESPACE FROM STRING (AGAIN), BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
-		dataStr = dataStr.replace(/xmlns\=\"[A-z0-9\:\/\.\-\%\_\?&amp;]*\"/gi,' ');
 
 		//remove tabs
 		dataStr = dataStr.replace(/\t/g, '');
@@ -1071,7 +1054,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.preloads.init(); //after event handlers!
 		this.setLangs();
 		this.editStatus.set(false);
-		setTimeout(function(){$form.fixLegends();}, 500);
+		//setTimeout(function(){$form.fixLegends();}, 500);
 	};
 
 	FormHTML.prototype.checkForErrors = function(){
@@ -1491,7 +1474,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					else{
 						$(this).addClass('busy show').next().show(600, function(){
 							$that.removeClass('busy');
-							$that.next().fixLegends();
+							//$that.next().fixLegends();
 						});
 					}
 				}	
@@ -1566,7 +1549,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
 			
-			branchNode.removeClass('disabled').show(1000, function(){$(this).fixLegends();} );
+			branchNode.removeClass('disabled').show(1000);//, function(){$(this).fixLegends();} );
 
 			type = branchNode.prop('nodeName').toLowerCase();
 
@@ -1745,7 +1728,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 				$(this).text(val);
 			});
-			$form.fixLegends();
+			//$form.fixLegends();
 			//hints may have changed too
 			that.setHints();
 		}, 1);
@@ -2706,9 +2689,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//hacks for legends
 		//it would be much better to replace these two handlers with a handler that detects the resize event of the form
 		//but for some reason that doesn't work
-		$(window).resize(function(){
-			$form.fixLegends();
-		});
+		//$(window).resize(function(){
+			//$form.fixLegends();
+		//});
 
 		$form.on('changelanguage', function(){
 			//console.log('changelanguage event detected');
@@ -2923,26 +2906,6 @@ String.prototype.pad = function(digits){
 				}
 			});
 		});
-	};
-
-	//this corrects a problem caused by the css legend fix (that positions the legend as 'absolute')
-	//it corrects the margin-top of the first <label> sibling following a <legend>
-	//the whole form (or several) can be provides as the context
-	$.fn.fixLegends = function() {
-//		var legendHeight;
-//		//console.log('fixing legends');
-//		return this.each(function(){
-//			$(this).find('legend + label').each(function(){
-//				//console.error('found legend');
-//				legendHeight = ($(this).prev().find('.jr-constraint-msg.active').length > 0 && $(this).prev().height() < 36) ? 36 : 
-//					($(this).prev().height() < 19) ? 19 : 
-//					$(this).prev().height();
-//				
-//				$(this).animate({
-//					'margin-top' : (legendHeight+6)+'px'
-//				}, 600 );
-//			});
-//		});
 	};
 
 

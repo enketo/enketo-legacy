@@ -934,8 +934,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		else{
 			context = contextDoc.getXML();
 		}
-		//else context = dataCleanClone.getXML();//dataCleanClone.get()[0];//.documentElement;
-		console.debug('context', context);
+		//console.debug('context', context);
 
 		resultTypes = { //REMOVE VALUES? NOT USED
 			0 : ['any', 'ANY_TYPE'], 
@@ -972,24 +971,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (resTypeNum === 0){
 				for (resTypeNum in resultTypes){
 					resTypeNum = Number(resTypeNum);
-					////console.log('checking if resultType = '+type+' is equal to actual result.resultType = '+result.resultType);
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum >0 && resTypeNum<4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
 						return result;
 					}
-					//resultTypeValProp = resultTypes[type][1];
-					//console.log('checking type with value property:'+resultTypeValProp);
-					// WHEN PROBLEMS USE ITERATENEXT().textContent for resultType = 4
-					//try{
-					//	if (typeof result[resultTypeValProp] !== 'undefined'){
-					//		//console.log('result type detected: '+type);
-					//		return result[resultTypeValProp];
-					//	}
-					//}
-					//catch(e){
-					//	//console.log('result type is not: '+type);
-					//}
 				}
 				console.error('Expression: '+expr+' did not return any boolean, string or number value as expected');
 				//console.debug(result);
@@ -1001,7 +987,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					//console.debug(result.snapshotItem(j));
 					$result.push(result.snapshotItem(j));
 				}
-				console.debug('evaluation returned nodes: ', $result);
+				//console.debug('evaluation returned nodes: ', $result);
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);

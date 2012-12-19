@@ -56,7 +56,7 @@ class Front extends CI_Controller {
 		else
 		{
 			$data['scripts'] = array_merge($default_scripts, array(
-				'/js-source/__common.js'
+				'/js-source/common.js'
 			));
 		}
 

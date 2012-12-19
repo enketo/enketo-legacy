@@ -60,11 +60,11 @@ class Test extends CI_Controller {
 			else
 			{
 				$data['scripts'] = array_merge($default_scripts, array(
-					'js-source/__common.js',
-					'js-source/__form.js',
-					'js-source/__test.js',
-					'js-source/__connection.js',
-					'js-source/__debug.js'
+					'js-source/common.js',
+					'js-source/form.js',
+					'js-source/test.js',
+					'js-source/connection.js',
+					'js-source/debug.js'
 				));
 			}
 			$data['stylesheets'] = $default_stylesheets;

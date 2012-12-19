@@ -39,7 +39,7 @@ function loadForm(formName, confirmed){
 		// *OLD*checkForOpenForm(true);
 		if (record.data !== null){
 			//var success = form.setData(data);
-			form.reset();
+			form.resetHTML();
 			//gui.closePage();
 			form = new Form('form.jr:eq(0)', record.data);
 			form.init();
@@ -106,8 +106,8 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	$('form.jr').trigger('beforesave');
 	rec = { 'data': form.getDataStr(true, true), 'ready': confirmedFinalStatus};
 	// HOW THE HELL DOES REC GET A LASTSAVED PROPERTY HERE??? SOMETHING VERY WRONG
-	console.debug('sending following record to store.setRecord():');
-	console.debug(rec);
+	//console.debug('sending following record to store.setRecord():');
+	//console.debug(rec);
 	//alert('hey');
 	result = store.setRecord(confirmedRecordName, rec, deleteOldName, overwriteExisting, curRecordName);
 
@@ -163,7 +163,7 @@ function resetForm(confirmed){
 		gui.confirm(message, choices);
 	}
 	else {
-		form.reset();
+		form.resetHTML();
 		form = new Form('form.jr:eq(0)', jrDataStr);
 		form.init();
 		$('button#delete-form').button('disable');

@@ -292,7 +292,7 @@ class Webform extends CI_Controller {
 		$form->html = $transf_result->form->asXML();
 		
 		$form->default_instance = $transf_result->model->asXML();
-		//$form->default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form->default_instance);
+		$form->default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form->default_instance);
 		//$form->default_instance = preg_replace('/\/\>\s+\</', '/><', $form->default_instance);
 		//the preg replacement below is very aggressive!... maybe too aggressive
 		$form->default_instance = preg_replace('/\>\s+\</', '><', $form->default_instance);

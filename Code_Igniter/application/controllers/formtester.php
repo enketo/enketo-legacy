@@ -36,7 +36,7 @@ class Formtester extends CI_Controller {
 				'libraries/jquery.min.js',
 				'libraries/bootstrap/js/bootstrap.min.js',
 				'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
-				'/libraries/eternicode-bootstrap-datepicker/js/bootstrap-datepicker.js',
+				'/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
 				'/libraries/bootstrap-select.js',
 				'libraries/modernizr.min.js',
 				'libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',

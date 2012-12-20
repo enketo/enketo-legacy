@@ -62,12 +62,12 @@
 	}
 	td {
 		&.day:hover {
-			background: $grayLighter;
+			background: $grayLighter !important; /* disable inheritance for inline */
 			cursor: pointer;
 		}
 		&.old,
 		&.new {
-			color: $grayLight;
+			color: $grayLight !important;  /* disable inheritance for inline */
 		}
 		&.disabled,
 		&.disabled:hover {

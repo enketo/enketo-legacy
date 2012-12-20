@@ -53,8 +53,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
  * 
  */
 	this.init = function() {
-		//dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/,'');
-		
 		//cloning children to keep any event handlers on 'form.jr' intact upon resetting
 		$formClone = $(formSelector).clone().appendTo('<original></original>');
 
@@ -64,26 +62,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		data.init();
 
 		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit.length > 0){
-			//the corrections below can be removed once the server side code is tested
-			if (!/^<model/.test(dataStrToEdit)){
-				if (!/<instance/.test(dataStrToEdit)){
-					dataStrToEdit = '<model><instance>'+dataStrToEdit+'</instance></model>';
-				}
-				else{
-					dataStrToEdit = '<model>'+dataStrToEdit+'</model>';
-				}
-			}
 			dataToEdit = new DataXML(dataStrToEdit);
 			dataToEdit.init();
 			data.load(dataToEdit);
 		}
 
 		form.init();
-		//console.debug('form html obj initialized');
-		
-		//to update data tab launch, trigger a dataupdate (required after )
-		//$form.trigger('dataupdate');
-
 		return;
 	};
 
@@ -223,16 +207,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.filter.noEmpty = (typeof filter.noEmpty !== 'undefined') ? filter.noEmpty : false;
 			this.index = index;
 
-			//to refer to non-first instance, the instance('id_literal')/path/to/node syntax can be used
-			if (this.selector !== defaultSelector && this.selector.indexOf('/') !== 0){
-				if( that.instanceSelectRegEx.test(this.selector) ){
+			if ($data.find('model>instance').length > 0){
+				//to refer to non-first instance, the instance('id_literal')/path/to/node syntax can be used
+				if (this.selector !== defaultSelector && this.selector.indexOf('/') !== 0 && that.instanceSelectRegEx.test(this.selector) ){
 					this.selector = this.selector.replace(that.instanceSelectRegEx, "model > instance#$1");
 					//console.debug('selector modified to: '+this.selector);
 					return;
 				}
+				//default context is the first instance in the model			
+				this.selector = "model > instance:eq(0) "+this.selector;
 			}
-			//default context is the first instance in the model
-			this.selector = "model > instance:eq(0) "+this.selector;
 		}
 
 		/**
@@ -596,13 +580,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
-		//console.debug('loading instance values to be edited');
-
 		nodesToLoad = instanceOfDataXML.node(null, null, filter).get();
-		
-		//console.debug(nodesToLoad.length+' nodes found in data to be edited: ');
-		//console.debug(nodesToLoad);
-
+		console.debug('nodes to load: ', nodesToLoad);
 		//first empty all form data nodes, to clear any default values except those inside templates
 		this.node(null, null, filter).get().each(function(){
 			//something seems fishy about doing it this way instead of using node.setVal('');
@@ -2735,7 +2714,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//other nodes may have the same XPath but because this function is used to determine the corresponding input name of a data node, index is not included 
 		var steps = [dataNode.prop('nodeName')],
 			parent = dataNode.parent();
-		while (parent.length == 1 && parent.prop('nodeName') !== 'instance'){
+		while (parent.length == 1 && parent.prop('nodeName') !== 'instance' && parent.prop('nodeName') !== '#document'){
 			steps.push(parent.prop("nodeName"));
 			parent = parent.parent();
 		}

@@ -10,14 +10,14 @@
             debug="false" output="public/js-min/test-all-min.js">
 
       <externs dir="${basedir}/src/js">
-        <file name="__extern.js"/>
+        <file name="extern.js"/>
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="__common.js"/>
-        <file name="__form.js"/>
-        <file name="__test.js"/>
-        <file name="__connection.js"/>
+        <file name="common.js"/>
+        <file name="form.js"/>
+        <file name="test.js"/>
+        <file name="connection.js"/>
       </sources>
 
     </jscomp>
@@ -26,11 +26,11 @@
             debug="false" output="public/js-min/front-all-min.js">
 
       <externs dir="${basedir}/src/js">
-        <file name="__extern.js"/>
+        <file name="extern.js"/>
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="__common.js"/>
+        <file name="common.js"/>
       </sources>
 
     </jscomp>
@@ -39,17 +39,17 @@
             debug="false" output="public/js-min/webform-all-min.js">
 
       <externs dir="${basedir}/src/js">
-        <file name="__extern.js"/>
+        <file name="extern.js"/>
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="__common.js"/>
-        <file name="__storage.js"/>
-        <file name="__form.js"/>
-        <file name="__connection.js"/>
-        <file name="__cache.js"/>
-        <file name="__survey_controls.js"/>
-        <file name="__webform.js"/>
+        <file name="common.js"/>
+        <file name="storage.js"/>
+        <file name="form.js"/>
+        <file name="connection.js"/>
+        <file name="cache.js"/>
+        <file name="survey_controls.js"/>
+        <file name="webform.js"/>
       </sources>
 
     </jscomp>
@@ -58,16 +58,16 @@
             debug="false" output="public/js-min/webform-edit-all-min.js">
 
       <externs dir="${basedir}/src/js">
-        <file name="__extern.js"/>
+        <file name="extern.js"/>
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="__common.js"/>
-        <file name="__storage.js"/>
-        <file name="__form.js"/>
-        <file name="__connection.js"/>
-        <file name="__survey_controls.js"/>
-        <file name="__webform_edit.js"/>
+        <file name="common.js"/>
+        <file name="storage.js"/>
+        <file name="form.js"/>
+        <file name="connection.js"/>
+        <file name="survey_controls.js"/>
+        <file name="webform_edit.js"/>
       </sources>
 
     </jscomp>
@@ -76,16 +76,16 @@
             debug="false" output="public/js-min/webform-iframe-all-min.js">
 
       <externs dir="${basedir}/src/js">
-        <file name="__extern.js"/>
+        <file name="extern.js"/>
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="__common.js"/>
-        <file name="__storage.js"/>
-        <file name="__form.js"/>
-        <file name="__connection.js"/>
-        <file name="__survey_controls.js"/>
-        <file name="__webform_iframe.js"/>
+        <file name="common.js"/>
+        <file name="storage.js"/>
+        <file name="form.js"/>
+        <file name="connection.js"/>
+        <file name="survey_controls.js"/>
+        <file name="webform_iframe.js"/>
       </sources>
 
     </jscomp>
@@ -94,15 +94,15 @@
             debug="false" output="public/js-min/formlist-all-min.js">
 
       <externs dir="${basedir}/src/js">
-        <file name="__extern.js"/>
+        <file name="extern.js"/>
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="__common.js"/>
-        <file name="__storage.js"/>
-        <file name="__connection.js"/>
-        <file name="__cache.js"/>
-        <file name="__formlist.js"/>
+        <file name="common.js"/>
+        <file name="storage.js"/>
+        <file name="connection.js"/>
+        <file name="cache.js"/>
+        <file name="formlist.js"/>
       </sources>
 
     </jscomp>

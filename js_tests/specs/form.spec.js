@@ -4,20 +4,24 @@ EnvJasmine.load(EnvJasmine.mocksDir + "form.mock.js");
 EnvJasmine.load(EnvJasmine.includeDir + "xpathjs_javarosa/build/xpathjs_javarosa.min.js");
 EnvJasmine.load(EnvJasmine.jsDir + "__form.js");
 
+loadForm = function(filename, editStr){
+	var strings = generated_forms[filename];
+	return new Form(strings.html_form, strings.xml_model, editStr);
+};
+
 describe("Data node getter", function () {
     var i, t =
 		[
-			["", null, null, 19],
-			["", null, {}, 19],
+			["", null, null, 20],
+			["", null, {}, 20],
 			//["/", null, {}, 9], //issue with xfind, not important
-			[false, null, {}, 19],
-			[null, null, {}, 19],
-			[null, null, {noTemplate:true}, 19],
-			[null, null, {noTemplate:false}, 21],
+			[false, null, {}, 20],
+			[null, null, {}, 20],
+			[null, null, {noTemplate:true}, 20],
+			[null, null, {noTemplate:false}, 22],
 			[null, null, {onlyTemplate:true}, 1],
 			[null, null, {noEmpty:true}, 9],
 			[null, null, {noEmpty:true, noTemplate:false}, 10],
-
 			["/thedata/nodeA", null, null, 1],
 			["/thedata/nodeA", 1   , null, 0],
 			["/thedata/nodeA", null, {noEmpty:true}, 0], //"int"
@@ -25,11 +29,9 @@ describe("Data node getter", function () {
 			["/thedata/nodeA", null, {onlyTemplate:true}, 0],
 			["/thedata/nodeA", null, {noTemplate:true}, 1],
 			["/thedata/nodeA", null, {noTemplate:false}, 1],
-
 			["/thedata/repeatGroup", null, null, 3],
 			["/thedata/repeatGroup", null, {onlyTemplate:true}, 1],
 			["/thedata/repeatGroup", null, {noTemplate:false}, 4],
-
 			["//nodeC", null, null, 3],
 			["/thedata/repeatGroup/nodeC", null, null, 3],
 			["/thedata/repeatGroup/nodeC", 2   , null, 1],
@@ -41,17 +43,15 @@ describe("Data node getter", function () {
 		],
 		form = new Form("", ""),
 		data = form.data(dataStr1);
-		
-		function test(node){
-			it("obtains nodes (selector: "+node.selector+", index: "+node.index+", filter: "+JSON.stringify(node.filter)+")", function() {
-				expect(data.node(node.selector, node.index, node.filter).get().length).toEqual(node.result);
-			});
-		}
-
-		for (i = 0 ; i<t.length ; i++){
-			test({selector: t[i][0], index: t[i][1], filter: t[i][2], result: t[i][3]});
-		}
-
+	
+	function test(node){
+		it("obtains nodes (selector: "+node.selector+", index: "+node.index+", filter: "+JSON.stringify(node.filter)+")", function() {
+			expect(data.node(node.selector, node.index, node.filter).get().length).toEqual(node.result);
+		});
+	}
+	for (i = 0 ; i<t.length ; i++){
+		test({selector: t[i][0], index: t[i][1], filter: t[i][2], result: t[i][3]});
+	}
 });
 
 describe('Date node (&) value getter', function(){
@@ -145,20 +145,20 @@ describe('Data node XML data type conversion & validation', function(){
 				["/thedata/nodeA", null, null, '0 0 a', 'geopoint', false],
 				["/thedata/nodeA", null, null, '0 0 0 a', 'geopoint', false]
 
-				//TO DO binary (?)
+				//				//TO DO binary (?)
 			];
 		form.form('<form></form>');
 
-		function test(n){
-			it("converts and validates xml-type "+n.type+" with value: "+n.value, function(){
-				data = form.data(dataStr1);
-				expect(data.node(n.selector, n.index, n.filter).setVal(n.value, null, n.type)).toEqual(n.result);
-			});
-		}
+	function test(n){
+		it("converts and validates xml-type "+n.type+" with value: "+n.value, function(){
+			data = form.data(dataStr1);
+			expect(data.node(n.selector, n.index, n.filter).setVal(n.value, null, n.type)).toEqual(n.result);
+		});
+	}
 
-		for (i = 0 ; i<t.length ; i++){
-			test({selector: t[i][0], index: t[i][1], filter: t[i][2], value: t[i][3], type: t[i][4], result:t[i][5]});
-		}
+	for (i = 0 ; i<t.length ; i++){
+		test({selector: t[i][0], index: t[i][1], filter: t[i][2], value: t[i][3], type: t[i][4], result:t[i][5]});
+	}
 
 	it('sets a non-empty value to empty', function(){
 		var node = data.node('/thedata/nodeA', null, null);
@@ -199,7 +199,7 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 	var i, t =
 		[
 			["/thedata/nodeB", "string", null, 0, "b"],
-			["../nodeB", "string", "/thedata/nodeB", 0, "b"],
+			["../nodeB", "string", "/thedata/nodeA", 0, "b"],
 			["/thedata/nodeB", "boolean", null, 0, true],
 			["/thedata/notexist", "boolean", null, 0, false],
 			["/thedata/repeatGroup[2]/nodeC", "string", null, 0, "c2"],
@@ -231,6 +231,74 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 		form.init();
 		expect(form.getDataO().evaluate("/thedata/repeatGroup/nodeC", "string", "/thedata/repeatGroup/nodeC", 2)).toEqual("c3");
 	});
+});
+
+
+describe('functionality to obtain string of the XML instance (DataXML.getStr() for storage or uploads)', function(){
+	var str1, str2, str3, str4, str5, str6, str7, str8, str9, str10, str11, str12,
+		formA = loadForm('new_cascading_selections.xml'),
+		formB = new Form(formStr1, dataStr1);
+	formA.init();
+	formB.init();
+	str1 = formA.getDataO().getStr();
+	str2 = formA.getDataO().getStr(null, null);
+	str3 = formA.getDataO().getStr(false, false);
+	str4 = formA.getDataO().getStr(true, false);
+	str5 = formA.getDataO().getStr(false, true);
+	str6 = formA.getDataO().getStr(true, true);
+	str7 = formA.getDataO().getStr(true, true, false);
+	str8 = formA.getDataO().getStr(null, null, true);
+	str9 = formA.getDataO().getStr(true, true, true);
+
+	str10 = formB.getDataO().getStr();
+	str11 = formB.getDataO().getStr(true);
+	str12 = formB.getDataO().getStr(false, false, true);
+
+	testModelPresent = function(str){return isValidXML(str) && new RegExp(/^<model/g).test(str);};
+	testInstancePresent = function(str){return isValidXML(str) && new RegExp(/<instance[\s|>]/g).test(str);};
+	testInstanceNumber = function(str){return str.match(/<instance[\s|>]/g).length;};
+	//testNamespacePresent = function(str){return isValidXML(str) && new RegExp(/xmlns=/).test(str);};
+	testTemplatePresent = function(str){return isValidXML(str) && new RegExp(/template=/).test(str);};
+	isValidXML = function(str){
+		var $xml;
+		try{ $xml = $.parseXML(str);}
+		catch(e){}
+		return typeof $xml === 'object';
+	};
+
+	it('returns a string of the primary instance only when called without 3rd parameter: true', function(){
+		expect(testModelPresent(str1)).toBe(false);
+		expect(testInstancePresent(str1)).toBe(false);
+		expect(testModelPresent(str2)).toBe(false);
+		expect(testInstancePresent(str2)).toBe(false);
+		expect(testModelPresent(str3)).toBe(false);
+		expect(testInstancePresent(str3)).toBe(false);
+		expect(testModelPresent(str4)).toBe(false);
+		expect(testInstancePresent(str4)).toBe(false);
+		expect(testModelPresent(str5)).toBe(false);
+		expect(testInstancePresent(str5)).toBe(false);
+		expect(testModelPresent(str6)).toBe(false);
+		expect(testInstancePresent(str6)).toBe(false);
+		expect(testModelPresent(str7)).toBe(false);
+		expect(testInstancePresent(str7)).toBe(false);
+	});
+
+	it('returns a string of the model and all instances when called with 3rd parameter: true', function(){
+		expect(testModelPresent(str8)).toBe(true);
+		expect(testInstancePresent(str8)).toBe(true);
+		expect(testInstanceNumber(str8)).toBe(4);
+		expect(testModelPresent(str9)).toBe(true);
+		expect(testInstancePresent(str9)).toBe(true);
+		expect(testInstanceNumber(str9)).toBe(4);
+		expect(testInstancePresent(str12)).toBe(true);
+		expect(testInstanceNumber(str12)).toBe(1);
+	});
+
+	it('returns a string with repeat templates included when called with 1st parameter: true', function(){
+		expect(testTemplatePresent(str10)).toBe(false);
+		expect(testTemplatePresent(str11)).toBe(true);
+	});
+
 });
 
 describe("Output functionality ", function(){
@@ -379,17 +447,13 @@ describe("Loading instance values into html input fields functionality", functio
 
 describe("Loading instance-to-edit functionality", function(){
 	var form;
-
-	describe('when instanceID and deprecatedID nodes are not present in the form format', function(){
+	
+	describe('when a deprecatedID node is not present in the form format', function(){
 		form = new Form(formStr1, dataStr1, dataEditStr1);
 		form.init();
 
-		it ("adds an instanceID node", function(){
-			expect(form.getDataO().node('*>meta>instanceID').get().length).toEqual(1);
-		});
-
 		it ("adds a deprecatedID node", function(){
-			expect(form.getDataO().node('*>meta>deprecatedID').get().length).toEqual(1);
+			expect(form.getDataO().node('* > meta > deprecatedID').get().length).toEqual(1);
 		});
 
 		//this is an important test even though it may not seem to be...
@@ -401,7 +465,7 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getDataO().node('*>meta>deprecatedID').getVal()[0]).toEqual('7c990ed9-8aab-42ba-84f5-bf23277154ad');
 		});
 
-		it ("gives the added instanceID node a new value", function(){
+		it ("gives the instanceID node a new value", function(){
 			expect(form.getDataO().node('*>meta>instanceID').getVal()[0].length).toEqual(41);
 			expect(form.getDataO().node('*>meta>instanceID').getVal()[0]).not.toEqual('7c990ed9-8aab-42ba-84f5-bf23277154ad');
 		});
@@ -410,6 +474,7 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('2012-02-05T15:34:00.000-04:00');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
+
 	});
 	
 	describe('when instanceID and deprecatedID nodes are already present in the form format', function(){
@@ -437,7 +502,6 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('2012-02-05T15:34:00.000-04:00');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
-
 	});
 
 	describe('repeat functionality', function(){
@@ -516,7 +580,8 @@ describe('branching functionality', function(){
 	 */
 	it ('a) evaluates relevant logic on a repeated radio-button-question and b) injects the position correctly (issue 208)', function(){
 		var repeatSelector = 'fieldset.jr-repeat[name="/issue208/rep"]';
-		form = new Form(formStr7, dataStr7);
+		//form = new Form(formStr7, dataStr7);
+		form = loadForm('issue208.xml');
 		form.init();
 		form.getFormO().$.find(repeatSelector).eq(0).find('button.repeat').click();
 		expect(form.getFormO().$.find(repeatSelector).length).toEqual(2);
@@ -533,7 +598,7 @@ describe('branching functionality', function(){
 	});
 });
 
-describe('required field validation', function(){
+describe('Required field validation', function(){
 	var form, $numberInput, $branch;
 
 	beforeEach(function() {
@@ -581,6 +646,213 @@ describe('required field validation', function(){
 	});
 });
 
+describe('Itemset functionality', function(){
+	var form;
 
+	it('is able to address an instance by id with the instance(id)/path/to/node syntax', function(){
+		form = new Form('', dataStr8);
+		form.init();
+		console.debug('data:', form.getDataO().$);
+		expect(form.getDataO().evaluate("instance('cities')/root/item/name", "string")).toEqual('denver');
+		expect(form.getDataO().evaluate("instance('cities')/root/item[state=/new_cascading_select/state]/name", "string")).toEqual('denver');
+		expect(form.getDataO().evaluate("instance('cities')/root/item[state=/new_cascading_select/state and 1<2]", "nodes").length).toEqual(2);
+		expect(form.getDataO().evaluate("instance('cities')/root/item[state=/new_cascading_select/state and name=/new_cascading_select/city]", "nodes").length).toEqual(1);
+	});
 
-//TODO load a large complex form and detect console errors
+	describe('in a cascading select using itext for all labels', function(){
+		var $items1Radio, $items2Radio, $items3Radio, $items1Select, $items2Select, $items3Select, formHTMLO,
+			sel1Radio = ':not(.itemset-template) > input:radio[data-name="/new_cascading_selections/group1/country"]',
+			sel2Radio = ':not(.itemset-template) > input:radio[data-name="/new_cascading_selections/group1/city"]',
+			sel3Radio = ':not(.itemset-template) > input:radio[data-name="/new_cascading_selections/group1/neighborhood"]',
+			sel1Select = 'select[name="/new_cascading_selections/group2/country2"]',
+			sel2Select = 'select[name="/new_cascading_selections/group2/city2"]',
+			sel3Select = 'select[name="/new_cascading_selections/group2/neighborhood2"]';
+		
+		beforeEach(function() {
+			jQuery.fx.off = true;//turn jQuery animations off
+			form = loadForm('new_cascading_selections.xml');
+			form.init();
+
+			formHTMLO = form.getFormO();
+			spyOn(formHTMLO, 'itemsetUpdate').andCallThrough();
+			
+			$items1Radio = function(){return form.getFormO().$.find(sel1Radio);};
+			$items2Radio = function(){return form.getFormO().$.find(sel2Radio);};
+			$items3Radio = function(){return form.getFormO().$.find(sel3Radio);};
+			$items1Select = function(){return form.getFormO().$.find(sel1Select+' > option:not(.itemset-template)');};
+			$items2Select = function(){return form.getFormO().$.find(sel2Select+' > option:not(.itemset-template)');};
+			$items3Select = function(){return form.getFormO().$.find(sel3Select+' > option:not(.itemset-template)');};
+		});
+
+		it('level 1: with <input type="radio"> elements has the expected amount of options', function(){
+			expect($items1Radio().length).toEqual(2);
+			expect($items1Radio().siblings().text()).toEqual('NederlandThe NetherlandsVerenigde StatenUnited States');
+			expect($items2Radio().length).toEqual(0);
+			expect($items3Radio().length).toEqual(0);
+		});
+		
+		it('level 2: with <input type="radio"> elements has the expected amount of options', function(){
+			//select first option in cascade
+			runs(function(){
+				form.getFormO().$.find(sel1Radio+'[value="nl"]').attr('checked', true).trigger('change');
+			});
+			
+			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'country';}, 'itemsetUpdate not called!', 1000);
+			
+			runs(function(){
+				expect($items1Radio().length).toEqual(2);
+				expect($items2Radio().length).toEqual(3);
+				expect($items2Radio().siblings().text()).toEqual('AmsterdamAmsterdamRotterdamRotterdamDrontenDronten');
+				expect($items3Radio().length).toEqual(0);
+			});
+		});
+
+		it('level 3: with <input type="radio"> elements has the expected amount of options', function(){
+			//select first option
+			runs(function(){
+				form.getFormO().$.find(sel1Radio+'[value="nl"]').attr('checked', true).trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'country';}, 'itemsetUpdate not called!', 1000);
+			
+			//select second option
+			runs(function(){
+				form.getFormO().$.find(sel2Radio+'[value="ams"]').attr('checked', true).trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'city';}, 'itemsetUpdate not called!', 1000);
+
+			runs(function(){
+				expect($items1Radio().length).toEqual(2);
+				expect($items2Radio().length).toEqual(3);
+				expect($items3Radio().length).toEqual(2);
+				expect($items3Radio().siblings().text()).toEqual('WesterparkWesterparkDe DamDam');
+			});
+
+			//select other first option to change itemset
+			runs(function(){
+				form.getFormO().$.find(sel1Radio+'[value="nl"]').attr('checked', false);
+				form.getFormO().$.find(sel1Radio+'[value="usa"]').attr('checked', true).trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'city';}, 'itemsetUpdate not called!', 1000);
+
+			runs(function(){
+				expect($items1Radio().length).toEqual(2);
+				expect($items2Radio().length).toEqual(3);
+				expect($items2Radio().siblings().text()).toEqual('DenverDenverNieuw AmsterdamNew York CityDe EngelenLos Angeles');
+				expect($items3Radio().length).toEqual(0);
+			});
+		});
+
+		it('level 1: with <select> <option> elements has the expected amount of options', function(){
+			expect($items1Select().length).toEqual(2);
+			expect($items1Select().eq(0).attr('value')).toEqual('nl');
+			expect($items1Select().eq(1).attr('value')).toEqual('usa');
+			expect($items2Select().length).toEqual(0);
+		});
+
+		it('level 2: with <select> <option> elements has the expected amount of options', function(){
+			//select first option in cascade
+			runs(function(){
+				form.getFormO().$.find(sel1Select).val("nl").trigger('change');
+			});
+			
+			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'country2';}, 'itemsetUpdate not called!', 1000);
+			
+			runs(function(){
+				expect($items1Select().length).toEqual(2);
+				expect($items2Select().length).toEqual(3);
+				expect($items2Select().eq(0).attr('value')).toEqual('ams');
+				expect($items2Select().eq(2).attr('value')).toEqual('dro');
+				expect($items3Select().length).toEqual(0);
+			});
+		});
+
+		it('level 3: with <select> <option> elements has the expected amount of options', function(){
+			//select first option in cascade
+			runs(function(){
+				form.getFormO().$.find(sel1Select).val("nl").trigger('change');
+			});
+			
+			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'country2';}, 'itemsetUpdate not called!', 1000);
+			
+			//select second option
+			runs(function(){
+				form.getFormO().$.find(sel2Select).val("ams").trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'city2';}, 'itemsetUpdate not called!', 1000);
+
+			runs(function(){
+				expect($items1Select().length).toEqual(2);
+				expect($items2Select().length).toEqual(3);
+				expect($items3Select().length).toEqual(2);
+				expect($items3Select().eq(0).attr('value')).toEqual('wes');
+				expect($items3Select().eq(1).attr('value')).toEqual('dam');
+			});
+
+			//select other first option to change itemset
+			runs(function(){
+				form.getFormO().$.find(sel1Select).val("usa").trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'city2';}, 'itemsetUpdate not called!', 1000);
+
+			runs(function(){
+				expect($items1Select().length).toEqual(2);
+				expect($items2Select().length).toEqual(3);
+				expect($items2Select().eq(0).attr('value')).toEqual('den');
+				expect($items2Select().eq(2).attr('value')).toEqual('la');
+				expect($items3Select().length).toEqual(0);
+			});
+		});
+	});
+
+	describe('in a cascading select that includes labels without itext', function(){
+		var $items1Radio, $items2Radio, $items3Radio, formHTMLO,
+			sel1Radio = ':not(.itemset-template) > input:radio[data-name="/form/state"]',
+			sel2Radio = ':not(.itemset-template) > input:radio[data-name="/form/county"]',
+			sel3Radio = ':not(.itemset-template) > input:radio[data-name="/form/city"]';
+		
+		beforeEach(function() {
+			jQuery.fx.off = true;//turn jQuery animations off
+			form = loadForm('cascading_mixture_itext_noitext.xml');
+			form.init();
+
+			formHTMLO = form.getFormO();
+			spyOn(formHTMLO, 'itemsetUpdate').andCallThrough();
+			
+
+			$items1Radio = function(){return form.getFormO().$.find(sel1Radio);};
+			$items2Radio = function(){return form.getFormO().$.find(sel2Radio);};
+			$items3Radio = function(){return form.getFormO().$.find(sel3Radio);};
+		});
+
+		it('level 3: with <input type="radio"> elements using direct references to instance labels without itext has the expected amount of options', function(){
+			//select first option
+			runs(function(){
+				form.getFormO().$.find(sel1Radio+'[value="washington"]')
+					.attr('checked', true).trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'state';}, 'itemsetUpdate not called!', 1000);
+			
+			//select second option
+			runs(function(){
+				form.getFormO().$.find(sel2Radio+'[value="king"]')
+					.attr('checked', true).trigger('change');
+			});
+
+			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'county';}, 'itemsetUpdate not called!', 1000);
+
+			runs(function(){
+				expect($items1Radio().length).toEqual(2);
+				expect($items2Radio().length).toEqual(3);
+				expect($items3Radio().length).toEqual(2);
+				expect($items3Radio().siblings().text()).toEqual('SeattleRedmond');
+			});
+		});
+	});
+});
+

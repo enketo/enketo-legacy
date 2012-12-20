@@ -1,3 +1,10 @@
+---
+layout: page
+title: About enketo
+nav: readme
+---
+
+
 Enketo
 ======
 

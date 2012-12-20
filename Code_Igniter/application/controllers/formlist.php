@@ -59,11 +59,11 @@ class Formlist extends CI_Controller {
 		else
 		{
 			$data['scripts'] = array_merge($default_scripts, array(
-				'/js-source/__common.js',       
-				'/js-source/__storage.js',
-       			'/js-source/__connection.js',
-       			'/js-source/__cache.js',
-        		'/js-source/__formlist.js'
+				'/js-source/common.js',       
+				'/js-source/storage.js',
+       			'/js-source/connection.js',
+       			'/js-source/cache.js',
+        		'/js-source/formlist.js'
 			));
 		}
 

@@ -31,7 +31,8 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
     xmlns:jr="http://openrosa.org/javarosa"
     xmlns:exsl="http://exslt.org/common"
     xmlns:str="http://exslt.org/strings"
-    extension-element-prefixes="exsl str"
+    xmlns:dyn="http://exslt.org/dynamic"
+    extension-element-prefixes="exsl str dyn"
     version="1.0"
     >
 
@@ -53,10 +54,16 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
 
     <xsl:template match="/">
     	<xsl:if test="not(function-available('exsl:node-set'))">
-            <xsl:message terminate="yes">FATAL ERROR: Node-set function is not available in this XSLT processor</xsl:message>
+            <xsl:message terminate="yes">FATAL ERROR: exsl:node-set function is not available in this XSLT processor</xsl:message>
+        </xsl:if>
+        <xsl:if test="not(function-available('str:replace'))">
+            <xsl:message terminate="yes">FATAL ERROR: str:tokenize function is not available in this XSLT processor</xsl:message>
+        </xsl:if>
+        <xsl:if test="not(function-available('dyn:evaluate'))">
+            <xsl:message terminate="yes">FATAL ERROR: dyn:evaluate function is not available in this XSLT processor</xsl:message>
         </xsl:if>
         <xsl:if test="not(function-available('str:tokenize'))">
-            <xsl:message terminate="yes">FATAL ERROR: Tokenize function is not available in this XSLT processor</xsl:message>
+            <xsl:message terminate="yes">FATAL ERROR: dyn:evaluate function is not available in this XSLT processor</xsl:message>
         </xsl:if>
         <xsl:for-each select="//xf:bind">
         	<xsl:if test="not(substring(./@nodeset, 1, 1) = '/')">
@@ -111,7 +118,8 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
 	                </h3>
                     <div id="stats" style="display: none;">
                         <span id="jrSelect"><xsl:value-of select="count(/h:html/h:body//xf:select)"/></span>
-                        <span id="jrSelect1"><xsl:value-of select="count(/h:html/h:body//xf:select)"/></span>
+                        <span id="jrSelect1"><xsl:value-of select="count(/h:html/h:body//xf:select1)"/></span>
+                        <span id="jrItemset"><xsl:value-of select="count(/h:html/h:body//xf:itemset)"/></span>
                         <span id="jrItem"><xsl:value-of select="count(/h:html/h:body//xf:item)"/></span>
                         <span id="jrInput"><xsl:value-of select="count(/h:html/h:body//xf:input)"/></span>
                         <span id="jrUpload"><xsl:value-of select="count(/h:html/h:body//xf:upload)"/></span>
@@ -148,23 +156,20 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
 	                <!-- create hidden input fields for calculated items -->
 	                <xsl:if test="/h:html/h:head/xf:model/xf:bind[@calculate]">
 	                    <fieldset id="jr-calculated-items" style="display:none;">
-	                        <!-- note: this breaks the order of the instance elements -->
 	                        <xsl:apply-templates select="/h:html/h:head/xf:model/xf:bind[@calculate]" />
-	                        <!--<xsl:message>WARNING: Found calculated item(s). Support for this will be limited.</xsl:message>-->
 	                    </fieldset>
 	                </xsl:if>
 	                <xsl:if test="/h:html/h:body//xf:output">
-	                    <xsl:message>WARNING: Output element(s) added but with limited support. Only /absolute/path/to/node is properly supported as "value" attribute of outputs. Please test to make sure they do what you want.</xsl:message>
+	                    <xsl:message>WARNING: Output element(s) added but note that only /absolute/path/to/node is properly supported as "value" attribute of outputs. Please test to make sure they do what you want.</xsl:message>
 	                </xsl:if>
                     <xsl:if test="/h:html/h:body//xf:itemset">
-                        <xsl:message terminate="yes">ERROR: No support for itemset yet. Form will fail until this is supported.</xsl:message>
+                        <xsl:message>WARNING: Itemset support is experimental. Make sure to test whether they do what you want.</xsl:message>
                     </xsl:if>
                     <xsl:if test="//xf:submission">
                         <xsl:message>ERROR: Submissions element(s) not supported yet.</xsl:message>
                     </xsl:if>
 	            </form>
             </root>
-        <!--</html>-->
         </xsl:template>
 
     <xsl:template match="h:head"/> <!--[not(self::xf:model/xf:bind[@jr:preload])]" />-->
@@ -184,7 +189,6 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 <xsl:call-template name="nodeset_used" />
             </xsl:variable>
            
-            <!--<xsl:if test="string(@ref)">-->
             <xsl:if test="string($nodeset_used)">
                 <!-- the correct absolute nodeset as used in HTML -->
                 <xsl:variable name="nodeset">
@@ -198,10 +202,9 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
 
                 <!--<xsl:variable name="nodeset" select="@ref" />-->
                 <xsl:attribute name="name">
-                    <!--<xsl:value-of select="@ref"/>-->
                     <xsl:value-of select="$nodeset"/>
                 </xsl:attribute>
-                <!--<xsl:if test="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]/@relevant">-->
+                
                 <xsl:if test="$binding/@relevant">
                     <xsl:attribute name="data-relevant">
                         <!--<xsl:value-of select="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]/@relevant" />-->
@@ -221,8 +224,6 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
     </xsl:template>
 
     <xsl:template match="xf:repeat">
-        <!--<xsl:variable name="nodeset" select="@nodeset" />
-        <xsl:variable name="binding" select="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]" />-->
         
         <xsl:variable name="nodeset_used">
             <xsl:call-template name="nodeset_used" />
@@ -280,20 +281,10 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         </xsl:if>
     </xsl:template>
 
-    <!--
-    <xsl:template name="default">
-        <xsl:param name="nodeset"/>
-        <xsl:variable name="path">
-            <xsl:value-of select="concat('/h:html/h:head/xf:model/xf:instance', replace($nodeset,'/','/xf:'))" />
-        </xsl:variable>
-    </xsl:template>
-   -->
-
     <xsl:template match="xf:input | xf:upload | xf:item | xf:bind[@jr:preload] | xf:bind[@calculate]">
         <xsl:variable name="nodeset_used">
             <xsl:call-template name="nodeset_used" />
         </xsl:variable>
-        <!--<xsl:message>INFO: nodeset found: <xsl:value-of select="$nodeset_used"/></xsl:message>-->
 
         <!-- the correct absolute nodeset as used in HTML -->
         <xsl:variable name="nodeset">
@@ -303,88 +294,32 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         </xsl:variable>
        
         <!-- note that bindings are not required -->
-        <!--<xsl:variable name="binding" select="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]" />-->
-        <!--***** SUPPORT CODE FOR RELATIVE NODESET BINDING *******-->
+        <!-- SUPPORT CODE FOR RELATIVE NODESET BINDINGS -->
         <xsl:variable name="binding" select="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset_used] | /h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]" />
-        <!--    <xsl:choose>
-                <xsl:when test="local-name() = 'bind'">
-                    <xsl:copy-of select="." />
-                </xsl:when>-->
-                <!-- first try to see if absolute nodeset returns a result, nothing to loose -->        
-         <!--       <xsl:when test="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]">
-                    <xsl:copy-of select="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]" />
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:copy-of select="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset_used]" />
-                </xsl:otherwise>
-            </xsl:choose>            
-        </xsl:variable>-->
-        <!--*******************************************************-->
-
-
-        <xsl:variable name="xml_type">
-            <!--<xsl:call-template name="xml_type" >
-                <xsl:with-param name="nodeset" select="$nodeset_used"/>
-            </xsl:call-template>-->
-            <xsl:choose>
-                <xsl:when test="string-length($binding/@type) &lt; 1" >string</xsl:when>
-                <xsl:otherwise>
-                    <xsl:call-template name="strip_namespace">
-                        <xsl:with-param name="string">
-                            <xsl:value-of select="$binding/@type"/>
-                        </xsl:with-param>
-                    </xsl:call-template>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-        <xsl:variable name="html_type">
-            <xsl:call-template name="html_type">
-                <xsl:with-param name="xml_type" select="$xml_type" />
-            </xsl:call-template>
-        </xsl:variable>
-        <xsl:variable name="constraint" select="$binding/@constraint" />
-        <!--
-        <xsl:variable name="constraintTokens">
-            <xsl:for-each select="str:tokenize($constraint, ' |\(|\)')">
-                <xsl:if test="string-length() &gt; 0">
-                    <token>
-                        <xsl:value-of select="."/>
-                    </token>
-                </xsl:if>
-            </xsl:for-each>
-        </xsl:variable>
-        -->
-        <!--
-        <xsl:variable name="default">
-            <xsl:call-template name="default">
-                <xsl:with-param name="nodeset" select="$nodeset" />
-            </xsl:call-template>
-        </xsl:variable>
-         -->
+       
         <label>
             <xsl:if test="@appearance"><!--only expected for input elements-->
-                <!--<xsl:variable name="appearance">
-                    <xsl:call-template name="appearance" />
-                </xsl:variable>--> 
                 <xsl:attribute name="class">
                     <xsl:call-template name="appearance" />
                 </xsl:attribute>
             </xsl:if> 
-            <!-- if "$html_type = 'radio' or $html_type = 'checkbox'"-->
             <xsl:if test="not(local-name() = 'item')">
                 <xsl:apply-templates select="$binding/@jr:constraintMsg" />
             </xsl:if>
             <xsl:apply-templates select="xf:label" />
-            <!-- note: Hints should actually be placed in title attribute (of input).
+            <!-- 
+                note: Hints should actually be placed in title attribute (of input).
                 However, to support multiple languages and parse all of them (to be available offline)
-                they are placed in the label instead.-->
+                they are placed in the label instead.
+            -->
             <xsl:apply-templates select="xf:hint" />
+            
             <xsl:variable name="appearance">
                 <xsl:value-of select="translate(@appearance, $upper-case, $lower-case)"/>
             </xsl:variable>
             <xsl:variable name="element">
                 <xsl:choose>
-                    <xsl:when test="$html_type = 'text' and $appearance = 'multi-line' or $appearance = 'multiline' or $appearance = 'text-area' or $appearance = 'big' or $appearance = 'big-text' or $appearance = 'textarea'">
+                    <xsl:when test="$binding/@type = 'string' and $appearance = 'multi-line' or $appearance = 'multiline' or $appearance = 'text-area' or $appearance = 'big' or $appearance = 'big-text' or $appearance = 'textarea'">
                         <xsl:value-of select="string('textarea')" />
                     </xsl:when>
                     <xsl:otherwise>
@@ -392,228 +327,18 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:variable>
+            <xsl:variable name="type">
+                <xsl:if test="$element = 'textarea'">
+                    <xsl:value-of select="$element"/>
+                </xsl:if>
+            </xsl:variable>
             <xsl:element name="{$element}">
                 <xsl:attribute name="autocomplete">off</xsl:attribute>
-                <!-- ****** ACCEPT ****** -->
-                <xsl:if test="$html_type = 'file'">
-                    <xsl:if test="@mediatype">
-                        <xsl:attribute name="accept">
-                            <xsl:value-of select="@mediatype" />
-                            <!-- image/*, video/* or audio/* -->
-                        </xsl:attribute>
-                    </xsl:if>
-                </xsl:if>
-                <!--
-                <xsl:if test="$html_type = 'image'" >
-                    <xsl:attribute name="alt">image</xsl:attribute>
-                </xsl:if>
-                -->
-
-                <!-- ****** CHECKED ****** -->
-                <xsl:if test="$html_type = 'radio' or $html_type = 'checkbox'">
-                    <!--<xsl:if test="$default &lt; 0">-->
-                        <!--<xsl:attribute name="checked"/> -->
-                    <!--</xsl:if>-->
-                </xsl:if>
-
-                <!-- ****** DISABLED ****** -->
-                <!-- not strictly necessary to disable (@preload & @calculate) fields but seems better -->
-                <!--<xsl:if test="(local-name() = 'bind')">
-                    <xsl:attribute name="disabled">disabled</xsl:attribute>
-                </xsl:if>-->
-
-                <!--<xsl:attribute name="form"/>-->
-                <!--<xsl:attribute name="formaction"/>-->
-                <!--<xsl:attribute name="formenctype"/>-->
-                <!--<xsl:attribute name="formmethod"/>-->
-                <!--<xsl:attribute name="formtarget"/>-->
-                <!--<xsl:attribute name="height"/>-->
-                <!--<xsl:attribute name="list"/>-->
-
-                <!-- ****** MAX ****** -->
-                <!-- DISABLED AS IT IS NOT SMART
-                <xsl:variable name="operator1">&lt;</xsl:variable>
-                <xsl:if test="contains($constraint, $operator1)">
-                    <xsl:choose>
-                        <xsl:when test="$html_type = 'number'">
-                            <xsl:attribute name="max">
-                                <xsl:variable name="max" select="exsl:node-set($constraintTokens)/token[contains(text(), $operator1)]/following-sibling::*/text()"/>
-                                <xsl:choose>
-                                    <xsl:when test="(string-length($max) &gt; 0) and (number($max) = $max)" >
-                                        <xsl:value-of select="$max" />
-                                        <xsl:if test="not(contains($constraint, concat($operator1,'=')))">
-                                            <xsl:message>WARNING [<xsl:value-of select="$nodeset"/>] max constraint operator1 was changed from <xsl:value-of select="$operator1" /> to <xsl:value-of select="concat($operator1, '=')" />.</xsl:message>
-                                        </xsl:if>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:message>ERROR [<xsl:value-of select="$nodeset"/>] could not process 'max' constraint with value <xsl:value-of select="$max" /> (ignored).</xsl:message>
-                                     </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:attribute>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:message>NO SUPPORT [<xsl:value-of select="$nodeset"/>] max constraint value is not supported for this data type (ignored).</xsl:message>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:if>
-                -->
-
-                <!-- ****** MAXLENGTH ****** -->
-                <!--<xsl:attribute name="maxlength"/>--><!-- ODK describes this as a regex pattern, for now ignore this attribute and copy pattern to pattern attribute -->
-
-                <!-- ****** MIN ****** -->
-                <!-- DISABLED AS IT IS NOT SMART
-                <xsl:variable name="operator2">&gt;</xsl:variable>
-                <xsl:if test="contains($constraint, $operator2)">
-                    <xsl:choose>
-                        <xsl:when test="$html_type = 'number'">
-                            <xsl:attribute name="min">
-                                <xsl:variable name="min" select="exsl:node-set($constraintTokens)/token[contains(text(), $operator2)]/following-sibling::*/text()"/>
-                                <xsl:choose>
-                                    <xsl:when test="(string-length($min) &gt; 0) and (number($min) = $min)" >
-                                        <xsl:value-of select="$min" />
-                                        <xsl:if test="not(contains($constraint, concat($operator2,'=')))">
-                                            <xsl:message >WARNING [<xsl:value-of select="$nodeset"/>] min constraint operator2 was changed from <xsl:value-of select="$operator2" /> to <xsl:value-of select="concat($operator2, '=')" />.</xsl:message>
-                                        </xsl:if>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:message>ERROR [<xsl:value-of select="$nodeset"/>] could not process 'min' constraint with value.<xsl:value-of select="$min" /> </xsl:message>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:attribute>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:message>NO SUPPORT [<xsl:value-of select="$nodeset"/>] min constraint value is not supported for this data type (ignored).</xsl:message>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:if>
-                -->
-
-                <!-- ****** MULTIPLE ****** -->
-                <!--<xsl:attribute name="multiple"/>--><!-- for type=email or file -->
-
-                <!-- name attribute is the nodeset (path/to/data) for non-select input fields -->
-                <xsl:attribute name="name">
-                    <xsl:value-of select="$nodeset"/>
-                </xsl:attribute>
-
-                <!-- ****** PATTERN ****** -->
-                <!-- DISABLED AS IT IS NOT SMART
-                <xsl:if test="contains($constraint, 'regex')">
-                    <xsl:attribute name="pattern">
-                        <xsl:choose>
-                            <xsl:when test="contains($constraint, '&quot;')">
-                                <xsl:variable name="pattern" select="substring-before(substring-after($constraint, '&quot;'), '&quot;')" />
-                                <xsl:value-of select="$pattern" />
-                            </xsl:when>
-                            <xsl:when test='contains($constraint, "&apos;")'>
-                                <xsl:variable name="pattern" select='substring-before(substring-after($constraint, "&apos;"), "&apos;")' />
-                                <xsl:value-of select="$pattern" />
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:message>ERROR [<xsl:value-of select="$nodeset"/>] unable to extract regex pattern from '<xsl:value-of select="$constraint" /> (ignored).'</xsl:message>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:attribute>
-                </xsl:if>
-                -->
-
-                <!-- ****** PLACEHOLDER ****** -->
-                <!--<xsl:attribute name="placeholder"/> could be used for short form of hint string in future -->
-
-                <!-- ****** READONLY ****** -->
-                <xsl:if test="string-length($binding/@readonly) &gt;0">
-                    <xsl:choose>
-                        <xsl:when test="$binding/@readonly = 'true()'" >
-                            <xsl:attribute name="readonly">readonly</xsl:attribute>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:message>ERROR [<xsl:value-of select="$nodeset"/>] unknown value for readonly attribute (ignored).</xsl:message>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:if>
-
-                <!-- ****** REQUIRED ****** -->
-                <xsl:if test="($binding/@required = 'true()') and (not(local-name() = 'bind'))">
-                    <xsl:attribute name="required">
-                        <xsl:text>required</xsl:text>
-                    </xsl:attribute>
-                </xsl:if>
-
-                <!-- ****** SIZE ****** -->
-                <!--<xsl:attribute name="size"/>-->
-
-                <!-- ****** SRC ****** -->
-                <!--<xsl:attribute name="src"/>-->
-
-                <!-- ****** STEP ****** -->
-                <!--<xsl:attribute name="step"/>-->
-
-                <!-- ****** TYPE ****** -->
-                <xsl:if test="not($element='textarea')">
-                    <xsl:attribute name="type">
-                        <xsl:value-of select="$html_type" />
-                    </xsl:attribute>
-                </xsl:if>
-
-
-
-                <!-- ****** VALUE ****** -->
-                <xsl:if test="local-name() = 'item'"><!-- add test for 'if default value exists' -->
-                    <xsl:attribute name="value">
-                        <xsl:value-of select="xf:value"/>
-                    </xsl:attribute>
-                </xsl:if>
-
-                <!--<xsl:attribute name="width"/>-->
-
-                <!-- ** the following are custom attributes to store NON-HTML5 preload, skip and repeat logic and other javarosa-style bindings **-->
-                
-                <!-- ****** CONSTRAINT ****** -->
-                <!-- it is not feasible to reliably extract min, max, pattern from the constraint attribute if this contains a complex expression e.g.(if(/data/a = 'this', (. &lt; 50), (regex(., /#$#@$@/))))-->
-                <!-- ****** CALCULATE ****** -->
-                <xsl:if test="string-length($binding/@constraint) &gt; 0">
-                     <xsl:attribute name="data-constraint">
-                         <xsl:value-of select="$binding/@constraint" />
-                     </xsl:attribute>
-                </xsl:if>
-    
-                <!-- ****** CALCULATE ****** -->
-                <xsl:if test="string-length($binding/@calculate) &gt; 0">
-                     <xsl:attribute name="data-calculate">
-                         <xsl:value-of select="$binding/@calculate" />
-                     </xsl:attribute>
-                </xsl:if>
-
-                <!-- ****** PRELOAD ****** -->
-                <xsl:if test="string-length($binding/@jr:preload) &gt; 0">
-                    <xsl:choose>
-                        <xsl:when test="not( $binding/@jr:preload = 'patient' )" >
-                            <xsl:attribute name="data-preload">
-                                <xsl:value-of select="./@jr:preload"/>
-                            </xsl:attribute>
-                            <xsl:attribute name="data-preload-params">
-                                <xsl:value-of select="./@jr:preloadParams"/>
-                            </xsl:attribute>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:message>NO SUPPORT: Patient preload item is not supported (ignored).</xsl:message>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:if>
-
-                <!-- ****** DATA TYPE ****** -->
-                <xsl:attribute name="data-type-xml">
-                    <xsl:value-of select="$xml_type"/>
-                </xsl:attribute>
-
-                <!-- ****** SKIP LOGIC ****** -->
-                <xsl:if test="string-length($binding/@relevant) &gt; 0">
-                    <xsl:attribute name="data-relevant">
-                        <xsl:value-of select="$binding/@relevant"/>
-                    </xsl:attribute>
-                </xsl:if>
-
+                <xsl:call-template name="binding-attributes">
+                    <xsl:with-param name="binding" select="$binding"/>
+                    <xsl:with-param name="nodeset" select="$nodeset"/>
+                    <xsl:with-param name="type" select="$type"/>
+                </xsl:call-template>
                 <!-- avoid self-closing textarea -->
                 <xsl:if test="$element='textarea'">
                     <xsl:text> </xsl:text>
@@ -642,16 +367,9 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
             </xsl:choose>
         </xsl:variable>
         <option>
-            <!--<xsl:variable name="default">
-
-            </xsl:variable>-->
             <xsl:if test="2 &lt; 1"><!-- IF READONLY? -->
                 <xsl:attribute name="disabled"></xsl:attribute>
             </xsl:if>
-            <!--<xsl:attribute name="label"/>-->
-           <!-- <xsl:if test="string($default)">
-                <xsl:attribute name="selected">selected</xsl:attribute>
-            </xsl:if>-->
             <xsl:attribute name="value">
                 <xsl:choose>
                     <xsl:when test="string($value)">
@@ -685,7 +403,304 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
             </span>
         </xsl:for-each>
     </xsl:template>
-
+     
+    <xsl:template match="xf:itemset" mode="templates">
+        <xsl:param name="nodeset" />
+        <xsl:param name="binding"/>
+        <xsl:choose>
+            <xsl:when test="$binding">
+                <label class="itemset-template">
+                    <xsl:attribute name="data-items-path">
+                        <xsl:value-of select="@nodeset"/>
+                    </xsl:attribute>
+                    <!--<xsl:value-of select="'__LABEL__'" />-->
+                    <input>
+                        <xsl:call-template name="binding-attributes">
+                            <xsl:with-param name="binding" select="$binding"/>
+                            <xsl:with-param name="nodeset" select="$nodeset"/>
+                        </xsl:call-template>
+                        <xsl:attribute name="value"></xsl:attribute>
+                    </input>
+                </label>
+            </xsl:when>
+            <xsl:otherwise>
+                <option class="itemset-template" value="">
+                    <xsl:attribute name="data-items-path">
+                        <xsl:value-of select="@nodeset"/>
+                    </xsl:attribute>
+                    <xsl:value-of select="'...'"/>
+                </option>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template match="xf:itemset" mode="labels">
+        <xsl:variable name="value-ref" select="./xf:value/@ref" />
+        <xsl:variable name="label-ref" select="./xf:label/@ref" />
+        <xsl:variable name="iwq" select="substring-before(substring-after(@nodeset, 'instance('),')/')" />
+        <xsl:variable name="instance-path" select="str:replace(substring-after(@nodeset, ')'), '/', '/xf:')" />
+        <xsl:variable name="instance-path-nofilter">
+            <xsl:call-template name="strip-filter">
+                <xsl:with-param name="string" select="$instance-path"/>
+            </xsl:call-template>
+        </xsl:variable> 
+        <xsl:variable name="instance-id" select="substring($iwq, 2, string-length($iwq)-2)" />    
+        <span class="itemset-labels">
+            <xsl:attribute name="data-value-ref">
+                <xsl:value-of select="$value-ref"/>
+            </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="contains($label-ref, 'jr:itext(')">
+                    <xsl:attribute name="data-label-type">
+                        <xsl:value-of select="'itext'"/>
+                    </xsl:attribute>
+                    <xsl:variable name="label-node-name"
+                        select="substring(substring-after($label-ref, 'itext('),1,string-length(substring-after($label-ref, 'itext('))-1)"/>
+                    <xsl:attribute name="data-label-ref">
+                        <xsl:value-of select="$label-node-name"/>
+                    </xsl:attribute>
+                    <xsl:for-each select="dyn:evaluate(concat('//xf:model/xf:instance[@id=&quot;', $instance-id, '&quot;]', $instance-path-nofilter))">
+                        <!-- so this is support for itext(node) (not itext(path/to/node)), but only 'ad-hoc' for itemset labels for now -->
+                        <xsl:variable name="id" select="./*[name()=$label-node-name]" />
+                        <xsl:call-template name="translations">
+                            <xsl:with-param name="id" select="$id"/>
+                        </xsl:call-template>
+                    </xsl:for-each>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="data-label-ref">
+                        <xsl:value-of select="$label-ref"/>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>
+            </xsl:text>
+        </span> 
+    </xsl:template>
+    
+    <!-- 
+        turns: /path/to/node[value=/some/other/node] into: /path/to/node
+        this function is probably way too aggressive but will work for xls-form generated forms
+        to do this properly a regexp:replace is required, but not supported in libXML
+        kept the recursion in, even though it is not being used right now
+    -->
+    <xsl:template name="strip-filter">
+        <xsl:param name="string"/>
+        <xsl:choose>
+            <xsl:when test="contains($string, '[') and contains($string, ']')">
+                <xsl:value-of select="substring-before($string, '[')"/>  
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$string"/>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:if test="string-length(substring-after($string, ']')) > 0">
+            <xsl:call-template name="strip-filter">
+                <xsl:with-param name="string" select="substring-after($string,']')"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+    
+    <!--
+       turns STRING: '/path/to/node' into: /*[name()='path'/*[name()='to']/*[name()='node'
+    -->    
+    <!--   
+    <xsl:template name="string-to-path">
+        <xsl:param name="path-string"/>
+        <xsl:if test="starts-with($path-string, '/')">
+            <xsl:value-of select="'/'"/>
+        </xsl:if>
+        <xsl:choose>
+            <xsl:when test="contains($path-string, '/')">
+                <xsl:value-of select="substring-before($path-string, '/')"/>
+                <xsl:call-template name="string-to-path">
+                    <xsl:with-param name="path-string" select="substring-after($path-string, '/')"/>
+                </xsl:call-template>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
+    -->
+    
+    <xsl:template name="select-select">
+        <xsl:param name="nodeset"/>
+        <xsl:param name="binding"/>
+        <xsl:variable name="appearance" select="./@appearance" />
+        <xsl:variable name="options">
+            <xsl:apply-templates select="xf:item" mode="select-option" />
+        </xsl:variable>
+        <xsl:variable name="type">
+           <xsl:choose>
+               <xsl:when test="local-name() = 'select'">select_multiple</xsl:when>
+               <xsl:otherwise>select_one</xsl:otherwise>
+           </xsl:choose>
+        </xsl:variable>   
+        <label>
+            <xsl:if test="./@appearance">
+                <xsl:attribute name="class">
+                    <xsl:call-template name="appearance" />
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:apply-templates select="$binding/@jr:constraintMsg" />
+            <xsl:apply-templates select="xf:label" />
+            <xsl:apply-templates select="xf:hint" />
+            <select>
+                <xsl:call-template name="binding-attributes">
+                    <xsl:with-param name="nodeset" select="$nodeset" />
+                    <xsl:with-param name="binding" select="$binding" />
+                    <xsl:with-param name="type" select="$type" />
+                </xsl:call-template> 
+                <xsl:choose>
+                    <xsl:when test="not(./xf:itemset)">
+                        <option value="">...</option>
+                        <xsl:for-each select="exsl:node-set($options)/option">
+                            <xsl:copy-of select="."/>
+                        </xsl:for-each>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <!--<xsl:attribute name="data-itemset"/>-->
+                        <xsl:apply-templates select="xf:itemset" mode="templates"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </select>            
+            <span class="jr-option-translations" style="display:none;">
+                <xsl:if test="not(./xf:itemset) and $translated = 'true'">
+                    <xsl:for-each select="exsl:node-set($options)/span">
+                        <xsl:copy-of select="." />
+                    </xsl:for-each>
+                </xsl:if>
+                <xsl:text>
+                </xsl:text>
+            </span>
+            <xsl:if test="./xf:itemset">
+                <xsl:apply-templates select="xf:itemset" mode="labels"/>
+            </xsl:if>
+        </label>
+    </xsl:template>
+    
+    <xsl:template name="select-input">
+        <xsl:param name="nodeset"/>
+        <xsl:param name="binding"/>
+        <fieldset>
+            <xsl:if test="@appearance">
+                <xsl:attribute name="class">
+                    <xsl:call-template name="appearance" />
+                </xsl:attribute>
+            </xsl:if>
+            <!--<xsl:if test="./xf:itemset">
+                <xsl:attribute name="data-itemset"/>
+            </xsl:if>-->
+            <legend>
+                <xsl:apply-templates select="$binding/@jr:constraintMsg" />
+                <xsl:apply-templates select="xf:label" />
+                <xsl:apply-templates select="xf:hint" />
+                <xsl:text>
+                </xsl:text>
+            </legend>
+            <xsl:choose>
+                <xsl:when test="not(./xf:itemset)">
+                    <xsl:apply-templates select="xf:item" />
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="xf:itemset" mode="templates">
+                        <xsl:with-param name="nodeset" select="$nodeset" />
+                        <xsl:with-param name="binding" select="$binding" />
+                    </xsl:apply-templates>
+                    <xsl:apply-templates select="xf:itemset" mode="labels"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </fieldset>
+    </xsl:template>
+    
+    <!--
+        adds binding attributes to the context node, meant for <input>, <select>, <textarea>
+    -->
+    <xsl:template name="binding-attributes">
+        <xsl:param name="binding"/>
+        <xsl:param name="nodeset"/>
+        <xsl:param name="type"/>
+        <xsl:variable name="xml-type">
+            <xsl:call-template name="xml_type">
+                <xsl:with-param name="nodeset" select="$nodeset"/>
+            </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="html-input-type">
+            <xsl:call-template name="html_type">
+                <xsl:with-param name="xml_type" select="$xml-type" />
+            </xsl:call-template>
+        </xsl:variable>
+        <xsl:choose>
+            <xsl:when test="$type = 'select_multiple'">
+                <xsl:attribute name="multiple">multiple</xsl:attribute>
+            </xsl:when>
+            <xsl:when test="$type = 'select_one'"></xsl:when>
+            <xsl:when test="$type = 'textarea'"></xsl:when>
+            <xsl:otherwise>
+                <xsl:attribute name="type">
+                    <xsl:value-of select="$html-input-type"/>
+                </xsl:attribute>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:attribute name="name">
+            <xsl:value-of select="$nodeset" />
+        </xsl:attribute>
+        <xsl:if test="local-name() = 'item'">
+            <xsl:attribute name="value">
+                <xsl:value-of select="./xf:value"/>
+            </xsl:attribute>
+        </xsl:if>
+        <xsl:if test="($binding/@required = 'true()') and (not(local-name() = 'bind'))">
+            <xsl:attribute name="required">required</xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$binding/@constraint">
+            <xsl:attribute name="data-constraint">
+                <xsl:value-of select="$binding/@constraint" />
+            </xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$binding/@relevant">
+            <xsl:attribute name="data-relevant">
+                <xsl:value-of select="$binding/@relevant"/>
+            </xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$binding/@calculate">
+            <xsl:attribute name="data-calculate">
+                <xsl:value-of select="$binding/@calculate" />
+            </xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$binding/@jr:preload">
+            <xsl:choose>
+                <xsl:when test="not( $binding/@jr:preload = 'patient' )" >
+                    <xsl:attribute name="data-preload">
+                        <xsl:value-of select="./@jr:preload"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="data-preload-params">
+                        <xsl:value-of select="./@jr:preloadParams"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:message>NO SUPPORT: Patient preload item is not supported (ignored).</xsl:message>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:if>
+        <xsl:attribute name="data-type-xml">
+            <xsl:value-of select="$xml-type"/>
+        </xsl:attribute>
+        <xsl:if test="$binding/@readonly = 'true()' and not($html-input-type = 'hidden')" >
+            <xsl:attribute name="readonly">readonly</xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$type = 'file'">
+            <xsl:if test="@mediatype">
+                <xsl:attribute name="accept">
+                    <xsl:value-of select="@mediatype" />
+                    <!-- image/*, video/* or audio/* -->
+                </xsl:attribute>
+            </xsl:if>
+        </xsl:if>
+        <!--
+            <xsl:if test="$html_type = 'image'" >
+            <xsl:attribute name="alt">image</xsl:attribute>
+            </xsl:if>
+        -->
+    </xsl:template>
 
     <xsl:template match="xf:select | xf:select1">
         <xsl:variable name="nodeset_used">
@@ -696,88 +711,19 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 <xsl:with-param name="nodeset_u" select="$nodeset_used"/>
             </xsl:call-template>
         </xsl:variable>
-
         <xsl:variable name="binding" select="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset_used] | /h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]" />
-
-        <!-- using 'appearance' attribute to decide whether to use radiobuttons and checkboxes or pulldown lists -->
         <xsl:choose>
-            <!--<xsl:when test="count(xf:item) &gt; 4">-->
             <xsl:when test="@appearance = 'minimal' or @appearance = 'autocomplete'">
-                <xsl:variable name="options">
-                    <xsl:apply-templates select="xf:item" mode="select-option" />
-                </xsl:variable>
-                <!-- **** test -->
-                
-                <!-- *** end test -->
-                <label>
-                    <!--<xsl:if test="@appearance">-->
-                        <xsl:attribute name="class">
-                            <xsl:call-template name="appearance" />
-                        </xsl:attribute>
-                    <!--</xsl:if>-->
-                    <xsl:apply-templates select="$binding/@jr:constraintMsg" />
-                    <xsl:apply-templates select="xf:label" />
-                    <xsl:apply-templates select="xf:hint" />
-                    <select>
-                        <!--**<xsl:attribute name="autofocus" />**-->
-                        <xsl:if test="2 &lt; 1">
-                            <xsl:attribute name="disabled" /><!-- ADD THIS FUNCTIONALITY! -->
-                        </xsl:if>
-                        <!--**<xsl: attribute name="form" />**-->
-                        <xsl:if test="local-name() = 'select'">
-                            <xsl:attribute name="multiple">multiple</xsl:attribute>
-                        </xsl:if>
-                        <xsl:attribute name="name">
-                        	<xsl:value-of select="$nodeset" />
-                        </xsl:attribute>
-                        <xsl:if test="$binding/@required">
-                            <xsl:attribute name="required">required</xsl:attribute>
-                        </xsl:if>
-                        <!-- ****** CONSTRAINT ****** -->
-                        <xsl:if test="string-length($binding/@constraint) &gt; 0">
-                            <xsl:attribute name="data-constraint">
-                                <xsl:value-of select="$binding/@constraint" />
-                            </xsl:attribute>
-                        </xsl:if>
-                        <!--**<xsl:attribute name="size" />**-->
-                        <!-- ****** SKIP LOGIC ****** -->
-		                <xsl:if test="string-length($binding/@relevant) &gt; 0">
-		                    <xsl:attribute name="data-relevant">
-                                <xsl:value-of select="$binding/@relevant"/>
-                            </xsl:attribute>
-		                </xsl:if>
-                        <!-- add empty first option for select1 -->
-                        <xsl:if test="local-name() = 'select1'">
-                            <option value="">...</option>
-                        </xsl:if>
-                        <xsl:for-each select="exsl:node-set($options)/option">
-                            <xsl:copy-of select="."/>
-                        </xsl:for-each>
-                    </select>
-                    <xsl:if test="$translated = 'true'">
-                        <span class="jr-option-translations" style="display:none;">
-                            <xsl:for-each select="exsl:node-set($options)/span">
-                                <xsl:copy-of select="." />
-                            </xsl:for-each>
-                            <!--<xsl:apply-templates select="xf:item/xf:label" />-->
-                        </span>
-                    </xsl:if>
-                </label>
+                <xsl:call-template name="select-select">
+                    <xsl:with-param name="nodeset" select="$nodeset" />
+                    <xsl:with-param name="binding" select="$binding" />
+                </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
-                <fieldset>
-                    <xsl:if test="@appearance">
-                        <xsl:attribute name="class">
-                            <xsl:call-template name="appearance" />
-                        </xsl:attribute>
-                    </xsl:if>
-                    <legend>
-                        <xsl:apply-templates select="$binding/@jr:constraintMsg" />
-                        <xsl:apply-templates select="xf:label" />
-                        <xsl:apply-templates select="xf:hint" />
-                    </legend>
-                    <xsl:apply-templates select="xf:item" />
-                </fieldset>
+                <xsl:call-template name="select-input">
+                    <xsl:with-param name="nodeset" select="$nodeset" />
+                    <xsl:with-param name="binding" select="$binding" />
+                </xsl:call-template>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -816,7 +762,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 <xsl:variable name="refid"
                     select="substring(substring-after($ref, 'itext('),2,string-length(substring-after($ref, 'itext('))-3)"/>
                 <xsl:if test="not(//xf:itext/xf:translation/xf:text[@id=$refid])">
-                    <xsl:message>ERROR: itext(id) found with non-existing id: "<xsl:value-of select="$refid"/>". Maybe itext(path/to/node) construct was used, which is not yet supported.</xsl:message>
+                    <xsl:message>ERROR: itext(id) found with non-existing id: "<xsl:value-of select="$refid"/>". Maybe itext(path/to/node) construct was used, which is not supported.</xsl:message>
                 </xsl:if>
                 <!--<xsl:variable name="apos" select='"&apos;"' />
                 <xsl:choose> 
@@ -929,6 +875,9 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                                         <xsl:value-of select="concat(' jr-form-', @form)" />
                                     </xsl:attribute>
                                 </xsl:if>
+                                <xsl:attribute name="data-itext-id">
+                                    <xsl:value-of select="$id"/>
+                                </xsl:attribute>
                                 <!--<xsl:if test="@form = 'short'" >
                                     <xsl:attribute name="style">display:none;</xsl:attribute>
                                 </xsl:if>-->
@@ -1013,7 +962,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 <xsl:attribute name="lang">
                     <xsl:value-of select="@lang"/>
                 </xsl:attribute>
-                <!--<xsl:value-of select="@lang" />REMOVED FOR RAPAIDE, BUT SHOULD BE RE-ADDED FOR GENERIC APP-->
+                <!--<xsl:value-of select="@lang" />REMOVED FOR ENKETO, BUT SHOULD BE RE-ADDED FOR GENERIC APP-->
             </a>
             <xsl:text> </xsl:text>
         </xsl:for-each>
@@ -1185,7 +1134,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         <xsl:value-of select="$nodeset_a"/>
     </xsl:template>
 
-   <!-- <xsl:template name="xml_type">
+    <xsl:template name="xml_type">
         <xsl:param name="nodeset" />
         <xsl:variable name="xml_type">
             <xsl:value-of select="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]/@type" />
@@ -1200,13 +1149,14 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 </xsl:call-template>
             </xsl:otherwise>
         </xsl:choose>
-    </xsl:template>-->
+    </xsl:template>
 
+    <!-- ONLY TO BE USED FOR INPUT ELEMENT TYPES -->
     <xsl:template name="html_type">
         <xsl:param name="xml_type" />
         <xsl:choose>
-            <xsl:when test="local-name(..) = 'select1'">radio</xsl:when>
-            <xsl:when test="local-name(..) = 'select'">checkbox</xsl:when>
+            <xsl:when test="local-name(..) = 'select1' or $xml_type='select1'">radio</xsl:when>
+            <xsl:when test="local-name(..) = 'select' or $xml_type='select'">checkbox</xsl:when>
             <xsl:when test="local-name() = 'bind'">hidden</xsl:when>
             <xsl:when test="$xml_type = 'dateTime'">datetime</xsl:when>
             <xsl:when test="$xml_type = 'date'">date</xsl:when>

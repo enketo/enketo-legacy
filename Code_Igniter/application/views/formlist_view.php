@@ -6,9 +6,7 @@
 		/*header{display: none;}*/
 		.progress-space{height: 50px; text-align: center;}
 		/*#page{display: none;}*/
-		#form-list ul{padding: 0; margin: 0;list-style: none;}
-		#form-list ul li {margin: 10px 0;}
-		#form-list.empty p{display: none;}
+		
 		progress{display: none;}
 		input{width: 80%;text-align: center;}
 		.input-append{width: 100%; text-align: center;}
@@ -26,7 +24,7 @@
 		<article class="paper">
 			<button class="btn btn-primary"><i class="icon-refresh icon-white">Refresh</i></button>
 			<div class="progress-space"><progress></progress></div>
-			<div id="form-list" class="empty">
+			<div id="form-list" class="formlist empty">
 				<p class="alert">To enable a form for offline use, simply load it.</p>
 				<ul></ul>
 			</div>

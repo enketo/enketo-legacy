@@ -26,7 +26,9 @@
 
     <xsl:template match="/">
     	<root>
-        	<xsl:apply-templates select="//xf:model/xf:instance[1]"/>
+            <model>
+        	   <xsl:apply-templates select="//xf:model/xf:instance"/>
+            </model>
         </root>
     </xsl:template>
 

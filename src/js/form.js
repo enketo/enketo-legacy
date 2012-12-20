@@ -213,7 +213,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 */
 		function Nodeset(selector, index, filter){
 			var defaultSelector = '*';
-
+			this.originalSelector = selector;
 			this.selector = (typeof selector === 'string' && selector.length > 0) ? selector : defaultSelector; 
 			filter = (typeof filter !== 'undefined' && filter !== null) ? filter : {};
 			this.filter = filter;
@@ -426,7 +426,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			typeValid = this.types[xmlDataType.toLowerCase()].validate(value);
 			
-			exprValid = (typeof expr !== 'undefined' && expr !== null && expr.length > 0) ? that.evaluate(expr, 'boolean', this.selector, this.index) : true;
+			exprValid = (typeof expr !== 'undefined' && expr !== null && expr.length > 0) ? that.evaluate(expr, 'boolean', this.originalSelector, this.index) : true;
 			//console.debug('constraint valid: '+exprValid);
 			return (typeValid && exprValid);
 		};

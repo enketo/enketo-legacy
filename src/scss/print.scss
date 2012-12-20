@@ -49,10 +49,10 @@ body{
     float: right;
     /*~ br {
       display: none; }*/ }
-  div.jr-branch{
-    display: none;}
-  .jr-branch+fieldset.disabled,
-  .jr-branch+label.disabled{
+  /*div.jr-branch{
+    display: none;}*/
+  .jr-branch.disabled{
+  /*.jr-branch+label.disabled{*/
     display: block !important; }
   .bootstrap-select, .bootstrap-multiselect{
     .dropdown-toggle{

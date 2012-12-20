@@ -48,9 +48,9 @@
 					<input type="hidden" name="form_id"/>
 					<!--<input type="submit">Transform and Test!</button>-->
 					
-					<div class="hurry"><a href="test?server=http%3A%2F%2Fformhub.org%2Fformhub_u" title="Check forms on http://formhub.org/formhub_u">Pssst, in a hurry?</a></div>
+					<div class="hurry"><a href="formtester?server=http%3A%2F%2Fformhub.org%2Fformhub_u" title="Check forms on http://formhub.org/formhub_u">Pssst, in a hurry?</a></div>
 				</form>
-				<div id="form-list" class="" style="display:none;">
+				<div id="form-list" class="formlist" style="display:none;">
 					<ul class="btn-group" data-toggle="buttons-radio">
 					</ul>
 				</div>
@@ -149,14 +149,14 @@
 		    web applications to cope with intermittent Internet connections. 
 		</p>
 		<p>
-		   The Enketo launch area allows survey administrators to test forms and afterwards 'launch' them on a unique URL for actual data entry. The entry component is offline-capable. The following are the main items left to do for full JavaRosa compatibility:
+		   The Enketo form tester is meant for survey administrators to test forms. When all is working well, the survey can be launched on a unique web address via the formlist. A launched survey is offline-capable. The following are the main items left to do for full JavaRosa compatibility:
 		</p> 
 		<div class="clearfix">   
 		    <div class="column">
 			    <ul style="line-height: 1.5em">
-			    	<li>support for cascading selections</li>
-			    	<li>itext(path/to/node) support</li>
 			    	<li>support for authentication</li>
+			    	<li>support for file uploads (images, video, audio)</li>
+			    	<li>support for calculations on dates</li>
 			    </ul>
 			</div>
 			<!--<div class="column ui-corner-all ui-helper-clearfix">

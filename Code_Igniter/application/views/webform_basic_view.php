@@ -2,9 +2,9 @@
 	require 'elements/html_start.php'; 
 ?>
 		<script type="text/javascript">
-			var jrDataStr = '<? echo $form_data ?>';
+			var jrDataStr = <?= $form_data ?>;
 		<? if (isset($form_data_to_edit) && isset($return_url)): ?>
-			var jrDataStrToEdit = '<?= $form_data_to_edit ?>';
+			var jrDataStrToEdit = <?= $form_data_to_edit ?>;
 			var RETURN_URL = '<?= $return_url ?>';
 		<? endif; ?>
 			var supportEmail = '<?= $this->config->item("support_email") ?>';

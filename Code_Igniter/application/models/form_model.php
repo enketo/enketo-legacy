@@ -80,7 +80,7 @@ class Form_model extends CI_Model {
                 //TODO: MOVE THIS TO SEPARATE FUNCTION $this->_fix_meta() or to XSLT
                 $meta = NULL;
                 $dataroot = NULL;
-                foreach ($data->instance->children() as $rootchild)
+                foreach ($data->model->instance[0]->children() as $rootchild)
                 {
                     $dataroot = $rootchild;
                     $meta = $dataroot->meta;
@@ -105,7 +105,7 @@ class Form_model extends CI_Model {
                 }
 
 				//easiest way to merge data and result
-				$result = simplexml_load_string('<root>'.$result->form->asXML().$data->instance->asXML().$result->xsltmessages->asXML().'</root>');
+				$result = simplexml_load_string('<root>'.$result->form->asXML().$data->model->asXML().$result->xsltmessages->asXML().'</root>');
 				
 				//$this->_html5_validate($result);
 				//log_message('debug', 'data: '.$data->asXML());				
@@ -273,28 +273,19 @@ class Form_model extends CI_Model {
    		
    			if(!$success)//empty($errors))
     		{
-    				log_message('error', 'XML/XSL doc load errors: '.json_encode($errors));
+    			log_message('error', 'XML/XSL doc load errors: '.json_encode($errors));
 
-    				//see if fatal errors occurred. Return FALSE for doc if one occurred
-    				//foreach ($errors as $error)// (array_search(LIBXML_ERR_FATAL, (array) $errors) === 'level')
-    				//{
-    				 // if ($error->level === 3)
-    				  //{	
+    			//see if fatal errors occurred. Return FALSE for doc if one occurred
+    			//foreach ($errors as $error)// (array_search(LIBXML_ERR_FATAL, (array) $errors) === 'level')
+    			//{
+    			// if ($error->level === 3)
+    			//{	
     			return array('doc' => FALSE, 'errors' => $errors);
-    				  //}
-    				//}
     		}	  			
-    		//if($success)
-    		//{
+
     		//log_message('debug', 'loaded doc!');// xml:'.$doc->saveXML());
     			
             return array('doc' => $doc, 'errors' => $errors, 'type' => $type);     			
-    		//}
-    		//else
-    		//{
-    		//	log_message('error', 'loading XML/XSL doc, errors: '.json_encode($errors)); //xml:'.$xml->saveXML());
-    		//	return FALSE;
-    		//}
     	}
     	else 
     	{

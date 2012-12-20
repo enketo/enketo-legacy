@@ -2,7 +2,7 @@
 	require 'elements/html_start.php'; 
 ?>
 		<script type="text/javascript">
-			var jrDataStr = '<?= $form_data ?>';
+			var jrDataStr = <?= $form_data ?>;
 			var supportEmail = '<?= $this->config->item("support_email") ?>';
 		</script>
 	

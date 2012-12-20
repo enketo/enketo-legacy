@@ -4,3 +4,6 @@
 [submodule "lib/phantom-jasmine"]
 	path = lib/phantom-jasmine
 	url = https://github.com/jcarver989/phantom-jasmine.git
+[submodule "public/libraries/bootstrap-datepicker"]
+	path = public/libraries/bootstrap-datepicker
+	url = https://github.com/eternicode/bootstrap-datepicker.git

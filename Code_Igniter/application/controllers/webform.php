@@ -30,7 +30,7 @@ class Webform extends CI_Controller {
 			'/libraries/jquery.min.js',
 			'/libraries/bootstrap/js/bootstrap.min.js',	
 			'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
-			'/libraries/eternicode-bootstrap-datepicker/js/bootstrap-datepicker.js',
+			'/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
 			'/libraries/bootstrap-select.js',
 			'/libraries/modernizr.min.js',
 			'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
@@ -291,9 +291,12 @@ class Webform extends CI_Controller {
 
 		$form->html = $transf_result->form->asXML();
 		
-		$form->default_instance = $transf_result->instance->asXML();
-		$form->default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form->default_instance);
-		$form->default_instance = addslashes($form->default_instance);
+		$form->default_instance = $transf_result->model->asXML();
+		//$form->default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form->default_instance);
+		//$form->default_instance = preg_replace('/\/\>\s+\</', '/><', $form->default_instance);
+		//the preg replacement below is very aggressive!... maybe too aggressive
+		$form->default_instance = preg_replace('/\>\s+\</', '><', $form->default_instance);
+		$form->default_instance = json_encode($form->default_instance);
 		
 		return (!empty($form->html) && !empty($form->default_instance)) ? $form : NULL;
 	}
@@ -303,7 +306,7 @@ class Webform extends CI_Controller {
 		$edit_o = $this->Instance_model->get_instance($this->subdomain, $instance_id);
 		if (!empty($edit_o))
 		{
-			$edit_o->instance_xml = addslashes($edit_o->instance_xml);
+			$edit_o->instance_xml = json_encode($edit_o->instance_xml);
 		}
 		return (!empty($edit_o->instance_xml) && !empty($edit_o->return_url)) ? $edit_o : NULL;
 	}

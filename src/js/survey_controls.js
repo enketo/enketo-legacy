@@ -39,7 +39,7 @@ function loadForm(formName, confirmed){
 		// *OLD*checkForOpenForm(true);
 		if (record.data !== null){
 			//var success = form.setData(data);
-			form.reset();
+			form.resetHTML();
 			//gui.closePage();
 			form = new Form('form.jr:eq(0)', record.data);
 			form.init();
@@ -106,8 +106,8 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	$('form.jr').trigger('beforesave');
 	rec = { 'data': form.getDataStr(true, true), 'ready': confirmedFinalStatus};
 	// HOW THE HELL DOES REC GET A LASTSAVED PROPERTY HERE??? SOMETHING VERY WRONG
-	console.debug('sending following record to store.setRecord():');
-	console.debug(rec);
+	//console.debug('sending following record to store.setRecord():');
+	//console.debug(rec);
 	//alert('hey');
 	result = store.setRecord(confirmedRecordName, rec, deleteOldName, overwriteExisting, curRecordName);
 
@@ -163,7 +163,7 @@ function resetForm(confirmed){
 		gui.confirm(message, choices);
 	}
 	else {
-		form.reset();
+		form.resetHTML();
 		form = new Form('form.jr:eq(0)', jrDataStr);
 		form.init();
 		$('button#delete-form').button('disable');
@@ -244,7 +244,7 @@ function submitForm() {
  *
  */
 function submitEditedForm() {
-	var name, record, saveResult, redirect, beforeMsg;
+	var name, record, saveResult, redirect, beforeMsg, callbacks;
 	$('form.jr').trigger('beforesave');
 	if (!form.isValid()){
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
@@ -253,17 +253,17 @@ function submitEditedForm() {
 	redirect = (typeof RETURN_URL !== 'undefined') ? true : false;
 	beforeMsg = (redirect) ? 'You will be automatically redirected after submission. ' : '';
 
-	gui.alert(beforeMsg + 'If it fails, please click submit button again.<br/>'+
+	gui.alert(beforeMsg + '<br />'+
 		'<progress style="text-align: center;"/>', 'Submitting...');
-	name = (Math.floor(Math.random()*100001)).toString();
-	console.debug('temporary record name: '+name);
-	record = { 'name': name,'data': form.getDataStr(true, true)};
+	//name = (Math.floor(Math.random()*100001)).toString();
+	//console.debug('temporary record name: '+name);
+	record = {'data': form.getDataStr(true, true)};
 	
-	connection.uploadRecords(record);
-
-	$('form.jr').on('uploadsuccess', function(e, uploadedName){
-		console.debug('uploaded successfully: '+uploadedName);
-		if (uploadedName == name){
+	callbacks = {
+		error: function(){
+			gui.alert('Please try submitting again.', 'Submission failed');
+		},
+		success: function(){
 			if (redirect){
 				gui.alert('You will now be redirected back to formhub.', 'Submission successful!');
 				location.href = RETURN_URL;
@@ -274,7 +274,9 @@ function submitEditedForm() {
 				resetForm(true);
 			}
 		}
-	});
+	};
+
+	connection.uploadRecords(record, true, callbacks);
 }
 
 /**
@@ -288,21 +290,15 @@ function exportData(finalOnly){
 	var i,dataArr, dataStr, uriContent, newWindow;
 	finalOnly = finalOnly || true;
 
-	//dataArr = store.getSurveyDataXMLStr(finalOnly);//store.getSurveyData(finalOnly).join('');
-	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
+	dataArr = store.getSurveyDataOnlyArr(finalOnly);
 	
-	//console.debug(data);
 	if (dataArr.length === 0){
 		gui.showFeedback('No data to export.');
 	}
 	else{
-		//for (i = 0 ; i<dataArr.length ; i++){
-		//	dataArr[i] = form.prepareForSubmission(dataArr[i]);
-		//}
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		uriContent = "data:application/octet-stream," + encodeURIComponent(dataStr); /*data:application/octet-stream*/
 		newWindow = window.open(uriContent, 'exportedData');
-	//window.location.href = uriContent;
 	}
 }
 
@@ -325,9 +321,6 @@ function exportToFile(fileName, finalOnly){
 		gui.showFeedback('No data marked "final" to export.');
 	}
 	else{
-		//for (i = 0 ; i<dataArr.length ; i++){
-		//	dataArr[i] = form.prepareForSubmission(dataArr[i]);
-		//}
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
 		bb = new BlobBuilder();
 		bb.append(dataStr);
@@ -336,28 +329,6 @@ function exportToFile(fileName, finalOnly){
 	}
 }
 
-//avoid Google Closure Compiler renaming:
-//Settings.prototype['autoUpload'] = Settings.prototype.autoUpload;
-//Settings.prototype['buttonLocation'] = Settings.prototype.buttonLocation;
-
-//Settings.prototype['autoUpload'] = function(val){//
-
-//};//
-
-//Settings.prototype['buttonLocation'] = function(val){
-//	"use strict";
-//	//if ($(this).checked === true) {
-//	//console.log('found radio input with required value'); // DEBUG
-//	$('#form-controls').removeClass('bottom right mobile').addClass(val);
-//	//if (el[i].value==='mobile'){
-//	//	$('body').addClass('no-scroll');
-//	//}
-//	//else {
-//	//	$('body').removeClass('no-scroll');
-//	//}
-//	$(window).trigger('resize');
-//};
-
 //Extend GUI
 //setCustomEventHandlers is called automatically by GUI.init();
 GUI.prototype.setCustomEventHandlers = function(){
@@ -365,39 +336,33 @@ GUI.prototype.setCustomEventHandlers = function(){
 	var settingsForm, that = this;
 	
 	// survey-form controls
-	$('button#save-form')//.button({'icons': {'primary':"ui-icon-disk"}})
+	$('button#save-form')
 		.click(function(){
 			form.validateForm();
 			saveForm();
 		});
-	$('button#reset-form')//.button({'icons': {'primary':"ui-icon-refresh"}})
+	$('button#reset-form')
 		.click(function(){
 			resetForm();
 		});
-	$('button#delete-form')//.button({'icons': {'primary':"ui-icon-trash"}, disabled:true})
+	$('button#delete-form')
 		.click(function(){
 			deleteForm(false);
 		});
-	$('button#submit-form').button()//.detach().appendTo($('form.jr'))
-		//.button({'icons': {'primary':"ui-icon-check"}})
-			.click(function(){
-				form.validateForm();
-				submitForm();
-				return false;
-		});
+	$('button#submit-form').button()
+		.click(function(){
+			form.validateForm();
+			submitForm();
+			return false;
+	});
 
-	$('button#submit-edited-data')//.detach().appendTo($('form.jr'))
-		//.button({'icons': {'primary':"ui-icon-check"}})
-			.click(function(){
-				form.validateForm();
-				submitEditedForm();
-				return false;
-		});
-//	$('a#queue').click(function(){
-//		exportToFile();
-//		return false;
-//	});
-//
+	$('button#submit-edited-data')
+		.click(function(){
+			form.validateForm();
+			submitEditedForm();
+			return false;
+	});
+
 	$('#drawer-export').click(function(){
 		exportToFile();
 		return false;
@@ -428,10 +393,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	//export/backup locally stored data
 	this.pages().get('records').find('button#records-export').button({'icons': {'primary':"ui-icon-suitcase"}})
 		.click(function(){
-			//false means also non-final records are exported. Add selectmenu with both options.
-			//gui.alert('hey');
 			exportData(false);
-
 		})
 		.hover(function(){
 			$('#records-export-info').show();
@@ -457,21 +419,6 @@ GUI.prototype.setCustomEventHandlers = function(){
 		console.debug('settings change by user detected');
 		
 		settings.set(name, value);
-		//actions resulting from settings change
-		//if (that.hasOwnProperty(name)){
-		//	that[name](value);
-		//}
-//		switch(name){
-//			case 'settings-auto-upload':
-//				break;
-//			case 'settings-button-location':
-//				//var value = $(this).val();
-//				//$('#form-controls').removeClass().addClass(el.val());
-//				//console.log('found '+el.length+' radio elements with this name');
-//				//for (var i = 0; i < el.length; i++) {
-//
-//			break;
-//		}
 	});
 
 	$('#dialog-save').hide();
@@ -486,23 +433,16 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 		draftFormsQty = 0;
 	console.debug('updating recordlist in GUI');
 	if(!$page){
-		$page = this.pages().get('records');//this.$pages.find('article[id="records"]');
+		$page = this.pages().get('records');
 	}
-	
-	//var selectElement = pageEl.find('#forms-saved-names');
+
 	$list = $page.find('#records-saved ol');
 	
 	//remove the existing option elements
-	//selectElement.children().remove();
 	$list.children().remove();
-	//$('<option value="select form">Select Form</option>').appendTo(selectElement);
-	
 	// get form list object (keys + upload) ordered by time last saved
 	recordList = recordList || [];//store.getFormList();
-//		if (!formList){
-//			_this.alert('error loading list of saved forms');
-//			return;
-//		}
+
 	if (recordList.length > 0){
 		for (i=0; i<recordList.length; i++){
 			name = recordList[i].key;
@@ -515,16 +455,11 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 				icon = 'pencil';
 				draftFormsQty++;
 			}
-			//$('<option value="'+name+'">'+name+'</option>').addClass(clss).appendTo(selectElement);
-			//$('<li><span class="ui-icon ui-icon-'+icon+'"></span><span class="name">'+name+
-			//	'</span><span class="date"> ('+date+')</span></li>')
-			//	.appendTo(listElement);
 			$li = $('<li><span class="ui-icon ui-icon-'+icon+'"></span><span class="name">'+
 				'</span><span class="date"> ('+date+')</span></li>');
 			$li.find('.name').text(name); // encodes string to html
 			$list.append($li);
 		}
-		//$('#queue').show().find('#queue-length').text(recordList.length);
 		$('#queue-length').text(recordList.length);
 	}
 	else{
@@ -532,7 +467,6 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 		$('#queue-length').text('0');
 	}
 	// update status counters
-	//pageEl.find('#forms-saved-qty').text(recordList.length);
 	$page.find('#records-draft-qty').text(draftFormsQty);
 	$page.find('#records-final-qty').text(finishedFormsQty);
 };

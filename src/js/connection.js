@@ -172,7 +172,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 			}
 		},
 		success: function(){}
-	} : {};
+	} : callbacks;
 	
 	if (this.uploadQueue.length > 0){
 		record = this.uploadQueue.pop();
@@ -195,7 +195,10 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 				processData: false,
 				//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
 				timeout: 60*1000,
-				complete: callbacks.complete,
+				complete: function(jqXHR, response){
+					that.uploadOngoing = false;
+					callbacks.complete(jqXHR, response);
+				},
 				error: callbacks.error,
 				success: callbacks.success
 			});
@@ -292,7 +295,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			// not sure if there should be a notification if forms fail automatic submission
 		}
 	}
-	this.uploadOngoing = false;
+	//this.uploadOngoing = false;
 };
 
 Connection.prototype.isValidURL = function(url){
@@ -348,20 +351,26 @@ Connection.prototype.getSurveyURL = function(serverURL, formId, callbacks){
  * @param  {Object.<string, Function>=} callbacks [description]
  */
 Connection.prototype.getFormHTML = function($form, callbacks){
-	var serverURL, formId,
+	var serverURL, formId, formFile,
 		formData = new FormData($form[0]);
 
 	callbacks = this.getCallbacks(callbacks);
 
-	serverURL = $form.find('input[name="server_url"]').val() || '',
+	serverURL = $form.find('input[name="server_url"]').val() || '';
 	formId = $form.find('input[name="form_id"]').val() || '';
+	formFile = $form.find('input[name="xml_file"]').val() || '';
 	
-	if (!this.isValidURL(serverURL)){
+	if (formFile === '' && serverURL === '' && formId === ''){
+		callbacks.error(null, 'validationerror', 'No form file or URLs provided');
+		return;
+	}
+
+	if (formFile === '' && !this.isValidURL(serverURL)){
 		callbacks.error(null, 'validationerror', 'Not a valid server url');
 		return;
 	}
 
-	if (formId.length === 0){
+	if (formFile === '' && formId.length === 0){
 		callbacks.error(null, 'validationerror', 'No form id provided');
 		return;
 	}
@@ -424,10 +433,6 @@ Connection.prototype.oRosaHelper = {
 			return null;
 		}
 
-		//if (that.isValidURL(frag)){
-		//	return frag;
-		//}
-
 		switch (type){
 			case 'http':
 			case 'https':
@@ -451,7 +456,6 @@ Connection.prototype.oRosaHelper = {
 		return serverURL;
 	}
 };
-
 
 /**
  * Sets defaults for optional callbacks if not provided

@@ -12,7 +12,7 @@ $iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in
 
 /** BOOTSTRAP PLUGINS **/
 @import "../../public/libraries/jdewit-bootstrap-timepicker/timepicker";
-@import "../../public/libraries/eternicode-bootstrap-datepicker/datepicker";
+@import "../../public/libraries/datepicker";
 
 @font-face{
   font-family: 'Open Sans';
@@ -212,6 +212,16 @@ label#data-template-show {
       list-style-type: none;
        } } }  
 
+.formlist{
+  ul{
+    padding: 0; 
+    margin: 0;
+    list-style: none;
+    li {
+      margin: 10px 0;} }
+  &.empty p{
+    display: none;} }
+
 .hint{
   //$hwidth: 30px;
   //background-color: $shadow;
@@ -333,17 +343,17 @@ label#data-template-show {
   height: 15px;
   font-size: 0.8em; 
   a {
-  &:link{
-  float: right;
-  padding-left: 10px;}
-  &:not(.active):hover {
-    text-decoration: underline; }
-  &.active {
-    color: $drawer_border;
-    text-decoration: none; } } }
+    &:link{
+      float: right;
+      padding-left: 10px;}
+    &:not(.active):hover {
+      text-decoration: underline; }
+    &.active {
+      color: $drawer_border;
+      text-decoration: none; } } }
 
 .tab-content #form-languages {
-  margin-top: -10px; } 
+  /*margin-top: -10px;*/ } 
 
 $line: 3px solid $groupline;
 $input-height: 30px;
@@ -431,6 +441,8 @@ html.touch{
     .remove {
       float: right;
       margin-right: 0; } }
+  .itemset-template, .itemset-labels{
+    display: none;}
   .add-on{
     padding: 9px 5px;
     margin-top: 8px;

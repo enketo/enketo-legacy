@@ -53,8 +53,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
  * 
  */
 	this.init = function() {
-		//dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/,'');
-		
 		//cloning children to keep any event handlers on 'form.jr' intact upon resetting
 		$formClone = $(formSelector).clone().appendTo('<original></original>');
 
@@ -62,8 +60,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		form = new FormHTML(formSelector);
 
 		data.init();
-		//console.debug('form data obj initialized');
-		//
+
 		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit.length > 0){
 			dataToEdit = new DataXML(dataStrToEdit);
 			dataToEdit.init();
@@ -71,11 +68,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 
 		form.init();
-		//console.debug('form html obj initialized');
-		
-		//to update data tab launch, trigger a dataupdate (required after )
-		//$form.trigger('dataupdate');
-
 		return;
 	};
 
@@ -83,8 +75,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
      * @param {boolean=} incTempl
      * @param {boolean=} incNs
      */
-	this.getDataStr = function(incTempl, incNs){
-		return data.getStr(incTempl, incNs);
+	this.getDataStr = function(incTempl, incNs, all){
+		return data.getStr(incTempl, incNs, all);
 	};
 	/**
      *
@@ -120,8 +112,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		return $form.find('#form-title').text();
 	 };
 
-	//restores form instance to pre-initialized state
-	this.reset = function(){
+	//restores html form to pre-initialized state
+	//does not affect data instance!
+	this.resetHTML = function(){
 		//form language selector was moved outside of <form> so has to be separately removed
 		$('#form-languages').remove();
 		$form.replaceWith($formClone);
@@ -150,28 +143,23 @@ function Form (formSelector, dataStr, dataStrToEdit){
  	 * @param {string} dataStr String of the default XML instance
  	 */
 	function DataXML(dataStr) {
-	
-		var $data, 
+		var $data,
 			that=this;
-		//console.debug('dataStr:'+dataStr); 
-		//seems wrong but using regular expression on string avoids persistant xmlns behaviour
-		dataStr = dataStr.replace(/<[\/]?instance(>|\s+[^>]*>)/gi, '');
-		////console.debug(dataStr);
-		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE ALL NAMESPACES FROM STRING, BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
-		//dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/,'');
+
+		this.instanceSelectRegEx = /instance\([\'|\"]([^\/:\s]+)[\'|\"]\)/g;
+
+		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE ALL NAMESPACES FROM STRING, 
+		//BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
+		dataStr = dataStr.replace(/xmlns\=\"[a-zA-Z0-9\:\/\.]*\"/g,'');
 
 		this.xml = $.parseXML(dataStr);
-		//$instance = $(xml);
-		//cleanDataStr = (new window.XMLSerializer()).serializeToString($instance.find('instance>*')[0]);
-		//xml = $.parseXML(cleanDataStr);
+
 		$data = $(this.xml);
 
-		//this.xml = xml;
 		this.$ = $data;
 
 		//replace browser-built-in-XPath Engine
-		XPathJS.bindDomLevel3XPath(); // move to Data if evalXpression moves to Data
-
+		XPathJS.bindDomLevel3XPath(); 
 
 		/**
 		 * Function: node
@@ -208,12 +196,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 *   @extends DataXML
 		 */
 		function Nodeset(selector, index, filter){
-			
-			this.selector = (typeof selector !== 'undefined' && selector) ? selector : '*'; 
-					//this.selector = selector.replace(/^\/{1}/, "instance/"); 
-			
-				//this.selector = '*:not(instance)';
-			//}	
+			var defaultSelector = '*';
+			this.originalSelector = selector;
+			this.selector = (typeof selector === 'string' && selector.length > 0) ? selector : defaultSelector; 
 			filter = (typeof filter !== 'undefined' && filter !== null) ? filter : {};
 			this.filter = filter;
 			this.filter.noTemplate = (typeof filter.noTemplate !== 'undefined') ? filter.noTemplate : true;
@@ -221,10 +206,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.filter.onlyTemplate = (typeof filter.onlyTemplate !== 'undefined') ? filter.onlyTemplate : false;
 			this.filter.noEmpty = (typeof filter.noEmpty !== 'undefined') ? filter.noEmpty : false;
 			this.index = index;
-			//this.xmlDataType = xmlDataType;
-			////console.debug('nodeset instance created with xmlDataType: '+this.xmlDataType);
 
-			//return this; //necessary?
+			if ($data.find('model>instance').length > 0){
+				//to refer to non-first instance, the instance('id_literal')/path/to/node syntax can be used
+				if (this.selector !== defaultSelector && this.selector.indexOf('/') !== 0 && that.instanceSelectRegEx.test(this.selector) ){
+					this.selector = this.selector.replace(that.instanceSelectRegEx, "model > instance#$1");
+					//console.debug('selector modified to: '+this.selector);
+					return;
+				}
+				//default context is the first instance in the model			
+				this.selector = "model > instance:eq(0) "+this.selector;
+			}
 		}
 
 		/**
@@ -235,7 +227,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {jQuery} jQuery-wrapped filtered instance nodes that match the selector and index
 		 */
 		Nodeset.prototype.get = function(){
-			var p, $nodes, val;
+			var p, $nodes, val, context;
 			
 			// noTemplate is ignored if onlyTemplate === true
 			if (this.filter.onlyTemplate === true){
@@ -280,10 +272,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 */
 		Nodeset.prototype.setVal = function(newVal, expr, xmlDataType){
 			var $target, curVal, success;
-			//index = (typeof index !== 'undefined') ? index : -1;
-			//is the .join(' ') an artefact that can be removed?
-			curVal = this.getVal()[0];//.join(' ');
-			//console.log('setting value of data node: '+this.selector+' with index: '+this.index);
+
+			curVal = this.getVal()[0];
 			
 			if (typeof newVal !== 'undefined' && newVal !== null){
 				newVal = ($.isArray(newVal)) ? newVal.join(' ') : newVal;
@@ -295,11 +285,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			else newVal = '';
 			newVal = this.convert(newVal, xmlDataType);
-			//value = data.type(value, type);
-			//console.debug('value(s) to set: '+newVal);
-			//console.debug('existing value(s): '+curVal);
 
-			$target = this.get();//.eq(index);
+			$target = this.get();
 
 			if ( $target.length === 1 && $.trim(newVal.toString()) !== $.trim(curVal.toString()) ){ //|| (target.length > 1 && typeof this.index == 'undefined') ){
 				//first change the value so that it can be evaluated in XPath (validated)
@@ -323,7 +310,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			////console.debug('validation result: '+this.validate());
 		};
 
-		/**for
+		/**
 		 * Function: getVal
 		 * 
 		 * Obtains the data value if a JQuery or XPath selector for a single node is provided.
@@ -345,32 +332,34 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return vals;
 		};
 		
-		//clone data node after all templates have been cloned (after initialization)
+		/**
+		 * clone data node after all templates have been cloned (after initialization)
+		 * @param  {jQuery} $precedingTargetNode the node after which to append the clone
+		 */
 		Nodeset.prototype.clone = function($precedingTargetNode){
 			var $dataNode, allClonedNodeNames;
 
 			$dataNode = this.get();
-			////console.debug(dataNode);
-			////console.debug(precedingTargetNode);
 			$precedingTargetNode = $precedingTargetNode || $dataNode;
+
 			if ($dataNode.length === 1 && $precedingTargetNode.length ===1){
 				$dataNode.clone().insertAfter($precedingTargetNode).find('*').andSelf().removeAttr('template');
-				//$('form.jr').trigger('dataupdate');
-				//since the dataNode (template) may have descendants as well that are used in evaluating e.g. 
-				//branching logic, we need to trigger a data update for each of the cloned nodes...
+
 				allClonedNodeNames = [$dataNode.prop('nodeName')];
 				$dataNode.find('*').each(function(){
 					allClonedNodeNames.push($(this).prop('nodeName'));
 				});
-				////console.log('nodenames in clone: ');
-				////console.log(allClonedNodeNames);
-				$form.trigger('dataupdate', allClonedNodeNames.join());
+
+				$form.trigger('dataupdate', allClonedNodeNames.join(','));
 			}
 			else{
 				console.error ('node.clone() function did not receive origin and target nodes');
 			}
 		};
 
+		/**
+		 * Remove a node
+		 */
 		Nodeset.prototype.remove = function(){
 			var dataNode = this.get();
 			if (dataNode.length > 0){
@@ -383,8 +372,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 		};
 
+		/**
+		 * Convert a value to a specified data type (though always stringified)
+		 * @param  {(string|number)} x  value to convert
+		 * @param  {?string=} xmlDataType name of xmlDataType
+		 * @return {string}             return string value of converted value
+		 */
 		Nodeset.prototype.convert = function(x, xmlDataType){
-			////console.debug('received xmlDataType for conversion: '+xmlDataType);
 			if (x.toString() === ''){
 				return x;
 			}
@@ -396,33 +390,36 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return x;
 		};
  
+		/**
+		 * Validate a value with an XPath Expression and/or xml data type
+		 * @param  {?string=} expr        XPath expression
+		 * @param  {?string=} xmlDataType name of xml data type
+		 * @return {boolean}            returns true if both validations are true
+		 */
 		Nodeset.prototype.validate = function(expr, xmlDataType){
-			//var //i, result,
 			var typeValid, exprValid,
 				value = this.getVal()[0];
-			//	value = this.getVal(); //multiple acceptable???
-			
-			//for (i=0 ; i<values.length ; i++){
-			//	result.push({type: this.type.validate(values[i]), expr: true });
-				//ADD result of XPath constraint expr 
-			//} 
-			////console.log('xml data type = '+this.xmlDataType);
+
 			if (value.toString() === '') {
 				return true;
 			}
 
 			if (typeof xmlDataType == 'undefined' || xmlDataType === null || 
 				typeof this.types[xmlDataType.toLowerCase()] == 'undefined'){
-				//console.log('data type '+xmlDataType+' set to string');
 				xmlDataType = 'string';
 			}
 			typeValid = this.types[xmlDataType.toLowerCase()].validate(value);
-			//console.debug('type valid: '+typeValid);
-			exprValid = (typeof expr !== 'undefined' && expr !== null && expr.length > 0) ? that.evaluate(expr, 'boolean', this.selector, this.index) : true;
+			
+			exprValid = (typeof expr !== 'undefined' && expr !== null && expr.length > 0) ? that.evaluate(expr, 'boolean', this.originalSelector, this.index) : true;
 			//console.debug('constraint valid: '+exprValid);
 			return (typeValid && exprValid);
 		};
 
+		/**
+		 * xml data types
+		 * @namespace  types
+		 * @type {Object}
+		 */
 		Nodeset.prototype.types = {
 			'string' :{
 				//max length of type string is 255 chars. Convert (truncate) silently?
@@ -560,24 +557,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 *   -
 	 */
 	DataXML.prototype.init = function(){
-		var $root, val;
-		//console.log('initializing DataXML object');
+		var val;
+
 		//trimming values
 		this.node(null, null, {noEmpty: true, noTemplate: false}).get().each(function(){
-			////console.debug('value found'+ $(this).text());
 			val = /** @type {string} */$(this).text();
 			$(this).text($.trim(val));
 		});
-		$root = this.node(':first', 0).get();
-
-		//store namespace of root element
-		this.namespace = $root.attr('xmlns');
-		//console.debug('namespace of root element is:'+this.namespace);
-		//strip namespace from root element (first child of instance) 
-		$root.removeAttr('xmlns');
 
 		this.cloneAllTemplates();
-
 		return;
 	};
 
@@ -592,13 +580,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
-		//console.debug('loading instance values to be edited');
-
 		nodesToLoad = instanceOfDataXML.node(null, null, filter).get();
-		
-		//console.debug(nodesToLoad.length+' nodes found in data to be edited: ');
-		//console.debug(nodesToLoad);
-
+		console.debug('nodes to load: ', nodesToLoad);
 		//first empty all form data nodes, to clear any default values except those inside templates
 		this.node(null, null, filter).get().each(function(){
 			//something seems fishy about doing it this way instead of using node.setVal('');
@@ -671,7 +654,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 		this.node('*>meta>deprecatedID').setVal(instanceID.getVal()[0], null, 'string');
 		instanceID.setVal('', null, 'string');
-		console.debug('finished loading instance values to be edited');
 	};
 
 
@@ -783,39 +765,34 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	/**
-	 * Function: getStr
-	 * 
-	 * Public function to get a string of the CLONED data object (used for Rapaide.launch component).
-	 * 
-	 * Parameters:
-	 * 
-	 *   incTempl - Boolean that indicates whether to include template nodes.
-	 *   
-	 * Returns:
-	 * 
-	 *   string of data xml object
+	 * Obtains a cleaned up string of the data instance(s)
+	 * @param  {boolean=} incTempl indicates whether repeat templates should be included in the return value (default: false)
+	 * @param  {boolean=} incNs    indicates whether namespaces should be included in return value (default: false)
+	 * @param  {boolean=} all	  indicates whether all instances should be included in the return value (default: false)
+	 * @return {string}           XML string
 	 */
-	DataXML.prototype.getStr = function(incTempl, incNs){
-		var $dataClone, dataStr;
+	DataXML.prototype.getStr = function(incTempl, incNs, all){
+		var $docRoot, $dataClone, dataStr;
 
-		incTempl = (typeof incTempl !== 'undefined') ? incTempl : false;
-		incNs = (typeof incNs !== 'undefined') ? incNs : true;
+		all =  all || false;
+		incTempl = incTempl || false;
+		incNs = incNs || true;
+
+		$docRoot = (all) ? this.$.find(':first') : this.node('> :first').get();
 		
 		$dataClone = $('<root></root');
 		
-		this.$.find(':first').clone().appendTo($dataClone);
+		$docRoot.clone().appendTo($dataClone);
 
 		if (incTempl === false){
 			$dataClone.find('[template]').remove();
 		}
+		//disabled 
 		if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
-			$dataClone.children().eq(0).attr('xmlns', this.namespace);
+			//$dataClone.find('instance').attr('xmlns', this.namespace);
 		}
 
 		dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
-
-		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE NAMESPACE FROM STRING (AGAIN), BETTER TO LEARN HOW TO DEAL WITH DEFAULT NAMESPACES
-		dataStr = dataStr.replace(/xmlns\=\"[A-z0-9\:\/\.\-\%\_\?&amp;]*\"/gi,' ');
 
 		//remove tabs
 		dataStr = dataStr.replace(/\t/g, '');
@@ -825,7 +802,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 	/**
 	 * There is a bug in JavaRosa that has resulted in the usage of incorrect formulae on nodes inside repeat nodes. 
-	 * Those formulae use absolute path when relative paths should have been used. See more here:
+	 * Those formulae use absolute paths when relative paths should have been used. See more here:
 	 * https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations (point 3). 
 	 * Tools such as pyxform (and xls form?) also build forms in this incorrect manner. It will take time to 
 	 * correct this way of making forms so makeBugCompliant() aims to mimic the incorrect 
@@ -872,15 +849,43 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {?(number|string|boolean)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
-		var context, dataCleanClone, resTypeNum, resultTypes, result, attr, $contextWrapNodes, $repParents;
-		console.debug('evaluating expr: '+expr+' with context selector: '+selector+' and 0-based index: '+index);
+		var i, j, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
+			$contextWrapNodes, $repParents;
+		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
+			index+' and result type: '+resTypeStr);
 		resTypeStr = resTypeStr || 'any';
 		index = index || 0;
-		dataCleanClone = new DataXML(this.getStr(false, false));
+
+		expr = expr.trim();
+
+		//SEEMS LIKE THE CONTEXT DOC (CLONE) CREATION COULD BE A PERFORMANCE HOG AS IT IS CALLED MANY TIMES, 
+		//IS THERE ANY BETTER WAY TO EXCLUDE TEMPLATE NODES AND THEIR CHILDREN?
+		contextDoc = new DataXML(this.getStr(false, false));
+
+		/* 
+		   If the expression contains the instance('id') syntax, a different context instance is required.
+		   However, the same expression may also contain absolute reference to the main data instance, 
+		   which means 2 different contexts would have to be supplied to the XPath Evaluator which is not
+		   possible. Alternatively, the XPath Evaluator becomes able to use a default instance and direct 
+		   the instance(id) references to a sibling instance context. The latter proved to be too hard for 
+		   this developer, so as a workaround, the following is used instead:
+		   The instance referred to in instance(id) is detached and appended to the main instance. The 
+		   instance(id) syntax is subsequently converted to /node()/instance[@id=id] XPath syntax.
+		 */
+		if (this.instanceSelectRegEx.test(expr)){
+			instances = expr.match(this.instanceSelectRegEx);
+			for (i=0 ; i<instances.length ; i++){
+				id = instances[i].match(/[\'|\"]([^\'']+)[\'|\"]/)[1];
+				expr = expr.replace(instances[i], '/node()/instance[@id="'+id+'"]');
+				this.$.find('instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
+			}
+		}
+
+		//console.debug('contextDoc:', contextDoc.$);
 
 		if (typeof selector !== 'undefined' && selector !== null) {
-
-			context = dataCleanClone.node(selector, index, {}).get()[0];
+			console.debug('contextNode: ', contextDoc.$.xfind(selector).eq(index));
+			context = contextDoc.$.xfind(selector).eq(index)[0];
 			/**
 			 * If the expressions is bound to a node that is inside a repeat.... see makeBugCompliant()
 			 */
@@ -888,14 +893,18 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				expr = this.makeBugCompliant(expr, selector, index);
 			}
 		}
-		else context = dataCleanClone.getXML();//dataCleanClone.get()[0];//.documentElement;
-		
+		else{
+			context = contextDoc.getXML();
+		}
+		//console.debug('context', context);
+
 		resultTypes = { //REMOVE VALUES? NOT USED
 			0 : ['any', 'ANY_TYPE'], 
 			1 : ['number', 'NUMBER_TYPE', 'numberValue'],
 			2 : ['string', 'STRING_TYPE', 'stringValue'], 
 			3 : ['boolean', 'BOOLEAN_TYPE', 'booleanValue'], 
 			//NOTE: nodes are actually never requested in this function as DataXML.node().get() is used to return nodes	
+			//5 : ['nodes' , 'ORDERED_NODE_ITERATOR_TYPE'],
 			7 : ['nodes', 'ORDERED_NODE_SNAPSHOT_TYPE'], //works with iterateNext().textContent
 			9 : ['node', 'FIRST_ORDERED_NODE_TYPE']
 			//'node': ['FIRST_ORDERED_NODE_TYPE','singleNodeValue'], // does NOT work, just take first result of previous
@@ -918,36 +927,30 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
-		//console.log('expr to test: '+expr);//+' with result type number: '+resTypeNum);
-		//result = evaluator.evaluate(expr, context.documentElement, null, resultType, null);
+		console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
-			//console.log('evaluated: '+expr+' to: '+(result[resultTypes[type][1]] || 'resultnode(s)'));
-			//console.log(result); //NOTE THAT THIS USE OF THE CONSOLE THROWS AN ERROR IN FIREFOX when using native XPath!
 			if (resTypeNum === 0){
 				for (resTypeNum in resultTypes){
 					resTypeNum = Number(resTypeNum);
-					////console.log('checking if resultType = '+type+' is equal to actual result.resultType = '+result.resultType);
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum >0 && resTypeNum<4) ? result[resultTypes[resTypeNum][2]] : result;
-						console.debug('evaluated '+expr+' to: '+result);
+						console.debug('evaluated '+expr+' to: ', result);
 						return result;
 					}
-					//resultTypeValProp = resultTypes[type][1];
-					//console.log('checking type with value property:'+resultTypeValProp);
-					// WHEN PROBLEMS USE ITERATENEXT().textContent for resultType = 4
-					//try{
-					//	if (typeof result[resultTypeValProp] !== 'undefined'){
-					//		//console.log('result type detected: '+type);
-					//		return result[resultTypeValProp];
-					//	}
-					//}
-					//catch(e){
-					//	//console.log('result type is not: '+type);
-					//}
 				}
 				console.error('Expression: '+expr+' did not return any boolean, string or number value as expected');
 				//console.debug(result);
+			}
+			else if (resTypeNum === 7){
+				$result = $();
+				//console.log('raw result', result);
+				for (j=0 ; j<result.snapshotLength; j++){
+					//console.debug(result.snapshotItem(j));
+					$result.push(result.snapshotItem(j));
+				}
+				//console.debug('evaluation returned nodes: ', $result);
+				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
 			return result[resultTypes[resTypeNum][2]];
@@ -1018,6 +1021,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.find('h2').first().append('<span/>');
 
 		this.repeat.init();
+		this.itemsetUpdate();
 		this.setAllVals();
 		this.widgets.init(); //after setAllVals()
 		this.bootstrapify();
@@ -1029,7 +1033,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.preloads.init(); //after event handlers!
 		this.setLangs();
 		this.editStatus.set(false);
-		setTimeout(function(){$form.fixLegends();}, 500);
+		//setTimeout(function(){$form.fixLegends();}, 500);
 	};
 
 	FormHTML.prototype.checkForErrors = function(){
@@ -1041,6 +1045,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if ($stats.length > 0){
 			total.jrItem= parseInt($stats.find('[id="jrItem"]').text(), 10);
 			total.jrInput= parseInt($stats.find('[id="jrInput"]').text(), 10);
+			total.jrItemset= parseInt($stats.find('[id="jrItemset"]').text(), 10);
 			total.jrUpload = parseInt($stats.find('[id="jrUpload"]').text(), 10);
 			total.jrTrigger = parseInt($stats.find('[id="jrTrigger"]').text(), 10);
 			total.jrConstraint = parseInt($stats.find('[id="jrConstraint"]').text(), 10);
@@ -1056,6 +1061,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			total.hRadio = $form.find('input[type="radio"]').length;
 			total.hCheck = $form.find('input[type="checkbox"]').length;
 			total.hSelect = $form.find('select').length;
+			total.hItemset = $form.find('.itemset-template').length;
 			total.hOption = $form.find('option[value!=""]').length;
 			total.hInputNotRadioCheck = $form.find('textarea, input:not([type="radio"],[type="checkbox"])').length;
 			total.hTrigger = $form.find('.trigger').length;
@@ -1066,27 +1072,30 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			total.hCalculate = $form.find('[data-calculate]').length;
 			total.hPreload = $form.find('#jr-preload-items input').length;
 
-			if ( total.jrItem !== ( total.hOption + total.hRadio + total.hCheck )  ) {
-				console.error(' total select fields differs between XML form and HTML form');
+			if (total.jrItemset === 0 && (total.jrItem !== ( total.hOption + total.hRadio + total.hCheck ) ) ) {
+				console.error(' total number of select fields differs between XML form and HTML form');
+			}
+			if (total.jrItemset !== total.hItemset ) {
+				console.error(' total number of itemset fields differs between XML form ('+total.jrItemset+') and HTML form ('+total.hItemset+')');
 			}
 			if ( ( total.jrInput + total.jrUpload ) !== ( total.hInputNotRadioCheck - total.hCalculate - total.hPreload ) ){
-				console.error(' total amount of input/upload fields differs between XML form and HTML form');
+				console.error(' total number of input/upload fields differs between XML form and HTML form');
 			}
 			if ( total.jrTrigger != total.hTrigger ){
-				console.error(' total triggers differs between XML form and HTML form');
+				console.error(' total number of triggers differs between XML form and HTML form');
 			}
 			if ( total.jrRelevant != ( total.hRelevantNotRadioCheck + total.hRelevantRadioCheck)){
-				console.error(' total amount of branches differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form)');
+				console.error(' total number of branches differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form)');
 			}
 			if ( total.jrConstraint != ( total.hConstraintNotRadioCheck + total.hConstraintRadioCheck)){
-				console.error(' total amount of constraints differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form).'+
+				console.error(' total numberRepeats of constraints differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form).'+
 					' Note that constraints on &lt;trigger&gt; elements are ignored in the transformation and could cause this error too.');
 			}
 			if ( total.jrCalculate != total.hCalculate ){
-				console.error(' total amount of calculated items differs between XML form and HTML form');
+				console.error(' total number of calculated items differs between XML form and HTML form');
 			}
 			if ( total.jrPreload != total.hPreload ){
-				console.error(' total amount of preload items differs between XML form and HTML form');
+				console.error(' total number of preload items differs between XML form and HTML form');
 			}
 			//probably resource intensive: check if all nodes mentioned in name attributes exist in $data
 			
@@ -1227,8 +1236,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			index = index || 0;
 			
 			if (this.getInputType($form.find('[data-name="'+name+'"]').eq(0)) == 'radio'){
-				//name = name+'____'+index;
-				//index = 0;
 				//why not use this.getIndex?
 				return this.getWrapNodes($form.find('[data-name="'+name+'"]')).eq(index).find('input[value="'+value+'"]').attr('checked', true);
 			}
@@ -1244,12 +1251,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					value = data.node().convert(value, type);
 
 					console.debug('converting date before setting input field to: '+value);
-
 				}
 			}
 
-			if (this.isMultiple($inputNodes.eq(0)) === true){
-				
+			if (this.isMultiple($inputNodes.eq(0)) === true){				
 				value = value.split(' ');
 			}
 			
@@ -1292,7 +1297,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			defaultLang = $form.find('#form-languages').attr('data-default-lang');
 		
 		$('#form-languages').detach().insertBefore($('form.jr').parent());
-		if (!defaultLang || defaultLang==='') {
+		if (!defaultLang || defaultLang === '') {
 			defaultLang = $('#form-languages a:eq(0)').attr('lang');
 		}
 		console.debug('default language is: '+defaultLang);
@@ -1306,6 +1311,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});
 			this.setHints();//defaultLang);
+			$form.trigger('changelanguage');
 			return;
 		}
 
@@ -1531,7 +1537,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
 			
-			branchNode.removeClass('disabled').show(1000, function(){$(this).fixLegends();} );
+			branchNode.removeClass('disabled').show(1000);//, function(){$(this).fixLegends();} );
 
 			type = branchNode.prop('nodeName').toLowerCase();
 
@@ -1582,10 +1588,100 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	$.extend(FormHTML.prototype.Branch.prototype, FormHTML.prototype);
 
 
+	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
+		//TODO: test with very large itemset
+		var that = this,
+			cleverSelector = [],
+			needToUpdateLangs = false;
+
+		if (typeof changedDataNodeNames == 'undefined'){
+			cleverSelector = ['.itemset-template'];
+		}
+		else{ 
+			$.each(changedDataNodeNames.split(','), function(index, value){
+				cleverSelector.push('.itemset-template[data-items-path*="'+value+'"]');
+			});
+		}
+
+		cleverSelector = cleverSelector.join(',');
+		
+		$form.find(cleverSelector).each(function(){
+			var $htmlItem, $htmlItemLabels, value, 
+				$template = $(this),
+				newItems = {},
+				prevItems = $template.data(),
+				templateNodeName = $(this).prop('nodeName').toLowerCase(),
+				$labels = $template.closest('label, select').siblings('.itemset-labels'),
+				itemsXpath = $template.attr('data-items-path'),
+				labelType = $labels.attr('data-label-type'),
+				labelRef = $labels.attr('data-label-ref'),
+				valueRef = $labels.attr('data-value-ref'),
+				$instanceItems = data.evaluate(itemsXpath, 'nodes');
+
+			// this property allows for more efficient 'itemschanged' detection
+			newItems.length = $instanceItems.length; 
+			//this may cause problems for large itemsets. Use md5 instead?
+			newItems.text = $instanceItems.text(); 
+
+			console.debug('previous items: ', prevItems);
+			console.debug('new items: ', newItems);
+
+			if (newItems.length === prevItems.length && newItems.text === prevItems.text){
+				console.debug('itemset unchanged');
+				return;
+			}
+
+			$template.data(newItems);
+			
+			//clear data values through inputs. Note: if a value exists, 
+			//this will trigger a dataupdate event which may call this update function again
+			$(this).closest('label > select, fieldset > label').parent()
+				.clearInputs('change')
+				.find(templateNodeName).not($template).remove();
+			$(this).parent('select').siblings('.jr-option-translations').empty();
+
+			$instanceItems.each(function(){
+				$htmlItem = $('<root/>');
+				$template
+					.clone().appendTo($htmlItem)
+					.removeClass('itemset-template')
+					.addClass('itemset')
+					.removeAttr('data-items-path');
+				
+				$htmlItemLabels = (labelType === 'itext') ? 
+					$labels.find('[data-itext-id="'+$(this).children(labelRef).text()+'"]').clone() : 
+					$('<span class="active" lang="">'+$(this).children(labelRef).text()+'</span>');
+				
+				value = $(this).children(valueRef).text();
+				$htmlItem.find('[value]').attr('value', value);
+
+				if (templateNodeName === 'label'){
+					$htmlItem.find('input')
+						.after($htmlItemLabels);
+					$labels.before($htmlItem.find(':first'));
+				}
+				else if (templateNodeName === 'option') { 
+					needToUpdateLangs = true;
+					if ($htmlItemLabels.length === 1){
+						$htmlItem.find('option').text($htmlItemLabels.text());
+					}
+					$htmlItemLabels
+						.attr('data-option-value', value)
+						.attr('data-itext-id', '')
+						.appendTo($labels.siblings('.jr-option-translations'));
+					$template.siblings().andSelf().last().after($htmlItem.find(':first'));
+				}
+			});			
+		});
+		if (needToUpdateLangs){
+			that.setLangs();
+		}	
+	};
+
 	/**
 	 * Updates output values, optionally filtered by those values that contain a changed node name
 	 * 
-	 * @param  {string=} changedNodeNames Space-separated node names that (may have changed)
+	 * @param  {string=} changedNodeNames Comma-separated node names that (may have changed)
 	 */
 	FormHTML.prototype.outputUpdate = function(changedNodeNames){
 		var i, $inputNode, contextPath, contextIndex, expr, namesArr, cleverSelector, 
@@ -1597,6 +1693,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * It must have something to do with the DOM not having been built or something, because a 1 millisecond!!!
 		 * delay in executing the code below, the issue was resolved. To be properly fixed later...
 		 */	
+		//TODO: DOES THIS REQUIRE EVALUATE?? OR WOULD data.node(expr).getVal()[0] WORK TOO??
 		setTimeout(function(){
 			//console.log('updating active outputs that contain: '+changedNodeNames);
 			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
@@ -1620,7 +1717,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 				$(this).text(val);
 			});
-			$form.fixLegends();
+			//$form.fixLegends();
 			//hints may have changed too
 			that.setHints();
 		}, 1);
@@ -2242,7 +2339,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		setDataVal: function(node, val){
 			//console.debug('setting meta data value to: '+val);
-			node.setVal(val, 'string');
+			node.setVal(val, null, 'string');
 		},
 		'timestamp' : function(o){
 			var value,
@@ -2553,6 +2650,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			that.calcUpdate(nodeNames); //EACH CALCUPDATE THAT CHANGES A VALUE TRIGGERS ANOTHER CALCUPDATE => VERY INEFFICIENT
 			that.branch.update(nodeNames);
 			that.outputUpdate(nodeNames);
+			that.itemsetUpdate(nodeNames);
 			//it is possible that a changed data value validates question that were previously invalidated
 			//that.validateInvalids();
 		});
@@ -2580,9 +2678,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//hacks for legends
 		//it would be much better to replace these two handlers with a handler that detects the resize event of the form
 		//but for some reason that doesn't work
-		$(window).resize(function(){
-			$form.fixLegends();
-		});
+		//$(window).resize(function(){
+			//$form.fixLegends();
+		//});
 
 		$form.on('changelanguage', function(){
 			//console.log('changelanguage event detected');
@@ -2616,7 +2714,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//other nodes may have the same XPath but because this function is used to determine the corresponding input name of a data node, index is not included 
 		var steps = [dataNode.prop('nodeName')],
 			parent = dataNode.parent();
-		while (parent.length == 1 && parent.prop('nodeName') !== '#document'){
+		while (parent.length == 1 && parent.prop('nodeName') !== 'instance' && parent.prop('nodeName') !== '#document'){
 			steps.push(parent.prop("nodeName"));
 			parent = parent.parent();
 		}
@@ -2799,26 +2897,6 @@ String.prototype.pad = function(digits){
 		});
 	};
 
-	//this corrects a problem caused by the css legend fix (that positions the legend as 'absolute')
-	//it corrects the margin-top of the first <label> sibling following a <legend>
-	//the whole form (or several) can be provides as the context
-	$.fn.fixLegends = function() {
-//		var legendHeight;
-//		//console.log('fixing legends');
-//		return this.each(function(){
-//			$(this).find('legend + label').each(function(){
-//				//console.error('found legend');
-//				legendHeight = ($(this).prev().find('.jr-constraint-msg.active').length > 0 && $(this).prev().height() < 36) ? 36 : 
-//					($(this).prev().height() < 19) ? 19 : 
-//					$(this).prev().height();
-//				
-//				$(this).animate({
-//					'margin-top' : (legendHeight+6)+'px'
-//				}, 600 );
-//			});
-//		});
-	};
-
 
 	/**
 	 * Function: xfind
@@ -2842,14 +2920,16 @@ String.prototype.pad = function(digits){
 	 */
     $.fn.xfind = function(selector){
 			var parts, cur, i;
-			////console.debug('xfind plugin received selector: '+selector);
+			//console.debug('xfind plugin received selector: '+selector);
+			
 			// Convert the root / into a different context
-            //if ( !selector.indexOf("/") ) {
-            //        context = context.documentElement;
-            //        selector = selector.replace(/^\/\w*/, "");
-            //        if ( !selector )
-            //                return [ context ];
-            //}
+			//if ( !selector.indexOf("/") ) {
+			//	context = this.context.documentElement;
+			//	selector = selector.replace(/^\/\w*/, "");
+			//	if ( !selector ){
+			//		return [ context ];
+			//	}
+			//}
 
             // Convert // to " "
             selector = selector.replace(/\/\//g, " ");

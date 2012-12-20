@@ -6,6 +6,11 @@
 
   <link rel="shortcut icon" type="image/png" href="../lib/jasmine/jasmine_favicon.png">
   <link rel="stylesheet" type="text/css" href="../lib/jasmine/jasmine.css">
+  <style>
+    .datepicker, .bootstrap-timepicker{display: none;}
+  </style>
+
+
   <script type="text/javascript" src="../lib/jasmine/jasmine.js"></script>
   <script type="text/javascript" src="../lib/jasmine/jasmine-html.js"></script>
 
@@ -13,7 +18,7 @@
   <script type="text/javascript" src="../public/libraries/jquery.min.js"></script>
   <script type="text/javascript" src="../public/libraries/bootstrap/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="../public/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
-  <script type="text/javascript" src="../public/libraries/eternicode-bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+  <script type="text/javascript" src="../public/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
   <script type="text/javascript" src="../public/libraries/bootstrap-select.js"></script>
   <script type="text/javascript" src="../public/libraries/modernizr.min.js"></script>
   <script type="text/javascript" src="../public/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js"></script>
@@ -22,6 +27,7 @@
   <script type="text/javascript" src="mocks/envjasmine.mock.js"></script>
   <script type="text/javascript" src="mocks/gui.mock.js"></script>
   <script type="text/javascript" src="mocks/form.mock.js"></script>
+  <script type="text/javascript" src="mocks/form_generated.mock.js"></script>
   <script type="text/javascript" src="mocks/connection.mock.js"></script>
 
   <!-- include source files here... -->
@@ -33,7 +39,6 @@
   <script type="text/javascript" src="specs/form.spec.js"></script>
   <script type="text/javascript" src="specs/storage.spec.js"></script>
   <script type="text/javascript" src="specs/connection.spec.js"></script>
-
   <script type="text/javascript">
     (function() {
       if (typeof console.debug === 'undefined'){

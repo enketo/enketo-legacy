@@ -195,7 +195,10 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 				processData: false,
 				//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
 				timeout: 60*1000,
-				complete: callbacks.complete,
+				complete: function(jqXHR, response){
+					this.uploadOngoing = false;
+					callbacks.complete(jqXHR, response);
+				},
 				error: callbacks.error,
 				success: callbacks.success
 			});
@@ -292,7 +295,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			// not sure if there should be a notification if forms fail automatic submission
 		}
 	}
-	this.uploadOngoing = false;
+	//this.uploadOngoing = false;
 };
 
 Connection.prototype.isValidURL = function(url){
@@ -429,10 +432,6 @@ Connection.prototype.oRosaHelper = {
 			console.log('nothing to do');
 			return null;
 		}
-
-		//if (that.isValidURL(frag)){
-		//	return frag;
-		//}
 
 		switch (type){
 			case 'http':

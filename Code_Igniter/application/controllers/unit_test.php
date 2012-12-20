@@ -92,8 +92,8 @@ class Unit_test extends CI_Controller {
 		//$diff = xdiff_string_diff($expected_form, $result_form, 1);
 		if (!$test)
 		{
-			echo 'transformation result:'.$result_form;
-			echo 'transformation expected:'.$expected_form;
+			//echo 'transformation result:'.$result_form;
+			//echo 'transformation expected:'.$expected_form;
 		}
 	}
 
@@ -129,14 +129,29 @@ class Unit_test extends CI_Controller {
 		else {echo'Something went wrong...';}
 	}
 
-
 	//tests instance model
 	public function instance()
 	{
+		$instance_received = '<?xml version="1.0" ?><backtobasic id="b2b_1"><formhub><uuid>71f440123a264629a696e5dfd6415fda</uuid></formhub><text>text entered in Enketo</text><meta><instanceID>uuid:a1a5fa9c3f51492eb282cd46c9018b9f</instanceID></meta></backtobasic>';
+		$subdomain = 'aaaaaa';
+		$id = '123';
+		$this->load->model('Instance_model', '', TRUE);
+		$result = $this->Instance_model->insert_instance($subdomain, $id, $instance_received, 'www.example.com');
 
+		$this->unit->run($result !== NULL, TRUE, 'Instance-to-edit is saved');
+
+		$result = $this->Instance_model->insert_instance($subdomain, $id, $instance_received, 'www.example.com');
+
+		$this->unit->run($result, NULL, 'Instance-to-edit is not saved as it already existed (edits ongoing)');
+		
+		$result = $this->Instance_model->get_instance($subdomain, $id);
+
+		$this->unit->run($result->instance_xml, $instance_received, 'Instance-to-edit is retrieved from db)');
+
+		echo $this->unit->report();
 	}
 
-	//tests suddomain helper
+	//tests subdomain helper
 	public function subdomain()
 	{
 

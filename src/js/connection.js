@@ -172,7 +172,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 			}
 		},
 		success: function(){}
-	} : {};
+	} : callbacks;
 	
 	if (this.uploadQueue.length > 0){
 		record = this.uploadQueue.pop();

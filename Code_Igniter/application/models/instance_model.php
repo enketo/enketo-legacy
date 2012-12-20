@@ -16,7 +16,6 @@ class Instance_model extends CI_Model {
 
   function insert_instance($subdomain, $instance_id, $instance_xml, $return_url)
   {
-      $instance_xml = '<model><instance>'.$instance_xml.'</instance></model>';
       $instance = $this->get_instance($subdomain, $instance_id);
       if ($instance === null)
       {
@@ -46,7 +45,7 @@ class Instance_model extends CI_Model {
   // removes instances that were stored more than 60 seconds ago
   function remove_old_instances()
   {
-    log_message('debug', 'removing old instances');
+    //log_message('debug', 'removing old instances');
     $this->db->where('timestamp <', time()-60 );
     $this->db->delete('instances');
     return;

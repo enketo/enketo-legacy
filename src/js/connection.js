@@ -196,7 +196,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 				//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
 				timeout: 60*1000,
 				complete: function(jqXHR, response){
-					this.uploadOngoing = false;
+					that.uploadOngoing = false;
 					callbacks.complete(jqXHR, response);
 				},
 				error: callbacks.error,

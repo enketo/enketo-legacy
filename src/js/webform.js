@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, Connection, Cache, vkbeautify, saveAs, gui, jrDataStr, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, Connection, Cache, vkbeautify, saveAs, gui, jrDataStr, settings, Form, store:true, StorageLocal:true, Settings, Modernizr*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var /**@type {Cache}*/cache;
-var /**@type {Settings}*/settings,
-	currentOnlineStatus = false;
+//var /**@type {Settings}*/settings,
+var currentOnlineStatus = false;
 var /**@type {StorageLocal}*/ store;
-var MODERN_BROWSERS_URL = 'modern_browsers';
-DEFAULT_SETTINGS = {'autoUpload':true, 'buttonLocation': 'bottom', 'autoNotifyBackup':false };
-
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 $(document).ready(function() {
@@ -34,12 +31,12 @@ $(document).ready(function() {
 
 	store = new StorageLocal();
 	form = new Form('form.jr:eq(0)', jrDataStr);
-	settings = new Settings();
-	settings.init();
+	//settings = new Settings();
+	//settings.init();
 	connection = new Connection();
 	
 	if (!store.isSupported()){
-		window.location = MODERN_BROWSERS_URL;
+		window.location = settings['modernBrowsersURL'];
 	}
 	else{
 		$(document).trigger('browsersupport', 'local-storage');
@@ -60,7 +57,7 @@ $(document).ready(function() {
 			choices = {
 				posButton : 'Show options',
 				negButton : 'Use it',
-				posAction : function(){ window.location = MODERN_BROWSERS_URL; }
+				posAction : function(){ window.location = settings['modernBrowsersURL'];}
 			};
 			gui.confirm({msg: message, heading:'Application cannot launch offline'}, choices);
 		}

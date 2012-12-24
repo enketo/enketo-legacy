@@ -154,8 +154,7 @@ class Manifest extends CI_Controller {
 		foreach ($resources as $resource)
 		{
 			//log_message('debug', 'checking resource')
-			//don't add existing or cross-domain resources for now
-			if (!in_array($resource, $this->data['cache']) && strpos($resource, 'http://')!==0 && strpos($resource, 'https://')!==0)//&& url_exists($resource))
+			if (!in_array($resource, $this->data['cache']))//&& url_exists($resource))
 			{
 				//log_message('debug', 'adding resource to cache: '.$resource);
 			    $this->data['cache'][] = $resource;	
@@ -214,28 +213,35 @@ class Manifest extends CI_Controller {
 			$this->data['hashes'] .= md5($content);
 
 			preg_match_all($pattern, $content, $result_array);
-			$resources = $result_array[$i];
+			$found_resources = $result_array[$i];
+			$cache_resources = array();
 
-			foreach ($resources as $index => $resource)
+			foreach ($found_resources as $index => $resource)
 			{
 				if (isset($base) && strpos($resource, '/') !== 0){
 					$resource = $base . $resource;
 				}
 
-				$content = $this->_get_content($resource);
-				
-				if (!empty($content))
+				if (!in_array($resource, $cache_resources))
 				{
-					$resources[$index] = $resource;
-					$this->data['hashes'] .= md5($content);
+					$content = $this->_get_content($resource);
+					if (!empty($content))
+					{
+						$cache_resources[] = $resource;
+						$this->data['hashes'] .= md5($content);
+					}
+					else
+					{
+						log_message('error', 'resource: '.$resource.' could not be found, removed from manifest.');
+						//unset($resources[$index]);
+					}
 				}
 				else
 				{
-					log_message('debug', 'resource: '.$resource.' could not be found, removed from manifest.');
-					unset($resources[$index]);
+					log_message('debug', 'resource '.$resource.' was already added');
 				}
 			}
-			return $resources;
+			return $cache_resources;
 		}
 		else
 		{
@@ -246,7 +252,7 @@ class Manifest extends CI_Controller {
 	// get the content, if possible through path, otherwise url
 	private function _get_content($url_or_path)
 	{
-		log_message('debug', 'getting content of '.$url_or_path);
+		//log_message('debug', 'getting content of '.$url_or_path);
 		if (strpos($url_or_path, 'http://') !== 0 && strpos($url_or_path, 'https://') !== 0)
 		{
 			$rel_path = (strpos($url_or_path, '/') === 0) ? substr($url_or_path, 1) : $url_or_path;
@@ -256,7 +262,7 @@ class Manifest extends CI_Controller {
 		}
 		else
 		{
-			//print ('checking url: '.$url.'<br/>');
+			//print ('checking url: '.$url_or_path."\n");
 			$content = (url_exists($url_or_path)) ? file_get_contents($url_or_path) : NULL;
 		}
 		if (empty($content))
@@ -264,8 +270,6 @@ class Manifest extends CI_Controller {
 			log_message('error', 'Manifest controller failed to get contents of '.$url_or_path);
 		}
 		return $content;
-		
-
 	}
 	
 	//returns a full url if relative url was provided

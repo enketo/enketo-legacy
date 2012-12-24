@@ -590,7 +590,7 @@ function Print(){
 	this.setStyleSheet();
 	//IE, FF, the 'proper' way:
     if (typeof window.onbeforeprint !== 'undefined'){
-		$(window).on('beforeprint', this.printForm);
+		//$(window).on('beforeprint', this.printForm);
     }
     //Chrome, Safari, Opera: (this approach has problems)
 	//else {
@@ -636,17 +636,153 @@ Print.prototype.styleReset = function(){
 
 Print.prototype.printForm = function(){
 	console.debug('preparing form for printing');
+	this.removePageBreaks();
+	this.removePossiblePageBreaks();
 	this.styleToAll();
 	this.addPageBreaks();
 	this.styleReset();
 	window.print();
 };
 
-Print.prototype.addPageBreaks = function(){
-	// add Alex' code
+Print.prototype.removePageBreaks = function(){
+	$('.page-break').remove();
 };
 
+Print.prototype.removePossiblePageBreaks = function(){
+	$('.possible-break').remove();
+};
 
+Print.prototype.addPossiblePageBreaks = function(){
+	var possible_break = $("<hr>", {"class": "possible-break"/*, "style":"background-color:blue; height: 1px"*/});
+	
+	this.removePossiblePageBreaks();
+
+	$('form.jr').before(possible_break.clone()).after(possible_break.clone())
+		.find('fieldset>legend, label:not(.geo)>input:not(input:radio, input:checkbox), label>select, label>textarea, .trigger>*, h4>*, h3>*')
+		.parent().each(function() {
+			var $this, prev;
+			$this = $(this);
+			prev = $this.prev().get(0);
+			//some exceptions
+			if (
+				prev && ( prev.nodeName === "H3" || prev.nodeName === "H4" ) ||
+				$(prev).hasClass('repeat-number') ||
+				$this.parents('#jr-calculated-items, #jr-preload-items').length > 0
+				) {
+				return null;
+			} else {
+				return $this.before(possible_break.clone());
+			}
+		});
+	
+	//correction of placing two direct sibling breaks
+	$('.possible-break').each(function() {
+		if ($(this).prev().hasClass('possible-break')) {
+			return $(this).remove();
+		}
+	});
+};
+
+/* Thank you, Alex Dorey! */
+/* this code needs to be uncoffeed */
+Print.prototype.addPageBreaks = function(){
+	var i, page, page_a, page_h, pages, possible_break, possible_breaks, qgroup, qgroups, _i, _j, _k, _len, _len1, _ref,
+		page_height_in_inches = 9.5,
+
+		dpi = {
+			v: 0,
+			get: function(noCache) {
+				var e;
+				if (noCache || dpi.v === 0) {
+					e = document.body.appendChild(document.createElement("DIV"));
+					e.style.width = "1in";
+					e.style.padding = "0";
+					dpi.v = e.offsetWidth;
+					e.parentNode.removeChild(e);
+				}
+			return dpi.v;
+			}
+		},
+
+		page_height_in_pixels = dpi.get() * page_height_in_inches,
+		pb = "<hr class='page-break' />",
+
+		QGroup = (function() {
+			/*
+			This is supposed to be a representation of a "Question Group", which exists only to
+			calculate the height of the question group and to make it easy to prepend a pagebreak
+			if necessary.
+			*/
+			function QGroup(begin, end) {
+				this.begin = $(begin);
+				this.begin_top = this.begin.offset().top;
+				this.end = $(end);
+				this.end_top = this.end.offset().top;
+				this.h = this.end_top - this.begin_top;
+				if (this.h < 0) {
+					console.debug('begin (top: '+this.begin_top+')', begin);
+					console.debug('end (top: '+this.end_top+')', end);
+					throw new Error("A question group has an invalid height.");
+				}
+			}
+
+			QGroup.prototype.break_before = function() {
+				var action, elem, prev, where_to_situate_breakpoint;
+				prev = this.begin.prev().get(0);
+				if (!prev) {
+					where_to_situate_breakpoint = ['before', this.begin.parent().get(0)];
+				} else {
+					where_to_situate_breakpoint = ['after', prev];
+				}
+				action = where_to_situate_breakpoint[0], elem = where_to_situate_breakpoint[1];
+				//console.debug('elem to place pb '+action+': ', elem);
+				return $(elem)[action]( pb );
+			};
+
+			return QGroup;
+		})();
+
+	this.removePageBreaks();
+
+	this.addPossiblePageBreaks();
+	possible_breaks = $('.possible-break');
+
+	qgroups = [];
+	for (i = 1; i < possible_breaks.length ; i++){
+		qgroups.push(new QGroup(possible_breaks[i - 1], possible_breaks[i]));
+	}
+
+	page_h = 0;
+	page_a = [];
+	pages = [];
+
+	for (_j = 0, _len = qgroups.length; _j < _len; _j++) {
+		qgroup = qgroups[_j];
+		if ((page_h + qgroup.h) > page_height_in_pixels) {
+			pages.push(page_a);
+			page_a = [qgroup];
+			page_h = qgroup.h;
+		} else {
+			page_a.push(qgroup);
+			page_h += qgroup.h;
+		}
+	}
+
+	pages.push(page_a);
+	
+	console.debug('pages: ', pages);
+
+	//skip the first page
+	for (_k = 1, _len1 = pages.length; _k < _len1; _k++) {
+		page = pages[_k];
+		if (page.length > 0) {
+			page[0].break_before();
+		}
+	}
+
+	//remove the possible-breaks
+	return $('.possible-break').remove();
+};
 	
 (function($){
 	"use strict";

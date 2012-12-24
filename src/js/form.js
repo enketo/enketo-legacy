@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google, connection*/
 
 /**
  * Class: Form
@@ -2045,16 +2045,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//algortithm could guess likely border values by using a regular expression search...
 		},
 		geopointWidget : function(){
-			//console.log('initializing geopoint widget');
 			$form.find('input[data-type-xml="geopoint"]').each(function(){ 
-				var mapOptions, map, marker, searchBox,
+				var mapOptions, map, marker, searchBox, geocoder,
 					$inputOrigin = $(this),
-					//$geoWrap = $(this).parent('label');
+
 					inputVals = $(this).val().split(' '),
-				//$geoWrap.addClass('geopoint widget');
 				
-					$widget = $('<div class="geopoint widget"><div class="map-canvas"></div>'+
-						'<input class="geo ignore" name="search" type="text" placeholder="search"/>'+
+					$widget = $('<div class="geopoint widget"><div class="map-canvas" style="width: 380px; height:275px;"></div>'+
+						'<input class="geo ignore" name="search" type="text" placeholder="search" disabled="disabled"/>'+
 						'<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
 						'<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
 						'<label class="geo">altitude (m)<input class="ignore" name="alt" type="number" step="0.1" /></label>'+
@@ -2079,7 +2077,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					//event.preventDefault();
 					$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
 					//console.log(event);
-					if (event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
+					if (typeof google !== 'undefined' && google.maps !== 'undefined' && event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
 						updateMap(lat, lng);
 					}
 					if (event.namespace !== 'bysearch'){
@@ -2089,24 +2087,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return false;
 				});
 
-				if (!navigator.geolocation){
-					$button.attr('disabled', 'disabled');
-				}
-				//default map view
-				if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
-					updateMap(0,0,1);
-					//searchBox = new google.maps.places.SearchBox($search[0]);
-				}
-
 				if (inputVals[3]) $acc.val(inputVals[3]);
 				if (inputVals[2]) $alt.val(inputVals[2]);
 				if (inputVals[1]) $lng.val(inputVals[1]);
 				if (inputVals[0].length > 0) $lat.val(inputVals[0]).trigger('change');
+
+				if (!navigator.geolocation){
+					$button.attr('disabled', 'disabled');
+				}
 				
 				$button.click(function(event){
 					event.preventDefault();
-					//console.debug('click event detected');
-					//console.debug(event);
 					navigator.geolocation.getCurrentPosition(function(position){	
 						updateMap(position.coords.latitude, position.coords.longitude);
 						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	
@@ -2114,11 +2105,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return false;
 				});
 
-				if ($(this).val() === ''){
-					$button.click();
-				}
+				//if ($(this).val() === ''){
+				//	$button.click();
+				//}
 
-				var geocoder = new google.maps.Geocoder();
+				$form.on('googlemapsscriptloaded', function(){
+					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
+						//default map view
+						updateMap(0,0,1);
+						geocoder = new google.maps.Geocoder();
+						$search.removeAttr('disabled');
+					}
+				});
+
 				$search.on('change', function(event){
 					event.stopImmediatePropagation();
 					//console.debug('search field click event');
@@ -2145,33 +2144,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				    return false;
 				});
 
-//				google.maps.event.addListener(searchBox, 'places_changed', function() {
-//					var places = searchBox.getPlaces();
-//					console.log(places);
-//					var markers = [];
-//					var bounds = new google.maps.LatLngBounds();
-//					for (var i = 0, place; place = places[i]; i++) {
-//						var image = new google.maps.MarkerImage(
-//						    place.icon, new google.maps.Size(71, 71),
-//						    new google.maps.Point(0, 0), new google.maps.Point(17, 34),
-//						    new google.maps.Size(25, 25));//
-
-//						var marker = new google.maps.Marker({
-//						  map: map,
-//						  icon: image,
-//						  title: place.name,
-//						  position: place.geometry.location
-//					});//
-
-//					markers.push(marker);//
-
-//					bounds.extend(place.geometry.location);
-//					}//
-
-//					map.fitBounds(bounds);
-//					return false;
-//				});
-
 				/**
 				 * [updateMap description]
 				 * @param  {number} lat  [description]
@@ -2180,7 +2152,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				 */
 				function updateMap(lat, lng, zoom){
 					zoom = zoom || 15;
-					if (typeof google.maps.LatLng !== 'undefined'){
+					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined' && typeof google.maps.LatLng !== 'undefined'){
 						mapOptions = {
 							zoom: zoom,
 							center: new google.maps.LatLng(lat, lng),
@@ -2195,12 +2167,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 							placeMarker(event.latLng);
 						});
 					}
-				}
-
-				function centralizeWithDelay(){
-					window.setTimeout(function() {
-						map.panTo(marker.getPosition());
-					}, 5000);
 				}
 
 				/**
@@ -2226,6 +2192,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					//center it (optional)
 					//map.setCenter(latLng);
 				}
+
+				function centralizeWithDelay(){
+					window.setTimeout(function() {
+						map.panTo(marker.getPosition());
+					}, 5000);
+				}
 				/**
 				 * [updateInputs description]
 				 * @param  {number} lat [description]
@@ -2243,8 +2215,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$alt.val(Math.round(alt*10)/10);
 					$acc.val(Math.round(acc*10)/10).trigger(ev);
 				}
-	
 			});
+
+			connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
 		},
 		autoCompleteWidget: function(){
 

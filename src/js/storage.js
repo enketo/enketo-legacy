@@ -348,67 +348,67 @@ function isNumber(n){
 	return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-/**
- * Settings class depends on Store Class
- * TODO MAKE THIS CLASS FUNCTION WITHOUT STORAGE TOO (GLOBAL VAR)
- * @constructor
- */
-function Settings(){
-	"use strict";
-}
+///**
+// * Settings class depends on Store Class
+// * TODO MAKE THIS CLASS FUNCTION WITHOUT STORAGE TOO (GLOBAL VAR)
+// * @constructor
+// */
+//function Settings(){
+//	"use strict";
+//}//
 
-Settings.prototype.init = function(){
-	"use strict";
-	var i, value, name,
-		settings = this.get(),
-		that = this;
-	
-	//set settings (loose coupling with GUI)
-	$(document).trigger('setsettings', settings);
-	//perform actions based on settings at launch
-	//for (var prop in settings){
-		
-	//}
-};
+//Settings.prototype.init = function(){
+//	"use strict";
+//	var i, value, name,
+//		settings = this.get(),
+//		that = this;
+//
+//	//set settings (loose coupling with GUI)
+//	$(document).trigger('setsettings', settings);
+//	//perform actions based on settings at launch
+//	//for (var prop in settings){
+//		
+//	//}
+//};//
 
-//communicates with local storage
-/**
- * [get description]
- * @return {Object.<string, (boolean|string)>}         [description]
- */
-Settings.prototype.get = function(){
-	"use strict";
-	//DISABLED SETTINGS IN LOCAL STORAGE AS IT IS NOT REQUIRED FOR NOW
-	//return store.getRecord('__settings') || DEFAULT_SETTINGS;
-	return DEFAULT_SETTINGS;
-};
+////communicates with local storage
+///**
+// * [get description]
+// * @return {Object.<string, (boolean|string)>}         [description]
+// */
+//Settings.prototype.get = function(){
+//	"use strict";
+//	//DISABLED SETTINGS IN LOCAL STORAGE AS IT IS NOT REQUIRED FOR NOW
+//	//return store.getRecord('__settings') || DEFAULT_SETTINGS;
+//	return DEFAULT_SETTINGS;
+//};//
 
-/**
- * [getOne description]
- * @param  {string} setting [description]
- * @return {?(string|boolean)}         [description]
- */
-Settings.prototype.getOne = function(setting){
-	var settings = this.get();//store.getRecord('__settings') || DEFAULT_SETTINGS;
-	return (typeof setting !== 'undefined' && typeof settings[setting] !== 'undefined') ? settings[setting] : null;
-};
+///**
+// * [getOne description]
+// * @param  {string} setting [description]
+// * @return {?(string|boolean)}         [description]
+// */
+//Settings.prototype.getOne = function(setting){
+//	var settings = this.get();//store.getRecord('__settings') || DEFAULT_SETTINGS;
+//	return (typeof setting !== 'undefined' && typeof settings[setting] !== 'undefined') ? settings[setting] : null;
+//};//
 
-/**
- * Communicates with local storage and perform action linked with setting. Called by eventhandler in GUI.
- *
- * @param {string} setting [description]
- * @param {string|boolean} value   [description]
- */
-Settings.prototype.set = function(setting, value){
-	"use strict";
-	var result,
-		settings = this.get();
-	console.debug('going to store setting: '+setting+' with value:'+value);
-	settings[setting] = value;
-	result = store.setRecord('__settings', settings);
-	//perform action linked to setting
-	if (typeof this[setting] !== 'undefined'){
-		this[setting](value);
-	}
-	return (result === 'success' ) ? true : console.error('error storing settings');
-};
+///**
+// * Communicates with local storage and perform action linked with setting. Called by eventhandler in GUI.
+// *
+// * @param {string} setting [description]
+// * @param {string|boolean} value   [description]
+// */
+//Settings.prototype.set = function(setting, value){
+//	"use strict";
+//	var result,
+//		settings = this.get();
+//	console.debug('going to store setting: '+setting+' with value:'+value);
+//	settings[setting] = value;
+//	result = store.setRecord('__settings', settings);
+//	//perform action linked to setting
+//	if (typeof this[setting] !== 'undefined'){
+//		this[setting](value);
+//	}
+//	return (result === 'success' ) ? true : console.error('error storing settings');
+//};

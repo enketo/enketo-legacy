@@ -17,7 +17,6 @@
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, StorageLocal, Connection, Modernizr, getGetVariable, vkbeautify*/
 var /** @type {Connection} */connection;
 var /** @type {StorageLocal} */store;
-var /** @type {Settings}*/settings;
 
 window.addEventListener("load",function() {
 	// Set a timeout...

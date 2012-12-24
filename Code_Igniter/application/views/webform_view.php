@@ -3,7 +3,6 @@
 ?>
 		<script type="text/javascript">
 			var jrDataStr = <?= $form_data ?>;
-			var supportEmail = '<?= $this->config->item("support_email") ?>';
 		</script>
 	
 	

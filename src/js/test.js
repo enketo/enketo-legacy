@@ -18,8 +18,7 @@
 var form, source, url, $tabs, $upload, _error, state, connection,
 	error_msg = 'There were errors. Please see the "report" tab for details.',
 	templateShow = false,
-	store = {},
-	settings = {};
+	store = {};
 
 $(document).ready(function(){
 	"use strict";

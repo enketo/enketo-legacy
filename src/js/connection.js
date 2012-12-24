@@ -211,7 +211,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 	var i, waswere, namesStr,
 		msg = '',
 		names=[],
-		contactSupport = 'Contact '+supportEmail+' please.',
+		contactSupport = 'Contact '+settings['supportEmail']+' please.',
 		contactAdmin = 'Contact the survey administrator please.',
 		serverDown = 'Sorry, the enketo server is down or being maintained. Please try again later or contact '+supportEmail+' please.',
 		statusMap = {
@@ -455,6 +455,15 @@ Connection.prototype.oRosaHelper = {
 		console.log('server_url: '+serverURL);
 		return serverURL;
 	}
+};
+
+Connection.prototype.loadGoogleMaps = function(callback){
+	var APIKey = settings['mapsAPIKey'] || '';
+		script = document.createElement("script");
+	window.googleMapsInit = callback;
+	script.type = "text/javascript";
+	script.src = "http://maps.googleapis.com/maps/api/js?v=3.exp&key="+APIKey+"&sensor=false&libraries=places&callback=googleMapsInit";
+	document.body.appendChild(script);
 };
 
 /**

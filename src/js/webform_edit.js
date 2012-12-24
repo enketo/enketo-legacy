@@ -20,8 +20,7 @@
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var	currentOnlineStatus = false;
-var settings, store; //leave, though not used, to prevent compilation error
-
+var store; //leave, though not used, to prevent compilation error
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 // !Document.ready()

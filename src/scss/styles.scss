@@ -525,7 +525,9 @@ html.touch{
       border: 1px solid #ccc;
       border-radius: 3px;
       margin-top: 10px;
-      height: $map-height}
+      height: $map-height;
+      img{
+        max-width: none; /*correction*/} }
     input[name="search"]{
       position: absolute;
       bottom: 0;

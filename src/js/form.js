@@ -2217,7 +2217,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});
 
-			connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
+			if (typeof connection !== 'undefined'){
+				connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
+			}
 		},
 		autoCompleteWidget: function(){
 

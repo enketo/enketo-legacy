@@ -115,7 +115,7 @@ Cache.prototype.onErrors = function(e){
 		console.error('HTML5 cache error event', e);
 		gui.alert('There is a new version of this application or form available but an error occurs when'+
 			' trying to download it. Please try to refresh the page or send a bug report to '+
-			'<a href="mailto:'+supportEmail+'">'+supportEmail+'</a>.');
+			'<a href="mailto:'+settings['supportEmail']+'">'+settings['supportEmail']+'</a>.');
 		// Possible to trigger cache problem for testing? ->
 		// 1. going offline, 2.manifest with unavailable resource, 3. manifest syntax error
 	}

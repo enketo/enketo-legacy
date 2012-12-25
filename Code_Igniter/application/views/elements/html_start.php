@@ -21,6 +21,8 @@
         	<script type="text/javascript">window.location = 'modern_browsers';</script>
 		<![endif]-->
 
+
+
 <? foreach ($stylesheets as $css): ?>
 	<link href="<?= $css['href']; ?>" media="<?= $css['media'] ?>" rel="stylesheet" type="text/css" />
 <? endforeach; ?>
@@ -28,3 +30,18 @@
 <? foreach ($scripts as $script): ?>
 	<script type="text/javascript" src="<?= $script; ?>"></script>
 <? endforeach; ?>
+
+
+<? $maps_api_key = $this->config->item('google_maps_api_v3_key'); ?>
+<? $support_email = $this->config->item("support_email"); ?>	
+	<script type="text/javascript">
+		var settings = {};
+<? if (!empty($maps_api_key)): ?>
+		settings['mapsAPIKey'] = '<?= $maps_api_key ?>';
+<? endif; ?>
+<? if (!empty($support_email)): ?>
+		settings['supportEmail'] = '<?= $support_email ?>';
+<? endif; ?>
+		//settings['autoUpload'] = true;
+		settings['modernBrowsersURL'] = 'modern_browsers';
+	</script>

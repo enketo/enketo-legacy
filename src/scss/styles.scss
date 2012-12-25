@@ -123,7 +123,7 @@ progress{
   button#drawer-export{
     display: block; } }
  
-#branding{
+/*#branding{
   position: fixed;
   z-index: -5;
   width: 120px;
@@ -139,7 +139,7 @@ progress{
     color: #666;}
   a:hover{
     color: #444;} }
-
+*/
 .main {
   margin: 100px auto 60px auto;
   position: relative;
@@ -330,6 +330,32 @@ label#data-template-show {
 ****    SURVEY FORM    ****
 **************************/
 .paper{
+  .form-header{
+    position: relative;
+    background-color: $groupline;
+    height: 45px;
+    padding: 0;
+    margin: -48px -48px 0px -48px;
+    .branding{
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      margin-top: -0.48 * 1.3em;
+      color: #ffffff;
+      text-shadow: 1px 1px 1px #555;
+      padding: 0;
+      height: 1.3em;
+      font-size: 1.3em; }
+    .print{
+      background-color: $groupline;
+      border-radius: 0;
+      border: none;
+      border-left: 1px solid #999999;
+      height: 100%;
+      width: 60px;
+      float: right;
+      &:hover{
+        background-color: $shadow; } } }
   //margin: 0 0 40px 0;
   #submit-form, #submit-edited-data, #validate-form, #launch-form{
     display: block;
@@ -375,8 +401,9 @@ html.touch{
   h3{
     //text-align: left;
     padding: 5px 0 15px 0;
-    border-top: solid 9px #000;
-    border-bottom: $line;
+    font-weight: bolder;
+    /*border-top: solid 9px #000;*/
+    /*border-bottom: $line;*/
   }
   h4{
     text-align: left;  }
@@ -498,7 +525,9 @@ html.touch{
       border: 1px solid #ccc;
       border-radius: 3px;
       margin-top: 10px;
-      height: $map-height}
+      height: $map-height;
+      img{
+        max-width: none; /*correction*/} }
     input[name="search"]{
       position: absolute;
       bottom: 0;

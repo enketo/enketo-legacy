@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google, connection*/
 
 /**
  * Class: Form
@@ -74,6 +74,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	/**
      * @param {boolean=} incTempl
      * @param {boolean=} incNs
+     * @param {boolean=} all
      */
 	this.getDataStr = function(incTempl, incNs, all){
 		return data.getStr(incTempl, incNs, all);
@@ -136,12 +137,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 	
 
- 	/**
- 	 * Inner Class dealing with the XML Instance (data) of a form
- 	 * @constructor
- 	 * @extends Form
- 	 * @param {string} dataStr String of the default XML instance
- 	 */
+	/**
+	 * Inner Class dealing with the XML Instance (data) of a form
+	 * @constructor
+	 * @extends Form
+	 * @param {string} dataStr String of the default XML instance
+	 */
 	function DataXML(dataStr) {
 		var $data,
 			that=this;
@@ -264,24 +265,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		/**
 		 * Sets data node values.
 		 * 
-		 * @param {(string|Array.<string>)=} newVal	The new value of the node.
+		 * @param {(string|Array.<string>)=} newVals	The new value of the node.
 		 * @param {?string=} expr  XPath expression to validate the node.
 		 * @param {?string=} xmlDataType XML data type of the node
 		 *
 		 * @returns {?boolean} null is returned when the node is not found or multiple nodes were selected
 		 */
-		Nodeset.prototype.setVal = function(newVal, expr, xmlDataType){
-			var $target, curVal, success;
+		Nodeset.prototype.setVal = function(newVals, expr, xmlDataType){
+			var $target, curVal, /**@type {string}*/ newVal, success;
 
 			curVal = this.getVal()[0];
 			
-			if (typeof newVal !== 'undefined' && newVal !== null){
-				newVal = ($.isArray(newVal)) ? newVal.join(' ') : newVal;
-				//this would perhaps be better: (but selected('a b') actually would not work (and does now))
-				//if($.isArray(value)){
-				//	$.each(value, function(i, val){value[i] = encodeURI(val);});
-				//	value = value.join(' ');
-				//}
+			if (typeof newVals !== 'undefined' && newVals !== null){
+				newVal = ($.isArray(newVals)) ? newVals.join(' ') : newVals.toString();
 			}
 			else newVal = '';
 			newVal = this.convert(newVal, xmlDataType);
@@ -374,7 +370,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		/**
 		 * Convert a value to a specified data type (though always stringified)
-		 * @param  {(string|number)} x  value to convert
+		 * @param  {string} x  value to convert
 		 * @param  {?string=} xmlDataType name of xmlDataType
 		 * @return {string}             return string value of converted value
 		 */
@@ -788,9 +784,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$dataClone.find('[template]').remove();
 		}
 		//disabled 
-		if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
-			//$dataClone.find('instance').attr('xmlns', this.namespace);
-		}
+		//if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
+		//	$dataClone.find('instance').attr('xmlns', this.namespace);
+		//}
 
 		dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
 
@@ -846,7 +842,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} resTypeStr boolean, string, number, nodes (best to always supply this)
 	 * @param  {string=} selector   jQuery selector which will be use to provide the context to the evaluator
 	 * @param  {number=} index      index of selector in document
-	 * @return {?(number|string|boolean)}            [description]
+	 * @return {?(number|string|boolean|jQuery)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var i, j, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
@@ -861,7 +857,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//SEEMS LIKE THE CONTEXT DOC (CLONE) CREATION COULD BE A PERFORMANCE HOG AS IT IS CALLED MANY TIMES, 
 		//IS THERE ANY BETTER WAY TO EXCLUDE TEMPLATE NODES AND THEIR CHILDREN?
 		contextDoc = new DataXML(this.getStr(false, false));
-
 		/* 
 		   If the expression contains the instance('id') syntax, a different context instance is required.
 		   However, the same expression may also contain absolute reference to the main data instance, 
@@ -880,7 +875,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.$.find('instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
 			}
 		}
-
 		//console.debug('contextDoc:', contextDoc.$);
 
 		if (typeof selector !== 'undefined' && selector !== null) {
@@ -947,7 +941,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//console.log('raw result', result);
 				for (j=0 ; j<result.snapshotLength; j++){
 					//console.debug(result.snapshotItem(j));
-					$result.push(result.snapshotItem(j));
+					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
 				return $result;
@@ -972,7 +966,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form = $(selector);
 		//used for testing
 		this.$ = $form;
-		this.branch = new this.Branch();
+		this.branch = new this.Branch(this);
 	}
 
 	FormHTML.prototype.init = function(){
@@ -1435,13 +1429,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 *
 	 * @constructor
 	 */
-	FormHTML.prototype.Branch = function(){
+	FormHTML.prototype.Branch = function(parent){
 		/**
 		 * Initializes branches, sets delegated event handlers
 		 */
 		this.init = function(){
-			var $branchNode,
-				that=this;
+			var $branchNode;//,
+				//that=this;
 			//console.debug('initializing branches');
 			//$form.on('click', '.jr-branch', function(event){
 			//	var $that = $(this);
@@ -1460,7 +1454,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//	}	
 			//});
 			$form.find('[data-relevant]').each(function(){
-				$branchNode = that.input.getWrapNodes($(this));
+				$branchNode = parent.input.getWrapNodes($(this));
 				if ($branchNode.length !== 1){
 					console.error('branchNode wrapper could not be identified for node: ', $(this));
 				}
@@ -1490,8 +1484,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			$form.find(cleverSelector.join()).each(function(){
 
-				p = that.input.getProps($(this));
-				branchNode = that.input.getWrapNodes($(this));
+				p = parent.input.getProps($(this));
+				branchNode = parent.input.getWrapNodes($(this));
 				
 				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
 				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[$(this).attr('name')]){
@@ -1585,9 +1579,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		};
 	};
 
-	$.extend(FormHTML.prototype.Branch.prototype, FormHTML.prototype);
+	//$.extend(FormHTML.prototype.Branch.prototype, FormHTML.prototype);
 
 
+	/**
+	 * Updates itemsets
+	 * @param  {string=} changedDataNodeNames node names that were recently changed, separated by commas
+	 */
 	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
 		//TODO: test with very large itemset
 		var that = this,
@@ -1652,7 +1650,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$labels.find('[data-itext-id="'+$(this).children(labelRef).text()+'"]').clone() : 
 					$('<span class="active" lang="">'+$(this).children(labelRef).text()+'</span>');
 				
-				value = $(this).children(valueRef).text();
+				value = /**@type {string}*/$(this).children(valueRef).text();
 				$htmlItem.find('[value]').attr('value', value);
 
 				if (templateNodeName === 'label'){
@@ -2045,16 +2043,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//algortithm could guess likely border values by using a regular expression search...
 		},
 		geopointWidget : function(){
-			//console.log('initializing geopoint widget');
 			$form.find('input[data-type-xml="geopoint"]').each(function(){ 
-				var mapOptions, map, marker, searchBox,
+				var mapOptions, map, marker, searchBox, geocoder,
 					$inputOrigin = $(this),
-					//$geoWrap = $(this).parent('label');
+
 					inputVals = $(this).val().split(' '),
-				//$geoWrap.addClass('geopoint widget');
 				
-					$widget = $('<div class="geopoint widget"><div class="map-canvas"></div>'+
-						'<input class="geo ignore" name="search" type="text" placeholder="search"/>'+
+					$widget = $('<div class="geopoint widget"><div class="map-canvas" style="width: 380px; height:275px;"></div>'+
+						'<input class="geo ignore" name="search" type="text" placeholder="search" disabled="disabled"/>'+
 						'<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
 						'<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
 						'<label class="geo">altitude (m)<input class="ignore" name="alt" type="number" step="0.1" /></label>'+
@@ -2079,7 +2075,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					//event.preventDefault();
 					$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
 					//console.log(event);
-					if (event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
+					if (typeof google !== 'undefined' && google.maps !== 'undefined' && event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
 						updateMap(lat, lng);
 					}
 					if (event.namespace !== 'bysearch'){
@@ -2089,24 +2085,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return false;
 				});
 
-				if (!navigator.geolocation){
-					$button.attr('disabled', 'disabled');
-				}
-				//default map view
-				if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
-					updateMap(0,0,1);
-					//searchBox = new google.maps.places.SearchBox($search[0]);
-				}
-
 				if (inputVals[3]) $acc.val(inputVals[3]);
 				if (inputVals[2]) $alt.val(inputVals[2]);
 				if (inputVals[1]) $lng.val(inputVals[1]);
 				if (inputVals[0].length > 0) $lat.val(inputVals[0]).trigger('change');
+
+				if (!navigator.geolocation){
+					$button.attr('disabled', 'disabled');
+				}
 				
 				$button.click(function(event){
 					event.preventDefault();
-					//console.debug('click event detected');
-					//console.debug(event);
 					navigator.geolocation.getCurrentPosition(function(position){	
 						updateMap(position.coords.latitude, position.coords.longitude);
 						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	
@@ -2114,11 +2103,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return false;
 				});
 
-				if ($(this).val() === ''){
-					$button.click();
-				}
+				//if ($(this).val() === ''){
+				//	$button.click();
+				//}
 
-				var geocoder = new google.maps.Geocoder();
+				$form.on('googlemapsscriptloaded', function(){
+					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
+						//default map view
+						updateMap(0,0,1);
+						geocoder = new google.maps.Geocoder();
+						$search.removeAttr('disabled');
+					}
+				});
+
 				$search.on('change', function(event){
 					event.stopImmediatePropagation();
 					//console.debug('search field click event');
@@ -2145,33 +2142,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				    return false;
 				});
 
-//				google.maps.event.addListener(searchBox, 'places_changed', function() {
-//					var places = searchBox.getPlaces();
-//					console.log(places);
-//					var markers = [];
-//					var bounds = new google.maps.LatLngBounds();
-//					for (var i = 0, place; place = places[i]; i++) {
-//						var image = new google.maps.MarkerImage(
-//						    place.icon, new google.maps.Size(71, 71),
-//						    new google.maps.Point(0, 0), new google.maps.Point(17, 34),
-//						    new google.maps.Size(25, 25));//
-
-//						var marker = new google.maps.Marker({
-//						  map: map,
-//						  icon: image,
-//						  title: place.name,
-//						  position: place.geometry.location
-//					});//
-
-//					markers.push(marker);//
-
-//					bounds.extend(place.geometry.location);
-//					}//
-
-//					map.fitBounds(bounds);
-//					return false;
-//				});
-
 				/**
 				 * [updateMap description]
 				 * @param  {number} lat  [description]
@@ -2180,7 +2150,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				 */
 				function updateMap(lat, lng, zoom){
 					zoom = zoom || 15;
-					if (typeof google.maps.LatLng !== 'undefined'){
+					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined' && typeof google.maps.LatLng !== 'undefined'){
 						mapOptions = {
 							zoom: zoom,
 							center: new google.maps.LatLng(lat, lng),
@@ -2195,12 +2165,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 							placeMarker(event.latLng);
 						});
 					}
-				}
-
-				function centralizeWithDelay(){
-					window.setTimeout(function() {
-						map.panTo(marker.getPosition());
-					}, 5000);
 				}
 
 				/**
@@ -2226,6 +2190,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					//center it (optional)
 					//map.setCenter(latLng);
 				}
+
+				function centralizeWithDelay(){
+					window.setTimeout(function() {
+						map.panTo(marker.getPosition());
+					}, 5000);
+				}
 				/**
 				 * [updateInputs description]
 				 * @param  {number} lat [description]
@@ -2243,8 +2213,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$alt.val(Math.round(alt*10)/10);
 					$acc.val(Math.round(acc*10)/10).trigger(ev);
 				}
-	
 			});
+
+			if (typeof connection !== 'undefined'){
+				connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
+			}
 		},
 		autoCompleteWidget: function(){
 
@@ -2786,11 +2759,11 @@ Date.prototype.toISOLocalString = function(){
  * @return {String|string}        [description]
  */
 String.prototype.pad = function(digits){
-		var x = this;
-		while (x.length < digits){
-			x = '0'+x;
-		}
-		return x;
+	var x = this;
+	while (x.length < digits){
+		x = '0'+x;
+	}
+	return x;
 };
 
 (function($){

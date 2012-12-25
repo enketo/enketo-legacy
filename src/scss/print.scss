@@ -23,7 +23,7 @@ body{
 #dialog-confirm,
 #dialog-save,
 #form-languages,
-#branding,
+.form-header,
 .paper #submit-form{
   display: none !important;}
 
@@ -37,6 +37,8 @@ body{
   .invalid .jr-constraint-msg.active.alert-error{
     display: none;
   }
+  legend span {
+    display: block; }
   .trigger{
     color: $dark;}
   label{
@@ -88,11 +90,6 @@ body{
         bottom: $map-height/4; }
       &:nth-of-type(4){
         bottom: 0; } } } }
-
-// This could have negative side effects.
-// If so, then take out "float:left" from .jr-hint.active above
-legend span {
-  display: block; }
 
 .page-break{
   display: block; 

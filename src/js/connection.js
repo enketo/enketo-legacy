@@ -213,7 +213,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		names=[],
 		contactSupport = 'Contact '+settings['supportEmail']+' please.',
 		contactAdmin = 'Contact the survey administrator please.',
-		serverDown = 'Sorry, the enketo server is down or being maintained. Please try again later or contact '+supportEmail+' please.',
+		serverDown = 'Sorry, the enketo server is down or being maintained. Please try again later or contact '+settings['supportEmail']+' please.',
 		statusMap = {
 			0: {success: false, msg: (typeof jrDataStrToEdit !== 'undefined') ?
 				"Uploading of data failed. Please try again." :
@@ -226,7 +226,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			403: {success:false, msg: "You are not allowed to post data to this data server. "+contactAdmin},
 			404: {success:false, msg: "Submission service on data server not found or not properly configured."},
 			'4xx': {success:false, msg: "Unknown submission problem on data server."},
-			413: {success:false, msg: "Data is too large. Please export the data and contact "+supportEmail+"."},
+			413: {success:false, msg: "Data is too large. Please export the data and contact "+settings['supportEmail']+"."},
 			500: {success:false, msg: serverDown},
 			503: {success:false, msg: serverDown},
 			'5xx':{success:false, msg: serverDown}
@@ -421,12 +421,13 @@ Connection.prototype.validateHTML = function(htmlStr, callbacks){
 Connection.prototype.oRosaHelper = {
 	/**
 	 * Magically generates a well-formed serverURL from a type and fragment
-	 * @param  {string} type     type of server or account (http, https, formhub_uni, formhub, appspot)
-	 * @param  {string} fragment a user input for the given type
-	 * @return {string}          a full serverURL
+	 * @param  {string} type    type of server or account (http, https, formhub_uni, formhub, appspot)
+	 * @param  {string} frag	a user input for the given type
+	 * @return {?string}        a full serverURL
 	 */
 	fragToServerURL: function(type, frag){
-		var serverURL, protocol;
+		var protocol,
+			serverURL = '';
 
 		if (!frag){
 			console.log('nothing to do');
@@ -457,8 +458,12 @@ Connection.prototype.oRosaHelper = {
 	}
 };
 
+/**
+ * Loads a google maps API v3 script
+ * @param  {Function} callback function to call when script has been loaded and added to DOM
+ */
 Connection.prototype.loadGoogleMaps = function(callback){
-	var APIKey = settings['mapsAPIKey'] || '';
+	var APIKey = settings['mapsAPIKey'] || '',
 		script = document.createElement("script");
 	window.googleMapsInit = callback;
 	script.type = "text/javascript";

@@ -15,13 +15,11 @@
  */
 
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, console:true*/
-// CHANGE: it would be better to remove references to store and form in common.js
-//
-// Copyright 2012 Martijn van de Rijdt
+
+// TODO: it would be better to remove references to store and form in common.js
 
 var /** @type {GUI}*/ gui;
 var /** @type {Print} */ printO;
-var DEFAULT_SETTINGS = {};
 
 $(document).ready(function(){
 	"use strict";
@@ -549,7 +547,7 @@ GUI.prototype.setSettings = function(settings){
 
 /**
  * Parses a list of forms
- * @param  {?*} list array of object with form information
+ * @param  {?Array.<{title: string, url: string, server: string, name: string}>} list array of object with form information
  * @param { jQuery } $target jQuery-wrapped target node with a <ul> element as child to append formlist to
  */
 GUI.prototype.parseFormlist = function(list, $target){
@@ -589,9 +587,9 @@ function Print(){
 	//	that = this;
 	this.setStyleSheet();
 	//IE, FF, the 'proper' way:
-    if (typeof window.onbeforeprint !== 'undefined'){
-		//$(window).on('beforeprint', this.printForm);
-    }
+    //if (typeof window.onbeforeprint !== 'undefined'){
+	//	$(window).on('beforeprint', this.printForm);
+    //}
     //Chrome, Safari, Opera: (this approach has problems)
 	//else {
 	//	mpl = window.matchMedia('print');
@@ -604,13 +602,34 @@ function Print(){
 	//		return false;
 	//	});
 	//}
+	this.setDpi();
 }
 
+/**
+ * Calculates the dots per inch and sets the dpi property
+ */
+Print.prototype.setDpi = function(){
+	var dpi = {},
+		e = document.body.appendChild(document.createElement("DIV"));
+	e.style.width = "1in";
+	e.style.padding = "0";
+	dpi.v = e.offsetWidth;
+	e.parentNode.removeChild(e);
+	this.dpi = dpi.v;
+};
+
+/**
+ * Sets print stylesheet properties
+ */
 Print.prototype.setStyleSheet = function(){
 	this.styleSheet = this.getStyleSheet();
 	this.$styleSheetLink = $('link[media="print"]:eq(0)');
 };
 
+/**
+ * Gets print stylesheets
+ * @return {Element} [description]
+ */
 Print.prototype.getStyleSheet = function(){
 	for (var i = 0 ; i < document.styleSheets.length ; i++){
 		if (document.styleSheets[i].media.mediaText === 'print'){
@@ -620,6 +639,9 @@ Print.prototype.getStyleSheet = function(){
 	return null;
 };
 
+/**
+ * Applies the print stylesheet to the current view by changing stylesheets media property to 'all'
+ */
 Print.prototype.styleToAll = function (){
 	//sometimes, setStylesheet fails upon loading
 	if (!this.styleSheet) this.setStyleSheet();
@@ -629,11 +651,17 @@ Print.prototype.styleToAll = function (){
 	this.$styleSheetLink.attr('media', 'all');
 };
 
+/**
+ * Resets the print stylesheet to only apply to media 'print'
+ */
 Print.prototype.styleReset = function(){
 	this.styleSheet.media.mediaText = 'print';
 	this.$styleSheetLink.attr('media', 'print');
 };
 
+/**
+ * Prints the form after first setting page breaks (every time it is called)
+ */
 Print.prototype.printForm = function(){
 	console.debug('preparing form for printing');
 	this.removePageBreaks();
@@ -644,14 +672,24 @@ Print.prototype.printForm = function(){
 	window.print();
 };
 
+/**
+ * Removes all current page breaks
+ */
 Print.prototype.removePageBreaks = function(){
 	$('.page-break').remove();
 };
 
+/**
+ * Removes all potential page breaks
+ */
 Print.prototype.removePossiblePageBreaks = function(){
 	$('.possible-break').remove();
 };
 
+
+/**
+ * Adds a temporary potential page break to each location in the form that is allowed to have one
+ */
 Print.prototype.addPossiblePageBreaks = function(){
 	var possible_break = $("<hr>", {"class": "possible-break"/*, "style":"background-color:blue; height: 1px"*/});
 	
@@ -683,28 +721,14 @@ Print.prototype.addPossiblePageBreaks = function(){
 	});
 };
 
-/* Thank you, Alex Dorey! */
-/* this code needs to be uncoffeed */
+/**
+ * Adds page breaks intelligently
+ * Thank you, Alex Dorey!
+ */
 Print.prototype.addPageBreaks = function(){
 	var i, page, page_a, page_h, pages, possible_break, possible_breaks, qgroup, qgroups, _i, _j, _k, _len, _len1, _ref,
 		page_height_in_inches = 9.5,
-
-		dpi = {
-			v: 0,
-			get: function(noCache) {
-				var e;
-				if (noCache || dpi.v === 0) {
-					e = document.body.appendChild(document.createElement("DIV"));
-					e.style.width = "1in";
-					e.style.padding = "0";
-					dpi.v = e.offsetWidth;
-					e.parentNode.removeChild(e);
-				}
-			return dpi.v;
-			}
-		},
-
-		page_height_in_pixels = dpi.get() * page_height_in_inches,
+		page_height_in_pixels = this.dpi * page_height_in_inches,
 		pb = "<hr class='page-break' />",
 
 		QGroup = (function() {
@@ -822,42 +846,36 @@ Print.prototype.addPageBreaks = function(){
 			allow: ""
 		}, p);
 
-		return this.each
-			(
-				function()
-				{
+		return this.each(function(){
 
-					if (p.nocaps) p.nchars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-					if (p.allcaps) p.nchars += "abcdefghijklmnopqrstuvwxyz";
-					
-					var s = p.allow.split('');
-					for (var i=0;i<s.length;i++) if (p.ichars.indexOf(s[i]) != -1) s[i] = "\\" + s[i];
-					p.allow = s.join('|');
-					
-					var reg = new RegExp(p.allow,'gi');
-					var ch = p.ichars + p.nchars;
-					ch = ch.replace(reg,'');
+			if (p.nocaps) p.nchars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			if (p.allcaps) p.nchars += "abcdefghijklmnopqrstuvwxyz";
+			
+			var s = p.allow.split('');
+			for (var i=0;i<s.length;i++) if (p.ichars.indexOf(s[i]) != -1) s[i] = "\\" + s[i];
+			p.allow = s.join('|');
+			
+			var reg = new RegExp(p.allow,'gi');
+			var ch = p.ichars + p.nchars;
+			ch = ch.replace(reg,'');
 
-					$(this).keypress
-						(
-							function (e)
-								{
-									var k;
-									if (!e.charCode) k = String.fromCharCode(e.which);
-										else k = String.fromCharCode(e.charCode);
-										
-									if (ch.indexOf(k) != -1) e.preventDefault();
-									if (e.ctrlKey&&k=='v') e.preventDefault();
-									
-								}
+			$(this).keypress
+				(
+					function (e)
+						{
+							var k;
+							if (!e.charCode) k = String.fromCharCode(e.which);
+								else k = String.fromCharCode(e.charCode);
 								
-						);
+							if (ch.indexOf(k) != -1) e.preventDefault();
+							if (e.ctrlKey&&k=='v') e.preventDefault();
+							
+						}
 						
-					$(this).bind('contextmenu',function () {return false;});
-									
-				}
-			);
-
+				);
+				
+			$(this).bind('contextmenu',function () {return false;});
+		});
 	};
 
 	$.fn.numeric = function(p) {

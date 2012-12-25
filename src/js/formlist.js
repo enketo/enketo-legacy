@@ -18,13 +18,13 @@
 var /** @type {Connection} */connection;
 var /** @type {StorageLocal} */store;
 
-window.addEventListener("load",function() {
+window.addEventListener("load", function() {
 	// Set a timeout...
 	setTimeout(function(){
 		// Hide the address bar!
 		window.scrollTo(0, 1);
 	}, 0);
-});
+}, false);
 
 $(document).ready(function(){
 	"use strict";
@@ -88,7 +88,7 @@ $(document).ready(function(){
 	$('#form-list').on('click', 'a', function(){
 		console.log('caught click');
 		var server, id,
-			href = $(this).attr('href');
+			href = /**@type {string}*/$(this).attr('href');
 			
 		//request a url first by launching this in enketo
 		if ( !href || href === "" || href==="#" ){
@@ -104,7 +104,7 @@ $(document).ready(function(){
 			});
 		}
 		else{
-			location.href=href;
+			location.href = href;
 		}
 		return false;
 	});
@@ -118,7 +118,8 @@ function loadPreviousState(){
 	if (server){
 		$('.url-helper li').removeClass('active').find('[data-value="'+server.helper+'"]').parent('li').addClass('active');
 		$('input#server').val(server.inputValue);
-		list = store.getRecord('__server_'+server.url);
+		//list = store.getRecord('__server_'+server.url);
+		list = store.getFormList(server.url);
 		gui.parseFormlist(list, $('#form-list'));
 	}
 }

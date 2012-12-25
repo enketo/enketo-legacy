@@ -1,5 +1,4 @@
-var jrDataStr, jrDataStrToEdit, RETURN_URL, supportEmail;
-
+var jrDataStr, jrDataStrToEdit, settings, RETURN_URL;
 
 /**
  * @type number

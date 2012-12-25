@@ -74,6 +74,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	/**
      * @param {boolean=} incTempl
      * @param {boolean=} incNs
+     * @param {boolean=} all
      */
 	this.getDataStr = function(incTempl, incNs, all){
 		return data.getStr(incTempl, incNs, all);
@@ -136,12 +137,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 	
 
- 	/**
- 	 * Inner Class dealing with the XML Instance (data) of a form
- 	 * @constructor
- 	 * @extends Form
- 	 * @param {string} dataStr String of the default XML instance
- 	 */
+	/**
+	 * Inner Class dealing with the XML Instance (data) of a form
+	 * @constructor
+	 * @extends Form
+	 * @param {string} dataStr String of the default XML instance
+	 */
 	function DataXML(dataStr) {
 		var $data,
 			that=this;
@@ -264,24 +265,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		/**
 		 * Sets data node values.
 		 * 
-		 * @param {(string|Array.<string>)=} newVal	The new value of the node.
+		 * @param {(string|Array.<string>)=} newVals	The new value of the node.
 		 * @param {?string=} expr  XPath expression to validate the node.
 		 * @param {?string=} xmlDataType XML data type of the node
 		 *
 		 * @returns {?boolean} null is returned when the node is not found or multiple nodes were selected
 		 */
-		Nodeset.prototype.setVal = function(newVal, expr, xmlDataType){
-			var $target, curVal, success;
+		Nodeset.prototype.setVal = function(newVals, expr, xmlDataType){
+			var $target, curVal, /**@type {string}*/ newVal, success;
 
 			curVal = this.getVal()[0];
 			
-			if (typeof newVal !== 'undefined' && newVal !== null){
-				newVal = ($.isArray(newVal)) ? newVal.join(' ') : newVal;
-				//this would perhaps be better: (but selected('a b') actually would not work (and does now))
-				//if($.isArray(value)){
-				//	$.each(value, function(i, val){value[i] = encodeURI(val);});
-				//	value = value.join(' ');
-				//}
+			if (typeof newVals !== 'undefined' && newVals !== null){
+				newVal = ($.isArray(newVals)) ? newVals.join(' ') : newVals.toString();
 			}
 			else newVal = '';
 			newVal = this.convert(newVal, xmlDataType);
@@ -374,7 +370,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		/**
 		 * Convert a value to a specified data type (though always stringified)
-		 * @param  {(string|number)} x  value to convert
+		 * @param  {string} x  value to convert
 		 * @param  {?string=} xmlDataType name of xmlDataType
 		 * @return {string}             return string value of converted value
 		 */
@@ -788,9 +784,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$dataClone.find('[template]').remove();
 		}
 		//disabled 
-		if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
-			//$dataClone.find('instance').attr('xmlns', this.namespace);
-		}
+		//if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
+		//	$dataClone.find('instance').attr('xmlns', this.namespace);
+		//}
 
 		dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
 
@@ -846,7 +842,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} resTypeStr boolean, string, number, nodes (best to always supply this)
 	 * @param  {string=} selector   jQuery selector which will be use to provide the context to the evaluator
 	 * @param  {number=} index      index of selector in document
-	 * @return {?(number|string|boolean)}            [description]
+	 * @return {?(number|string|boolean|jQuery)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var i, j, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
@@ -861,7 +857,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//SEEMS LIKE THE CONTEXT DOC (CLONE) CREATION COULD BE A PERFORMANCE HOG AS IT IS CALLED MANY TIMES, 
 		//IS THERE ANY BETTER WAY TO EXCLUDE TEMPLATE NODES AND THEIR CHILDREN?
 		contextDoc = new DataXML(this.getStr(false, false));
-
 		/* 
 		   If the expression contains the instance('id') syntax, a different context instance is required.
 		   However, the same expression may also contain absolute reference to the main data instance, 
@@ -880,7 +875,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.$.find('instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
 			}
 		}
-
 		//console.debug('contextDoc:', contextDoc.$);
 
 		if (typeof selector !== 'undefined' && selector !== null) {
@@ -947,7 +941,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//console.log('raw result', result);
 				for (j=0 ; j<result.snapshotLength; j++){
 					//console.debug(result.snapshotItem(j));
-					$result.push(result.snapshotItem(j));
+					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
 				return $result;
@@ -972,7 +966,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form = $(selector);
 		//used for testing
 		this.$ = $form;
-		this.branch = new this.Branch();
+		this.branch = new this.Branch(this);
 	}
 
 	FormHTML.prototype.init = function(){
@@ -1435,13 +1429,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 *
 	 * @constructor
 	 */
-	FormHTML.prototype.Branch = function(){
+	FormHTML.prototype.Branch = function(parent){
 		/**
 		 * Initializes branches, sets delegated event handlers
 		 */
 		this.init = function(){
-			var $branchNode,
-				that=this;
+			var $branchNode;//,
+				//that=this;
 			//console.debug('initializing branches');
 			//$form.on('click', '.jr-branch', function(event){
 			//	var $that = $(this);
@@ -1460,7 +1454,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//	}	
 			//});
 			$form.find('[data-relevant]').each(function(){
-				$branchNode = that.input.getWrapNodes($(this));
+				$branchNode = parent.input.getWrapNodes($(this));
 				if ($branchNode.length !== 1){
 					console.error('branchNode wrapper could not be identified for node: ', $(this));
 				}
@@ -1490,8 +1484,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			$form.find(cleverSelector.join()).each(function(){
 
-				p = that.input.getProps($(this));
-				branchNode = that.input.getWrapNodes($(this));
+				p = parent.input.getProps($(this));
+				branchNode = parent.input.getWrapNodes($(this));
 				
 				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
 				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[$(this).attr('name')]){
@@ -1585,9 +1579,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		};
 	};
 
-	$.extend(FormHTML.prototype.Branch.prototype, FormHTML.prototype);
+	//$.extend(FormHTML.prototype.Branch.prototype, FormHTML.prototype);
 
 
+	/**
+	 * Updates itemsets
+	 * @param  {string=} changedDataNodeNames node names that were recently changed, separated by commas
+	 */
 	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
 		//TODO: test with very large itemset
 		var that = this,
@@ -1652,7 +1650,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$labels.find('[data-itext-id="'+$(this).children(labelRef).text()+'"]').clone() : 
 					$('<span class="active" lang="">'+$(this).children(labelRef).text()+'</span>');
 				
-				value = $(this).children(valueRef).text();
+				value = /**@type {string}*/$(this).children(valueRef).text();
 				$htmlItem.find('[value]').attr('value', value);
 
 				if (templateNodeName === 'label'){
@@ -2217,7 +2215,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});
 
-			connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
+			if (typeof connection !== 'undefined'){
+				connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
+			}
 		},
 		autoCompleteWidget: function(){
 
@@ -2759,11 +2759,11 @@ Date.prototype.toISOLocalString = function(){
  * @return {String|string}        [description]
  */
 String.prototype.pad = function(digits){
-		var x = this;
-		while (x.length < digits){
-			x = '0'+x;
-		}
-		return x;
+	var x = this;
+	while (x.length < digits){
+		x = '0'+x;
+	}
+	return x;
 };
 
 (function($){

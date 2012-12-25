@@ -67,7 +67,7 @@ $(document).ready(function() {
 	gui.setup();
 
 	//trigger fake save event to update formlist on data page
-	$('form.jr').trigger('save', JSON.stringify(store.getFormList()));
+	$('form.jr').trigger('save', JSON.stringify(store.getRecordList()));
 
 	window.setInterval(function(){
 		//TODO: add second parameter to getSurveyDataArr() to

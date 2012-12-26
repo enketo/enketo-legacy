@@ -2049,13 +2049,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 					inputVals = $(this).val().split(' '),
 				
-					$widget = $('<div class="geopoint widget"><div class="map-canvas" style="width: 380px; height:275px;"></div>'+
-						'<input class="geo ignore" name="search" type="text" placeholder="search" disabled="disabled"/>'+
-						'<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
-						'<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
-						'<label class="geo">altitude (m)<input class="ignore" name="alt" type="number" step="0.1" /></label>'+
-						'<label class="geo">accuracy (m)<input class="ignore" name="acc" type="number" step="0.1" /></label>'+
-						'<button name="geodetect" type="button" class="btn btn-small">detect</button></div>'),
+					$widget = $(
+						'<div class="geopoint widget">'+
+						'<div class="search-bar">'+
+							'<button name="geodetect" type="button" class="btn" title="detect current location">'+
+							'<i class="icon-crosshairs"></i></button>'+
+						'<div class="input-append">'+
+							'<input class="geo ignore" name="search" type="text" placeholder="search for place or address" disabled="disabled"/>'+
+							'<button type="button" class="btn add-on"><i class="icon-search"></i>'+
+						'</div>'+
+						'</div>'+
+						'<div class="map-canvas-wrapper"><div class="map-canvas"></div></div>'+
+						'<div class="geo-inputs">'+
+							'<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
+							'<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
+							'<label class="geo"><input class="ignore" name="alt" type="number" step="0.1" />altitude (m)</label>'+
+							'<label class="geo"><input class="ignore" name="acc" type="number" step="0.1" />accuracy (m)</label>'+
+						'</div>'+
+						'</div>'
+						),
 					$map = $widget.find('.map-canvas'),
 					$lat = $widget.find('[name="lat"]'),
 					$lng = $widget.find('[name="long"]'),
@@ -2120,25 +2132,27 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					event.stopImmediatePropagation();
 					//console.debug('search field click event');
 					var address = $(this).val();
-					geocoder.geocode(
-				        {
-							'address': address,
-							'bounds' : map.getBounds()
-						}, 
-				        function(results, status) { 
-				            if (status == google.maps.GeocoderStatus.OK) { 
-								$search.attr('placeholder', 'search');
-				                var loc = results[0].geometry.location;
-				                console.log(loc);
-				                updateMap(loc.lat(), loc.lng());
-				                updateInputs(loc.lat(), loc.lng(), null, null, 'change.bysearch'); 
-				            } 
-				            else {
-								$search.val('');
-								$search.attr('placeholder', address+' not found, try something else.');
-				            } 
-				        }
-				    );
+					if (typeof geocoder !== 'undefined'){	
+						geocoder.geocode(
+					        {
+								'address': address,
+								'bounds' : map.getBounds()
+							}, 
+					        function(results, status) { 
+					            if (status == google.maps.GeocoderStatus.OK) { 
+									$search.attr('placeholder', 'search');
+					                var loc = results[0].geometry.location;
+					                console.log(loc);
+					                updateMap(loc.lat(), loc.lng());
+					                updateInputs(loc.lat(), loc.lng(), null, null, 'change.bysearch'); 
+					            } 
+					            else {
+									$search.val('');
+									$search.attr('placeholder', address+' not found, try something else.');
+					            } 
+					        }
+					    );
+					}
 				    return false;
 				});
 

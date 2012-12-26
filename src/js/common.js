@@ -62,7 +62,7 @@ GUI.prototype.init = function(){
 	"use strict";
 		
 	this.nav.setup();
-	this.pages().init();
+	this.pages.init();
 	this.setEventHandlers();
 	// setup additional 'custom' eventHandlers declared other js file
 	if (typeof this.setCustomEventHandlers === 'function'){
@@ -106,12 +106,12 @@ GUI.prototype.setEventHandlers = function(){
 	});
 
 	$(document).on('click', '#page .close', function(event){
-		that.pages().close();
+		that.pages.close();
 		return false;
 	});
 
 	//$(document).on('click', '.touch #page', function(event){
-	//	that.pages().close();
+	//	that.pages.close();
 	//});
 	
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
@@ -130,9 +130,8 @@ GUI.prototype.setEventHandlers = function(){
 		.click(function(event){
 			event.preventDefault();
 			var targetPage = $(this).attr('href').substr(1);
-			that.pages().open(targetPage);
-			$(this).closest('li').addClass('active');
-			//$(this).closest('li').addClass('nav-state-active');//.css('border-color', headerBorderColor);
+			that.pages.open(targetPage);
+			$(this).closest('li').addClass('active').siblings().removeClass('active');
 		});
 	
 	// handlers for status icons in header
@@ -192,54 +191,59 @@ GUI.prototype.nav = {
 	},
 	reset : function(){
 		"use strict";
-		$('nav ul li').removeClass('active');//.css('border-color', headerBackgroundColor);
-		//$('nav ul li a').css('color', buttonBackgroundColorDefault);
+		$('nav ul li').removeClass('active');
 	}
 };
 
-GUI.prototype.pages = function(){
-	"use strict";
-
-	this.init = function(){
-
-		//this.showing = false;
-		this.$pages = $('<pages></pages>');// placeholder 'parent' element for the articles (pages)
+GUI.prototype.pages = {
+	/**
+	 * initializes the pages
+	 */
+	init : function(){
+		// placeholder 'parent' element for the articles (pages)
+		this.$pages = $('<pages></pages>');
 		// detaching pages from DOM and storing them in the pages variable
-		$('article.page').detach().appendTo(this.$pages);//.css('display','block');
-	};
+		$('article.page').detach().appendTo(this.$pages);
+	},
 
-	this.get = function(name){
+	/**
+	 * Obtains a particular pages from the pages variable
+	 * @param  {string} name id of page
+	 * @return {jQuery}
+	 */
+	get : function(name){
+		var $page = this.$pages.find('article[id="'+name+'"]');
 
-		var $page = this.$pages.find('article[id="'+name+'"]');//.clone(true);
-		//switch(name){
-		//	case 'records':
-			//_this.updateRecordList(page); // ?? Why does call with this.up.. not work?
-		//		break;
-		//	case 'settings':
-		//}
 		$page = ($page.length > 0) ? $page : $('article[id="'+name+'"]');
 		
 		return $page ;
-		//}
-	};
+	},
 		
-	this.isShowing = function(name){
-		//no name means any page
+	/**
+	 * Confirms whether a page with a particular id or any page is currently showing
+	 * @param  {string=}  name id of page
+	 * @return {boolean}       returns true or false
+	 */
+	isShowing : function(name){
 		var idSelector = (typeof name !== 'undefined') ? '[id="'+name+'"]' : '';
 		return ( $('#page article.page'+idSelector).length > 0 );
-	};
-		
-	this.open = function(pg){
+	},
+	
+	/**
+	 * Opens a page with a particular id
+	 * @param  {string} pg id of page
+	 */
+	open : function(pg){
 		var $page;
 		if (this.isShowing(pg)){
 			return;
 		}
 
-		$page = this.get(pg);//outsidePage;
-		//console.debug('opening page '+pg);
+		$page = this.get(pg);
 		
 		if ($page.length !== 1){
-			return console.error('page not found');
+			console.error('page not found');
+			return;
 		}
 
 		if(this.isShowing()){
@@ -247,38 +251,27 @@ GUI.prototype.pages = function(){
 		}
 			
 		$('#page .content').prepend($page.show()).trigger('change');
-		//$('#overlay').show();
-
-		//for some reason, the scrollbar needs to be added after a short delay (default duration of show() maybe)
-		//similarly adding the event handler needs to be done a delay otherwise it picks up an even(?) instantly
-		//addScrollBar should be called each time page loads because record list will change
-		/*setTimeout(function(){
-			$page.find('.scroll-list').addScrollBar();
-			$('#overlay, header').bind('click.pageEvents', function(){
-				//triggers a click of the page close button
-				$('#page-close').trigger('click');
-			});
-		}, 50);*/
 		
 		// if the page is visible as well as the feedbackbar the display() method should be called if the window is resized
 		$(window).bind('resize.pageEvents', function(){
 			$('#page').trigger('change');
 		});
-	};
-		
-	this.close = function(){
-		var $page;
-		//console.log('closePage() triggered');
-		$page = $('#page .page').detach();
-		this.$pages.append($page);
-		$('#page').trigger('change');
-		this.nav.reset();
-		$('#overlay').hide();
-		$('#overlay, header').unbind('.pageEvents');
-		$(window).unbind('.pageEvents');
-	};
-
-	return this;
+	},
+	
+	/**
+	 * Closes the currently shown page
+	 */
+	close : function(){
+		var $page = $('#page .page').detach();//.length > 0) ? $('#page .page').detach() : [];
+		if ($page.length > 0){
+			this.$pages.append($page);
+			$('#page').trigger('change');
+			$('nav ul li').removeClass('active');
+			$('#overlay').hide();
+			$('#overlay, header').unbind('.pageEvents');
+			$(window).unbind('.pageEvents');
+		}
+	}
 };
 
 /**
@@ -487,6 +480,19 @@ GUI.prototype.updateStatus = {
 };
 
 /**
+ * Returns the height in pixels that it would take for this element to stretch down to the bottom of the window
+ * For now it's a dumb function that only takes into consideration a header above the element.
+ * @param  {jQuery} $elem [description]
+ * @return {[type]}       [description]
+ */
+GUI.prototype.fillHeight = function($elem){
+	var bottom = $(window).height(),
+		above = $('header').outerHeight(true),
+		fluff = $elem.outerHeight() - $elem.height();
+	return bottom - above - fluff;
+};
+
+/**
  * Makes sure sliders that reveal the feedback bar and page have the correct css 'top' property
  */
 GUI.prototype.display = function(){
@@ -499,7 +505,7 @@ GUI.prototype.display = function(){
 	//the below can probably be simplified, is the this.page().isVisible check necessary at all?
 	if ($feedback.find('p').length > 0){
 		feedbackTop = ($header.css('position') === 'fixed') ? $header.outerHeight() : 0; // shows feedback-bar
-		if (this.pages().isShowing()){
+		if (this.pages.isShowing()){
 			pageTop = $header.outerHeight() + $feedback.outerHeight(); // shows page
 		}
 		else{
@@ -508,7 +514,7 @@ GUI.prototype.display = function(){
 	}
 	else{
 		feedbackTop = ($header.css('position') === 'fixed') ? $header.outerHeight() - $feedback.outerHeight() : 0 - $feedback.outerHeight();
-		if (this.pages().isShowing()){
+		if (this.pages.isShowing()){
 			pageTop = $header.outerHeight(); // shows page
 		}
 		else{
@@ -534,8 +540,8 @@ GUI.prototype.setSettings = function(settings){
 	
 	$.each(settings, function(key, value){ //iterate through each item in object
 		//console.log('key:'+key+' value:'+value);// DEBUG
-		$input = (value) ? that.pages().get('settings').find('input[name="'+key+'"][value="'+value+'"]') :
-			that.pages().get('settings').find('input[name="'+key+'"]');
+		$input = (value) ? that.pages.get('settings').find('input[name="'+key+'"][value="'+value+'"]') :
+			that.pages.get('settings').find('input[name="'+key+'"]');
 
 		value = (value) ? true : false;
 		if ($input.length > 0){
@@ -549,20 +555,24 @@ GUI.prototype.setSettings = function(settings){
  * Parses a list of forms
  * @param  {?Array.<{title: string, url: string, server: string, name: string}>} list array of object with form information
  * @param { jQuery } $target jQuery-wrapped target node with a <ul> element as child to append formlist to
+ * @param { boolean} reset if list provided is empty and reset is true, no error message is shown
  */
-GUI.prototype.parseFormlist = function(list, $target){
+GUI.prototype.parseFormlist = function(list, $target, reset){
 	var i, listHTML='';
 	if(!$.isEmptyObject(list)){
 		for (i in list){
 			listHTML += '<li><a class="btn btn-block btn-info" id="'+i+'" title="'+list[i].title+'" '+
 				'href="'+list[i].url+'" data-server="'+list[i].server+'" >'+list[i].name+'</a></li>';
 		}
+		$target.removeClass('empty');
 	}
-	else{
-		listHTML = '<p class="alert alert-error">Error occurred during creation of form list or no forms found</p>';
+	else {
+		$target.addClass('empty');
+		if (!reset){
+			listHTML = '<p class="alert alert-error">Error occurred during creation of form list or no forms found</p>';
+		}
 	}
-	$target.removeClass('empty').find('ul').empty().append(listHTML);
-	//$('#form-list').show();
+	$target.find('ul').empty().append(listHTML);
 };
 
 function getGetVariable(variable) {

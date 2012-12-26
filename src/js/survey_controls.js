@@ -153,7 +153,7 @@ function resetForm(confirmed){
 	var message, choices;
 	//valueFirst = /**@type {string} */$('#saved-forms option:first').val();
 	//console.debug('first form is '+valueFirst);
-	//gui.pages().get('records').find('#records-saved').val(valueFirst);
+	//gui.pages.get('records').find('#records-saved').val(valueFirst);
 	console.debug('editstatus: '+ form.getEditStatus());
 	if (!confirmed && form.getEditStatus()){
 		message = 'There are unsaved changes, would you like to continue <strong>without</strong> saving those?';
@@ -402,7 +402,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 	});
 
 	// handlers for application settings [settings page]
-	this.pages().get('settings').on('change', 'input', function(){
+	this.pages.get('settings').on('change', 'input', function(){
 		var name =  /** @type {string} */  $(this).attr('name');
 		var value = ($(this).is(':checked')) ?  /** @type {string} */ $(this).val().toString() : '';
 		console.debug('settings change by user detected');
@@ -422,7 +422,7 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 		draftFormsQty = 0;
 	console.debug('updating recordlist in GUI');
 	if(!$page){
-		$page = this.pages().get('records');
+		$page = this.pages.get('records');
 	}
 
 	$list = $page.find('#records-saved ol');

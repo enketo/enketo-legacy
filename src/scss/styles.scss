@@ -219,8 +219,15 @@ label#data-template-show {
     list-style: none;
     li {
       margin: 10px 0;} }
-  &.empty p{
-    display: none;} }
+  img{
+    display: none; }
+  &.empty{
+    img{ 
+      height: 40%;
+      display: block;
+      margin: 40% auto; }
+    p:not(.alert-error){
+      display: none;} } }
 
 .hint{
   //$hwidth: 30px;
@@ -245,6 +252,12 @@ label#data-template-show {
   font-weight: normal !important;
   /* fix for tooltips when placed inside a legend element (Safari)*/
   line-height: 18px !important;}
+
+//this fixes an inherit bug in bootstrap. It can probably be removed after v2.3.
+.popover{
+  font-size: $baseFontSize !important;
+  color: black !important;
+}
 
 /*#launch form{
   margin-top: 20px; 
@@ -300,6 +313,13 @@ label#data-template-show {
   background-color: $pagecolor;
   border: none;
   border-top: $border;
+  input, .input-append{
+    text-align: center;}
+  .input-append{
+    margin-top: 30px;
+    width: 100%; }
+  input{
+    width: 80%; }
   hr {
     position: absolute;
     margin: 0;
@@ -359,7 +379,11 @@ label#data-template-show {
   //margin: 0 0 40px 0;
   #submit-form, #submit-edited-data, #validate-form, #launch-form{
     display: block;
-    margin: 45px auto 5px auto; } }
+    margin: 45px auto 5px auto; }
+  #refresh-list{
+    float: right;
+    margin: -2px -14px 0 14px;
+    width: 60px; } }
 
 .jr [lang]:not(.active), .jr-hint, .jr-option-translations, .jr-appearance-page-break, .jr-constraint-msg.alert-error {
   display: none; }

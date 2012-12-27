@@ -45,7 +45,7 @@ class Forms extends CI_Controller {
 		);
 
 		$data = array(
-			'manifest'=> '/manifest/html/formlist', 
+			'manifest'=> '/manifest/html/forms', 
 			'title_component'=>'forms', 
 			'stylesheets' => $default_stylesheets
 		);

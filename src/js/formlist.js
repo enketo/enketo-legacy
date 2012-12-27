@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, StorageLocal, Connection, Modernizr, getGetVariable, vkbeautify*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, StorageLocal, Connection, settings Modernizr, getGetVariable, vkbeautify*/
 var /** @type {Connection} */connection;
 var /** @type {StorageLocal} */store;
 
@@ -28,7 +28,15 @@ window.addEventListener("load", function() {
 
 $(document).ready(function(){
 	"use strict";
-	var url;
+	var url, $settings,
+		popoverOptions = {placement: 'bottom', trigger: 'click'},
+		urlHelperText = {
+			formhub : {tit: 'Enter formhub account name', ex: 'e.g. johndoe', inp: 'enter formhub account name'},
+			formhub_uni: {tit: 'Enter formhub account name', ex: 'e.g. formhub_u', inp: 'enter formhub account name', val: 'formhub_u'},
+			appspot: {tit: 'Enter appspot subdomain name', ex: 'e.g. opendatakit', inp: 'enter appspot subdomain name'},
+			http: {tit: 'Enter http web address', ex: 'e.g. formhub.org/formhub_u', inp: 'enter web address'},
+			https: {tit: 'Enter https web address', ex: 'e.g. formhub.org/formhub_u', inp: 'enter web address'}
+		};
 
 	connection = new Connection();
 	store = new StorageLocal();
@@ -37,42 +45,45 @@ $(document).ready(function(){
 
 	gui.setup();
 
+	$settings = gui.pages.get('settings');
+
 	/*** TEMPORARY FIX? https://github.com/twitter/bootstrap/issues/4550 ***/
 	$('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
 	/*********************/
 
-	$('.url-helper a')
+	$settings.find('.url-helper a')
 		.click(function(){
-			var helper, placeholder, value;
+			var helper, hText, value;
 			$(this).parent().addClass('active').siblings().removeClass('active');
-			helper = $(this).attr('data-value');
-			placeholder = (helper === 'formhub' || helper === 'formhub_uni') ? 'enter formhub account' :
-				(helper === 'appspot') ? 'enter appspot subdomain' : 'e.g. formhub.org/johndoe';
-			value = (helper === 'formhub_uni') ? 'formhub_u' : '';
-			
-			$('input#server').attr('placeholder', placeholder);
-			if ( $('input#server').val() !== value ){
-				$('input#server').val(value).trigger('change');
+			helper = $(this).attr('data-value') || settings['defaultServerURLHelper'];
+			hText = urlHelperText[helper];
+			value = hText.val || '';
+
+			$settings.find('input#server')
+				.attr('placeholder', hText.inp)
+				.attr('title', hText.tit)
+				.attr('data-content', hText.ex)
+				.popover('destroy').popover(popoverOptions)
+			;
+			if ( $settings.find('input#server').val() !== value ){
+				$settings.find('input#server').val(value).trigger('change');
 			}
 		})
 		.andSelf().find('[data-value="formhub"]').click();
 
-	$('input').change(function(){
-		if ($(this).val().length > 0){
-			$('.go').click();
-		}
-		return false;
-	});
+	$settings.find('input#server').change(function(){
+		$settings.find('.go').click();
+	}).popover(popoverOptions);
 
-	$('.go').click(function(){
-		var props,
-			frag = $('input#server').val(),
-			type = $('.url-helper li.active > a').attr('data-value');
+	$(document).on('click', '#refresh-list, #page .go', function(){
+		var props, reset,
+			frag = $settings.find('input#server').val(),
+			type = $settings.find('.url-helper li.active > a').attr('data-value');
 		if ($('progress').css('display') === 'none'){
 			props = {
 				server: connection.oRosaHelper.fragToServerURL(type, frag),
-				helper: $('.url-helper li.active > a').attr('data-value'),
-				inputValue: $('input#server').val()
+				helper: $settings.find('.url-helper li.active > a').attr('data-value'),
+				inputValue: $settings.find('input#server').val()
 			};
 			if (props.server){
 				$('progress').show();
@@ -82,7 +93,12 @@ $(document).ready(function(){
 					}
 				});
 			}
+			else{
+				reset = true;
+				processFormlistResponse({}, null, props, reset);
+			}
 		}
+		$('#page .close').click();
 	});
 
 	$('#form-list').on('click', 'a', function(){
@@ -109,30 +125,41 @@ $(document).ready(function(){
 		return false;
 	});
 
+	$('#page').on('change', function(){
+		$settings.find('input#server').popover('hide');
+	});
+
+	$(window).on('resize', function(){
+		$('.paper').height(gui.fillHeight($('.paper')));
+	}).trigger('resize');
+
 	loadPreviousState();
 });
 
 function loadPreviousState(){
 	var i, list,
+		$settings = gui.pages.get('settings'),
 		server = store.getRecord('__current_server');
 	if (server){
-		$('.url-helper li').removeClass('active').find('[data-value="'+server.helper+'"]').parent('li').addClass('active');
-		$('input#server').val(server.inputValue);
-		//list = store.getRecord('__server_'+server.url);
+		$settings.find('.url-helper li').removeClass('active').find('[data-value="'+server.helper+'"]').parent('li').addClass('active');
+		$settings.find('input#server').val(server.inputValue);
 		list = store.getFormList(server.url);
 		gui.parseFormlist(list, $('#form-list'));
 	}
 }
 
-function processFormlistResponse(resp, msg, props){
+function processFormlistResponse(resp, msg, props, reset){
 	var helper, inputValue;
 	console.log('processing formlist response');
 	if (typeof resp === 'object' && !$.isEmptyObject(resp)){
 		store.setRecord('__server_' + props.server, resp, false, true);
 		store.setRecord('__current_server', {'url': props.server, 'helper': props.helper, 'inputValue': props.inputValue}, false, true);
 	}
+	else if (reset){
+		store.removeRecord('__current_server');
+	}
 	$('progress').hide();
-	gui.parseFormlist(resp, $('#form-list'));
+	gui.parseFormlist(resp, $('#form-list'), reset);
 }
 
 /**

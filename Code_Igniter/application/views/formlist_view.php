@@ -2,16 +2,6 @@
 	
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 
-	<style type="text/css">
-		/*header{display: none;}*/
-		.progress-space{height: 50px; text-align: center;}
-		/*#page{display: none;}*/
-		
-		progress{display: none;}
-		input{width: 80%;text-align: center;}
-		.input-append{width: 100%; text-align: center;}
-	</style>
-
 </head>
 <body>
 <? 
@@ -22,21 +12,23 @@
 ?>
 	<div class="main">
 		<article class="paper">
-			<button class="btn btn-primary"><i class="icon-refresh icon-white">Refresh</i></button>
-			<div class="progress-space"><progress></progress></div>
+			
+			<progress style="display: none; margin: -30px auto 15px auto;"></progress>
 			<div id="form-list" class="formlist empty">
-				<p class="alert">To enable a form for offline use, simply load it.</p>
+				<p class="alert">To enable a form for offline use, simply load it. <button id="refresh-list" type="button" class="btn  btn-mini"><i class="icon-refresh"></i></button></p>
 				<ul></ul>
+				<img src="images/formlist.png" alt="enter settings to load list of forms" />
 			</div>
 		</article>
 	</div>
-
 	<article class="page" id="settings">
 		<div class="btn-toolbar">
-			<div class="input-prepend input-append btn-group">
+			<div class="<? if (!$integrated): ?>input-prepend<? endif ?> input-append btn-group">
+			<? if(!$integrated): ?>
 				<button class="addon btn dropdown-toggle" data-toggle="dropdown">
 					<span class="caret"></span>
 				</button>
+			<? endif ?>
 				<ul class="dropdown dropdown-menu url-helper" data-toggle="buttons-radio">	
 					<li><a class="url-helper" data-value="http" href="#">http://</a></li>
 					<li><a class="url-helper" data-value="https" href="#">https://</a></li>

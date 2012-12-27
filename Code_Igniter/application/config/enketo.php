@@ -29,3 +29,15 @@ $config['integration_with_url'] = "http://formhub.org";
  * Will be used to direct users throughout application (not totally implemented yet)
  */
 $config['support_email'] = "support@formhub.org";
+
+/**
+ * In the formlist view this defines which server URL helper to set as default
+ * options: 'http', 'https', 'formhub', 'formhub_u', 'appspot' 
+ */
+$config['default_server_url_helper'] = "formhub";
+
+/**
+ * 
+ * It is not recommended to change this
+ */
+$config['integrated'] = strlen($config['integration_with_url']) > 0;

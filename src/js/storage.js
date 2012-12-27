@@ -48,10 +48,8 @@ function StorageLocal(){
 		return RESERVED_KEYS;
 	};
 		
-	// saves a data object in JSON format (string)
-	// ADD CONSIDER separating this function for surveyData and other record types as there seems very little that is shared between record types
 	/**
-	 * [setRecord description]
+	 * saves a data object in JSON format (string)
 	 * @param {string} newKey    [description]
 	 * @param {*} record     [description]
 	 * @param {boolean=} del [description] used to change name of existing record and delete old record
@@ -60,9 +58,6 @@ function StorageLocal(){
 	 * @return {string}
 	 */
 	this.setRecord = function(newKey, record, del, overwrite, oldKey) {
-		console.debug('setRecord received record with final: '+record['ready']);
-		//console.debug(record);
-		//var record = rec;
 		if (!newKey || newKey.length < 1){
 			console.error('no key provided for record');
 			return 'require';
@@ -71,7 +66,7 @@ function StorageLocal(){
 		oldKey = (typeof oldKey === 'string') ? oldKey.trim() : null;
 		overwrite = (typeof overwrite !== 'undefined' && overwrite === true) ? true : false;
 		
-		// ADD: CATCH ERROR WHEN LOCALSTORAGE SPACE IS FULL
+		//TODO: CATCH ERROR WHEN LOCALSTORAGE SPACE IS FULL
 		
 		//using the knowledge that only survey data is provided as a "data" property (and is  a string)
 		if (typeof record['data'] === 'string' && isReservedKey(newKey)){
@@ -92,12 +87,7 @@ function StorageLocal(){
 				localStorage.setItem('__counter', JSON.stringify({'counter': this.getCounterValue()}));
 				//}
 			}
-			//record['ready'] = (Boolean(record['ready']) === true) ? true : false;
-			//console.log('lastSaved: '+data['lastSaved']);
-			localStorage.setItem(newKey, JSON.stringify(record)); //{
-				//"data": record['data'], "ready": record['ready'], "lastSaved":record['lastSaved']
-			//}));
-			
+			localStorage.setItem(newKey, JSON.stringify(record));
 			console.debug('saved: '+newKey+', old key was: '+oldKey);
 			//if the record was loaded from the store (oldKey != null) and the key's value was changed during editing
 			//delete the old record if del=true
@@ -146,7 +136,6 @@ function StorageLocal(){
 			return false;
 		}
 	};
-	
 
 	/**
 	 * Returns a list of locally stored form names and properties for a provided server URL
@@ -154,7 +143,7 @@ function StorageLocal(){
 	 * @return {Array.<{name: string, server: string, title: string, url: string}>}
 	 */
 	this.getFormList = function(serverURL){
-		if (typeof serverURL !== 'undefined'){
+		if (typeof serverURL == 'undefined'){
 			return null;
 		}
 		return /**@type {Array.<{name: string, server: string, title: string, url: string}>}*/this.getRecord('__server_'+serverURL);

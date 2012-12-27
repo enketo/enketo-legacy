@@ -309,7 +309,7 @@ Connection.prototype.getFormlist = function(serverURL, callbacks){
 		callbacks.error(null, 'validationerror', 'not a valid URL');
 		return;
 	}
-	$.ajax('/formlist/get_list', {
+	$.ajax('/forms/get_list', {
 		type: 'GET',
 		data: {server_url: serverURL},
 		cache: false,

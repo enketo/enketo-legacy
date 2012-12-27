@@ -115,7 +115,7 @@ CACHE_CHECK_INTERVAL);return!0};Cache.prototype.update=function(){window.applica
 Cache.prototype.onUpdateReady=function(){applicationCache.swapCache();gui.showFeedback("A new version of this application or form has been downloaded. Refresh this page to load the updated version.",20)};
 Cache.prototype.onErrors=function(a){!0===connection.currentOnlineStatus&&(console.error("HTML5 cache error event",a),gui.alert('There is a new version of this application or form available but an error occurs when trying to download it. Please try to refresh the page or send a bug report to <a href="mailto:'+settings.supportEmail+'">'+settings.supportEmail+"</a>."))};
 Cache.prototype.showBookmarkMsg=function(a,b){var c,a=a||"",b=b||!1;c=(c=store.getRecord("__bookmark"))?c.shown:0;if(b||3>c)gui.showFeedback(a+"We recommend to bookmark this page for easy access when you are not connected to the Internet. "),c++,store.setRecord("__bookmark",{shown:c})};Cache.prototype.isSupported=function(){return window.applicationCache?!0:!1};/*
- Copyright 2012 Martijn van de Rijdt & Modilabs 
+ Copyright 2012 Martijn van de Rijdt & Modilabs
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.

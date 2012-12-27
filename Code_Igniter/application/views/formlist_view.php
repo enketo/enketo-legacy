@@ -17,7 +17,7 @@
 			<div id="form-list" class="formlist empty">
 				<p class="alert">To enable a form for offline use, simply load it. <button id="refresh-list" type="button" class="btn  btn-mini"><i class="icon-refresh"></i></button></p>
 				<ul></ul>
-				<img src="images/formlist.png" alt="enter settings to load list of forms" />
+				<img src="/images/formlist.png" alt="enter settings to load list of forms" />
 			</div>
 		</article>
 	</div>

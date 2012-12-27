@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0013'; //time();
+		private $hash_manual_override = '0015'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -106,6 +106,17 @@ class Manifest extends CI_Controller {
 		{
 			show_404();
 		}
+	}
+
+	/**
+	 * An uncached copy of the manifest (not referred to anywhere as a manifest and therefor not cached)
+	 * meant for trouble-shooting. Simply replace "html" with "test" in the manifest URL. 
+	 * Eg. "http://abcd.enketo.org/manifest/html/webform" becomes "http://abcd.enketo.org/manifest/test/webform"
+	 */
+	public function test()
+	{
+		$args = func_get_args();
+		call_user_func_array(array($this, 'html'), $args);
 	}
 
 	public function index()

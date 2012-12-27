@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+<? $integrated = $this->config->item('integrated'); ?>
 <!-- An offline-capable survey application suite (c) Aid Web Solutions -->
 
 <html lang="en" <?= (!empty($manifest)) ? 'manifest="'.$manifest.'"' : '' ?> class="no-js">
@@ -33,7 +34,8 @@
 
 
 <? $maps_api_key = $this->config->item('google_maps_api_v3_key'); ?>
-<? $support_email = $this->config->item("support_email"); ?>	
+<? $support_email = $this->config->item("support_email") ; ?>
+<? $default_server_url_helper = $this->config->item("default_server_url_helper"); ?>
 	<script type="text/javascript">
 		var settings = {};
 <? if (!empty($maps_api_key)): ?>
@@ -41,6 +43,9 @@
 <? endif; ?>
 <? if (!empty($support_email)): ?>
 		settings['supportEmail'] = '<?= $support_email ?>';
+<? endif; ?>
+<? if (!empty($default_server_url_helper)): ?>
+		settings['defaultServerURLHelper'] = '<?= $default_server_url_helper ?>';
 <? endif; ?>
 		//settings['autoUpload'] = true;
 		settings['modernBrowsersURL'] = 'modern_browsers';

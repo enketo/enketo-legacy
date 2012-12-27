@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-class Formlist extends CI_Controller {
+class Forms extends CI_Controller {
 
 	function __construct()
 	{
@@ -46,7 +46,7 @@ class Formlist extends CI_Controller {
 
 		$data = array(
 			'manifest'=> '/manifest/html/formlist', 
-			'title_component'=>'formlist', 
+			'title_component'=>'forms', 
 			'stylesheets' => $default_stylesheets
 		);
 

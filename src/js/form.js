@@ -1832,8 +1832,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.timeWidget();
 				this.dateTimeWidget();
 				this.selectWidget();
-				this.geopointWidget();
 			}
+			this.geopointWidget();
 			this.pageBreakWidget();
 			this.readonlyWidget();
 			this.tableWidget();
@@ -1924,7 +1924,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				var $dateTimeI = $(this),
 					/*
 						Loaded or default datetime values remain untouched until they are edited. This is done to preserve 
-						the timezone information (especially for instances-to-edit) if the values are not edited. However, 
+						the timezone information (especially for instances-to-edit) if the values are not edited (the
+						original entry may have been done in a different time zone than the edit). However, 
 						values shown in the widget should reflect the local time representation of that value.
 					 */
 					val = ($(this).val().length > 0) ? new Date($(this).val()).toISOLocalString() : '',

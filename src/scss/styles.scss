@@ -265,6 +265,9 @@ label#data-template-show {
   color: black !important;
 }
 
+.page-break{
+  display: none; }
+
 /*#launch form{
   margin-top: 20px; 
   input{
@@ -304,8 +307,7 @@ label#data-template-show {
     right: 20px; } }
 
 .page{
-  display:none;
-}
+  display:none;}
 
 #page {
   $border: 1px solid #888;

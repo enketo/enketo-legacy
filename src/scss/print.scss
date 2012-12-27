@@ -31,8 +31,8 @@ body{
 
 .jr{
   .hint,
-  .geopoint button,
-  .geopoint input[name="search"],
+  .map-canvas-wrapper,
+  .geopoint .search-bar,
   .jr-constraint-msg,
   .invalid .jr-constraint-msg.active.alert-error{
     display: none;
@@ -42,11 +42,12 @@ body{
   .trigger{
     color: $dark;}
   label{
-    > span:not(.jr-constraint-msg).active{
+    > span.jr-hint.active{
       display: block;}
-    > input[type="radio"] ~ span.active, 
-    > input[type="checkbox"] ~ span.active{
-      display: inline; } } 
+    //> input[type="radio"] ~ span.active, 
+    //> input[type="checkbox"] ~ span.active{
+    //  display: inline; } 
+    } 
   .required{
     float: right;
     /*~ br {
@@ -78,18 +79,9 @@ body{
     height: 280px;
     .map-canvas{
       bottom: 0;
-      width: 500px; }
-    label.geo{
-      $map-height: 275px;
-      //padding: 2px 0;
-      &:nth-of-type(1){
-        bottom: 3 * $map-height/4; }
-      &:nth-of-type(2){
-        bottom: 2 * $map-height/4; }
-      &:nth-of-type(3){
-        bottom: $map-height/4; }
-      &:nth-of-type(4){
-        bottom: 0; } } } }
+      width: 450px; } }
+  .jr-appearance-maps .map-canvas-wrapper{
+      display: block;} } 
 
 .page-break{
   display: block; 

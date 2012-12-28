@@ -2044,7 +2044,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//algortithm could guess likely border values by using a regular expression search...
 		},
 		geopointWidget : function(){
-			$form.find('input[data-type-xml="geopoint"]').geopointWidget({touch: false});
+			$form.find('input[data-type-xml="geopoint"]').geopointWidget({touch: Modernizr.touch});
 		},
 		autoCompleteWidget: function(){
 

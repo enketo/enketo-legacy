@@ -176,13 +176,54 @@
 
 (function($) {
     "use strict";
-
     var GeopointWidget = function(element, options) {
+        var detect = 
+                '<button name="geodetect" type="button" class="btn" title="detect current location" data-placement="top">'+
+                '<i class="icon-crosshairs"></i></button>',
+            search = 
+                '<div class="input-append">'+
+                    '<input class="geo ignore" name="search" type="text" placeholder="search for place or address" disabled="disabled"/>'+
+                    '<button type="button" class="btn add-on"><i class="icon-search"></i>'+
+                '</div>',
+            map = '<div class="map-canvas-wrapper"><div class="map-canvas"></div></div>';
         this.$inputOrigin = $(element);
         this.$form = this.$inputOrigin.closest('form');
-        console.debug('options for geopoint widget: ', options);
-        this.init();
+        this.$widget = $(
+            '<div class="geopoint widget">'+
+            '<div class="search-bar no-search-input"></div>'+
+            '<div class="geo-inputs">'+
+                '<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
+                '<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
+                '<label class="geo"><input class="ignore" name="alt" type="number" step="0.1" />altitude (m)</label>'+
+                '<label class="geo"><input class="ignore" name="acc" type="number" step="0.1" />accuracy (m)</label>'+
+            '</div>'+
+            '</div>'
+        );
+        //if geodetection is supported, add the button
+        if (navigator.geolocation){
+            this.$widget.find('.search-bar').append(detect);
+            this.$detect = this.$widget.find('button[name="geodetect"]');
+        }
+        //if not on a mobile device, add the search field
+        if (options.touch !== true){
+            this.$widget.find('.search-bar').removeClass('no-search-input').append(search);
+            this.$search = this.$widget.find('[name="search"]');
+        }
+        //if not on a mobile device or specifically requested, add the map canvas
+        if (options.touch !== true || (options.touch === true && this.$inputOrigin.parents('.jr-appearance-maps').length > 0 )){
+            this.$widget.find('.search-bar').after(map);
+            this.$map = this.$widget.find('.map-canvas');
+        }
 
+        this.$lat = this.$widget.find('[name="lat"]');
+        this.$lng = this.$widget.find('[name="long"]');
+        this.$alt = this.$widget.find('[name="alt"]');
+        this.$acc = this.$widget.find('[name="acc"]');
+        
+        this.$inputOrigin.hide().after(this.$widget);
+
+        this.touch = options.touch || false;
+        this.init();
     };
 
     GeopointWidget.prototype = {
@@ -190,90 +231,66 @@
         constructor: GeopointWidget,
 
         init: function(){
-            var mapOptions, map, marker, searchBox, geocoder,
+            var that = this,
+                inputVals = this.$inputOrigin.val().split(' ');
 
-                inputVals = this.$inputOrigin.val().split(' '),
-            
-                $widget = $(
-                    '<div class="geopoint widget">'+
-                    '<div class="search-bar">'+
-                        '<button name="geodetect" type="button" class="btn" title="detect current location">'+
-                        '<i class="icon-crosshairs"></i></button>'+
-                    '<div class="input-append">'+
-                        '<input class="geo ignore" name="search" type="text" placeholder="search for place or address" disabled="disabled"/>'+
-                        '<button type="button" class="btn add-on"><i class="icon-search"></i>'+
-                    '</div>'+
-                    '</div>'+
-                    '<div class="map-canvas-wrapper"><div class="map-canvas"></div></div>'+
-                    '<div class="geo-inputs">'+
-                        '<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
-                        '<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
-                        '<label class="geo"><input class="ignore" name="alt" type="number" step="0.1" />altitude (m)</label>'+
-                        '<label class="geo"><input class="ignore" name="acc" type="number" step="0.1" />accuracy (m)</label>'+
-                    '</div>'+
-                    '</div>'
-                    ),
-                $map = $widget.find('.map-canvas'),
-                $lat = $widget.find('[name="lat"]'),
-                $lng = $widget.find('[name="long"]'),
-                $alt = $widget.find('[name="alt"]'),
-                $acc = $widget.find('[name="acc"]'),
-                $search = $widget.find('[name="search"]'),
-                $button = $widget.find('button[name="geodetect"]');
-
-            this.$inputOrigin.hide().after($widget),
-            
-            $widget.find('input:not([name="search"])').on('change change.bymap change.bysearch', function(event){
+            this.$widget.find('input:not([name="search"])').on('change change.bymap change.bysearch', function(event){
                 //console.debug('change event detected');
-                var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
-                    lng = ($lng.val() !== '') ? $lng.val() : 0.0, 
-                    alt = ($alt.val() !== '') ? $alt.val() : 0.0, 
-                    acc = $acc.val();
-                //event.preventDefault();
-                this.$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
-                //console.log(event);
-                if (typeof google !== 'undefined' && google.maps !== 'undefined' && event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
-                    updateMap(lat, lng);
+                var lat = (that.$lat.val() !== '') ? that.$lat.val() : 0.0, 
+                    lng = (that.$lng.val() !== '') ? that.$lng.val() : 0.0, 
+                    alt = (that.$alt.val() !== '') ? that.$alt.val() : 0.0, 
+                    acc = that.$acc.val();
+
+                that.$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
+               
+                if (that.mapAvailable() && event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
+                    that.updateMap(lat, lng);
                 }
-                if (event.namespace !== 'bysearch'){
-                    $search.val('');
+                
+                if (event.namespace !== 'bysearch' && this.$search){
+                    that.$search.val('');
                 }
                 //event.stopPropagation();
                 return false;
             });
 
-            if (inputVals[3]) $acc.val(inputVals[3]);
-            if (inputVals[2]) $alt.val(inputVals[2]);
-            if (inputVals[1]) $lng.val(inputVals[1]);
-            if (inputVals[0].length > 0) $lat.val(inputVals[0]).trigger('change');
-
-            if (!navigator.geolocation){
-                $button.attr('disabled', 'disabled');
+            if (inputVals[3]) this.$acc.val(inputVals[3]);
+            if (inputVals[2]) this.$alt.val(inputVals[2]);
+            if (inputVals[1]) this.$lng.val(inputVals[1]);
+            if (inputVals[0].length > 0) this.$lat.val(inputVals[0]).trigger('change');
+            
+            if (this.$detect){
+                this.enableDetection();
             }
             
-            $button.click(function(event){
+            this.$form.on('googlemapsscriptloaded', function(){
+                if (that.mapAvailable()){
+                    //default map view
+                    that.updateMap(0,0,1);
+                    if (that.$search){
+                        that.enableSearch();
+                    }
+                }
+            });
+        },
+        enableDetection: function(){
+            var that = this;
+            this.$detect.click(function(event){
                 event.preventDefault();
                 navigator.geolocation.getCurrentPosition(function(position){    
-                    updateMap(position.coords.latitude, position.coords.longitude);
-                    updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);  
+                    if(that.mapAvailable()){
+                        that.updateMap(position.coords.latitude, position.coords.longitude);
+                    }
+                    that.updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);  
                 });
                 return false;
             });
-
-            //if ($(this).val() === ''){
-            //  $button.click();
-            //}
-
-            this.$form.on('googlemapsscriptloaded', function(){
-                if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
-                    //default map view
-                    updateMap(0,0,1);
-                    geocoder = new google.maps.Geocoder();
-                    $search.removeAttr('disabled');
-                }
-            });
-
-            $search.on('change', function(event){
+        },
+        enableSearch: function(){
+            var geocoder = new google.maps.Geocoder(),
+                that = this;
+            this.$search.removeAttr('disabled');
+            this.$search.on('change', function(event){
                 event.stopImmediatePropagation();
                 //console.debug('search field click event');
                 var address = $(this).val();
@@ -281,19 +298,19 @@
                     geocoder.geocode(
                         {
                             'address': address,
-                            'bounds' : map.getBounds()
+                            'bounds' : that.map.getBounds()
                         },
                         function(results, status) { 
                             if (status == google.maps.GeocoderStatus.OK) {
-                                $search.attr('placeholder', 'search');
+                                that.$search.attr('placeholder', 'search');
                                 var loc = results[0].geometry.location;
-                                console.log(loc);
-                                updateMap(loc.lat(), loc.lng());
-                                updateInputs(loc.lat(), loc.lng(), null, null, 'change.bysearch');
+                                //console.log(loc);
+                                that.updateMap(loc.lat(), loc.lng());
+                                that.updateInputs(loc.lat(), loc.lng(), null, null, 'change.bysearch');
                             }
                             else {
-                                $search.val('');
-                                $search.attr('placeholder', address+' not found, try something else.');
+                                that.$search.val('');
+                                that.$search.attr('placeholder', address+' not found, try something else.');
                             }
                         }
                     );
@@ -301,88 +318,107 @@
                 return false;
             });
 
-            /**
-             * [updateMap description]
-             * @param  {number} lat  [description]
-             * @param  {number} lng  [description]
-             * @param  {number=} zoom [description]
-             */
-            function updateMap(lat, lng, zoom){
-                zoom = zoom || 15;
-                if (typeof google !== 'undefined' && typeof google.maps !== 'undefined' && typeof google.maps.LatLng !== 'undefined'){
-                    mapOptions = {
-                        zoom: zoom,
-                        center: new google.maps.LatLng(lat, lng),
-                        mapTypeId: google.maps.MapTypeId.ROADMAP,
-                        streetViewControl: false
-                    };
-                    map = new google.maps.Map($map[0], mapOptions);
-                    placeMarker();
-                    // place marker where user clicks
-                    google.maps.event.addListener(map, 'click', function(event){
-                        updateInputs(event.latLng.lat(), event.latLng.lng(), '', '', 'change.bymap');
-                        placeMarker(event.latLng);
-                    });
-                }
-            }
+        },
+        /**
+         * Whether google maps are available (whether scripts have loaded).
+         */
+        mapAvailable: function(){
+            return (this.$map && typeof google !== 'undefined' && typeof google.maps !== 'undefined');
+        },
+        updateStaticMap: function(){
 
-            /**
-             * [placeMarker description]
-             * @param  {Object.<string, number>=} latLng [description]
-             */
-            function placeMarker(latLng){
-                latLng = latLng || map.getCenter();
-                if (typeof marker !== 'undefined'){
-                    marker.setMap(null);
-                }
-                marker = new google.maps.Marker({
-                    position: latLng, //map.getCenter(),
-                    map: map,
-                    draggable: true
+        },
+        /**
+         * Updates the map to show the provided coordinates (in the center), with the provided zoom level
+         * @param  {number} lat  latitude
+         * @param  {number} lng  longitude
+         * @param  {number=} zoom default zoom level is 15
+         */
+        updateMap: function(lat, lng, zoom){
+            var $map = this.$map,
+                that = this;
+            zoom = zoom || 15;
+            
+            if (this.mapAvailable && typeof google.maps.LatLng !== 'undefined'){
+                var mapOptions = {
+                    zoom: zoom,
+                    center: new google.maps.LatLng(lat, lng),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    streetViewControl: false
+                };
+                this.map = new google.maps.Map(this.$map[0], mapOptions);
+                this.placeMarker();
+                // place marker where user clicks
+                google.maps.event.addListener(this.map, 'click', function(event){
+                    that.updateInputs(event.latLng.lat(), event.latLng.lng(), '', '', 'change.bymap');
+                    that.placeMarker(event.latLng);
                 });
-                // dragging markers
-                google.maps.event.addListener(marker, 'dragend', function() {
-                    updateInputs(marker.getPosition().lat(), marker.getPosition().lng(), '', '', 'change.bymap');
-                    centralizeWithDelay();
+            }
+        },
+        /**
+         * Moves the existing marker to the provided coordinates or places a new one in the center of the map
+         * @param  {Object.<string, number>=} latLng [description]
+         */
+        placeMarker: function(latLng){
+            var that;
+            latLng = latLng || this.map.getCenter();
+            if (typeof this.marker !== 'undefined'){
+                this.marker.setMap(null);
+            }
+            this.marker = new google.maps.Marker({
+                position: latLng,
+                map: this.map,
+                draggable: true
+            });
+            that = this;
+            // dragging markers for non-touch screens
+            if (!this.touch){
+                google.maps.event.addListener(this.marker, 'dragend', function() {
+                that.updateInputs(that.marker.getPosition().lat(), that.marker.getPosition().lng(), '', '', 'change.bymap');
+                that.centralizeWithDelay();
                 });
-                centralizeWithDelay();
-                //center it (optional)
-                //map.setCenter(latLng);
+                this.centralizeWithDelay(5000);
             }
-
-            function centralizeWithDelay(){
-                window.setTimeout(function() {
-                    map.panTo(marker.getPosition());
-                }, 5000);
-            }
-            /**
-             * [updateInputs description]
-             * @param  {number} lat [description]
-             * @param  {number} lng [description]
-             * @param  {?(string|number)} alt [description]
-             * @param  {?(string|number)} acc [description]
-             * @param  {string=} ev  [description]
-             */
-            function updateInputs(lat, lng, alt, acc, ev){
-                alt = alt || '';
-                acc = acc || '';
-                ev = ev || 'change';
-                $lat.val(Math.round(lat*10000)/10000);
-                $lng.val(Math.round(lng*10000)/10000);
-                $alt.val(Math.round(alt*10)/10);
-                $acc.val(Math.round(acc*10)/10).trigger(ev);
-            }
-        }
+            this.centralizeWithDelay(0);
+        },
+        /**
+         * Shifts the map so that the marker is in the center after a small delay.
+         */
+        centralizeWithDelay: function(delay){
+            var that = this;
+            window.setTimeout(function() {
+                that.map.panTo(that.marker.getPosition());
+            }, delay);
+        },
+        /**
+         * Updates the (fake) input element for latitude, longitude, altitude and accuracy
+         * @param  {number} lat [description]
+         * @param  {number} lng [description]
+         * @param  {?(string|number)} alt [description]
+         * @param  {?(string|number)} acc [description]
+         * @param  {string=} ev  [description]
+         */
+        updateInputs: function(lat, lng, alt, acc, ev){
+            alt = alt || '';
+            acc = acc || '';
+            ev = ev || 'change';
+            this.$lat.val(Math.round(lat*10000)/10000);
+            this.$lng.val(Math.round(lng*10000)/10000);
+            this.$alt.val(Math.round(alt*10)/10);
+            this.$acc.val(Math.round(acc*10)/10).trigger(ev);
+        },
+        /**
+         * In enketo the loading of the GMaps resources is dealt with in the Connection class.
+         */
+        loadMapsScript: function(){}
     };
 
     $.fn.geopointWidget = function(option) {
-        console.debug('geopoint inputs provided: ', this);
-        //console.debug('typeof connection:'+ typeof connection);
-       // console.debug('typeof google:'+ typeof google);
-        if (typeof connection !== 'undefined' ){
+        //for some reason, calling this inside the GeopointWidget class does not work properly
+        if ( (typeof connection !== 'undefined') && (typeof google == 'undefined' || typeof google.maps == 'undefined') ){
+            console.debug('loading maps script asynchronously');
             connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
         }
-
         return this.each(function() {
             var $this = $(this),
                 data = $(this).data('geopointwidget'),

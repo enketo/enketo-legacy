@@ -571,6 +571,11 @@ html.touch{
         float: right;
         margin: 8px 0 0 $separator-width;
         width: $detect-width; } }
+    .no-search-input button[name="geodetect"]{
+      float: none;
+      display: block;
+      margin: 0 auto;
+      width: 50%; }
     label.geo{
       display: block;
       border: none;

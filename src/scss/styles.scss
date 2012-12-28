@@ -20,6 +20,12 @@ $iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in
         url('fonts/OpenSans-Regular.ttf') format('truetype');
 }
 
+//additional icons
+.icon-crosshairs{
+  background-image: url("/images/crosshairs.png");
+  background-position: -5px -5px;
+}
+
 /****************************
  ****     GENERAL GUI    ****
  ****************************/
@@ -223,7 +229,7 @@ label#data-template-show {
     display: none; }
   &.empty{
     img{ 
-      height: 40%;
+      width: 80%;
       display: block;
       margin: 40% auto; }
     p:not(.alert-error){
@@ -258,6 +264,9 @@ label#data-template-show {
   font-size: $baseFontSize !important;
   color: black !important;
 }
+
+.page-break{
+  display: none; }
 
 /*#launch form{
   margin-top: 20px; 
@@ -298,8 +307,7 @@ label#data-template-show {
     right: 20px; } }
 
 .page{
-  display:none;
-}
+  display:none;}
 
 #page {
   $border: 1px solid #888;
@@ -536,51 +544,89 @@ html.touch{
       display: inline-block;
       margin-right: 10px; } }
   .geopoint{ 
-    position: relative;
-    height: 340px;
     $map-height: 275px;
-    .map-canvas, input[name="search"]{
-      width: 380px; }
+    $map-width: 65%;
+    $input-width: 27%;
+    $separator-width: 4%;
+    $detect-width: 40px;
+    $search-width: 70%;
+    .geo-inputs{
+      min-width: 160px;
+      width: $input-width;
+      margin: 0 $separator-width 0 0;
+      @media screen and (max-width: 700px){
+        width: 100%; } }
+    .map-canvas-wrapper, .search-bar{
+      width: $map-width;  
+      float: right;
+      padding-left: $separator-width;
+      border-left: solid 1px $groupline; 
+      @media screen and (max-width: 700px){
+        width: 100%;
+        float: none; 
+        padding-left: 0;
+        border-left: none; }
+      img{
+        width: 100%;
+        height: 100%; } }
+    button{
+      height: 40px;
+      &[name="geodetect"]{
+        display: inline-block;
+        float: right;
+        margin: 8px 0 0 $separator-width;
+        width: $detect-width; } }
+    .no-search-input{
+      &.no-map{
+        border-left: none; }
+      button[name="geodetect"]{
+        float: none;
+        display: block;
+        margin: 15px auto 15px auto;
+        width: 50%; } }
+    label.geo{
+      display: block;
+      border: none;
+      padding: 0;
+      margin: 15px 0 0 0;
+      &:nth-of-type(1){
+        padding-top: 5px; } 
+      &:nth-of-type(2){
+        margin-bottom: 20px; };
+      &:nth-of-type(3){
+        border-top: solid 1px $groupline;
+        padding: 12px 0 0 0;
+        margin: 0 0 0 0;
+        @media screen and (max-width: 700px){
+          border-top: none; } }
+      &:nth-of-type(4){
+        padding: 0;
+        margin: 5px 0 0 0;}
+      &:nth-of-type(3), &:nth-of-type(4){
+        line-height: 45px;
+        font-size: 0.75 * $baseFontSize; } }
+    input{
+      &[name="search"]{
+        width: $search-width;}
+      &[name="lat"],&[name="long"]{
+        float: none;
+        @include border-box;
+        width: 100%;}
+      &[name="alt"], &[name="acc"]{
+        @include border-box;
+        display: block;
+        float: right;
+        width: 40%;
+        @media screen and (max-width: 700px){
+          width: 50%; } } }
     .map-canvas{
-      position: absolute;
-      right: 0;
-      bottom: 50px;
-      padding: 0 6px;
+      width: 100%;
       border: 1px solid #ccc;
       border-radius: 3px;
       margin-top: 10px;
       height: $map-height;
       img{
-        max-width: none; /*correction*/} }
-    input[name="search"]{
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      text-align: center; }
-    label.geo{
-      position: absolute;
-      border: none;
-      padding: 0;
-      margin: 0;
-      //padding: 2px 0;
-      &:nth-of-type(1){
-        bottom: 50px + 3 * $map-height/4; }
-      &:nth-of-type(2){
-        bottom: 50px + 2 * $map-height/4; }
-      &:nth-of-type(3){
-        bottom: 50px + $map-height/4; }
-      &:nth-of-type(4){
-        bottom: 50px;}
-      > input{
-        float: none;
-        display: block;
-        margin: 0; } }
-    button{
-      position: absolute;
-      bottom: 0;
-      height: 40px;
-      width: $input-min-width + 16px;
-      margin-top: 10px;} }
+        max-width: none; /*correction*/} } } 
   .bootstrap-select{
     margin-top: 15px;
     .dropdown-toggle{

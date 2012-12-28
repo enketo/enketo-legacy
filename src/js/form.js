@@ -1,5 +1,5 @@
 /**
- * @preserve Copyright 2012 Martijn van de Rijdt
+ * @preserve Copyright 2012 Martijn van de Rijdt & Modilabs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1379,7 +1379,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$wrapNode.find('.hint').removeAttr('title');
 			}
 		});
-		$form.find('.hint[title]').tooltip('destroy').tooltip({placement: 'right'}); 
+		$form.find('[title]').tooltip('destroy').tooltip({placement: 'right'}); 
 	};
 
 	FormHTML.prototype.editStatus = {
@@ -1832,8 +1832,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.timeWidget();
 				this.dateTimeWidget();
 				this.selectWidget();
-				this.geopointWidget();
 			}
+			this.geopointWidget();
 			this.pageBreakWidget();
 			this.readonlyWidget();
 			this.tableWidget();
@@ -1924,7 +1924,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				var $dateTimeI = $(this),
 					/*
 						Loaded or default datetime values remain untouched until they are edited. This is done to preserve 
-						the timezone information (especially for instances-to-edit) if the values are not edited. However, 
+						the timezone information (especially for instances-to-edit) if the values are not edited (the
+						original entry may have been done in a different time zone than the edit). However, 
 						values shown in the widget should reflect the local time representation of that value.
 					 */
 					val = ($(this).val().length > 0) ? new Date($(this).val()).toISOLocalString() : '',
@@ -2043,181 +2044,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//algortithm could guess likely border values by using a regular expression search...
 		},
 		geopointWidget : function(){
-			$form.find('input[data-type-xml="geopoint"]').each(function(){ 
-				var mapOptions, map, marker, searchBox, geocoder,
-					$inputOrigin = $(this),
-
-					inputVals = $(this).val().split(' '),
-				
-					$widget = $('<div class="geopoint widget"><div class="map-canvas" style="width: 380px; height:275px;"></div>'+
-						'<input class="geo ignore" name="search" type="text" placeholder="search" disabled="disabled"/>'+
-						'<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
-						'<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
-						'<label class="geo">altitude (m)<input class="ignore" name="alt" type="number" step="0.1" /></label>'+
-						'<label class="geo">accuracy (m)<input class="ignore" name="acc" type="number" step="0.1" /></label>'+
-						'<button name="geodetect" type="button" class="btn btn-small">detect</button></div>'),
-					$map = $widget.find('.map-canvas'),
-					$lat = $widget.find('[name="lat"]'),
-					$lng = $widget.find('[name="long"]'),
-					$alt = $widget.find('[name="alt"]'),
-					$acc = $widget.find('[name="acc"]'),
-					$search = $widget.find('[name="search"]'),
-					$button = $widget.find('button[name="geodetect"]');
-
-				$inputOrigin.hide().after($widget),
-				
-				$widget.find('input:not([name="search"])').on('change change.bymap change.bysearch', function(event){
-					//console.debug('change event detected');
-					var lat = ($lat.val() !== '') ? $lat.val() : 0.0, 
-						lng = ($lng.val() !== '') ? $lng.val() : 0.0, 
-						alt = ($alt.val() !== '') ? $alt.val() : 0.0, 
-						acc = $acc.val();
-					//event.preventDefault();
-					$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
-					//console.log(event);
-					if (typeof google !== 'undefined' && google.maps !== 'undefined' && event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
-						updateMap(lat, lng);
-					}
-					if (event.namespace !== 'bysearch'){
-						$search.val('');
-					}
-					//event.stopPropagation();
-					return false;
-				});
-
-				if (inputVals[3]) $acc.val(inputVals[3]);
-				if (inputVals[2]) $alt.val(inputVals[2]);
-				if (inputVals[1]) $lng.val(inputVals[1]);
-				if (inputVals[0].length > 0) $lat.val(inputVals[0]).trigger('change');
-
-				if (!navigator.geolocation){
-					$button.attr('disabled', 'disabled');
-				}
-				
-				$button.click(function(event){
-					event.preventDefault();
-					navigator.geolocation.getCurrentPosition(function(position){	
-						updateMap(position.coords.latitude, position.coords.longitude);
-						updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);	
-					});
-					return false;
-				});
-
-				//if ($(this).val() === ''){
-				//	$button.click();
-				//}
-
-				$form.on('googlemapsscriptloaded', function(){
-					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined'){
-						//default map view
-						updateMap(0,0,1);
-						geocoder = new google.maps.Geocoder();
-						$search.removeAttr('disabled');
-					}
-				});
-
-				$search.on('change', function(event){
-					event.stopImmediatePropagation();
-					//console.debug('search field click event');
-					var address = $(this).val();
-					geocoder.geocode(
-				        {
-							'address': address,
-							'bounds' : map.getBounds()
-						}, 
-				        function(results, status) { 
-				            if (status == google.maps.GeocoderStatus.OK) { 
-								$search.attr('placeholder', 'search');
-				                var loc = results[0].geometry.location;
-				                console.log(loc);
-				                updateMap(loc.lat(), loc.lng());
-				                updateInputs(loc.lat(), loc.lng(), null, null, 'change.bysearch'); 
-				            } 
-				            else {
-								$search.val('');
-								$search.attr('placeholder', address+' not found, try something else.');
-				            } 
-				        }
-				    );
-				    return false;
-				});
-
-				/**
-				 * [updateMap description]
-				 * @param  {number} lat  [description]
-				 * @param  {number} lng  [description]
-				 * @param  {number=} zoom [description]
-				 */
-				function updateMap(lat, lng, zoom){
-					zoom = zoom || 15;
-					if (typeof google !== 'undefined' && typeof google.maps !== 'undefined' && typeof google.maps.LatLng !== 'undefined'){
-						mapOptions = {
-							zoom: zoom,
-							center: new google.maps.LatLng(lat, lng),
-							mapTypeId: google.maps.MapTypeId.ROADMAP,
-							streetViewControl: false
-						};
-						map = new google.maps.Map($map[0], mapOptions);
-						placeMarker();
-						// place marker where user clicks
-						google.maps.event.addListener(map, 'click', function(event){
-							updateInputs(event.latLng.lat(), event.latLng.lng(), '', '', 'change.bymap');
-							placeMarker(event.latLng);
-						});
-					}
-				}
-
-				/**
-				 * [placeMarker description]
-				 * @param  {Object.<string, number>=} latLng [description]
-				 */
-				function placeMarker(latLng){
-					latLng = latLng || map.getCenter();
-					if (typeof marker !== 'undefined'){
-						marker.setMap(null);
-					}
-					marker = new google.maps.Marker({
-						position: latLng, //map.getCenter(),
-						map: map,
-						draggable: true
-					});
-					// dragging markers
-					google.maps.event.addListener(marker, 'dragend', function() {
-						updateInputs(marker.getPosition().lat(), marker.getPosition().lng(), '', '', 'change.bymap');
-						centralizeWithDelay();
-					});
-					centralizeWithDelay();
-					//center it (optional)
-					//map.setCenter(latLng);
-				}
-
-				function centralizeWithDelay(){
-					window.setTimeout(function() {
-						map.panTo(marker.getPosition());
-					}, 5000);
-				}
-				/**
-				 * [updateInputs description]
-				 * @param  {number} lat [description]
-				 * @param  {number} lng [description]
-				 * @param  {?(string|number)} alt [description]
-				 * @param  {?(string|number)} acc [description]
-				 * @param  {string=} ev  [description]
-				 */
-				function updateInputs(lat, lng, alt, acc, ev){
-					alt = alt || '';
-					acc = acc || '';
-					ev = ev || 'change';
-					$lat.val(Math.round(lat*10000)/10000);
-					$lng.val(Math.round(lng*10000)/10000);
-					$alt.val(Math.round(alt*10)/10);
-					$acc.val(Math.round(acc*10)/10).trigger(ev);
-				}
-			});
-
-			if (typeof connection !== 'undefined'){
-				connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
-			}
+			$form.find('input[data-type-xml="geopoint"]').geopointWidget({touch: Modernizr.touch});
 		},
 		autoCompleteWidget: function(){
 

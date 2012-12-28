@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global Modernizr, google, connection*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global Modernizr, google, settings, connection*/
 
 
 
@@ -190,13 +190,13 @@
         this.$form = this.$inputOrigin.closest('form');
         this.$widget = $(
             '<div class="geopoint widget">'+
-            '<div class="search-bar no-search-input"></div>'+
-            '<div class="geo-inputs">'+
-                '<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
-                '<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
-                '<label class="geo"><input class="ignore" name="alt" type="number" step="0.1" />altitude (m)</label>'+
-                '<label class="geo"><input class="ignore" name="acc" type="number" step="0.1" />accuracy (m)</label>'+
-            '</div>'+
+                '<div class="search-bar no-search-input no-map"></div>'+
+                '<div class="geo-inputs">'+
+                    '<label class="geo">latitude (x.y &deg;)<input class="ignore" name="lat" type="number" step="0.0001" /></label>'+
+                    '<label class="geo">longitude (x.y &deg;)<input class="ignore" name="long" type="number" step="0.0001" /></label>'+
+                    '<label class="geo"><input class="ignore" name="alt" type="number" step="0.1" />altitude (m)</label>'+
+                    '<label class="geo"><input class="ignore" name="acc" type="number" step="0.1" />accuracy (m)</label>'+
+                '</div>'+
             '</div>'
         );
         //if geodetection is supported, add the button
@@ -211,17 +211,18 @@
         }
         //if not on a mobile device or specifically requested, add the map canvas
         if (options.touch !== true || (options.touch === true && this.$inputOrigin.parents('.jr-appearance-maps').length > 0 )){
-            this.$widget.find('.search-bar').after(map);
+            this.$widget.find('.search-bar').removeClass('no-map').after(map);
             this.$map = this.$widget.find('.map-canvas');
         }
 
         this.$lat = this.$widget.find('[name="lat"]');
         this.$lng = this.$widget.find('[name="long"]');
+         console.debug('this.$lng: ', this.$lng);
         this.$alt = this.$widget.find('[name="alt"]');
         this.$acc = this.$widget.find('[name="acc"]');
         
         this.$inputOrigin.hide().after(this.$widget);
-
+        this.updateMapFn = "updateDynamicMap";
         this.touch = options.touch || false;
         this.init();
     };
@@ -230,6 +231,7 @@
 
         constructor: GeopointWidget,
 
+        //TODO: this is where the Maps API script load function should be called
         init: function(){
             var that = this,
                 inputVals = this.$inputOrigin.val().split(' ');
@@ -243,7 +245,7 @@
 
                 that.$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
                
-                if (that.mapAvailable() && event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
+                if (event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
                     that.updateMap(lat, lng);
                 }
                 
@@ -263,29 +265,53 @@
                 this.enableDetection();
             }
             
-            this.$form.on('googlemapsscriptloaded', function(){
-                if (that.mapAvailable()){
-                    //default map view
-                    that.updateMap(0,0,1);
-                    if (that.$search){
-                        that.enableSearch();
+            if (!this.touch){
+                this.$form.on('googlemapsscriptloaded', function(){
+                    if (that.dynamicMapAvailable()){
+                        //default map view
+                        that.updateMap(0,0,1);
+                        if (that.$search){
+                            that.enableSearch();
+                        }
                     }
-                }
-            });
+                });
+            }
+            else if(this.$map){
+                this.updateMapFn = "updateStaticMap";
+                this.updateMap(0,0,1);
+                $(window).on('resize', function(){
+                    var resizeCount = $(window).data('resizecount') || 0;
+                    resizeCount++;
+                    $(window).data('resizecount', resizeCount);
+                    window.setTimeout(function(){
+                        if (resizeCount == $(window).data('resizecount')){
+                            $(window).data('resizecount', 0);
+                            //do the things
+                            console.debug('resizing stopped');
+                            that.updateMap();
+                        }
+                    }, 500);   
+                });
+            }
+            console.log('this in init:', this);
         },
+        /**
+         * Enables geo detection using the built-in browser geoLocation functionality
+         */
         enableDetection: function(){
             var that = this;
             this.$detect.click(function(event){
                 event.preventDefault();
                 navigator.geolocation.getCurrentPosition(function(position){    
-                    if(that.mapAvailable()){
-                        that.updateMap(position.coords.latitude, position.coords.longitude);
-                    }
+                    that.updateMap(position.coords.latitude, position.coords.longitude);
                     that.updateInputs(position.coords.latitude, position.coords.longitude, position.coords.altitude, position.coords.accuracy);  
                 });
                 return false;
             });
         },
+        /**
+         * Enables search functionality using the Google Maps API v3
+         */
         enableSearch: function(){
             var geocoder = new google.maps.Geocoder(),
                 that = this;
@@ -317,29 +343,55 @@
                 }
                 return false;
             });
-
         },
         /**
          * Whether google maps are available (whether scripts have loaded).
          */
-        mapAvailable: function(){
+        dynamicMapAvailable: function(){
             return (this.$map && typeof google !== 'undefined' && typeof google.maps !== 'undefined');
         },
-        updateStaticMap: function(){
-
-        },
         /**
-         * Updates the map to show the provided coordinates (in the center), with the provided zoom level
-         * @param  {number} lat  latitude
-         * @param  {number} lng  longitude
-         * @param  {number=} zoom default zoom level is 15
+         * Calls the appropriate map update function. 
+         * @param  {number=} lat  latitude
+         * @param  {number=} lng  longitude
+         * @param  {number=} zoom zoom level which defaults to 15
          */
         updateMap: function(lat, lng, zoom){
+            if(!this.$map){
+                return;
+            }
+            lat = lat || Number(this.$lat.val());
+            lng = lng || Number(this.$lng.val());
+            zoom = zoom || 15;
+            if (lat === 0 && lng === 0) zoom = 1;
+            return this[this.updateMapFn](lat, lng, zoom);
+        },
+        /**
+         * Loads a static map with placemarker. Does not use Google Maps v3 API (uses Static Maps API instead)
+         * @param  {number} lat  latitude
+         * @param  {number} lng  longitude
+         * @param  {number} zoom default zoom level is 15
+         */
+        updateStaticMap: function(lat, lng, zoom){
+            var params,
+                width = this.$map.width(),
+                height = this.$map.height(),
+                mapsAPIKey = settings['mapsStaticAPIKey'] || '';
+
+            params = "center="+lat+","+lng+"&size="+width+"x"+height+"&zoom="+zoom+"&sensor=false&key="+mapsAPIKey;
+            this.$map.empty().append('<img src="http://maps.googleapis.com/maps/api/staticmap?'+params+'"/>');
+        },
+        /**
+         * Updates the dynamic (Maps API v3) map to show the provided coordinates (in the center), with the provided zoom level
+         * @param  {number} lat  latitude
+         * @param  {number} lng  longitude
+         * @param  {number} zoom zoom
+         */
+        updateDynamicMap: function(lat, lng, zoom){
             var $map = this.$map,
                 that = this;
-            zoom = zoom || 15;
             
-            if (this.mapAvailable && typeof google.maps.LatLng !== 'undefined'){
+            if (this.dynamicMapAvailable && typeof google.maps.LatLng !== 'undefined'){
                 var mapOptions = {
                     zoom: zoom,
                     center: new google.maps.LatLng(lat, lng),
@@ -415,7 +467,7 @@
 
     $.fn.geopointWidget = function(option) {
         //for some reason, calling this inside the GeopointWidget class does not work properly
-        if ( (typeof connection !== 'undefined') && (typeof google == 'undefined' || typeof google.maps == 'undefined') ){
+        if ( (typeof connection !== 'undefined') && (typeof google == 'undefined' || typeof google.maps == 'undefined') && !option.touch){
             console.debug('loading maps script asynchronously');
             connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
         }

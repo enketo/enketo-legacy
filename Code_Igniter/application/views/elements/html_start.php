@@ -33,13 +33,17 @@
 <? endforeach; ?>
 
 
-<? $maps_api_key = $this->config->item('google_maps_api_v3_key'); ?>
+<? $maps_dynamic_key = $this->config->item('google_maps_api_v3_key'); ?>
+<? $maps_static_key = $this->config->item('google_maps_static_api_key'); ?>
 <? $support_email = $this->config->item("support_email") ; ?>
 <? $default_server_url_helper = $this->config->item("default_server_url_helper"); ?>
 	<script type="text/javascript">
 		var settings = {};
-<? if (!empty($maps_api_key)): ?>
-		settings['mapsAPIKey'] = '<?= $maps_api_key ?>';
+<? if (!empty($maps_dynamic_key)): ?>
+		settings['mapsDynamicAPIKey'] = '<?= $maps_dynamic_key ?>';
+<? endif; ?>
+<? if (!empty($maps_static_key)): ?>
+		settings['mapsStaticAPIKey'] = '<?= $maps_static_key ?>';
 <? endif; ?>
 <? if (!empty($support_email)): ?>
 		settings['supportEmail'] = '<?= $support_email ?>';

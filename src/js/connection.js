@@ -463,7 +463,7 @@ Connection.prototype.oRosaHelper = {
  * @param  {Function} callback function to call when script has been loaded and added to DOM
  */
 Connection.prototype.loadGoogleMaps = function(callback){
-	var APIKey = settings['mapsAPIKey'] || '',
+	var APIKey = settings['mapsDynamicAPIKey'] || '',
 		script = document.createElement("script");
 	window.googleMapsInit = callback;
 	script.type = "text/javascript";

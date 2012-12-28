@@ -16,6 +16,7 @@
       <sources dir="${basedir}/src/js">
         <file name="common.js"/>
         <file name="form.js"/>
+        <file name="widgets.js"/>
         <file name="test.js"/>
         <file name="connection.js"/>
       </sources>
@@ -46,6 +47,7 @@
         <file name="common.js"/>
         <file name="storage.js"/>
         <file name="form.js"/>
+        <file name="widgets.js"/>
         <file name="connection.js"/>
         <file name="cache.js"/>
         <file name="survey_controls.js"/>
@@ -65,6 +67,7 @@
         <file name="common.js"/>
         <file name="storage.js"/>
         <file name="form.js"/>
+        <file name="widgets.js"/>
         <file name="connection.js"/>
         <file name="survey_controls.js"/>
         <file name="webform_edit.js"/>
@@ -83,6 +86,7 @@
         <file name="common.js"/>
         <file name="storage.js"/>
         <file name="form.js"/>
+        <file name="widgets.js"/>
         <file name="connection.js"/>
         <file name="survey_controls.js"/>
         <file name="webform_iframe.js"/>

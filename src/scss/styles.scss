@@ -265,6 +265,9 @@ label#data-template-show {
   color: black !important;
 }
 
+.page-break{
+  display: none; }
+
 /*#launch form{
   margin-top: 20px; 
   input{
@@ -304,8 +307,7 @@ label#data-template-show {
     right: 20px; } }
 
 .page{
-  display:none;
-}
+  display:none;}
 
 #page {
   $border: 1px solid #888;
@@ -551,7 +553,9 @@ html.touch{
     .geo-inputs{
       min-width: 160px;
       width: $input-width;
-      margin: 0 $separator-width 0 0; }
+      margin: 0 $separator-width 0 0;
+      @media screen and (max-width: 700px){
+        width: 100%; } }
     .map-canvas-wrapper, .search-bar{
       width: $map-width;  
       float: right;
@@ -561,7 +565,10 @@ html.touch{
         width: 100%;
         float: none; 
         padding-left: 0;
-        border-left: none; } }
+        border-left: none; }
+      img{
+        width: 100%;
+        height: 100%; } }
     button{
       height: 40px;
       &[name="geodetect"]{
@@ -569,6 +576,14 @@ html.touch{
         float: right;
         margin: 8px 0 0 $separator-width;
         width: $detect-width; } }
+    .no-search-input{
+      &.no-map{
+        border-left: none; }
+      button[name="geodetect"]{
+        float: none;
+        display: block;
+        margin: 15px auto 15px auto;
+        width: 50%; } }
     label.geo{
       display: block;
       border: none;
@@ -581,7 +596,9 @@ html.touch{
       &:nth-of-type(3){
         border-top: solid 1px $groupline;
         padding: 12px 0 0 0;
-        margin: 0 0 0 0; }
+        margin: 0 0 0 0;
+        @media screen and (max-width: 700px){
+          border-top: none; } }
       &:nth-of-type(4){
         padding: 0;
         margin: 5px 0 0 0;}
@@ -599,7 +616,9 @@ html.touch{
         @include border-box;
         display: block;
         float: right;
-        width: 40%; } }
+        width: 40%;
+        @media screen and (max-width: 700px){
+          width: 50%; } } }
     .map-canvas{
       width: 100%;
       border: 1px solid #ccc;

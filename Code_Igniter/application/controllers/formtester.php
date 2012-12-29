@@ -33,16 +33,14 @@ class Formtester extends CI_Controller {
 			$data = array('offline'=>FALSE, 'title_component'=>'test');
 			
 			$default_scripts = array(
-				'libraries/jquery.min.js',
-				'libraries/bootstrap/js/bootstrap.min.js',
+				'/libraries/jquery.min.js',
+				'/libraries/bootstrap/js/bootstrap.min.js',
 				'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
 				'/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
-				'/libraries/bootstrap-select.js',
-				'libraries/modernizr.min.js',
-				'libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
-				'libraries/jquery.form.js',
-				'libraries/vkbeautify.js'//,
-				//"http://maps.googleapis.com/maps/api/js?key=".$this->config->item('google_maps_api_v3_key')."&sensor=false"
+				'/libraries/modernizr.min.js',
+				'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
+				'/libraries/jquery.form.js',
+				'/libraries/vkbeautify.js'
 			);
 			$default_stylesheets = array
 			(
@@ -60,11 +58,12 @@ class Formtester extends CI_Controller {
 			else
 			{
 				$data['scripts'] = array_merge($default_scripts, array(
-					'js-source/common.js',
-					'js-source/form.js',
-					'js-source/test.js',
-					'js-source/connection.js',
-					'js-source/debug.js'
+					'/js-source/common.js',
+					'/js-source/form.js',
+					'/js-source/widgets.js',
+					'/js-source/test.js',
+					'/js-source/connection.js',
+					'/js-source/debug.js'
 				));
 			}
 			$data['stylesheets'] = $default_stylesheets;

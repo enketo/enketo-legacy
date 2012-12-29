@@ -217,7 +217,6 @@
 
         this.$lat = this.$widget.find('[name="lat"]');
         this.$lng = this.$widget.find('[name="long"]');
-         console.debug('this.$lng: ', this.$lng);
         this.$alt = this.$widget.find('[name="alt"]');
         this.$acc = this.$widget.find('[name="acc"]');
         
@@ -293,7 +292,6 @@
                     }, 500);   
                 });
             }
-            console.log('this in init:', this);
         },
         /**
          * Enables geo detection using the built-in browser geoLocation functionality
@@ -391,7 +389,7 @@
             var $map = this.$map,
                 that = this;
             
-            if (this.dynamicMapAvailable && typeof google.maps.LatLng !== 'undefined'){
+            if (this.dynamicMapAvailable() && typeof google.maps.LatLng !== 'undefined'){
                 var mapOptions = {
                     zoom: zoom,
                     center: new google.maps.LatLng(lat, lng),

@@ -389,7 +389,7 @@
             var $map = this.$map,
                 that = this;
             
-            if (this.dynamicMapAvailable && typeof google.maps.LatLng !== 'undefined'){
+            if (this.dynamicMapAvailable() && typeof google.maps.LatLng !== 'undefined'){
                 var mapOptions = {
                     zoom: zoom,
                     center: new google.maps.LatLng(lat, lng),

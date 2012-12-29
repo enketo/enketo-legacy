@@ -1845,10 +1845,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.radioWidget();
 		},
 		radioWidget: function(){
-			$form.on('click', 'label[data-checked="true"]', function(){
+			$form.on('click', 'label[data-checked="true"]', function(event){
 				$(this).removeAttr('data-checked');
-				$(this).find('input').prop('checked', false).trigger('change');
-				return false;
+				$(this).parent().find('input').prop('checked', false).trigger('change');
+				if (event.target.nodeName.toLowerCase() !== 'input'){
+					return false;
+				}
 			});
 			$form.on('click', 'input[type="radio"]:checked', function(event){
 				$(this).parent('label').attr('data-checked', 'true');
@@ -1999,40 +2001,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
 				$(this).find('label').toLargestWidth();
 				$(this).find('legend').toLargestWidth();
-//				var $row,
-//					$table = $('<table></table>'), 
-//					$thead = $('<thead></thead>'), 
-//					$tbody = $('<tbody></tbody>'),
-//					$header = $(this).find('.jr-appearance-label'),
-//					$content = $(this).find('.jr-appearance-list-nolabel'); 
-//				
-//				$row = createRow($header, 'th');
-//				$row.appendTo($thead);
-//				$thead.appendTo($table);//
-
-//				$content.each(function(){
-//					$row = createRow($(this), 'td');
-//					$row.appendTo($tbody);
-//				});//
-
-//				$tbody.appendTo($table);
-//				$table.appendTo($(this));//
-
-//				function createRow($fieldlist, cellType){
-//					var $cell,
-//						$row = $('<tr/>'),
-//						$legend = $fieldlist.find('legend');
-//					//legends have special built-in browser formatting so we remove them but keep the content
-//					$('<'+cellType+'>'+$legend.html()+'</'+cellType+'>').appendTo($row);
-//					$legend.remove();
-//					//everything else can stay intact but is moved to table cells
-//					$fieldlist.find('label').each(function(){
-//						$cell = $('<'+cellType+'/>');
-//						$(this).detach().appendTo($cell);
-//						$cell.appendTo($row);
-//					});
-//					return $row;
-//				}	
 			});	
 			//$form.find('.jr-appearance-compact label img').selectable();
 		},

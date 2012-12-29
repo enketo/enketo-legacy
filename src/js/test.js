@@ -217,11 +217,13 @@ State.prototype.init = function (){
 
 	state.setUrl();
 
-	$(window).on('popstate', function(){
-
-		if (!first){
-			window.location = location.href;
-		}
+	$(window).on('popstate', function(event){
+		//if (!first){
+		//TODO: FIX THIS
+			console.debug('popstate event: ', event);
+			console.debug('popstate state props ', event.state);
+			//window.location = location.href;
+		//}
 		first = false;
 	});
 	// really not elegant....

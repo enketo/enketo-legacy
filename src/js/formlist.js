@@ -130,7 +130,7 @@ $(document).ready(function(){
 	});
 
 	$(window).on('resize', function(){
-		$('.paper').height(gui.fillHeight($('.paper')));
+		$('.paper').css('min-height', gui.fillHeight($('.paper')));
 	}).trigger('resize');
 
 	loadPreviousState();

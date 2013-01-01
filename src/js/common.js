@@ -97,12 +97,12 @@ GUI.prototype.setEventHandlers = function(){
 	var that=this;
 	
 	$(document).on('click', '#feedback-bar .close', function(event){
-		that.hideFeedback();
+		that.feedbackBar.hide();
 		return false;
 	});
 
 	$(document).on('click', '.touch #feedback-bar', function(event){
-		that.hideFeedback();
+		that.feedbackBar.hide();
 	});
 
 	$(document).on('click', '#page .close', function(event){
@@ -155,7 +155,7 @@ GUI.prototype.setEventHandlers = function(){
 	// more info on connection status after clicking icon
 	//$('header #status-connection')
 	//	.click(function(event){
-	//		that.showFeedback($(this).attr('title'));
+	//		that.feedback($(this).attr('title'));
 	//		event.stopPropagation(); //prevent closing of simultaneously shown page when clicking icon
 	//		//event.cancelBubble(); //IE
 	//	});
@@ -274,43 +274,69 @@ GUI.prototype.pages = {
 	}
 };
 
-/**
- * Shows an unobtrusive feedback message to the user.
- *
- * @param {string} message
- * @param {number=} duration duration in seconds for the message to show
- */
-GUI.prototype.showFeedback = function(message, duration){
-	"use strict";
-	var $msg,
-		that = this;
-	
-	duration = (duration) ? duration * 1000 : 10 * 1000;
-	
-	// max 2 messages displayed
-	$('#feedback-bar p').eq(1).remove();
-	
-	// if an already shown message isn't exactly the same
-	if($('#feedback-bar p').html() !== message){
-		$msg = $('<p></p>');
-		$msg.append(message);
-		$('#feedback-bar').append($msg);
-	}
-	$('#feedback-bar').trigger('change');
 
-	// automatically remove feedback after a period
-	setTimeout(function(){
-		if(typeof $msg !== 'undefined'){
-			$msg.remove();
+GUI.prototype.feedbackBar = {
+	/**
+	 * Shows an unobtrusive feedback bar to the user.
+	 *
+	 * @param {string} message
+	 * @param {number=} duration duration in seconds for the message to show
+	 */
+	show : function (message, duration){
+		"use strict";
+		var $msg,
+			that = this;
+		
+		duration = (duration) ? duration * 1000 : 10 * 1000;
+		
+		// max 2 messages displayed
+		$('#feedback-bar p').eq(1).remove();
+		
+		// if an already shown message isn't exactly the same
+		if($('#feedback-bar p').html() !== message){
+			$msg = $('<p></p>');
+			$msg.append(message);
+			$('#feedback-bar').append($msg);
 		}
 		$('#feedback-bar').trigger('change');
-	}, duration);
+
+		// automatically remove feedback after a period
+		setTimeout(function(){
+			if(typeof $msg !== 'undefined'){
+				$msg.remove();
+			}
+			$('#feedback-bar').trigger('change');
+		}, duration);
+	},
+	hide : function(){
+		"use strict";
+		$('#feedback-bar p').remove();
+		$('#feedback-bar').trigger('change');
+	}
 };
-	
-GUI.prototype.hideFeedback = function(){
-	"use strict";
-	$('#feedback-bar p').remove();
-	$('#feedback-bar').trigger('change');
+
+/**
+ * Select what type of unobtrusive feedback message to show to the user.
+ *
+ * @param {string}	message
+ * @param {number=} duration duration in seconds for the message to show
+ * @param {string=} heading  heading to show - defaults to information, ignored in feedback bar
+ * @param {Object=} choices  choices to show - defaults to simple Close button, ignored in feedback bar for now
+ */
+GUI.prototype.feedback = function(message, duration, heading, choices){
+	heading = heading || 'Information';
+	if ($('header').css('position') === 'fixed'){
+		this.feedbackBar.show(message, duration);
+	}
+	else if (choices){
+		this.confirm({
+			msg: message,
+			heading: heading
+		}, choices);
+	}
+	else{
+		this.alert(message, heading, 'info', duration);
+	}
 };
 
 /**
@@ -319,10 +345,11 @@ GUI.prototype.hideFeedback = function(){
  * @param {string} message
  * @param {string=} heading
  * @param {string=} level bootstrap css class
+ * @param {number=} duration duration after which dialog should self-destruct
  */
-GUI.prototype.alert = function(message, heading, level){
+GUI.prototype.alert = function(message, heading, level, duration){
 	"use strict";
-	var closeFn, cls,
+	var cls, timer,
 		$alert = $('#dialog-alert');
 
 	heading = heading || 'Alert';
@@ -340,14 +367,28 @@ GUI.prototype.alert = function(message, heading, level){
 
 	$alert.on('hidden', function(){
 		$alert.find('.modal-header h3, .modal-body p').html('');
+		clearInterval(timer);
 	});
+
+	if (typeof duration === 'number'){
+		var left = duration;
+		$alert.find('.self-destruct-timer').text(left);
+		timer = setInterval(function(){
+			left--;
+			$alert.find('.self-destruct-timer').text(left);
+		}, 1000);
+		setTimeout(function(){
+			clearInterval(timer);
+			$alert.find('.close').click();
+		}, duration * 1000);
+	}
 
 	/* sample test code (for console):
 	
 		gui.alert('What did you just do???', 'Obtrusive alert dialog');
-
 	 */
 };
+
 	
 /**
  * Function: confirm
@@ -357,10 +398,11 @@ GUI.prototype.alert = function(message, heading, level){
  *   @param {?(Object.<string, (string|boolean)>|string)=} texts - In its simplest form this is just a string but it can
  *                                                         also an object with parameters msg, heading and errorMsg.
  *   @param {Object=} choices - [type/description]
+ *   @param {number=} duration duration after which dialog should self-destruct
  */
-GUI.prototype.confirm = function(texts, choices){
+GUI.prototype.confirm = function(texts, choices, duration){
 	"use strict";
-	var msg, heading, errorMsg, closeFn, dialogName, $dialog;
+	var msg, heading, errorMsg, closeFn, dialogName, $dialog, timer;
 	
 	if (typeof texts === 'string'){
 		msg = texts;
@@ -385,7 +427,10 @@ GUI.prototype.confirm = function(texts, choices){
 	//write content into confirmation dialog
 	$dialog.find('.modal-header h3').text(heading);
 	$dialog.find('.modal-body .msg').html(msg).capitalizeStart();
-	$dialog.find('.modal-body .alert-error').html(errorMsg);
+	$dialog.find('.modal-body .alert-error').html(errorMsg).show();
+	if (!errorMsg) {
+		$dialog.find('.modal-body .alert-error').hide();
+	}
 
 	//instantiate dialog
 	$dialog.modal({
@@ -418,6 +463,19 @@ GUI.prototype.confirm = function(texts, choices){
 		$dialog.find('.modal-body .msg, .modal-body .alert-error, button').text('');
 		//console.debug('dialog destroyed');
 	});
+
+	if (typeof duration === 'number'){
+		var left = duration;
+		$dialog.find('.self-destruct-timer').text(left);
+		timer = setInterval(function(){
+			left--;
+			$dialog.find('.self-destruct-timer').text(left);
+		}, 1000);
+		setTimeout(function(){
+			clearInterval(timer);
+			$dialog.find('.close').click();
+		}, duration * 1000);
+	}
 
 	/* sample test code (for console):
 
@@ -483,7 +541,7 @@ GUI.prototype.updateStatus = {
  * Returns the height in pixels that it would take for this element to stretch down to the bottom of the window
  * For now it's a dumb function that only takes into consideration a header above the element.
  * @param  {jQuery} $elem [description]
- * @return {[type]}       [description]
+ * @return {number}       [description]
  */
 GUI.prototype.fillHeight = function($elem){
 	var bottom = $(window).height(),
@@ -555,7 +613,7 @@ GUI.prototype.setSettings = function(settings){
  * Parses a list of forms
  * @param  {?Array.<{title: string, url: string, server: string, name: string}>} list array of object with form information
  * @param { jQuery } $target jQuery-wrapped target node with a <ul> element as child to append formlist to
- * @param { boolean} reset if list provided is empty and reset is true, no error message is shown
+ * @param { boolean=} reset if list provided is empty and reset is true, no error message is shown
  */
 GUI.prototype.parseFormlist = function(list, $target, reset){
 	var i, listHTML='';

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, StorageLocal, Connection, settings Modernizr, getGetVariable, vkbeautify*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, StorageLocal, Connection, Cache, settings Modernizr, getGetVariable, vkbeautify*/
 var /** @type {Connection} */connection;
 var /** @type {StorageLocal} */store;
+var /** @type {Cache} */cache;
 
 window.addEventListener("load", function() {
 	// Set a timeout...
@@ -29,7 +30,7 @@ window.addEventListener("load", function() {
 $(document).ready(function(){
 	"use strict";
 	var url, $settings,
-		popoverOptions = {placement: 'bottom', trigger: 'click'},
+		popoverOptions = {placement: 'top', trigger: 'click'},
 		urlHelperText = {
 			formhub : {tit: 'Enter formhub account name', ex: 'e.g. johndoe', inp: 'enter formhub account name'},
 			formhub_uni: {tit: 'Enter formhub account name', ex: 'e.g. formhub_u', inp: 'enter formhub account name', val: 'formhub_u'},
@@ -40,8 +41,13 @@ $(document).ready(function(){
 
 	connection = new Connection();
 	store = new StorageLocal();
-
-	$('[title]').tooltip();
+	if ($('html').attr('manifest')){
+		cache = new Cache();
+		if (cache.isSupported()){
+			cache.init();
+			$(document).trigger('browsersupport', 'offline-launch');
+		}
+	}
 
 	gui.setup();
 
@@ -95,7 +101,7 @@ $(document).ready(function(){
 			}
 			else{
 				reset = true;
-				processFormlistResponse({}, null, props, reset);
+				processFormlistResponse([{}], null, props, reset);
 			}
 		}
 		$('#page .close').click();
@@ -149,7 +155,13 @@ function loadPreviousState(){
 		gui.parseFormlist(list, $('#form-list'));
 	}
 }
-
+/**
+ * [processFormlistResponse description]
+ * @param  {?Array.<{name: string, server: string, title: string, url: string}>} resp  [description]
+ * @param  {?string} msg   [description]
+ * @param  {Object} props [description]
+ * @param  {boolean=} reset [description]
+ */
 function processFormlistResponse(resp, msg, props, reset){
 	var helper, inputValue;
 	console.log('processing formlist response');
@@ -186,3 +198,19 @@ function processSurveyURLResponse(resp, msg){
 		//TODO: add error handling
 	}
 }
+
+//overriding
+Cache.prototype.showBookmarkMsg = function(){};
+
+//overriding
+Cache.prototype.informUpdate = function(){
+	return gui.confirm({
+			msg: '<div class="alert alert-success">A new version of this application has been downloaded.</div>'+
+				'<br/> Refresh the window to start using it.',
+			heading: 'Updated!'
+		},{
+			posButton: 'Refresh',
+			negButton: 'Cancel',
+			posAction: function(){document.location.reload(true);}
+		});
+};

@@ -252,7 +252,11 @@ label#data-template-show {
   //text-align: center;
 }
 
-
+.self-destruct-timer{
+  float: left;
+  margin-top: 5px;
+  color: $shadow; }
+  
 .tooltip{
   /* fix for tooltips when places inside a label/legend element (All)*/
   font-weight: normal !important;
@@ -321,6 +325,9 @@ label#data-template-show {
   background-color: $pagecolor;
   border: none;
   border-top: $border;
+  #settings{
+    .btn-toolbar{
+      margin-top: 70px; } }
   input, .input-append{
     text-align: center;}
   .input-append{
@@ -363,7 +370,7 @@ label#data-template-show {
     background-color: $groupline;
     height: 45px;
     padding: 0;
-    margin: -48px -48px 0px -48px;
+    margin: -48px -48px 20px -48px;
     .branding{
       position: absolute;
       left: 15px;

@@ -32,7 +32,7 @@ $(document).ready(function(){
 	_error = console.error;
 	console.error = function(){
 		addJsError(arguments[0]);
-		gui.showFeedback(error_msg);
+		gui.feedback(error_msg);
 		return _error.apply(console, arguments);
 	};
 
@@ -55,7 +55,7 @@ $(document).ready(function(){
 			serverURL = $(this).find('[name="server_url"]').val(),
 			error = function(jqXHR, status, errorThrown){
 				if (status !== 'validationerror'){
-					gui.showFeedback('Sorry, an error occured while communicating with the Enketo server. ('+errorThrown+')');
+					gui.feedback('Sorry, an error occured while communicating with the Enketo server. ('+errorThrown+')');
 				}
 				else {
 					gui.alert(errorThrown);
@@ -398,7 +398,7 @@ function processForm($response){
 	}
 	
 	if (form && form.getDataStr().length > 0 && $('#report .level-2, #report .level-3').length > 0){
-		gui.showFeedback(error_msg);
+		gui.feedback(error_msg);
 	}
 }
 

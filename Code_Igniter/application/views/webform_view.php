@@ -17,7 +17,7 @@
 
 
 
-		<header style="height: 0;"></header>
+		<header class="navbar navbar-inverse navbar-fixed-top" style="height: 0;"></header>
 		
 	<? require 'elements/dialogs.php'; ?>
 

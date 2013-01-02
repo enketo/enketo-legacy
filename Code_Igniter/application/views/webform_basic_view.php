@@ -25,8 +25,8 @@
 				</div>
 				<?= $form ?>
 				<button id="submit-edited-data" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
-			</div>
-		</article>
+			</article>
+		</div>
 
 		
 

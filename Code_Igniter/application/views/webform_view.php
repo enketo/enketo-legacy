@@ -29,8 +29,8 @@
 				</div>
 				<?= $form ?>	
 				<button id="submit-form" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
-			</div>
-		</article>
+			</article>
+		</div>
 
 		<? require 'elements/status.php'; ?>	
 

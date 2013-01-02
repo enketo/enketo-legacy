@@ -27,7 +27,7 @@ $(document).ready(function(){
 	state.init();
 	
 
-	$('[title]').tooltip();
+	//$('[title]').tooltip();
 
 	_error = console.error;
 	console.error = function(){

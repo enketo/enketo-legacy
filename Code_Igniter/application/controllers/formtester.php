@@ -30,7 +30,7 @@ class Formtester extends CI_Controller {
 		}
 		else 
 		{
-			$data = array('offline'=>FALSE, 'title_component'=>'test');
+			$data = array('offline'=>FALSE, 'title_component'=>'form-tester');
 			
 			$default_scripts = array(
 				'/libraries/jquery.min.js',

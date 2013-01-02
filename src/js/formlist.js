@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, StorageLocal, Connection, settings Modernizr, getGetVariable, vkbeautify*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global gui, Form, StorageLocal, Connection, Cache, settings Modernizr, getGetVariable, vkbeautify*/
 var /** @type {Connection} */connection;
 var /** @type {StorageLocal} */store;
+var /** @type {Cache} */cache;
 
 window.addEventListener("load", function() {
 	// Set a timeout...
@@ -29,9 +30,9 @@ window.addEventListener("load", function() {
 $(document).ready(function(){
 	"use strict";
 	var url, $settings,
-		popoverOptions = {placement: 'bottom', trigger: 'click'},
+		popoverOptions = {placement: 'top', trigger: 'click'},
 		urlHelperText = {
-			formhub : {tit: 'Enter formhub account name', ex: 'e.g. johndoe', inp: 'enter formhub account name'},
+			formhub : {tit: 'Enter formhub account name', ex: 'e.g. formhub_u', inp: 'enter formhub account name'},
 			formhub_uni: {tit: 'Enter formhub account name', ex: 'e.g. formhub_u', inp: 'enter formhub account name', val: 'formhub_u'},
 			appspot: {tit: 'Enter appspot subdomain name', ex: 'e.g. opendatakit', inp: 'enter appspot subdomain name'},
 			http: {tit: 'Enter http web address', ex: 'e.g. formhub.org/formhub_u', inp: 'enter web address'},
@@ -40,8 +41,13 @@ $(document).ready(function(){
 
 	connection = new Connection();
 	store = new StorageLocal();
-
-	$('[title]').tooltip();
+	if ($('html').attr('manifest')){
+		cache = new Cache();
+		if (cache.isSupported()){
+			cache.init();
+			$(document).trigger('browsersupport', 'offline-launch');
+		}
+	}
 
 	gui.setup();
 
@@ -95,14 +101,13 @@ $(document).ready(function(){
 			}
 			else{
 				reset = true;
-				processFormlistResponse({}, null, props, reset);
+				processFormlistResponse([], null, props, reset);
 			}
 		}
-		$('#page .close').click();
+		$('#page .close, header a:not(.collapsed)[data-toggle="collapse"]').click();
 	});
 
 	$('#form-list').on('click', 'a', function(){
-		console.log('caught click');
 		var server, id,
 			href = /**@type {string}*/$(this).attr('href');
 			
@@ -120,7 +125,7 @@ $(document).ready(function(){
 			});
 		}
 		else{
-			location.href = href;
+			return true; //location.href = href;
 		}
 		return false;
 	});
@@ -129,11 +134,14 @@ $(document).ready(function(){
 		$settings.find('input#server').popover('hide');
 	});
 
-	$(window).on('resize', function(){
-		$('.paper').height(gui.fillHeight($('.paper')));
-	}).trigger('resize');
-
 	loadPreviousState();
+
+	$(window).on('resize', function(){
+		$('.paper').css('min-height', gui.fillHeight($('.paper')));
+		if ($('#form-list li').length === 0 && !gui.pages.isShowing() && !$('header nav').hasClass('in')){
+			showVirginHint();
+		}
+	}).trigger('resize');
 });
 /**
  * Loads the previous state of the formlist and server settings
@@ -142,14 +150,47 @@ function loadPreviousState(){
 	var i, list,
 		$settings = gui.pages.get('settings'),
 		server = store.getRecord('__current_server');
-	if (server){
+	if (server && server.url){
 		$settings.find('.url-helper li').removeClass('active').find('[data-value="'+server.helper+'"]').parent('li').addClass('active');
 		$settings.find('input#server').val(server.inputValue);
 		list = store.getFormList(server.url);
 		gui.parseFormlist(list, $('#form-list'));
 	}
 }
+function showVirginHint(){
+	var left, offset, $popover,
+		$collapsedMenuIcon = $('header a[data-toggle="collapse"]'),
+		$menuItem = $('nav [href="#settings"]'),
+		$target = ($collapsedMenuIcon.is(':visible')) ? $collapsedMenuIcon : $menuItem;
 
+	$collapsedMenuIcon.add($menuItem).popover('destroy');
+
+	$target
+		.popover({
+			placement: 'bottom',
+			trigger:'manual',
+			title:'load forms',
+			content:'Go to settings to load a list of your forms.'
+		})
+		.popover('show');
+
+	$popover = $target.next('.popover');
+	left = $popover.offset().left;
+	$popover.css({'left': 'auto', 'right': '17px'});
+	offset = left - $popover.offset().left;
+	$popover.find('.arrow').css('left', $popover.outerWidth()/2 + offset + 'px');
+	//console.debug('offset: '+offset);
+	$popover.add($target).add('nav ul li a').click(function(){
+		$target.popover('destroy');
+	});
+}
+/**
+ * [processFormlistResponse description]
+ * @param  {?Array.<{name: string, server: string, title: string, url: string}>} resp  [description]
+ * @param  {?string} msg   [description]
+ * @param  {Object} props [description]
+ * @param  {boolean=} reset [description]
+ */
 function processFormlistResponse(resp, msg, props, reset){
 	var helper, inputValue;
 	console.log('processing formlist response');
@@ -158,6 +199,7 @@ function processFormlistResponse(resp, msg, props, reset){
 		store.setRecord('__current_server', {'url': props.server, 'helper': props.helper, 'inputValue': props.inputValue}, false, true);
 	}
 	else if (reset){
+		showVirginHint();
 		store.removeRecord('__current_server');
 	}
 	$('progress').hide();
@@ -180,9 +222,26 @@ function processSurveyURLResponse(resp, msg){
 		record = store.getRecord('__server_'+server) || {};
 		record[id]['url'] = url;
 		store.setRecord('__server_'+server, record, false, true);
-		$('a[id="'+id+'"][data-server="'+server+'"]').attr('href', url).click();
+		//$('a[id="'+id+'"][data-server="'+server+'"]').attr('href', url).click();
+		window.location = url;
 	}
 	else{
 		//TODO: add error handling
 	}
 }
+
+//overriding
+Cache.prototype.showBookmarkMsg = function(){};
+
+//overriding
+Cache.prototype.informUpdate = function(){
+	return gui.confirm({
+			msg: '<div class="alert alert-success">A new version of this application has been downloaded.</div>'+
+				'<br/> Refresh the window to start using it.',
+			heading: 'Updated!'
+		},{
+			posButton: 'Refresh',
+			negButton: 'Cancel',
+			posAction: function(){document.location.reload(true);}
+		});
+};

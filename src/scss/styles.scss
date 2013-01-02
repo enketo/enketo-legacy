@@ -35,6 +35,7 @@ body{
   background: $bg url(/images/tex2res2.png) repeat;
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
+  overflow-x: hidden;
   .main article{
     padding: 3em;} }
 
@@ -43,7 +44,9 @@ body{
   body{
     background: none;    
     .main{ 
-      margin: 0;} } }
+      margin: 0;} 
+    #page .close{
+      font-size: 2em; } } }
 
 @media screen and (max-width: 600px){
   @include small-screen-paddings;
@@ -54,7 +57,9 @@ body{
     .main{ 
       margin: 0;
       article{
-        padding: 2em; } } } }
+        padding: 2em; } }
+    #page .close{
+      font-size: 3em; } } }
 
 @media screen and (max-width: 400px){
   @include small-screen-paddings;
@@ -65,7 +70,9 @@ body{
     .main{ 
       margin: 0;
       article{
-        padding: 1em; } } } }
+        padding: 1em; } }
+    #page .close{
+      font-size: 4em; } } }
 
 h2, h3, h4 {
   color: $title;
@@ -129,7 +136,7 @@ progress{
   button#drawer-export{
     display: block; } }
  
-#branding{
+/*#branding{
   position: fixed;
   z-index: -5;
   width: 120px;
@@ -145,7 +152,7 @@ progress{
     color: #666;}
   a:hover{
     color: #444;} }
-
+*/
 .main {
   margin: 100px auto 60px auto;
   position: relative;
@@ -252,6 +259,10 @@ label#data-template-show {
   //text-align: center;
 }
 
+.self-destruct-timer{
+  float: left;
+  margin-top: 5px;
+  color: $shadow; }
 
 .tooltip{
   /* fix for tooltips when places inside a label/legend element (All)*/
@@ -279,6 +290,8 @@ label#data-template-show {
 
 #feedback-bar {
   @include transition-slow;
+  @include border-box;
+  @include radius-zero;
   position: fixed;
   z-index: 13;
   top: -100px;
@@ -287,8 +300,6 @@ label#data-template-show {
   width: 100%;
   min-height: 35px;
   height: auto;
-  border-left: none;
-  border-right: none;
   p {
     position: relative;
     margin: 0 50px;
@@ -312,15 +323,19 @@ label#data-template-show {
 #page {
   $border: 1px solid #888;
   @include transition-slow;
+  //@include border-box;
   position: fixed;
   line-height: 30px;
   z-index: 12;
   top: -320px;
-  min-height: 250px;
   width: 100%;
   background-color: $pagecolor;
+  color: $shadow;
   border: none;
   border-top: $border;
+  #settings{
+    .btn-toolbar{
+      margin-top: 70px; } }
   input, .input-append{
     text-align: center;}
   .input-append{
@@ -337,6 +352,8 @@ label#data-template-show {
     border: none;
     border-top: $border;}
   .content {
+    position: relative;
+    min-height: 15em;
     margin: 2em;
     p {
       &:first-child {
@@ -363,7 +380,7 @@ label#data-template-show {
     background-color: $groupline;
     height: 45px;
     padding: 0;
-    margin: -48px -48px 0px -48px;
+    margin: -48px -48px 20px -48px;
     .branding{
       position: absolute;
       left: 15px;

@@ -17,27 +17,21 @@
 
 
 
-		<header style="height: 0;"></header>
+		<header class="navbar navbar-inverse navbar-fixed-top" style="height: 0;"></header>
 		
 	<? require 'elements/dialogs.php'; ?>
 
 		<div class="main">
 			<article class="paper" >
-				<!--<div class="form-header">
+				<div class="form-header">
 					<span class="branding">enketo forms + formhub</span>
 					<button onclick="printO.printForm(); return false" class="print"><i class="icon-print"></i></button>
-				</div>-->
+				</div>
 				<?= $form ?>	
 				<button id="submit-form" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
-			</div>
-		</article>
+			</article>
+		</div>
 
 		<? require 'elements/status.php'; ?>	
 
-
-
-	<div id="branding">
-		<a href="http://aidwebsolutions.com" target="_blank">enketo forms</a> for <a href="http://formhub.org" target="_blank">formhub</a>
-	</div>
-	
 	<? require 'elements/footer++.php' ?>

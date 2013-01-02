@@ -173,7 +173,7 @@
 			More information is available <a target="_blank" href="http://blog.aidwebsolutions.com/tag/enketo/">here</a>. 
 		</p>
 		<p>
-			<a href="#contact" title="contact us">Feedback</a> is very welcome. If you discover a bug, it would be great if you could send the xml form to help troubleshoot.
+			Feedback is very welcome at <a href="mailto:<?= $this->config->item('support_email') ?>"><?= $this->config->item('support_email') ?></a>. If you discover a bug, it would be great if you could send the xml form to help troubleshoot.
 			<!--<a href="http://aidwebsolutions.com/blog" title="go to Aid Web Solutions blog post on Rapaide" target=_blank>
 			 More information</a> about the app.-->
 		</p>
@@ -182,7 +182,5 @@
 		--> 
 
 	</article>
-
-	<? require 'elements/page_contact.php'; ?>
 
 	<? require 'elements/footer++.php' ?>

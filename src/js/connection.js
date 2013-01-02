@@ -275,7 +275,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		}
 		waswere = (i>1) ? ' were' : ' was';
 		namesStr = names.join(', ');
-		gui.showFeedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
+		gui.feedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
 		this.setOnlineStatus(true);
 	}
 

@@ -15,7 +15,7 @@
 			
 			<progress style="display: none; margin: -30px auto 15px auto;"></progress>
 			<div id="form-list" class="formlist empty">
-				<p class="alert">To enable a form for offline use, simply load it. <button id="refresh-list" type="button" class="btn  btn-mini"><i class="icon-refresh"></i></button></p>
+				<p class="alert clearfix">To enable a form for offline use, simply load it. <button id="refresh-list" type="button" class="btn  btn-mini"><i class="icon-refresh"></i></button></p>
 				<ul></ul>
 				<img src="/images/formlist.png" alt="enter settings to load list of forms" />
 			</div>

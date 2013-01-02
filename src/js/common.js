@@ -78,7 +78,7 @@ GUI.prototype.init = function(){
 
 	$('footer').detach().appendTo('#container');
 	//this.nav.reset();
-	this.display();
+	this.positionPageAndBar();
 };
 
 /**
@@ -149,7 +149,7 @@ GUI.prototype.setEventHandlers = function(){
 	});
 
 	$('#page, #feedback-bar').on('change', function(){
-		that.display();
+		that.positionPageAndBar();
 	});
 			
 	// more info on connection status after clicking icon
@@ -249,13 +249,18 @@ GUI.prototype.pages = {
 		if(this.isShowing()){
 			this.close();
 		}
-			
+	
+		//to go with the responsive flow, copy the css position type of the header
+		$('#page').css('position', $('header').css('position'));
+
 		$('#page .content').prepend($page.show()).trigger('change');
+
+		$('#page').show();
 		
-		// if the page is visible as well as the feedbackbar the display() method should be called if the window is resized
 		$(window).bind('resize.pageEvents', function(){
 			$('#page').trigger('change');
 		});
+
 	},
 	
 	/**
@@ -267,7 +272,7 @@ GUI.prototype.pages = {
 			this.$pages.append($page);
 			$('#page').trigger('change');
 			$('nav ul li').removeClass('active');
-			$('#overlay').hide();
+			//$('#overlay').hide();
 			$('#overlay, header').unbind('.pageEvents');
 			$(window).unbind('.pageEvents');
 		}
@@ -298,7 +303,7 @@ GUI.prototype.feedbackBar = {
 			$msg.append(message);
 			$('#feedback-bar').append($msg);
 		}
-		$('#feedback-bar').trigger('change');
+		$('#feedback-bar').show().trigger('change');
 
 		// automatically remove feedback after a period
 		setTimeout(function(){
@@ -328,11 +333,12 @@ GUI.prototype.feedback = function(message, duration, heading, choices){
 	if ($('header').css('position') === 'fixed'){
 		this.feedbackBar.show(message, duration);
 	}
+	//a more obtrusive message is shown
 	else if (choices){
 		this.confirm({
 			msg: message,
 			heading: heading
-		}, choices);
+		}, choices, duration);
 	}
 	else{
 		this.alert(message, heading, 'info', duration);
@@ -345,7 +351,7 @@ GUI.prototype.feedback = function(message, duration, heading, choices){
  * @param {string} message
  * @param {string=} heading
  * @param {string=} level bootstrap css class
- * @param {number=} duration duration after which dialog should self-destruct
+ * @param {number=} duration duration in secondsafter which dialog should self-destruct
  */
 GUI.prototype.alert = function(message, heading, level, duration){
 	"use strict";
@@ -389,7 +395,6 @@ GUI.prototype.alert = function(message, heading, level, duration){
 	 */
 };
 
-	
 /**
  * Function: confirm
  *
@@ -398,7 +403,7 @@ GUI.prototype.alert = function(message, heading, level, duration){
  *   @param {?(Object.<string, (string|boolean)>|string)=} texts - In its simplest form this is just a string but it can
  *                                                         also an object with parameters msg, heading and errorMsg.
  *   @param {Object=} choices - [type/description]
- *   @param {number=} duration duration after which dialog should self-destruct
+ *   @param {number=} duration duration in seconds after which dialog should self-destruct
  */
 GUI.prototype.confirm = function(texts, choices, duration){
 	"use strict";
@@ -551,16 +556,40 @@ GUI.prototype.fillHeight = function($elem){
 };
 
 /**
- * Makes sure sliders that reveal the feedback bar and page have the correct css 'top' property
+ * Makes sure sliders that reveal the feedback bar and page have the correct css 'top' property when the header is fixed
  */
-GUI.prototype.display = function(){
+GUI.prototype.positionPageAndBar = function(){
 	"use strict";
-	//console.log('display() called');
-	var feedbackTop, pageTop,
+	console.log('positionPageAndBar called');
+	var fTop, pTop,
 		$header = $('header'),
+		hHeight = $header.outerHeight(),
 		$feedback = $('#feedback-bar'),
-		$page = $('#page');
-	//the below can probably be simplified, is the this.page().isVisible check necessary at all?
+		fShowing = ( $feedback.find('p').length > 0 ) ? true : false,
+		fHeight = $feedback.outerHeight(),
+		$page = $('#page'),
+		pShowing = this.pages.isShowing(),
+		pHeight = $page.outerHeight() ;
+
+	if ($('header').css('position') !== 'fixed'){
+		if (!fShowing) {
+			$feedback.hide();
+		}
+		if (!pShowing) {
+			$page.hide();
+		}
+		return false;
+	}
+	console.log('fshowing '+fShowing);
+	console.log('pshowing '+pShowing);
+
+	fTop = (!fShowing) ? 0 - hHeight : hHeight;
+	pTop = (!pShowing) ? 0 - pHeight : (fShowing) ? fTop + fHeight : hHeight;
+
+	$feedback.css('top', fTop);
+	$page.css('top', pTop);
+ 
+	/*
 	if ($feedback.find('p').length > 0){
 		feedbackTop = ($header.css('position') === 'fixed') ? $header.outerHeight() : 0; // shows feedback-bar
 		if (this.pages.isShowing()){
@@ -580,7 +609,7 @@ GUI.prototype.display = function(){
 		}
 	}
 	$feedback.css('top', feedbackTop);
-	$page.css('top', pageTop);
+	$page.css('top', pageTop);*/
 };
 
 /**

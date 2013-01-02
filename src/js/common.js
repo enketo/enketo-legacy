@@ -234,7 +234,8 @@ GUI.prototype.pages = {
 	 * @param  {string} pg id of page
 	 */
 	open : function(pg){
-		var $page;
+		var $page,
+			$header = $('header');
 		if (this.isShowing(pg)){
 			return;
 		}
@@ -249,18 +250,13 @@ GUI.prototype.pages = {
 		if(this.isShowing()){
 			this.close();
 		}
-	
-		//to go with the responsive flow, copy the css position type of the header
-		$('#page').css('position', $('header').css('position'));
 
 		$('#page .content').prepend($page.show()).trigger('change');
-
 		$('#page').show();
 		
 		$(window).bind('resize.pageEvents', function(){
 			$('#page').trigger('change');
 		});
-
 	},
 	
 	/**
@@ -571,7 +567,10 @@ GUI.prototype.positionPageAndBar = function(){
 		pShowing = this.pages.isShowing(),
 		pHeight = $page.outerHeight() ;
 
-	if ($('header').css('position') !== 'fixed'){
+	//to go with the responsive flow, copy the css position type of the header
+	$page.css({'position': $header.css('position')});//, 'margin': $header.css('margin'), 'width': $header.css('width')});
+
+	if ($header.css('position') !== 'fixed'){
 		if (!fShowing) {
 			$feedback.hide();
 		}
@@ -580,10 +579,8 @@ GUI.prototype.positionPageAndBar = function(){
 		}
 		return false;
 	}
-	console.log('fshowing '+fShowing);
-	console.log('pshowing '+pShowing);
 
-	fTop = (!fShowing) ? 0 - hHeight : hHeight;
+	fTop = (!fShowing) ? 0 - fHeight : hHeight;
 	pTop = (!pShowing) ? 0 - pHeight : (fShowing) ? fTop + fHeight : hHeight;
 
 	$feedback.css('top', fTop);

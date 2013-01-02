@@ -163,7 +163,7 @@ Cache.prototype.showBookmarkMsg = function(prepend, force){
 	shown = (bookmark) ? bookmark['shown'] : 0;
 	if(force || shown < 3){
 		gui.feedback(prepend+'We recommend to bookmark this page for easy '+
-			'access when you are not connected to the Internet. ');
+			'access when you are not connected to the Internet. ', 15);
 			//'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
 		shown++;
 		store.setRecord('__bookmark', {'shown': shown});

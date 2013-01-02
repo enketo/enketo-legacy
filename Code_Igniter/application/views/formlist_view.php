@@ -21,7 +21,7 @@
 			</div>
 		</article>
 	</div>
-	<article class="page" id="settings">
+	<article class="page" id="settings" data-title="load forms">
 		<div class="btn-toolbar">
 			<div class="<? if (!$integrated): ?>input-prepend<? endif ?> input-append btn-group">
 			<? if(!$integrated): ?>
@@ -41,7 +41,14 @@
 			</div>
 		</div>
 	</article>
-
-<? require 'elements/page_contact.php'; ?>	
+	
+<article id="about" class="page">
+	<p> This form launcher provides easy access to your forms even when online (in modern browsers).
+		When a form has been manually loaded once (by clicking on it), that form will also be accessible offline.</p>
+	<p> Make sure to bookmark this page for offline use!</p>	
+	<p>
+		Please write <a href="mailto:<?= $this->config->item('support_email') ?>"><?= $this->config->item('support_email') ?></a> for any comments, questions or bug reports.
+	</p>			
+</article>
 
 <? require 'elements/footer++.php' ?>

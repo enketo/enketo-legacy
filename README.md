@@ -1,3 +1,10 @@
+---
+layout: page
+title: About enketo
+nav: readme
+---
+
+
 Enketo
 ======
 
@@ -15,7 +22,7 @@ Prerequisites
 
 Installation
 -----------
-See [Ubuntu_installation_instructions.md](https://github.com/modilabs/enketo/blob/master/devinfo/Ubuntu_installation_instructions.md)
+See [Ubuntu_installation_instructions.md](https://github.com/modilabs/enketo/blob/master/Ubuntu_installation_instructions.md)
 
 Frequently Asked Questions
 ---------------------------
@@ -52,6 +59,8 @@ Acknowledgements
 I would like to acknowledge and thank the indirect contribution by the creators of the following excellent works that were used in the project:
 * [Code Igniter by EllisLab](http://codeigniter.com)
 * [XPathJS by Andrej Pavlovic](https://github.com/andrejpavlovic/xpathjs)
-* [JQuery & JQuery UI](http://jquery.com)
+* [JQuery](http://jquery.com)
 * [Modernizr](http://modernizr.com)
 * [vkbeautify by Vadim Kiryukhin](https://github.com/vkiryukhin/vkBeautify)
+* [Bootstrap](http://twitter.github.com/bootstrap/)
+* [Bootstrap Datepicker by eternicode](https://github.com/eternicode/bootstrap-datepicker)

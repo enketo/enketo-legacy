@@ -72,21 +72,28 @@ class Survey_model extends CI_Model {
         return !$this->_has_subdomain_suffix();
     }
 
-    public function switch_offline_launch($active)
+    public function is_launched_live_and_offline()
     {
-        $current = $this->_get_item('offline');
-        log_message('debug', 'current: '.$current);
-        log_message('debug', 'active: '.$active);
-        return ($current == $active) ? TRUE : $this->_update_item('offline', $active);
+        return $this->has_offline_launch_enabled() && $this->is_live_survey() && $this->is_launched_survey();
     }
+
+//    public function switch_offline_launch($active)
+//    {
+//        $current = $this->_get_item('offline');
+//        log_message('debug', 'current: '.$current);
+//        log_message('debug', 'active: '.$active);
+//        return ($current == $active) ? TRUE : $this->_update_item('offline', $active);
+//    }
     
-    public function launch_survey($server_url, $form_id, $submission_url, $data_url, $email)
+    public function launch_survey($server_url, $form_id, $submission_url, $data_url=NULL, $email=NULL)
     {  
         //log_message('debug', 'launch_survey function started');
         if (url_valid($server_url) && url_valid($submission_url) && (url_valid($data_url) || $data_url===NULL))
         {
             //TODO: CHECK URLS FOR LIVENESS?
+            $alt_server_url = $this->_switch_protocol($server_url);
             $this->db->where("server_url = '".$server_url."' AND BINARY form_id = '".$form_id."'");
+            $this->db->or_where("server_url = '".$alt_server_url."' AND BINARY form_id = '".$form_id."'");
             $existing = $this->db->get('surveys', 1); 
             if ( $existing->num_rows() > 0 )
             {
@@ -126,6 +133,7 @@ class Survey_model extends CI_Model {
 
             $survey_url = (isset($subdomain)) ? $this->_get_full_survey_url($subdomain) : '';
             $edit_url = (isset($subdomain)) ? $this->_get_full_survey_edit_url($subdomain) : '';
+            $iframe_url = (isset($subdomain)) ? $this->_get_full_survey_iframe_url($subdomain) : '';
 
             return (isset($subdomain)) ? 
                 array
@@ -133,6 +141,7 @@ class Survey_model extends CI_Model {
                     'success' => $success, 
                     'url'=> $survey_url, 
                     'edit_url' => $edit_url, 
+                    'iframe_url' => $iframe_url, 
                     'subdomain' => $subdomain,
                     'reason' => $reason
                 ) 
@@ -145,6 +154,23 @@ class Survey_model extends CI_Model {
         }
         log_message('error', 'unknown error occurred when trying to launch survey');
         return array('success'=>FALSE, 'reason'=>'unknown');
+    }
+
+    //note that this function does not 'launch' the survey if it doesn't exist
+    public function get_survey_url_if_launched($form_id, $server_url)
+    {
+        $this->db->select('subdomain');
+        $this->db->where(array('form_id'=>$form_id, 'server_url'=>$server_url)); 
+        $query = $this->db->get('surveys', 1); 
+        if ($query->num_rows() === 1) 
+        {
+            $row = $query->row_array();
+            return $this->_get_full_survey_url($row['subdomain']);
+        }
+        else 
+        {
+            return NULL;   
+        }
     }
 
     public function remove_test_entries(){
@@ -181,6 +207,20 @@ class Survey_model extends CI_Model {
         $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
         return $protocol.$subdomain.($this->ONLINE_SUBDOMAIN_SUFFIX).'.'.$domain.'/webform/edit';
     }
+
+     /**
+     * @method _get_full_iframe_url turns a subdomain into the full url where an iframeable webform is available
+     * 
+     * @param $subdomain subdomain
+     */
+    private function _get_full_survey_iframe_url($subdomain)
+    {
+        $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
+        $domain = $_SERVER['SERVER_NAME'];
+        $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
+        return $protocol.$subdomain.($this->ONLINE_SUBDOMAIN_SUFFIX).'.'.$domain.'/webform/iframe';
+    }
+
 
 // 	public function update_formlist()
 // 	{
@@ -239,6 +279,18 @@ class Survey_model extends CI_Model {
             log_message('debug', 'no results!');
             return FALSE;
         }
+    }
+
+    private function _switch_protocol($url)
+    {
+        list($protocol, $rest) = explode('://', $url);
+        $alt_url = ($protocol === 'https') ? 'http://'.$rest : 'https://'.$rest;
+
+        if (empty($alt_url))
+        {
+            log_message('error', 'Failed to switch protocol of '.$url);
+        }
+        return $alt_url;
     }
 
     private function _generate_subdomain()

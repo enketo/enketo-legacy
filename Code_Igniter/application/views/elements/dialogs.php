@@ -12,6 +12,7 @@
 		<p class="alert alert-block alert-error"></p>
 	</div>
 	<div class="modal-footer">
+		<span class="self-destruct-timer"></span>
 		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 		</div>
 </div>
@@ -26,6 +27,7 @@
 		<p class="msg"></p>
 	</div>
 	<div class="modal-footer">
+		<span class="self-destruct-timer"></span>
 		<button class="negative btn">Close</button>
 		<button class="positive btn btn-primary">Confirm</button>
 		</div>

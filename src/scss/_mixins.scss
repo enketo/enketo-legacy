@@ -1,0 +1,56 @@
+@mixin transition-slow{
+  -webkit-transition: all 1s ease-out;
+  -moz-transition: all 1s ease-out;
+  -o-transition: all 1s ease-out;
+  transition: all 1s ease-out; 
+}
+
+@mixin transition-fast{
+  -webkit-transition: all 0.6s ease-out;
+  -moz-transition: all 0.6s ease-out;
+  -o-transition: all 0.6s ease-out;
+  transition: all 0.6s ease-out; 
+}
+
+@mixin hints-visible{
+  .jr{
+    .jr-hint.active{
+      color: #888888;
+      display: block;
+      line-height: 1.5em;
+      font-weight: normal;
+      font-size: .7em;
+      font-style: italic;
+      ~ br{
+        display: none; } }
+    label .jr-hint.active{
+      padding-top: .5em; } 
+    legend .jr-hint.active{
+      padding-bottom: .6em; } } }
+
+@mixin font-sizes($base, $factor){
+  font-size: $factor * $base;
+  h1 { font-size: $factor * $base * 2.75; } 
+  h2 { font-size: $factor * $base * 2.25; } 
+  h3 { font-size: $factor * $base * 1.75; } 
+  h4 { font-size: $factor * $base * 1.25; } 
+  h5 { font-size: $factor * $base; }
+  h6 { font-size: $factor * $base * 0.85; } 
+}
+
+@mixin small-screen-paddings{
+  body{
+    padding: 0 !important;
+    header{
+      padding-left: 20px;
+      padding-right: 20px; } } }
+
+@mixin border-box{
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
+@mixin radius-zero{
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+ border-radius: 0; }

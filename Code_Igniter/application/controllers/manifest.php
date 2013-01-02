@@ -51,19 +51,19 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0011'; //time();
+		private $hash_manual_override = '0015'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
 	|--------------------------------------------------------------------------
 	*/	
-		private $pages = array('webform'); //, 'modern_browsers'); 
+		private $pages = array(); //, 'modern_browsers'); 
 	/*
 	|--------------------------------------------------------------------------	
 	| page to re-direct offline 404 requests to (html5 manifest 'fallback' section)
 	|__________________________________________________________________________
 	*/ 
-		private $offline = 'offline';	
+		private $offline = '/offline';	
 	/*
 	|--------------------------------------------------------------------------
 	| pages to always retrieve from the server (html5 manifest 'network' section)
@@ -84,44 +84,55 @@ class Manifest extends CI_Controller {
 		parent::__construct();
 		$this->load->helper(array('url', 'json', 'subdomain', 'http'));
 		$this->load->model('Survey_model','',TRUE);
-		$this->_set_data();
-		//log_message('debug', 'array with manifest resources generated');
 	}
 
-	public function gears()
-	{	
-		// IE9 requires these additional resources for Gears function properly
-		//$this->data['cache'][] = base_url().'index.php';
+	public function html()
+	{
+		$pages = func_get_args();
 		
-		// convert html5 manifest properties into object with Gears properties
-		$g_data['manifest']['betaManifestVersion'] = 1;
-		$g_data['manifest']['version'] = $this->data['hashes'];
-		foreach ($this->data['cache'] as $resource)
+		if(!empty($pages))
 		{
-			$g_data['manifest']['entries'][] = array('url' => $resource);
+			foreach ($pages as $page)
+			{
+				if (!empty($page))
+				{
+					$this->pages[] = $page;
+				}
+			}
+			$this->_set_data();
+			if (count($this->data['cache']) > 0 )
+			{
+				$this->load->view('html5_manifest_view.php', $this->data);
+				return;
+			}
 		}
-		
-		// convert manifest object to pretty JSON format
-		$g_data['manifest'] = stripslashes(json_format(json_encode($g_data['manifest'])));
-			
-		$this->load->view('gears_manifest_view.php', $g_data);
-	}	
-	
+		show_404();
+	}
+
+	/**
+	 * An uncached copy of the manifest (not referred to anywhere as a manifest and therefor not cached)
+	 * meant for trouble-shooting. Simply replace "html" with "test" in the manifest URL. 
+	 * Eg. "http://abcd.enketo.org/manifest/html/webform" becomes "http://abcd.enketo.org/manifest/test/webform"
+	 */
+	public function test()
+	{
+		$args = func_get_args();
+		call_user_func_array(array($this, 'html'), $args);
+	}
+
 	public function index()
 	{
-		//var_dump($this->data);
-		$this->load->view('html5_manifest_view.php', $this->data);
+		show_404();
 	}
 	
 	private function _set_data(){
-		//check if the survey exists (from subdomain) and is live
-		if ($this->Survey_model->is_launched_survey() && $this->Survey_model->is_live_survey() && $this->Survey_model->has_offline_launch_enabled()){
-			//convert to full urls
+		//if a subdomain is present, this manifest is meant for a survey and needs to be live, launched and offline-enabled
+		if ( (get_subdomain() && $this->Survey_model->is_launched_live_and_offline()) || !get_subdomain()){
 			$this->data['hashes'] = '';
 			$this->data['cache'] = $this->pages;	
 			foreach ($this->pages as $page)
 			{
-				//log_message('debug', 'checking resources on page: '.$page);
+				log_message('debug', 'checking resources on page: '.$this->_full_url($page));
 				$page_full_url = $this->_full_url($page);
 				$result = $this->_add_resources_to_cache($page_full_url);
 				if (!$result)
@@ -155,8 +166,7 @@ class Manifest extends CI_Controller {
 		foreach ($resources as $resource)
 		{
 			//log_message('debug', 'checking resource')
-			//don't add existing or cross-domain resources for now
-			if (!in_array($resource, $this->data['cache']) && strpos($resource, 'http://')!==0 && strpos($resource, 'https://')!==0)//&& url_exists($resource))
+			if (!in_array($resource, $this->data['cache']))//&& url_exists($resource))
 			{
 				//log_message('debug', 'adding resource to cache: '.$resource);
 			    $this->data['cache'][] = $resource;	
@@ -198,8 +208,9 @@ class Manifest extends CI_Controller {
 	private function _get_resources_from_css($path, $base=NULL)
 	{
 		//SMALL PROBLEM: ALSO EXTRACTS RESOURCES THAT ARE COMMENTED OUT
-		$pattern = '/url\((|\'|\")([^\)]+)(|\'|\")\)/';///url\(([^)]+)\)/';
-		$index = 2; //match of 1st set of parentheses is what we want
+		//doesn't do @import-ed resources
+		$pattern = '/url[\s]?\([\s]?[\'\"]?([^\)\'\"]+)[\'\"]?[\s]?\)/';///url\(([^)]+)\)/';
+		$index = 1; //match of 1st set of parentheses is what we want
 		return $this->_get_resources($path, $pattern, $index, $base);
 	}
 	
@@ -207,7 +218,6 @@ class Manifest extends CI_Controller {
 	// only goes one level deep
 	private function _get_resources($url, $pattern, $i, $base=NULL)
 	{
-
 		$content = $this->_get_content($url);
 		
 		if (isset($content))
@@ -215,28 +225,35 @@ class Manifest extends CI_Controller {
 			$this->data['hashes'] .= md5($content);
 
 			preg_match_all($pattern, $content, $result_array);
-			$resources = $result_array[$i];
+			$found_resources = $result_array[$i];
+			$cache_resources = array();
 
-			foreach ($resources as $index => $resource)
+			foreach ($found_resources as $index => $resource)
 			{
-				if (isset($base)){
+				if (isset($base) && strpos($resource, '/') !== 0){
 					$resource = $base . $resource;
 				}
 
-				$content = $this->_get_content($resource);
-				
-				if (!empty($content))
+				if (!in_array($resource, $cache_resources))
 				{
-					$resources[$index] = $resource;
-					$this->data['hashes'] .= md5($content);
+					$content = $this->_get_content($resource);
+					if (!empty($content))
+					{
+						$cache_resources[] = $resource;
+						$this->data['hashes'] .= md5($content);
+					}
+					else
+					{
+						log_message('error', 'resource: '.$resource.' could not be found, removed from manifest.');
+						//unset($resources[$index]);
+					}
 				}
 				else
 				{
-					log_message('debug', 'resource: '.$resource.' could not be found, removed from manifest.');
-					unset($resources[$index]);
+					log_message('debug', 'resource '.$resource.' was already added');
 				}
 			}
-			return $resources;
+			return $cache_resources;
 		}
 		else
 		{
@@ -245,25 +262,26 @@ class Manifest extends CI_Controller {
 	}
 	
 	// get the content, if possible through path, otherwise url
-	private function _get_content($url)
+	private function _get_content($url_or_path)
 	{
-		//var_dump($url);
-		log_message('debug', 'getting content of '.$url);
-		if (strpos($url, 'http://')!==0 && strpos($url, 'https://')!==0)
+		//log_message('debug', 'getting content of '.$url_or_path);
+		if (strpos($url_or_path, 'http://') !== 0 && strpos($url_or_path, 'https://') !== 0)
 		{
-			//log_message('debug', 'checking url: '.$url);
-			$abs_path = constant('FCPATH'). $url; //$this->_rel_url($url);
-			//log_message('debug', 'checking absolute path: '.$abs_path);
+			$rel_path = (strpos($url_or_path, '/') === 0) ? substr($url_or_path, 1) : $url_or_path;
+			$abs_path = constant('FCPATH'). $rel_path; 
+			//print('checking absolute path: '.$abs_path.'<br/>');
 			$content = (is_file($abs_path)) ? file_get_contents($abs_path) : NULL;
 		}
 		else
 		{
-			$content = (url_exists($url)) ? file_get_contents($url) : NULL;
+			//print ('checking url: '.$url_or_path."\n");
+			$content = (url_exists($url_or_path)) ? file_get_contents($url_or_path) : NULL;
 		}
-
+		if (empty($content))
+		{
+			log_message('error', 'Manifest controller failed to get contents of '.$url_or_path);
+		}
 		return $content;
-		//log_message('error', 'Manifest controller failed to get contents of '.$url);
-		//return $content;
 	}
 	
 	//returns a full url if relative url was provided

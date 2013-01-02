@@ -1,3 +1,6 @@
+@import "_variables";
+@import "_mixins";
+
 $very_dark: #444444;
 $dark: #666666;
 $medium: #888888;
@@ -5,16 +8,14 @@ $light: #aaaaaa;
 $very_light: #cccccc;
 
 body{
-  background: none; }
-
-.main{
-  margin: 0;
-  article{
-    padding: 3px; } }
-
-.paper{
-  border: none;
-  margin: 0; }
+  background: none; 
+  .main{
+    margin: 0;
+    article{
+      padding: 3px; } }
+  .paper{
+    border: none;
+    margin: 0; } }
 
 .drawer, 
 #feedback-bar,
@@ -22,42 +23,39 @@ body{
 #dialog-confirm,
 #dialog-save,
 #form-languages,
-#branding,
+.form-header,
 .paper #submit-form{
   display: none !important;}
 
+@include hints-visible;
+
 .jr{
   .hint,
-  .geopoint button,
-  .geopoint input[name="search"],
+  .map-canvas-wrapper,
+  .geopoint .search-bar,
   .jr-constraint-msg,
   .invalid .jr-constraint-msg.active.alert-error{
     display: none;
   }
+  legend span {
+    display: block; }
   .trigger{
     color: $dark;}
   label{
-    > span:not(.jr-constraint-msg).active{
+    > span.jr-hint.active{
       display: block;}
-    > input[type="radio"] ~ span.active, 
-    > input[type="checkbox"] ~ span.active{
-      display: inline; } } 
-  .jr-hint.active {
-    color: blue;
-    display: block;
-    font-weight: normal;
-    font-size: 10px;
-    font-style: italic;
-    ~ br{
-      display: none; } }
+    //> input[type="radio"] ~ span.active, 
+    //> input[type="checkbox"] ~ span.active{
+    //  display: inline; } 
+    } 
   .required{
     float: right;
     /*~ br {
       display: none; }*/ }
-  div.jr-branch{
-    display: none;}
-  .jr-branch+fieldset.disabled,
-  .jr-branch+label.disabled{
+  /*div.jr-branch{
+    display: none;}*/
+  .jr-branch.disabled{
+  /*.jr-branch+label.disabled{*/
     display: block !important; }
   .bootstrap-select, .bootstrap-multiselect{
     .dropdown-toggle{
@@ -78,26 +76,12 @@ body{
         input{
           display: none; } } }
   .geopoint{
-    height: 320px;
+    height: 280px;
     .map-canvas{
       bottom: 0;
-      width: 500px; }
-    label.geo{
-      $map-height: 275px;
-      //padding: 2px 0;
-      &:nth-of-type(1){
-        bottom: 3 * $map-height/4; }
-      &:nth-of-type(2){
-        bottom: 2 * $map-height/4; }
-      &:nth-of-type(3){
-        bottom: $map-height/4; }
-      &:nth-of-type(4){
-        bottom: 0; } } } }
-
-// This could have negative side effects.
-// If so, then take out "float:left" from .jr-hint.active above
-legend span {
-  display: block; }
+      width: 450px; } }
+  .jr-appearance-maps .map-canvas-wrapper{
+      display: block;} } 
 
 .page-break{
   display: block; 

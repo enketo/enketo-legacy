@@ -42,7 +42,7 @@ class Front extends CI_Controller {
 		);
 		$data = array(
 			'offline'=>FALSE, 
-			'title_component'=>'survey', 
+			'title_component'=>'', 
 			'stylesheets' => $default_stylesheets,
 			'num_surveys' => $this->Survey_model->number_surveys()
 		);
@@ -56,7 +56,7 @@ class Front extends CI_Controller {
 		else
 		{
 			$data['scripts'] = array_merge($default_scripts, array(
-				'/js-source/__common.js'
+				'/js-source/common.js'
 			));
 		}
 

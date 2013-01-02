@@ -80,7 +80,7 @@ class Form_model extends CI_Model {
                 //TODO: MOVE THIS TO SEPARATE FUNCTION $this->_fix_meta() or to XSLT
                 $meta = NULL;
                 $dataroot = NULL;
-                foreach ($data->instance->children() as $rootchild)
+                foreach ($data->model->instance[0]->children() as $rootchild)
                 {
                     $dataroot = $rootchild;
                     $meta = $dataroot->meta;
@@ -105,7 +105,7 @@ class Form_model extends CI_Model {
                 }
 
 				//easiest way to merge data and result
-				$result = simplexml_load_string('<root>'.$result->form->asXML().$data->instance->asXML().$result->xsltmessages->asXML().'</root>');
+				$result = simplexml_load_string('<root>'.$result->form->asXML().$data->model->asXML().$result->xsltmessages->asXML().'</root>');
 				
 				//$this->_html5_validate($result);
 				//log_message('debug', 'data: '.$data->asXML());				
@@ -127,26 +127,50 @@ class Form_model extends CI_Model {
         return ($xml['doc']) ? $xml['doc'] : null;
     }
    	
-    function get_formlist_HTML($server_url)
+//    function get_formlist_HTML($server_url)
+//    {
+//        $result = new SimpleXMLElement('<root></root>');
+//        $formlist = $result->addChild('formlist');
+//        $xforms_sxe = $this->_get_formlist($server_url);//
+
+//        if($xforms_sxe)
+//        {    
+//            foreach ($xforms_sxe->xform as $form)   //xpath('/forms/form') as $form)
+//            {
+//                $li = $formlist->addChild('li');
+//                //$li->addAttribute('class', 'ui-corner-all');
+//                $anchor = $li->addChild('a', $form->name); //$form);
+//                $anchor -> addAttribute('id', $form->formID);
+//                $anchor -> addAttribute('title', $form->descriptionText);
+//                $anchor -> addAttribute('data-server', $server_url);
+//                //$anchor -> addAttribute('data-manifest', $form->manifestUrl);
+//                //$anchor -> addAttribute('href', $form->downloadUrl);//$form["url"]);
+//            }   
+//        }
+//        //$result = $this->_add_errors($full_list['errors'], 'xmlerrors', $result);
+//        return $result;
+//    }
+
+    function get_formlist_JSON($server_url)
     {
-        $result = new SimpleXMLElement('<root></root>');
-        $formlist = $result->addChild('formlist');
+        $result = array();
         $xforms_sxe = $this->_get_formlist($server_url);
 
         if($xforms_sxe)
-        {    
+        {   
+            $this->load->model('Survey_model', '', TRUE);
             foreach ($xforms_sxe->xform as $form)   //xpath('/forms/form') as $form)
             {
-                $li = $formlist->addChild('li');
-                //$li->addAttribute('class', 'ui-corner-all');
-                $anchor = $li->addChild('a', $form->name); //$form);
-                $anchor -> addAttribute('id', $form->formID);
-                $anchor -> addAttribute('title', $form->descirptionText);
-                //$anchor -> addAttribute('data-manifest', $form->manifestUrl);
-                $anchor -> addAttribute('href', $form->downloadUrl);//$form["url"]);
+                $id = (string) $form->formID;
+                $url = $this->Survey_model->get_survey_url_if_launched($id, $server_url);
+                $result[$id] = array(
+                    'name' => (string) $form->name, 
+                    'title' => (string) $form->descriptionText,
+                    'url' => (!empty($url)) ? $url : '',
+                    'server'=>$server_url
+                );
             }   
         }
-        //$result = $this->_add_errors($full_list['errors'], 'xmlerrors', $result);
         return $result;
     }
 
@@ -249,28 +273,19 @@ class Form_model extends CI_Model {
    		
    			if(!$success)//empty($errors))
     		{
-    				log_message('error', 'XML/XSL doc load errors: '.json_encode($errors));
+    			log_message('error', 'XML/XSL doc load errors: '.json_encode($errors));
 
-    				//see if fatal errors occurred. Return FALSE for doc if one occurred
-    				//foreach ($errors as $error)// (array_search(LIBXML_ERR_FATAL, (array) $errors) === 'level')
-    				//{
-    				 // if ($error->level === 3)
-    				  //{	
+    			//see if fatal errors occurred. Return FALSE for doc if one occurred
+    			//foreach ($errors as $error)// (array_search(LIBXML_ERR_FATAL, (array) $errors) === 'level')
+    			//{
+    			// if ($error->level === 3)
+    			//{	
     			return array('doc' => FALSE, 'errors' => $errors);
-    				  //}
-    				//}
     		}	  			
-    		//if($success)
-    		//{
+
     		//log_message('debug', 'loaded doc!');// xml:'.$doc->saveXML());
     			
             return array('doc' => $doc, 'errors' => $errors, 'type' => $type);     			
-    		//}
-    		//else
-    		//{
-    		//	log_message('error', 'loading XML/XSL doc, errors: '.json_encode($errors)); //xml:'.$xml->saveXML());
-    		//	return FALSE;
-    		//}
     	}
     	else 
     	{

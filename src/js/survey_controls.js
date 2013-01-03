@@ -273,7 +273,8 @@ function submitEditedForm() {
 				gui.alert('Done!', 'Submission successful!');
 				resetForm(true);
 			}
-		}
+		},
+		complete: function(){}
 	};
 
 	connection.uploadRecords(record, true, callbacks);

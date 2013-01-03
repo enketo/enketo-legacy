@@ -60,7 +60,8 @@ class Front extends CI_Controller {
 			));
 		}
 
-		$integrated = $this->config->item('integration_with_url') || '';
+		$integrated = $this->config->item('integrated');
+		echo $integrated;
 		
 		if (strlen($integrated)>0)
 		{

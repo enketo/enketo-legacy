@@ -6,7 +6,7 @@
 <html lang="en" <?= (!empty($manifest)) ? 'manifest="'.$manifest.'"' : '' ?> class="no-js">
 	<head>
 		<title>
-			<?= (isset($html_title) && strlen($html_title) > 0) ? $html_title : $title_component ?> - enketo
+			<?= (!empty($html_title)) ? $html_title : (!empty($title_component)) ? $title_component.' - ' : ''; ?>enketo
 		</title>
 		
 		<link rel="icon" type="image/png" href="/images/favicon.png">

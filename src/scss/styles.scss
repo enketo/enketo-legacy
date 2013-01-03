@@ -407,8 +407,12 @@ label#data-template-show {
         background-color: $shadow; } } }
   //margin: 0 0 40px 0;
   #submit-form, #submit-edited-data, #validate-form, #launch-form{
-    display: block;
-    margin: 45px auto 5px auto; }
+    position: relative;
+    width: 150px;
+    left: 50%;
+    margin: 45px 10px 5px -75px; }
+    //display: block;
+    //margin: 45px auto 5px auto; }
   #refresh-list{
     float: right;
     margin: -2px -14px 0 14px;

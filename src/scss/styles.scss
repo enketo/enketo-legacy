@@ -375,12 +375,16 @@ label#data-template-show {
 ****    SURVEY FORM    ****
 **************************/
 .paper{
+  position: relative;
   .form-header{
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     background-color: $groupline;
     height: 45px;
     padding: 0;
-    margin: -48px -48px 20px -48px;
+    //margin: -48px -48px 20px -48px;
     .branding{
       position: absolute;
       left: 15px;
@@ -728,6 +732,9 @@ html.touch{
         border-color: $title; } } }
   label>input[type="radio"]+img, label>input[type="checkbox"]+img{
     /*margin-top: -25px;*/ } }
-  
 
+
+//fix can be removed if formheader is removed
+.form-header ~ .jr > .form-logo{
+  margin-top: 30px; }
 

@@ -194,13 +194,14 @@ class Webform extends CI_Controller {
 		else
 		{		
 			$data['scripts'] = array_merge($scripts, array(
-				'/js-source/__common.js',
-				'/js-source/__storage.js',
-				'/js-source/__form.js',
-				'/js-source/__connection.js',
-				'/js-source/__survey_controls.js',
-				'/js-source/__webform_edit.js',
-				'/js-source/__debug.js'
+				'/js-source/common.js',
+				'/js-source/storage.js',
+				'/js-source/form.js',
+				'/js-source/widgets.js',
+				'/js-source/connection.js',
+				'/js-source/survey_controls.js',
+				'/js-source/webform_edit.js',
+				'/js-source/debug.js'
 			));
 		}
 		$this->load->view('webform_basic_view',$data);
@@ -264,13 +265,14 @@ class Webform extends CI_Controller {
 		else
 		{		
 			$data['scripts'] = array_merge($scripts, array(
-				'/js-source/__common.js',
+				'/js-source/common.js',
 				//'/js-source/__storage.js',
-				'/js-source/__form.js',
-				'/js-source/__connection.js',
-				'/js-source/__survey_controls.js',
-				'/js-source/__webform_iframe.js',
-				'/js-source/__debug.js'
+				'/js-source/form.js',
+				'/js-source/widgets.js',
+				'/js-source/connection.js',
+				'/js-source/survey_controls.js',
+				'/js-source/webform_iframe.js',
+				'/js-source/debug.js'
 			));
 		}
 		$this->load->view('webform_basic_view',$data);

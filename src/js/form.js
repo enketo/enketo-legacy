@@ -1787,7 +1787,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 	FormHTML.prototype.bootstrapify = function(){				
 		//if no constraintmessage was specified show an empty box
-		$form.find('label, legend').each(function(){
+		$form.addClass('clearfix')
+			.find('label, legend').each(function(){
 			var $label = $(this);
 			if ($label.siblings('legend').length === 0 && 
 				$label.find('.jr-constraint-msg').length === 0 && 

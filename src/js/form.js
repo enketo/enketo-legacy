@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google, connection*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google, settings, connection*/
 
 /**
  * Class: Form
@@ -1419,13 +1419,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 	};
 
-	// evaluate the skip logic in data-relevant attributes
-	// this function should be called whenever $data has been updated
-	// If this becomes more complex it is probably better to create a branch object:
-	// branch.anim, branch.filter, branch.duration, branch.update, branch.init() //for eventhandlers
-	// this would actually be more consistent too as it's more modular like widgets, repeats, preloads
 	/**
-	 * Branch Class (inherits properties of FormHTML Class) is used to manage braching
+	 * Branch Class (inherits properties of FormHTML Class) is used to manage skip logic
 	 *
 	 * @constructor
 	 */
@@ -1553,7 +1548,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//branchClue = '<div class="jr-branch"></div>'; 
 
 			console.debug('disabling branch');
-			branchNode.addClass('disabled').hide(1000); 
+			branchNode.addClass('disabled');
+
+			if (typeof settings !== 'undefined' && typeof settings.showBranch !== 'undefined' && !settings.showBranch){
+				branchNode.hide(1000);
+			} 
 			
 			//if the branch was previously enabled
 			//if (branchNode.prev('.jr-branch').length === 0){

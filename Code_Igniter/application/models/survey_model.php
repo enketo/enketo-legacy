@@ -67,6 +67,11 @@ class Survey_model extends CI_Model {
         return strtolower($this->_get_item('submission_url'));
     }
 
+    public function get_preview_url($server_url, $form_id)
+    {
+        return $this->_get_preview_url($server_url, $form_id);
+    }
+
     public function has_offline_launch_enabled()
     {
         return !$this->_has_subdomain_suffix();
@@ -208,7 +213,7 @@ class Survey_model extends CI_Model {
         return $protocol.$subdomain.($this->ONLINE_SUBDOMAIN_SUFFIX).'.'.$domain.'/webform/edit';
     }
 
-     /**
+    /**
      * @method _get_full_iframe_url turns a subdomain into the full url where an iframeable webform is available
      * 
      * @param $subdomain subdomain
@@ -219,6 +224,17 @@ class Survey_model extends CI_Model {
         $domain = $_SERVER['SERVER_NAME'];
         $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
         return $protocol.$subdomain.($this->ONLINE_SUBDOMAIN_SUFFIX).'.'.$domain.'/webform/iframe';
+    }
+
+    /**
+     * returns a preview url
+     */
+    private function _get_preview_url($server_url, $form_id)
+    {
+        $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
+        $domain = $_SERVER['SERVER_NAME'];
+        $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain;
+        return $protocol.$domain.'/webform/preview?server='.$server_url.'&id='.$form_id;
     }
 
 

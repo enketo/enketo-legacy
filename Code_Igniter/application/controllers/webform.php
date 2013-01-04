@@ -245,7 +245,6 @@ class Webform extends CI_Controller {
 		}
 	
 		$data = array(
-			//'offline'=>FALSE, 
 			'title_component'=>'webform iframe', 
 			'html_title'=> $form->title,
 			'form'=> $form->html,
@@ -276,6 +275,51 @@ class Webform extends CI_Controller {
 			));
 		}
 		$this->load->view('webform_basic_view',$data);
+	}
+
+	public function preview()
+	{
+		extract($_GET);
+
+		if (empty($server) || empty($id))
+		{
+			show_error('Preview requires server url and form id variables.', 404);
+			return;
+		}
+		if (isset($this->subdomain))
+		{
+			show_error('Preview cannot be launched from subdomain', 404);
+			return;
+		}
+		$data = array(
+			'title_component' => 'webform preview', 
+			'html_title'=> 'enketo webform preview',
+			'form'=> '',
+			'return_url' => '',
+			'stylesheets'=> $this->default_stylesheets
+		);
+		$scripts = $this->default_scripts;
+
+		if (ENVIRONMENT === 'production')
+		{
+			$data['scripts'] = array_merge($scripts, array(
+				'/js-min/webform-preview-all-min.js'
+			));
+		}
+		else
+		{		
+			$data['scripts'] = array_merge($scripts, array(
+				'/js-source/common.js',
+				'/js-source/form.js',
+				'/js-source/widgets.js',
+				'/js-source/connection.js',
+				'/js-source/survey_controls.js',
+				'/js-source/webform_preview.js',
+				'/js-source/debug.js'
+			));
+		}
+
+		$this->load->view('webform_preview_view', $data);
 	}
 
 	private function _get_form()

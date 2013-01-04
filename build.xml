@@ -94,6 +94,25 @@
 
     </jscomp>
 
+     <jscomp compilationLevel="simple" warning="verbose" 
+            debug="false" output="public/js-min/webform-preview-all-min.js">
+
+      <externs dir="${basedir}/src/js">
+        <file name="extern.js"/>
+      </externs>
+
+      <sources dir="${basedir}/src/js">
+        <file name="common.js"/>
+        <file name="form.js"/>
+        <file name="widgets.js"/>
+        <file name="connection.js"/>
+        <file name="survey_controls.js"/>
+        <file name="webform_preview.js"/>
+      </sources>
+
+    </jscomp>
+
+
     <jscomp compilationLevel="simple" warning="verbose" 
             debug="false" output="public/js-min/formlist-all-min.js">
 

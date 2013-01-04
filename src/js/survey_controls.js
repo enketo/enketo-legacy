@@ -356,12 +356,17 @@ GUI.prototype.setCustomEventHandlers = function(){
 			submitForm();
 			return false;
 	});
-
 	$('button#submit-edited-data')
 		.click(function(){
 			form.validateForm();
 			submitEditedForm();
 			return false;
+	});
+	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
+		//$('form.jr').trigger('beforesave');
+		if (typeof form !== 'undefined'){
+			form.validateForm();
+		}
 	});
 
 	$('#drawer-export').click(function(){

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, console:true*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, settings, console:true*/
 
 // TODO: it would be better to remove references to store and form in common.js
 
@@ -23,29 +23,47 @@ var /** @type {Print} */ printO;
 
 $(document).ready(function(){
 	"use strict";
+	setSettings();
 	gui = new GUI();
 	gui.init();
 	// avoid windows console errors
 	if (typeof console == "undefined") {console = {log: function(){}};}
 	if (typeof window.console.debug == "undefined") {console.debug = console.log;}
 
-	if (getGetVariable('debug') !== 'true'){
+	if (settings.debug){
 		window.console.log = function(){};
 		window.console.debug = function(){};
 	}
 	//override Modernizr's detection (for development purposes)
-	if (getGetVariable('touch') == 'true'){
+	if (settings.touch){
 		Modernizr.touch = true;
 		$('html').addClass('touch');
 	}
-	else if (getGetVariable('touch') == 'false'){
+	else if (settings.touch === false){
 		Modernizr.touch = false;
 		$('html').removeClass('touch');
 	}
-
 	printO = new Print();
 });
 
+function setSettings(){
+	var i, queryVar,
+		settingsMap =
+		[
+			{q: 'return', s: 'returnURL'},
+			{q: 'showbranch', s: 'showBranch'},
+			{q: 'debug', s: 'debug'},
+			{q: 'touch', s: 'touch'},
+			{q: 'server', s: 'serverURL'},
+			{q: 'id', s: 'formId'}
+		];
+	for (i=0 ; i< settingsMap.length ; i++){
+		queryVar = getQueryVar(settingsMap[i].q);
+		//a query variable has preference
+		settings[settingsMap[i].s] = (queryVar !== null) ?
+			queryVar : (typeof settings[settingsMap[i].s] !== 'undefined') ? settings[settingsMap[i].s] : null;
+	}
+}
 
 /**
  * Class GUI deals with the main GUI elements (but not the survey form)
@@ -659,17 +677,19 @@ GUI.prototype.parseFormlist = function(list, $target, reset){
 	$target.find('ul').empty().append(listHTML);
 };
 
-function getGetVariable(variable) {
+function getQueryVar(variableName) {
 	"use strict";
-	var query = window.location.search.substring(1);
-	var vars = query.split("&");
+	var queryVarVal,
+		query = window.location.search.substring(1),
+		vars = query.split("&");
 	for (var i = 0; i < vars.length; i++) {
 		var pair = vars[i].split("=");
-		if (pair[0] == variable) {
-			return encodeURI(pair[1]);// URLs are case senstive!.toLowerCase();
+		if (pair[0].toLowerCase() === variableName.toLowerCase()) {
+			queryVarVal = encodeURI(pair[1]);
+			return (queryVarVal === 'true') ? true : (queryVarVal === 'false') ? false : queryVarVal;
 		}
 	}
-	return false;
+	return null;
 }
 /**
  * Class dealing with printing

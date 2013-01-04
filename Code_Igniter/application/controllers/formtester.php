@@ -39,12 +39,10 @@ class Formtester extends CI_Controller {
 				'/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
 				'/libraries/modernizr.min.js',
 				'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
-				'/libraries/jquery.form.js',
 				'/libraries/vkbeautify.js'
 			);
 			$default_stylesheets = array
 			(
-				//array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'all'),
 				array( 'href' => '/css/styles.css', 'media' => 'all'),
 				array( 'href' => '/css/print.css', 'media' => 'print')
 			);

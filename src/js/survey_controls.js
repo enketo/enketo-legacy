@@ -366,6 +366,10 @@ GUI.prototype.setCustomEventHandlers = function(){
 		//$('form.jr').trigger('beforesave');
 		if (typeof form !== 'undefined'){
 			form.validateForm();
+			if (!form.isValid()){
+				gui.alert('Form contains errors <br/>(please see fields marked in red)');
+				return;
+			}
 		}
 	});
 

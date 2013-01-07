@@ -5,7 +5,7 @@
 			var jrDataStr = <?= $form_data ?>;
 		<? if (isset($form_data_to_edit) && isset($return_url)): ?>
 			var jrDataStrToEdit = <?= $form_data_to_edit ?>;
-			var RETURN_URL = '<?= $return_url ?>';
+			settings['returnURL'] = '<?= $return_url ?>';
 		<? endif; ?>
 		</script>
 	

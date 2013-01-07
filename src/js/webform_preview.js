@@ -16,10 +16,9 @@
 
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global getGetVariable, settings, Connection, gui, jrDataStr, jrDataStrToEdit, Form*/
 
-/* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
-var store; //leave, though not used, to prevent compilation error
+var /**@type {StorageLocal}*/store; //leave, though not used, to prevent compilation error
 
 $(document).ready(function() {
 	'use strict';

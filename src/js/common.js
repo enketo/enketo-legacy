@@ -17,7 +17,6 @@
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, settings, console:true*/
 
 // TODO: it would be better to remove references to store and form in common.js
-
 var /** @type {GUI}*/ gui;
 var /** @type {Print} */ printO;
 
@@ -391,7 +390,7 @@ GUI.prototype.alert = function(message, heading, level, duration){
 	});
 
 	if (typeof duration === 'number'){
-		var left = duration;
+		var left = duration.toString();
 		$alert.find('.self-destruct-timer').text(left);
 		timer = setInterval(function(){
 			left--;
@@ -484,7 +483,7 @@ GUI.prototype.confirm = function(texts, choices, duration){
 	});
 
 	if (typeof duration === 'number'){
-		var left = duration;
+		var left = duration.toString();
 		$dialog.find('.self-destruct-timer').text(left);
 		timer = setInterval(function(){
 			left--;

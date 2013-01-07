@@ -1889,7 +1889,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$fakeDate.datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView})
 					.on(targetEvent, function(e) {
 						//console.debug(e.type+' detected');
-						var dp = $(e.currentTarget).data('datepicker');
+						var dp = /** @type {{date:Date, setValue:Function, hide:Function}} */ $(e.currentTarget).data('datepicker');
 						dp.date = e.date;
 						dp.setValue();
 						dp.hide();

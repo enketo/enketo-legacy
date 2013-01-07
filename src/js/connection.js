@@ -398,9 +398,9 @@ Connection.prototype.getFormHTML = function($form, callbacks){
 
 /**
  * Obtains HTML Form from an XML file or from a server url and form id
- * @param  {string=}					serverURL   full server url
- * @param  {string=}					formId		form ID
- * @param  {file=}						formFile	XForm XML file
+ * @param  {?string=}					serverURL   full server url
+ * @param  {?string=}					formId		form ID
+ * @param  {Blob=}						formFile	XForm XML file
  * @param  {Object.<string, Function>=} callbacks	callbacks
  */
 Connection.prototype.getTransForm = function(serverURL, formId, formFile, callbacks){

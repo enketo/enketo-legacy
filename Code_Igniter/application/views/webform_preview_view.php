@@ -15,7 +15,7 @@
 	<? require 'elements/dialogs.php'; ?>
 
 		<div class="main">
-			<h3>Preview of Form</h3>
+			<h3>Form Preview</h3>
 			<article class="paper" >
 				<div class="form-header">
 					<span class="branding">enketo forms + formhub</span>

@@ -29,7 +29,7 @@ $(document).ready(function(){
 	if (typeof console == "undefined") {console = {log: function(){}};}
 	if (typeof window.console.debug == "undefined") {console.debug = console.log;}
 
-	if (settings.debug){
+	if (!settings.debug){
 		window.console.log = function(){};
 		window.console.debug = function(){};
 	}

@@ -54,3 +54,18 @@
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
  border-radius: 0; }
+
+/** copy of bootstrap style for alert-error */
+@mixin error-bg-border{
+  background-color: #F2DEDE;
+  border-color: #EED3D7;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px; }
+
+@mixin error-text{
+  display: block;
+  padding-top: 5px;
+  font-size: 0.85em;
+  font-weight: bold;
+  color: #B94A48;}

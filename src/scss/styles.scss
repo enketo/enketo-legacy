@@ -420,7 +420,7 @@ label#data-template-show {
     margin: -2px -14px 0 14px;
     width: 60px; } }
 
-.jr [lang]:not(.active), .jr-hint, .jr-option-translations, .jr-appearance-page-break, .jr-constraint-msg.alert-error {
+.jr [lang]:not(.active), .jr-hint, .jr-option-translations, .jr-appearance-page-break, .jr-constraint-msg, .jr-required-msg {
   display: none; }
 
 #form-languages{
@@ -503,7 +503,7 @@ html.touch{
     max-height: 300px;
     max-width: 70%;}
   input:not([type="radio"]):not([type="checkbox"]), textarea, select{
-    float: left;
+    //float: left;
     display: inline-block;
     margin: 8px 0 0 0;
   }
@@ -544,14 +544,20 @@ html.touch{
     color: $title;}
   .disabled {
     opacity: 0.5; }
-  .jr-constraint-msg.alert-error {
-   @include transition-fast; }
+  /*.jr-constraint-msg.alert-error {
+   @include transition-fast; }*/
   .invalid {
-    .jr-constraint-msg.active.alert-error {
-      display: block;
-      min-height: 30px;
-      font-weight: bold;
-      font-style: italic; } }
+    @include transition-fast;
+    @include error-bg-border;
+    margin-right: -10px;
+    margin-left: -10px;
+    padding: 10px;
+    &.required{
+      .jr-required-msg.active{
+        @include error-text; } }
+    &.constraint{
+      .jr-constraint-msg.active{
+        @include error-text; } } }
   /*.jr-branch {
     border-top: 1px solid $shadow;
     border-bottom: 1px solid $shadow;
@@ -564,7 +570,7 @@ html.touch{
     input{
       width: $input-min-width;} }
   .datetimepicker{
-    float: left;
+    //float: left;
     .bootstrap-timepicker-component{
       display: inline-block;}
     .date{

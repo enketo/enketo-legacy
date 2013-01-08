@@ -1785,7 +1785,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	FormHTML.prototype.bootstrapify = function(){				
-		//if no constraintmessage was specified show an empty box
+		//if no constraintmessage use a default
 		$form.addClass('clearfix')
 			.find('label, legend').each(function(){
 			var $label = $(this);
@@ -1795,15 +1795,22 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$label.children('input.ignore').length !== $label.children('input').length  ||
 					$label.children('select.ignore').length !== $label.children('select').length ||
 					$label.children('textarea.ignore').length !== $label.children('textarea').length ) ){
-				$label.prepend('<span class="jr-constraint-msg" lang="" />');
+				$label.prepend('<span class="jr-constraint-msg" lang="">Value not allowed</span>');
 			}
 		});
 		$form.find('.trigger').addClass('alert alert-block');
-		$form.find('.jr-constraint-msg').addClass('alert alert-error');
+		//$form.find('.jr-constraint-msg').addClass('alert alert-error');
 		$form.find('label:not(.geo), fieldset').addClass('clearfix');
 		$form.find(':checkbox, :radio').each(function(){
 			var $p = $(this).parent('label'); 
 			$(this).detach().prependTo($p);
+		});
+		//move constraint message to bottom of question and add message for required (could also be done in XSLT)
+		$form.find('.jr-constraint-msg').parent().each(function(){
+			var $msg = $(this).find('.jr-constraint-msg').detach(),
+				$wrapper = $(this).closest('label, fieldset');
+			$msg.after('<span class="jr-required-msg" lang="">This field is required</span>');
+			$wrapper.append($msg);
 		});
 	};
 
@@ -2456,12 +2463,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 	};
 
-	FormHTML.prototype.setValid = function($node){
-		this.input.getWrapNodes($node).removeClass('invalid');
+	FormHTML.prototype.setValid = function($node, type){
+		type = type || 'constraint';
+		this.input.getWrapNodes($node).removeClass('invalid '+type);
 	};
 
-	FormHTML.prototype.setInvalid = function($node){
-		this.input.getWrapNodes($node).addClass('invalid');
+	FormHTML.prototype.setInvalid = function($node, type){
+		type = type || 'constraint';
+		this.input.getWrapNodes($node).addClass('invalid '+type);
 	};
 
 	/**

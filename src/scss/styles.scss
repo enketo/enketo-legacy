@@ -498,6 +498,7 @@ html.touch{
           background-color: lighten($title, 48%);} } }
   label, legend, .trigger {
     font-size: 1em; }
+  
   img, audio, video{
     float: right;
     max-height: 300px;
@@ -542,22 +543,33 @@ html.touch{
   .required{
     margin-left: 3px;
     color: $title;}
+  .required-subtle{
+    @include transition-slow;
+    font-size: 0.8em;
+    @media screen and (max-width: 500px){
+      font-size: 0.5em; }
+    float: right;
+    margin-top: 4px;
+    color: #e00e0e;
+    &.focus{
+      @include transition-slow;
+      color: #333333; } };
   .disabled {
     opacity: 0.5; }
   /*.jr-constraint-msg.alert-error {
    @include transition-fast; }*/
-  .invalid {
+  [class^="invalid"], [class*=" invalid"] {
     @include transition-fast;
     @include error-bg-border;
     margin-right: -10px;
     margin-left: -10px;
-    padding: 10px;
-    &.required{
-      .jr-required-msg.active{
-        @include error-text; } }
-    &.constraint{
-      .jr-constraint-msg.active{
-        @include error-text; } } }
+    padding: 10px;}
+  .invalid-required{
+    .jr-required-msg.active{
+      @include error-text; } }
+  .invalid-constraint{
+    .jr-constraint-msg.active{
+      @include error-text; } } 
   /*.jr-branch {
     border-top: 1px solid $shadow;
     border-bottom: 1px solid $shadow;
@@ -583,6 +595,7 @@ html.touch{
     $separator-width: 4%;
     $detect-width: 40px;
     $search-width: 70%;
+    margin-top: 25px;
     .geo-inputs{
       min-width: 160px;
       width: $input-width;

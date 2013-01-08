@@ -615,7 +615,7 @@ describe('Required field validation', function(){
 		expect($numberLabel.length).toEqual(1);
 		expect($numberInput.val().length).toEqual(0);
 		expect($numberLabel.parents('.jr-group').attr('disabled')).toEqual('disabled');
-		expect($numberLabel.hasClass('invalid')).toBe(false);
+		expect($numberLabel.hasClass('invalid-required')).toBe(false);
 	});
 
 	//see issue #144
@@ -623,15 +623,15 @@ describe('Required field validation', function(){
 		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
 		expect($numberLabel.length).toEqual(1);
 		$numberInput.val(0).trigger('change');
-		expect($numberLabel.hasClass('invalid')).toBe(false);
+		expect($numberLabel.hasClass('invalid-required')).toBe(false);
 		$numberInput.val(1).trigger('change');
-		expect($numberLabel.hasClass('invalid')).toBe(false);
+		expect($numberLabel.hasClass('invalid-required')).toBe(false);
 	});
 
 	it ("invalidates an enabled and required number field without a value", function(){
 		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
 		$numberInput.val('').trigger('change');
-		expect($numberLabel.hasClass('invalid')).toBe(true);
+		expect($numberLabel.hasClass('invalid-required')).toBe(true);
 	});
 
 	it ("invalidates an enabled and required textarea that contains only a newline character or other whitespace characters", function(){
@@ -640,9 +640,9 @@ describe('Required field validation', function(){
 		var $textarea = form.getFormO().$.find('[name="/thedata/nodeF"]');
 		$textarea.val('\n').trigger('change');
 		expect($textarea.length).toEqual(1);
-		expect($textarea.parent('label').hasClass('invalid')).toBe(true);
+		expect($textarea.parent('label').hasClass('invalid-required')).toBe(true);
 		$textarea.val('  \n  \n\r \t ').trigger('change');
-		expect($textarea.parent('label').hasClass('invalid')).toBe(true);
+		expect($textarea.parent('label').hasClass('invalid-required')).toBe(true);
 	});
 });
 

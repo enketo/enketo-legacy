@@ -1520,21 +1520,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * 
 		 * @param  {jQuery} branchNode The jQuery object to reveal and enable
 		 */
-		this.enable = function(branchNode){
+		this.enable = function($branchNode){
 			var type;
 			console.debug('enabling branch');
 
 			//branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
 			
-			branchNode.removeClass('disabled').show(1000);//, function(){$(this).fixLegends();} );
+			$branchNode.removeClass('disabled').show(1000);//, function(){$(this).fixLegends();} );
 
-			type = branchNode.prop('nodeName').toLowerCase();
+			type = $branchNode.prop('nodeName').toLowerCase();
 
 			if (type == 'label') {
-				branchNode.children('input, select, textarea').removeAttr('disabled');
+				$branchNode.children('input, select, textarea').removeAttr('disabled');
 			}
 			else{
-				branchNode.removeAttr('disabled');
+				$branchNode.removeAttr('disabled');
 			}
 		};
 		/**
@@ -1542,38 +1542,34 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * 
 		 * @param  {jQuery} branchNode The jQuery object to hide and disable
 		 */
-		this.disable = function(branchNode){
-			var type,
-				that = this;//, 
-				//branchClue = '<div class="jr-branch"></div>'; 
+		this.disable = function($branchNode){
+			var type = $branchNode.prop('nodeName').toLowerCase(),
+				currentlyDisabled = $branchNode.hasClass('disabled');
 
 			console.debug('disabling branch');
-			branchNode.addClass('disabled');
+			$branchNode.addClass('disabled');
 
 			if (typeof settings !== 'undefined' && typeof settings.showBranch !== 'undefined' && !settings.showBranch){
-				branchNode.hide(1000);
+				$branchNode.hide(1000);
 			} 
 			
 			//if the branch was previously enabled
-			//if (branchNode.prev('.jr-branch').length === 0){
-				//branchNode.before(branchClue);
+			if (!currentlyDisabled){
 				//if the branch was hidden upon form initialization, then shown and then hidden again
 				//difficult to detect. Maybe better to just replace clearInputs with setDefaults	
-				branchNode.clearInputs('change');
-			//}
+				$branchNode.clearInputs('change');
+			}
 
-			//since all fields are emptied they can be marked as valid
-			//branchNode.find('input, select, textarea').each(function(){
-				//that.setValid($(this));
-			//});
-
-			type = branchNode.prop('nodeName').toLowerCase();
+			//all remaining fields marked as invalid can now be marked as valid
+			$branchNode.find('.invalid-required, .invalid-constraint').find('input, select, textarea').each(function(){
+				parent.setValid($(this));
+			});
 
 			if (type == 'label'){
-				branchNode.children('input, select, textarea').attr('disabled', 'disabled');
+				$branchNode.children('input, select, textarea').attr('disabled', 'disabled');
 			}
 			else{
-				branchNode.attr('disabled', 'disabled');
+				$branchNode.attr('disabled', 'disabled');
 			}
 		};
 	};
@@ -1824,6 +1820,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * - disable when its parent branch is hidden (also when hidden upon initialization)
 	 * - enable when its parent branch is revealed 
 	 * - allow setting an empty value (that empties node in instance)
+	 * - send a focus event to the original input when the widget gets focus
 	 *
 	 * Considering the ever-increasing code size of the widgets and their dependence on the UI library being used,
 	 * it would be good to move them to a separate javascript file. 
@@ -1885,12 +1882,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					var date,
 						value = $(this).val();
 					value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
-					$dateI.val(data.node().convert(value, 'date')).trigger('change');
+					$dateI.val(data.node().convert(value, 'date')).trigger('change').blur();
 					date = new Date(value.split('-')[0], Number (value.split('-')[1]) - 1, value.split('-')[2]);
 					//the 'update' method only works for full dates, not yyyy-mm and yyyy dates, so this convoluted
 					//method is used by using setDate
 					$fakeDate.datepicker('setDate', new Date(date));
 					return false;
+				});
+
+				$fakeDateI.on('focus blur', function(event){
+					$dateI.trigger(event.type);
 				});
 
 				$fakeDate.datepicker({format: format, autoclose: true, todayHighlight: true, startView: startView})
@@ -1922,8 +1923,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 				$fakeTimeI.on('change', function(){
 					console.debug('detected change event on fake time input');
-					$timeI.val($(this).val()).trigger('change');
+					$timeI.val($(this).val()).trigger('change').blur();
 					return false;
+				});
+
+				$fakeTimeI.on('focus blur', function(event){
+					$timeI.trigger(event.type);
 				});
 			});
 		}, 
@@ -1950,7 +1955,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$fakeDateI = $fakeDate.find('input'),
 					$fakeTimeI = $fakeTime.find('input');
 
-				$dateTimeI.hide().after('<div class="datetimepicker" />');
+				$dateTimeI.hide().after('<div class="datetimepicker widget" />');
 				$dateTimeI.siblings('.datetimepicker').append($fakeDate).append($fakeTime);
 				$fakeDate.datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true});
 				$fakeTimeI.timepicker({defaultTime: (timeVal.length > 0) ? 'value' : 'current', showMeridian: false}).val(timeVal);
@@ -1963,13 +1968,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					changeVal();
 					return false;
 				});
-				
+				$fakeDateI.add($fakeTimeI).on('focus blur', function(event){
+					$dateTimeI.trigger(event.type);
+				});
+
 				function changeVal(){
 					if ($fakeDateI.val().length > 0 && $fakeTimeI.val().length > 0){
 						var d = $fakeDateI.val().split('-'),
 							t = $fakeTimeI.val().split(':');
 						console.log('changing datetime');
-						$dateTimeI.val(new Date(d[0], d[1]-1, d[2], t[0], t[1]).toISOLocalString()).trigger('change');
+						$dateTimeI.val(new Date(d[0], d[1]-1, d[2], t[0], t[1]).toISOLocalString()).trigger('change').blur();
+					}
+					else{
+						$dateTimeI.val('').trigger('change');
 					}
 				}
 			});
@@ -2393,36 +2404,80 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 	
 	FormHTML.prototype.setEventHandlers = function(){
-		var n, valid,//path, index, constraint, value, values, inputType, xmlDataType, indexOfAddition, gpIndex, $fieldset, valid, 
-			that = this;
+		var that = this;
 
 		//first prevent default submission, e.g. when text field is filled in and Enter key is pressed
 		$('form.jr').attr('onsubmit', 'return false;');
 
 		$form.on('change validate', 'input:not(.ignore), select:not(.ignore), textarea:not(.ignore)', function(event){
-			n = that.input.getProps($(this));
-			//console.log('node props: ', n);
+			var validCons, validReq, 
+				n = that.input.getProps($(this));
+
+			event.stopImmediatePropagation();
+
+			console.debug('event: '+event.type);
+			console.log('node props: ', n);
 			//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
-			if (event.type == 'validate'){
+			if (event.type === 'validate'){
 				//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
-				valid = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
+				validCons = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
 			}
 			else{
-				valid = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
+				validCons = data.node(n.path, n.ind).setVal(n.val, n.constraint, n.xmlType);
 			}
 			
-			//console.log('data.set validation returned valid: '+valid);
-			//additional check for 'required'
-			valid = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : valid;
-			//console.log('after "required" validation valid is: '+valid);
-			if (typeof valid !== 'undefined' && valid !== null){
-				return (valid === false) ? that.setInvalid($(this)) : that.setValid($(this));
-			}			
+			//validate 'required'
+			validReq = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : true;
+			
+			console.debug('validation required: '+validReq);
+			console.debug('validation constraint: '+validCons);
+
+			if (validReq === false){
+				that.setValid($(this), 'constraint');
+				if (event.type === 'validate'){
+					that.setInvalid($(this), 'required');
+				}
+			}
+			else{
+				that.setValid($(this), 'required');
+				if (typeof validCons !== 'undefined' && validCons === false){
+					that.setInvalid($(this), 'constraint');
+				}
+				else if (validCons !== null) {
+					that.setValid ($(this), 'constraint');
+				}
+			}
 		});	
 		
+		$form.on('focus', '[required]', function(){
+			var props = that.input.getProps($(this)),
+				loudErrorShown = ($(this).parents('.invalid-required, .invalid-constraint').length > 0),
+				$reqSubtle = $(this).next('.required-subtle'),
+				reqSubtle = $('<span class="required-subtle focus" style="color: white;">Required</span>');
+			if ($reqSubtle.length === 0 && !loudErrorShown){
+				$(reqSubtle).insertAfter(this).show(function(){$(this).removeAttr('style');});
+			}
+			else if (!loudErrorShown){
+				$reqSubtle.addClass('focus');
+			}
+			console.debug('required field getting focus');
+		});
+
+		$form.on('blur', '[required]', function(){
+			var props = that.input.getProps($(this)), 
+				$reqSubtle = $(this).next('.required-subtle');
+			if (props.val !== ''){
+				$reqSubtle.remove();
+			}
+			else {
+				$reqSubtle.removeClass('focus');
+			}
+			console.debug('required field blurring, props', props);
+		});
+
 		//nodeNames is comma-separated list as a string
 		$form.on('dataupdate', function(event, nodeNames){			
-			that.calcUpdate(nodeNames); //EACH CALCUPDATE THAT CHANGES A VALUE TRIGGERS ANOTHER CALCUPDATE => VERY INEFFICIENT
+			that.calcUpdate(nodeNames); //EACH CALCUPDATE THAT CHANGES A VALUE TRIGGERS ANOTHER CALCUPDATE => INEFFICIENT
 			that.branch.update(nodeNames);
 			that.outputUpdate(nodeNames);
 			that.itemsetUpdate(nodeNames);
@@ -2458,19 +2513,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//});
 
 		$form.on('changelanguage', function(){
-			//console.log('changelanguage event detected');
 			that.outputUpdate();
 		});
 	};
 
 	FormHTML.prototype.setValid = function($node, type){
-		type = type || 'constraint';
-		this.input.getWrapNodes($node).removeClass('invalid '+type);
+		var classes = (type) ? 'invalid-'+type : 'invalid-constraint invalid-required';
+		console.debug('removing classes: '+classes);
+		this.input.getWrapNodes($node).removeClass(classes);
 	};
 
 	FormHTML.prototype.setInvalid = function($node, type){
 		type = type || 'constraint';
-		this.input.getWrapNodes($node).addClass('invalid '+type);
+		console.debug('adding invalid-'+type+' class');
+		this.input.getWrapNodes($node).addClass('invalid-'+type).find('.required-subtle').remove();
 	};
 
 	/**
@@ -2519,7 +2575,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {!boolean} whether the form is valid
 	 */
 	FormHTML.prototype.isValid = function(){
-		return ($form.find('.invalid').length > 0) ? false : true;
+		return ($form.find('.invalid-required, .invalid-constraint').length > 0) ? false : true;
 	};
 
 	/**
@@ -2651,7 +2707,9 @@ String.prototype.pad = function(digits){
 					case 'file':
 					case 'hidden':
 					case 'textarea':
-						$(this).val('').trigger(ev);
+						if ($(this).val() !== ''){
+							$(this).val('').trigger(ev);
+						}
 						break;
 					case 'radio':
 					case 'checkbox':
@@ -2663,8 +2721,10 @@ String.prototype.pad = function(digits){
 						break;
 					case 'select':
 						// TEST THIS!
-						$(this)[0].selectedIndex = -1;
-						$(this).trigger(ev);
+						if ($(this)[0].selectedIndex >= 0){
+							$(this)[0].selectedIndex = -1;
+							$(this).trigger(ev);
+						}
 						break;
 					default:
 						console.error('Unrecognized input type found when trying to reset: '+type);

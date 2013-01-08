@@ -60,11 +60,12 @@
             this.$newElement = this.$element.next('.bootstrap-select');
             this.$newElement.find('> a').addClass(this.selectClass);
             this.clickListener();
+            //this.focusListener();
         },
 
         getTemplate: function() {
             var template =
-                "<div class='btn-group bootstrap-select'>" +
+                "<div class='btn-group bootstrap-select widget'>" +
                     "<a class='btn dropdown-toggle clearfix' data-toggle='dropdown' href='#''>" +
                         "<span class='filter-option pull-left'>__SELECTED_OPTIONS</span>" +
                         "<span class='caret pull-right'></span>" +
@@ -162,6 +163,23 @@
 
                 $select.trigger('change');
             });
+        },
+        //this listener has a bug and actually breaks the widget!
+        focusListener: function() {
+            var _this = this,
+                prevOpen = false;
+            //NOTE: in Bootstrap 3.0 this can probably be done more elegantly by listening for built-in dropdown open and close events
+            window.setInterval(function(){
+                if (_this.$newElement.hasClass('open')){
+                    _this.$element.focus();
+                    prevOpen = true;
+                }
+                else if (prevOpen){
+                    prevOpen = false;
+                    console.debug('sending blur event to original input');
+                    _this.$element.blur();
+                }
+            }, 1000);
         },
         update : function(){
            this.$newElement.remove();
@@ -271,9 +289,12 @@
                 var lat = (that.$lat.val() !== '') ? that.$lat.val() : 0.0, 
                     lng = (that.$lng.val() !== '') ? that.$lng.val() : 0.0, 
                     alt = (that.$alt.val() !== '') ? that.$alt.val() : 0.0, 
-                    acc = that.$acc.val();
+                    acc = that.$acc.val(),
+                    value = (lat === 0 && lng === 0) ? '' : lat+' '+lng+' '+alt+' '+acc;
 
-                that.$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
+                event.stopImmediatePropagation();
+                
+                that.$inputOrigin.val(value).trigger('change');
                
                 if (event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
                     that.updateMap(lat, lng);
@@ -282,8 +303,10 @@
                 if (event.namespace !== 'bysearch' && this.$search){
                     that.$search.val('');
                 }
-                //event.stopPropagation();
-                return false;
+            });
+
+            this.$widget.on('focus blur', 'input', function(event){
+                that.$inputOrigin.trigger(event.type);
             });
 
             if (inputVals[3]) this.$acc.val(inputVals[3]);

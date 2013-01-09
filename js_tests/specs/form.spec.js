@@ -80,7 +80,7 @@ describe('Data node XML data type conversion & validation', function(){
 		form = new Form("", ""),
 		t =	[
 				["/thedata/nodeA", null, null, 'val1', null, true],
-				["/thedata/nodeA", null, null, 'val3', 'somewrongtype', true],
+				["/thedata/nodeA", null, null, 'val3', 'somewrongtype', true], //default type is string
 
 				["/thedata/nodeA", 1   , null, 'val13', 'string', null], //non-existing node
 				["/thedata/repeatGroup/nodeC", null, null, 'val', null], //multiple nodes
@@ -113,6 +113,7 @@ describe('Data node XML data type conversion & validation', function(){
 				["/thedata/nodeA", null, null, '2012-12-31T23:59:59-06:30', 'datetime', true],
 				["/thedata/nodeA", null, null, '2012-12-31T23:59:59Z', 'datetime', true],
 				["/thedata/nodeA", null, null, '2012-01-01T30:00:00-06', 'datetime', false],
+				["/thedata/nodeA", null, null, '2013-05-31T07:00-02', 'datetime', true],
 				
 				["/thedata/nodeA", null, null, 'a', 'time', false],
 				["/thedata/nodeA", null, null, 'aa:bb', 'time', false],

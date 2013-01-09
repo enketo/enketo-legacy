@@ -489,8 +489,14 @@ html.touch{
   label, fieldset {
     padding-top: 14px;
     font-weight: bold; }
+  fieldset.with-legend{
+    margin-top: -20px;
+    margin-bottom: 5px;}
   legend {
-    margin-bottom: 0;
+    //margin-bottom: 0;
+    position: relative;
+    top: 25px;
+    margin-bottom: 25px;
     ~ label {
         padding: 5px 0 2px 0;
         font-weight: normal; 
@@ -563,6 +569,7 @@ html.touch{
     @include error-bg-border;
     margin-right: -10px;
     margin-left: -10px;
+    margin-top: 10px;
     padding: 10px;}
   .invalid-required{
     .jr-required-msg.active{

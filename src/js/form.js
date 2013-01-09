@@ -470,7 +470,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			'datetime' : {
 				validate : function(x){
 					console.debug('datetime validation function received: '+x+' type:'+ typeof x);
-					return ( new Date(x.toString()).toString() !== 'Invalid Date');
+					//the second part builds in some tolerance for slightly-off dates provides as defaults (e.g.: 2013-05-31T07:00-02)
+					return ( new Date(x.toString()).toString() !== 'Invalid Date' || new Date(this.convert(x.toString())).toString() !== 'Invalid Date');
 				},
 				convert : function(x){
 					var date,// timezone, segments, dateS, timeS,
@@ -1794,6 +1795,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$label.prepend('<span class="jr-constraint-msg" lang="">Value not allowed</span>');
 			}
 		});
+		$form.find('legend').parent('fieldset').addClass('with-legend');
 		$form.find('.trigger').addClass('alert alert-block');
 		//$form.find('.jr-constraint-msg').addClass('alert alert-error');
 		$form.find('label:not(.geo), fieldset').addClass('clearfix');
@@ -2417,8 +2419,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			console.debug('event: '+event.type);
 			console.log('node props: ', n);
-			//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
+			
 			if (event.type === 'validate'){
+				//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
 				//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
 				validCons = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
 			}
@@ -2430,7 +2433,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			validReq = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : true;
 			
 			console.debug('validation required: '+validReq);
-			console.debug('validation constraint: '+validCons);
+			console.debug('validation constraint + data type: '+validCons);
 
 			if (validReq === false){
 				that.setValid($(this), 'constraint');
@@ -2453,9 +2456,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var props = that.input.getProps($(this)),
 				loudErrorShown = ($(this).parents('.invalid-required, .invalid-constraint').length > 0),
 				$reqSubtle = $(this).next('.required-subtle'),
-				reqSubtle = $('<span class="required-subtle focus" style="color: white;">Required</span>');
-			if ($reqSubtle.length === 0 && !loudErrorShown){
-				$(reqSubtle).insertAfter(this).show(function(){$(this).removeAttr('style');});
+				reqSubtle = $('<span class="required-subtle focus" style="color: transparent;">Required</span>');
+			if ($reqSubtle.length === 0){
+				$reqSubtle = $(reqSubtle);
+				$reqSubtle.insertAfter(this);
+				if (!loudErrorShown){
+					$reqSubtle.show(function(){$(this).removeAttr('style');});
+				}
 			}
 			else if (!loudErrorShown){
 				$reqSubtle.addClass('focus');
@@ -2470,7 +2477,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$reqSubtle.remove();
 			}
 			else {
-				$reqSubtle.removeClass('focus');
+				$reqSubtle.removeAttr('style').removeClass('focus');
 			}
 			console.debug('required field blurring, props', props);
 		});
@@ -2526,7 +2533,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	FormHTML.prototype.setInvalid = function($node, type){
 		type = type || 'constraint';
 		console.debug('adding invalid-'+type+' class');
-		this.input.getWrapNodes($node).addClass('invalid-'+type).find('.required-subtle').remove();
+		this.input.getWrapNodes($node).addClass('invalid-'+type).find('.required-subtle').attr('style', 'color: transparent;');
 	};
 
 	/**

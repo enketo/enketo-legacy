@@ -622,15 +622,15 @@ describe('Required field validation', function(){
 	it ("validates an enabled and required number field with value 0 and 1", function(){
 		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
 		expect($numberLabel.length).toEqual(1);
-		$numberInput.val(0).trigger('change');
+		$numberInput.val(0).trigger('change').trigger('validate');
 		expect($numberLabel.hasClass('invalid-required')).toBe(false);
-		$numberInput.val(1).trigger('change');
+		$numberInput.val(1).trigger('change').trigger('validate');
 		expect($numberLabel.hasClass('invalid-required')).toBe(false);
 	});
 
 	it ("invalidates an enabled and required number field without a value", function(){
 		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
-		$numberInput.val('').trigger('change');
+		$numberInput.val('').trigger('change').trigger('validate');
 		expect($numberLabel.hasClass('invalid-required')).toBe(true);
 	});
 
@@ -638,10 +638,10 @@ describe('Required field validation', function(){
 		form = new Form(formStr1, dataStr1);
 		form.init();
 		var $textarea = form.getFormO().$.find('[name="/thedata/nodeF"]');
-		$textarea.val('\n').trigger('change');
+		$textarea.val('\n').trigger('change').trigger('validate');
 		expect($textarea.length).toEqual(1);
 		expect($textarea.parent('label').hasClass('invalid-required')).toBe(true);
-		$textarea.val('  \n  \n\r \t ').trigger('change');
+		$textarea.val('  \n  \n\r \t ').trigger('change').trigger('validate');
 		expect($textarea.parent('label').hasClass('invalid-required')).toBe(true);
 	});
 });

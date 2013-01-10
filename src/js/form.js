@@ -2462,38 +2462,36 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 		});	
 		
-		$form.on('focus', '[required]', function(){
+		$form.on('focus blur', '[required]', function(event){
 			var props = that.input.getProps($(this)),
 				loudErrorShown = ($(this).parents('.invalid-required, .invalid-constraint').length > 0),
 				$reqSubtle = $(this).next('.required-subtle'),
 				reqSubtle = $('<span class="required-subtle focus" style="color: transparent;">Required</span>');
-			if ($reqSubtle.length === 0){
-				$reqSubtle = $(reqSubtle);
-				$reqSubtle.insertAfter(this);
-				if (!loudErrorShown){
-					$reqSubtle.show(function(){$(this).removeAttr('style');});
+			console.debug('event: ', event);
+			if (event.type === 'focusin'){
+				if ($reqSubtle.length === 0){
+					$reqSubtle = $(reqSubtle);
+					$reqSubtle.insertAfter(this);
+					if (!loudErrorShown){
+						$reqSubtle.show(function(){$(this).removeAttr('style');});
+					}
+				}
+				else if (!loudErrorShown){
+					$reqSubtle.addClass('focus');
 				}
 			}
-			else if (!loudErrorShown){
-				$reqSubtle.addClass('focus');
+			else if (event.type === 'focusout'){
+				if (props.val.length > 0){
+					$reqSubtle.remove();
+				}
+				else {
+					$reqSubtle.removeClass('focus');
+					if (!loudErrorShown){
+						$reqSubtle.removeAttr('style');
+					}
+				}
 			}
-			console.debug('required field getting focus');
-		});
 
-		$form.on('blur', '[required]', function(){
-			var props = that.input.getProps($(this)), 
-				loudErrorShown = ($(this).parents('.invalid-required, .invalid-constraint').length > 0),
-				$reqSubtle = $(this).next('.required-subtle');
-			if (props.val.length > 0){
-				$reqSubtle.remove();
-			}
-			else {
-				$reqSubtle.removeClass('focus');
-				if (!loudErrorShown){
-					$reqSubtle.removeAttr('style');
-				}
-			}
-			console.debug('required field blurring, props', props);
 		});
 
 		//nodeNames is comma-separated list as a string

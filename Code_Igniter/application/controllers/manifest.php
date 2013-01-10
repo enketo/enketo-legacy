@@ -250,7 +250,7 @@ class Manifest extends CI_Controller {
 				}
 				else
 				{
-					log_message('debug', 'resource '.$resource.' was already added');
+					//log_message('debug', 'resource '.$resource.' was already added');
 				}
 			}
 			return $cache_resources;

@@ -242,11 +242,12 @@ class Form_model extends CI_Model {
     //loads xml resource into DOMDocument object 
     private function _load_xml($resource)
     {
-		log_message('debug', 'loading XML/XSL file with path:'.$resource);    
+        $time_start = time();
+		//log_message('debug', 'loading XML/XSL file with path:'.$resource);    
     	if (file_exists($resource))
     	{
     		$type = 'file';
-    		log_message('debug', 'file exists!');
+    		//log_message('debug', 'file exists!');
     	}
     	else //if  (url_exists($resource))
     	{ 
@@ -283,7 +284,7 @@ class Form_model extends CI_Model {
     			return array('doc' => FALSE, 'errors' => $errors);
     		}	  			
 
-    		//log_message('debug', 'loaded doc!');// xml:'.$doc->saveXML());
+    		log_message('debug', 'loading xml from '.$type.' ('.$resource.') took '.(time()-$time_start).' seconds.');
     			
             return array('doc' => $doc, 'errors' => $errors, 'type' => $type);     			
     	}

@@ -1017,9 +1017,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		this.repeat.init();
 		this.itemsetUpdate();
+		this.bootstrapify(); //before setAllVals()
 		this.setAllVals();
 		this.widgets.init(); //after setAllVals()
-		this.bootstrapify();
 		this.branch.init();
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 		this.calcUpdate();
@@ -1115,7 +1115,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//multiple nodes are limited to ones of the same input type (better implemented as JQuery plugin actually)
 		getWrapNodes: function($inputNodes){
 			var type = this.getInputType($inputNodes.eq(0));
-			return (type == 'radio' || type == 'checkbox') ? $inputNodes.parent('label').parent('fieldset') : 
+			return (type == 'radio' || type == 'checkbox') ? $inputNodes.closest('.restoring-sanity-to-legends') : 
 				(type == 'fieldset') ? $inputNodes : $inputNodes.parent('label');
 		},
 		getProps : function($node){
@@ -1795,7 +1795,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$label.prepend('<span class="jr-constraint-msg" lang="">Value not allowed</span>');
 			}
 		});
-		$form.find('legend').parent('fieldset').addClass('with-legend');
+		//legends are a royal pain-in-the-ass, but semantically correct to use. To restoring sanity, the least
+		//ugly solution that works regardless of the legend text + hint length (and showing a nice error background)
+		//is to use a double fieldset (in hindsight, I should have used <section>s for each question)
+		$form.find('legend').parent('fieldset').addClass('with-legend').each(function(){
+			var $elem = $(this),
+				$prev = $elem.prev(),
+				$wrap = $('<fieldset class="restoring-sanity-to-legends"></fieldset>');
+			$elem.detach().appendTo($wrap);
+			$prev.after($wrap);
+		});
+
 		$form.find('.trigger').addClass('alert alert-block');
 		//$form.find('.jr-constraint-msg').addClass('alert alert-error');
 		$form.find('label:not(.geo), fieldset').addClass('clearfix');
@@ -2472,12 +2482,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.on('blur', '[required]', function(){
 			var props = that.input.getProps($(this)), 
+				loudErrorShown = ($(this).parents('.invalid-required, .invalid-constraint').length > 0),
 				$reqSubtle = $(this).next('.required-subtle');
 			if (props.val.length > 0){
 				$reqSubtle.remove();
 			}
 			else {
-				$reqSubtle.removeAttr('style').removeClass('focus');
+				$reqSubtle.removeClass('focus');
+				if (!loudErrorShown){
+					$reqSubtle.removeAttr('style');
+				}
 			}
 			console.debug('required field blurring, props', props);
 		});
@@ -2741,6 +2755,26 @@ String.prototype.pad = function(digits){
 		});
 	};
 
+	$.fn.fixLegends = function(){
+		return this.each(function(){
+			var $elem = $(this),
+				$prev = $elem.prev(),
+				space = $elem.offset().top - $prev.offset().top - $prev.outerHeight();
+
+			console.log('space: '+space);
+		});
+	};
+
+	$.fn.fieldsetWrap = function(){
+		return this.each(function(){
+			var $elem = $(this),
+				$prev = $elem.prev(),
+				$wrap = $('<fieldset class="wrap" style="border: 1px solid black;"></fieldset>');
+
+			$elem.detach().appendTo($wrap);
+			$prev.after($wrap);
+		});
+	};
 
 	/**
 	 * Function: xfind

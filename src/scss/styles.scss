@@ -477,7 +477,7 @@ html.touch{
       margin: 8px 0 0 0;
       color: $title; } } 
   .jr-group{
-    border-top: $line; /**/
+    border-top: $line; 
     margin: .5em 0;
     .jr-group{
       margin: 25px 0 0 25px;
@@ -487,24 +487,26 @@ html.touch{
   #stats + .jr-group, #jr-preload-items + .jr-group, #form-languages + .jr-group{
     border-top: none;}
   label, fieldset {
-    padding-top: 14px;
+    margin: 0 0 0.7em 0;
+    padding-top: 0.9em;
     font-weight: bold; }
-  fieldset.with-legend{
-    margin-top: -20px;
-    margin-bottom: 5px;}
+  .restoring-sanity-to-legends{
+    fieldset{
+      padding: 0;
+      margin: 0; } }
   legend {
-    //margin-bottom: 0;
     position: relative;
-    top: 25px;
-    margin-bottom: 25px;
+    line-height: $baseLineHeight;
+    margin-bottom: 0.9em;
+    border: none;
     ~ label {
-        padding: 5px 0 2px 0;
+        margin: 0;
+        padding: 0.3em 0 0.15em 0;
         font-weight: normal; 
         &:hover{
           background-color: lighten($title, 48%);} } }
   label, legend, .trigger {
     font-size: 1em; }
-  
   img, audio, video{
     float: right;
     max-height: 300px;
@@ -567,10 +569,14 @@ html.touch{
   [class^="invalid"], [class*=" invalid"] {
     @include transition-fast;
     @include error-bg-border;
-    margin-right: -10px;
-    margin-left: -10px;
-    margin-top: 10px;
-    padding: 10px;}
+    $pad: 10px;
+    margin-right: -$pad;
+    margin-left: -$pad;
+    //margin-top: 10px;
+    padding-left: $pad;
+    padding-right: $pad;
+    padding-bottom: $pad;
+  }
   .invalid-required{
     .jr-required-msg.active{
       @include error-text; } }

@@ -1131,7 +1131,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				constraint: $node.attr('data-constraint'),
 				relevant: $node.attr('data-relevant'),
 				val: this.getVal($node),
-				required: ($node.attr('required') !== undefined) ? true : false,
+				required: ($node.attr('required') !== undefined && $node.parents('.jr-appearance-label').length === 0) ? true : false,
 				enabled: this.isEnabled($node),
 				multiple: this.isMultiple($node)
 			};
@@ -2027,10 +2027,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 		},
 		tableWidget :function(){
-			$form.find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label').parent().each(function(){
-				$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
-				$(this).find('label').toLargestWidth();
-				$(this).find('legend').toLargestWidth();
+			$form.find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
+				.parent().parent('.jr-group').each(function(){
+					$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
+					$(this).find('label').toLargestWidth();
+					$(this).find('legend').toLargestWidth();
 			});	
 			//$form.find('.jr-appearance-compact label img').selectable();
 		},
@@ -2750,27 +2751,6 @@ String.prototype.pad = function(digits){
 						console.error($(this));
 				}
 			});
-		});
-	};
-
-	$.fn.fixLegends = function(){
-		return this.each(function(){
-			var $elem = $(this),
-				$prev = $elem.prev(),
-				space = $elem.offset().top - $prev.offset().top - $prev.outerHeight();
-
-			console.log('space: '+space);
-		});
-	};
-
-	$.fn.fieldsetWrap = function(){
-		return this.each(function(){
-			var $elem = $(this),
-				$prev = $elem.prev(),
-				$wrap = $('<fieldset class="wrap" style="border: 1px solid black;"></fieldset>');
-
-			$elem.detach().appendTo($wrap);
-			$prev.after($wrap);
 		});
 	};
 

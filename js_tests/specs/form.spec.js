@@ -588,7 +588,8 @@ describe('branching functionality', function(){
 		expect(form.getFormO().$.find(repeatSelector).length).toEqual(2);
 		//check if initial state of 2nd question in 2nd repeat is disabled.
 		expect(form.getFormO().$.find(repeatSelector).eq(1)
-			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().attr('disabled')).toEqual('disabled');
+			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().parent('.restoring-sanity-to-legends')
+			.attr('disabled')).toEqual('disabled');
 		//select 'yes' in first question of 2nd repeat
 		form.getDataO().node('/issue208/rep/nodeA', 1).setVal('yes', null, 'string');
 		//doublecheck if new value was set

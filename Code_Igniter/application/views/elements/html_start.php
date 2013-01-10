@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 
-<? $integrated = $this->config->item('integrated'); ?>
+<? 	$integrated = $this->config->item('integrated'); 
+ 	$brand_setting = $this->config->item('brand');
+	$brand = (!empty($brand_setting)) ? $brand_setting : 'enketo'; ?>
 <!-- An offline-capable survey application suite (c) Aid Web Solutions -->
 
 <html lang="en" <?= (!empty($manifest)) ? 'manifest="'.$manifest.'"' : '' ?> class="no-js">

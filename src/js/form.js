@@ -989,10 +989,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$(this).children('span:not(.jr-option-translations, .jr-hint):last').after($required);
 			});
 
-
 		//add 'hint' icon
-		//$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea')
-		//	.after($hint);
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
 			$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea').before($hint);
@@ -1002,6 +999,18 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.find('select, input:not([type="checkbox"], [type="radio"]), textarea').before($('<br/>'));
 
+		/*
+			legends are a royal pain-in-the-ass, but semantically correct to use. To restoring sanity, the least
+			ugly solution that works regardless of the legend text + hint length (and showing a nice error background)
+			is to use a double fieldset (in hindsight, I should have used <section>s for each question)
+		 */
+		$form.find('legend').parent('fieldset').each(function(){
+			var $elem = $(this),
+				$prev = $elem.prev(),
+				$wrap = $('<fieldset class="restoring-sanity-to-legends"></fieldset>');
+			$elem.detach().appendTo($wrap);
+			$prev.after($wrap);
+		});
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
 			Repeated radiobuttons would all have the same name which means they wouldn't work right.
@@ -1017,9 +1026,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		this.repeat.init();
 		this.itemsetUpdate();
-		this.bootstrapify(); //before setAllVals()
 		this.setAllVals();
 		this.widgets.init(); //after setAllVals()
+		this.bootstrapify(); 
 		this.branch.init();
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 		this.calcUpdate();
@@ -1055,7 +1064,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			/** @type {number} */
 			total.hRadio = $form.find('input[type="radio"]').length;
 			total.hCheck = $form.find('input[type="checkbox"]').length;
-			total.hSelect = $form.find('select').length;
+			total.hSelect = $form.find('select:not(#form-languages)').length;
 			total.hItemset = $form.find('.itemset-template').length;
 			total.hOption = $form.find('option[value!=""]').length;
 			total.hInputNotRadioCheck = $form.find('textarea, input:not([type="radio"],[type="checkbox"])').length;
@@ -1289,15 +1298,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	FormHTML.prototype.setLangs = function(){
 		var lang, value, /** @type {string} */curLabel, /** @type {string} */ newLabel,
 			that = this,
-			defaultLang = $form.find('#form-languages').attr('data-default-lang');
+			defaultLang = $form.find('#form-languages').attr('data-default-lang'),
+			$langSelector = $('#form-language-selector');
 		
-		$('#form-languages').detach().insertBefore($('form.jr').parent());
+		$('#form-languages').detach().appendTo($langSelector);//insertBefore($('form.jr').parent());
+		
 		if (!defaultLang || defaultLang === '') {
-			defaultLang = $('#form-languages a:eq(0)').attr('lang');
+			defaultLang = $('#form-languages option:eq(0)').attr('value');
 		}
 		console.debug('default language is: '+defaultLang);
 
-		if ($('#form-languages a').length < 2 ){
+		if ($('#form-languages option').length < 2 ){
 			$form.find('[lang]').addClass('active');
 			//hide the short versions if long versions exist
 			$form.find('.jr-form-short.active').each(function(){
@@ -1310,10 +1321,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return;
 		}
 
-		$('#form-languages a').click(function(event){
+		$('#form-languages').change(function(event){
 			event.preventDefault();
-			lang = $(this).attr('lang');
-			$('#form-languages a').removeClass('active');
+			lang = $(this).val();//attr('lang');
+			$('#form-languages option').removeClass('active');
 			$(this).addClass('active');
 
 			//$form.find('[lang]').not('.jr-hint, .jr-constraint-msg, jr-option-translations>*').show().not('[lang="'+lang+'"], [lang=""], #form-languages a').hide();
@@ -1350,7 +1361,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//$form.fixLegends();
 			$form.trigger('changelanguage');
 		});
-		$('#form-languages a[lang="'+defaultLang+'"]').click();
+		$('#form-languages').val(defaultLang).trigger('change');
 	};
 		
 	/**
@@ -1795,19 +1806,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$label.prepend('<span class="jr-constraint-msg" lang="">Value not allowed</span>');
 			}
 		});
-		//legends are a royal pain-in-the-ass, but semantically correct to use. To restoring sanity, the least
-		//ugly solution that works regardless of the legend text + hint length (and showing a nice error background)
-		//is to use a double fieldset (in hindsight, I should have used <section>s for each question)
-		$form.find('legend').parent('fieldset').addClass('with-legend').each(function(){
-			var $elem = $(this),
-				$prev = $elem.prev(),
-				$wrap = $('<fieldset class="restoring-sanity-to-legends"></fieldset>');
-			$elem.detach().appendTo($wrap);
-			$prev.after($wrap);
-		});
 
 		$form.find('.trigger').addClass('alert alert-block');
-		//$form.find('.jr-constraint-msg').addClass('alert alert-error');
 		$form.find('label:not(.geo), fieldset').addClass('clearfix');
 		$form.find(':checkbox, :radio').each(function(){
 			var $p = $(this).parent('label'); 
@@ -1999,7 +1999,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		selectWidget : function(){
 			//$form.find('select option[value=""]').remove(); issue with init value empty
-			$form.find('select').selectpicker();
+			$form.find('select').not('#form-languages').selectpicker();
 			$form.on('changelanguage', function(){
 				$form.find('select').selectpicker('update');
 			});

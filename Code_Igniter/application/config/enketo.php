@@ -42,7 +42,7 @@ $config['default_server_url_helper'] = "formhub";
 /**
  * In the webform view this is the brand name shown (empty = enketo)
  */
-$config['brand'] = "enketo+formhub";
+$config['brand'] = "formhub";
 
 /**
  * 

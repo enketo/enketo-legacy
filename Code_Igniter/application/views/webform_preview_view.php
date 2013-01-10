@@ -17,10 +17,7 @@
 		<div class="main">
 			<h3>Form Preview</h3>
 			<article class="paper" >
-				<div class="form-header">
-					<span class="branding">enketo forms + formhub</span>
-					<button onclick="printO.printForm(); return false" class="print"><i class="icon-print"></i></button>
-				</div>
+				<? include_once 'elements/form-header.php'; ?>
 				<progress></progress>
 				<?= $form ?>
 				<button id="validate-form" class="btn btn-primary btn-large" disabled="disabled"><i class="icon-ok icon-white"></i> Validate</button>

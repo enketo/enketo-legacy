@@ -1223,7 +1223,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				});
 				return values;
 			}
-			return (!$node.val()) ? '' : ($.isArray($node.val())) ? $node.val() : $node.val().trim();
+			return (!$node.val()) ? '' : ($.isArray($node.val())) ? $node.val().join(' ').trim() : $node.val().trim();
 		},
 		setVal : function(name, index, value){
 			var $inputNodes, type, date;//, 
@@ -2432,8 +2432,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//validate 'required'
 			validReq = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : true;
 			
-			console.debug('validation required: '+validReq);
-			console.debug('validation constraint + data type: '+validCons);
+			console.debug('validation for required: '+validReq);
+			console.debug('validation for constraint + datatype: '+validCons);
 
 			if (validReq === false){
 				that.setValid($(this), 'constraint');
@@ -2473,7 +2473,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.on('blur', '[required]', function(){
 			var props = that.input.getProps($(this)), 
 				$reqSubtle = $(this).next('.required-subtle');
-			if (props.val !== ''){
+			if (props.val.length > 0){
 				$reqSubtle.remove();
 			}
 			else {

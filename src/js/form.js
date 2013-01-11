@@ -997,7 +997,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 		}
 
-		$form.find('select, input:not([type="checkbox"], [type="radio"]), textarea').before($('<br/>'));
+		$form.find('select, input, textarea')
+			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 
 		this.repeat.init(); //before double-fieldset magic to fix legend issues
 		

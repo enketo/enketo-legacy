@@ -52,9 +52,8 @@
         constructor: Selectpicker,
 
         init: function () {
-            this.$element.css('display', 'none');
-
             var $template = this.getTemplate();
+            this.$element.css('display', 'none');
             $template = this.createLi($template);
             this.$element.after($template);
             this.$newElement = this.$element.next('.bootstrap-select');
@@ -284,6 +283,8 @@
         init: function(){
             var that = this,
                 inputVals = this.$inputOrigin.val().split(' ');
+
+            this.$inputOrigin.parent().addClass('clearfix');
 
             this.$widget.find('input:not([name="search"])').on('change change.bymap change.bysearch', function(event){
                 //console.debug('change event detected');

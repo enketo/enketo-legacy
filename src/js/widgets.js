@@ -164,22 +164,23 @@
                 $select.trigger('change');
             });
         },
-        //this listener has a bug and actually breaks the widget!
+        //this listener for fake focus and blur events has a bug and actually breaks the widget!
+        //TODO: when bootstrap 3.0 has launched, used the dropdown open and close events to do this.
         focusListener: function() {
-            var _this = this,
-                prevOpen = false;
-            //NOTE: in Bootstrap 3.0 this can probably be done more elegantly by listening for built-in dropdown open and close events
-            window.setInterval(function(){
-                if (_this.$newElement.hasClass('open')){
-                    _this.$element.focus();
-                    prevOpen = true;
+            var _this = this;
+
+            _this.$newElement.find('.dropdown-toggle').hover(
+                function(){
+                    console.debug('focus...');
+                    _this.$element.trigger('focus');
+                    return true;
+                }, 
+                function(){
+                    console.debug('blur...');
+                    _this.$element.trigger('blur');
+                    return true;
                 }
-                else if (prevOpen){
-                    prevOpen = false;
-                    console.debug('sending blur event to original input');
-                    _this.$element.blur();
-                }
-            }, 1000);
+            );
         },
         update : function(){
            this.$newElement.remove();

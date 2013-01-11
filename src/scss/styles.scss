@@ -435,6 +435,14 @@ label#data-template-show {
     margin: 45px 10px 5px -75px; }
     //display: block;
     //margin: 45px auto 5px auto; }
+  .enketo-power{
+    position: relative;
+    left: 50%;
+    margin: 30px 0 0 -100px;
+    width: 200px;
+    text-align: center;
+    a{
+      font-style: italic;} }
   #refresh-list{
     float: right;
     margin: -2px -14px 0 14px;
@@ -462,7 +470,7 @@ html.touch{
     left: 50%;
     max-height: 200px;
     width: 120px;
-    margin: 0 0 10px -60px; }
+    margin: 30px 0 10px -60px; }
   h3{
     //text-align: left;
     padding: 5px 0 15px 0;
@@ -779,8 +787,4 @@ html.touch{
   label>input[type="radio"]+img, label>input[type="checkbox"]+img{
     /*margin-top: -25px;*/ } }
 
-
-//fix can be removed if formheader is removed
-.form-header ~ .jr > .form-logo{
-  margin-top: 30px; }
 

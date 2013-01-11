@@ -26,6 +26,7 @@
 				<? include_once 'elements/form-header.php'; ?>
 				<?= $form ?>	
 				<button id="submit-form" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
+				<? include_once 'elements/enketo-power.php'; ?>
 			</article>
 		</div>
 

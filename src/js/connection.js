@@ -478,6 +478,12 @@ Connection.prototype.oRosaHelper = {
 			console.log('nothing to do');
 			return null;
 		}
+		console.debug('frag: '+frag);
+		//always override if valid URL is entered
+		//TODO: REMOVE reference to connection
+		if (connection.isValidURL(frag)){
+			return frag;
+		}
 
 		switch (type){
 			case 'http':

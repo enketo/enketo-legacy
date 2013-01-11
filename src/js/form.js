@@ -1811,7 +1811,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 
 		$form.find('.trigger').addClass('alert alert-block');
-		$form.find('label:not(.geo), fieldset').addClass('clearfix');
+		//$form.find('label:not(.geo), fieldset').addClass('clearfix');
 		$form.find(':checkbox, :radio').each(function(){
 			var $p = $(this).parent('label'); 
 			$(this).detach().prependTo($p);

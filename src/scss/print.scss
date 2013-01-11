@@ -99,7 +99,9 @@ body{
     height: 280px;
     .map-canvas{
       bottom: 0;
-      width: 450px; } }
+      width: 450px; }
+    label.geo:nth-of-type(3){
+      border-top:none; } }
   .jr-appearance-maps .map-canvas-wrapper{
       display: block;} } 
 

@@ -65,6 +65,7 @@ class Formtester extends CI_Controller {
 				));
 			}
 			$data['stylesheets'] = $default_stylesheets;
+			$this->output->cache(10);
 			$this->load->view('test_view', $data);
 		}
 	}

@@ -21,10 +21,12 @@ class Webform extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
+
+		log_message('debug', 'Webform Controller started');
+
 		$this->load->helper(array('subdomain','url'));
-		$this->load->model('Form_model', '', TRUE);
 		$this->load->model('Survey_model','',TRUE);
-		$this->load->model('Instance_model','',TRUE);
+		
 		$this->default_library_scripts = array
 		(
 			'/libraries/jquery.min.js',
@@ -90,7 +92,7 @@ class Webform extends CI_Controller {
 
 			if (ENVIRONMENT === 'production')
 			{
-				//$this->output->cache(60);
+				$this->output->cache(3);
 				$data['scripts'] = array
 				(
 					'/libraries/libraries-all-min.js',
@@ -129,6 +131,7 @@ class Webform extends CI_Controller {
 	 **/
 	public function edit()
 	{
+		$this->load->model('Instance_model','',TRUE);
 		log_message('debug', 'webform edit view controller started');
 		extract($_GET);
 		
@@ -334,6 +337,7 @@ class Webform extends CI_Controller {
 
 	private function _get_form()
 	{
+		$this->load->model('Form_model', '', TRUE);
 		if (!isset($this->form_id) || !isset($this->server_url))
 		{
 			return FALSE;

@@ -66,7 +66,7 @@ class Forms extends CI_Controller {
         		'/js-source/formlist.js'
 			));
 		}
-
+		$this->output->cache(10);
 		$this->load->view('formlist_view', $data);
 	}
 

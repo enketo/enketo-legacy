@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0018'; //time();
+		private $hash_manual_override = '0020'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -83,6 +83,7 @@ class Manifest extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		log_message('debug', 'Manifest Controller started');
 		$this->load->helper(array('url', 'json', 'subdomain', 'http'));
 		$this->load->model('Survey_model','',TRUE);
 	}
@@ -105,6 +106,7 @@ class Manifest extends CI_Controller {
 			$this->_set_data();
 			if (count($this->data['cache']) > 0 )
 			{
+				$this->output->cache(1);
 				$this->load->view('html5_manifest_view.php', $this->data);
 				return;
 			}
@@ -271,7 +273,7 @@ class Manifest extends CI_Controller {
 	// get the content, if possible through path, otherwise url
 	private function _get_content($url_or_path)
 	{
-		//log_message('debug', 'getting content of '.$url_or_path);
+		log_message('debug', 'getting content of '.$url_or_path);
 		if (strpos($url_or_path, 'http://') !== 0 && strpos($url_or_path, 'https://') !== 0)
 		{
 			$rel_path = (strpos($url_or_path, '/') === 0) ? substr($url_or_path, 1) : $url_or_path;
@@ -282,7 +284,8 @@ class Manifest extends CI_Controller {
 		else
 		{
 			//print ('checking url: '.$url_or_path."\n");
-			$content = (url_exists($url_or_path)) ? file_get_contents($url_or_path) : NULL;
+			//$content = (url_exists($url_or_path)) ? file_get_contents($url_or_path) : NULL;
+			$content = file_get_contents($url_or_path);
 		}
 		if (empty($content))
 		{

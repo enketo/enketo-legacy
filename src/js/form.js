@@ -1301,7 +1301,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var lang, value, /** @type {string} */curLabel, /** @type {string} */ newLabel,
 			that = this,
 			defaultLang = $form.find('#form-languages').attr('data-default-lang'),
-			$langSelector = $('#form-language-selector');
+			$langSelector = $('.form-language-selector');
 		
 		$('#form-languages').detach().appendTo($langSelector);//insertBefore($('form.jr').parent());
 		
@@ -1311,6 +1311,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		console.debug('default language is: '+defaultLang);
 
 		if ($('#form-languages option').length < 2 ){
+			$langSelector.hide();
 			$form.find('[lang]').addClass('active');
 			//hide the short versions if long versions exist
 			$form.find('.jr-form-short.active').each(function(){
@@ -1822,6 +1823,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$msg.after('<span class="jr-required-msg" lang="">This field is required</span>');
 			$wrapper.append($msg);
 		});
+
+		$('.form-header [title]').tooltip({placement: 'bottom'});
 	};
 
 	/**

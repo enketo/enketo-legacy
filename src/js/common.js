@@ -127,6 +127,10 @@ GUI.prototype.setEventHandlers = function(){
 		return false;
 	});
 
+	$('button.print').on('click', function(){
+		printO.printForm();
+	});
+
 	//$(document).on('click', '.touch #page', function(event){
 	//	that.pages.close();
 	//});
@@ -776,7 +780,7 @@ Print.prototype.styleReset = function(){
  * Prints the form after first setting page breaks (every time it is called)
  */
 Print.prototype.printForm = function(){
-	console.debug('preparing form for printing');
+	//console.debug('preparing form for printing');
 	this.removePageBreaks();
 	this.removePossiblePageBreaks();
 	this.styleToAll();
@@ -809,7 +813,7 @@ Print.prototype.addPossiblePageBreaks = function(){
 	this.removePossiblePageBreaks();
 
 	$('form.jr').before(possible_break.clone()).after(possible_break.clone())
-		.find('fieldset>legend, label:not(.geo)>input:not(input:radio, input:checkbox), label>select, label>textarea, .trigger>*, h4>*, h3>*')
+		.find('fieldset>fieldset>legend, label:not(.geo)>input:not(input:radio, input:checkbox), label>select, label>textarea, .trigger>*, h4>*, h3>*')
 		.parent().each(function() {
 			var $this, prev;
 			$this = $(this);

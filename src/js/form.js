@@ -1043,6 +1043,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 	};
 
+	/**
+	 * Checks for general transformation or xml form errors by comparing stats. It is helpful,
+	 * though an error is not always important
+	 */
 	FormHTML.prototype.checkForErrors = function(){
 		var i,
 			paths = [],
@@ -1060,16 +1064,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			total.jrCalculate = parseInt($stats.find('[id="jrCalculate"]').text(), 10);
 			total.jrPreload = parseInt($stats.find('[id="jrPreload"]').text(), 10);
 
-			//console.log('checking for general transformation or xml form errors by comparing stats');
-			//$form.find('#stats span').each(function(){
-			//	total[$(this).attr('id')] = parseInt($(this).text(),10);
-			//});
 			/** @type {number} */
 			total.hRadio = $form.find('input[type="radio"]').length;
 			total.hCheck = $form.find('input[type="checkbox"]').length;
 			total.hSelect = $form.find('select:not(#form-languages)').length;
 			total.hItemset = $form.find('.itemset-template').length;
-			total.hOption = $form.find('option[value!=""]').length;
+			total.hOption = $form.find('select:not(#form-languages) > option[value!=""]').length;
 			total.hInputNotRadioCheck = $form.find('textarea, input:not([type="radio"],[type="checkbox"])').length;
 			total.hTrigger = $form.find('.trigger').length;
 			total.hRelevantNotRadioCheck = $form.find('[data-relevant]:not([type="radio"],[type="checkbox"])').length;
@@ -1080,7 +1080,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			total.hPreload = $form.find('#jr-preload-items input').length;
 
 			if (total.jrItemset === 0 && (total.jrItem !== ( total.hOption + total.hRadio + total.hCheck ) ) ) {
-				console.error(' total number of select fields differs between XML form and HTML form');
+				console.error(' total number of option fields differs between XML form and HTML form');
 			}
 			if (total.jrItemset !== total.hItemset ) {
 				console.error(' total number of itemset fields differs between XML form ('+total.jrItemset+') and HTML form ('+total.hItemset+')');

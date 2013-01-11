@@ -999,6 +999,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.find('select, input:not([type="checkbox"], [type="radio"]), textarea').before($('<br/>'));
 
+		this.repeat.init(); //before double-fieldset magic to fix legend issues
+		
 		/*
 			legends are a royal pain-in-the-ass, but semantically correct to use. To restoring sanity, the least
 			ugly solution that works regardless of the legend text + hint length (and showing a nice error background)
@@ -1024,7 +1026,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.find('h2').first().append('<span/>');
 
-		this.repeat.init();
 		this.itemsetUpdate();
 		this.setAllVals();
 		this.widgets.init(); //after setAllVals()
@@ -1038,6 +1039,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.setLangs();
 		this.editStatus.set(false);
 		//setTimeout(function(){$form.fixLegends();}, 500);
+
 	};
 
 	FormHTML.prototype.checkForErrors = function(){

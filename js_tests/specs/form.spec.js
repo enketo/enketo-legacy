@@ -505,37 +505,39 @@ describe("Loading instance-to-edit functionality", function(){
 		});
 	});
 
-	describe('repeat functionality', function(){
-		var form, timerCallback;
+});
 
-		beforeEach(function() {
-			//turn jQuery animations off
-			jQuery.fx.off = true;
-		});
+describe('repeat functionality', function(){
+	var form, timerCallback;
 
-		it ("removes the correct instance and HTML node when the '-' button is clicked (issue 170)", function(){
-			var rep,
-				repeatPath = "/thedata/repeatGroup",
-				nodePath = "/thedata/repeatGroup/nodeC",
-				index = 2;
-			form = new Form(formStr1, dataStr1);
-			form.init();
-			
-			expect(form.getFormO().$.find('[name="'+repeatPath+'"]').eq(index).length).toEqual(1);
-			expect(form.getFormO().$.find('[name="'+repeatPath+'"]:eq('+index+') button.remove').length).toEqual(1);
-			expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index).val()).toEqual('c3');
-			expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual('c3');
-			
-			form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]:eq('+index+') button.remove').click();
-			expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual(undefined);
-			//check if it removed the correct data node
-			expect(form.getDataO().node(nodePath, index-1).getVal()[0]).toEqual('c2');
-			//check if it removed the correct html node
-			expect(form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]').eq(index).length).toEqual(0);
-			expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index-1).val()).toEqual('c2');
-		});
+	beforeEach(function() {
+		//turn jQuery animations off
+		jQuery.fx.off = true;
+	});
+
+	it ("removes the correct instance and HTML node when the '-' button is clicked (issue 170)", function(){
+		var rep,
+			repeatPath = "/thedata/repeatGroup",
+			nodePath = "/thedata/repeatGroup/nodeC",
+			index = 2;
+		form = new Form(formStr1, dataStr1);
+		form.init();
+		
+		expect(form.getFormO().$.find('[name="'+repeatPath+'"]').eq(index).length).toEqual(1);
+		expect(form.getFormO().$.find('[name="'+repeatPath+'"]:eq('+index+') button.remove').length).toEqual(1);
+		expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index).val()).toEqual('c3');
+		expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual('c3');
+		
+		form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]:eq('+index+') button.remove').click();
+		expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual(undefined);
+		//check if it removed the correct data node
+		expect(form.getDataO().node(nodePath, index-1).getVal()[0]).toEqual('c2');
+		//check if it removed the correct html node
+		expect(form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]').eq(index).length).toEqual(0);
+		expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index-1).val()).toEqual('c2');
 	});
 });
+
 
 describe('branching functionality', function(){
 	var form;
@@ -584,11 +586,16 @@ describe('branching functionality', function(){
 		//form = new Form(formStr7, dataStr7);
 		form = loadForm('issue208.xml');
 		form.init();
+	
 		form.getFormO().$.find(repeatSelector).eq(0).find('button.repeat').click();
 		expect(form.getFormO().$.find(repeatSelector).length).toEqual(2);
-		//check if initial state of 2nd question in 2nd repeat is disabled.
+		//check if initial state of 2nd question in 2nd repeat is disabled
+
+			console.debug('the input to check: ', form.getFormO().$.find(repeatSelector).eq(1)
+				.find('[data-name="/issue208/rep/nodeB"]'));
+
 		expect(form.getFormO().$.find(repeatSelector).eq(1)
-			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().parent('.restoring-sanity-to-legends')
+			.find('[data-name="/issue208/rep/nodeB"]').closest('.restoring-sanity-to-legends')
 			.attr('disabled')).toEqual('disabled');
 		//select 'yes' in first question of 2nd repeat
 		form.getDataO().node('/issue208/rep/nodeA', 1).setVal('yes', null, 'string');
@@ -597,6 +604,7 @@ describe('branching functionality', function(){
 		//check if 2nd question in 2nd repeat is now enabled
 		expect(form.getFormO().$.find(repeatSelector).eq(1)
 			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().attr('disabled')).toEqual(undefined);
+
 	});
 });
 

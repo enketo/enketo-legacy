@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0015'; //time();
+		private $hash_manual_override = '0018'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -78,6 +78,7 @@ class Manifest extends CI_Controller {
 	*/
 	
 	private $data;
+	private $master_page;
 
 	public function __construct()
 	{
@@ -89,9 +90,11 @@ class Manifest extends CI_Controller {
 	public function html()
 	{
 		$pages = func_get_args();
-		
+		//!important the first argument is assumed to be the master entry which is implicitly cached
+		//and removed from the manifest as a test to solve issue with manifest updates
 		if(!empty($pages))
 		{
+			$this->master_page = $pages[0];
 			foreach ($pages as $page)
 			{
 				if (!empty($page))
@@ -140,8 +143,12 @@ class Manifest extends CI_Controller {
 					//remove non-existing page from manifest
 					$key = array_search($page, $this->data['cache']);
 					unset($this->data['cache'][$key]);
-				}		
+				}
 			}
+			//remove Master page
+			$key = array_search($this->master_page, $this->data['cache']);
+			unset($this->data['cache'][$key]);	
+
 			$this->data['hashes'] = md5($this->data['hashes']).'_'.$this->hash_manual_override; //hash of hashes		
 			$this->data['network'] = $this->network;
 			$this->data['fallback']= $this->offline;	

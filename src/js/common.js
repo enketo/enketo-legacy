@@ -813,7 +813,8 @@ Print.prototype.addPossiblePageBreaks = function(){
 	this.removePossiblePageBreaks();
 
 	$('form.jr').before(possible_break.clone()).after(possible_break.clone())
-		.find('fieldset>fieldset>legend, label:not(.geo)>input:not(input:radio, input:checkbox), label>select, label>textarea, .trigger>*, h4>*, h3>*')
+		.find('fieldset>legend, label:not(.geo)>input:not(input:radio, input:checkbox), label>select, label>textarea,'+
+			' .trigger>*, h4>*, h3>*, .jr-appearance-field-list>*')
 		.parent().each(function() {
 			var $this, prev;
 			$this = $(this);
@@ -822,7 +823,8 @@ Print.prototype.addPossiblePageBreaks = function(){
 			if (
 				prev && ( prev.nodeName === "H3" || prev.nodeName === "H4" ) ||
 				$(prev).hasClass('repeat-number') ||
-				$this.parents('#jr-calculated-items, #jr-preload-items').length > 0
+				$this.parents('#jr-calculated-items, #jr-preload-items').length > 0 ||
+				$this.parents('.jr-appearance-field-list').length > 0
 				) {
 				return null;
 			} else {

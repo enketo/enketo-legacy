@@ -92,7 +92,7 @@ class Webform extends CI_Controller {
 
 			if (ENVIRONMENT === 'production')
 			{
-				$this->output->cache(3);
+				//$this->output->cache(3);
 				$data['scripts'] = array
 				(
 					'/libraries/libraries-all-min.js',

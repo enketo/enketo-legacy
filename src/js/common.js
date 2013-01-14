@@ -14,38 +14,55 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, console:true*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, settings, console:true*/
 
 // TODO: it would be better to remove references to store and form in common.js
-
 var /** @type {GUI}*/ gui;
 var /** @type {Print} */ printO;
 
 $(document).ready(function(){
 	"use strict";
+	setSettings();
 	gui = new GUI();
 	gui.init();
 	// avoid windows console errors
 	if (typeof console == "undefined") {console = {log: function(){}};}
 	if (typeof window.console.debug == "undefined") {console.debug = console.log;}
 
-	if (getGetVariable('debug') !== 'true'){
+	if (!settings.debug){
 		window.console.log = function(){};
 		window.console.debug = function(){};
 	}
 	//override Modernizr's detection (for development purposes)
-	if (getGetVariable('touch') == 'true'){
+	if (settings.touch){
 		Modernizr.touch = true;
 		$('html').addClass('touch');
 	}
-	else if (getGetVariable('touch') == 'false'){
+	else if (settings.touch === false){
 		Modernizr.touch = false;
 		$('html').removeClass('touch');
 	}
-
 	printO = new Print();
 });
 
+function setSettings(){
+	var i, queryVar,
+		settingsMap =
+		[
+			{q: 'return', s: 'returnURL'},
+			{q: 'showbranch', s: 'showBranch'},
+			{q: 'debug', s: 'debug'},
+			{q: 'touch', s: 'touch'},
+			{q: 'server', s: 'serverURL'},
+			{q: 'id', s: 'formId'}
+		];
+	for (i=0 ; i< settingsMap.length ; i++){
+		queryVar = getQueryVar(settingsMap[i].q);
+		//a query variable has preference
+		settings[settingsMap[i].s] = (queryVar !== null) ?
+			queryVar : (typeof settings[settingsMap[i].s] !== 'undefined') ? settings[settingsMap[i].s] : null;
+	}
+}
 
 /**
  * Class GUI deals with the main GUI elements (but not the survey form)
@@ -108,6 +125,10 @@ GUI.prototype.setEventHandlers = function(){
 	$(document).on('click', '#page .close', function(event){
 		that.pages.close();
 		return false;
+	});
+
+	$('button.print').on('click', function(){
+		printO.printForm();
 	});
 
 	//$(document).on('click', '.touch #page', function(event){
@@ -373,7 +394,7 @@ GUI.prototype.alert = function(message, heading, level, duration){
 	});
 
 	if (typeof duration === 'number'){
-		var left = duration;
+		var left = duration.toString();
 		$alert.find('.self-destruct-timer').text(left);
 		timer = setInterval(function(){
 			left--;
@@ -466,7 +487,7 @@ GUI.prototype.confirm = function(texts, choices, duration){
 	});
 
 	if (typeof duration === 'number'){
-		var left = duration;
+		var left = duration.toString();
 		$dialog.find('.self-destruct-timer').text(left);
 		timer = setInterval(function(){
 			left--;
@@ -659,17 +680,19 @@ GUI.prototype.parseFormlist = function(list, $target, reset){
 	$target.find('ul').empty().append(listHTML);
 };
 
-function getGetVariable(variable) {
+function getQueryVar(variableName) {
 	"use strict";
-	var query = window.location.search.substring(1);
-	var vars = query.split("&");
+	var queryVarVal,
+		query = window.location.search.substring(1),
+		vars = query.split("&");
 	for (var i = 0; i < vars.length; i++) {
 		var pair = vars[i].split("=");
-		if (pair[0] == variable) {
-			return encodeURI(pair[1]);// URLs are case senstive!.toLowerCase();
+		if (pair[0].toLowerCase() === variableName.toLowerCase()) {
+			queryVarVal = encodeURI(pair[1]);
+			return (queryVarVal === 'true') ? true : (queryVarVal === 'false') ? false : queryVarVal;
 		}
 	}
-	return false;
+	return null;
 }
 /**
  * Class dealing with printing
@@ -757,7 +780,7 @@ Print.prototype.styleReset = function(){
  * Prints the form after first setting page breaks (every time it is called)
  */
 Print.prototype.printForm = function(){
-	console.debug('preparing form for printing');
+	//console.debug('preparing form for printing');
 	this.removePageBreaks();
 	this.removePossiblePageBreaks();
 	this.styleToAll();
@@ -790,7 +813,8 @@ Print.prototype.addPossiblePageBreaks = function(){
 	this.removePossiblePageBreaks();
 
 	$('form.jr').before(possible_break.clone()).after(possible_break.clone())
-		.find('fieldset>legend, label:not(.geo)>input:not(input:radio, input:checkbox), label>select, label>textarea, .trigger>*, h4>*, h3>*')
+		.find('fieldset>legend, label:not(.geo)>input:not(input:radio, input:checkbox), label>select, label>textarea,'+
+			' .trigger>*, h4>*, h3>*, .jr-appearance-field-list>*')
 		.parent().each(function() {
 			var $this, prev;
 			$this = $(this);
@@ -799,7 +823,8 @@ Print.prototype.addPossiblePageBreaks = function(){
 			if (
 				prev && ( prev.nodeName === "H3" || prev.nodeName === "H4" ) ||
 				$(prev).hasClass('repeat-number') ||
-				$this.parents('#jr-calculated-items, #jr-preload-items').length > 0
+				$this.parents('#jr-calculated-items, #jr-preload-items').length > 0 ||
+				$this.parents('.jr-appearance-field-list').length > 0
 				) {
 				return null;
 			} else {

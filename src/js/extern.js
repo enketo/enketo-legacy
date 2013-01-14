@@ -1,4 +1,10 @@
-var jrDataStr, jrDataStrToEdit, settings, RETURN_URL;
+var jrDataStr, jrDataStrToEdit;
+
+/** @type {{returnURL: string, serverURL: string, formId: string, mapsStaticAPIKey:string, mapsDynamicAPIKey:string,
+	 defaultServerURLHelper:string, supportEmail:string, modernBrowsersURL:string, showBranch:boolean}}
+ */
+var settings;
+
 
 /**
  * @type number

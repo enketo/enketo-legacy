@@ -20,7 +20,7 @@
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var	currentOnlineStatus = false;
-var store; //leave, though not used, to prevent compilation error
+var /**@type {StorageLocal}*/store; //leave, though not used, to prevent compilation error
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 // !Document.ready()
@@ -31,7 +31,7 @@ $(document).ready(function() {
 	form = new Form('form.jr:eq(0)', jrDataStr, jrDataStrToEdit);
 
 	connection = new Connection();
-
+	
 	form.init();
 	connection.init();
 	gui.setup();

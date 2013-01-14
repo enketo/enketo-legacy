@@ -102,7 +102,7 @@ Cache.prototype.onObsolete = function(){
  * Handler for newly-cached event
  */
 Cache.prototype.onCached = function(){
-	this.showBookmarkMsg('This form can be loaded and used when you are offline! <br />', true);
+	this.showBookmarkMsg('This form works offline! <br />', true);
 	gui.updateStatus.offlineLaunch(true);
 };
 
@@ -162,8 +162,8 @@ Cache.prototype.showBookmarkMsg = function(prepend, force){
 	bookmark = store.getRecord('__bookmark');
 	shown = (bookmark) ? bookmark['shown'] : 0;
 	if(force || shown < 3){
-		gui.feedback(prepend+'We recommend to bookmark this page for easy '+
-			'access when you are not connected to the Internet. ', 15);
+		gui.feedback(prepend+'Bookmark this form for easy '+
+			'offline access. ', 15);
 			//'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
 		shown++;
 		store.setRecord('__bookmark', {'shown': shown});

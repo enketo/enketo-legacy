@@ -132,7 +132,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
 
                     </div>
 	                <xsl:if test="//*/@lang" >
-	                    <div id="form-languages">
+	                    <select id="form-languages">
 	                    	<xsl:if test="$translated != 'true'">
 	                        	<xsl:attribute name="style">display:none;</xsl:attribute>
 	                        </xsl:if>
@@ -142,7 +142,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
 	                            </xsl:attribute>
 	                        </xsl:if>
 	                        <xsl:call-template name="languages" />
-	                    </div>
+	                    </select>
 	                </xsl:if>
 	                <!-- create hidden input fields for preload items -->
 	                <xsl:if test="/h:html/h:head/xf:model/xf:bind[@jr:preload]" >
@@ -958,12 +958,12 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
 
     <xsl:template name="languages">
         <xsl:for-each select="//xf:itext/xf:translation" >
-            <a href="#">
-                <xsl:attribute name="lang">
+            <option>
+                <xsl:attribute name="value">
                     <xsl:value-of select="@lang"/>
                 </xsl:attribute>
-                <!--<xsl:value-of select="@lang" />REMOVED FOR ENKETO, BUT SHOULD BE RE-ADDED FOR GENERIC APP-->
-            </a>
+                <xsl:value-of select="@lang" />
+            </option>
             <xsl:text> </xsl:text>
         </xsl:for-each>
     </xsl:template>

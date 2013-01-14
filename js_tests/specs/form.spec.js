@@ -80,7 +80,7 @@ describe('Data node XML data type conversion & validation', function(){
 		form = new Form("", ""),
 		t =	[
 				["/thedata/nodeA", null, null, 'val1', null, true],
-				["/thedata/nodeA", null, null, 'val3', 'somewrongtype', true],
+				["/thedata/nodeA", null, null, 'val3', 'somewrongtype', true], //default type is string
 
 				["/thedata/nodeA", 1   , null, 'val13', 'string', null], //non-existing node
 				["/thedata/repeatGroup/nodeC", null, null, 'val', null], //multiple nodes
@@ -113,6 +113,7 @@ describe('Data node XML data type conversion & validation', function(){
 				["/thedata/nodeA", null, null, '2012-12-31T23:59:59-06:30', 'datetime', true],
 				["/thedata/nodeA", null, null, '2012-12-31T23:59:59Z', 'datetime', true],
 				["/thedata/nodeA", null, null, '2012-01-01T30:00:00-06', 'datetime', false],
+				//["/thedata/nodeA", null, null, '2013-05-31T07:00-02', 'datetime', true],fails in phantomJSs
 				
 				["/thedata/nodeA", null, null, 'a', 'time', false],
 				["/thedata/nodeA", null, null, 'aa:bb', 'time', false],
@@ -504,37 +505,39 @@ describe("Loading instance-to-edit functionality", function(){
 		});
 	});
 
-	describe('repeat functionality', function(){
-		var form, timerCallback;
+});
 
-		beforeEach(function() {
-			//turn jQuery animations off
-			jQuery.fx.off = true;
-		});
+describe('repeat functionality', function(){
+	var form, timerCallback;
 
-		it ("removes the correct instance and HTML node when the '-' button is clicked (issue 170)", function(){
-			var rep,
-				repeatPath = "/thedata/repeatGroup",
-				nodePath = "/thedata/repeatGroup/nodeC",
-				index = 2;
-			form = new Form(formStr1, dataStr1);
-			form.init();
-			
-			expect(form.getFormO().$.find('[name="'+repeatPath+'"]').eq(index).length).toEqual(1);
-			expect(form.getFormO().$.find('[name="'+repeatPath+'"]:eq('+index+') button.remove').length).toEqual(1);
-			expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index).val()).toEqual('c3');
-			expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual('c3');
-			
-			form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]:eq('+index+') button.remove').click();
-			expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual(undefined);
-			//check if it removed the correct data node
-			expect(form.getDataO().node(nodePath, index-1).getVal()[0]).toEqual('c2');
-			//check if it removed the correct html node
-			expect(form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]').eq(index).length).toEqual(0);
-			expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index-1).val()).toEqual('c2');
-		});
+	beforeEach(function() {
+		//turn jQuery animations off
+		jQuery.fx.off = true;
+	});
+
+	it ("removes the correct instance and HTML node when the '-' button is clicked (issue 170)", function(){
+		var rep,
+			repeatPath = "/thedata/repeatGroup",
+			nodePath = "/thedata/repeatGroup/nodeC",
+			index = 2;
+		form = new Form(formStr1, dataStr1);
+		form.init();
+		
+		expect(form.getFormO().$.find('[name="'+repeatPath+'"]').eq(index).length).toEqual(1);
+		expect(form.getFormO().$.find('[name="'+repeatPath+'"]:eq('+index+') button.remove').length).toEqual(1);
+		expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index).val()).toEqual('c3');
+		expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual('c3');
+		
+		form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]:eq('+index+') button.remove').click();
+		expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual(undefined);
+		//check if it removed the correct data node
+		expect(form.getDataO().node(nodePath, index-1).getVal()[0]).toEqual('c2');
+		//check if it removed the correct html node
+		expect(form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]').eq(index).length).toEqual(0);
+		expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index-1).val()).toEqual('c2');
 	});
 });
+
 
 describe('branching functionality', function(){
 	var form;
@@ -583,11 +586,17 @@ describe('branching functionality', function(){
 		//form = new Form(formStr7, dataStr7);
 		form = loadForm('issue208.xml');
 		form.init();
+	
 		form.getFormO().$.find(repeatSelector).eq(0).find('button.repeat').click();
 		expect(form.getFormO().$.find(repeatSelector).length).toEqual(2);
-		//check if initial state of 2nd question in 2nd repeat is disabled.
+		//check if initial state of 2nd question in 2nd repeat is disabled
+
+			console.debug('the input to check: ', form.getFormO().$.find(repeatSelector).eq(1)
+				.find('[data-name="/issue208/rep/nodeB"]'));
+
 		expect(form.getFormO().$.find(repeatSelector).eq(1)
-			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().attr('disabled')).toEqual('disabled');
+			.find('[data-name="/issue208/rep/nodeB"]').closest('.restoring-sanity-to-legends')
+			.attr('disabled')).toEqual('disabled');
 		//select 'yes' in first question of 2nd repeat
 		form.getDataO().node('/issue208/rep/nodeA', 1).setVal('yes', null, 'string');
 		//doublecheck if new value was set
@@ -595,6 +604,7 @@ describe('branching functionality', function(){
 		//check if 2nd question in 2nd repeat is now enabled
 		expect(form.getFormO().$.find(repeatSelector).eq(1)
 			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().attr('disabled')).toEqual(undefined);
+
 	});
 });
 
@@ -615,34 +625,34 @@ describe('Required field validation', function(){
 		expect($numberLabel.length).toEqual(1);
 		expect($numberInput.val().length).toEqual(0);
 		expect($numberLabel.parents('.jr-group').attr('disabled')).toEqual('disabled');
-		expect($numberLabel.hasClass('invalid')).toBe(false);
+		expect($numberLabel.hasClass('invalid-required')).toBe(false);
 	});
 
 	//see issue #144
 	it ("validates an enabled and required number field with value 0 and 1", function(){
 		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
 		expect($numberLabel.length).toEqual(1);
-		$numberInput.val(0).trigger('change');
-		expect($numberLabel.hasClass('invalid')).toBe(false);
-		$numberInput.val(1).trigger('change');
-		expect($numberLabel.hasClass('invalid')).toBe(false);
+		$numberInput.val(0).trigger('change').trigger('validate');
+		expect($numberLabel.hasClass('invalid-required')).toBe(false);
+		$numberInput.val(1).trigger('change').trigger('validate');
+		expect($numberLabel.hasClass('invalid-required')).toBe(false);
 	});
 
 	it ("invalidates an enabled and required number field without a value", function(){
 		form.getFormO().$.find('[name="/data/nodeA"]').val('yes').trigger('change');
-		$numberInput.val('').trigger('change');
-		expect($numberLabel.hasClass('invalid')).toBe(true);
+		$numberInput.val('').trigger('change').trigger('validate');
+		expect($numberLabel.hasClass('invalid-required')).toBe(true);
 	});
 
 	it ("invalidates an enabled and required textarea that contains only a newline character or other whitespace characters", function(){
 		form = new Form(formStr1, dataStr1);
 		form.init();
 		var $textarea = form.getFormO().$.find('[name="/thedata/nodeF"]');
-		$textarea.val('\n').trigger('change');
+		$textarea.val('\n').trigger('change').trigger('validate');
 		expect($textarea.length).toEqual(1);
-		expect($textarea.parent('label').hasClass('invalid')).toBe(true);
-		$textarea.val('  \n  \n\r \t ').trigger('change');
-		expect($textarea.parent('label').hasClass('invalid')).toBe(true);
+		expect($textarea.parent('label').hasClass('invalid-required')).toBe(true);
+		$textarea.val('  \n  \n\r \t ').trigger('change').trigger('validate');
+		expect($textarea.parent('label').hasClass('invalid-required')).toBe(true);
 	});
 });
 

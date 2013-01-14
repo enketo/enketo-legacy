@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0022'; //time();
+		private $hash_manual_override = '0025'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -83,9 +83,11 @@ class Manifest extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		log_message('debug', 'Manifest Controller started');
 		$this->load->helper(array('url', 'json', 'subdomain', 'http'));
 		$this->load->model('Survey_model','',TRUE);
+		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
+		$this->manifest_url = $this->_full_url(uri_string());
+		log_message('debug', 'Manifest Controller started for url: '. $this->manifest_url);
 	}
 
 	public function html()
@@ -95,19 +97,31 @@ class Manifest extends CI_Controller {
 		//and removed from the manifest as a test to solve issue with manifest updates
 		if(!empty($pages))
 		{
-			$this->master_page = $pages[0];
-			foreach ($pages as $page)
+			if (!$data = $this->cache->get($this->manifest_url))
 			{
-				if (!empty($page))
+				log_message('debug', 'creating manifest');
+				$this->master_page = $pages[0];
+				
+				foreach ($pages as $page)
 				{
-					$this->pages[] = $page;
+					if (!empty($page))
+					{
+						$this->pages[] = $page;
+					}
 				}
+				$this->_set_data();
+				$data = $this->data;
+				$this->cache->save($this->manifest_url, $data, 60);
 			}
-			$this->_set_data();
-			if (count($this->data['cache']) > 0 )
+			else
+			{
+				log_message('debug', 'loading manifest from cache');
+			}
+			
+			if (count($data['cache']) > 0 )
 			{
 				//$this->output->cache(1);
-				$this->load->view('html5_manifest_view.php', $this->data);
+				$this->load->view('html5_manifest_view.php', $data);
 				return;
 			}
 		}

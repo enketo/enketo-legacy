@@ -106,7 +106,7 @@ class Manifest extends CI_Controller {
 			$this->_set_data();
 			if (count($this->data['cache']) > 0 )
 			{
-				$this->output->cache(1);
+				//$this->output->cache(1);
 				$this->load->view('html5_manifest_view.php', $this->data);
 				return;
 			}

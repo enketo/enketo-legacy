@@ -14,38 +14,55 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, console:true*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, settings, console:true*/
 
 // TODO: it would be better to remove references to store and form in common.js
-
 var /** @type {GUI}*/ gui;
 var /** @type {Print} */ printO;
 
 $(document).ready(function(){
 	"use strict";
+	setSettings();
 	gui = new GUI();
 	gui.init();
 	// avoid windows console errors
 	if (typeof console == "undefined") {console = {log: function(){}};}
 	if (typeof window.console.debug == "undefined") {console.debug = console.log;}
 
-	if (getGetVariable('debug') !== 'true'){
+	if (!settings.debug){
 		window.console.log = function(){};
 		window.console.debug = function(){};
 	}
 	//override Modernizr's detection (for development purposes)
-	if (getGetVariable('touch') == 'true'){
+	if (settings.touch){
 		Modernizr.touch = true;
 		$('html').addClass('touch');
 	}
-	else if (getGetVariable('touch') == 'false'){
+	else if (settings.touch === false){
 		Modernizr.touch = false;
 		$('html').removeClass('touch');
 	}
-
 	printO = new Print();
 });
 
+function setSettings(){
+	var i, queryVar,
+		settingsMap =
+		[
+			{q: 'return', s: 'returnURL'},
+			{q: 'showbranch', s: 'showBranch'},
+			{q: 'debug', s: 'debug'},
+			{q: 'touch', s: 'touch'},
+			{q: 'server', s: 'serverURL'},
+			{q: 'id', s: 'formId'}
+		];
+	for (i=0 ; i< settingsMap.length ; i++){
+		queryVar = getQueryVar(settingsMap[i].q);
+		//a query variable has preference
+		settings[settingsMap[i].s] = (queryVar !== null) ?
+			queryVar : (typeof settings[settingsMap[i].s] !== 'undefined') ? settings[settingsMap[i].s] : null;
+	}
+}
 
 /**
  * Class GUI deals with the main GUI elements (but not the survey form)
@@ -78,7 +95,7 @@ GUI.prototype.init = function(){
 
 	$('footer').detach().appendTo('#container');
 	//this.nav.reset();
-	this.display();
+	this.positionPageAndBar();
 };
 
 /**
@@ -97,17 +114,21 @@ GUI.prototype.setEventHandlers = function(){
 	var that=this;
 	
 	$(document).on('click', '#feedback-bar .close', function(event){
-		that.hideFeedback();
+		that.feedbackBar.hide();
 		return false;
 	});
 
 	$(document).on('click', '.touch #feedback-bar', function(event){
-		that.hideFeedback();
+		that.feedbackBar.hide();
 	});
 
 	$(document).on('click', '#page .close', function(event){
 		that.pages.close();
 		return false;
+	});
+
+	$('button.print').on('click', function(){
+		printO.printForm();
 	});
 
 	//$(document).on('click', '.touch #page', function(event){
@@ -149,13 +170,13 @@ GUI.prototype.setEventHandlers = function(){
 	});
 
 	$('#page, #feedback-bar').on('change', function(){
-		that.display();
+		that.positionPageAndBar();
 	});
 			
 	// more info on connection status after clicking icon
 	//$('header #status-connection')
 	//	.click(function(event){
-	//		that.showFeedback($(this).attr('title'));
+	//		that.feedback($(this).attr('title'));
 	//		event.stopPropagation(); //prevent closing of simultaneously shown page when clicking icon
 	//		//event.cancelBubble(); //IE
 	//	});
@@ -234,7 +255,8 @@ GUI.prototype.pages = {
 	 * @param  {string} pg id of page
 	 */
 	open : function(pg){
-		var $page;
+		var $page,
+			$header = $('header');
 		if (this.isShowing(pg)){
 			return;
 		}
@@ -249,10 +271,10 @@ GUI.prototype.pages = {
 		if(this.isShowing()){
 			this.close();
 		}
-			
+
 		$('#page .content').prepend($page.show()).trigger('change');
+		$('#page').show();
 		
-		// if the page is visible as well as the feedbackbar the display() method should be called if the window is resized
 		$(window).bind('resize.pageEvents', function(){
 			$('#page').trigger('change');
 		});
@@ -267,50 +289,77 @@ GUI.prototype.pages = {
 			this.$pages.append($page);
 			$('#page').trigger('change');
 			$('nav ul li').removeClass('active');
-			$('#overlay').hide();
+			//$('#overlay').hide();
 			$('#overlay, header').unbind('.pageEvents');
 			$(window).unbind('.pageEvents');
 		}
 	}
 };
 
-/**
- * Shows an unobtrusive feedback message to the user.
- *
- * @param {string} message
- * @param {number=} duration duration in seconds for the message to show
- */
-GUI.prototype.showFeedback = function(message, duration){
-	"use strict";
-	var $msg,
-		that = this;
-	
-	duration = (duration) ? duration * 1000 : 10 * 1000;
-	
-	// max 2 messages displayed
-	$('#feedback-bar p').eq(1).remove();
-	
-	// if an already shown message isn't exactly the same
-	if($('#feedback-bar p').html() !== message){
-		$msg = $('<p></p>');
-		$msg.append(message);
-		$('#feedback-bar').append($msg);
-	}
-	$('#feedback-bar').trigger('change');
 
-	// automatically remove feedback after a period
-	setTimeout(function(){
-		if(typeof $msg !== 'undefined'){
-			$msg.remove();
+GUI.prototype.feedbackBar = {
+	/**
+	 * Shows an unobtrusive feedback bar to the user.
+	 *
+	 * @param {string} message
+	 * @param {number=} duration duration in seconds for the message to show
+	 */
+	show : function (message, duration){
+		"use strict";
+		var $msg,
+			that = this;
+		
+		duration = (duration) ? duration * 1000 : 10 * 1000;
+		
+		// max 2 messages displayed
+		$('#feedback-bar p').eq(1).remove();
+		
+		// if an already shown message isn't exactly the same
+		if($('#feedback-bar p').html() !== message){
+			$msg = $('<p></p>');
+			$msg.append(message);
+			$('#feedback-bar').append($msg);
 		}
+		$('#feedback-bar').show().trigger('change');
+
+		// automatically remove feedback after a period
+		setTimeout(function(){
+			if(typeof $msg !== 'undefined'){
+				$msg.remove();
+			}
+			$('#feedback-bar').trigger('change');
+		}, duration);
+	},
+	hide : function(){
+		"use strict";
+		$('#feedback-bar p').remove();
 		$('#feedback-bar').trigger('change');
-	}, duration);
+	}
 };
-	
-GUI.prototype.hideFeedback = function(){
-	"use strict";
-	$('#feedback-bar p').remove();
-	$('#feedback-bar').trigger('change');
+
+/**
+ * Select what type of unobtrusive feedback message to show to the user.
+ *
+ * @param {string}	message
+ * @param {number=} duration duration in seconds for the message to show
+ * @param {string=} heading  heading to show - defaults to information, ignored in feedback bar
+ * @param {Object=} choices  choices to show - defaults to simple Close button, ignored in feedback bar for now
+ */
+GUI.prototype.feedback = function(message, duration, heading, choices){
+	heading = heading || 'Information';
+	if ($('header').css('position') === 'fixed'){
+		this.feedbackBar.show(message, duration);
+	}
+	//a more obtrusive message is shown
+	else if (choices){
+		this.confirm({
+			msg: message,
+			heading: heading
+		}, choices, duration);
+	}
+	else{
+		this.alert(message, heading, 'info', duration);
+	}
 };
 
 /**
@@ -319,10 +368,11 @@ GUI.prototype.hideFeedback = function(){
  * @param {string} message
  * @param {string=} heading
  * @param {string=} level bootstrap css class
+ * @param {number=} duration duration in secondsafter which dialog should self-destruct
  */
-GUI.prototype.alert = function(message, heading, level){
+GUI.prototype.alert = function(message, heading, level, duration){
 	"use strict";
-	var closeFn, cls,
+	var cls, timer,
 		$alert = $('#dialog-alert');
 
 	heading = heading || 'Alert';
@@ -340,15 +390,28 @@ GUI.prototype.alert = function(message, heading, level){
 
 	$alert.on('hidden', function(){
 		$alert.find('.modal-header h3, .modal-body p').html('');
+		clearInterval(timer);
 	});
+
+	if (typeof duration === 'number'){
+		var left = duration.toString();
+		$alert.find('.self-destruct-timer').text(left);
+		timer = setInterval(function(){
+			left--;
+			$alert.find('.self-destruct-timer').text(left);
+		}, 1000);
+		setTimeout(function(){
+			clearInterval(timer);
+			$alert.find('.close').click();
+		}, duration * 1000);
+	}
 
 	/* sample test code (for console):
 	
 		gui.alert('What did you just do???', 'Obtrusive alert dialog');
-
 	 */
 };
-	
+
 /**
  * Function: confirm
  *
@@ -357,10 +420,11 @@ GUI.prototype.alert = function(message, heading, level){
  *   @param {?(Object.<string, (string|boolean)>|string)=} texts - In its simplest form this is just a string but it can
  *                                                         also an object with parameters msg, heading and errorMsg.
  *   @param {Object=} choices - [type/description]
+ *   @param {number=} duration duration in seconds after which dialog should self-destruct
  */
-GUI.prototype.confirm = function(texts, choices){
+GUI.prototype.confirm = function(texts, choices, duration){
 	"use strict";
-	var msg, heading, errorMsg, closeFn, dialogName, $dialog;
+	var msg, heading, errorMsg, closeFn, dialogName, $dialog, timer;
 	
 	if (typeof texts === 'string'){
 		msg = texts;
@@ -385,7 +449,10 @@ GUI.prototype.confirm = function(texts, choices){
 	//write content into confirmation dialog
 	$dialog.find('.modal-header h3').text(heading);
 	$dialog.find('.modal-body .msg').html(msg).capitalizeStart();
-	$dialog.find('.modal-body .alert-error').html(errorMsg);
+	$dialog.find('.modal-body .alert-error').html(errorMsg).show();
+	if (!errorMsg) {
+		$dialog.find('.modal-body .alert-error').hide();
+	}
 
 	//instantiate dialog
 	$dialog.modal({
@@ -418,6 +485,19 @@ GUI.prototype.confirm = function(texts, choices){
 		$dialog.find('.modal-body .msg, .modal-body .alert-error, button').text('');
 		//console.debug('dialog destroyed');
 	});
+
+	if (typeof duration === 'number'){
+		var left = duration.toString();
+		$dialog.find('.self-destruct-timer').text(left);
+		timer = setInterval(function(){
+			left--;
+			$dialog.find('.self-destruct-timer').text(left);
+		}, 1000);
+		setTimeout(function(){
+			clearInterval(timer);
+			$dialog.find('.close').click();
+		}, duration * 1000);
+	}
 
 	/* sample test code (for console):
 
@@ -483,7 +563,7 @@ GUI.prototype.updateStatus = {
  * Returns the height in pixels that it would take for this element to stretch down to the bottom of the window
  * For now it's a dumb function that only takes into consideration a header above the element.
  * @param  {jQuery} $elem [description]
- * @return {[type]}       [description]
+ * @return {number}       [description]
  */
 GUI.prototype.fillHeight = function($elem){
 	var bottom = $(window).height(),
@@ -493,16 +573,41 @@ GUI.prototype.fillHeight = function($elem){
 };
 
 /**
- * Makes sure sliders that reveal the feedback bar and page have the correct css 'top' property
+ * Makes sure sliders that reveal the feedback bar and page have the correct css 'top' property when the header is fixed
  */
-GUI.prototype.display = function(){
+GUI.prototype.positionPageAndBar = function(){
 	"use strict";
-	//console.log('display() called');
-	var feedbackTop, pageTop,
+	console.log('positionPageAndBar called');
+	var fTop, pTop,
 		$header = $('header'),
+		hHeight = $header.outerHeight(),
 		$feedback = $('#feedback-bar'),
-		$page = $('#page');
-	//the below can probably be simplified, is the this.page().isVisible check necessary at all?
+		fShowing = ( $feedback.find('p').length > 0 ) ? true : false,
+		fHeight = $feedback.outerHeight(),
+		$page = $('#page'),
+		pShowing = this.pages.isShowing(),
+		pHeight = $page.outerHeight() ;
+
+	//to go with the responsive flow, copy the css position type of the header
+	$page.css({'position': $header.css('position')});//, 'margin': $header.css('margin'), 'width': $header.css('width')});
+
+	if ($header.css('position') !== 'fixed'){
+		if (!fShowing) {
+			$feedback.hide();
+		}
+		if (!pShowing) {
+			$page.hide();
+		}
+		return false;
+	}
+
+	fTop = (!fShowing) ? 0 - fHeight : hHeight;
+	pTop = (!pShowing) ? 0 - pHeight : (fShowing) ? fTop + fHeight : hHeight;
+
+	$feedback.css('top', fTop);
+	$page.css('top', pTop);
+ 
+	/*
 	if ($feedback.find('p').length > 0){
 		feedbackTop = ($header.css('position') === 'fixed') ? $header.outerHeight() : 0; // shows feedback-bar
 		if (this.pages.isShowing()){
@@ -522,7 +627,7 @@ GUI.prototype.display = function(){
 		}
 	}
 	$feedback.css('top', feedbackTop);
-	$page.css('top', pageTop);
+	$page.css('top', pageTop);*/
 };
 
 /**
@@ -555,7 +660,7 @@ GUI.prototype.setSettings = function(settings){
  * Parses a list of forms
  * @param  {?Array.<{title: string, url: string, server: string, name: string}>} list array of object with form information
  * @param { jQuery } $target jQuery-wrapped target node with a <ul> element as child to append formlist to
- * @param { boolean} reset if list provided is empty and reset is true, no error message is shown
+ * @param { boolean=} reset if list provided is empty and reset is true, no error message is shown
  */
 GUI.prototype.parseFormlist = function(list, $target, reset){
 	var i, listHTML='';
@@ -575,17 +680,19 @@ GUI.prototype.parseFormlist = function(list, $target, reset){
 	$target.find('ul').empty().append(listHTML);
 };
 
-function getGetVariable(variable) {
+function getQueryVar(variableName) {
 	"use strict";
-	var query = window.location.search.substring(1);
-	var vars = query.split("&");
+	var queryVarVal,
+		query = window.location.search.substring(1),
+		vars = query.split("&");
 	for (var i = 0; i < vars.length; i++) {
 		var pair = vars[i].split("=");
-		if (pair[0] == variable) {
-			return encodeURI(pair[1]);// URLs are case senstive!.toLowerCase();
+		if (pair[0].toLowerCase() === variableName.toLowerCase()) {
+			queryVarVal = encodeURI(pair[1]);
+			return (queryVarVal === 'true') ? true : (queryVarVal === 'false') ? false : queryVarVal;
 		}
 	}
-	return false;
+	return null;
 }
 /**
  * Class dealing with printing
@@ -673,7 +780,7 @@ Print.prototype.styleReset = function(){
  * Prints the form after first setting page breaks (every time it is called)
  */
 Print.prototype.printForm = function(){
-	console.debug('preparing form for printing');
+	//console.debug('preparing form for printing');
 	this.removePageBreaks();
 	this.removePossiblePageBreaks();
 	this.styleToAll();
@@ -706,7 +813,8 @@ Print.prototype.addPossiblePageBreaks = function(){
 	this.removePossiblePageBreaks();
 
 	$('form.jr').before(possible_break.clone()).after(possible_break.clone())
-		.find('fieldset>legend, label:not(.geo)>input:not(input:radio, input:checkbox), label>select, label>textarea, .trigger>*, h4>*, h3>*')
+		.find('fieldset>legend, label:not(.geo)>input:not(input:radio, input:checkbox), label>select, label>textarea,'+
+			' .trigger>*, h4>*, h3>*, .jr-appearance-field-list>*')
 		.parent().each(function() {
 			var $this, prev;
 			$this = $(this);
@@ -715,7 +823,8 @@ Print.prototype.addPossiblePageBreaks = function(){
 			if (
 				prev && ( prev.nodeName === "H3" || prev.nodeName === "H4" ) ||
 				$(prev).hasClass('repeat-number') ||
-				$this.parents('#jr-calculated-items, #jr-preload-items').length > 0
+				$this.parents('#jr-calculated-items, #jr-preload-items').length > 0 ||
+				$this.parents('.jr-appearance-field-list').length > 0
 				) {
 				return null;
 			} else {

@@ -49,3 +49,34 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box; }
+
+
+@mixin box-shadow-none{
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
+
+@mixin radius-zero{
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+ border-radius: 0; }
+
+/** copy of bootstrap style for alert-error */
+@mixin error-bg-border{
+  background-color: #F2DEDE;
+  border-color: #EED3D7;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px; }
+
+@mixin error-text{
+  display: block;
+  padding-top: 5px;
+  font-size: 0.85em;
+  font-weight: bold;
+  color: #B94A48;}
+
+@mixin appearance-none{
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none; }

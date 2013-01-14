@@ -275,7 +275,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		}
 		waswere = (i>1) ? ' were' : ' was';
 		namesStr = names.join(', ');
-		gui.showFeedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
+		gui.feedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
 		this.setOnlineStatus(true);
 	}
 
@@ -346,7 +346,8 @@ Connection.prototype.getSurveyURL = function(serverURL, formId, callbacks){
 };
 
 /**
- * Obtains HTML Form from an XML file or from a server url and form id
+ * TODO: REMOVE THIS AND REPLACE REFERENCES WITH NEXT FUNCTION
+ * Obtains HTML Form from a form element with input fields for XML file or from a server url and form id
  * @param  {jQuery}   $form    the jQuery-wrapped form object with 3 input fields (xml_file, server_url, form_id)
  * @param  {Object.<string, Function>=} callbacks [description]
  */
@@ -395,6 +396,50 @@ Connection.prototype.getFormHTML = function($form, callbacks){
 	});
 };
 
+/**
+ * Obtains HTML Form from an XML file or from a server url and form id
+ * @param  {?string=}					serverURL   full server url
+ * @param  {?string=}					formId		form ID
+ * @param  {Blob=}						formFile	XForm XML file
+ * @param  {Object.<string, Function>=} callbacks	callbacks
+ */
+Connection.prototype.getTransForm = function(serverURL, formId, formFile, callbacks){
+	var formData = new FormData();
+
+	callbacks = this.getCallbacks(callbacks);
+	serverURL = serverURL || null;
+	formId = formId || null;
+	formFile = formFile || new Blob();
+	
+	if (formFile.size === 0 && !serverURL && !formId){
+		callbacks.error(null, 'validationerror', 'No form file or URLs provided');
+		return;
+	}
+	if (formFile.size === 0 && !this.isValidURL(serverURL)){
+		callbacks.error(null, 'validationerror', 'Not a valid server url');
+		return;
+	}
+	if (formFile.size === 0 && (!formId || formId.length === 0)){
+		callbacks.error(null, 'validationerror', 'No form id provided');
+		return;
+	}
+	formData.append('server_url', serverURL);
+	formData.append('form_id', formId);
+	formData.append('xml_file', formFile);
+
+	$.ajax('/transform/get_html_form', {
+		type: 'POST',
+		cache: false,
+		contentType: false,
+		processData: false,
+		dataType: 'xml',
+		data: formData,
+		success: callbacks.success,
+		error: callbacks.error,
+		complete: callbacks.complete
+	});
+};
+
 Connection.prototype.validateHTML = function(htmlStr, callbacks){
 	var content = new FormData();
 	
@@ -432,6 +477,12 @@ Connection.prototype.oRosaHelper = {
 		if (!frag){
 			console.log('nothing to do');
 			return null;
+		}
+		console.debug('frag: '+frag);
+		//always override if valid URL is entered
+		//TODO: REMOVE reference to connection
+		if (connection.isValidURL(frag)){
+			return frag;
 		}
 
 		switch (type){

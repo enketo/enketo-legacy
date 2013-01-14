@@ -20,6 +20,8 @@ class Offline extends CI_Controller {
 
 	public function index()
 	{
+		log_message('debug', 'Offline Controller started');
+		$this->output->cache(60);
 		$this->load->view('offline_view');    	
 	}
 

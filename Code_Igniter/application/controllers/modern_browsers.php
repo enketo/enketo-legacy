@@ -19,7 +19,8 @@
 class Modern_browsers extends CI_Controller {
 
 	public function index()
-	{		
+	{	
+		$this->output->cache(60);	
 		$this->load->view('modern_browsers_view');
 	}
 

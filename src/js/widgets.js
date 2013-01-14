@@ -26,7 +26,13 @@
 (function($) {
 
     "use strict";
-
+    /**
+     * Select picker Class
+     * @constructor
+     * @param {Element} element [description]
+     * @param {(boolean|{btnStyle: string, noneSelectedText: string, maxlength:number})} options options
+     * @param {*=} e     event
+     */
     var Selectpicker = function(element, options, e) {
         if (e ) {
             e.stopPropagation();
@@ -35,7 +41,7 @@
         this.$element = $(element);
         this.$newElement = null;
         this.selectClass = options.btnStyle || '';
-        this.noneSelectedText = options.noneSelectedText || 'None selected';
+        this.noneSelectedText = options.noneSelectedText || 'none selected';
         this.lengthmax = options.maxlength || 20;
         this.multiple = (typeof this.$element.attr('multiple') !== 'undefined' && this.$element.attr('multiple') !== false);
         this.init();
@@ -43,22 +49,22 @@
 
     Selectpicker.prototype = {
 
-        contructor: Selectpicker,
+        constructor: Selectpicker,
 
-        init: function (e) {
+        init: function () {
+            var $template = this.getTemplate();
             this.$element.css('display', 'none');
-
-            var template = this.getTemplate();
-            template = this.createLi(template);
-            this.$element.after(template);
+            $template = this.createLi($template);
+            this.$element.after($template);
             this.$newElement = this.$element.next('.bootstrap-select');
             this.$newElement.find('> a').addClass(this.selectClass);
             this.clickListener();
+            //this.focusListener();
         },
 
         getTemplate: function() {
             var template =
-                "<div class='btn-group bootstrap-select'>" +
+                "<div class='btn-group bootstrap-select widget'>" +
                     "<a class='btn dropdown-toggle clearfix' data-toggle='dropdown' href='#''>" +
                         "<span class='filter-option pull-left'>__SELECTED_OPTIONS</span>" +
                         "<span class='caret pull-right'></span>" +
@@ -73,36 +79,46 @@
 
         createLi: function(template) {
 
-            var _li = [];
-            var _liHtml = '';
-            var _inputAttr = (this.multiple) ? "type='checkbox'" : "type='radio' style='display: none;' name='"+Math.random()*100000+"'";
+            var li = [];
+            var liHtml = '';
+            var inputAttr = (this.multiple) ? "type='checkbox'" : "type='radio' style='display: none;' name='"+Math.random()*100000+"'";
             var _this = this;
-            var checkedAttr;
+            var checkedInputAttr,
+                checkedLiAttr;
 
             this.$element.find('option').each(function(){
-                _li.push([$(this).text(), $(this).is(':selected')]);
+                li.push({label: $(this).text(), selected: $(this).is(':selected'), value: $(this).attr('value')});
             });
 
-            if(_li.length > 0) {
+            if(li.length > 0) {
                 template = template.replace('__SELECTED_OPTIONS', this.createSelectedStr());
-                for (var i = 0; i < _li.length; i++) {
-                    checkedAttr = (_li[i][1]) ? " checked='checked'" : '';
-                    _liHtml += "<li rel=" + i + "><a tabindex='-1' href='#'><label class='checkbox inline'>"+
-                    "<input class='ignore' " + _inputAttr + checkedAttr + " />"+_li[i][0]+"</label></a></li>";
+                for (var i = 0; i < li.length; i++) {
+                    if (li[i].value){
+                        checkedInputAttr = (li[i].selected) ? " checked='checked'" : '';
+                        checkedLiAttr = (li[i].selected && !_this.multiple) ? "class='active'" : '';
+                        liHtml += "<li "+checkedLiAttr+"><a tabindex='-1' href='#'><label class='checkbox inline'>"+
+                        "<input class='ignore' " + inputAttr + checkedInputAttr + "value='"+li[i].value+"' />"+li[i].label+"</label></a></li>";
+                    }  
                 }
             }
 
-            template = template.replace('__ADD_LI', _liHtml);
+            template = template.replace('__ADD_LI', liHtml);
 
             return template;
         },
-
+        /**
+         * create text to show in closed picker
+         * @param  {jQuery=} $select  jQuery-wrapped select element
+         * @return {string}         
+         */
         createSelectedStr: function($select){
             var textToShow,
                 selectedLabels = [];
             $select = $select || this.$element;
             $select.find('option:selected').each(function(){
-                 selectedLabels.push($(this).text());
+                if ($(this).attr('value').length > 0 ){
+                    selectedLabels.push($(this).text());
+                }
              });
             
             if (selectedLabels.length === 0){
@@ -118,25 +134,28 @@
             this.$newElement.find('li').on('click', function(e) {
                 e.preventDefault();
                
-                var rel = $(this).attr('rel'),
-                    $input = $(this).find('input'),
-                    $picker = $(this).parents('.bootstrap-select'),
+               var  $li = $(this),
+                    $input = $li.find('input'),
+                    $picker = $li.parents('.bootstrap-select'),
                     $select = $picker.prev('select'),
-                    $option = $select.find('option').eq(parseInt(rel,10)),
+                    $option = $select.find('option[value="'+$input.val()+'"]'),
                     selectedBefore = $option.is(':selected');
 
                 if (!_this.multiple){
-                    $option.siblings('option').removeAttr('selected');
-                    $picker.find('input').removeAttr('checked');
+                    $picker.find('li').removeClass('active');
+                    $option.siblings('option').prop('selected', false);
+                    $picker.find('input').prop('checked', false);
                 }
 
                 if (selectedBefore){
-                    $input.prop('checked', false).removeAttr('checked');
-                    $option.removeAttr('selected');
+                    $li.removeClass('active');
+                    $input.prop('checked', false);//.removeAttr('checked');
+                    $option.prop('selected', false);
                 }
                 else{
+                    if (!_this.multiple) $li.addClass('active');
                     $input.prop('checked', true);
-                    $option.attr('selected', 'selected');
+                    $option.prop('selected', true);
                 }
 
                 $picker.find('.filter-option').html(_this.createSelectedStr($select));
@@ -144,17 +163,41 @@
                 $select.trigger('change');
             });
         },
+        //this listener for fake focus and blur events has a bug and actually breaks the widget!
+        //TODO: when bootstrap 3.0 has launched, used the dropdown open and close events to do this.
+        focusListener: function() {
+            var _this = this;
+
+            _this.$newElement.find('.dropdown-toggle').hover(
+                function(){
+                    console.debug('focus...');
+                    _this.$element.trigger('focus');
+                    return true;
+                }, 
+                function(){
+                    console.debug('blur...');
+                    _this.$element.trigger('blur');
+                    return true;
+                }
+            );
+        },
         update : function(){
            this.$newElement.remove();
            this.init();
         }
     };
 
+    /**
+     * [selectpicker description]
+     * @param {({btnStyle: string, noneSelectedText: string, maxlength:number}|string)=} option options
+     * @param {*=} event       [description]
+     */
     $.fn.selectpicker = function(option, event) {
         return this.each(function () {
             var $this = $(this),
                 data = $this.data('selectpicker'),
                 options = typeof option == 'object' && option;
+
             if (!data) {
                 $this.data('selectpicker', (data = new Selectpicker(this, options, event)));
             }
@@ -176,6 +219,12 @@
 
 (function($) {
     "use strict";
+    /**
+     * Geopoint widget Class
+     * @constructor
+     * @param {[type]} element [description]
+     * @param {[type]} options [description]
+     */
     var GeopointWidget = function(element, options) {
         var detect = 
                 '<button name="geodetect" type="button" class="btn" title="detect current location" data-placement="top">'+
@@ -235,14 +284,19 @@
             var that = this,
                 inputVals = this.$inputOrigin.val().split(' ');
 
+            this.$inputOrigin.parent().addClass('clearfix');
+
             this.$widget.find('input:not([name="search"])').on('change change.bymap change.bysearch', function(event){
                 //console.debug('change event detected');
                 var lat = (that.$lat.val() !== '') ? that.$lat.val() : 0.0, 
                     lng = (that.$lng.val() !== '') ? that.$lng.val() : 0.0, 
                     alt = (that.$alt.val() !== '') ? that.$alt.val() : 0.0, 
-                    acc = that.$acc.val();
+                    acc = that.$acc.val(),
+                    value = (lat === 0 && lng === 0) ? '' : lat+' '+lng+' '+alt+' '+acc;
 
-                that.$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
+                event.stopImmediatePropagation();
+                
+                that.$inputOrigin.val(value).trigger('change');
                
                 if (event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
                     that.updateMap(lat, lng);
@@ -251,8 +305,10 @@
                 if (event.namespace !== 'bysearch' && this.$search){
                     that.$search.val('');
                 }
-                //event.stopPropagation();
-                return false;
+            });
+
+            this.$widget.on('focus blur', 'input', function(event){
+                that.$inputOrigin.trigger(event.type);
             });
 
             if (inputVals[3]) this.$acc.val(inputVals[3]);

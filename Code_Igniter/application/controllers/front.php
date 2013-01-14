@@ -42,7 +42,7 @@ class Front extends CI_Controller {
 		);
 		$data = array(
 			'offline'=>FALSE, 
-			'title_component'=>'survey', 
+			'title_component'=>'', 
 			'stylesheets' => $default_stylesheets,
 			'num_surveys' => $this->Survey_model->number_surveys()
 		);
@@ -60,7 +60,8 @@ class Front extends CI_Controller {
 			));
 		}
 
-		$integrated = $this->config->item('integration_with_url') || '';
+		$integrated = $this->config->item('integrated');
+		echo $integrated;
 		
 		if (strlen($integrated)>0)
 		{

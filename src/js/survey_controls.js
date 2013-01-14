@@ -54,7 +54,7 @@ function loadForm(formName, confirmed){
 				//gui.alert('Error loading form. Saved data may be corrupted');
 			//}
 			//else
-			gui.showFeedback('"'+formName +'" has been loaded', 2);
+			gui.feedback('"'+formName +'" has been loaded', 2);
 		}
 		else{
 			gui.alert('Record contained no data');
@@ -79,7 +79,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	//record['ready'] = confirmedFinalStatus;
 	console.debug('new name: '+confirmedRecordName+', before: '+curRecordName+', delOld: '+deleteOldName+', overwr: '+overwriteExisting);
 	if (form.getDataStr(true, true) === null || form.getDataStr(true, true) === ''){
-		return gui.showFeedback('Nothing to save.'); //ADD error with getting data from form?
+		return gui.feedback('Nothing to save.'); //ADD error with getting data from form?
 	}
 
 	if (typeof confirmedRecordName == 'undefined' || confirmedRecordName.length === 0){
@@ -113,7 +113,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 
 	console.log('result of save: '+result); // DEBUG
 	if (result === 'success'){
-		gui.showFeedback('Form with name "'+confirmedRecordName+'" has been saved.', 2);
+		gui.feedback('Form with name "'+confirmedRecordName+'" has been saved.', 2);
 		
 		//set the new custom html5 data attribute stored-with-key
 		form.setRecordName(confirmedRecordName);
@@ -131,16 +131,16 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 		choices = {
 			posButton : 'Yes, overwrite',
 			posAction : function(){ saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, true); },
-			negAction : function(){ gui.showFeedback("Form was not saved.");}
+			negAction : function(){ gui.feedback("Form was not saved.");}
 		};
 		gui.confirm(message, choices);
 	}
 	else if (result === 'forbidden'){
 		gui.alert ('This name is not allowed. Please change it');
-		gui.showFeedback ('Form was NOT saved.');
+		gui.feedback ('Form was NOT saved.');
 	}
 	else {
-		gui.showFeedback('Error occurred. Form was NOT saved.');
+		gui.feedback('Error occurred. Form was NOT saved.');
 	}
 }
 
@@ -183,11 +183,11 @@ function deleteForm(confirmed) {
 			var success = store.removeRecord(key);
 			if (success){
 				resetForm(true);
-				gui.showFeedback('Successfully deleted form.');
+				gui.feedback('Successfully deleted form.');
 				$('form.jr').trigger('delete', JSON.stringify(store.getRecordList()));
 			}
 			else {
-				gui.showFeedback('An error occurred when trying to delete this form.');
+				gui.feedback('An error occurred when trying to delete this form.');
 			}
 		}
 		else {
@@ -200,7 +200,7 @@ function deleteForm(confirmed) {
 		}
 	}
 	else {
-		gui.showFeedback ('Please first load the form you would like to delete or choose reset if you\'d like to reset the current form.');
+		gui.feedback ('Please first load the form you would like to delete or choose reset if you\'d like to reset the current form.');
 	}
 	return;
 }
@@ -250,7 +250,7 @@ function submitEditedForm() {
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
-	redirect = (typeof RETURN_URL !== 'undefined') ? true : false;
+	redirect = (typeof settings !== 'undefined' && typeof settings['returnURL'] !== 'undefined') ? true : false;
 	beforeMsg = (redirect) ? 'You will be automatically redirected after submission. ' : '';
 
 	gui.alert(beforeMsg + '<br />'+
@@ -266,14 +266,15 @@ function submitEditedForm() {
 		success: function(){
 			if (redirect){
 				gui.alert('You will now be redirected back to formhub.', 'Submission successful!');
-				location.href = RETURN_URL;
+				location.href = settings['returnURL'];
 			}
 			//also use for iframed forms
 			else{
 				gui.alert('Done!', 'Submission successful!');
 				resetForm(true);
 			}
-		}
+		},
+		complete: function(){}
 	};
 
 	connection.uploadRecords(record, true, callbacks);
@@ -293,7 +294,7 @@ function exportData(finalOnly){
 	dataArr = store.getSurveyDataOnlyArr(finalOnly);
 	
 	if (dataArr.length === 0){
-		gui.showFeedback('No data to export.');
+		gui.feedback('No data to export.');
 	}
 	else{
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
@@ -318,7 +319,7 @@ function exportToFile(fileName, finalOnly){
 	dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
 	//console.debug(data);
 	if (!dataArr || dataArr.length === 0){
-		gui.showFeedback('No data marked "final" to export.');
+		gui.feedback('No data marked "final" to export.');
 	}
 	else{
 		dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
@@ -355,12 +356,21 @@ GUI.prototype.setCustomEventHandlers = function(){
 			submitForm();
 			return false;
 	});
-
 	$('button#submit-edited-data')
 		.click(function(){
 			form.validateForm();
 			submitEditedForm();
 			return false;
+	});
+	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
+		//$('form.jr').trigger('beforesave');
+		if (typeof form !== 'undefined'){
+			form.validateForm();
+			if (!form.isValid()){
+				gui.alert('Form contains errors <br/>(please see fields marked in red)');
+				return;
+			}
+		}
 	});
 
 	$('#drawer-export').click(function(){
@@ -402,13 +412,13 @@ GUI.prototype.setCustomEventHandlers = function(){
 	});
 
 	// handlers for application settings [settings page]
-	this.pages.get('settings').on('change', 'input', function(){
-		var name =  /** @type {string} */  $(this).attr('name');
-		var value = ($(this).is(':checked')) ?  /** @type {string} */ $(this).val().toString() : '';
-		console.debug('settings change by user detected');
-		
-		settings.set(name, value);
-	});
+	//this.pages.get('settings').on('change', 'input', function(){
+	//	var name =  /** @type {string} */  $(this).attr('name');
+	//	var value = ($(this).is(':checked')) ?  /** @type {string} */ $(this).val().toString() : '';
+	//	console.debug('settings change by user detected');
+	//
+	//	settings.set(name, value);
+	//});
 
 	$('#dialog-save').hide();
 

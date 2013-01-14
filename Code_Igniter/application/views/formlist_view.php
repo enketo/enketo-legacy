@@ -15,13 +15,13 @@
 			
 			<progress style="display: none; margin: -30px auto 15px auto;"></progress>
 			<div id="form-list" class="formlist empty">
-				<p class="alert">To enable a form for offline use, simply load it. <button id="refresh-list" type="button" class="btn  btn-mini"><i class="icon-refresh"></i></button></p>
+				<p class="alert clearfix">To enable a form for offline use, simply load it. <button id="refresh-list" type="button" class="btn  btn-mini"><i class="icon-refresh"></i></button></p>
 				<ul></ul>
 				<img src="/images/formlist.png" alt="enter settings to load list of forms" />
 			</div>
 		</article>
 	</div>
-	<article class="page" id="settings">
+	<article class="page" id="settings" data-title="load forms">
 		<div class="btn-toolbar">
 			<div class="<? if (!$integrated): ?>input-prepend<? endif ?> input-append btn-group">
 			<? if(!$integrated): ?>
@@ -41,7 +41,14 @@
 			</div>
 		</div>
 	</article>
-
-<? require 'elements/page_contact.php'; ?>	
+	
+<article id="about" class="page">
+	<p>This form list provides easy access to your forms. This list also works while offline (in modern browsers).</p>
+	<p>When a form has been manually loaded once (by clicking on it), that form will also be accessible offline.</p>
+	<p>Make sure to bookmark this page for offline use!</p>	
+	<p>
+		Please write <a href="mailto:<?= $this->config->item('support_email') ?>"><?= $this->config->item('support_email') ?></a> for any comments, questions or bug reports.
+	</p>			
+</article>
 
 <? require 'elements/footer++.php' ?>

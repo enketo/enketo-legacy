@@ -21,11 +21,13 @@ class Webform extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
+
+		log_message('debug', 'Webform Controller started');
+
 		$this->load->helper(array('subdomain','url'));
-		$this->load->model('Form_model', '', TRUE);
 		$this->load->model('Survey_model','',TRUE);
-		$this->load->model('Instance_model','',TRUE);
-		$this->default_scripts = array
+		
+		$this->default_library_scripts = array
 		(
 			'/libraries/jquery.min.js',
 			'/libraries/bootstrap/js/bootstrap.min.js',	
@@ -33,7 +35,17 @@ class Webform extends CI_Controller {
 			'/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
 			'/libraries/modernizr.min.js',
 			'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
-			'/libraries/vkbeautify.js'
+			'/libraries/vkbeautify.js',
+			'/libraries/FileSaver.min.js',
+			'/libraries/BlobBuilder.min.js'
+		);
+		$this->default_main_scripts = array
+		(
+			'/js-source/common.js',
+			'/js-source/form.js',
+			'/js-source/widgets.js',
+			'/js-source/connection.js',
+			'/js-source/survey_controls.js',
 		);
 		$this->default_stylesheets = array
 		(
@@ -77,32 +89,32 @@ class Webform extends CI_Controller {
 				'form_data'=> $form->default_instance,
 				'stylesheets'=> $this->default_stylesheets
 			);
-			$scripts = array_merge($this->default_scripts, array(
-				'/libraries/FileSaver.min.js',
-				'/libraries/BlobBuilder.min.js'
-				)
-			);
 
 			if (ENVIRONMENT === 'production')
 			{
-				//$this->output->cache(60);
-				$data['scripts'] = array_merge($scripts, array(
+				$this->output->cache(3);
+				$data['scripts'] = array
+				(
+					'/libraries/libraries-all-min.js',
 					'/js-min/webform-all-min.js'
-				));
+				);
 			}
 			else
 			{		
-				$data['scripts'] = array_merge($scripts, array(
-					'/js-source/common.js',
-					'/js-source/storage.js',
-					'/js-source/form.js',
-					'/js-source/widgets.js',
-					'/js-source/connection.js',
-					'/js-source/cache.js',
-					'/js-source/survey_controls.js',
-					'/js-source/webform.js',
-					'/js-source/debug.js'
-				));
+				$data['scripts'] = array_merge
+				(
+					$this->default_library_scripts, 
+					array
+					(
+						'/js-source/storage.js',
+						'/js-source/cache.js'
+					),
+					$this->default_main_scripts,
+					array
+					(
+						'/js-source/webform.js'
+					)
+				);
 			}
 			$this->load->view('webform_view', $data);
 		}
@@ -112,8 +124,6 @@ class Webform extends CI_Controller {
 		}
 	}
 
-
-
 	/**
 	 * function that opens an edit-view of the form with previously POSTed instance-to-edit and return url (from OpenRosa server)
 	 * the edit-view is a simplified webform view without any offline capabilities 
@@ -121,6 +131,7 @@ class Webform extends CI_Controller {
 	 **/
 	public function edit()
 	{
+		$this->load->model('Instance_model','',TRUE);
 		log_message('debug', 'webform edit view controller started');
 		extract($_GET);
 		
@@ -171,8 +182,8 @@ class Webform extends CI_Controller {
 			return show_error('An error occurred during transformation or processing instances. ', 404);
 		}
 	
-		$data = array(
-			//'offline'=>FALSE, 
+		$data = array
+		(
 			'title_component'=>'webform edit', 
 			'html_title'=> $form->title,
 			'form'=> $form->html,
@@ -181,27 +192,27 @@ class Webform extends CI_Controller {
 			'return_url' => $edit_obj->return_url,
 			'stylesheets'=> $this->default_stylesheets
 		);
-		$scripts = $this->default_scripts;
 
 		//log_message('debug', 'form string: '.$form->asXML());
 		if (ENVIRONMENT === 'production')
 		{
 			//$this->output->cache(60);
-			$data['scripts'] = array_merge($scripts, array(
+			$data['scripts'] = array
+			(
+				'/libraries/libraries-all-min.js',
 				'/js-min/webform-edit-all-min.js'
-			));
+			);
 		}
 		else
 		{		
-			$data['scripts'] = array_merge($scripts, array(
-				'/js-source/__common.js',
-				'/js-source/__storage.js',
-				'/js-source/__form.js',
-				'/js-source/__connection.js',
-				'/js-source/__survey_controls.js',
-				'/js-source/__webform_edit.js',
-				'/js-source/__debug.js'
-			));
+			$data['scripts'] = array_merge(
+				$this->default_library_scripts,
+				$this->default_main_scripts,
+				array
+				(
+					'/js-source/webform_edit.js'
+				)
+			);
 		}
 		$this->load->view('webform_basic_view',$data);
 	}
@@ -243,8 +254,8 @@ class Webform extends CI_Controller {
 			return show_error('An error occurred during transformation or processing instances. ', 404);
 		}
 	
-		$data = array(
-			//'offline'=>FALSE, 
+		$data = array
+		(
 			'title_component'=>'webform iframe', 
 			'html_title'=> $form->title,
 			'form'=> $form->html,
@@ -253,31 +264,80 @@ class Webform extends CI_Controller {
 			'return_url' => NULL,
 			'stylesheets'=> $this->default_stylesheets
 		);
-		$scripts = $this->default_scripts;
 
 		if (ENVIRONMENT === 'production')
 		{
-			$data['scripts'] = array_merge($scripts, array(
+			$data['scripts'] = array
+			(
+				'/libraries/libraries-all-min.js',
 				'/js-min/webform-iframe-all-min.js'
-			));
+			);
 		}
 		else
 		{		
-			$data['scripts'] = array_merge($scripts, array(
-				'/js-source/__common.js',
-				//'/js-source/__storage.js',
-				'/js-source/__form.js',
-				'/js-source/__connection.js',
-				'/js-source/__survey_controls.js',
-				'/js-source/__webform_iframe.js',
-				'/js-source/__debug.js'
-			));
+			$data['scripts'] = array_merge
+			(
+				$this->default_library_scripts,
+				$this->default_main_scripts,
+				array
+				(
+					'/js-source/webform_iframe.js'
+				)
+			);
 		}
 		$this->load->view('webform_basic_view',$data);
 	}
 
+	public function preview()
+	{
+		extract($_GET);
+
+		if (empty($server) || empty($id))
+		{
+			show_error('Preview requires server url and form id variables.', 404);
+			return;
+		}
+		if (isset($this->subdomain))
+		{
+			show_error('Preview cannot be launched from subdomain', 404);
+			return;
+		}
+		$data = array
+		(
+			'title_component' => 'webform preview', 
+			'html_title'=> 'enketo webform preview',
+			'form'=> '',
+			'return_url' => '',
+			'stylesheets'=> $this->default_stylesheets
+		);
+
+		if (ENVIRONMENT === 'production')
+		{
+			$data['scripts'] = array
+			(
+				'/libraries/libraries-all-min.js',
+				'/js-min/webform-preview-all-min.js'
+			);
+		}
+		else
+		{		
+			$data['scripts'] = array_merge
+			(
+				$this->default_library_scripts,
+				$this->default_main_scripts,
+				array
+				(
+					'/js-source/webform_preview.js'
+				)
+			);
+		}
+
+		$this->load->view('webform_preview_view', $data);
+	}
+
 	private function _get_form()
 	{
+		$this->load->model('Form_model', '', TRUE);
 		if (!isset($this->form_id) || !isset($this->server_url))
 		{
 			return FALSE;

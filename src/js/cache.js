@@ -85,7 +85,16 @@ Cache.prototype.update = function(){
  */
 Cache.prototype.onObsolete = function(){
 	store.removeRecord('__bookmark');
-	gui.alert('Application/form is no longer able to launch offline. Try to refresh the page to fix this.');
+	gui.confirm({
+		msg: 'Refreshing the page may restore it.',
+		heading: 'Offline-disabled.',
+		errorMsg: 'Application/form is no longer able to launch offline. '
+	},{
+		posButton: 'Ok',
+		negButton: 'Refresh',
+		posAction: function(){},
+		negAction: function(){document.location.reload(true);}
+	});
 	gui.updateStatus.offlineLaunch(false);
 };
 
@@ -93,7 +102,7 @@ Cache.prototype.onObsolete = function(){
  * Handler for newly-cached event
  */
 Cache.prototype.onCached = function(){
-	this.showBookmarkMsg('This form can be loaded and used when you are offline! <br />', true);
+	this.showBookmarkMsg('This form works offline! <br />', true);
 	gui.updateStatus.offlineLaunch(true);
 };
 
@@ -102,9 +111,27 @@ Cache.prototype.onCached = function(){
  */
 Cache.prototype.onUpdateReady = function(){
 	applicationCache.swapCache();
-	gui.showFeedback("A new version of this application or form has been downloaded. "+
-		"Refresh this page to load the updated version.", 20);
+	gui.feedback("A new version of this application or form has been downloaded. "+
+		"Refresh this page to load the updated version.", 20, 'Updated!',  {
+			posButton: 'Refresh',
+			negButton: 'Cancel',
+			posAction: function(){document.location.reload(true);}
+		}
+	);
 };
+
+
+/*
+gui.confirm({
+			msg: '<div class="alert alert-success">A new version of this application has been downloaded.</div>'+
+				'<br/> Refresh the window to start using it.',
+			heading: 'Updated!'
+		},{
+			posButton: 'Refresh',
+			negButton: 'Cancel',
+			posAction: function(){document.location.reload(true);}
+		});
+*/
 
 /**
  * Handler for cache error
@@ -135,8 +162,8 @@ Cache.prototype.showBookmarkMsg = function(prepend, force){
 	bookmark = store.getRecord('__bookmark');
 	shown = (bookmark) ? bookmark['shown'] : 0;
 	if(force || shown < 3){
-		gui.showFeedback(prepend+'We recommend to bookmark this page for easy '+
-			'access when you are not connected to the Internet. ');
+		gui.feedback(prepend+'Bookmark this form for easy '+
+			'offline access. ', 15);
 			//'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
 		shown++;
 		store.setRecord('__bookmark', {'shown': shown});

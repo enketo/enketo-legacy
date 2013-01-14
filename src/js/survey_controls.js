@@ -250,7 +250,7 @@ function submitEditedForm() {
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
-	redirect = (typeof RETURN_URL !== 'undefined') ? true : false;
+	redirect = (typeof settings !== 'undefined' && typeof settings['returnURL'] !== 'undefined') ? true : false;
 	beforeMsg = (redirect) ? 'You will be automatically redirected after submission. ' : '';
 
 	gui.alert(beforeMsg + '<br />'+
@@ -266,14 +266,15 @@ function submitEditedForm() {
 		success: function(){
 			if (redirect){
 				gui.alert('You will now be redirected back to formhub.', 'Submission successful!');
-				location.href = RETURN_URL;
+				location.href = settings['returnURL'];
 			}
 			//also use for iframed forms
 			else{
 				gui.alert('Done!', 'Submission successful!');
 				resetForm(true);
 			}
-		}
+		},
+		complete: function(){}
 	};
 
 	connection.uploadRecords(record, true, callbacks);
@@ -355,12 +356,21 @@ GUI.prototype.setCustomEventHandlers = function(){
 			submitForm();
 			return false;
 	});
-
 	$('button#submit-edited-data')
 		.click(function(){
 			form.validateForm();
 			submitEditedForm();
 			return false;
+	});
+	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
+		//$('form.jr').trigger('beforesave');
+		if (typeof form !== 'undefined'){
+			form.validateForm();
+			if (!form.isValid()){
+				gui.alert('Form contains errors <br/>(please see fields marked in red)');
+				return;
+			}
+		}
 	});
 
 	$('#drawer-export').click(function(){
@@ -402,13 +412,13 @@ GUI.prototype.setCustomEventHandlers = function(){
 	});
 
 	// handlers for application settings [settings page]
-	this.pages.get('settings').on('change', 'input', function(){
-		var name =  /** @type {string} */  $(this).attr('name');
-		var value = ($(this).is(':checked')) ?  /** @type {string} */ $(this).val().toString() : '';
-		console.debug('settings change by user detected');
-		
-		settings.set(name, value);
-	});
+	//this.pages.get('settings').on('change', 'input', function(){
+	//	var name =  /** @type {string} */  $(this).attr('name');
+	//	var value = ($(this).is(':checked')) ?  /** @type {string} */ $(this).val().toString() : '';
+	//	console.debug('settings change by user detected');
+	//
+	//	settings.set(name, value);
+	//});
 
 	$('#dialog-save').hide();
 

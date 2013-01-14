@@ -208,12 +208,12 @@ function State(){
 
 State.prototype.init = function (){
 	var first = true,
-		serverGetVar = decodeURIComponent(decodeURI(getGetVariable('server')));
+		serverGetVar = decodeURIComponent(decodeURI(getQueryVar('server')));
 
 	this.server = ( serverGetVar && connection.isValidURL(serverGetVar) ) ? serverGetVar : null;
-	this.id = getGetVariable('id') || null; //CHECK THIS FOR 'VALIDITY'
-	this.source = getGetVariable('source') || false;
-	this.debug = getGetVariable('debug') || false;
+	this.id = getQueryVar('id') || null; //CHECK THIS FOR 'VALIDITY'
+	this.source = getQueryVar('source') || false;
+	this.debug = getQueryVar('debug') || false;
 
 	state.setUrl();
 
@@ -269,14 +269,7 @@ State.prototype.reset = function(){
 };
 
 GUI.prototype.setCustomEventHandlers = function(){
-	
-	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
-		//$('form.jr').trigger('beforesave');
-		if (typeof form !== 'undefined'){
-			form.validateForm();
-		}
-	});
-
+	/*
 	$(document).on('click', 'button#launch-form:not(.disabled)', function(){
 		var dataUrl, errorMsg;
 		if (!state.server){
@@ -301,7 +294,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 			$('#launch form').submit();
 		}
 	});
-
+	
 	$('#launch a.advanced').click(function(event){
 		event.preventDefault();
 		if ($(this).hasClass('active')){
@@ -311,7 +304,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 			$(this).text('hide advanced options').addClass('active').siblings('fieldset.advanced').show();
 		}
 	});
-
+	*/
 };
 
 function resetForm(){

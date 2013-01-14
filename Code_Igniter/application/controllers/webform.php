@@ -116,6 +116,7 @@ class Webform extends CI_Controller {
 					)
 				);
 			}
+			$this->output->enable_profiler(FALSE);
 			$this->load->view('webform_view', $data);
 		}
 		else 
@@ -214,6 +215,7 @@ class Webform extends CI_Controller {
 				)
 			);
 		}
+
 		$this->load->view('webform_basic_view',$data);
 	}
 
@@ -337,15 +339,19 @@ class Webform extends CI_Controller {
 
 	private function _get_form()
 	{
-		$this->load->model('Form_model', '', TRUE);
+		
 		if (!isset($this->form_id) || !isset($this->server_url))
 		{
 			return FALSE;
 		}
+		
+		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
 
+		$this->load->model('Form_model', '', TRUE);
 		$transf_result = $this->Form_model->transform($this->server_url, $this->form_id, FALSE);
-	
+		
 		$title = $transf_result->form->xpath('//h3[@id="form-title"]');
+		$form = new stdClass();
 		$form->title = (!empty($title[0])) ? $title[0] : '';
 
 		$form->html = $transf_result->form->asXML();
@@ -356,7 +362,8 @@ class Webform extends CI_Controller {
 		//the preg replacement below is very aggressive!... maybe too aggressive
 		$form->default_instance = preg_replace('/\>\s+\</', '><', $form->default_instance);
 		$form->default_instance = json_encode($form->default_instance);
-		
+
+				
 		return (!empty($form->html) && !empty($form->default_instance)) ? $form : NULL;
 	}
 

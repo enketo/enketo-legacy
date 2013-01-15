@@ -31,8 +31,8 @@
  */
 function Form (formSelector, dataStr, dataStrToEdit){
 	"use strict";
-	var data, dataToEdit, form, $form, $formClone;
- 
+	var data, dataToEdit, form, $form, $formClone,
+		loadErrors = [];
 	//*** FOR DEBUGGING and UNIT TESTS ONLY ***
 	this.ex = function(expr, type, selector, index){return data.evaluate(expr, type, selector, index);};
 	this.sfv = function(){return form.setAllVals();};
@@ -68,7 +68,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 
 		form.init();
-		return;
+		return loadErrors;
 	};
 
 	/**
@@ -573,7 +573,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * 
 	 */
 	DataXML.prototype.load = function(instanceOfDataXML){
-		var nodesToLoad, index, xmlDataType, path, value, target, $input, $target, $template, instanceID,
+		var nodesToLoad, index, xmlDataType, path, value, target, $input, $target, $template, instanceID, error,
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
@@ -626,7 +626,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					target.setVal(value, null, xmlDataType);
 				}
 				else{
-					console.error('Error occured trying to clone template node to set the repeat value of the instance to be edited.');
+					error = 'Error occured trying to clone template node to set the repeat value of the instance to be edited.';
+					console.error(error);
+					loadErrors.push(error);
 				}
 			}
 			else if ($(this).parent('meta').length === 1){
@@ -635,14 +637,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$(this).clone().appendTo(that.get().children().eq(0).children('meta'));
 			}
 			else {
-				console.error('did not find node with path: '+path+' and index: '+index+' so could not load data');
+				error = 'Did not find form node with path: '+path+' and index: '+index+' so failed to load data.';
+				console.error(error);
+				loadErrors.push(error);
 			}
 		});
 		//add deprecatedID node, copy instanceID value to deprecatedID and empty deprecatedID
 		instanceID = this.node('*>meta>instanceID');
 		if (instanceID.get().length !== 1){
-			//TODO add user feedback or delete form or something
-			console.error('instanceID was not found (or multiple)! Edited submission will not be successful.');
+			error = 'InstanceID node was not found (or multiple)!';
+			console.error(error);
+			loadErrors.push(error);
 			return;
 		}
 		if (this.node('*>meta>deprecatedID').get().length !== 1){

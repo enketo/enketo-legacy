@@ -447,7 +447,7 @@ describe("Loading instance values into html input fields functionality", functio
 });
 
 describe("Loading instance-to-edit functionality", function(){
-	var form;
+	var form, loadErrors;
 	
 	describe('when a deprecatedID node is not present in the form format', function(){
 		form = new Form(formStr1, dataStr1, dataEditStr1);
@@ -503,6 +503,13 @@ describe("Loading instance-to-edit functionality", function(){
 			expect(form.getDataO().node('/thedata/nodeA').getVal()[0]).toEqual('2012-02-05T15:34:00.000-04:00');
 			expect(form.getDataO().node('/thedata/repeatGroup/nodeC', 0).getVal()[0]).toEqual('some data');
 		});
+	});
+
+	it('returns form initialization errors when the instance-to-edit contains nodes that are not present in the default instance', function(){
+		var dataEditStr1a = dataEditStr1.replace(/thedata/g,'thedata_updated');
+		form = new Form(formStr1, dataStr1, dataEditStr1a);
+		loadErrors = form.init();
+		expect(loadErrors.length).toEqual(9);
 	});
 
 });

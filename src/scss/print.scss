@@ -74,6 +74,23 @@ button,
     border: none;
     background: none;
     border-bottom: 1px solid black;}
+  input[type="file"]{
+    display: none !important;
+  }
+  /*input[type="checkbox"]{
+    display: none !important;
+    ~ .active{
+      margin-left: 15px;
+      padding-left: 35px;
+      background: url('/images/checkbox.png') left center no-repeat;
+    } }
+  input[type="radio"]{
+    display: none !important;
+    ~ .active{
+      margin-left: 15px;
+      padding-left: 35px;
+      background: url('/images/radio.png') left center no-repeat;
+    } }*/
   textarea{
     //border-bottom: none;
     -webkit-print-color-adjust: exact;

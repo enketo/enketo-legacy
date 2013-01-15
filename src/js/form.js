@@ -146,7 +146,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	function DataXML(dataStr) {
 		var $data,
 			that=this;
-
+	
 		this.instanceSelectRegEx = /instance\([\'|\"]([^\/:\s]+)[\'|\"]\)/g;
 
 		//TEMPORARY DUE TO FIREFOX ISSUE, REMOVE ALL NAMESPACES FROM STRING, 
@@ -2058,7 +2058,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//$form.find('input[data-type-xml="barcode"]').attr('placeholder', 'not supported in browser data entry').attr('disabled', 'disabled');
 		},
 		fileWidget : function(){
-			$form.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled');
+			$form.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled')
+				.hide().after('<span class="text-warning">Image/Video/Audio uploads are not (yet) supported in enketo.</span>');
+
 			/*
 				Some cool code to use for image previews:
 				$fileinput = $(this);

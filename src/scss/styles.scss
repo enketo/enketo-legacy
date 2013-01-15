@@ -93,6 +93,14 @@ progress{
   display: block;
   margin: 10px auto;}
 
+.alert{
+  .error-list{
+    font-size: 0.65em;
+    li{
+      line-height: 1.4em; } }
+  strong{
+  text-decoration: underline;} }
+
 .navbar{
   &.navbar-fixed-top{
     margin-bottom: 0;}

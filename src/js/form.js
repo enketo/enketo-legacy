@@ -31,8 +31,8 @@
  */
 function Form (formSelector, dataStr, dataStrToEdit){
 	"use strict";
-	var data, dataToEdit, form, $form, $formClone;
- 
+	var data, dataToEdit, form, $form, $formClone,
+		loadErrors = [];
 	//*** FOR DEBUGGING and UNIT TESTS ONLY ***
 	this.ex = function(expr, type, selector, index){return data.evaluate(expr, type, selector, index);};
 	this.sfv = function(){return form.setAllVals();};
@@ -68,7 +68,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 
 		form.init();
-		return;
+		return loadErrors;
 	};
 
 	/**
@@ -573,7 +573,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * 
 	 */
 	DataXML.prototype.load = function(instanceOfDataXML){
-		var nodesToLoad, index, xmlDataType, path, value, target, $input, $target, $template, instanceID,
+		var nodesToLoad, index, xmlDataType, path, value, target, $input, $target, $template, instanceID, error,
 			that = this,
 			filter = {noTemplate: true, noEmpty: true};
 
@@ -616,7 +616,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//this use of node(,,).get() is a bit of a trick that is difficult to wrap one's head around
 			else if (that.node(path, index, {noTemplate:false}).get().length > 0){
 				//clone the template node 
-				//TODO add support for repeated nodes in forms that do not use template=""
+				//TODO add support for repeated nodes in forms that do not use template="" (not possible in formhub)
 				$template = that.node(path, 0, {noTemplate:false}).get().closest('[template]');
 				//TODO test this for nested repeats
 				that.cloneTemplate(form.generateName($template), index-1);
@@ -626,23 +626,37 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					target.setVal(value, null, xmlDataType);
 				}
 				else{
-					console.error('Error occured trying to clone template node to set the repeat value of the instance to be edited.');
+					error = 'Error occured trying to clone template node to set the repeat value of the instance to be edited.';
+					console.error(error);
+					loadErrors.push(error);
 				}
 			}
-			else if ($(this).parent('meta').length === 1){
-					//console.debug('cloning this direct child of <meta>:');
-					//console.debug($(this).clone());
-					$(this).clone().appendTo(that.get().children().eq(0).children('meta'));
+			//as an exception, missing meta nodes will be quietly added if a meta node exists at that path
+			//the latter requires e.g the root node to have the correct name
+			else if ( $(this).parent('meta').length === 1  && that.node(form.generateName($(this).parent('meta')), 0).get().length === 1){
+				//if there is no existing meta node with that node as child
+				if(that.node(':first > meta > '+name, 0).get().length === 0){
+					console.debug('cloning this direct child of <meta>');
+					$(this).clone().appendTo(that.node(':first > meta').get());
+				}
+				else{
+					error = 'Found duplicate meta node ('+name+')!';
+					console.error(error);
+					loadErrors.push(error);
+				}
 			}
 			else {
-				console.error('did not find node with path: '+path+' and index: '+index+' so could not load data');
+				error = 'Did not find form node with path: '+path+' and index: '+index+' so failed to load data.';
+				console.error(error);
+				loadErrors.push(error);
 			}
 		});
 		//add deprecatedID node, copy instanceID value to deprecatedID and empty deprecatedID
 		instanceID = this.node('*>meta>instanceID');
 		if (instanceID.get().length !== 1){
-			//TODO add user feedback or delete form or something
-			console.error('instanceID was not found (or multiple)! Edited submission will not be successful.');
+			error = 'InstanceID node in default instance error (found '+instanceID.get().length+' instanceID nodes)';
+			console.error(error);
+			loadErrors.push(error);
 			return;
 		}
 		if (this.node('*>meta>deprecatedID').get().length !== 1){
@@ -1632,8 +1646,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//this may cause problems for large itemsets. Use md5 instead?
 			newItems.text = $instanceItems.text(); 
 
-			console.debug('previous items: ', prevItems);
-			console.debug('new items: ', newItems);
+			//console.debug('previous items: ', prevItems);
+			//console.debug('new items: ', newItems);
 
 			if (newItems.length === prevItems.length && newItems.text === prevItems.text){
 				console.debug('itemset unchanged');
@@ -2436,8 +2450,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			event.stopImmediatePropagation();
 
-			console.debug('event: '+event.type);
-			console.log('node props: ', n);
+			//console.debug('event: '+event.type);
+			//console.log('node props: ', n);
 			
 			if (event.type === 'validate'){
 				//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
@@ -2451,8 +2465,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//validate 'required'
 			validReq = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : true;
 			
-			console.debug('validation for required: '+validReq);
-			console.debug('validation for constraint + datatype: '+validCons);
+			//console.debug('validation for required: '+validReq);
+			//console.debug('validation for constraint + datatype: '+validCons);
 
 			if (validReq === false){
 				that.setValid($(this), 'constraint');
@@ -2547,13 +2561,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 	FormHTML.prototype.setValid = function($node, type){
 		var classes = (type) ? 'invalid-'+type : 'invalid-constraint invalid-required';
-		console.debug('removing classes: '+classes);
+		//console.debug('removing classes: '+classes);
 		this.input.getWrapNodes($node).removeClass(classes);
 	};
 
 	FormHTML.prototype.setInvalid = function($node, type){
 		type = type || 'constraint';
-		console.debug('adding invalid-'+type+' class');
+		//console.debug('adding invalid-'+type+' class');
 		this.input.getWrapNodes($node).addClass('invalid-'+type).find('.required-subtle').attr('style', 'color: transparent;');
 	};
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global Connection, gui, jrDataStr, jrDataStrToEdit, Form*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global Connection, gui, jrDataStr, settings, jrDataStrToEdit, Form*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var /**@type {Form}*/form;
@@ -27,12 +27,25 @@ var /**@type {StorageLocal}*/store; //leave, though not used, to prevent compila
 /************ Document Ready ****************/
 $(document).ready(function() {
 	'use strict';
+	var loadErrors;
 
 	form = new Form('form.jr:eq(0)', jrDataStr, jrDataStrToEdit);
 
 	connection = new Connection();
 	
-	form.init();
+	loadErrors = form.init();
+	if (loadErrors.length > 0){
+		var errorStringHTML = '<ul class="error-list"><li>' + loadErrors.join('</li><li>') + '</li></ul',
+			errorStringEmail = '* '+loadErrors.join('* '),
+			s = (loadErrors.length > 1) ? 's' : '',
+			email = settings['supportEmail'];
+		gui.alert('<p>Error'+s+' occured during the loading of data. It is highly recommended <strong>not to edit</strong> '+
+			'this record until this is resolved.</p><br/><p>'+
+			'Please contact <a href="mailto:'+ email +
+			'?subject=loading errors for: '+location.href+'&body='+errorStringEmail+'" target="_blank" >'+email+'</a>'+
+			' with the link to this page and the error message'+s+' below:</p><br/>'+ errorStringHTML, 'Data Loading Error'+s);
+	}
+
 	connection.init();
 	gui.setup();
 

@@ -77,7 +77,7 @@ class Launch extends CI_Controller {
 		}
 		else 
 		{
-			extract($_GET);
+			extract($_POST);
 			if (!empty($server_url) && strlen(trim($server_url)) > 1 && !empty($form_id) && strlen(trim($form_id)) > 1)
 			{
 				$server_url = trim($server_url);

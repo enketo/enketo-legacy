@@ -447,7 +447,7 @@ describe("Loading instance values into html input fields functionality", functio
 });
 
 describe("Loading instance-to-edit functionality", function(){
-	var form;
+	var form, loadErrors;
 	
 	describe('when a deprecatedID node is not present in the form format', function(){
 		form = new Form(formStr1, dataStr1, dataEditStr1);
@@ -505,6 +505,27 @@ describe("Loading instance-to-edit functionality", function(){
 		});
 	});
 
+	describe('returns load errors upon initialization', function(){
+		it('when the instance-to-edit contains nodes that are not present in the default instance', function(){
+			var dataEditStr1a = dataEditStr1.replace(/thedata/g,'thedata_updated');
+			form = new Form(formStr1, dataStr1, dataEditStr1a);
+			loadErrors = form.init();
+			expect(loadErrors.length).toEqual(10);
+		});
+
+		it('when an instance-to-edit is provided with double instanceID nodes', function(){
+			var dataEditStr1a = dataEditStr1.replace('</thedata>', '<meta><instanceID>uuid:3b35ac780c10468d8be7d8c44f3b17df</instanceID></meta></thedata>');
+			//first check it does not return erors when single instanceID node is present
+			form = new Form(formStr1, dataStr1, dataEditStr1);
+			loadErrors = form.init();
+			expect(loadErrors.length).toEqual(0);
+			//then with the incorrect instance
+			form = new Form(formStr1, dataStr1, dataEditStr1a);
+			loadErrors = form.init();
+			expect(loadErrors.length).toEqual(1);
+			expect(loadErrors[0]).toEqual("Found duplicate meta node (instanceID)!");
+		});
+	});
 });
 
 describe('repeat functionality', function(){

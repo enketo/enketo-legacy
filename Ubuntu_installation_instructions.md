@@ -13,8 +13,8 @@ Installation on bare Ubuntu 12.04 server (AWS)
 - check for 'It Works!' message when visiting domain or IP-address
 - `sudo a2enmod expires rewrite`
 
-#### PHP & git:
-- `sudo apt-get install php5 libapache2-mod-php5 php5-xsl php5-curl git`
+#### PHP, APC & git:
+- `sudo apt-get install php5 libapache2-mod-php5 php5-xsl php5-curl git php-apc`
 
 #### MySQL:
 - `sudo apt-get install mysql-server`
@@ -40,7 +40,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 - enter database info in /var/www/enketo/Code_Igniter/application/config/database.php (username, password, database)
 - enter other info in /var/www/enketo/Code_Igniter/application/config/enketo.php
 - set environment in index.php to 'production' if it isn't already
-- change permissions `sudo chmod 777 /var/www/enketo/Code_Igniter/application/cache` and `sudo chmod 777 /var/www/enketo/Code_Igniter/application/logs` (double-check that this actually works, may require `sudo chown -R ubuntu enketo` first)
+- change permissions `sudo chmod 777 /var/www/enketo/Code_Igniter/application/cache` and `sudo chmod 777 /var/www/enketo/Code_Igniter/application/logs` (double-check that this actually works, may require `sudo chown -R ubuntu /var/www/enketo` first)
 - open /etc/apache2/sites-available/default for editing:
   * change DocumentRoot to /var/www/enketo/public in /etc/apache2/sites-available/default
   * change 2nd `<Directory /var/www>` to: `<Directory /var/www/enketo/public>`

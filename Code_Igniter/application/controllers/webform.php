@@ -339,13 +339,10 @@ class Webform extends CI_Controller {
 
 	private function _get_form()
 	{
-		
 		if (!isset($this->form_id) || !isset($this->server_url))
 		{
 			return FALSE;
 		}
-		
-		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
 
 		$this->load->model('Form_model', '', TRUE);
 		$transf_result = $this->Form_model->transform($this->server_url, $this->form_id, FALSE);
@@ -357,13 +354,14 @@ class Webform extends CI_Controller {
 		$form->html = $transf_result->form->asXML();
 		
 		$form->default_instance = $transf_result->model->asXML();
+		//a later version of PHP seems to output jr:template= instead of template=
+		$form->default_instance = str_replace(' jr:template=', ' template=', $form->default_instance);
 		//$form->default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form->default_instance);
 		//$form->default_instance = preg_replace('/\/\>\s+\</', '/><', $form->default_instance);
 		//the preg replacement below is very aggressive!... maybe too aggressive
 		$form->default_instance = preg_replace('/\>\s+\</', '><', $form->default_instance);
 		$form->default_instance = json_encode($form->default_instance);
-
-				
+		
 		return (!empty($form->html) && !empty($form->default_instance)) ? $form : NULL;
 	}
 

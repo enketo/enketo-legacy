@@ -17,7 +17,7 @@
         <file name="common.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
-        <file name="test.js"/>
+        <file name="formtester.js"/>
         <file name="connection.js"/>
       </sources>
 

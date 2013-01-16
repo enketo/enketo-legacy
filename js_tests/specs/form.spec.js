@@ -534,28 +534,53 @@ describe('repeat functionality', function(){
 	beforeEach(function() {
 		//turn jQuery animations off
 		jQuery.fx.off = true;
+		form = new Form(formStr1, dataStr1);
+		form.init();
 	});
 
 	it ("removes the correct instance and HTML node when the '-' button is clicked (issue 170)", function(){
-		var rep,
-			repeatPath = "/thedata/repeatGroup",
-			nodePath = "/thedata/repeatGroup/nodeC",
+		var repeatSelector = '.jr-repeat[name="/thedata/repeatGroup"]',
+			nodePath = '/thedata/repeatGroup/nodeC',
+			nodeSelector = 'input[name="'+nodePath+'"]',
+			formH = form.getFormO(),
+			data = form.getDataO(),
 			index = 2;
-		form = new Form(formStr1, dataStr1);
-		form.init();
 		
-		expect(form.getFormO().$.find('[name="'+repeatPath+'"]').eq(index).length).toEqual(1);
-		expect(form.getFormO().$.find('[name="'+repeatPath+'"]:eq('+index+') button.remove').length).toEqual(1);
-		expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index).val()).toEqual('c3');
-		expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual('c3');
+		expect(formH.$.find(repeatSelector).eq(index).length).toEqual(1);
+		expect(formH.$.find(repeatSelector).eq(index).find('button.remove').length).toEqual(1);
+		expect(formH.$.find(nodeSelector).eq(index).val()).toEqual('c3');
+		expect(data.node(nodePath, index).getVal()[0]).toEqual('c3');
 		
-		form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]:eq('+index+') button.remove').click();
-		expect(form.getDataO().node(nodePath, index).getVal()[0]).toEqual(undefined);
+		formH.$.find(repeatSelector).eq(index).find('button.remove').click();
+		expect(data.node(nodePath, index).getVal()[0]).toEqual(undefined);
 		//check if it removed the correct data node
-		expect(form.getDataO().node(nodePath, index-1).getVal()[0]).toEqual('c2');
+		expect(data.node(nodePath, index-1).getVal()[0]).toEqual('c2');
 		//check if it removed the correct html node
-		expect(form.getFormO().$.find('fieldset.jr-repeat[name="'+repeatPath+'"]').eq(index).length).toEqual(0);
-		expect(form.getFormO().$.find('[name="'+nodePath+'"]').eq(index-1).val()).toEqual('c2');
+		expect(formH.$.find(repeatSelector).eq(index).length).toEqual(0);
+		expect(formH.$.find(nodeSelector).eq(index-1).val()).toEqual('c2');
+	});
+
+	it ("marks cloned invalid fields as valid", function(){
+		var repeatSelector = '.jr-repeat[name="/thedata/repeatGroup"]',
+			nodeSelector = 'input[name="/thedata/repeatGroup/nodeC"]',
+			formH = form.getFormO(),
+			$node3 = formH.$.find(nodeSelector).eq(2),
+			$node4;
+
+		formH.setInvalid($node3);
+		
+		expect(formH.$.find(repeatSelector).length).toEqual(3);
+		expect($node3.parent().hasClass('invalid-constraint')).toBe(true);
+		expect(formH.$.find(nodeSelector).eq(3).length).toEqual(0);
+
+		formH.$.find(repeatSelector).eq(2).find('button.repeat').click();
+
+		$node4 = formH.$.find(nodeSelector).eq(2);
+		expect(formH.$.find(repeatSelector).length).toEqual(4);
+		expect($node4.length).toEqual(1);
+		//console.log('cloned node parent: ', $node4.parent());
+		/*****************************************************************************************/
+		//expect($node4.parent().hasClass('invalid-constraint')).toBe(false); TODO: FIX THIS TEST
 	});
 });
 

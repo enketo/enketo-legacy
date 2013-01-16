@@ -998,7 +998,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
 			.find('legend:eq(0) span:not(.jr-hint):last').after($required);
 		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
-			.not('[type="checkbox"], [type="radio"]').parent()
+			.not('[type="checkbox"], [type="radio"], [readonly]').parent()
 			.each(function(){
 				$(this).children('span:not(.jr-option-translations, .jr-hint):last').after($required);
 			});
@@ -1014,7 +1014,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 
-		this.repeat.init(); //before double-fieldset magic to fix legend issues
+		this.repeat.init(this); //before double-fieldset magic to fix legend issues
 		
 		/*
 			legends are a royal pain-in-the-ass, but semantically correct to use. To restoring sanity, the least
@@ -1861,8 +1861,18 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @type {Object}
 	 */
 	FormHTML.prototype.widgets = {
-		//IMPORTANT! Widgets should be initalized after instance values have been loaded in $data as well as in input fields
-		init : function(){
+		/**
+		 * Initializes widgets. 
+		 * (Important:  Widgets should be initalized after instance values have been loaded in $data as well as in input fields)
+		 * @param  {jQuery=} $group optionally only initialize widgets inside a group (default is inside whole form)
+		 */
+		init : function($group){
+			/* 
+				For the sake of convenience it is assumed that the $group parameter is only provided when initiating
+				widgets inside newly cloned repeats and that this function has been called before for the whole form.
+			*/
+			this.repeat = ($group) ? true : false;
+			this.$group = $group || $form;
 			if (!Modernizr.touch){
 				this.dateWidget();
 				this.timeWidget();
@@ -1880,22 +1890,24 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.mediaLabelWidget();
 			this.radioWidget();
 		},
-		radioWidget: function(){
-			$form.on('click', 'label[data-checked="true"]', function(event){
-				$(this).removeAttr('data-checked');
-				$(this).parent().find('input').prop('checked', false).trigger('change');
-				if (event.target.nodeName.toLowerCase() !== 'input'){
-					return false;
-				}
-			});
-			$form.on('click', 'input[type="radio"]:checked', function(event){
-				$(this).parent('label').attr('data-checked', 'true');
-			});
-			//defaults
-			$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');
+		radioWidget : function(){
+			if (!this.repeat){
+				$form.on('click', 'label[data-checked="true"]', function(event){
+					$(this).removeAttr('data-checked');
+					$(this).parent().find('input').prop('checked', false).trigger('change');
+					if (event.target.nodeName.toLowerCase() !== 'input'){
+						return false;
+					}
+				});
+				$form.on('click', 'input[type="radio"]:checked', function(event){
+					$(this).parent('label').attr('data-checked', 'true');
+				});
+				//defaults
+				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');
+			}
 		},
 		dateWidget : function(){
-			$form.find('input[type="date"]').each(function(){
+			this.$group.find('input[type="date"]').each(function(){
 				var $dateI = $(this),
 					$p = $(this).parent('label'),
 					startView = ($p.hasClass('jr-appearance-month-year')) ? 'year' :
@@ -1913,12 +1925,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					console.debug('fakedate input field change detected');
 					var date,
 						value = $(this).val();
-					value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
-					$dateI.val(data.node().convert(value, 'date')).trigger('change').blur();
-					date = new Date(value.split('-')[0], Number (value.split('-')[1]) - 1, value.split('-')[2]);
-					//the 'update' method only works for full dates, not yyyy-mm and yyyy dates, so this convoluted
-					//method is used by using setDate
-					$fakeDate.datepicker('setDate', new Date(date));
+					if(value.length > 0){
+						value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
+						$dateI.val(data.node().convert(value, 'date')).trigger('change').blur();
+						date = new Date(value.split('-')[0], Number (value.split('-')[1]) - 1, value.split('-')[2]);
+						//the 'update' method only works for full dates, not yyyy-mm and yyyy dates, so this convoluted
+						//method is used by using setDate
+						$fakeDate.datepicker('setDate', new Date(date));
+					}
+					else{
+						$dateI.val('').trigger('change').blur();
+					} 
 					return false;
 				});
 
@@ -1938,7 +1955,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 		},
 		timeWidget : function(){
-			$form.find('input[type="time"]').each(function(){
+			this.$group.find('input[type="time"]').each(function(){
 				var $timeI = $(this),
 					$p = $(this).parent('label'),
 					timeVal = $(this).val(),
@@ -1966,7 +1983,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}, 
 		//Note: this widget doesn't offer a way to reset a datetime value in the instance to empty
 		dateTimeWidget : function(){
-			$form.find('input[type="datetime"]').each(function(){	
+			this.$group.find('input[type="datetime"]').each(function(){	
 				var $dateTimeI = $(this),
 					/*
 						Loaded or default datetime values remain untouched until they are edited. This is done to preserve 
@@ -2012,47 +2029,59 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						$dateTimeI.val(new Date(d[0], d[1]-1, d[2], t[0], t[1]).toISOLocalString()).trigger('change').blur();
 					}
 					else{
-						$dateTimeI.val('').trigger('change');
+						$dateTimeI.val('').trigger('change').blur();
 					}
 				}
 			});
 		},
 		selectWidget : function(){
 			//$form.find('select option[value=""]').remove(); issue with init value empty
-			$form.find('select').not('#form-languages').selectpicker();
-			$form.on('changelanguage', function(){
-				$form.find('select').selectpicker('update');
-			});
+			this.$group.find('select').not('#form-languages').selectpicker();
+			if (!this.repeat){
+				$form.on('changelanguage', function(){
+					$form.find('select').selectpicker('update');
+				});
+			}
 		},
-		//transforms temporary page-break elements to triggers //REMOVE WHEN BETTER SOLUTION FOR PAGE BREAKS IS FOUND
+		//transforms triggers to page-break elements //REMOVE WHEN NIGERIA FORMS NO LONGER USE THIS
 		pageBreakWidget : function(){
-			$form.find('.jr-appearance-page-break input[readonly]').parent('label').each(function(){
-				var	name = 'name="'+$(this).find('input').attr('name')+'"';
-				$('<hr class="manual page-break" '+name+'></hr>') //ui-corner-all
-					.insertBefore($(this)).find('input').remove(); 
-				$(this).remove();
-			});
+			if (!this.repeat){
+				$form.find('.jr-appearance-page-break input[readonly]').parent('label').each(function(){
+					var	name = 'name="'+$(this).find('input').attr('name')+'"';
+					$('<hr class="manual page-break" '+name+'></hr>') //ui-corner-all
+						.insertBefore($(this)).find('input').remove(); 
+					$(this).remove();
+				});
+			}
 		},
 		//transforms readonly inputs into triggers
 		readonlyWidget : function(){
-			$form.find('input[readonly]:not([data-type-xml="geopoint"])').parent('label').each(function(){
-				//var $spans = $(this).find('span').not('.question-icons span').detach(); 
-				var html = $(this).html(),
-					relevant = $(this).find('input').attr('data-relevant'),
-					name = 'name="'+$(this).find('input').attr('name')+'"',
-					attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name;
-				$('<fieldset class="trigger" '+attributes+'></fieldset>') //ui-corner-all
-					.insertBefore($(this)).append(html).find('input').remove(); 
-				$(this).remove();
-			});
+			if (!this.repeat){
+				$form.find('input[readonly]:not([data-type-xml="geopoint"])').parent('label').each(function(){
+					//var $spans = $(this).find('span').not('.question-icons span').detach(); 
+					var html = $(this).html(),
+						relevant = $(this).find('input').attr('data-relevant'),
+						name = 'name="'+$(this).find('input').attr('name')+'"',
+						attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name;
+					$('<fieldset class="trigger" '+attributes+'></fieldset>') //ui-corner-all
+						.insertBefore($(this)).append(html).find('input').remove(); 
+					$(this).remove();
+				});
+			}
 		},
 		tableWidget :function(){
-			$form.find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
-				.parent().parent('.jr-group').each(function(){
-					$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
-					$(this).find('label').toLargestWidth();
-					$(this).find('legend').toLargestWidth();
-			});	
+			if (!this.repeat){
+				//when loading a form dynamically the DOM elements don't have a width yet (width = 0), so we call
+				//this with a bit of a delay..
+				setTimeout(function(){
+					$form.find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
+						.parent().parent('.jr-group').each(function(){
+							$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
+							$(this).find('label').toLargestWidth();
+							$(this).find('legend').toLargestWidth();
+					});
+				}, 500);	
+			}
 			//$form.find('.jr-appearance-compact label img').selectable();
 		},
 		spinnerWidget :function(){
@@ -2063,7 +2092,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//algortithm could guess likely border values by using a regular expression search...
 		},
 		geopointWidget : function(){
-			$form.find('input[data-type-xml="geopoint"]').geopointWidget({touch: Modernizr.touch});
+			this.$group.find('input[data-type-xml="geopoint"]').geopointWidget({touch: Modernizr.touch});
 		},
 		autoCompleteWidget: function(){
 
@@ -2072,9 +2101,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//$form.find('input[data-type-xml="barcode"]').attr('placeholder', 'not supported in browser data entry').attr('disabled', 'disabled');
 		},
 		fileWidget : function(){
-			$form.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled')
-				.hide().after('<span class="text-warning">Image/Video/Audio uploads are not (yet) supported in enketo.</span>');
-
+			if (!this.repeat){
+				this.$group.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled')
+					.hide().after('<span class="text-warning">Image/Video/Audio uploads are not (yet) supported in enketo.</span>');
+			}
 			/*
 				Some cool code to use for image previews:
 				$fileinput = $(this);
@@ -2093,9 +2123,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		mediaLabelWidget : function(){
 			//improve looks when images, video or audio is used as label
-			$('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact)>label, '+
-				'fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact)>legend')
-				.children('img,video,audio').parent().addClass('with-media clearfix');
+			if (!this.repeat){
+				$('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact)>label, '+
+					'fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact)>legend')
+					.children('img,video,audio').parent().addClass('with-media clearfix');
+			}
 		}
 	};
 
@@ -2276,18 +2308,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
  */
 	FormHTML.prototype.repeat = {
 		/**
-		 * Function: init
-		 * 
-		 * Initiates all Repeat Groups in form (only called once).
-		 * 
-		 * Returns:
-		 * 
-		 *   return description
+		 * Initializes all Repeat Groups in form (only called once).
+		 * @param  {FormHTML} formO the parent form object
 		 */
-		init : function(){
+		init : function(formO){
 			var i, numRepsInCount, repCountPath, numRepsInInstance, numRepsDefault,
 				that=this;
 			//console.debug('initializing repeats');
+			this.formO = formO;
 			$form.find('fieldset.jr-repeat').prepend('<span class="repeat-number"></span>');
 			$form.find('fieldset.jr-repeat:not([data-repeat-fixed])')
 				.append('<button type="button" class="btn repeat"><i class="icon-plus"></i></button>'+
@@ -2344,7 +2372,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * 
 		 *   return description
 		 */
-		clone : function($node, ev){
+		/**
+		 * clone a repeat group/node
+		 * @param  {jQuery} $node node to clone
+		 * @return {[type]}       [description]
+		 */
+		clone : function($node){
 			var $master, $clone, $parent, index, radioNames, i, path, timestamp,
 				that = this;
 			if ($node.length !== 1){
@@ -2353,21 +2386,24 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			$parent = $node.parent('fieldset.jr-group');
 			$master = $parent.children('fieldset.jr-repeat:not(.clone)').eq(0);
-			//create a clone and
 			$clone = $master.clone(false);//deep cloning with button events causes problems
-			//remove any clones inside this clone.. (cloned repeats within repeats..)
-			$clone.find('.clone').remove();
-			$clone.addClass('clone');
+			
+			//add clone class, remove any clones inside this clone.. (cloned repeats within repeats..)
+			//also remove all widgets
+			$clone.addClass('clone').find('.clone, .widget').remove();
+			
+			//mark all cloned fields as valid
+			$clone.find('.invalid-required, .invalid-constraint').find('input, select, textarea').each(function(){
+				that.formO.setValid($(this)); 
+			});
 
 			$clone.insertAfter($node)
 				.parent('.jr-group').numberRepeats();
-			$clone.hide().show(600); 
-			$clone.clearInputs(ev);
-			$clone.find('.invalid input, .invalid select, .invalid textarea').each(function(){
-				that.setValid($(this));
-			});
-			//clone.find('fieldset.jr-repeat').addClass('clone');
+			$clone.hide().show(600).clearInputs('');
 
+			//re-initiate widgets in clone
+			this.formO.widgets.init($clone);
+			
 			//note: in http://formhub.org/formhub_u/forms/hh_polio_survey_cloned/form.xml a parent group of a repeat
 			//has the same ref attribute as the nodeset attribute of the repeat. This would cause a problem determining 
 			//the proper index if .jr-repeat was not included in the selector
@@ -2384,7 +2420,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			console.debug ('different radioNames in clone: '+radioNames.join());
 			for (i=0; i<radioNames.length ;i++){
 				//amazingly, this executes so fast when compiled that the timestamp in milliseconds is
-				//not sufficient guarantee for uniqueness
+				//not sufficient guarantee of uniqueness (??)
 				timestamp = new Date().getTime().toString()+'_'+Math.floor((Math.random()*10000)+1);
 				$clone.find('input[type="radio"][data-name="'+radioNames[i]+'"]').attr('name', timestamp);
 			}
@@ -2395,7 +2431,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			path = $master.attr('name');
 
 			//0-based index of node in a jquery resultset when using a selector with that name attribute
-			//console.log('index of form node to clone: '+index);
+			console.log('index of form node to clone: '+index);
 			/*
 			 * clone data node if it doesn't already exist
 			 */

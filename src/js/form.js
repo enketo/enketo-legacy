@@ -998,7 +998,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
 			.find('legend:eq(0) span:not(.jr-hint):last').after($required);
 		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
-			.not('[type="checkbox"], [type="radio"]').parent()
+			.not('[type="checkbox"], [type="radio"], [readonly]').parent()
 			.each(function(){
 				$(this).children('span:not(.jr-option-translations, .jr-hint):last').after($required);
 			});

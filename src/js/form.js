@@ -2095,7 +2095,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//improve looks when images, video or audio is used as label
 			$('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact)>label, '+
 				'fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact)>legend')
-				.children('img,video,audio').parent().addClass('with-media');
+				.children('img,video,audio').parent().addClass('with-media clearfix');
 		}
 	};
 

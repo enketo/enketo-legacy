@@ -346,57 +346,6 @@ Connection.prototype.getSurveyURL = function(serverURL, formId, callbacks){
 };
 
 /**
- * TODO: REMOVE THIS AND REPLACE REFERENCES WITH NEXT FUNCTION
- * Obtains HTML Form from a form element with input fields for XML file or from a server url and form id
- * @param  {jQuery}   $form    the jQuery-wrapped form object with 3 input fields (xml_file, server_url, form_id)
- * @param  {Object.<string, Function>=} callbacks [description]
- */
-Connection.prototype.getFormHTML = function($form, callbacks){
-	var serverURL, formId, formFile,
-		formData = new FormData($form[0]);
-
-	callbacks = this.getCallbacks(callbacks);
-
-	serverURL = $form.find('input[name="server_url"]').val() || '';
-	formId = $form.find('input[name="form_id"]').val() || '';
-	formFile = $form.find('input[name="xml_file"]').val() || '';
-	
-	if (formFile === '' && serverURL === '' && formId === ''){
-		callbacks.error(null, 'validationerror', 'No form file or URLs provided');
-		return;
-	}
-
-	if (formFile === '' && !this.isValidURL(serverURL)){
-		callbacks.error(null, 'validationerror', 'Not a valid server url');
-		return;
-	}
-
-	if (formFile === '' && formId.length === 0){
-		callbacks.error(null, 'validationerror', 'No form id provided');
-		return;
-	}
-
-	$.ajax('/transform/get_html_form', {
-		type: 'POST',
-		cache: false,
-		contentType: false,
-		processData: false,
-		dataType: 'xml',
-		/*xhr: function() {  // custom xhr
-            myXhr = $.ajaxSettings.xhr();
-            if(myXhr.upload){ // check if upload property exists
-                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // for handling the progress of the upload
-            }
-            return myXhr;
-        },*/
-		data: formData,
-		success: callbacks.success,
-		error: callbacks.error,
-		complete: callbacks.complete
-	});
-};
-
-/**
  * Obtains HTML Form from an XML file or from a server url and form id
  * @param  {?string=}					serverURL   full server url
  * @param  {?string=}					formId		form ID
@@ -426,6 +375,8 @@ Connection.prototype.getTransForm = function(serverURL, formId, formFile, callba
 	formData.append('server_url', serverURL);
 	formData.append('form_id', formId);
 	formData.append('xml_file', formFile);
+
+	console.debug('form file: ', formFile);
 
 	$.ajax('/transform/get_html_form', {
 		type: 'POST',

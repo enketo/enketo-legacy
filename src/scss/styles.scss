@@ -95,7 +95,7 @@ progress{
 
 .alert{
   .error-list{
-    font-size: 0.65em;
+    font-size: 0.7em;
     li{
       line-height: 1.4em; } }
   strong{
@@ -414,28 +414,33 @@ label#data-template-show {
       &:hover{
         text-decoration: none;
         opacity: 0.8;} }
-    .form-language-selector{
-      //border: 1px solid blue;
-      float: right;
-      padding: 0.2em $baseFontSize;
-      font-size: 0.8em;
-      select{
-        width: auto;
-        background: none;
-        min-width: 11em;
-        margin: 0 0 0 1em;
-        font-size: 0.9em; }  }
     .print{
       //border: 1px solid black;
       background: none;
       border-radius: 0;
       border: none;
-      border-left: 1px solid #999999;
       width: 60px;
       padding: 0.3em $baseFontSize;
       float: right;
       &:hover{
         opacity: 0.7; } } }
+  .form-language-selector{
+      //border: 1px solid blue;
+      float: right;
+      padding: 0.2em $baseFontSize;
+      font-size: 0.8em;
+      border-right: 1px solid #999999;
+      select{
+        width: auto;
+        background: none;
+        min-width: 11em;
+        margin: 0 0 0 1em;
+        font-size: 0.9em; } } 
+  &.tab-pane .form-language-selector{
+    padding-right: 0;
+    border-right: 0;
+    margin-top: -30px;
+    margin-right: -25px; }
   //margin: 0 0 40px 0;
   #submit-form, #submit-edited-data, #validate-form, #launch-form{
     position: relative;

@@ -32,7 +32,7 @@ class Formtester extends CI_Controller {
 		{
 			$data = array('offline'=>FALSE, 'title_component'=>'form-tester');
 			
-			$default_scripts = array(
+			$default_library_scripts = array(
 				'/libraries/jquery.min.js',
 				'/libraries/bootstrap/js/bootstrap.min.js',
 				'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
@@ -40,6 +40,14 @@ class Formtester extends CI_Controller {
 				'/libraries/modernizr.min.js',
 				'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 				'/libraries/vkbeautify.js'
+			);
+			$default_main_scripts = array(
+					'/js-source/common.js',
+					'/js-source/form.js',
+					'/js-source/widgets.js',
+					'/js-source/formtester.js',
+					'/js-source/connection.js',
+					'/js-source/debug.js'
 			);
 			$default_stylesheets = array
 			(
@@ -49,24 +57,23 @@ class Formtester extends CI_Controller {
 
 			if (ENVIRONMENT === 'production')
 			{
-				$data['scripts'] = array_merge($default_scripts, array(
+				$data['scripts'] = array
+				(
+					'libraries/libraries-all-min.js',
 					'js-min/test-all-min.js'
-				));
+				);
 			}
 			else
 			{
-				$data['scripts'] = array_merge($default_scripts, array(
-					'/js-source/common.js',
-					'/js-source/form.js',
-					'/js-source/widgets.js',
-					'/js-source/test.js',
-					'/js-source/connection.js',
-					'/js-source/debug.js'
-				));
+				$data['scripts'] = array_merge
+				(
+					$default_library_scripts, 
+					$default_main_scripts
+				);
 			}
 			$data['stylesheets'] = $default_stylesheets;
-			$this->output->cache(10);
-			$this->load->view('test_view', $data);
+			//$this->output->cache(10);
+			$this->load->view('formtester_view', $data);
 		}
 	}
 }

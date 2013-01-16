@@ -47,10 +47,6 @@ class Form_model extends CI_Model {
 
         $url = ($file_path) ? array('xml'=> $file_path) : $this->_get_form_urls($server_url, $form_id);
         $xml = $this->_load_xml($url['xml']);
-        //get manifest with media urls if exists
-       // else // ($xml['type'] == 'url')
-        //{
-            //$manifest_url = $this->_get_manifest_url($xml_url);
             
         if (isset($url['manifest']))//$manifest_url !== FALSE)
         {
@@ -103,13 +99,13 @@ class Form_model extends CI_Model {
                 {
                     $this->_fix_media_urls($manifest_sxe, $result);
                 }
-
 				//easiest way to merge data and result
-				$result = simplexml_load_string('<root>'.$result->form->asXML().$data->model->asXML().$result->xsltmessages->asXML().'</root>');
-				
-				//$this->_html5_validate($result);
-				//log_message('debug', 'data: '.$data->asXML());				
-				//log_message('debug', 'result after appending: '.$result->asXML());
+                $modelStr = $data->model->asXML();
+                //remove jr: namespace (seems to cause issue with latest PHP libs)
+                $modelStr = str_replace(' jr:template=', ' template=', $modelStr);
+                $formStr = $result->form->asXML();
+                $messageStr = $result->xsltmessages->asXML();
+				$result = simplexml_load_string('<root>'.$modelStr.$formStr.$messageStr.'</root>');
 			}
 			$result = $this->_add_errors($odk_result['errors'], 'jrvalidationmessages', $result);		
 		}	

@@ -2066,12 +2066,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		tableWidget :function(){
 			if (!this.repeat){
-				$form.find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
-					.parent().parent('.jr-group').each(function(){
-						$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
-						$(this).find('label').toLargestWidth();
-						$(this).find('legend').toLargestWidth();
-				});	
+				//when loading a form dynamically the DOM elements don't have a width yet (width = 0), so we call
+				//this with a bit of a delay..
+				setTimeout(function(){
+					$form.find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
+						.parent().parent('.jr-group').each(function(){
+							$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
+							$(this).find('label').toLargestWidth();
+							$(this).find('legend').toLargestWidth();
+					});
+				}, 500);	
 			}
 			//$form.find('.jr-appearance-compact label img').selectable();
 		},

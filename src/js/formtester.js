@@ -25,9 +25,6 @@ $(document).ready(function(){
 	connection = new Connection();
 	state = new State();
 	state.init();
-	
-
-	//$('[title]').tooltip();
 
 	_error = console.error;
 	console.error = function(){
@@ -47,29 +44,37 @@ $(document).ready(function(){
 
 	$('#upload-form [name="xml_file"]').change(function(){
 		$('#upload-form').submit();
-		resetForm();
 	});
 
 	$('#upload-form').submit(function(){
-		var formId = $(this).find('[name="form_id"]').val(),
-			serverURL = $(this).find('[name="server_url"]').val(),
+		var $formId = $(this).find('[name="form_id"]'),
+			formId = $formId.val(),
+			$serverURL = $(this).find('[name="server_url"]'),
+			serverURL = $serverURL.val(),
+			$file = $(this).find('[name="xml_file"]'),
+			file = ($file.val()) ? $file[0].files[0] : null,
 			error = function(jqXHR, status, errorThrown){
 				if (status !== 'validationerror'){
 					gui.feedback('Sorry, an error occured while communicating with the Enketo server. ('+errorThrown+')');
 				}
 				else {
 					gui.alert(errorThrown);
-					resetForm();
+					//resetAll();
 				}
 			},
 			complete = function(jqXHR, textStatus){
 				$('#upload-form progress').hide();
 			};
 
+		resetAll();
+
 		$('#upload-form progress').show();
 
-		if ( formId || $(this).find('[name="xml_file"]').val().length > 0){
-			connection.getFormHTML($(this), {
+		if ( formId || file ){
+			if (file) {
+				$('#form-list ul').empty();
+			}
+			connection.getTransForm(serverURL, formId, file, {
 				success: function(resp, textStatus, jqXHR){
 					state.server = (serverURL) ? serverURL : null;
 					state.id = (formId) ? formId : null;
@@ -81,13 +86,15 @@ $(document).ready(function(){
 			});
 		}
 		else{
+			$('#form-list ul').empty();
 			connection.getFormlist(serverURL, {
 				success: function(resp, textStatus, jqXHR){
-					$('#upload .hurry').hide();
+					//$('#upload .hurry').hide();
 					state.server = serverURL;
 					state.id = null;
 					state.setUrl();
 					processFormlist(resp);
+					$serverURL.val(serverURL);
 				},
 				error: error,
 				complete: complete
@@ -110,10 +117,10 @@ $(document).ready(function(){
 	});
 
 	$(document).on('click', '#form-list a', function(event){
-		var id = /** @type {string} */ $(this).attr('id');
+		var id = /** @type {string} */ $(this).attr('id'),
+			server = /** @type {string} */ $(this).attr('data-server');
 		event.preventDefault();
-		//console.debug('form clicked');
-		//$('#upload-form input[name="xml_url"]').val($(this).attr('href'));
+		$('#upload-form input[name="server_url"]').val(server);
 		$('#upload-form input[name="form_id"]').val(id);
 		$('#upload-form').submit();
 	});
@@ -148,7 +155,7 @@ $(document).ready(function(){
 	
 	$('#upload-form #input-switcher a#server_url').click();
 
-	$('#launch form').submit(function(){
+	/*$('#launch form').submit(function(){
 		var serverURL = $(this).find('[name="server_url"]').val(),
 			formId = $(this).find('[name="form_id"]').val();
 
@@ -188,7 +195,7 @@ $(document).ready(function(){
 			}
 		});
 		return false;
-	});
+	});*/
 
 	if (state.server){
 		$('#upload-form input[name="server_url"]').val(state.server);
@@ -249,18 +256,6 @@ State.prototype.setUrl = function(){
 	}
 };
 
-State.prototype.setIdFromUrl = function(url){
-	var id;
-	if (!connection.isValidURL(url)){
-		this.id = null;
-	}
-	id = url.match(/formhub\.org\/[A-z\_0-9\-]*\/forms\/([A-z\_0-9\-]*)\/form\.xml/i);
-	if (!id){
-		id = url.match(/formXml\?formId=([A-z\_0-9\-]*)/i);
-	}
-	return (id) ? this.id = id[1] : console.error('could not extract id from url: '+url);
-};
-
 State.prototype.reset = function(){
 	console.debug('resetting state');
 	this.server = null;
@@ -268,62 +263,19 @@ State.prototype.reset = function(){
 	this.setUrl();
 };
 
-GUI.prototype.setCustomEventHandlers = function(){
-	/*
-	$(document).on('click', 'button#launch-form:not(.disabled)', function(){
-		var dataUrl, errorMsg;
-		if (!state.server){
-			errorMsg = 'Requires a server url and ';
-		}
-		if (!state.id){
-			errorMsg = (errorMsg) ? errorMsg : 'Requires ';
-			errorMsg += 'a form to be selected first.';
-		}
-		dataUrl = $('#launch [name="data_url"]').val();
-		if (dataUrl.length > 0 && !connection.isValidURL(dataUrl)){
-			errorMsg = (errorMsg) ? errorMsg+'<br/>' : '';
-			errorMsg += 'The publication link is not a valid url';
-		}
-		if (errorMsg && errorMsg.length > 0){
-			$('#launch p.alert.alert-error').html(errorMsg).show();
-		}
-		else{
-			$('#launch [name="server_url"]').val(state.server);
-			$('#launch [name="form_id"]').val(state.id);
-			$('#launch p.alert.alert-error').empty().hide();
-			$('#launch form').submit();
-		}
-	});
-	
-	$('#launch a.advanced').click(function(event){
-		event.preventDefault();
-		if ($(this).hasClass('active')){
-			$(this).text('show advanced options').removeClass('active').siblings('fieldset.advanced').hide();
-		}
-		else{
-			$(this).text('hide advanced options').addClass('active').siblings('fieldset.advanced').show();
-		}
-	});
-	*/
-};
-
-function resetForm(){
+function resetAll(){
 	"use strict";
-	//$content.hide();
-	//$upload.show();
 	state.reset();
-	//$('#upload-form')[0].reset();
+	$('#upload-form')[0].reset();
 	$('#upload-form input[type="hidden"]').val('');
-	$('#form-list ul').empty().hide();
+	//$('#form-list ul').empty().hide();
 	$('#upload-form progress').hide();
-	$('#input-switcher, #upload .hurry').show().find('a#server_url').click();
+	//$('#input-switcher, #upload .hurry').show().find('a#server_url').click();
 	$('#form-languages').remove();
-	//gui.updateStatus.edit(false);
 	$('#survey-form form, #xsltmessages div, #html5validationmessages div, #jrvalidationmessages div, #xmlerrors div, #xslerrors div, #html5-form-source textarea, #data textarea').empty();
 	form = null;
 	$('#validate-form').addClass('disabled');
 	$('.nav li a[href="#upload"]').tab('show');
-	//$tabs.hide();
 }
 
 function processForm($response){
@@ -395,24 +347,12 @@ function processForm($response){
 	}
 }
 
-//duplicate of parseFormList() in __formlist.js (TODO: reorganize)
+
 function processFormlist(list)
 {
 	"use strict";
-	var i, listHTML='';
-	if(list){
-		for (i in list){
-			listHTML += '<li><a class="btn btn-block btn-info" id="'+i+'" title="'+list[i].title+'" '+
-				'href="'+list[i].url+'" data-server="'+list[i].server+'" >'+list[i].name+'</a></li>';
-		}
-	}
-	else{
-		listHTML = '<p class="alert alert-error">Error occurred during creation of form list</p>';
-		resetForm();
-	}
-	$('#form-list').removeClass('empty').find('ul').empty().append(listHTML);
-	$('#upload-form progress').hide();
-	$('#form-list').show();
+	$('.hurry').remove();
+	gui.parseFormlist(list, $('#form-list'));
 }
 
 function updateData(){

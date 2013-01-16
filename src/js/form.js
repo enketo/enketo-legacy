@@ -1925,12 +1925,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					console.debug('fakedate input field change detected');
 					var date,
 						value = $(this).val();
-					value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
-					$dateI.val(data.node().convert(value, 'date')).trigger('change').blur();
-					date = new Date(value.split('-')[0], Number (value.split('-')[1]) - 1, value.split('-')[2]);
-					//the 'update' method only works for full dates, not yyyy-mm and yyyy dates, so this convoluted
-					//method is used by using setDate
-					$fakeDate.datepicker('setDate', new Date(date));
+					if(value.length > 0){
+						value = (format === 'yyyy-mm') ? value+'-01' : (format === 'yyyy') ? value+'-01-01' : value;
+						$dateI.val(data.node().convert(value, 'date')).trigger('change').blur();
+						date = new Date(value.split('-')[0], Number (value.split('-')[1]) - 1, value.split('-')[2]);
+						//the 'update' method only works for full dates, not yyyy-mm and yyyy dates, so this convoluted
+						//method is used by using setDate
+						$fakeDate.datepicker('setDate', new Date(date));
+					}
+					else{
+						$dateI.val('').trigger('change').blur();
+					} 
 					return false;
 				});
 
@@ -2024,7 +2029,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						$dateTimeI.val(new Date(d[0], d[1]-1, d[2], t[0], t[1]).toISOLocalString()).trigger('change').blur();
 					}
 					else{
-						$dateTimeI.val('').trigger('change');
+						$dateTimeI.val('').trigger('change').blur();
 					}
 				}
 			});

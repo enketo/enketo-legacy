@@ -355,7 +355,7 @@ class Webform extends CI_Controller {
 		
 		$form->default_instance = $transf_result->model->asXML();
 		//a later version of PHP seems to output jr:template= instead of template=
-		$form->default_instance = str_replace(' jr:template=', ' template=', $form->default_instance);
+		//$form->default_instance = str_replace(' jr:template=', ' template=', $form->default_instance);
 		//$form->default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form->default_instance);
 		//$form->default_instance = preg_replace('/\/\>\s+\</', '/><', $form->default_instance);
 		//the preg replacement below is very aggressive!... maybe too aggressive

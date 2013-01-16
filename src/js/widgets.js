@@ -520,15 +520,19 @@
     };
 
     $.fn.geopointWidget = function(option) {
-        //for some reason, calling this inside the GeopointWidget class does not work properly
-        if ( (typeof connection !== 'undefined') && (typeof google == 'undefined' || typeof google.maps == 'undefined') && !option.touch){
-            console.debug('loading maps script asynchronously');
-            connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
-        }
+        var loadStarted = false;
+
         return this.each(function() {
             var $this = $(this),
                 data = $(this).data('geopointwidget'),
                 options = typeof option == 'object' && option;
+            //for some reason, calling this inside the GeopointWidget class does not work properly
+            if ( !loadStarted && (typeof connection !== 'undefined') && (typeof google == 'undefined' || typeof google.maps == 'undefined') && !option.touch){
+                loadStarted = true;
+                console.debug('loading maps script asynchronously');
+                connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
+            }
+
             if (!data){
                 $this.data('geopointwidget', (data = new GeopointWidget(this, options)));
             }

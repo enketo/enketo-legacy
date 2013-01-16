@@ -503,7 +503,9 @@ html.touch{
       display: block;
       float: right;
       margin: 8px 0 0 0;
-      color: $title; } } 
+      color: $title;
+      + .jr-group{
+        border-top: none; } } } 
   .jr-group{
     border-top: $line; 
     margin: 1.5em 0 0.4em 0;

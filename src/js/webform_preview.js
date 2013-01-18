@@ -18,7 +18,6 @@
 
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
-var /**@type {StorageLocal}*/store; //leave, though not used, to prevent compilation error
 
 $(document).ready(function() {
 	'use strict';

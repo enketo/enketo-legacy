@@ -20,12 +20,7 @@
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var	currentOnlineStatus = false;
-var store; //leave, though not used, to prevent compilation error
 
-
-//tight coupling with Form and Storage class, but loose coupling with GUI
-// !Document.ready()
-/************ Document Ready ****************/
 $(document).ready(function() {
 	'use strict';
 
@@ -36,5 +31,4 @@ $(document).ready(function() {
 	form.init();
 	connection.init();
 	gui.setup();
-
 });

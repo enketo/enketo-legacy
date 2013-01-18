@@ -117,7 +117,7 @@ $(document).ready(function(){
 	});
 
 	$(document).on('click', '#form-list a', function(event){
-		var id = /** @type {string} */ $(this).attr('id'),
+		var id = /** @type {string} */ $(this).attr('id').toString(),
 			server = /** @type {string} */ $(this).attr('data-server');
 		event.preventDefault();
 		$('#upload-form input[name="server_url"]').val(server);

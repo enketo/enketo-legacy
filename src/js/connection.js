@@ -35,10 +35,9 @@ function Connection(){
 	this.CONNECTION_URL = '/checkforconnection.php';
 	this.SUBMISSION_URL = '/data/submission';
 	this.GETSURVEYURL_URL = '/launch/get_survey_url';
-	this.SUBMISSION_TRIES = 2;
-	this.currentOnlineStatus = false;
+	//this.SUBMISSION_TRIES = 2;
+	this.currentOnlineStatus = null;
 	this.uploadOngoing = false;
-
 
 	this.init = function(){
 		//console.log('initializing Connection object');
@@ -155,6 +154,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 
 	callbacks = (typeof callbacks === 'undefined' || !callbacks) ? {
 		complete: function(jqXHR, response){
+			$(document).trigger('submissioncomplete');
 			that.processOpenRosaResponse(jqXHR.status, record.name, last);
 			/**
 			  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
@@ -168,7 +168,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 				console.debug('submission request timed out');
 			}
 			else{
-				console.error('error during submission', textStatus);
+				console.error('error during submission, textStatus:', textStatus);
 			}
 		},
 		success: function(){}
@@ -186,6 +186,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 			content.append('Date', new Date().toUTCString());
 			last = (this.uploadQueue.length === 0) ? true : false;
 			this.setOnlineStatus(null);
+			$(document).trigger('submissionstart');
 			//console.debug('calbacks: ', callbacks );
 			$.ajax(this.SUBMISSION_URL,{
 				type: 'POST',
@@ -231,16 +232,12 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			503: {success:false, msg: serverDown},
 			'5xx':{success:false, msg: serverDown}
 		};
-	console.debug('name: '+name+' status: '+status);
-	//TO DO: TRIGGER EVENTS AND DEAL WITH STORE AND GUI OUTSIDE OF THIS CLASS
+
+	console.debug('submission results for '+name+' => status: '+status);
+	
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
-			if (typeof store !== 'undefined'){
-				store.removeRecord(name);
-				//$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
-				console.log('tried to remove record with key: '+name);
-			}
-			$('form.jr').trigger('uploadsuccess', name);
+			$(document).trigger('submissionsuccess', name);
 			this.uploadResult.win.push([name, statusMap[status].msg]);
 		}
 		else if (statusMap[status].success === false){
@@ -265,8 +262,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		return;
 	}
 
-	console.debug('going to provide upload feedback (forced = '+this.forced+') from object:');
-	console.debug(this.uploadResult);
+	console.debug('forced: '+this.forced+' online: '+this.currentOnlineStatus, this.uploadResult);
 
 	if (this.uploadResult.win.length > 0){
 		for (i = 0 ; i<this.uploadResult.win.length ; i++){
@@ -281,19 +277,18 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 
 	if (this.uploadResult.fail.length > 0){
 		//console.debug('upload failed');
-		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
-		this.setOnlineStatus(false);
-
-		if (this.forced === true){
+		if (this.forced === true && this.currentOnlineStatus !== false){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
 			}
-			$('.drawer.left.closed .handle').click();
+			//$('.drawer.left.closed .handle').click();
 			gui.alert(msg, 'Failed data submission');
 		}
 		else{
 			// not sure if there should be a notification if forms fail automatic submission
 		}
+		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
+		this.setOnlineStatus(false);
 	}
 	//this.uploadOngoing = false;
 };

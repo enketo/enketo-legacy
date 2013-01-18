@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, form, Form, connection, settings, vkbeautify, saveAs, gui, jrDataStr, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, form, Form, connection, settings, vkbeautify, saveAs, gui, jrDataStr, report, Form, StorageLocal:true, Settings, Modernizr*/
+
+var /**@type {StorageLocal}*/ store;
+
+$(document).ready(function(){
+	if (typeof StorageLocal !== undefined){
+		store = new StorageLocal();
+		store.init();
+	}
+});
 
 /**
  * Controller function to load a form from local storage. Checks whether there is any unsaved data in the current form first.
@@ -85,7 +94,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	if (typeof confirmedRecordName == 'undefined' || confirmedRecordName.length === 0){
 		curRecordName = curRecordName || store.getCounterValue();
 		$('#dialog-save input[name="record-name"]').val(curRecordName);
-		$('#dialog-save input[name="record-final"]').attr('checked', curRecordFinal);
+		$('#dialog-save input[name="record-final"]').prop('checked', curRecordFinal);
 		return gui.saveConfirm();
 		//console.debug('new Record Props: '+JSON.stringify(newRecord));
 		//return saveForm(newRecord.name, newRecord.markedFinal);
@@ -207,7 +216,7 @@ function deleteForm(confirmed) {
 
 
 /**
- * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a backup, without saved data loading
+ * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a queue, without saved data loading
  * functionality. It only allows validated forms to be submitted. 'Submitted' in this case actually still means it is saved to localStorage first
  * and then forced to upload. If uploading fails the user can continue working on a blank form. Uploading will be attempted at intervals until it
  * succeeds.
@@ -226,6 +235,7 @@ function submitForm() {
 	
 	console.log('result of save: '+saveResult);
 	if (saveResult === 'success'){
+		gui.feedback('Record queued for submission.', 3);
 		resetForm(true);
 		$('form.jr').trigger('save', JSON.stringify(store.getRecordList()));
 		//attempt uploading the data (all data in localStorage)

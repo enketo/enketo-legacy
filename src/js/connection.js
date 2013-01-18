@@ -101,7 +101,7 @@ Connection.prototype.checkOnlineStatus = function(){
  * return true when connected to a local network that is not connected to the Internet.
  * However, this could be the first step. If (true) a request is sent to the server to check for a connection
  *
- * @return {boolean} true if it seems the browser is online, false if it does not
+ * @return {?boolean} true if it seems the browser is online, false if it does not, null if not known
  */
 Connection.prototype.getOnlineStatus = function(){
 	//return navigator.onLine;

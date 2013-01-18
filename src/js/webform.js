@@ -24,7 +24,7 @@ var /**@type {Cache}*/cache;
 //tight coupling with Form and Storage class, but loose coupling with GUI
 $(document).ready(function() {
 	'use strict';
-	var message, choices;
+	var message, choices, loadErrors;
 
 	//store = new StorageLocal();
 	//store.init();
@@ -60,7 +60,11 @@ $(document).ready(function() {
 			gui.confirm({msg: message, heading:'Application cannot launch offline'}, choices);
 		}
 	}
-	form.init();
+	loadErrors = form.init();
+	if (loadErrors.length > 0){
+		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
+	}
+
 	connection.init();
 	gui.setup();
 

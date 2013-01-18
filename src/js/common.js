@@ -520,7 +520,7 @@ GUI.prototype.confirm = function(texts, choices, duration){
 /**
  * Shows modal with load errors
  * @param  {Array.<string>} loadErrors	load error messagesg
- * @param  {=string}			addition	a string with advice
+ * @param  {string=}		advice	a string with advice
  */
 GUI.prototype.showLoadErrors = function(loadErrors, advice){
 	var errorStringHTML = '<ul class="error-list"><li>' + loadErrors.join('</li><li>') + '</li></ul',

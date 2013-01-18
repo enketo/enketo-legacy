@@ -343,7 +343,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$precedingTargetNode = $precedingTargetNode || $dataNode;
 
 			if ($dataNode.length === 1 && $precedingTargetNode.length ===1){
-				$dataNode.clone().insertAfter($precedingTargetNode).find('*').andSelf().removeAttr('template');
+				$dataNode.clone().insertAfter($precedingTargetNode).find('*').addBack().removeAttr('template');
 
 				allClonedNodeNames = [$dataNode.prop('nodeName')];
 				$dataNode.find('*').each(function(){
@@ -736,7 +736,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			////console.log('found data point with template attribute, name:'+$(this).prop('nodeName'));
 			if (typeof $(this).parent().attr('template') == 'undefined' && $(this).siblings($(this).prop('nodeName')).not('[template]').length === 0){
 				//console.log('going to clone template data node with name: ' + $(this).prop('nodeName'));
-				$(this).clone().insertAfter($(this)).find('*').andSelf().removeAttr('template');
+				$(this).clone().insertAfter($(this)).find('*').addBack().removeAttr('template');
 				//cloneDataNode($(this));
 			}
 		});
@@ -843,7 +843,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		for (i=0 ; i<$repParents.length ; i++){
 			repSelector = /** @type {string} */$repParents.eq(i).attr('name');
 			//console.log(repSelector);
-			repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').andSelf().index($repParents.eq(i)); 
+			repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').addBack().index($repParents.eq(i)); 
 			console.log('calculated repeat 0-based index: '+repIndex);
 			expr = expr.replace(repSelector, repSelector+'['+(repIndex+1)+']');
 		}
@@ -1262,7 +1262,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			if (this.getInputType($form.find('[data-name="'+name+'"]').eq(0)) == 'radio'){
 				//why not use this.getIndex?
-				return this.getWrapNodes($form.find('[data-name="'+name+'"]')).eq(index).find('input[value="'+value+'"]').attr('checked', true);
+				return this.getWrapNodes($form.find('[data-name="'+name+'"]')).eq(index).find('input[value="'+value+'"]').prop('checked', true);
 			}
 			else {
 				//why not use this.getIndex?
@@ -1554,7 +1554,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		/**
 		 * Enables and reveals a branch node/group
 		 * 
-		 * @param  {jQuery} branchNode The jQuery object to reveal and enable
+		 * @param  {jQuery} $branchNode The jQuery object to reveal and enable
 		 */
 		this.enable = function($branchNode){
 			var type;
@@ -1576,7 +1576,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		/**
 		 * Disables and hides a branch node/group
 		 * 
-		 * @param  {jQuery} branchNode The jQuery object to hide and disable
+		 * @param  {jQuery} $branchNode The jQuery object to hide and disable
 		 */
 		this.disable = function($branchNode){
 			var type = $branchNode.prop('nodeName').toLowerCase(),
@@ -1698,7 +1698,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						.attr('data-option-value', value)
 						.attr('data-itext-id', '')
 						.appendTo($labels.siblings('.jr-option-translations'));
-					$template.siblings().andSelf().last().after($htmlItem.find(':first'));
+					$template.siblings().addBack().last().after($htmlItem.find(':first'));
 				}
 			});			
 		});
@@ -2361,27 +2361,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//console.log('default number of repeats for '+$(this).attr('name')+' is '+numRepsDefault);
 				//1st rep is already included (by XSLT transformation)
 				for (i = 1 ; i<numRepsDefault ; i++){
-					that.clone($(this).siblings().andSelf().last(), '');
+					that.clone($(this).siblings().addBack().last(), '');
 				}
 			});
 		},
 		/**
-		 * Function: clone
-		 * 
-		 * description
-		 * 
-		 * Parameters:
-		 * 
-		 *   node - [type/description]
-		 * 
-		 * Returns:
-		 * 
-		 *   return description
-		 */
-		/**
 		 * clone a repeat group/node
 		 * @param  {jQuery} $node node to clone
-		 * @return {[type]}       [description]
+		 * @return {boolean}       [description]
 		 */
 		clone : function($node){
 			var $master, $clone, $parent, index, radioNames, i, path, timestamp,
@@ -2697,19 +2684,6 @@ Date.prototype.toISOLocalString = function(){
 		.replace('Z', offset.direction+offset.hrspart+':'+offset.minspart);
 };
 
-/**
- * Pads a string with prefixed zeros until the requested string length is achieved.
- * @param  {number} digits [description]
- * @return {String|string}        [description]
- */
-String.prototype.pad = function(digits){
-	var x = this;
-	while (x.length < digits){
-		x = '0'+x;
-	}
-	return x;
-};
-
 (function($){
 	"use strict";
 	// plugin to update number of repeated elements (with class jr-repeat)
@@ -2821,10 +2795,7 @@ String.prototype.pad = function(digits){
 	/**
 	 * Function: xfind
 	 * 
-	 * Simple XPath Compatibility Plugin for jQuery 1.1
-	 * By John Resig
-	 * Dual licensed under MIT and GPL.
-	 * some changes made by Martijn van de Rijdt (not replacing $.find(), removed context, dot escaping)
+	 *
 	 * 
 	 * Parameters:
 	 * 
@@ -2836,8 +2807,17 @@ String.prototype.pad = function(digits){
 	 *   
 	 * See Also:
 	 * 
-	 *   Original plugin code here: http://code.google.com/p/jqueryjs/source/browse/trunk/plugins/xpath/jquery.xpath.js?spec=svn3167&r=3167
+	 *   
 	 */
+    /**
+     * Simple XPath Compatibility Plugin for jQuery 1.1
+	 * By John Resig
+	 * Dual licensed under MIT and GPL.
+	 * Original plugin code here: http://code.google.com/p/jqueryjs/source/browse/trunk/plugins/xpath/jquery.xpath.js?spec=svn3167&r=3167
+	 * some changes made by Martijn van de Rijdt (not replacing $.find(), removed context, dot escaping)
+     * @param  {string} selector [description]
+     * @return {?(Array.<(Element|null)>|Element)}          [description]
+     */
     $.fn.xfind = function(selector){
 			var parts, cur, i;
 			//console.debug('xfind plugin received selector: '+selector);

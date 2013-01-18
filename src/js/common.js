@@ -16,7 +16,6 @@
 
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global Modernizr, settings, console:true*/
 
-// TODO: it would be better to remove references to store and form in common.js
 var /** @type {GUI}*/ gui;
 var /** @type {Print} */ printO;
 
@@ -526,8 +525,7 @@ GUI.prototype.confirm = function(texts, choices, duration){
 GUI.prototype.updateStatus = {
 	connection : function(online) {
 		"use strict";
-		console.log('updating online status in menu bar to:');
-		console.log(online);
+		console.log('updating online status in menu bar to:', online);
 		if (online === true) {
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-signal-diag')
 				.attr('title', 'It appears there is currently an Internet connection available.');
@@ -927,6 +925,20 @@ Print.prototype.addPageBreaks = function(){
 	return $('.possible-break').remove();
 };
 	
+
+/**
+ * Pads a string with prefixed zeros until the requested string length is achieved.
+ * @param  {number} digits [description]
+ * @return {String|string}        [description]
+ */
+String.prototype.pad = function(digits){
+	var x = this;
+	while (x.length < digits){
+		x = '0'+x;
+	}
+	return x;
+};
+
 (function($){
 	"use strict";
 	// give a set of elements the same (longest) width
@@ -944,7 +956,6 @@ Print.prototype.addPageBreaks = function(){
 	$.fn.toSmallestWidth = function(){
 		var smallestWidth = 2000;
 		return this.each(function(){
-			console.log($(this).width());
 			if ($(this).width() < smallestWidth) {
 				smallestWidth = $(this).width();
 			}

@@ -20,16 +20,14 @@
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var /**@type {Cache}*/cache;
-//var /**@type {Settings}*/settings,
-var currentOnlineStatus = false;
-var /**@type {StorageLocal}*/ store;
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 $(document).ready(function() {
 	'use strict';
 	var message, choices;
 
-	store = new StorageLocal();
+	//store = new StorageLocal();
+	//store.init();
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	//settings = new Settings();
 	//settings.init();

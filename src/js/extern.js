@@ -5,7 +5,6 @@ var jrDataStr, jrDataStrToEdit;
  */
 var settings;
 
-
 /**
  * @type number
  */
@@ -461,7 +460,7 @@ jQuery.prototype.ajaxSuccess = function(handler) {};
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.andSelf = function() {};
+jQuery.prototype.addBack = function() {};
 
 /**
  * @param {Object.<string,*>} properties

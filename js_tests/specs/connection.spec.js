@@ -4,23 +4,50 @@
 
 EnvJasmine.load(EnvJasmine.jsDir + "__connection.js");
 
-describe("The Connection Class ...", function () {
-	var callbacks,
-		connection = new Connection();
+describe("The Connection Class ", function () {
+	var callbacks, connection;
 	
 	//TODO: implement async=true .... query string to run async tests
 	//connection.GETSURVEYURL_URL = "http://enketo-dev.formhub.org"+connection.GETSURVEYURL_URL;
 
-	it('exists!', function(){
-		expect(connection).toEqual(jasmine.any(Connection));
-	});
-
 	beforeEach(function(){
+		connection = new Connection();
 		callbacks = {
 			success: jasmine.createSpy(),
 			error: jasmine.createSpy(),
 			complete: jasmine.createSpy()
 		};
+	});
+
+	it('exists!', function(){
+		expect(connection).toEqual(jasmine.any(Connection));
+	});
+
+	describe("validates urls", function(){
+		var i,t = [
+			['htt://example.org', false],
+			[' http://example.org', false],
+			['example.org', false],
+			['www.example.org', false],
+			['http://example.o', false],
+			['http://example.o/ d', false],
+			['http://example.org', true],
+			['https://example.org', true],
+			['http://example.org/_-?', true],
+			['http://www.example.org', true],
+			['http://sub.example.org', true]
+		];
+
+		function test(url, result){
+			it("evaluates url: "+url+" to "+result, function() {
+				expect(connection.isValidURL(url)).toBe(result);
+			});
+		}
+
+		for (i = 0 ; i<t.length ; i++){
+			test(t[i][0], t[i][1]);
+		}
+
 	});
 
 	describe("tries to obtains survey URLs", function(){
@@ -51,29 +78,82 @@ describe("The Connection Class ...", function () {
 		});
 	});
 
-	describe("validates urls", function(){
-		var t = [
-			['htt://example.org', false],
-			[' http://example.org', false],
-			['example.org', false],
-			['www.example.org', false],
-			['http://example.o', false],
-			['http://example.o/ d', false],
-			['http://example.org', true],
-			['https://example.org', true],
-			['http://example.org/_-?', true],
-			['http://www.example.org', true],
-			['http://sub.example.org', true]
-		];
+	describe("handles submission reponses", function(){
+		var i, errorHeading = 'Failed data submission',
+			failCode = [0, 200, 203, 204, 300, 400, 401, 402, 403, 404, 405, 413, 500, 503, 510],
+			winCode = [201, 202],
+			t = [ //forced //online //alert
+					[true,	true,	true],
+					[false,	true,	false],
+					[true,	false,	false],
+					[false,	false,	false],
+					[true,	null,	true],
+					[false,	null,	false]
+			];
 
-		function test(url, result){
-			it("evaluates url: "+url+" to "+result, function() {
-				expect(connection.isValidURL(url)).toBe(result);
+		beforeEach(function(){
+			connection = new Connection();
+			connection.uploadResult = {win:[], fail:[]};
+			spyOn(gui, 'alert');
+			spyOn(gui, 'feedback');
+		});
+
+		function testFail(statusCode){
+			it ('correctly identifies statusCode '+statusCode+' as a failed submission.', function(){
+				connection.processOpenRosaResponse(statusCode, 'aname', true);
+				expect(connection.uploadResult.win.length).toBe(0);
+				expect(connection.uploadResult.fail.length).toBe(1);
+			});
+		}
+
+		for (i=0 ; i<failCode.length ; i++){
+			testFail(failCode[i]);
+		}
+
+		function testWin(statusCode){
+			it ('correctly identifies statusCode '+statusCode+' as a succesful submission.', function(){
+				connection.processOpenRosaResponse(statusCode, 'aname', true);
+				expect(connection.uploadResult.win.length).toBe(1);
+				expect(connection.uploadResult.fail.length).toBe(0);
+			});
+		}
+
+		for (i=0 ; i<winCode.length ; i++){
+			testWin(winCode[i]);
+		}
+
+		function testFailAlert(forced, online, alert){
+			var anno = (alert) ? 'an' : 'NO';
+			it('shows '+anno+' alert when failed upload was conducted with forced:'+forced+' and online: '+online, function(){
+				connection.forced = forced;
+				connection.currentOnlineStatus = online;
+				connection.processOpenRosaResponse(404, 'aname', true);
+				if (alert){
+					expect(gui.alert).toHaveBeenCalled();
+					expect(gui.alert.mostRecentCall.args[1]).toEqual(errorHeading);
+				}
+				else{
+					expect(gui.alert).not.toHaveBeenCalled();
+				}
 			});
 		}
 
 		for (i = 0 ; i<t.length ; i++){
-			test(t[i][0], t[i][1]);
+			testFailAlert(t[i][0], t[i][1], t[i][2]);
+		}
+
+		function testWinFeedback(forced, online){
+			it('shows a feedback message when succesful upload was conducted with forced:'+forced+' and online: '+online, function(){
+				connection.forced = forced;
+				connection.currentOnlineStatus = online;
+				connection.processOpenRosaResponse(201, 'aname', true);
+				expect(gui.alert).not.toHaveBeenCalled();
+				expect(gui.feedback).toHaveBeenCalled();
+			});
+		}
+
+		for (i = 0 ; i<t.length ; i++){
+			testWinFeedback(t[i][0], t[i][1]);
 		}
 
 	});

@@ -85,7 +85,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	if (typeof confirmedRecordName == 'undefined' || confirmedRecordName.length === 0){
 		curRecordName = curRecordName || store.getCounterValue();
 		$('#dialog-save input[name="record-name"]').val(curRecordName);
-		$('#dialog-save input[name="record-final"]').attr('checked', curRecordFinal);
+		$('#dialog-save input[name="record-final"]').prop('checked', curRecordFinal);
 		return gui.saveConfirm();
 		//console.debug('new Record Props: '+JSON.stringify(newRecord));
 		//return saveForm(newRecord.name, newRecord.markedFinal);

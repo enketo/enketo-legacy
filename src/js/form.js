@@ -843,7 +843,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		for (i=0 ; i<$repParents.length ; i++){
 			repSelector = /** @type {string} */$repParents.eq(i).attr('name');
 			//console.log(repSelector);
-			repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').andBack().index($repParents.eq(i)); 
+			repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').addBack().index($repParents.eq(i)); 
 			console.log('calculated repeat 0-based index: '+repIndex);
 			expr = expr.replace(repSelector, repSelector+'['+(repIndex+1)+']');
 		}

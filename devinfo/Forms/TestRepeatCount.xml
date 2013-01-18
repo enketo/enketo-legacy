@@ -1,9 +1,9 @@
 <h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
   <h:head>
-    <h:title>Test Sum</h:title>
+    <h:title>Test Repeat Count</h:title>
     <model>
       <instance>
-        <data id="build_TestRepeatFixed" version="2" xmlns="http://rapaide.com/testRepeatFixed">
+        <data id="TestRepeatCount" version="2" xmlns="http://enketo.org/testRepeatCount">
           <rep jr:template="">
             <nodeA/>   
           </rep>   
@@ -26,6 +26,7 @@
       </itext>
       <bind nodeset="/data/rep/nodeA" type="int"/>
       <bind nodeset="/data/sum" type="int" calculate="sum(/data/rep/nodeA)" />
+      <bind nodeset="/data/repeatnumber" type="int"/>
     </model>
   </h:head>
   <h:body>

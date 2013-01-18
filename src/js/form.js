@@ -36,10 +36,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	//*** FOR DEBUGGING and UNIT TESTS ONLY ***
 	this.ex = function(expr, type, selector, index){return data.evaluate(expr, type, selector, index);};
 	this.sfv = function(){return form.setAllVals();};
-	this.data = function(dataStr){return new DataXML(dataStr);};
+	this.Data = function(dataStr){return new DataXML(dataStr);};
 	this.getDataO = function(){return data;};
 	this.getDataEditO = function(){return dataToEdit.get();};
-	this.form = function(selector){return new FormHTML(selector);};
+	this.Form = function(selector){return new FormHTML(selector);};
 	this.getFormO = function(){return form;};
 	//this.getDataXML = function(){return data.getXML();};
 	//this.validateAll = function(){return form.validateAll();};
@@ -68,6 +68,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 
 		form.init();
+		
+		if (loadErrors.length > 0){
+			console.error('loadErrors: ',loadErrors);
+		}
 		return loadErrors;
 	};
 
@@ -1255,7 +1259,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var $inputNodes, type, date;//, 
 				//values = value.split(' ');
 			index = index || 0;
-			
+
 			if (this.getInputType($form.find('[data-name="'+name+'"]').eq(0)) == 'radio'){
 				//why not use this.getIndex?
 				return this.getWrapNodes($form.find('[data-name="'+name+'"]')).eq(index).find('input[value="'+value+'"]').attr('checked', true);
@@ -1266,6 +1270,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				
 				type = this.getInputType($inputNodes.eq(0)); 
 				
+				if ( type === 'file'){
+					console.error('Cannot set value of file input field (value: '+value+'). If trying to load '+
+						'this record for editing this file input field will remain unchanged.');
+					return false;
+				}
+
 				if ( type === 'date' || type === 'datetime'){
 					//convert current value (loaded from instance) to a value that a native datepicker understands
 					//TODO test for IE, FF, Safari when those browsers start including native datepickers
@@ -1286,28 +1296,24 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	/**
-	 * Function: setAllVals
-	 * 
-	 * Uses current content of $data to set all the values in the form
-	 * 
-	 * Notes:
-	 * 
-	 * Since not all data nodes with a value have a corresponding input element, it could be considered to turn this
-	 * around and cycle through the HTML form elements and check for each form element whether data is available.
-	 * 
-	 * Returns:
-	 * 
-	 *   -
+	 *  Uses current content of $data to set all the values in the form.
+	 *  Since not all data nodes with a value have a corresponding input element, it could be considered to turn this
+	 *  around and cycle through the HTML form elements and check for each form element whether data is available.
 	 */
 	FormHTML.prototype.setAllVals = function(){
 		var index, name, value,
-			that=this;			
+			that=this;	
 		data.node(null, null, {noEmpty: true}).get().each(function(){
-			value = $(this).text(); 
-			name = that.generateName($(this));
-			index = data.node(name).get().index($(this));
-			//console.debug('calling input.setVal with name: '+name+', index: '+index+', value: '+value);
-			that.input.setVal(name, index, value);
+			try{
+				value = $(this).text(); 
+				name = that.generateName($(this));
+				index = data.node(name).get().index($(this));
+				console.debug('calling input.setVal with name: '+name+', index: '+index+', value: '+value);
+				that.input.setVal(name, index, value);
+			}
+			catch(e){
+				loadErrors.push('Could not load input field value with name: '+name+' and value: '+value);
+			}
 		});
 		return;
 	};

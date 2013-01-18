@@ -73,10 +73,32 @@ class Front extends CI_Controller {
 		}	
 	}
 
-	public function number_launched()
+	public function get_number_launched()
 	{
-		echo $this->Survey_model->number_surveys();
-	} 
+		echo (int) $this->Survey_model->number_surveys();
+	}
+
+	public function get_number_launched_everywhere()
+	{
+		$deployments = array(
+			"enketo.formhub.org" => "http://enketo.formhub.org",
+			"enketo.org" => "http://enketo.org"
+		);
+		$result = array('total' => 0);
+
+		foreach ($deployments as $name => $url)
+		{
+			$this->load->helper('subdomain');
+			$number = (full_base_url() == $url.'/') ? 
+				$this->get_number_launched : file_get_contents($url.'/front/get_number_launched');
+			if (!empty($number))
+			{
+				$result[$name] = (int) $number;
+				$result['total'] += (int) $number;
+			}
+		}
+		echo json_encode($result);
+	}
 
 	//public function update_list()
 	//{

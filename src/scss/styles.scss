@@ -497,12 +497,12 @@ html.touch{
   .jr-repeat {
     background-color: lighten($title, 55%);
     margin: 0 0 3px 0;
-    padding: 0 10px 10px 10px;
+    padding: 10px 10px 10px 10px;
     .repeat-number {
       height: 2em;
       display: block;
       float: right;
-      margin: 8px 0 0 0;
+      //margin: 8px 0 0 0;
       color: $title;
       + .jr-group{
         border-top: none; } } } 

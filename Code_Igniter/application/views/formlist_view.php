@@ -32,8 +32,10 @@
 				<ul class="dropdown dropdown-menu url-helper" data-toggle="buttons-radio">	
 					<li><a class="url-helper" data-value="http" href="#">http://</a></li>
 					<li><a class="url-helper" data-value="https" href="#">https://</a></li>
+				<? if($integrated): ?>
 					<li><a class="url-helper" data-value="formhub" href="#">formhub account</a></li>
-					<li><a class="url-helper" data-value="formhub_uni" href="#">formhub university</a></li>
+				<? endif ?>
+					<!--<li><a class="url-helper" data-value="formhub_uni" href="#">formhub university</a></li>-->
 					<li><a class="url-helper" data-value="appspot" href="#">appspot subdomain</a></li>
 				</ul>
 				<input id="server" type="url" placeholder="" />

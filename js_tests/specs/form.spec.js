@@ -42,7 +42,7 @@ describe("Data node getter", function () {
 			["/thedata/repeatGroup/nodeC", null, {noTemplate:false}, 4]
 		],
 		form = new Form("", ""),
-		data = form.data(dataStr1);
+		data = form.Data(dataStr1);
 	
 	function test(node){
 		it("obtains nodes (selector: "+node.selector+", index: "+node.index+", filter: "+JSON.stringify(node.filter)+")", function() {
@@ -56,7 +56,7 @@ describe("Data node getter", function () {
 
 describe('Date node (&) value getter', function(){
 	var form = new Form('',''),
-		data = form.data(dataStr1);
+		data = form.Data(dataStr1);
 
 	it('returns an array of one node value', function(){
 		expect(data.node("/thedata/nodeB").getVal()).toEqual(['b']);
@@ -148,11 +148,11 @@ describe('Data node XML data type conversion & validation', function(){
 
 				//				//TO DO binary (?)
 			];
-		form.form('<form></form>');
+		form.Form('<form></form>');
 
 	function test(n){
 		it("converts and validates xml-type "+n.type+" with value: "+n.value, function(){
-			data = form.data(dataStr1);
+			data = form.Data(dataStr1);
 			expect(data.node(n.selector, n.index, n.filter).setVal(n.value, null, n.type)).toEqual(n.result);
 		});
 	}
@@ -163,7 +163,7 @@ describe('Data node XML data type conversion & validation', function(){
 
 	it('sets a non-empty value to empty', function(){
 		var node = data.node('/thedata/nodeA', null, null);
-		data = form.data(dataStr1);
+		data = form.Data(dataStr1);
 		node.setVal('value', null, 'string');
 		expect(node.setVal('')).toBe(true);
 	});
@@ -172,10 +172,10 @@ describe('Data node XML data type conversion & validation', function(){
 describe("Data node cloner", function(){
 	it("has cloned a data node", function(){
 		var form = new Form('', ''),
-			data = form.data(dataStr1),
+			data = form.Data(dataStr1),
 			node = data.node("/thedata/nodeA"),
 			$precedingTarget = data.node("/thedata/repeatGroup/nodeC", 0).get();
-		form.form('form');
+		form.Form('form');
 
 		expect(data.node('/thedata/repeatGroup/nodeA', 0).get().length).toEqual(0);
 		node.clone($precedingTarget);
@@ -186,9 +186,9 @@ describe("Data node cloner", function(){
 describe("Data node remover", function(){
 	it("has removed a data node", function(){
 		var form = new Form('', ''),
-			data = form.data(dataStr1),
+			data = form.Data(dataStr1),
 			node = data.node("/thedata/nodeA");
-		form.form('form');
+		form.Form('form');
 
 		expect(node.get().length).toEqual(1);
 		data.node("/thedata/nodeA").remove();

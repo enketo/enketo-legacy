@@ -461,6 +461,21 @@ Connection.prototype.oRosaHelper = {
 };
 
 /**
+ * Get the number of forms launched on enketo (all know deployments)
+ * @param  {Object.<string, Function>=} callbacks callbacks
+ */
+Connection.prototype.getNumberFormsLaunched = function(callbacks){
+	callbacks = this.getCallbacks(callbacks);
+	$.ajax({
+		url: '/front/get_number_launched_everywhere',
+		dataType: 'json',
+		success: callbacks.success,
+		error: callbacks.error,
+		complete: callbacks.complete
+	});
+};
+
+/**
  * Loads a google maps API v3 script
  * @param  {Function} callback function to call when script has been loaded and added to DOM
  */

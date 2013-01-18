@@ -1,9 +1,9 @@
 <h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
   <h:head>
-    <h:title>Test Repeat Count Fixed</h:title>
+    <h:title>Test Repeat Count Dynamic</h:title>
     <model>
       <instance>
-        <data id="TestRepeatCountFixed" version="2" xmlns="http://enketo.org/testRepeatCountFixed">
+        <data id="TestRepeatCountDyn" version="2" xmlns="http://enketo.org/testRepeatCountDyn">
           <rep jr:template="">
             <nodeA/>   
           </rep>   
@@ -30,10 +30,12 @@
     </model>
   </h:head>
   <h:body>
+    <input ref="/data/repeatnumber">
+      <label>enter number of repeats</label>
+    </input>
     <group>
       <label ref="jr:itext('/data/rep:label')" />
-      <repeat nodeset="/data/rep" jr:count="/data/repeatnumber" 
-        jr:noAddRemove="true()">
+      <repeat nodeset="/data/rep" jr:count="/data/repeatnumber">
         <input ref="/data/rep/nodeA">
           <label ref="jr:itext('/data/rep/nodeA:label')"/>
           <hint ref="jr:itext('/data/rep/nodeA:hint')"/>

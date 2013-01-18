@@ -115,7 +115,7 @@ progress{
 	background-color: #fff;
 	border-radius: 7px;
 	border: 7px solid $content_border;}
-
+/*
 .drawer{
   position: fixed;
   z-index: 15;
@@ -153,7 +153,7 @@ progress{
   #status-offline-launch{
     display: block; }
   button#drawer-export{
-    display: block; } }
+    display: block; } }*/
  
 /*#branding{
   position: fixed;
@@ -414,6 +414,23 @@ label#data-template-show {
       &:hover{
         text-decoration: none;
         opacity: 0.8;} }
+
+    .records{
+      $size: 20px;
+      display: inline-block;
+      background-color: #c9c9c9;
+      border: 1px solid $groupline;
+      height: $size;
+      min-width: $size;
+      border-radius: $size/2; }
+    .queue-length{
+      color: #ffffff;
+      text-align: center;
+      padding: 0 7px;
+      &.submitting{
+        color: #ce4f07; }
+      &:hover{
+        color: green; } }
     .print{
       //border: 1px solid black;
       background: none;

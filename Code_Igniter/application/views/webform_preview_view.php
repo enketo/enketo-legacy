@@ -15,7 +15,7 @@
 	<? require 'elements/dialogs.php'; ?>
 
 		<div class="main">
-			<h3>Form Preview</h3>
+			
 			<article class="paper" >
 				<? include_once 'elements/form-header.php'; ?>
 				<progress></progress>

@@ -35,18 +35,8 @@ $(document).ready(function() {
 	
 	loadErrors = form.init();
 	if (loadErrors.length > 0){
-		var errorStringHTML = '<ul class="error-list"><li>' + loadErrors.join('</li><li>') + '</li></ul',
-			errorStringEmail = '* '+loadErrors.join('* '),
-			s = (loadErrors.length > 1) ? 's' : '',
-			email = settings['supportEmail'];
-		gui.alert('<p>Error'+s+' occured during the loading of data. It is highly recommended <strong>not to edit</strong> '+
-			'this record until this is resolved.</p><br/><p>'+
-			'Please contact <a href="mailto:'+ email +
-			'?subject=loading errors for: '+location.href+'&body='+errorStringEmail+'" target="_blank" >'+email+'</a>'+
-			' with the link to this page and the error message'+s+' below:</p><br/>'+ errorStringHTML, 'Data Loading Error'+s);
+		gui.showLoadErrors(loadErrors, 'It is highly recommended <strong>not to edit</strong> this record until this is resolved.');
 	}
-
 	connection.init();
 	gui.setup();
-
 });

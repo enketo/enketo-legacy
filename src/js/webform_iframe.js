@@ -23,12 +23,17 @@ var	currentOnlineStatus = false;
 
 $(document).ready(function() {
 	'use strict';
-
+	var loadErrors;
+	
 	form = new Form('form.jr:eq(0)', jrDataStr);
 
 	connection = new Connection();
+	
+	loadErrors = form.init();
+	if (loadErrors.length > 0){
+		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
+	}
 
-	form.init();
 	connection.init();
 	gui.setup();
 });

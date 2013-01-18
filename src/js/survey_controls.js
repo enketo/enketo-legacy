@@ -207,7 +207,7 @@ function deleteForm(confirmed) {
 
 
 /**
- * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a backup, without saved data loading
+ * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a queue, without saved data loading
  * functionality. It only allows validated forms to be submitted. 'Submitted' in this case actually still means it is saved to localStorage first
  * and then forced to upload. If uploading fails the user can continue working on a blank form. Uploading will be attempted at intervals until it
  * succeeds.
@@ -226,6 +226,7 @@ function submitForm() {
 	
 	console.log('result of save: '+saveResult);
 	if (saveResult === 'success'){
+		gui.feedback('Record queued for submission.', 3);
 		resetForm(true);
 		$('form.jr').trigger('save', JSON.stringify(store.getRecordList()));
 		//attempt uploading the data (all data in localStorage)

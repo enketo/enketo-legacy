@@ -35,10 +35,9 @@ function Connection(){
 	this.CONNECTION_URL = '/checkforconnection.php';
 	this.SUBMISSION_URL = '/data/submission';
 	this.GETSURVEYURL_URL = '/launch/get_survey_url';
-	this.SUBMISSION_TRIES = 2;
-	this.currentOnlineStatus = false;
+	//this.SUBMISSION_TRIES = 2;
+	this.currentOnlineStatus = true;
 	this.uploadOngoing = false;
-
 
 	this.init = function(){
 		//console.log('initializing Connection object');
@@ -168,7 +167,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 				console.debug('submission request timed out');
 			}
 			else{
-				console.error('error during submission', textStatus);
+				console.error('error during submission, textStatus:', textStatus);
 			}
 		},
 		success: function(){}
@@ -265,8 +264,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		return;
 	}
 
-	console.debug('going to provide upload feedback (forced = '+this.forced+') from object:');
-	console.debug(this.uploadResult);
+	console.debug('forced: '+this.forced+' online: '+online, this.uploadResult);
 
 	if (this.uploadResult.win.length > 0){
 		for (i = 0 ; i<this.uploadResult.win.length ; i++){
@@ -281,19 +279,18 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 
 	if (this.uploadResult.fail.length > 0){
 		//console.debug('upload failed');
-		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
-		this.setOnlineStatus(false);
-
-		if (this.forced === true){
+		if (this.forced === true && this.currentOnlineStatus){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
 			}
-			$('.drawer.left.closed .handle').click();
+			//$('.drawer.left.closed .handle').click();
 			gui.alert(msg, 'Failed data submission');
 		}
 		else{
 			// not sure if there should be a notification if forms fail automatic submission
 		}
+		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
+		this.setOnlineStatus(false);
 	}
 	//this.uploadOngoing = false;
 };

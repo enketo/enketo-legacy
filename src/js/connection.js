@@ -460,6 +460,10 @@ Connection.prototype.oRosaHelper = {
 	}
 };
 
+/**
+ * Get the number of forms launched on enketo (all know deployments)
+ * @param  {Object.<string, Function>=} callbacks callbacks
+ */
 Connection.prototype.getNumberFormsLaunched = function(callbacks){
 	callbacks = this.getCallbacks(callbacks);
 	$.ajax({

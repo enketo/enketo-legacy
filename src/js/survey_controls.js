@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, form, Form, connection, settings, vkbeautify, saveAs, gui, jrDataStr, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, form, Form, connection, settings, vkbeautify, saveAs, gui, jrDataStr, report, Form, StorageLocal:true, Settings, Modernizr*/
+
+var /**@type {StorageLocal}*/ store;
+
+$(document).ready(function(){
+	if (typeof StorageLocal !== undefined){
+		store = new StorageLocal();
+		store.init();
+	}
+});
 
 /**
  * Controller function to load a form from local storage. Checks whether there is any unsaved data in the current form first.

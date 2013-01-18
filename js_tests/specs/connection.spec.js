@@ -86,7 +86,9 @@ describe("The Connection Class ", function () {
 					[true,	true,	true],
 					[false,	true,	false],
 					[true,	false,	false],
-					[false,	false,	false]
+					[false,	false,	false],
+					[true,	null,	true],
+					[false,	null,	false]
 			];
 
 		beforeEach(function(){

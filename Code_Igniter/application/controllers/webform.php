@@ -37,15 +37,18 @@ class Webform extends CI_Controller {
 			'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 			'/libraries/vkbeautify.js',
 			'/libraries/FileSaver.min.js',
-			'/libraries/BlobBuilder.min.js'
+			'/libraries/BlobBuilder.min.js'//,
+			//"http://code.jquery.com/jquery-migrate-1.0.0.js"
 		);
 		$this->default_main_scripts = array
 		(
 			'/js-source/common.js',
 			'/js-source/form.js',
 			'/js-source/widgets.js',
+			'/js-source/storage.js',
 			'/js-source/connection.js',
 			'/js-source/survey_controls.js',
+			'/js-source/debug.js'
 		);
 		$this->default_stylesheets = array
 		(
@@ -106,7 +109,6 @@ class Webform extends CI_Controller {
 					$this->default_library_scripts, 
 					array
 					(
-						'/js-source/storage.js',
 						'/js-source/cache.js'
 					),
 					$this->default_main_scripts,

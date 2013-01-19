@@ -1,4 +1,9 @@
-var jrDataStr, jrDataStrToEdit, settings, RETURN_URL;
+var jrDataStr, jrDataStrToEdit;
+
+/** @type {{returnURL: string, serverURL: string, formId: string, mapsStaticAPIKey:string, mapsDynamicAPIKey:string,
+	 defaultServerURLHelper:string, supportEmail:string, modernBrowsersURL:string, showBranch:boolean}}
+ */
+var settings;
 
 /**
  * @type number
@@ -455,7 +460,7 @@ jQuery.prototype.ajaxSuccess = function(handler) {};
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.andSelf = function() {};
+jQuery.prototype.addBack = function() {};
 
 /**
  * @param {Object.<string,*>} properties

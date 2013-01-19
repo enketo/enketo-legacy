@@ -20,21 +20,20 @@
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var	currentOnlineStatus = false;
-var store; //leave, though not used, to prevent compilation error
 
-
-//tight coupling with Form and Storage class, but loose coupling with GUI
-// !Document.ready()
-/************ Document Ready ****************/
 $(document).ready(function() {
 	'use strict';
-
+	var loadErrors;
+	
 	form = new Form('form.jr:eq(0)', jrDataStr);
 
 	connection = new Connection();
+	
+	loadErrors = form.init();
+	if (loadErrors.length > 0){
+		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
+	}
 
-	form.init();
 	connection.init();
 	gui.setup();
-
 });

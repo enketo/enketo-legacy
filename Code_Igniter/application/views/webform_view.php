@@ -23,12 +23,10 @@
 
 		<div class="main">
 			<article class="paper" >
-				<div class="form-header">
-					<span class="branding">enketo forms + formhub</span>
-					<button onclick="printO.printForm(); return false" class="print"><i class="icon-print"></i></button>
-				</div>
+				<? include_once 'elements/form-header.php'; ?>
 				<?= $form ?>	
 				<button id="submit-form" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
+				<? include_once 'elements/enketo-power.php'; ?>
 			</article>
 		</div>
 

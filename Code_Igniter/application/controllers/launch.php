@@ -64,6 +64,39 @@ class Launch extends CI_Controller {
 		}
 	}
 
+	public function get_survey_preview_url()
+	{
+		
+		$this->load->helper('subdomain');
+		$this->load->model('Survey_model');
+		$subdomain = get_subdomain();
+		
+		if (isset($subdomain))
+		{
+			show_404();
+		}
+		else 
+		{
+			extract($_POST);
+			if (!empty($server_url) && strlen(trim($server_url)) > 1 && !empty($form_id) && strlen(trim($form_id)) > 1)
+			{
+				$server_url = trim($server_url);
+				$form_id = trim($form_id);
+				$result = array
+                (
+                    'success' => TRUE, 
+                    'preview_url' => $this->Survey_model->get_preview_url($server_url, $form_id), 
+                    'reason' => NULL
+                );
+				echo json_encode($result);
+			}	
+			else
+			{
+				echo json_encode(array('success'=>FALSE, 'reason'=>'empty'));
+			}
+		}
+	}
+
 	/**
 	 * For now this function just cleans test entries in the surveys table. In the future,
 	 * we could add removal of obsolete surveys (found to not be 'live' for extended period)

@@ -52,19 +52,19 @@
         constructor: Selectpicker,
 
         init: function () {
-            this.$element.css('display', 'none');
-
             var $template = this.getTemplate();
+            this.$element.css('display', 'none');
             $template = this.createLi($template);
             this.$element.after($template);
             this.$newElement = this.$element.next('.bootstrap-select');
             this.$newElement.find('> a').addClass(this.selectClass);
             this.clickListener();
+            //this.focusListener();
         },
 
         getTemplate: function() {
             var template =
-                "<div class='btn-group bootstrap-select'>" +
+                "<div class='btn-group bootstrap-select widget'>" +
                     "<a class='btn dropdown-toggle clearfix' data-toggle='dropdown' href='#''>" +
                         "<span class='filter-option pull-left'>__SELECTED_OPTIONS</span>" +
                         "<span class='caret pull-right'></span>" +
@@ -162,6 +162,24 @@
 
                 $select.trigger('change');
             });
+        },
+        //this listener for fake focus and blur events has a bug and actually breaks the widget!
+        //TODO: when bootstrap 3.0 has launched, used the dropdown open and close events to do this.
+        focusListener: function() {
+            var _this = this;
+
+            _this.$newElement.find('.dropdown-toggle').hover(
+                function(){
+                    console.debug('focus...');
+                    _this.$element.trigger('focus');
+                    return true;
+                }, 
+                function(){
+                    console.debug('blur...');
+                    _this.$element.trigger('blur');
+                    return true;
+                }
+            );
         },
         update : function(){
            this.$newElement.remove();
@@ -266,14 +284,19 @@
             var that = this,
                 inputVals = this.$inputOrigin.val().split(' ');
 
+            this.$inputOrigin.parent().addClass('clearfix');
+
             this.$widget.find('input:not([name="search"])').on('change change.bymap change.bysearch', function(event){
                 //console.debug('change event detected');
                 var lat = (that.$lat.val() !== '') ? that.$lat.val() : 0.0, 
                     lng = (that.$lng.val() !== '') ? that.$lng.val() : 0.0, 
                     alt = (that.$alt.val() !== '') ? that.$alt.val() : 0.0, 
-                    acc = that.$acc.val();
+                    acc = that.$acc.val(),
+                    value = (lat === 0 && lng === 0) ? '' : lat+' '+lng+' '+alt+' '+acc;
 
-                that.$inputOrigin.val(lat+' '+lng+' '+alt+' '+acc).trigger('change');
+                event.stopImmediatePropagation();
+                
+                that.$inputOrigin.val(value).trigger('change');
                
                 if (event.namespace !== 'bymap' && event.namespace !== 'bysearch'){
                     that.updateMap(lat, lng);
@@ -282,8 +305,10 @@
                 if (event.namespace !== 'bysearch' && this.$search){
                     that.$search.val('');
                 }
-                //event.stopPropagation();
-                return false;
+            });
+
+            this.$widget.on('focus blur', 'input', function(event){
+                that.$inputOrigin.trigger(event.type);
             });
 
             if (inputVals[3]) this.$acc.val(inputVals[3]);
@@ -495,15 +520,19 @@
     };
 
     $.fn.geopointWidget = function(option) {
-        //for some reason, calling this inside the GeopointWidget class does not work properly
-        if ( (typeof connection !== 'undefined') && (typeof google == 'undefined' || typeof google.maps == 'undefined') && !option.touch){
-            console.debug('loading maps script asynchronously');
-            connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
-        }
+        var loadStarted = false;
+
         return this.each(function() {
             var $this = $(this),
                 data = $(this).data('geopointwidget'),
                 options = typeof option == 'object' && option;
+            //for some reason, calling this inside the GeopointWidget class does not work properly
+            if ( !loadStarted && (typeof connection !== 'undefined') && (typeof google == 'undefined' || typeof google.maps == 'undefined') && !option.touch){
+                loadStarted = true;
+                console.debug('loading maps script asynchronously');
+                connection.loadGoogleMaps(function(){$('form.jr').trigger('googlemapsscriptloaded');});
+            }
+
             if (!data){
                 $this.data('geopointwidget', (data = new GeopointWidget(this, options)));
             }

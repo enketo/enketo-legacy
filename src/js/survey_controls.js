@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, form, Form, connection, settings, vkbeautify, saveAs, gui, jrDataStr, report, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, form, Form, connection, settings, vkbeautify, saveAs, gui, jrDataStr, report, Form, StorageLocal:true, Settings, Modernizr*/
+
+var /**@type {StorageLocal}*/ store;
+
+$(document).ready(function(){
+	if (typeof StorageLocal !== undefined){
+		store = new StorageLocal();
+		store.init();
+	}
+});
 
 /**
  * Controller function to load a form from local storage. Checks whether there is any unsaved data in the current form first.
@@ -85,7 +94,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	if (typeof confirmedRecordName == 'undefined' || confirmedRecordName.length === 0){
 		curRecordName = curRecordName || store.getCounterValue();
 		$('#dialog-save input[name="record-name"]').val(curRecordName);
-		$('#dialog-save input[name="record-final"]').attr('checked', curRecordFinal);
+		$('#dialog-save input[name="record-final"]').prop('checked', curRecordFinal);
 		return gui.saveConfirm();
 		//console.debug('new Record Props: '+JSON.stringify(newRecord));
 		//return saveForm(newRecord.name, newRecord.markedFinal);
@@ -207,7 +216,7 @@ function deleteForm(confirmed) {
 
 
 /**
- * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a backup, without saved data loading
+ * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a queue, without saved data loading
  * functionality. It only allows validated forms to be submitted. 'Submitted' in this case actually still means it is saved to localStorage first
  * and then forced to upload. If uploading fails the user can continue working on a blank form. Uploading will be attempted at intervals until it
  * succeeds.
@@ -226,6 +235,7 @@ function submitForm() {
 	
 	console.log('result of save: '+saveResult);
 	if (saveResult === 'success'){
+		gui.feedback('Record queued for submission.', 3);
 		resetForm(true);
 		$('form.jr').trigger('save', JSON.stringify(store.getRecordList()));
 		//attempt uploading the data (all data in localStorage)
@@ -250,7 +260,7 @@ function submitEditedForm() {
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
-	redirect = (typeof RETURN_URL !== 'undefined') ? true : false;
+	redirect = (typeof settings !== 'undefined' && typeof settings['returnURL'] !== 'undefined') ? true : false;
 	beforeMsg = (redirect) ? 'You will be automatically redirected after submission. ' : '';
 
 	gui.alert(beforeMsg + '<br />'+
@@ -266,14 +276,15 @@ function submitEditedForm() {
 		success: function(){
 			if (redirect){
 				gui.alert('You will now be redirected back to formhub.', 'Submission successful!');
-				location.href = RETURN_URL;
+				location.href = settings['returnURL'];
 			}
 			//also use for iframed forms
 			else{
 				gui.alert('Done!', 'Submission successful!');
 				resetForm(true);
 			}
-		}
+		},
+		complete: function(){}
 	};
 
 	connection.uploadRecords(record, true, callbacks);
@@ -355,12 +366,21 @@ GUI.prototype.setCustomEventHandlers = function(){
 			submitForm();
 			return false;
 	});
-
 	$('button#submit-edited-data')
 		.click(function(){
 			form.validateForm();
 			submitEditedForm();
 			return false;
+	});
+	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
+		//$('form.jr').trigger('beforesave');
+		if (typeof form !== 'undefined'){
+			form.validateForm();
+			if (!form.isValid()){
+				gui.alert('Form contains errors <br/>(please see fields marked in red)');
+				return;
+			}
+		}
 	});
 
 	$('#drawer-export').click(function(){
@@ -402,13 +422,13 @@ GUI.prototype.setCustomEventHandlers = function(){
 	});
 
 	// handlers for application settings [settings page]
-	this.pages.get('settings').on('change', 'input', function(){
-		var name =  /** @type {string} */  $(this).attr('name');
-		var value = ($(this).is(':checked')) ?  /** @type {string} */ $(this).val().toString() : '';
-		console.debug('settings change by user detected');
-		
-		settings.set(name, value);
-	});
+	//this.pages.get('settings').on('change', 'input', function(){
+	//	var name =  /** @type {string} */  $(this).attr('name');
+	//	var value = ($(this).is(':checked')) ?  /** @type {string} */ $(this).val().toString() : '';
+	//	console.debug('settings change by user detected');
+	//
+	//	settings.set(name, value);
+	//});
 
 	$('#dialog-save').hide();
 

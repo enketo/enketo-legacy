@@ -32,8 +32,10 @@
 				<ul class="dropdown dropdown-menu url-helper" data-toggle="buttons-radio">	
 					<li><a class="url-helper" data-value="http" href="#">http://</a></li>
 					<li><a class="url-helper" data-value="https" href="#">https://</a></li>
+				<? if($integrated): ?>
 					<li><a class="url-helper" data-value="formhub" href="#">formhub account</a></li>
-					<li><a class="url-helper" data-value="formhub_uni" href="#">formhub university</a></li>
+				<? endif ?>
+					<!--<li><a class="url-helper" data-value="formhub_uni" href="#">formhub university</a></li>-->
 					<li><a class="url-helper" data-value="appspot" href="#">appspot subdomain</a></li>
 				</ul>
 				<input id="server" type="url" placeholder="" />
@@ -43,9 +45,9 @@
 	</article>
 	
 <article id="about" class="page">
-	<p> This form launcher provides easy access to your forms even when online (in modern browsers).
-		When a form has been manually loaded once (by clicking on it), that form will also be accessible offline.</p>
-	<p> Make sure to bookmark this page for offline use!</p>	
+	<p>This form list provides easy access to your forms. This list also works while offline (in modern browsers).</p>
+	<p>When a form has been manually loaded once (by clicking on it), that form will also be accessible offline.</p>
+	<p>Make sure to bookmark this page for offline use!</p>	
 	<p>
 		Please write <a href="mailto:<?= $this->config->item('support_email') ?>"><?= $this->config->item('support_email') ?></a> for any comments, questions or bug reports.
 	</p>			

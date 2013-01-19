@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0015'; //time();
+		private $hash_manual_override = '0025'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -78,31 +78,50 @@ class Manifest extends CI_Controller {
 	*/
 	
 	private $data;
+	private $master_page;
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->helper(array('url', 'json', 'subdomain', 'http'));
 		$this->load->model('Survey_model','',TRUE);
+		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
+		$this->manifest_url = $this->_full_url(uri_string());
+		log_message('debug', 'Manifest Controller started for url: '. $this->manifest_url);
 	}
 
 	public function html()
 	{
 		$pages = func_get_args();
-		
+		//!important the first argument is assumed to be the master entry which is implicitly cached
+		//and removed from the manifest as a test to solve issue with manifest updates
 		if(!empty($pages))
 		{
-			foreach ($pages as $page)
+			if (!$data = $this->cache->get($this->manifest_url))
 			{
-				if (!empty($page))
+				log_message('debug', 'creating manifest');
+				$this->master_page = $pages[0];
+				
+				foreach ($pages as $page)
 				{
-					$this->pages[] = $page;
+					if (!empty($page))
+					{
+						$this->pages[] = $page;
+					}
 				}
+				$this->_set_data();
+				$data = $this->data;
+				$this->cache->save($this->manifest_url, $data, 60);
 			}
-			$this->_set_data();
-			if (count($this->data['cache']) > 0 )
+			else
 			{
-				$this->load->view('html5_manifest_view.php', $this->data);
+				log_message('debug', 'loading manifest from cache');
+			}
+			
+			if (count($data['cache']) > 0 )
+			{
+				//$this->output->cache(1);
+				$this->load->view('html5_manifest_view.php', $data);
 				return;
 			}
 		}
@@ -140,8 +159,12 @@ class Manifest extends CI_Controller {
 					//remove non-existing page from manifest
 					$key = array_search($page, $this->data['cache']);
 					unset($this->data['cache'][$key]);
-				}		
+				}
 			}
+			//remove Master page
+			$key = array_search($this->master_page, $this->data['cache']);
+			unset($this->data['cache'][$key]);	
+
 			$this->data['hashes'] = md5($this->data['hashes']).'_'.$this->hash_manual_override; //hash of hashes		
 			$this->data['network'] = $this->network;
 			$this->data['fallback']= $this->offline;	
@@ -250,7 +273,7 @@ class Manifest extends CI_Controller {
 				}
 				else
 				{
-					log_message('debug', 'resource '.$resource.' was already added');
+					//log_message('debug', 'resource '.$resource.' was already added');
 				}
 			}
 			return $cache_resources;
@@ -264,7 +287,7 @@ class Manifest extends CI_Controller {
 	// get the content, if possible through path, otherwise url
 	private function _get_content($url_or_path)
 	{
-		//log_message('debug', 'getting content of '.$url_or_path);
+		log_message('debug', 'getting content of '.$url_or_path);
 		if (strpos($url_or_path, 'http://') !== 0 && strpos($url_or_path, 'https://') !== 0)
 		{
 			$rel_path = (strpos($url_or_path, '/') === 0) ? substr($url_or_path, 1) : $url_or_path;
@@ -275,7 +298,8 @@ class Manifest extends CI_Controller {
 		else
 		{
 			//print ('checking url: '.$url_or_path."\n");
-			$content = (url_exists($url_or_path)) ? file_get_contents($url_or_path) : NULL;
+			//$content = (url_exists($url_or_path)) ? file_get_contents($url_or_path) : NULL;
+			$content = file_get_contents($url_or_path);
 		}
 		if (empty($content))
 		{

@@ -8,6 +8,7 @@ $light: #aaaaaa;
 $very_light: #cccccc;
 
 body{
+  font-family: courier, times, serif;
   background: none; 
   .main{
     margin: 0;
@@ -24,6 +25,8 @@ body{
 #dialog-save,
 #form-languages,
 .form-header,
+.enketo-power,
+button,
 .paper #submit-form{
   display: none !important;}
 
@@ -34,29 +37,67 @@ body{
   .map-canvas-wrapper,
   .geopoint .search-bar,
   .jr-constraint-msg,
+  .required-subtle,
+  .add-on,
+  button,
   .invalid .jr-constraint-msg.active.alert-error{
-    display: none;
-  }
+    display: none !important;}
+  h2, h3, h4, .required{
+    color: black;}
   legend span {
     display: block; }
   .trigger{
-    color: $dark;}
+    font-weight: normal;
+    border: 1px solid black;
+    background: none;
+    color: black; } //$dark;}
   label{
     > span.jr-hint.active{
-      display: block;}
+      color: black;
+      display: block; }
     //> input[type="radio"] ~ span.active, 
     //> input[type="checkbox"] ~ span.active{
     //  display: inline; } 
     } 
   .required{
-    float: right;
-    /*~ br {
-      display: none; }*/ }
-  /*div.jr-branch{
-    display: none;}*/
+    float: right;}
+  .jr-repeat{
+    background: none; }
   .jr-branch.disabled{
   /*.jr-branch+label.disabled{*/
+    opacity: 1;
     display: block !important; }
+  input:not([type="radio"]):not([type="checkbox"]), select, textarea{
+    @include radius-zero;
+    @include box-shadow-none;
+    @include appearance-none;
+    border: none;
+    background: none;
+    border-bottom: 1px solid black;}
+  input[type="file"]{
+    display: none !important;
+  }
+  /*input[type="checkbox"]{
+    display: none !important;
+    ~ .active{
+      -webkit-print-color-adjust:exact;
+      margin-left: 15px;
+      padding-left: 35px;
+      background: url('/images/checkbox.png') left center no-repeat;
+    } }
+  input[type="radio"]{
+    display: none !important;
+    ~ .active{
+      -webkit-print-color-adjust:exact;
+      margin-left: 15px;
+      padding-left: 35px;
+      background: url('/images/radio.png') left center no-repeat;
+    } }*/
+  textarea{
+    //border-bottom: none;
+    -webkit-print-color-adjust: exact;
+    background-image: url('/images/line.png');
+    background-repeat: repeat; }
   .bootstrap-select, .bootstrap-multiselect{
     .dropdown-toggle{
       display: none;}
@@ -79,13 +120,16 @@ body{
     height: 280px;
     .map-canvas{
       bottom: 0;
-      width: 450px; } }
+      width: 450px; }
+    label.geo:nth-of-type(3){
+      border-top:none; } }
   .jr-appearance-maps .map-canvas-wrapper{
       display: block;} } 
 
 .page-break{
   display: block; 
-  border: 1px dashed blue;
+  //border: 1px dashed blue;
+  color: transparent;
   border-bottom: none;
   page-break-before: always !important;}
 

@@ -35,10 +35,9 @@ function Connection(){
 	this.CONNECTION_URL = '/checkforconnection.php';
 	this.SUBMISSION_URL = '/data/submission';
 	this.GETSURVEYURL_URL = '/launch/get_survey_url';
-	this.SUBMISSION_TRIES = 2;
-	this.currentOnlineStatus = false;
+	//this.SUBMISSION_TRIES = 2;
+	this.currentOnlineStatus = null;
 	this.uploadOngoing = false;
-
 
 	this.init = function(){
 		//console.log('initializing Connection object');
@@ -102,7 +101,7 @@ Connection.prototype.checkOnlineStatus = function(){
  * return true when connected to a local network that is not connected to the Internet.
  * However, this could be the first step. If (true) a request is sent to the server to check for a connection
  *
- * @return {boolean} true if it seems the browser is online, false if it does not
+ * @return {?boolean} true if it seems the browser is online, false if it does not, null if not known
  */
 Connection.prototype.getOnlineStatus = function(){
 	//return navigator.onLine;
@@ -155,6 +154,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 
 	callbacks = (typeof callbacks === 'undefined' || !callbacks) ? {
 		complete: function(jqXHR, response){
+			$(document).trigger('submissioncomplete');
 			that.processOpenRosaResponse(jqXHR.status, record.name, last);
 			/**
 			  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
@@ -168,7 +168,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 				console.debug('submission request timed out');
 			}
 			else{
-				console.error('error during submission', textStatus);
+				console.error('error during submission, textStatus:', textStatus);
 			}
 		},
 		success: function(){}
@@ -186,6 +186,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 			content.append('Date', new Date().toUTCString());
 			last = (this.uploadQueue.length === 0) ? true : false;
 			this.setOnlineStatus(null);
+			$(document).trigger('submissionstart');
 			//console.debug('calbacks: ', callbacks );
 			$.ajax(this.SUBMISSION_URL,{
 				type: 'POST',
@@ -231,16 +232,12 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			503: {success:false, msg: serverDown},
 			'5xx':{success:false, msg: serverDown}
 		};
-	console.debug('name: '+name+' status: '+status);
-	//TO DO: TRIGGER EVENTS AND DEAL WITH STORE AND GUI OUTSIDE OF THIS CLASS
+
+	console.debug('submission results for '+name+' => status: '+status);
+	
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
-			if (typeof store !== 'undefined'){
-				store.removeRecord(name);
-				//$('form.jr').trigger('delete', JSON.stringify(store.getFormList()));
-				console.log('tried to remove record with key: '+name);
-			}
-			$('form.jr').trigger('uploadsuccess', name);
+			$(document).trigger('submissionsuccess', name);
 			this.uploadResult.win.push([name, statusMap[status].msg]);
 		}
 		else if (statusMap[status].success === false){
@@ -265,8 +262,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 		return;
 	}
 
-	console.debug('going to provide upload feedback (forced = '+this.forced+') from object:');
-	console.debug(this.uploadResult);
+	console.debug('forced: '+this.forced+' online: '+this.currentOnlineStatus, this.uploadResult);
 
 	if (this.uploadResult.win.length > 0){
 		for (i = 0 ; i<this.uploadResult.win.length ; i++){
@@ -281,19 +277,18 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 
 	if (this.uploadResult.fail.length > 0){
 		//console.debug('upload failed');
-		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
-		this.setOnlineStatus(false);
-
-		if (this.forced === true){
+		if (this.forced === true && this.currentOnlineStatus !== false){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
 			}
-			$('.drawer.left.closed .handle').click();
+			//$('.drawer.left.closed .handle').click();
 			gui.alert(msg, 'Failed data submission');
 		}
 		else{
 			// not sure if there should be a notification if forms fail automatic submission
 		}
+		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
+		this.setOnlineStatus(false);
 	}
 	//this.uploadOngoing = false;
 };
@@ -347,33 +342,36 @@ Connection.prototype.getSurveyURL = function(serverURL, formId, callbacks){
 
 /**
  * Obtains HTML Form from an XML file or from a server url and form id
- * @param  {jQuery}   $form    the jQuery-wrapped form object with 3 input fields (xml_file, server_url, form_id)
- * @param  {Object.<string, Function>=} callbacks [description]
+ * @param  {?string=}					serverURL   full server url
+ * @param  {?string=}					formId		form ID
+ * @param  {Blob=}						formFile	XForm XML file
+ * @param  {Object.<string, Function>=} callbacks	callbacks
  */
-Connection.prototype.getFormHTML = function($form, callbacks){
-	var serverURL, formId, formFile,
-		formData = new FormData($form[0]);
+Connection.prototype.getTransForm = function(serverURL, formId, formFile, callbacks){
+	var formData = new FormData();
 
 	callbacks = this.getCallbacks(callbacks);
-
-	serverURL = $form.find('input[name="server_url"]').val() || '';
-	formId = $form.find('input[name="form_id"]').val() || '';
-	formFile = $form.find('input[name="xml_file"]').val() || '';
+	serverURL = serverURL || null;
+	formId = formId || null;
+	formFile = formFile || new Blob();
 	
-	if (formFile === '' && serverURL === '' && formId === ''){
+	if (formFile.size === 0 && !serverURL && !formId){
 		callbacks.error(null, 'validationerror', 'No form file or URLs provided');
 		return;
 	}
-
-	if (formFile === '' && !this.isValidURL(serverURL)){
+	if (formFile.size === 0 && !this.isValidURL(serverURL)){
 		callbacks.error(null, 'validationerror', 'Not a valid server url');
 		return;
 	}
-
-	if (formFile === '' && formId.length === 0){
+	if (formFile.size === 0 && (!formId || formId.length === 0)){
 		callbacks.error(null, 'validationerror', 'No form id provided');
 		return;
 	}
+	formData.append('server_url', serverURL);
+	formData.append('form_id', formId);
+	formData.append('xml_file', formFile);
+
+	console.debug('form file: ', formFile);
 
 	$.ajax('/transform/get_html_form', {
 		type: 'POST',
@@ -381,13 +379,6 @@ Connection.prototype.getFormHTML = function($form, callbacks){
 		contentType: false,
 		processData: false,
 		dataType: 'xml',
-		/*xhr: function() {  // custom xhr
-            myXhr = $.ajaxSettings.xhr();
-            if(myXhr.upload){ // check if upload property exists
-                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // for handling the progress of the upload
-            }
-            return myXhr;
-        },*/
 		data: formData,
 		success: callbacks.success,
 		error: callbacks.error,
@@ -433,6 +424,12 @@ Connection.prototype.oRosaHelper = {
 			console.log('nothing to do');
 			return null;
 		}
+		console.debug('frag: '+frag);
+		//always override if valid URL is entered
+		//TODO: REMOVE reference to connection
+		if (connection.isValidURL(frag)){
+			return frag;
+		}
 
 		switch (type){
 			case 'http':
@@ -456,6 +453,21 @@ Connection.prototype.oRosaHelper = {
 		console.log('server_url: '+serverURL);
 		return serverURL;
 	}
+};
+
+/**
+ * Get the number of forms launched on enketo (all know deployments)
+ * @param  {Object.<string, Function>=} callbacks callbacks
+ */
+Connection.prototype.getNumberFormsLaunched = function(callbacks){
+	callbacks = this.getCallbacks(callbacks);
+	$.ajax({
+		url: '/front/get_number_launched_everywhere',
+		dataType: 'json',
+		success: callbacks.success,
+		error: callbacks.error,
+		complete: callbacks.complete
+	});
 };
 
 /**

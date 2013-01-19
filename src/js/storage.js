@@ -16,24 +16,23 @@
 
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true*//*global gui, store, Form, DEFAULT_SETTINGS, Modernizr*/
 
-/* !Storage Class */
 /**
- *
- *
- * Function (Class): Storage
- *
- * description
- *
- * Returns:
- *
- *   return description
- *
+ * Storage Class
  * @constructor
  */
 function StorageLocal(){
 	"use strict";
 	var RESERVED_KEYS = ['__settings', 'null','__history', 'Firebug', 'undefined', '__bookmark', '__counter', '__current_server'],
 		localStorage = window.localStorage;
+
+	this.init = function() {
+		var that = this;
+		$(document).on('submissionsuccess', function(ev, recordName){
+			that.removeRecord(recordName);
+			console.log('After submission event was detected, tried to remove record with key: '+recordName);
+		});
+	};
+
 	// Could be replaced by Modernizr function if Modernizr remains used in final version
 	this.isSupported = function() {
 		try {

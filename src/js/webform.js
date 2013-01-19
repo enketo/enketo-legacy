@@ -20,16 +20,14 @@
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var /**@type {Cache}*/cache;
-//var /**@type {Settings}*/settings,
-var currentOnlineStatus = false;
-var /**@type {StorageLocal}*/ store;
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 $(document).ready(function() {
 	'use strict';
-	var message, choices;
+	var message, choices, loadErrors;
 
-	store = new StorageLocal();
+	//store = new StorageLocal();
+	//store.init();
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	//settings = new Settings();
 	//settings.init();
@@ -62,7 +60,11 @@ $(document).ready(function() {
 			gui.confirm({msg: message, heading:'Application cannot launch offline'}, choices);
 		}
 	}
-	form.init();
+	loadErrors = form.init();
+	if (loadErrors.length > 0){
+		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
+	}
+
 	connection.init();
 	gui.setup();
 

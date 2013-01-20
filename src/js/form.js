@@ -1879,6 +1879,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			*/
 			this.repeat = ($group) ? true : false;
 			this.$group = $group || $form;
+			this.readonlyWidget(); //call before other widgets
+			this.pageBreakWidget();
 			if (!Modernizr.touch){
 				this.dateWidget();
 				this.timeWidget();
@@ -1886,8 +1888,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.selectWidget();
 			}
 			this.geopointWidget();
-			this.pageBreakWidget();
-			this.readonlyWidget();
 			this.tableWidget();
 			this.spinnerWidget();
 			this.sliderWidget();	
@@ -2068,9 +2068,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					var html = $(this).html(),
 						relevant = $(this).find('input').attr('data-relevant'),
 						name = 'name="'+$(this).find('input').attr('name')+'"',
-						attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name;
-					$('<fieldset class="trigger" '+attributes+'></fieldset>') //ui-corner-all
-						.insertBefore($(this)).append(html).find('input').remove(); 
+						attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name,
+						value = $(this).find('input, select, textarea').val();
+					$('<fieldset class="trigger" '+attributes+'></fieldset>')
+						.insertBefore($(this)).append(html).append('<div class="note-value">'+value+'</div>').find('input').remove(); 
 					$(this).remove();
 				});
 			}

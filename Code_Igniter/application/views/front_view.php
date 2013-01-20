@@ -1,152 +1,88 @@
 <? require 'elements/html_start.php' ?>		
-		
-	<style type="text/css">
-		.main{
-			max-width: 900px;
-			line-height: 30px;
-		}
 
-		.advice{
-			display: block;
-			padding: 10px 0;
-		}
-
-		#build ul{
-			list-style-type: none;
-			margin-left: 0;
-		}
-		#build ul>li{
-			padding: 10px 0;
-		}
-		#build ul>li>a{
-			display: block;
-			float: left;
-			padding: 0 20px 0 0;
-		}
-		#build img{
-			width: 120px;
-		}
-
-		.input-prepend .btn.dropdown-toggle{
-			float: none;
-		}
-
-		#launch .btn-toolbar{
-			margin: 30px auto;
-		}
-
-		#launch input, #launch .go{
-			height: 28px;
-		}
-
-		#launch .go{
-			padding-top: 7px;
-			padding-bottom: 1px;
-		}
-
-		table{
-			font-size: 80%;
-		}
-
-		.table th:not(:first-child), .table td:not(:first-child){
-			width: 25%;
-			text-align: center;
-		}
-
-		.table th:first-child, .table td:first-child{
-			text-align: left;
-			width: 50%;
-		}
-
-	</style>
-
-	<script type="text/javascript">
-		$(document).ready(function(){
-			$('.url-helper')
-				.click(function(){
-					var placeholder;
-					$(this).parent().addClass('active').siblings().removeClass('active');
-					$('#url-helper-selected').attr('data-value', $(this).attr('data-value')).text($(this).text());
-					placeholder = ($(this).attr('data-value') === 'formhub') ? 'e.g. martijnr' : 'e.g. formhub.org/martijnr';
-					$('#launch input').attr('placeholder', placeholder);
-				})
-				.andSelf().find('[data-value="https"]').click();
-
-			$('#launch input').change(goToLaunch);
-
-			function goToLaunch(){
-				var val = $('#launch input').val();
-					type = $('#url-helper-selected').attr('data-value');
-					server_url = ( type === 'formhub' ) ? 'https://formhub.org/'+val : type+'://'+val;
-
-				//TODO add isValidUrl() check	
-				location.href = '/launch?server='+server_url;
-				return false;
-			}
-
-			$('[title]').tooltip();
-		});
-		
-	</script>
 </head>
 <body>
 <? 
 	if (ENVIRONMENT === 'production'){include_once 'elements/tracking.php';}
 	require 'elements/header.php'; 
 	require 'elements/page.php';
+	require 'elements/dialogs.php';
 ?>
-	<article id="launch" class="page" data-title="Test &amp; Launch area" data-ext-link="/launch"></article>
-	<article id="blog" class="page" data-title="Blog" data-ext-link="http://blog.enketo.org/tag/enketo"></article> 
+	<!--<article id="launch" class="page" data-title="Test &amp; Launch area" data-ext-link="/launch"></article>
+	<article id="blog" class="page" data-title="Blog" data-ext-link="http://blog.enketo.org/tag/enketo"></article>-->
 	
 	<div class="main container-fluid paper tabbable tabs-left">
 			
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#intro" data-toggle="tab">Intro</a></li>
 			<li><a href="#build" data-toggle="tab">Build</a></li>
-			<li><a href="#launch" data-toggle="tab">Launch</a></li>
+			<li><a href="#test" data-toggle="tab">Test</a></li>
 			<li><a href="#deploy" data-toggle="tab">Deploy</a></li>
+			<li><a href="#samples" data-toggle="tab">Samples</a></li>
 		</ul>
 
 		<div class="tab-content">
 			<article id="intro" class="tab-pane active">
+				<h2 style="display: inline; text-align: left;">enketo</h2> is a free collaborative survey application that uses an open-source form format. Click the key features below to learn more.
 
-				<div class="alert">Enketo is an offline-capable collaborative survey application that uses the OpenRosa form format.</div>
+				<!--<p>It works <b class="text-info">offline</b>, has <b class="text-info">print-friendly</b> forms, is <b class="text-info">easy to deploy</b> and fits snugly inside a modern, <b class="text-info">flexible</b> information management system.</p>-->
+				<ul class="features clearfix">
+					<li id="offline-capable"><a class="btn btn-large btn-info" href="#">offline-capable</a></li>
+					<li id="print-friendly"><a class="btn btn-large btn-info" href="#">print-friendly</a></li>
+					<li id="quick-deploy"><a class="btn btn-large btn-info" href="#">easy to deploy</a></li>
+					<li id="open-source"><a class="btn btn-large btn-info" href="#">open, compatible</a></li>
+				</ul>
+				<section class="features-detail">
+					<p class="alert alert-success offline-capable">
+					Forms in enketo open without an Internet connection (after a form has been opened once online, a copy is kept inside the browser). A user can just bookmark a form and from then onwards access it whether offline or online. Enketo also safely stores entered data in the browser and uploads records automatically (e.g. to formhub) when the user is connected to the Internet. Only after a successful upload, the data is deleted from the browser. A user can safely close the browser or laptop and work for weeks (or months) without an Internet connection!
+					</p>
+					<p class="alert alert-success print-friendly">
+					Enketo only requires a modern browser to run. It can therefore be deployed by users very quickly on pretty much any laptop or desktop and is becoming quite usable on mobile devices as well.
+					</p>
+					<p class="alert alert-success quick-deploy">
+					Enketo only requires a modern browser to run. It can therefore be deployed by users very quickly on pretty much any laptop or desktop and is becoming quite usable on mobile devices as well.
+					</p>
+					<p class="alert alert-success open-source">
+					Due to its openness and compatibility with a popular standard, it is relatively easy to integrate enketo into existing OpenRosa systems as was done in <a href="http://formhub.org">formhub.org</a>. Moreover, the beauty of using a popular open-source form format is that users can pick-and-choose the best components to create a flexible information management system that can move with the times and does not get you hooked on a particular tool.
+					</p>
+				</section>
+				
 				<img src="/images/ss.jpg" alt="screenshot" /><br /><br />
-				<div class="alert">Enketo is fully integrated into <a href="http://formhub.org" title="go to the formhub website">formhub.org</a>. If you are a formhub user, or are new to this ecosystem, that would be an excellent place to start.</div>
+				<div class="alert">Enketo is fully integrated into <a href="http://formhub.org" title="go to the formhub website">formhub.org</a>. If you are a formhub user, or are new to this form format, that would be an excellent place to start!</div>
 
 			</article>
 			<article id="build" class="tab-pane">
-				<h3>Step 1: Design and Build your form</h3> 
+				<h3>Design and Build your form</h3> 
 				<p>One of the benefits of using a popular open-source form format, is that there are a variety of tools available. For building your form, these are some readily available tools:</p>
 				<ul>
 					<li class="clearfix">
-						<a href="http://build.opendatakit.org"><img src="/images/builder_ODK.png" /></a>
+						<a href="http://build.opendatakit.org"><img src="/images/builder_ODK.png" alt="ODK Build"/></a>
 						<div class="description">
 							<a href="http://build.opendatakit.org">ODK Build</a>
 							<span class="advice">
-								Easiest tool to use, but not suitable for complex surveys and you cannot deploy these forms in formhub.
+								Easiest and nicest-looking tool to use, but not so suitable for complex surveys. Forms created with this tool cannot be deployed in formhub.
 							</span>
 						</div>
 					</li>
 					<li class="clearfix">
-						<a href="http://formhub.org/syntax"><img src="/images/builder_formhub.png" /></a>
+						<a href="http://formhub.org/syntax"><img src="/images/builder_formhub.png" alt="formhub" /></a>
 						<div class="description">
 							<a href="http://formhub.org/syntax">Formhub</a> and <a href="http://opendatakit.org/use/xlsform/">XLS Forms</a>
 							<span class="advice">
-								Recommended, as it offers a good combination of ease of use and ability to create complex forms. 
+								Recommended, as it offers a good combination of ease of use and ability to create complex forms. Formhub is managed by a Modilabs at Columbia University.
 							</span>
 						</div>
 					</li>
 					<li class="clearfix">
-						<a href="http://www.commcarehq.org"><img src="/images/builder_commcare.png" /></a>
+						<a href="http://www.commcarehq.org"><img src="/images/builder_commcare.png" alt="CommcareHQ"/></a>
 						<div class="description">
 							<a href="http://www.commcarehq.org">CommCareHQ</a>
 							<span class="advice">
-								The form builder (Vellum) is part of a full-fledged information management system.
+								The form builder (Vellum) is part of a full-fledged information management system by one of the creators and maintainers of the OpenRosa form format (Dimagi). 
 							</span>
 						</div>
 					<li class="clearfix">
-						<a href="https://bitbucket.org/javarosa/javarosa/wiki/xform-jr-compat"><img src="/images/builder_xml.png" /></a>
+						<a href="https://bitbucket.org/javarosa/javarosa/wiki/xform-jr-compat"><img src="/images/builder_xml.png" alt="XML coding by hand" /></a>
 						<div class="description">
 							<a href="https://bitbucket.org/javarosa/javarosa/wiki/xform-jr-compat">Coding by hand in XML</a>
 							<span class="advice">
@@ -155,7 +91,7 @@
 						</div>
 					</li>
 					<li class="clearfix">
-						<a href="http://www.kobotoolbox.org/koboform/"><img src="/images/builder_kobo.png" /></a>
+						<a href="http://www.kobotoolbox.org/koboform/"><img src="/images/builder_kobo.png" alt="KoboForms" /></a>
 						<div class="description">
 							<a href="http://www.kobotoolbox.org/koboform/">KoboForm</a>
 							<span class="advice">
@@ -166,9 +102,9 @@
 				</ul>
 			</article>
 
-			<article id="launch" class="tab-pane">
-				<h3>Step 2: Test your survey</h3>
-				<p>A convenient way to do this if you have already selected a server is at <a href="/launch" title="go to enketo test and launch area">enketo.org/launch</a> or by entering enter your server url in the field below.</p>
+			<article id="test" class="tab-pane">
+				<h3>Test your survey</h3>
+				<p>A convenient way to do this if you have already selected a server is at <a href="/formtester">enketo.org/formtester</a> or by entering enter your server url in the field below.</p>
 				<div class="btn-toolbar">
 					<div class="input-prepend input-append btn-group">
 						<button class="btn btn-large dropdown-toggle" data-toggle="dropdown">
@@ -178,43 +114,74 @@
 						<ul class="dropdown-menu" data-toggle="buttons-radio">	
 							<li><a class="url-helper" data-value="http" href="#">http://</a></li>
 							<li><a class="url-helper" data-value="https" href="#">https://</a></li>
-							<li><a class="url-helper" data-value="formhub" href="#">formhub account</a></li>
 						</ul>
 						<input class="span5" type="url" placeholder="" />
 						<span class="addon btn btn-primary go">Go</span>
 					</div>
 				</div>
 				<div class="alert alert-info">
-					The enketo Test &amp; Launch area can also load XML files. However, in order to launch your survey it needs to be hosted on a server first.
-				</div>
-
-				<p>A server stores your survey forms and aggregates the data. There are basically two server choices: <a href="http://formhub.org">formhub</a> and <a href="http://opendatakit.org/use/aggregate/">ODK Aggregate</a>. We recommend formhub for speed, user interface and versatility. Both products are under very active development. Upload your form to one of these tools if you haven’t done so already.</p>
+					The enketo form-tester can also load XML files. However, in order to launch your survey it needs to be hosted on a server first. See the next page for details.</div>
 			</article>
 
 			<article id="deploy" class="tab-pane">
-				<h3>Step 3: Deploy your survey</h3>
-				<p>There are at least two excellent tools for deploying your survey, enketo and ODK collect. You can deploy a form on enketo from within the <a href="/launch" title="enketo test &amp; launch area">enketo launch area</a> with the click of a button. For ODK Collect refer to the <a href="http://opendatakit.org" title="link to ODK website/use/collect">ODK Collect page on ODK website</a> and the <a href="https://play.google.com/store/apps/details?id=org.odk.collect.android" title="link to ODK Collect on Google Play">Google Play Store</a>. The table below highlights the differences so help make the choice. Note that you can also use both tools!</p>
+				<h3>Deploy your survey</h3>
+				<p>To deploy a survey you'll first have to choose a server and upload your form. Apart from serving your form it will also receive and manage the survey data. There are basically two choices: <a href="http://formhub.org">formhub</a> and <a href="http://opendatakit.org/use/aggregate/">ODK Aggregate</a>. Both products are open-source and under active development.</p>
+				<p>To collect data in the field we recommend using on of these two excellent tools: enketo and ODK collect. You can deploy a form with enketo from within the <a href="/forms" title="enketo forms">forms area</a> with the click of a button. For ODK Collect refer to the <a href="http://opendatakit.org" title="link to ODK website/use/collect">ODK Collect page on ODK website</a> and the <a href="https://play.google.com/store/apps/details?id=org.odk.collect.android" title="link to ODK Collect on Google Play">Google Play Store</a>.
 
-				<div class="alert alert-info">If you are using formhub you can skip this step and instead launch from within the formhub interface (select Enter Webform) and share the link.</div>
+				<div class="alert alert-info">If you are using <a href="http://formhub.org">formhub</a> you can skip this step and instead launch from within the formhub interface (select "Enter Webform") and share the link.</div>
 
-				<table class="table table-bordered">
-					<thead><tr><th></th><th>enketo</th><th>ODK Collect</th></tr><thead>
-					<tr><td>larger text entry</td><td><i class="icon-ok"></i></td><td></td></tr>
-					<tr><td>photos, videos, sound entry</td><td></td><td><i class="icon-ok"></i></td></tr>
-					<tr><td>gps coordinates on the spot</td><td></td><td><i class="icon-ok"></i></td></tr>
-					<tr><td>direct data entry on Android mobile</td><td></td><td><i class="icon-ok"></i></td></tr>
-					<tr><td>using pen + paper for data collection, then app for data entry</td><td><i class="icon-ok"></i></td><td></td></tr>
-					<tr><td>technical requirements</td><td><i class="icon-ok"></i></td><td></td></tr>
+				<table class="table table-bordered clients">
+					<tr><th></th><th>enketo</th><th>ODK Collect</th></tr>
+					<tr><td>larger text entry</td><td><i class="icon-ok"></i></td><td>(one line)</td></tr>
+					<tr><td>photos, videos, sound entry</td><td>(coming)</td><td><i class="icon-ok"></i></td></tr>
+					<tr><td>sketch, signature, barcode entry</td><td></td><td><i class="icon-ok"></i></td></tr>
+					<tr><td>gps coordinates on the spot</td><td><i class="icon-ok"></i></td><td><i class="icon-ok"></i></td></tr>
+					<tr><td>direct data entry on Android mobile</td><td>(improving)</td><td><i class="icon-ok"></i></td></tr>
+					<tr><td>printing a form and using pen + paper for primary data collection</td><td><i class="icon-ok"></i></td><td></td></tr>
+					<!--<tr><td>technical requirements</td><td><i class="icon-ok"></i></td><td></td></tr>-->
 					<tr><td>ease and speed of deployment</td><td><i class="icon-ok"></i></td><td></td></tr>
 					<tr><td>deal with intermittent internet, work offline</td><td><i class="icon-ok"></i></td><td><i class="icon-ok"></i></td></tr>
 				</table>
+			</article>
 
+			<article id="samples" class="tab-pane">
+				<h3>Sample Forms</h3>
+				The form format allows <em>very complex</em> forms to be constructed with widgets, branches, repeatable questions, and multiple languages. For all the form building tools there are active Google Groups available to help you build your form. Checkout these sample forms below.
+				<table class="table table-bordered forms">
+					<tr><th>form</th><th>description</th><th>author</th><th>src</th><th>src</th></tr>
+					<tr>
+						<td><a href="http://widgets.enketo.org/webform">Widgets</a></td>
+						<td>showcases the different available widgets.</td>
+						<td>ODK, Modilabs</td>
+						<td><a href="http://formhub.org/formhub_u/forms/widgets/form.xls">xls</a></td>
+						<td><a href="http://formhub.org/formhub_u/forms/widgets/form.xml">xml</a></td>
+					</tr>
+					<tr>
+						<td><a href="http://wfl69.enketo.org/webform">S.E.L.F. Study</a></td>
+						<td>a form with complex skip logic and advanced features.</td>
+						<td>Erwin Olario</td>
+						<td><a href="http://formhub.org/enketo/forms/term/form.xls">xls</a></td>
+						<td><a href="http://formhub.org/enketo/forms/term/form.xml">xml</a></td>
+					</tr>
+				</table>
+				<p class="form-count alert alert-info">
+					<em class="counter">343</em> forms have been launched so far on enketo.org and enketo.formhub.org combined!
+				</p>
 			</article>
 
 		</div>
 	</div>
 
-<? require 'elements/page_contact.php'; ?>	
+	<article id="about" class="page">
+		<p>
+			Enketo.org is hosted by Aid Web Solutions and was developed as a joint effort by Martijn van de Rijdt and Modilabs. A separate version of enketo is fully integrated into <a href="http://formhub.org">formhub.org</a>. Enketo.org is a stand-alone version that provides access to enketo forms to ODK Aggregate users. It is a way to contribute back to the fabulous ODK community.</p>
+		<p>
+			Many thanks to Modilabs for making their huge improvements to enketo available under an open-source license!
+		</p>	
+		<p>
+			Please write <a href="mailto:<?= $this->config->item('support_email') ?>"><?= $this->config->item('support_email') ?></a> for any comments, questions or bug reports.
+		</p>			
+	</article>
 
 <? require 'elements/footer++.php' ?>
 

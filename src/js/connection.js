@@ -38,6 +38,7 @@ function Connection(){
 	//this.SUBMISSION_TRIES = 2;
 	this.currentOnlineStatus = null;
 	this.uploadOngoing = false;
+	this.oRosaHelper = new this.ORosaHelper(this);
 
 	this.init = function(){
 		//console.log('initializing Connection object');
@@ -407,16 +408,17 @@ Connection.prototype.validateHTML = function(htmlStr, callbacks){
 
 /**
  * Collection of helper functions for openRosa connectivity
- * @type {Object}
+ * @param {*} conn [description]
+ * @constructor
  */
-Connection.prototype.oRosaHelper = {
+Connection.prototype.ORosaHelper = function(conn){
 	/**
 	 * Magically generates a well-formed serverURL from a type and fragment
 	 * @param  {string} type    type of server or account (http, https, formhub_uni, formhub, appspot)
 	 * @param  {string} frag	a user input for the given type
 	 * @return {?string}        a full serverURL
 	 */
-	fragToServerURL: function(type, frag){
+	this.fragToServerURL = function(type, frag){
 		var protocol,
 			serverURL = '';
 
@@ -427,7 +429,7 @@ Connection.prototype.oRosaHelper = {
 		console.debug('frag: '+frag);
 		//always override if valid URL is entered
 		//TODO: REMOVE reference to connection
-		if (connection.isValidURL(frag)){
+		if (conn.isValidURL(frag)){
 			return frag;
 		}
 
@@ -439,20 +441,20 @@ Connection.prototype.oRosaHelper = {
 				break;
 			case 'formhub_uni':
 			case 'formhub':
-				serverURL = 'http://formhub.org/'+frag;
+				serverURL = 'https://formhub.org/'+frag;
 				break;
 			case 'appspot':
 				serverURL = 'https://'+frag+'.appspot.com';
 				break;
 		}
 
-		if (!connection.isValidURL(serverURL)){
+		if (!conn.isValidURL(serverURL)){
 			console.error('not a valid url: '+serverURL);
 			return null;
 		}
 		console.log('server_url: '+serverURL);
 		return serverURL;
-	}
+	};
 };
 
 /**

@@ -28,16 +28,24 @@ class Front extends CI_Controller {
 	{
 		$this->load->helper(array('url'));
 
-		$default_scripts = array
+		$default_library_scripts = array
 		(
 			'/libraries/jquery.min.js',
 			'/libraries/bootstrap/js/bootstrap.min.js',
 			'/libraries/modernizr.min.js'
 		);
+		$default_main_scripts = array
+		(
+			'/js-source/common.js',
+			'/js-source/connection.js',
+			'/js-source/front.js'
+		);
+
 		$default_stylesheets = array
 		(
 			//array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'screen'),
 			array( 'href' => '/css/styles.css', 'media' => 'screen'),
+			array( 'href' => '/css/front.css', 'media' => 'screen'),
 			array( 'href' => '/css/print.css', 'media' => 'print')
 		);
 		$data = array(
@@ -49,15 +57,17 @@ class Front extends CI_Controller {
 
 		if (ENVIRONMENT === 'production')
 		{
-			$data['scripts'] = array_merge($default_scripts, array(
+			$data['scripts'] = array(
+				'/libraries/libraries-all-min.js',
 				'/js-min/front-all-min.js'
-			));
+			);
 		}
 		else
 		{
-			$data['scripts'] = array_merge($default_scripts, array(
-				'/js-source/common.js'
-			));
+			$data['scripts'] = array_merge(
+				$default_library_scripts,
+				$default_main_scripts
+			);
 		}
 
 		$integrated = $this->config->item('integrated');
@@ -75,6 +85,8 @@ class Front extends CI_Controller {
 
 	public function get_number_launched()
 	{
+		$this->load->helper('subdomain');
+		echo full_base_url()."\n";
 		echo (int) $this->Survey_model->number_surveys();
 	}
 

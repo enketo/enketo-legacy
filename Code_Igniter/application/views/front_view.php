@@ -11,7 +11,7 @@
 	<!--<article id="launch" class="page" data-title="Test &amp; Launch area" data-ext-link="/launch"></article>
 	<article id="blog" class="page" data-title="Blog" data-ext-link="http://blog.enketo.org/tag/enketo"></article>-->
 	
-	<div class="main container-fluid paper tabbable tabs-left">
+	<div class="main container-fluid paper tabbable tabs-top">
 			
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#intro" data-toggle="tab">Intro</a></li>
@@ -23,27 +23,27 @@
 
 		<div class="tab-content">
 			<article id="intro" class="tab-pane active">
-				<h2 style="display: inline; text-align: left;">enketo</h2> is a free collaborative survey application that uses an open-source form format. Click the key features below to learn more.
+				<div><h3>enketo</h3> is a free collaborative survey application that uses an open-source form format. Click the key features below to learn more.</div>
 
 				<!--<p>It works <b class="text-info">offline</b>, has <b class="text-info">print-friendly</b> forms, is <b class="text-info">easy to deploy</b> and fits snugly inside a modern, <b class="text-info">flexible</b> information management system.</p>-->
 				<ul class="features clearfix">
 					<li id="offline-capable"><a class="btn btn-large btn-info" href="#">offline-capable</a></li>
 					<li id="print-friendly"><a class="btn btn-large btn-info" href="#">print-friendly</a></li>
 					<li id="quick-deploy"><a class="btn btn-large btn-info" href="#">easy to deploy</a></li>
-					<li id="open-source"><a class="btn btn-large btn-info" href="#">open, compatible</a></li>
+					<li id="open-source"><a class="btn btn-large btn-info" href="#">open format</a></li>
 				</ul>
 				<section class="features-detail">
 					<p class="alert alert-success offline-capable">
-					Forms in enketo open without an Internet connection (after a form has been opened once online, a copy is kept inside the browser). A user can just bookmark a form and from then onwards access it whether offline or online. Enketo also safely stores entered data in the browser and uploads records automatically (e.g. to formhub) when the user is connected to the Internet. Only after a successful upload, the data is deleted from the browser. A user can safely close the browser or laptop and work for weeks (or months) without an Internet connection!
+					When a form has been opened once online, it becomes available offline (a copy is kept is kept inside the browsers). Enketo also safely stores entered data in the browser and uploads records automatically (e.g. to formhub) when the user is connected to the Internet. Only after a successful upload, the data is deleted from the browser. A user can safely close the browser or laptop and work for weeks (or months) without an Internet connection! Whenever a new version of the form or application is available it will automatically updated when the user is online.
 					</p>
 					<p class="alert alert-success print-friendly">
-					Enketo only requires a modern browser to run. It can therefore be deployed by users very quickly on pretty much any laptop or desktop and is becoming quite usable on mobile devices as well.
+					Enketo facilitates old-school data collection (and modern data entry) with pen and paper without the need to maintain a separate print-version of the form. 
 					</p>
 					<p class="alert alert-success quick-deploy">
 					Enketo only requires a modern browser to run. It can therefore be deployed by users very quickly on pretty much any laptop or desktop and is becoming quite usable on mobile devices as well.
 					</p>
 					<p class="alert alert-success open-source">
-					Due to its openness and compatibility with a popular standard, it is relatively easy to integrate enketo into existing OpenRosa systems as was done in <a href="http://formhub.org">formhub.org</a>. Moreover, the beauty of using a popular open-source form format is that users can pick-and-choose the best components to create a flexible information management system that can move with the times and does not get you hooked on a particular tool.
+					Due to its openness and compatibility with a popular standard, it is relatively easy to integrate enketo into existing OpenRosa systems as was done in <a href="http://formhub.org">formhub.org</a>. Moreover, the beauty of using a popular open-source form format is that users can pick-and-choose the best components to create a flexible information management system that can <em>move with the times</em> and does not get you hooked on a particular tool.
 					</p>
 				</section>
 				
@@ -105,17 +105,19 @@
 			<article id="test" class="tab-pane">
 				<h3>Test your survey</h3>
 				<p>A convenient way to do this if you have already selected a server is at <a href="/formtester">enketo.org/formtester</a> or by entering enter your server url in the field below.</p>
+
+				<div class="error-msg text-error"></div>
 				<div class="btn-toolbar">
 					<div class="input-prepend input-append btn-group">
-						<button class="btn btn-large dropdown-toggle" data-toggle="dropdown">
+						<button class="btn dropdown-toggle" data-toggle="dropdown">
 							<span class="caret"></span>
 						</button>
-						<button id="url-helper-selected" class="btn btn-large"></button>
+						<button id="url-helper-selected" class="btn"></button>
 						<ul class="dropdown-menu" data-toggle="buttons-radio">	
 							<li><a class="url-helper" data-value="http" href="#">http://</a></li>
 							<li><a class="url-helper" data-value="https" href="#">https://</a></li>
 						</ul>
-						<input class="span5" type="url" placeholder="" />
+						<input class="" type="url" placeholder="" />
 						<span class="addon btn btn-primary go">Go</span>
 					</div>
 				</div>
@@ -174,13 +176,13 @@
 
 	<article id="about" class="page">
 		<p>
-			Enketo.org is hosted by Aid Web Solutions and was developed as a joint effort by Martijn van de Rijdt and Modilabs. A separate version of enketo is fully integrated into <a href="http://formhub.org">formhub.org</a>. Enketo.org is a stand-alone version that provides access to enketo forms to ODK Aggregate users. It is a way to contribute back to the fabulous ODK community.</p>
+			The enketo open-source project is a joint effort by Aid Web Solutions and Modilabs. Enketo.org is a stand-alone application hosted by Aid Web Solutions primarily for the benefit of ODK Aggregate users. A separate version of enketo is available on <a href="http://formhub.org">formhub.org</a> and is fully integrated with formhub.  
+		</p>
 		<p>
-			Many thanks to Modilabs for making their huge improvements to enketo available under an open-source license!
-		</p>	
-		<p>
-			Please write <a href="mailto:<?= $this->config->item('support_email') ?>"><?= $this->config->item('support_email') ?></a> for any comments, questions or bug reports.
-		</p>			
+			Please write 
+			<a href="mailto:<?= $this->config->item('support_email') ?>"><?= $this->config->item('support_email') ?></a> 
+			for any comments, questions or bug reports or use the <a href="https://groups.google.com/forum/?fromgroups#!forum/enketo">Google Groups Forum</a> so others can benefit from the discussion too.
+		</p>
 	</article>
 
 <? require 'elements/footer++.php' ?>

@@ -21,12 +21,13 @@
 			    <ul class="nav">
 			    <? $integration_url = $this->config->item('integration_with_url'); ?>
 			    <? if (empty($integration_url)): ?>
-			    	<? if ($title_component !== 'form-tester'): ?>
-			    		<li><a href="/formtester" title="form-tester">form-tester</a></li>
-			    	<? endif; ?>
-			    	<? if ($title_component !== 'forms'): ?>
-			    		<li><a href="/forms" title="forms">forms</a></li>
-			    	<? endif; ?>
+			    	<li class="<?= ($title_component == 'forms') ? 'active': ''?>">
+			    		<a href="/forms" title="forms">forms</a>
+			    	</li>
+			    	<li class="<?= ($title_component == 'form-tester') ? 'active': ''?>">
+			    		<a href="/formtester" title="form-tester" 
+			    		>tester</a>
+			    	</li>
 			    <? endif; ?>
 			    </ul>
 			</nav>

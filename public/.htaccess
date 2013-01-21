@@ -9,7 +9,7 @@ IndexIgnore *
 
 RewriteEngine on
 
-RewriteCond $1 !^(index\.php|info\.php|css|images|js-source|js-min|cache|libraries|robots\.txt|favicon\.ico|checkforconnection\.txt|checkforconnection\.php)
+RewriteCond $1 !^(index\.php|info\.php|sitemap\.xml|css|images|js-source|js-min|cache|libraries|robots\.txt|favicon\.ico|checkforconnection\.txt|checkforconnection\.php)
 RewriteRule ^(.*)$ /index.php/$1 [L]
 
 #attempt to allow .appcache extension for manifest files (not working yet)

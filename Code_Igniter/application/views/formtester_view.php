@@ -1,9 +1,6 @@
 <? require 'elements/html_start.php' ?>
 
 </head>
-
-<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>
-
 <body>
 
 <? 	

@@ -32,6 +32,8 @@
 
       <sources dir="${basedir}/src/js">
         <file name="common.js"/>
+        <file name="connection.js"/>
+        <file name="front.js"/>
       </sources>
 
     </jscomp>

@@ -57,4 +57,8 @@
 		settings['modernBrowsersURL'] = 'modern_browsers';
 	</script>
 
-<? if (ENVIRONMENT === 'production'){include_once 'elements/tracking.php';} ?>
+<? 
+//if (ENVIRONMENT === 'production'){
+	include_once 'elements/tracking.php';
+//} 
+?>

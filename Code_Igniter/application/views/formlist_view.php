@@ -5,7 +5,7 @@
 </head>
 <body>
 <? 
-	if (ENVIRONMENT === 'production'){include_once 'elements/tracking.php';}
+	
 	require 'elements/header.php';
 	require 'elements/dialogs.php';
 	require 'elements/page.php';

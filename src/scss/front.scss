@@ -4,12 +4,22 @@
 .main{
 	max-width: 900px;
 	min-height: 600px;
-	line-height: 30px; }
+	line-height: 30px;
+	img{
+		width: 100%; }
+	h3{
+		margin-top: -1em; } }
 
 .advice{
 	display: block;
 	padding: 10px 0;
 }
+
+#intro>div:first-child{
+	margin-top: -1em;
+	h3{
+		display: inline;
+		text-align: left; } }
 
 #build ul{
 	list-style-type: none;
@@ -29,18 +39,33 @@
 .features{
 	display: block;
 	margin: 1em auto 1em auto;
-	padding: 0 5%;
+	padding: 0;
 	li{
 		float: left;
 		list-style: none;
 		text-align: center;
-		padding: 0.5em 4%;
-		width: 41%;
-		@media screen and (max-width: 830px){
-  			@include small-screen-paddings;
-  			padding: 0.5em 10%;
-  			width: 80% ;}
-		//min-width: 210px;
+		padding: 0.5em 1%;
+		width: 23.5%;
+		&:first-child{
+			padding-left: 0; }
+		&:nth-child(4){
+			padding-right: 0; }
+		@media screen and (max-width: 920px){
+			a {
+				height: 64px;} }
+		@media screen and (max-width: 550px){
+  			//@include small-screen-paddings;
+  			padding: 0.5em 4%;
+  			width: 46%;
+  			&:nth-child(3){
+  				padding-left: 0;};
+  			&:nth-child(2){
+  				padding-right: 0; }
+  			a {
+  				height: auto; }	}
+  		@media screen and (max-width: 490px){
+			a {
+				height: 64px;} }
 		a{
 			box-sizing: border-box;
 			width: 100%; } } }
@@ -52,16 +77,21 @@
 			display: block; } } }
 
 #test{
+	.error-msg{
+		text-align: center;
+		height: 2em;
+		margin-bottom: -2em;}
 	.btn-toolbar{
-		margin: 30px auto; }
-	input, .go{
-		height: 34px; }
-	.go{
-		padding-top: 8px;
-		padding-bottom: 0px; } 
-	.input-prepend .btn.dropdown-toggle{
-		float: none; } }
-	
+		text-align:center;
+		margin: 30px 0;
+		input{
+			width: 25em;
+			text-align: center;
+			@media screen and (max-width: 700px){
+				width: 15em; }
+			@media screen and (max-width: 500px){
+				width: 10em;
+			} } } }
 
 table{
 	font-size: 80%;

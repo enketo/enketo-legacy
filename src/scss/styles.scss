@@ -51,9 +51,9 @@ body{
       margin: 0;}
     .form-header{
       top: 0;
+      border-bottom: 1px solid $groupline;
       .form-language-selector > span{
-        display: none; }
-      border-bottom: 1px solid $groupline;}
+        display: none; } }
     #page .close{
       font-size: 2em; } } }
 
@@ -205,46 +205,49 @@ label#data-template-show {
 
 #upload{
   form{
-    position:relative;
+    //position:relative;
+    margin-top: 2em;
     text-align: center;
-    height: 150px;
     #input-switcher{
-      position: absolute;
-      top: 30px;
-      left: 275px;}
-    label {
-      text-align: center;
-      margin-top: 20px;
-      padding: 0 5%;
-      display: block;
-      z-index: 0;
-      width: 80%; }
-    label>span {
-      display: block; }
-    .fakefileinput span{
-      vertical-align: middle;}
-    input, .fakefileinput {
-      position: absolute;
-      top: 50px;
-      left: 0px;
-      display: block;
-      width: 100%%;
-      margin: 10px 0 10px 0;
-      min-height: 30px;
-      text-align: center; }
-    input[type=file] {
-      z-index: 5;
-      opacity: 0; }
+      margin-top: 5em;
+      text-align: center;}
+    fieldset{
+      position:relative;
+      height: 70px;
+      label {
+        text-align: center;
+        margin-top: 20px;
+        padding: 0 5%;
+        display: block;
+        z-index: 0;
+        width: 80%; }
+      label>span {
+        display: block; }
+      .fakefileinput span{
+        vertical-align: middle;}
+      input, .fakefileinput {
+        position: absolute;
+        box-sizing: border-box;
+        top: 0;
+        left: 0px;
+        display: block;
+        width: 100%;
+        margin: 10px 0 10px 0;
+        height: 100%;
+        text-align: center;
+        span{
+          line-height: 60px;} }
+      input[type=file] {
+        z-index: 5;
+        opacity: 0; } }
     .hurry{
       font-size: .8em;
-      margin-top: 180px;} }
+      margin: 5em 0 3em 0;} }
   #form-list{
-    margin-top: 20px;
+    margin-top: 4em;
     ul{
       width: 100%;
-      margin: 4px;
-      list-style-type: none;
-       } } }  
+      list-style-type: none; } } }  
 
 .formlist{
   ul{
@@ -384,8 +387,8 @@ label#data-template-show {
         margin-bottom: 0; } } }
   .close {
     position: absolute;
-    right: 20px;
-    bottom: 20px;
+    right: 0;
+    bottom: 0;
     opacity: 1;
     text-shadow: none; }
   .column {

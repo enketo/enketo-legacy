@@ -35,15 +35,16 @@
   h3 { font-size: $factor * $base * 1.75; } 
   h4 { font-size: $factor * $base * 1.25; } 
   h5 { font-size: $factor * $base; }
-  h6 { font-size: $factor * $base * 0.85; } 
-}
+  h6 { font-size: $factor * $base * 0.85; } }
 
 @mixin small-screen-paddings{
   body{
     padding: 0 !important;
     header{
       padding-left: 20px;
-      padding-right: 20px; } } }
+      padding-right: 20px; }
+    #page .content{
+      margin: 1em; } } }
 
 @mixin border-box{
   -moz-box-sizing: border-box;

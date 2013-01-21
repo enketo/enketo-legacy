@@ -21,12 +21,19 @@ class Front extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Survey_model','',TRUE);
+		$this->load->helper(array('subdomain', 'url'));
+		$subdomain = get_subdomain();
+		//log_message('debug', 'subdomain in front index:'.$subdomain);
+		if (!empty($subdomain))
+		{
+			show_404();
+		}
 	}
 
 	public function index()
 	{
-		$this->load->helper(array('url'));
+		
+		
 
 		$default_library_scripts = array
 		(
@@ -51,8 +58,8 @@ class Front extends CI_Controller {
 		$data = array(
 			'offline'=>FALSE, 
 			'title_component'=>'', 
-			'stylesheets' => $default_stylesheets,
-			'num_surveys' => $this->Survey_model->number_surveys()
+			'stylesheets' => $default_stylesheets//,
+			//'num_surveys' => $this->Survey_model->number_surveys()
 		);
 
 		if (ENVIRONMENT === 'production')
@@ -85,8 +92,7 @@ class Front extends CI_Controller {
 
 	public function get_number_launched()
 	{
-		$this->load->helper('subdomain');
-		echo full_base_url()."\n";
+		$this->load->model('Survey_model','',TRUE);
 		echo (int) $this->Survey_model->number_surveys();
 	}
 

@@ -1,9 +1,6 @@
 <? require 'elements/html_start.php' ?>
 
 </head>
-
-<? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>
-
 <body>
 
 <? 	
@@ -28,28 +25,23 @@
 			<article id="upload" class="tab-pane paper">
 				<h3 class="ui-widget-header ui-corner-all">JavaRosa XML Form to Load</h3>
 				<form id="upload-form" enctype="multipart/form-data" accept-charset="utf-8">
-					<progress style="display: none;"></progress><br />
 					<div id="input-switcher" class="btn-group" data-toggle="buttons-radio">
 						<a type="button" href="#" id="xml_file" class="btn btn-mini">file</a> 
 						<a type="button" href="#" id="server_url" class="btn btn-mini">url</a>
 					</div>
-					<label>
-						<!--<span>Select XML Form File (or drag it)</span>-->
-						<div class="fakefileinput uneditable-input"><span>Select XML Form File or drag it here</span></div>
-						<div><input type="file" name="xml_file" /></div>
-					</label>
-					<label>
-						<!--<span>Enter full web address to server</span>-->
-						<!-- add hint: Note that uploading a file is a good way to test forms, but in order to launch the
-						survey for data entry in Enketo, it has to be provided as a url-->
-						<input type="text" name="server_url" placeholder="Enter full web address to server, e.g. http://formhub.org/formhub_u"/>
-					</label>
-					<!--<input type="hidden" name="xml_url"/>-->
-					<input type="hidden" name="form_id"/>
-					<!--<input type="submit">Transform and Test!</button>-->
-					
+					<fieldset>
+						<label>
+							<div class="fakefileinput uneditable-input"><span>Select XML Form File or drag it here</span></div>
+							<div><input type="file" name="xml_file" /></div>
+						</label>
+						<label>
+							<input type="text" name="server_url" placeholder="Enter full web address to server, e.g. http://formhub.org/formhub_u"/>
+						</label>
+						<input type="hidden" name="form_id"/>
+					</fieldset>
 					<div class="hurry"><a href="formtester?server=http%3A%2F%2Fformhub.org%2Fformhub_u" title="Check forms on http://formhub.org/formhub_u">Just want to see how it works?</a></div>
 				</form>
+				<progress style="display: none;"></progress>
 				<div id="form-list" class="formlist">
 					<ul>
 					</ul>

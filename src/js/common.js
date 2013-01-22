@@ -172,18 +172,6 @@ GUI.prototype.setEventHandlers = function(){
 		that.positionPageAndBar();
 	});
 			
-	// more info on connection status after clicking icon
-	//$('header #status-connection')
-	//	.click(function(event){
-	//		that.feedback($(this).attr('title'));
-	//		event.stopPropagation(); //prevent closing of simultaneously shown page when clicking icon
-	//		//event.cancelBubble(); //IE
-	//	});
-	
-	//move this when feedback bar is shown?
-	//$(window).resize(function(){
-	//	$('#container').css('top', $('header').outerHeight());
-	//});
 };
 	
 GUI.prototype.nav = {
@@ -542,7 +530,7 @@ GUI.prototype.showLoadErrors = function(loadErrors, advice){
 GUI.prototype.updateStatus = {
 	connection : function(online) {
 		"use strict";
-		console.log('updating online status in menu bar to:', online);
+		/*console.log('updating online status in menu bar to:', online);
 		if (online === true) {
 			$('header #status-connection').removeClass().addClass('ui-icon ui-icon-signal-diag')
 				.attr('title', 'It appears there is currently an Internet connection available.');
@@ -555,7 +543,7 @@ GUI.prototype.updateStatus = {
 		}
 		else{
 			$('.drawer #status').removeClass('offline').addClass('waiting').text('Waiting. ');
-		}
+		}*/
 	},
 	edit : function(editing){
 		"use strict";
@@ -621,28 +609,6 @@ GUI.prototype.positionPageAndBar = function(){
 
 	$feedback.css('top', fTop);
 	$page.css('top', pTop);
- 
-	/*
-	if ($feedback.find('p').length > 0){
-		feedbackTop = ($header.css('position') === 'fixed') ? $header.outerHeight() : 0; // shows feedback-bar
-		if (this.pages.isShowing()){
-			pageTop = $header.outerHeight() + $feedback.outerHeight(); // shows page
-		}
-		else{
-			pageTop = 0 - $page.outerHeight(); // hides page
-		}
-	}
-	else{
-		feedbackTop = ($header.css('position') === 'fixed') ? $header.outerHeight() - $feedback.outerHeight() : 0 - $feedback.outerHeight();
-		if (this.pages.isShowing()){
-			pageTop = $header.outerHeight(); // shows page
-		}
-		else{
-			pageTop = 0 - $page.outerHeight();
-		}
-	}
-	$feedback.css('top', feedbackTop);
-	$page.css('top', pageTop);*/
 };
 
 /**
@@ -944,6 +910,7 @@ Print.prototype.addPageBreaks = function(){
 	
 
 /**
+ * Duplicate in form.js.... 
  * Pads a string with prefixed zeros until the requested string length is achieved.
  * @param  {number} digits [description]
  * @return {String|string}        [description]

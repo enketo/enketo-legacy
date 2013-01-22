@@ -282,7 +282,6 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
 			}
-			//$('.drawer.left.closed .handle').click();
 			gui.alert(msg, 'Failed data submission');
 		}
 		else{

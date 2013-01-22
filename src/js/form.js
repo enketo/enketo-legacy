@@ -1887,6 +1887,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.dateTimeWidget();
 				this.selectWidget();
 			}
+			else{
+				this.touchRadioCheckWidget();
+			}
 			this.geopointWidget();
 			this.tableWidget();
 			this.spinnerWidget();
@@ -1910,6 +1913,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				});
 				//defaults
 				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');
+			}
+		},
+		touchRadioCheckWidget : function(){
+			if (!this.repeat){
+				$form.find('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact, .jr-appearance-label, .jr-appearance-list-nolabel )')
+					.children('label')
+					.children('input[type="radio"], input[type="checkbox"]').parent('label').addClass('btn');
 			}
 		},
 		dateWidget : function(){
@@ -2683,6 +2693,20 @@ Date.prototype.toISOLocalString = function(){
 
 	return new Date(this.getTime() - (offset.minstotal * 60 * 1000)).toISOString()
 		.replace('Z', offset.direction+offset.hrspart+':'+offset.minspart);
+};
+
+/**
+ * Duplicate in common.js.... 
+ * Pads a string with prefixed zeros until the requested string length is achieved.
+ * @param  {number} digits [description]
+ * @return {String|string}        [description]
+ */
+String.prototype.pad = function(digits){
+	var x = this;
+	while (x.length < digits){
+		x = '0'+x;
+	}
+	return x;
 };
 
 (function($){

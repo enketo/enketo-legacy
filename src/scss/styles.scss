@@ -423,6 +423,9 @@ label#data-template-show {
     .records{
       $size: 20px;
       display: inline-block;
+      position: relative;
+      bottom: 4px;
+      margin-left: -10px;
       background-color: #c9c9c9;
       border: 1px solid $groupline;
       height: $size;

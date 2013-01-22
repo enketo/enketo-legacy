@@ -56,3 +56,5 @@
 		//settings['autoUpload'] = true;
 		settings['modernBrowsersURL'] = 'modern_browsers';
 	</script>
+
+<? if (ENVIRONMENT === 'production'){include_once 'tracking.php';} ?>

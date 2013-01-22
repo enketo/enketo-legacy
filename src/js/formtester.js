@@ -63,12 +63,12 @@ $(document).ready(function(){
 				}
 			},
 			complete = function(jqXHR, textStatus){
-				$('#upload-form progress').hide();
+				$('#upload progress').hide();
 			};
 
 		resetAll();
 
-		$('#upload-form progress').show();
+		$('#upload progress').show();
 
 		if ( formId || file ){
 			if (file) {
@@ -269,7 +269,7 @@ function resetAll(){
 	$('#upload-form')[0].reset();
 	$('#upload-form input[type="hidden"]').val('');
 	//$('#form-list ul').empty().hide();
-	$('#upload-form progress').hide();
+	$('#upload progress').hide();
 	//$('#input-switcher, #upload .hurry').show().find('a#server_url').click();
 	$('#form-languages').remove();
 	$('#survey-form form, #xsltmessages div, #html5validationmessages div, #jrvalidationmessages div, #xmlerrors div, #xslerrors div, #html5-form-source textarea, #data textarea').empty();
@@ -289,7 +289,7 @@ function processForm($response){
 	var $xmlMsg = $response.find('xmlerrors message');
 	var $xslMsg = $response.find('xslformerrors message, xsldataerrors message');
 
-	$('#upload-form progress').hide();
+	$('#upload progress').hide();
 	
 	if(formStr.length > 0){
 		$('#html5-form-source textarea').empty().text(vkbeautify.xml(formStr));

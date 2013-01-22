@@ -8,13 +8,8 @@
 	
 
 
-	</head>
+		</head>
 	<body>
-	<? if (ENVIRONMENT === 'production'){include_once 'elements/tracking.php';}?>
-
-		
-
-
 
 
 		<header class="navbar navbar-inverse navbar-fixed-top" style="height: 0;"></header>
@@ -30,6 +25,6 @@
 			</article>
 		</div>
 
-		<? require 'elements/status.php'; ?>	
+		<? //require 'elements/status.php'; ?>	
 
 	<? require 'elements/footer++.php' ?>

@@ -351,7 +351,6 @@ GUI.prototype.setCustomEventHandlers = function(){
 	"use strict";
 	var settingsForm, that = this;
 	
-	// survey-form controls
 	$('button#save-form')
 		.click(function(){
 			form.validateForm();
@@ -394,32 +393,16 @@ GUI.prototype.setCustomEventHandlers = function(){
 
 	$('#form-controls button').toLargestWidth();
 
-	$(document)
-		.on('click', '#records-saved li:not(.no-click)', function(event){
-			event.preventDefault();
-			var name = /** @type {string} */$(this).find('.name').text();
-			loadForm(name);
-			$(this).siblings().removeClass('ui-state-active');
-			$(this).addClass('ui-state-active');
-		})
-		.on('mouseenter', '#records-saved li:not(.no-click)', function(){
-			$(this).addClass('ui-state-hover');
-		})
-		.on('mouseleave', '#records-saved li:not(.no-click)', function(){
-			$(this).removeClass('ui-state-hover');
-		});
-
 	$(document).on('save delete', 'form.jr', function(e, formList){
 		console.debug('save or delete event detected with new formlist: '+formList);
 		that.updateRecordList(JSON.parse(formList));
 	});
 
+	/*
 	$(document).on('setsettings', function(e, settings){
-		//console.debug('settingschange detected, GUI will be updated with settings:');
-		//console.debug(settings);
 		that.setSettings(settings);
 	});
-
+	*/
 	// handlers for application settings [settings page]
 	//this.pages.get('settings').on('change', 'input', function(){
 	//	var name =  /** @type {string} */  $(this).attr('name');

@@ -1917,7 +1917,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		touchRadioCheckWidget : function(){
 			if (!this.repeat){
-				$form.find('input[type="radio"], input[type="checkbox"]').parent('label').addClass('btn');
+				$form.find('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact, .jr-appearance-label, .jr-appearance-list-nolabel )')
+					.children('label')
+					.children('input[type="radio"], input[type="checkbox"]').parent('label').addClass('btn');
 			}
 		},
 		dateWidget : function(){

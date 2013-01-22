@@ -944,6 +944,7 @@ Print.prototype.addPageBreaks = function(){
 	
 
 /**
+ * Duplicate in form.js.... 
  * Pads a string with prefixed zeros until the requested string length is achieved.
  * @param  {number} digits [description]
  * @return {String|string}        [description]

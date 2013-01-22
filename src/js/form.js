@@ -2685,6 +2685,20 @@ Date.prototype.toISOLocalString = function(){
 		.replace('Z', offset.direction+offset.hrspart+':'+offset.minspart);
 };
 
+/**
+ * Duplicate in common.js.... 
+ * Pads a string with prefixed zeros until the requested string length is achieved.
+ * @param  {number} digits [description]
+ * @return {String|string}        [description]
+ */
+String.prototype.pad = function(digits){
+	var x = this;
+	while (x.length < digits){
+		x = '0'+x;
+	}
+	return x;
+};
+
 (function($){
 	"use strict";
 	// plugin to update number of repeated elements (with class jr-repeat)

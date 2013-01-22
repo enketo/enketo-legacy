@@ -44,15 +44,15 @@ class Front extends CI_Controller {
 		$default_main_scripts = array
 		(
 			'/js-source/common.js',
-			'/js-source/connection.js',
-			'/js-source/front.js'
+			'/js-source/connection.js'//,
+			//'/js-source/front.js'
 		);
 
 		$default_stylesheets = array
 		(
 			//array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'screen'),
 			array( 'href' => '/css/styles.css', 'media' => 'screen'),
-			array( 'href' => '/css/front.css', 'media' => 'screen'),
+			//array( 'href' => '/css/front.css', 'media' => 'screen'),
 			array( 'href' => '/css/print.css', 'media' => 'print')
 		);
 		$data = array(

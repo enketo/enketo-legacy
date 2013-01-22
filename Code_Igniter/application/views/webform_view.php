@@ -25,6 +25,6 @@
 			</article>
 		</div>
 
-		<? require 'elements/status.php'; ?>	
+		<? //require 'elements/status.php'; ?>	
 
 	<? require 'elements/footer++.php' ?>

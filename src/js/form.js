@@ -1895,7 +1895,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.spinnerWidget();
 			this.sliderWidget();	
 			this.barcodeWidget();
-			this.fileWidget();
+			this.offlineFileWidget();
 			this.mediaLabelWidget();
 			this.radioWidget();
 		},
@@ -2115,10 +2115,39 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		barcodeWidget : function(){
 			//$form.find('input[data-type-xml="barcode"]').attr('placeholder', 'not supported in browser data entry').attr('disabled', 'disabled');
 		},
-		fileWidget : function(){
+		offlineFileWidget : function(){
 			if (!this.repeat){
-				this.$group.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled')
-					.hide().after('<span class="text-warning">Image/Video/Audio uploads are not (yet) supported in enketo.</span>');
+				var storageSpace = 100 * 1024 * 1024,
+					$fileInputs = this.$group.find('input[type="file"]');
+				window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+				window.resolveLocalFileSystemURL = window.resolveLocalFileSystemURL || window.webkitResolveLocalFileSystemURL;
+				window.storageInfo = window.storageInfo || window.webkitStorageInfo;
+
+				if (typeof window.requestFileSystem !== 'undefined' && typeof window.resolveLocalFileSystemURL !== 'undefined' && window.storageInfo !== 'undefined'){
+					console.debug('File API supported');
+					window.storageInfo.requestQuota(window.storageInfo.PERSISTENT, storageSpace , function(grantedBytes) {
+						window.requestFileSystem(window.storageInfo.PERSISTENT, grantedBytes, function(){
+							console.log('all clear for loading offline file input widget');
+							$fileInputs.offlineFilepicker();
+						}, function(e){
+							console.error('Error occurred during request for File System', e);
+							//ADD LOADERROR?
+						});
+					}, function(e) {
+						console.error('Error occurred during request for persistent storage', e);
+						//ADD LOADERROR?
+					});
+					//TODO: add eventhandler for when storage space runs out. Test this.
+				}
+				else{
+					console.debug('File API not supported');
+					$fileInputs
+						.attr('placeholder', 'not supported yet')
+						.attr('disabled', 'disabled')
+						.addClass('.ignore')
+						.hide()
+						.after('<span class="text-warning">Image/Video/Audio uploads are not (yet) supported in enketo.</span>');
+				}
 			}
 			/*
 				Some cool code to use for image previews:

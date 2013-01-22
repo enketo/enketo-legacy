@@ -503,8 +503,12 @@ html.touch{
         margin: 0;
         padding: 0.3em 0 0.15em 0;
         font-weight: normal; 
-        &:hover{
-          background-color: lighten($title, 48%);} } }
+        &:not(.btn):hover{
+          background-color: lighten($title, 48%);}
+        &.btn{
+          width: 100%;
+          text-align: left;
+          margin-bottom: .4em; } } }
   label, legend, .trigger {
     font-size: 1em; }
   img, audio, video{
@@ -512,7 +516,6 @@ html.touch{
     max-height: 300px;
     max-width: 70%;}
   input:not([type="radio"]):not([type="checkbox"]), textarea, select{
-    //float: left;
     display: inline-block;
     margin: 8px 0 0 0;
   }

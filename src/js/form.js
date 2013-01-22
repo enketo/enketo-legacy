@@ -1887,6 +1887,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.dateTimeWidget();
 				this.selectWidget();
 			}
+			else{
+				this.touchRadioCheckWidget();
+			}
 			this.geopointWidget();
 			this.tableWidget();
 			this.spinnerWidget();
@@ -1910,6 +1913,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				});
 				//defaults
 				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');
+			}
+		},
+		touchRadioCheckWidget : function(){
+			if (!this.repeat){
+				$form.find('input[type="radio"], input[type="checkbox"]').parent('label').addClass('btn');
 			}
 		},
 		dateWidget : function(){

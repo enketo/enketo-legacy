@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google, settings, connection*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google, settings, connection, fileManager*/
 
 /**
  * Class: Form
@@ -294,6 +294,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//then return validation result
 				success = this.validate(expr, xmlDataType);
 				$form.trigger('dataupdate', $target.prop('nodeName'));
+				//add type="file" attribute for file references
+				if (xmlDataType === 'binary'){
+					if (newVal.length > 0 ){
+						$target.attr('type', 'file');
+					}
+					else{
+						$target.removeAttr('type');
+					}
+				}
 				return success;
 			}
 			if ($target.length > 1){
@@ -570,6 +579,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		return;
 	};
 
+	DataXML.prototype.getInstanceID = function(){
+		return this.node(':first>meta>instanceID').getVal()[0];
+	};
 	/**
 	 * Function to load an (possibly incomplete) instance so that it can be edited.
 	 * 
@@ -992,11 +1004,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var name, $required, $hint;
 
 		this.checkForErrors();
+		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate and preload.init! 
+		this.preloads.init(this); //after event handlers! WHY? I suspect the reason is that it affects all the other updates, 
+		//However, calling it all the way at the beginning may be even better.
+
 
 		if (typeof data == 'undefined' || !(data instanceof DataXML)){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 		
+		//TODO JUST MOVE TO SEPARATE FUNCTION
 		//add 'required field'
 		$required = '<span class="required">*</span>';//<br />';
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
@@ -1007,6 +1024,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$(this).children('span:not(.jr-option-translations, .jr-hint):last').after($required);
 			});
 
+		//TODO JUST MOVE TO SEPARATE FUNCTION
 		//add 'hint' icon
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
@@ -1015,6 +1033,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 		}
 
+		//TODO MOVE TO BOOTSTRAPIFY
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 
@@ -1025,6 +1044,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			ugly solution that works regardless of the legend text + hint length (and showing a nice error background)
 			is to use a double fieldset (in hindsight, I should have used <section>s for each question)
 		 */
+		//TODO JUST MOVE TO SEPARATE FUNCTION
 		$form.find('legend').parent('fieldset').each(function(){
 			var $elem = $(this),
 				$prev = $elem.prev(),
@@ -1050,11 +1070,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.widgets.init(); //after setAllVals()
 		this.bootstrapify(); 
 		this.branch.init();
-		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
+		
 		this.calcUpdate();
 		this.outputUpdate();
 		this.setEventHandlers();
-		this.preloads.init(); //after event handlers!
+
 		this.setLangs();
 		this.editStatus.set(false);
 		//setTimeout(function(){$form.fixLegends();}, 500);
@@ -1919,7 +1939,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (!this.repeat){
 				$form.find('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact, .jr-appearance-label, .jr-appearance-list-nolabel )')
 					.children('label')
-					.children('input[type="radio"], input[type="checkbox"]').parent('label').addClass('btn');
+					.children('input[type="radio"], input[type="checkbox"]')
+					.parent('label')
+					.addClass('btn');
 			}
 		},
 		dateWidget : function(){
@@ -2119,27 +2141,70 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		offlineFileWidget : function(){
 			if (!this.repeat){
-				var storageSpace = 100 * 1024 * 1024,
-					$fileInputs = this.$group.find('input[type="file"]');
-				window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-				window.resolveLocalFileSystemURL = window.resolveLocalFileSystemURL || window.webkitResolveLocalFileSystemURL;
-				window.storageInfo = window.storageInfo || window.webkitStorageInfo;
+				var $fileInputs = this.$group.find('input[type="file"]');
+				//TODO: add online file widget in case fileManager is undefined or use file manager with temporary storage?
+				if (typeof fileManager !== 'undefined' && fileManager.isSupported()){
+					var callbacks = {
+						success: function(){
+							$fileInputs.on('change.passthrough', function(event){
+								var prevFileName, file, mediaType, $preview, 
+									$input = $(this);
+								console.debug('namespace: '+event.namespace);
+								if (event.namespace === 'passthrough'){
+									console.debug('eturning true');
+									$input.trigger('change.file');
+									return false;
+								}
+								prevFileName = $input.attr('data-previous-file-name');
+								file = $input[0].files[0];
+								mediaType = $input.attr('accept');
+								$preview = (mediaType && mediaType === 'image/*') ? $('<img />')
+									: (mediaType === 'audio/*') ? $('<audio controls="controls"/>')
+									: (mediaType === 'video/*') ? $('<video controls="controls"/>')
+									: $('<span>No preview (unknown mediatype)</span>');
+								$preview.addClass('file-feedback');
 
-				if (typeof window.requestFileSystem !== 'undefined' && typeof window.resolveLocalFileSystemURL !== 'undefined' && window.storageInfo !== 'undefined'){
-					console.debug('File API supported');
-					window.storageInfo.requestQuota(window.storageInfo.PERSISTENT, storageSpace , function(grantedBytes) {
-						window.requestFileSystem(window.storageInfo.PERSISTENT, grantedBytes, function(){
-							console.log('all clear for loading offline file input widget');
-							$fileInputs.offlineFilepicker();
-						}, function(e){
-							console.error('Error occurred during request for File System', e);
-							//ADD LOADERROR?
-						});
-					}, function(e) {
-						console.error('Error occurred during request for persistent storage', e);
-						//ADD LOADERROR?
-					});
-					//TODO: add eventhandler for when storage space runs out. Test this.
+								$input.next('.file-feedback').remove();
+
+								if (prevFileName && (!file || prevFileName !== file.name)){
+									fileManager.deleteFile(prevFileName);
+								}
+
+								console.debug('file: ', file);
+								if (file && file.size > 0){
+									fileManager.saveFile(
+										file,
+										{
+											success: function(fsURL){
+												$preview.attr('src', fsURL);
+												$input.trigger('change.passthrough').after($preview);
+											}, 
+											error: function(e){
+												console.error('error: ',e);
+												$input.val('');
+												$input.after('<span class="file-feedback text-error">'+
+														'Failed to save file</span>');
+											}
+										}
+									);
+									return false;
+								}
+								//clear instance value by letting it bubble up to normal change handler
+								else{
+									return true;
+								}
+							});
+						}
+					};
+
+					$fileInputs.each(function(){
+						var $input = $(this),
+							fileName = ($input[0].files.length > 0) ? $input[0].files[0].name : '';
+						$input.attr('data-previous-file-name', fileName);
+					}).parent().addClass('with-media clearfix').prepend('<div class="text-warning">'+
+						'File inputs are still very experimental. Use only for testing!</div>');
+
+					fileManager.init(data.getInstanceID(), callbacks);
 				}
 				else{
 					console.debug('File API not supported');
@@ -2148,7 +2213,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						.attr('disabled', 'disabled')
 						.addClass('.ignore')
 						.hide()
-						.after('<span class="text-warning">Image/Video/Audio uploads are not (yet) supported in enketo.</span>');
+						.after('<span class="file-feedback text-warning">File uploads not yet supported by your browser'+
+							' (try Chrome instead).</span>');
 				}
 			}
 			/*
@@ -2183,19 +2249,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 */
 	//functions are design to fail silently if unknown preloaders are called
 	FormHTML.prototype.preloads = {
-		init: function(){
-			var item, param, name, curVal, meta, dataNode,
+		init: function(parentO){
+			var item, param, name, curVal, newVal, meta, dataNode, props, xmlType,
 				that = this;
 			//console.log('initializing preloads');
 			//these initialize actual preload items
 			$form.find('#jr-preload-items input').each(function(){
+				props = parentO.input.getProps($(this));
 				item = $(this).attr('data-preload').toLowerCase();
 				param = $(this).attr('data-preload-params').toLowerCase();
-				name = $(this).attr('name');
 				if (typeof that[item] !== 'undefined'){
-					//proper way would be to add index
-					curVal = data.node(name).getVal()[0];
-					that.setVal($(this), that[item]({param: param, curVal:curVal, node: $(this)}));
+					dataNode = data.node(props.path, props.index);
+					curVal = dataNode.getVal()[0];
+					newVal = that[item]({param: param, curVal:curVal, dataNode: dataNode});
+					dataNode.setVal(newVal, null, props.xmlType);
 				}
 				else{
 					console.error('Preload "'+item+'"" not supported. May or may not be a big deal.');
@@ -2216,30 +2283,33 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					switch (name){
 						case 'instanceID':
 							item = 'instance';
+							xmlType = 'string';
 							param = '';
 							break;
 						case 'timeStart':
 							item = 'timestamp';
+							xmlType = 'datetime';
 							param = 'start';
 							break;
 						case 'timeEnd':
 							item = 'timestamp';
+							xmlType = 'datetime';
 							param = 'end';
 							break;
 					}
 				}
 				if (item){
-					that.setDataVal(dataNode, that[item]({param: param, curVal:curVal, dataNode:dataNode}), null, 'string');
+					dataNode.setVal(that[item]({param: param, curVal:curVal, dataNode:dataNode}), null, xmlType);
 				}
 			});
 		},
-		setVal: function($node, val){
+		/*setVal: function($node, val){
 			$node.val(val.toString()).trigger('change');
-		},
-		setDataVal: function(node, val){
+		},*/
+		/*setDataVal: function(node, val,){
 			//console.debug('setting meta data value to: '+val);
 			node.setVal(val, null, 'string');
-		},
+		},*/
 		'timestamp' : function(o){
 			var value,
 				that = this;
@@ -2251,18 +2321,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//set event handler for each save event (needs to be triggered!)
 				$form.on('beforesave', function(){
 					value = data.evaluate('now()', 'string');
-					//if this is a preload item (and has a html input node)
-					if (o.node){
-						that.setVal(o.node, value);
-					}
-					//otherwise this is a metadata node
-					else{
-						that.setDataVal(o.dataNode, value);
-					}
+					o.dataNode.setVal(value, null, 'datetime');
 				});
 				return data.evaluate('now()', 'string');
 			}
-			return '';
+			return 'error - unknown timestamp parameter';
 		},
 		'date' : function(o){
 			var today, year, month, day;
@@ -2513,7 +2576,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//first prevent default submission, e.g. when text field is filled in and Enter key is pressed
 		$('form.jr').attr('onsubmit', 'return false;');
 
-		$form.on('change validate', 'input:not(.ignore), select:not(.ignore), textarea:not(.ignore)', function(event){
+		$form.on('change.file validate', 'input:not(.ignore), select:not(.ignore), textarea:not(.ignore)', function(event){
 			var validCons, validReq, 
 				n = that.input.getProps($(this));
 
@@ -2521,6 +2584,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//console.debug('event: '+event.type);
 			//console.log('node props: ', n);
+
+			//set file input values to the actual name of file (without c://fakepath or anything like that)
+			if (n.val.length > 0 && n.inputType === 'file' && $(this)[0].files[0] && $(this)[0].files[0].size > 0){
+				n.val = $(this)[0].files[0].name;
+				$(this).attr('data-previous-file-name', n.val);
+			}
 			
 			if (event.type === 'validate'){
 				//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
@@ -2583,7 +2652,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					}
 				}
 			}
-
 		});
 
 		//nodeNames is comma-separated list as a string

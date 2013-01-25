@@ -16,6 +16,7 @@
       <sources dir="${basedir}/src/js">
         <file name="common.js"/>
         <file name="form.js"/>
+        <file name="files.js"/>
         <file name="widgets.js"/>
         <file name="formtester.js"/>
         <file name="connection.js"/>
@@ -51,6 +52,7 @@
         <file name="storage.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
+        <file name="files.js"/>
         <file name="connection.js"/>
         <file name="survey_controls.js"/>
         <file name="webform.js"/>
@@ -69,6 +71,7 @@
         <file name="common.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
+        <file name="files.js"/>
         <file name="storage.js"/>
         <file name="connection.js"/>
         <file name="survey_controls.js"/>
@@ -88,6 +91,7 @@
         <file name="common.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
+        <file name="files.js"/>
         <file name="storage.js"/>
         <file name="connection.js"/>
         <file name="survey_controls.js"/>
@@ -107,6 +111,7 @@
         <file name="common.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
+        <file name="files.js"/>
         <file name="storage.js"/>
         <file name="connection.js"/>
         <file name="survey_controls.js"/>
@@ -133,22 +138,6 @@
 
     </jscomp>
 
-    <jscomp compilationLevel="simple" warning="verbose" 
-            debug="false" output="public/js-min/formlist-all-min.js">
-
-      <externs dir="${basedir}/src/js">
-        <file name="extern.js"/>
-      </externs>
-
-      <sources dir="${basedir}/src/js">
-        <file name="common.js"/>
-        <file name="storage.js"/>
-        <file name="connection.js"/>
-        <file name="cache.js"/>
-        <file name="formlist.js"/>
-      </sources>
-
-    </jscomp>
     
     <jscomp compilationLevel="simple" warning="quiet" 
             debug="false" output="public/libraries/libraries-all-min.js">

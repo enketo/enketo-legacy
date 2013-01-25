@@ -584,7 +584,8 @@
         changeListener: function() {
             var that = this;
             
-            this.$newElement.find('li').on('click', function(e) {
+            this.$fileInput.on('change', function(e) {
+                e.stopImmediatePropagation();
 
             });
         },

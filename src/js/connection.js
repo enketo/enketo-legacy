@@ -38,6 +38,7 @@ function Connection(){
 	//this.SUBMISSION_TRIES = 2;
 	this.currentOnlineStatus = null;
 	this.uploadOngoing = false;
+	this.uploadQueue = [];
 	this.oRosaHelper = new this.ORosaHelper(this);
 
 	this.init = function(){
@@ -121,17 +122,19 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 
 /**
  * [uploadRecords description]
- * @param  {(Array.<Object.<string, string>>|Object.<string, string>)} records   [description]
+ * @param  {{name: string, instanceID: string, formData: FormData}} record   [description]
  * @param  {boolean=} force     [description]
  * @param  {Object.<string, Function>=} callbacks only used for testing
  * @return {boolean}           [description]
  */
-Connection.prototype.uploadRecords = function(records, force, callbacks){
+Connection.prototype.uploadRecords = function(record, force, callbacks){
+	var namesInQueue;
 	force = (typeof force !== 'undefined') ? force : false;
-	records = (typeof records === 'object' && !$.isArray(records)) ? [records] : records;
+	//records = (typeof records === 'object' && !$.isArray(records)) ? [records] : records;
 	callbacks = (typeof callbacks === 'undefined') ? null : callbacks;
 
-	if (records.length === 0){
+	/*if (records.length === 0){
+		if (force) console.error('Nothing to upload but was forced to do this.');
 		return false;
 	}
 
@@ -143,6 +146,24 @@ Connection.prototype.uploadRecords = function(records, force, callbacks){
 		this.uploadOne(callbacks);
 	}
 	return true;
+	*/
+	if (!record.name || !record.instanceID || !record.formData){
+		console.error('record missing properties', record);
+		return false;
+	}
+	
+	//if ($.inArray(record.name, namesInQueue) === -1){ //THIS CHECK DOESN"T WORK I THINK
+	if ($.grep(this.uploadQueue, function(item){return record.name === item.name; }).length === 0){
+		this.uploadQueue.push(record);
+		if (!this.uploadOngoing){
+			this.uploadResult = {win:[], fail:[]};
+			this.forced = force; //TODO ADD FORCE AND CALLBACKS TO EACH RECORD??
+			this.uploadOne(callbacks);
+		}
+		else{
+			return true;
+		}
+	}
 };
 
 /**
@@ -156,7 +177,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 	callbacks = (typeof callbacks === 'undefined' || !callbacks) ? {
 		complete: function(jqXHR, response){
 			$(document).trigger('submissioncomplete');
-			that.processOpenRosaResponse(jqXHR.status, record.name, last);
+			that.processOpenRosaResponse(jqXHR.status, record.name, record.instanceID, last);
 			/**
 			  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
 			  * as it duplicates 1 entry and omits the other but returns 201 for both...
@@ -177,13 +198,12 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 	
 	if (this.uploadQueue.length > 0){
 		record = this.uploadQueue.pop();
-		if (this.getOnlineStatus() !== true){
-			this.processOpenRosaResponse(0, record.name, true);
+		if (this.getOnlineStatus() === false){
+			this.processOpenRosaResponse(0, record.name, record.instanceID, true);
 		}
 		else{
 			this.uploadOngoing = true;
-			content = new FormData();
-			content.append('xml_submission_data', record.data);
+			content = record.formData;
 			content.append('Date', new Date().toUTCString());
 			last = (this.uploadQueue.length === 0) ? true : false;
 			this.setOnlineStatus(null);
@@ -209,7 +229,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 };
 
 //TODO: move this outside this class?
-Connection.prototype.processOpenRosaResponse = function(status, name, last){
+Connection.prototype.processOpenRosaResponse = function(status, name, instanceID, last){
 	var i, waswere, namesStr,
 		msg = '',
 		names=[],
@@ -234,11 +254,11 @@ Connection.prototype.processOpenRosaResponse = function(status, name, last){
 			'5xx':{success:false, msg: serverDown}
 		};
 
-	console.debug('submission results for '+name+' => status: '+status);
+	console.debug('submission results for: '+name+', instanceID: '+instanceID+' => status: '+status);
 	
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
-			$(document).trigger('submissionsuccess', name);
+			$(document).trigger('submissionsuccess', name, instanceID);
 			this.uploadResult.win.push([name, statusMap[status].msg]);
 		}
 		else if (statusMap[status].success === false){

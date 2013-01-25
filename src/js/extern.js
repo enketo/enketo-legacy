@@ -10,6 +10,9 @@ var settings;
  */
 applicationCache.OBSOLETE;
 
+window.webkitResolveLocalFileSystemURL = function(){};
+
+
 function vkbeautify(){}
 
 /**

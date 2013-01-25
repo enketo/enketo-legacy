@@ -189,7 +189,6 @@ function FileManager(){
 		var i,
 			that = this,
 			pathPrefix = (directoryName) ? '/'+directoryName+'/' : dirPrefix,
-
 			callbacksForFileEntry = {
 				success: function(fileEntry){
 					that.retrieveFile(
@@ -217,6 +216,11 @@ function FileManager(){
 				},
 				error: callbacks.error
 			};
+
+		if (files.length === 0){
+			console.log('files length is 0, calling success handler with empty array');
+			callbacks.success([]);
+		}
 
 		for (i = 0 ; i<files.length ; i++){
 			this.retrieveFileEntry(

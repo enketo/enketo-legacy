@@ -131,7 +131,8 @@ function FileManager(){
 	 * @param  {Error} e [description]
 	 */
 	errorHandler = function(e){
-		console.error('error occurred: ', e);
+		//console.error('error occurred: ', e);
+		throw('error occurred: '+e.message);
 	};
 
 	/**
@@ -309,19 +310,22 @@ function FileManager(){
 
 	/**
 	 * Deletes a complete directory with all its contents
-	 * @param {string=} name name of directory
+	 * @param {string} name name of directory
 	 */
 	this.deleteDir = function(name){
-		name = name || dirName;
+		//name = name || dirName;
+		console.log('going to delete directory: '+name);
 		fs.root.getDirectory(
 			name,
 			{},
 			function(dirEntry){
-				dirEntry.removeRecursively(function(){
-					setCurrentQuotaUsed();
-					console.log('Directory: '+name+ ' deleted');
-				},
-				errorHandler);
+				dirEntry.removeRecursively(
+					function(){
+						setCurrentQuotaUsed();
+						console.log('Directory: '+name+ ' deleted');
+					},
+					errorHandler
+				);
 			},
 			errorHandler
 		);

@@ -258,7 +258,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, instanceID
 	
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
-			$(document).trigger('submissionsuccess', name, instanceID);
+			$(document).trigger('submissionsuccess', [name, instanceID]);
 			this.uploadResult.win.push([name, statusMap[status].msg]);
 		}
 		else if (statusMap[status].success === false){

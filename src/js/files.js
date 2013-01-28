@@ -131,8 +131,8 @@ function FileManager(){
 	 * @param  {Error} e [description]
 	 */
 	errorHandler = function(e){
-		//console.error('error occurred: ', e);
-		throw('error occurred: '+e.message);
+		console.error('error occurred: ', e);
+		if (typeof console.trace !== 'undefined') console.trace();
 	};
 
 	/**

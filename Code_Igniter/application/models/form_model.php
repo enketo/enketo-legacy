@@ -69,9 +69,9 @@ class Form_model extends CI_Model {
 			if ($odk_result['pass'] === TRUE)
 			{
 				//perform transformation to HTML5 form and get xslt messages
-				$result = $this->_xslt_transform($xml['doc'], $xsl_form['doc']);
+				$result = $this->_xslt_transform($xml['doc'], $xsl_form['doc'], 'form');
 				//perform transformation to get data
-				$data = $this->_xslt_transform($xml['doc'], $xsl_data['doc']);
+				$data = $this->_xslt_transform($xml['doc'], $xsl_data['doc'], 'data');
                 //hack to add <meta><instanceID/></meta>
                 //TODO: MOVE THIS TO SEPARATE FUNCTION $this->_fix_meta() or to XSLT
                 $meta = NULL;
@@ -292,7 +292,7 @@ class Form_model extends CI_Model {
     }
 	
 	//returns SimpleXML Object
-	private function _xslt_transform($xml, $xsl)
+	private function _xslt_transform($xml, $xsl, $name = '')
 	{
 		//log_message('debug', 'starting transformation');
 		$result = new SimpleXMLElement('<root></root>'); //default
@@ -311,9 +311,12 @@ class Form_model extends CI_Model {
 			libxml_clear_errors();
 			//import XSLT stylesheet
 			$proc->importStyleSheet($xsl);
-			//$proc->setProfiling(APPPATH.'logs/XSLTprofiling.txt');
+			//profile transformation (only turn on for development!)
+            $proc->setProfiling(APPPATH.'logs/XSLTprofiling_'.$name.'.txt');
 			//transform
+            $start_time = time();
 			$output = $proc->transformToXML($xml);
+            log_message('debug', 'xlst transformation time: '.(time() - $start_time).' seconds');
 			$errors = libxml_get_errors();
 			//empty errors
 			libxml_clear_errors();

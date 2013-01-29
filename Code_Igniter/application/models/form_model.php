@@ -37,7 +37,16 @@ class Form_model extends CI_Model {
         $this->file_path_to_jr2Data_XSL = APPPATH.'libraries/jr2xmldata.xsl';
         //log_message('debug', 'Form Model loaded');
     }
-    
+
+    function content_unchanged($server_url, $form_id, $previous_hash=NULL)
+    {
+        $current_hash = (string) $this->_get_hash($server_url, $form_id);
+        $previous_has = (string) $previous_hash;
+        //log_message('debug', 'previous hash: '.$previous_hash);
+        //log_message('debug', 'current_hash: '.$current_hash);
+        return (!empty($current_hash) && !empty($previous_hash) && $current_hash === $previous_hash);
+    }
+
     function transform($server_url=NULL, $form_id = NULL, $file_path = NULL, $feedback = FALSE)
     {
         //log_message('debug', 'Starting transform');
@@ -45,13 +54,14 @@ class Form_model extends CI_Model {
     	$xsl_form = $this->_load_xml($this->file_path_to_jr2HTML5_XSL);
     	$xsl_data = $this->_load_xml($this->file_path_to_jr2Data_XSL);
 
-        $url = ($file_path) ? array('xml'=> $file_path) : $this->_get_form_urls($server_url, $form_id);
-        $xml = $this->_load_xml($url['xml']);
+        $info = ($file_path) ? array('xml'=> $file_path) : $this->_get_form_info($server_url, $form_id);
+        $xml = $this->_load_xml($info['xml']);
+        $hash = (!empty($info['hash'])) ? $info['hash'] : '';
             
-        if (isset($url['manifest']))//$manifest_url !== FALSE)
+        if (isset($info['manifest']))//$manifest_url !== FALSE)
         {
             //log_message('debug', 'received: '.$url['manifest']);
-            $manifest = $this->_load_xml($url['manifest']);
+            $manifest = $this->_load_xml($info['manifest']);
             $manifest_sxe = ($manifest['doc']) ? simplexml_import_dom($manifest['doc']) : NULL;
             //log_message('debug', $manifest_sxe->asXML()); 
         }
@@ -100,12 +110,13 @@ class Form_model extends CI_Model {
                     $this->_fix_media_urls($manifest_sxe, $result);
                 }
 				//easiest way to merge data and result
-                $modelStr = $data->model->asXML();
+                $model_str = $data->model->asXML();
                 //remove jr: namespace (seems to cause issue with latest PHP libs)
-                $modelStr = str_replace(' jr:template=', ' template=', $modelStr);
-                $formStr = $result->form->asXML();
-                $messageStr = $result->xsltmessages->asXML();
-				$result = simplexml_load_string('<root>'.$modelStr.$formStr.$messageStr.'</root>');
+                $model_str = str_replace(' jr:template=', ' template=', $model_str);
+                $form_str = $result->form->asXML();
+                $message_str = $result->xsltmessages->asXML();
+                $hash_str = '<hash>'.$hash.'</hash>';
+				$result = simplexml_load_string('<root>'.$model_str.$form_str.$message_str.$hash_str.'</root>');
 			}
 			$result = $this->_add_errors($odk_result['errors'], 'jrvalidationmessages', $result);		
 		}	
@@ -118,7 +129,7 @@ class Form_model extends CI_Model {
 
     function get_form_xml($server_url, $form_id)
     {
-        $urls = $this->_get_form_urls($server_url, $form_id);
+        $urls = $this->_get_form_info($server_url, $form_id);
         $xml = $this->_load_xml($urls['xml']);
         return ($xml['doc']) ? $xml['doc'] : null;
     }
@@ -174,10 +185,47 @@ class Form_model extends CI_Model {
     {
         $formlist_url = $this->_get_formlist_url($server_url);
         $full_list = $this->_load_xml($formlist_url);
-        
-        return ($full_list['doc']) ? simplexml_import_dom($full_list['doc']) : NULL;
+        $formlist_sxe = ($full_list['doc']) ? simplexml_import_dom($full_list['doc']) : NULL;
+        if (empty($formlist_sxe))
+        {
+            log_message('error', 'failed to get formlist from '.$server_url);
+        }
+        return $formlist_sxe;
     }
 
+    private function _get_form_info($server_url, $form_id)
+    {
+        $formlist_sxe = $this->_get_formlist($server_url);
+
+        //rather inefficient but am trying to avoid using xpath() because of default namespace in xformslist
+        foreach ($formlist_sxe->xform as $form)
+        {
+            if ($form->formID == $form_id){
+                $info = array('xml' => $form->downloadUrl);
+                if (isset($form->manifestUrl))
+                {
+                    $info['manifest'] = $form->manifestUrl;
+                }
+                if (isset($form->hash))
+                {
+                    $info['hash'] = $form->hash;
+                }
+                return $info;
+            }
+        }
+        log_message('error', 'Form with id: '.$form_id.' could not be found in formlist for '.$server_url);
+        return NULL;
+    }
+
+    private function _get_hash($server_url, $form_id)
+    {
+        log_message('debug', 'info getting hash with  '.$server_url.' and '.$form_id);
+        $info = $this->_get_form_info($server_url, $form_id);
+        
+        return (!empty($info['hash'])) ? $info['hash'] : NULL;
+    }
+
+    /*
     private function _get_form_urls($server_url, $form_id)
     {
         $xforms_sxe = $this->_get_formlist($server_url);
@@ -198,7 +246,7 @@ class Form_model extends CI_Model {
         }
         return NULL;
     }
-
+    */
     private function _get_formlist_url($server_url)
     {
         $server_url = ( strrpos($server_url, '/') == strlen($server_url)-1 ) ? $server_url : $server_url.'/';
@@ -312,7 +360,7 @@ class Form_model extends CI_Model {
 			//import XSLT stylesheet
 			$proc->importStyleSheet($xsl);
 			//profile transformation (only turn on for development!)
-            $proc->setProfiling(APPPATH.'logs/XSLTprofiling_'.$name.'.txt');
+            //$proc->setProfiling(APPPATH.'logs/XSLTprofiling_'.$name.'.txt');
 			//transform
             $start_time = time();
 			$output = $proc->transformToXML($xml);

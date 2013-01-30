@@ -23,9 +23,10 @@ class Front extends CI_Controller {
 		parent::__construct();
 		$this->load->helper(array('subdomain', 'url'));
 		$subdomain = get_subdomain();
-		//log_message('debug', 'subdomain in front index:'.$subdomain);
+		log_message('debug', 'Front controller started');
 		if (!empty($subdomain))
 		{
+			log_message('debug', 'front controller loaded with subdomain: '.$subdomain.' -> sending 404');
 			show_404();
 		}
 	}

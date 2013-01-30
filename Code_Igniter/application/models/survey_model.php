@@ -27,6 +27,7 @@ class Survey_model extends CI_Model {
         $this->load->helper(array('subdomain', 'url', 'string', 'http'));
     	$this->subdomain = get_subdomain();
         $this->ONLINE_SUBDOMAIN_SUFFIX = '-0';
+        $this->db_subdomain = ( $this->_has_subdomain_suffix() ) ? substr($this->subdomain, 0, strlen($this->subdomain)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) : $this->subdomain;
         date_default_timezone_set('UTC');
     }
     
@@ -47,6 +48,11 @@ class Survey_model extends CI_Model {
         return ($this->_get_item('subdomain')) ? TRUE : FALSE;
     }
     
+    public function get_form_props()
+    {
+        return $this->_get_items(array('server_url', 'form_id', 'hash'));
+    }
+
     public function get_server_url()
     {
         return $this->_get_item('server_url');
@@ -80,6 +86,27 @@ class Survey_model extends CI_Model {
     public function is_launched_live_and_offline()
     {
         return $this->has_offline_launch_enabled() && $this->is_live_survey() && $this->is_launched_survey();
+    }
+
+    public function get_transform_result()
+    {
+        $items = $this->_get_items(array('transform_result_title', 'transform_result_model', 'transform_result_form'));
+        $form = new stdClass();
+        $form->title =  $items['transform_result_title'];
+        $form->default_instance = $items['transform_result_model'];
+        $form->html = $items['transform_result_form'];
+        return $form;
+    }
+
+    public function update_transform_result($form, $hash)
+    {
+        $values = array(
+            'transform_result_title' => (string) $form->title,
+            'transform_result_model' => (string) $form->default_instance,
+            'transform_result_form' => (string) $form->html, 
+            'hash' => (string) $hash
+        );
+        $this->_update_items($values);
     }
 
 //    public function switch_offline_launch($active)
@@ -272,7 +299,7 @@ class Survey_model extends CI_Model {
 // 			return FALSE;
 // 		}
 // 	}
-    
+    /*
     public function get_survey_list()
     {
         //log_message('debug', 'getting survey list');
@@ -295,7 +322,7 @@ class Survey_model extends CI_Model {
             log_message('debug', 'no results!');
             return FALSE;
         }
-    }
+    }*/
 
     private function _switch_protocol($url)
     {
@@ -328,6 +355,13 @@ class Survey_model extends CI_Model {
     
     private function _get_item($field)
     {
+        $item_arr = $this->_get_items($field);
+        if (!empty($item_arr[$field]))
+        {
+            return $item_arr[$field];
+        }
+        return NULL;
+        /*
         $subd = $this->subdomain;
         $db_subd = ( $this->_has_subdomain_suffix() ) ? substr($subd, 0, strlen($subd)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) : $subd;
         $this->db->select($field);
@@ -341,6 +375,24 @@ class Survey_model extends CI_Model {
         else 
         {
             return NULL;   
+        }*/
+    }
+
+    private function _get_items($items)
+    {  
+        $this->db->select($items);
+        $this->db->where('subdomain', $this->db_subdomain); //$this->subdomain);
+        $query = $this->db->get('surveys', 1); 
+        if ($query->num_rows() === 1) 
+        {
+            $row = $query->row_array();
+            //log_message('debug', 'db query returning row: '.json_encode($row));
+            return $row;
+        }
+        else 
+        {
+            log_message('error', 'db query for '.implode(', ', $items)).' returned '.$query_num_rows().' results.';
+            return NULL;   
         }
     }
 
@@ -353,8 +405,15 @@ class Survey_model extends CI_Model {
     private function _update_item($field, $value)
     {
         $data = array($field => $value);
-        //would be safer to include limit(1)
-        $this->db->where('subdomain', $this->subdomain);
+        $result = $this->_update_items($data);
+        return $result;
+    }
+
+    private function _update_items($data)
+    {
+        //$data = array($field => $value);
+        $this->db->where('subdomain', $this->db_subdomain);
+        $this->db->limit(1);
         $query = $this->db->update('surveys', $data); 
         if ($this->db->affected_rows() > 0) 
         {
@@ -362,8 +421,10 @@ class Survey_model extends CI_Model {
         }
         else 
         {
+            log_message('error', 'database update on record with subdomain '.$this->db_subdomain);
             return FALSE;   
         }
+
     }
 
     private function _remove_item($field, $value)

@@ -9,7 +9,7 @@ IndexIgnore *
 
 RewriteEngine on
 
-RewriteCond $1 !^(index\.php|info\.php|sitemap\.xml|css|images|js-source|js-min|cache|libraries|robots\.txt|favicon\.ico|checkforconnection\.txt|checkforconnection\.php)
+RewriteCond $1 !^(index\.php|info\.php|sitemap\.xml|css|images|js-source|js-min|libraries|robots\.txt|favicon\.ico|checkforconnection\.txt|checkforconnection\.php)
 RewriteRule ^(.*)$ /index.php/$1 [L]
 
 #attempt to allow .appcache extension for manifest files (not working yet)
@@ -26,3 +26,7 @@ AddType application/x-font-woff .woff
 
 #Avoid caching of manifest files
 ExpiresByType text/cache-manifest "access plus 0 seconds"
+
+#allow larger file size (can also be set in php.ini)
+php_value upload_max_filesize 10M
+php_value post_max_size 10M

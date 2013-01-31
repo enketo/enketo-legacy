@@ -7,9 +7,9 @@
 
 <html lang="en" <?= (!empty($manifest)) ? 'manifest="'.$manifest.'"' : '' ?> class="no-js">
 	<head>
-		<title>
-			<?= (!empty($html_title)) ? $html_title : (!empty($title_component)) ? $title_component.' - ' : ''; ?>enketo
-		</title>
+		<title><?= !empty($html_title) ? $brand.' - '.$html_title : 
+			( !empty($title_component) ? 'enketo - '.$title_component : 'enketo' ); 
+		?></title>
 		
 		<link rel="icon" type="image/png" href="/images/favicon.png">
 		

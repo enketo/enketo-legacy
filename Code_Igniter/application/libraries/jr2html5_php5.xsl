@@ -696,12 +696,12 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         <xsl:if test="$binding/@readonly = 'true()' and not($html-input-type = 'hidden')" >
             <xsl:attribute name="readonly">readonly</xsl:attribute>
         </xsl:if>
-        <xsl:if test="$type = 'file'">
+        <xsl:if test="$html-input-type = 'file'">
             <xsl:if test="@mediatype">
                 <xsl:attribute name="accept">
                     <xsl:value-of select="@mediatype" />
                     <!-- image/*, video/* or audio/* -->
-                </xsl:attribute>
+               </xsl:attribute>
             </xsl:if>
         </xsl:if>
         <!--

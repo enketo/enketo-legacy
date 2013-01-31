@@ -94,8 +94,8 @@ class Webform extends CI_Controller {
 			
 			$data = array(
 				'manifest'=> ($offline) ? '/manifest/html/webform' : NULL, 
-				'title_component'=>'webform', 
-				'html_title'=>$form->title,
+				'title_component' => 'webform', 
+				'html_title' => $form->title,
 				'form'=> $form->html,
 				'form_data'=> $form->default_instance,
 				'stylesheets'=> $this->default_stylesheets
@@ -369,6 +369,7 @@ class Webform extends CI_Controller {
 			$transf_result = $this->Form_model->transform($this->server_url, $this->form_id, FALSE);
 			
 			$title = $transf_result->form->xpath('//h3[@id="form-title"]');
+
 			$hash = $transf_result->hash;
 			$form = new stdClass();
 			$form->title = (!empty($title[0])) ? $title[0] : '';

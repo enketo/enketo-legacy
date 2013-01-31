@@ -628,8 +628,8 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         <xsl:param name="type"/>
         <xsl:variable name="xml-type">
             <xsl:call-template name="xml_type">
-                <!--<xsl:with-param name="nodeset" select="$nodeset"/>-->
-                <xsl:with-param name="binding" select="$binding"/>
+                <xsl:with-param name="nodeset" select="$nodeset"/>
+                <!--<xsl:with-param name="binding" select="$binding"/>-->
             </xsl:call-template>
         </xsl:variable>
         <xsl:variable name="html-input-type">
@@ -1131,11 +1131,11 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
     </xsl:template>
 
     <xsl:template name="xml_type">
-        <!--<xsl:param name="nodeset" />-->
-        <xsl:param name="binding" />
+        <xsl:param name="nodeset" />
+        <!--<xsl:param name="binding" />-->
         <xsl:variable name="xml_type">
-            <xsl:value-of select="$binding"/>
-            <!--<xsl:value-of select="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]/@type" />-->
+            <!--<xsl:value-of select="$binding"/>-->
+            <xsl:value-of select="/h:html/h:head/xf:model/xf:bind[@nodeset=$nodeset]/@type" />
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="string-length($xml_type) &lt; 1" >string</xsl:when>

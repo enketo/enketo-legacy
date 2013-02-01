@@ -2201,8 +2201,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						var $input = $(this),
 							fileName = ($input[0].files.length > 0) ? $input[0].files[0].name : '';
 						$input.attr('data-previous-file-name', fileName);
-					}).parent().addClass('with-media clearfix').prepend('<div class="text-warning">'+
-						'File inputs are still very experimental. Use only for testing!</div>');
+					}).parent().addClass('with-media clearfix');//.prepend('<div class="text-warning">'+
+						//'File inputs are still very experimental. Use only for testing!</div>');
 
 					fileManager.init(data.getInstanceID(), callbacks);
 				}

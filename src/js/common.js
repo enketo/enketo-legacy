@@ -53,6 +53,7 @@ function setSettings(){
 			{q: 'debug', s: 'debug'},
 			{q: 'touch', s: 'touch'},
 			{q: 'server', s: 'serverURL'},
+			{q: 'form', s:'formURL'},
 			{q: 'id', s: 'formId'}
 		];
 	for (i=0 ; i< settingsMap.length ; i++){

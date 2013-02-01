@@ -74,7 +74,7 @@ $(document).ready(function(){
 			if (file) {
 				$('#form-list ul').empty();
 			}
-			connection.getTransForm(serverURL, formId, file, {
+			connection.getTransForm(serverURL, formId, file, null, {
 				success: function(resp, textStatus, jqXHR){
 					state.server = (serverURL) ? serverURL : null;
 					state.id = (formId) ? formId : null;

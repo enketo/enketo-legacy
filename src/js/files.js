@@ -37,7 +37,7 @@ function FileManager(){
 	/**
 	 * Initializes the File Manager
 	 * @param  {string}					directory name of directory to store files in
-	 * @param  {Object.<string, Function>} callbacks callback functions (error, and success)
+	 * @param  {{success:Function, error:Function}} callbacks callback functions (error, and success)
 	 * @return {boolean}					returns true/false if File API is supported by browser
 	 */
 	this.init = function(directory, callbacks){

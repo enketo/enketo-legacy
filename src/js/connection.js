@@ -342,33 +342,36 @@ Connection.prototype.getSurveyURL = function(serverURL, formId, callbacks){
 
 /**
  * Obtains HTML Form from an XML file or from a server url and form id
- * @param  {?string=}					serverURL   full server url
+ * @param  {?string=}					serverURL   full server URL
  * @param  {?string=}					formId		form ID
  * @param  {Blob=}						formFile	XForm XML file
+ * @param  {?string=}					formURL		XForm URL
  * @param  {Object.<string, Function>=} callbacks	callbacks
  */
-Connection.prototype.getTransForm = function(serverURL, formId, formFile, callbacks){
+Connection.prototype.getTransForm = function(serverURL, formId, formFile, formURL, callbacks){
 	var formData = new FormData();
 
 	callbacks = this.getCallbacks(callbacks);
 	serverURL = serverURL || null;
 	formId = formId || null;
+	formURL = formURL || null;
 	formFile = formFile || new Blob();
 	
-	if (formFile.size === 0 && !serverURL && !formId){
+	if (formFile.size === 0 && (!serverURL || !formId) && !formURL ){
 		callbacks.error(null, 'validationerror', 'No form file or URLs provided');
 		return;
 	}
-	if (formFile.size === 0 && !this.isValidURL(serverURL)){
-		callbacks.error(null, 'validationerror', 'Not a valid server url');
+	if (formFile.size === 0 && !this.isValidURL(serverURL) && !this.isValidURL(formURL)){
+		callbacks.error(null, 'validationerror', 'Not a valid server or form url');
 		return;
 	}
-	if (formFile.size === 0 && (!formId || formId.length === 0)){
+	if (formFile.size === 0 && !formURL && (!formId || formId.length === 0)){
 		callbacks.error(null, 'validationerror', 'No form id provided');
 		return;
 	}
 	formData.append('server_url', serverURL);
 	formData.append('form_id', formId);
+	formData.append('form_url', formURL);
 	formData.append('xml_file', formFile);
 
 	console.debug('form file: ', formFile);

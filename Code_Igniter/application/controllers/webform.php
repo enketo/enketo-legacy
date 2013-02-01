@@ -300,9 +300,9 @@ class Webform extends CI_Controller {
 	{
 		extract($_GET);
 
-		if (empty($server) || empty($id))
+		if ((empty($server) || empty($id)) && empty($form))
 		{
-			show_error('Preview requires server url and form id variables.', 404);
+			show_error('Preview requires server url and form id variables or a form url variable.', 404);
 			return;
 		}
 		if (isset($this->subdomain))

@@ -51,6 +51,10 @@ class Transform extends CI_Controller {
 			log_message('debug', 'server url received: '.$server_url.', id: '+$form_id);
 			$result = $this->Form_model->transform($server_url, $form_id, NULL,  TRUE);
 		}
+		else if (!empty($form_url)){
+			log_message('debug', 'form url received: '.$form_url);
+			$result = $this->Form_model->transform(NULL, NULL, $form_url, TRUE);
+		}
 		else
 		{
 			$error = (isset($FILES['xml_file']['error'])) ? $_FILES['xml_file']['error'] : 'upload error (no file or not a valid server url and form ID)';

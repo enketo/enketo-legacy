@@ -1,6 +1,6 @@
 var jrDataStr, jrDataStrToEdit;
 
-/** @type {{returnURL: string, serverURL: string, formId: string, mapsStaticAPIKey:string, mapsDynamicAPIKey:string,
+/** @type {{returnURL: string, serverURL: string, formId: string, formURL: string, mapsStaticAPIKey:string, mapsDynamicAPIKey:string,
 	 defaultServerURLHelper:string, supportEmail:string, modernBrowsersURL:string, showBranch:boolean}}
  */
 var settings;

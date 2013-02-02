@@ -35,8 +35,8 @@ $(document).ready(function() {
 		success: function(response){
 			var loadErrors,
 				$response = $(response),
-				formStr = new XMLSerializer().serializeToString($response.find('form')[0]),
-				modelStr = new XMLSerializer().serializeToString($response.find('model')[0]);
+				formStr = new XMLSerializer().serializeToString($response.find(':first>form')[0]),
+				modelStr = new XMLSerializer().serializeToString($response.find(':first>model')[0]);
 
 			if (formStr.length > 0 && modelStr.length > 0){
 				$validateButton.before(formStr);

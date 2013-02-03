@@ -90,7 +90,7 @@ class Front extends CI_Controller {
 	public function get_number_launched()
 	{
 		$this->load->model('Survey_model','',TRUE);
-		echo (int) $this->Survey_model->number_surveys();
+		return (int) $this->Survey_model->number_surveys();
 	}
 
 	public function get_number_launched_everywhere()

@@ -19,6 +19,7 @@
 $(document).ready(function(){
 	var connection = new Connection(),
 		defaultURLHelper = settings['defaultServerURLHelper'] || 'https';
+	/*
 	$('.url-helper')
 		.click(function(){
 			var placeholder;
@@ -45,7 +46,7 @@ $(document).ready(function(){
 		$('#test input').val('');
 		return false;
 	}
-
+	*/
 	$('.features li a').on('click', function(){
 		var feature = $(this).parent().attr('id'),
 			$featureDetail = $('.features-detail .'+feature);
@@ -54,6 +55,14 @@ $(document).ready(function(){
 		$(this).toggleClass('active').parent().siblings().find('a').removeClass('active');
 		$featureDetail.toggleClass('show').siblings().removeClass('show');
 		return false;
+	});
+
+	$('button.test').click(function(){
+		location.href="/formtester";
+	});
+
+	$('button.launch').click(function(){
+		location.href="/forms";
 	});
 
 	connection.getNumberFormsLaunched({

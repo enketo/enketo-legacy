@@ -25,7 +25,7 @@
 				</ul>
 				<section class="features-detail">
 					<p class="alert alert-success offline-capable">
-					Enketo webforms become available offline after they have been opened once (ie. a copy is kept is kept inside the browser). Enketo also safely stores entered data in the browser and uploads records automatically (e.g. to formhub) when the user is connected to the Internet. Only after a successful upload, the data is deleted from the browser. Users can safely close the browser or laptop and work for weeks (or months) without an Internet connection! Whenever a new version of the form or application is available it will automatically updated when the user is online.
+					Enketo webforms become available offline after they have been opened once (a copy is stored inside the browser). Enketo also safely stores data in the browser and uploads records automatically (e.g. to formhub) when the user is connected to the Internet. Only after a successful upload, the data is deleted from the browser. Users can safely close the browser or laptop and work for weeks (or months) without an Internet connection! Whenever a new version of the form or application is available it will automatically updated when the user is online.
 					</p>
 					<p class="alert alert-success print-friendly">
 					Enketo automatically produces a print-friendly version of your form. This facilitates old-school data collection (and modern data entry) without the need to maintain a separate print-version of the form. 

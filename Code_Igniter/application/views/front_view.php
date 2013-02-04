@@ -24,16 +24,16 @@
 					<li id="open-source"><a class="btn btn-large btn-info" href="#">open format</a></li>
 				</ul>
 				<section class="features-detail">
-					<p class="alert alert-success offline-capable">
+					<p class="alert offline-capable">
 					Enketo webforms become available offline after they have been opened once (a copy is stored inside the browser). Enketo also safely stores data in the browser and uploads records automatically (e.g. to formhub) when the user is connected to the Internet. Only after a successful upload, the data is deleted from the browser. Users can safely close the browser or laptop and work for weeks (or months) without an Internet connection! Whenever a new version of the form or application is available it will automatically updated when the user is online.
 					</p>
-					<p class="alert alert-success print-friendly">
+					<p class="alert print-friendly">
 					Enketo automatically produces a print-friendly version of your form. This facilitates old-school data collection (and modern data entry) without the need to maintain a separate print-version of the form. 
 					</p>
-					<p class="alert alert-success quick-deploy">
+					<p class="alert quick-deploy">
 					Enketo only requires a modern browser to run. It can therefore be deployed by users very quickly on pretty much any laptop or desktop and is becoming quite usable on mobile devices as well.
 					</p>
-					<p class="alert alert-success open-source">
+					<p class="alert open-source">
 					Due to its openness and compatibility with a popular standard, it is relatively easy to integrate enketo into existing OpenRosa systems as was done in <a href="http://formhub.org">formhub.org</a>. Moreover, the beauty of using a popular open-source form format is that users can pick-and-choose the best components to create a flexible information management system that can <em>move with the times</em>. 
 					</p>
 				</section>

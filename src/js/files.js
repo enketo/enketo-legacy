@@ -1,5 +1,8 @@
 /**
- * @preserve Copyright 2012 Martijn van de Rijdt & Modilabs
+ * This library copies liberally from http://www.html5rocks.com/en/tutorials/file/filesystem/#toc-filesystemurls
+ * by Eric Bidelman. Thanks a lot, Eric!
+ *
+ * Copyright 2012 Martijn van de Rijdt & Modilabs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +28,10 @@
 function FileManager(){
 	"use strict";
 
-	var fs, requestQuota, requestFileSystem, errorHandler, setCurrentQuotaUsed, dirName, dirPrefix,
+	var fs, requestQuota, requestFileSystem, errorHandler, setCurrentQuotaUsed, traverseAll, dirName, dirPrefix,
 		currentQuota = null,
 		currentQuotaUsed = null,
-		DEFAULTBYTESREQUESTED = 10 * 1024 * 1024;
+		DEFAULTBYTESREQUESTED = 100 * 1024 * 1024;
 
 	this.getCurrentQuota = function(){return currentQuota;}; //REMOVE, IS TEMPORARY
 	this.getCurrentQuotaUsed = function(){return currentQuotaUsed;};
@@ -131,7 +134,29 @@ function FileManager(){
 	 * @param  {Error} e [description]
 	 */
 	errorHandler = function(e){
-		console.error('error occurred: ', e);
+		var msg = '';
+
+		switch (e.code) {
+			case window.FileError.QUOTA_EXCEEDED_ERR:
+				msg = 'QUOTA_EXCEEDED_ERR';
+				break;
+			case window.FileError.NOT_FOUND_ERR:
+				msg = 'NOT_FOUND_ERR';
+				break;
+			case window.FileError.SECURITY_ERR:
+				msg = 'SECURITY_ERR';
+				break;
+			case window.FileError.INVALID_MODIFICATION_ERR:
+				msg = 'INVALID_MODIFICATION_ERR';
+				break;
+			case window.FileError.INVALID_STATE_ERR:
+				msg = 'INVALID_STATE_ERR';
+				break;
+			default:
+				msg = 'Unknown Error';
+				break;
+		}
+		console.log('Error occurred: ' + msg);
 		if (typeof console.trace !== 'undefined') console.trace();
 	};
 
@@ -174,17 +199,17 @@ function FileManager(){
 						callbacks.success(fileEntry.toURL());
 					};
 					fileWriter.onerror = callbacks.error;
-				});
+				}, callbacks.error);
 			},
 			callbacks.error
 		);
 	};
 
 	/**
-	 * Obtains files (asynchronously)
+	 * Obtains specified files from a specified directory (asynchronously)
 	 * @param {string}	directoryName								directory to look in for files
 	 * @param  {Array.<{nodeName: string, fileName: string}>} files array of objects with file properties
-	 * @param {Object.<string, Function>} callbacks					callback functions (error, and success)
+	 * @param {{success:Function, error:Function}} callbacks		callback functions (error, and success)
 	 */
 	this.retrieveFiles = function(directoryName, files, callbacks){
 		var i,
@@ -235,9 +260,9 @@ function FileManager(){
 	};
 
 	/**
-	 * Obtains a file (asynchronously)
+	 * Obtains a fileEntry (asynchronously)
 	 * @param  {string} fullPath						full filesystem path to the file
-	 * @param  {Object.<string, Function>} callbacks	callback functions (error, and success)
+	 * @param {{success:Function, error:Function}} callbacks		callback functions (error, and success)
 	 */
 	this.retrieveFileEntry = function(fullPath, callbacks){
 		console.debug('retrieving fileEntry for: '+fullPath);
@@ -256,6 +281,12 @@ function FileManager(){
 		);
 	};
 
+
+	/**
+	 * Retrieves a file from a fileEntry (asynchronously)
+	 * @param  {FileEntry} fileEntry [description]
+	 * @param  {{success:function(File), error: function(FileError)}} callbacks [description]
+	 */
 	this.retrieveFile = function(fileEntry, callbacks){
 		fileEntry.file(
 			callbacks.success,
@@ -264,14 +295,14 @@ function FileManager(){
 	};
 
 	/**
-	 * Deletes a file from local storage from the directory set upon initialization
-	 * At the moment there is no feedback provided whether this was successful except indirectly by
-	 * resetting the storageUsed variable.
-	 * @param  {string} fileName file name
+	 * Deletes a file from the file system (asynchronously) from the directory set upon initialization
+	 * @param {string}								fileName		file name
+	 * @param {{success:Function, error:Function}}	callbacks		callback functions (error, and success)
 	 */
-	this.deleteFile = function(fileName){
+	this.deleteFile = function(fileName, callbacks){
 		//console.log('amount of storage used: '+this.getStorageUsed());
 		console.log('deleting file: '+fileName);
+		callbacks = callbacks || {success: function(){}, error: function(){}};
 		//console.log('amount of storage used: '+this.getStorageUsed());
 		fs.root.getFile(
 			dirPrefix + fileName,
@@ -282,18 +313,23 @@ function FileManager(){
 				fileEntry.remove(function(){
 					setCurrentQuotaUsed();
 					console.log(fileName+' removed from file system');
+					callbacks.success();
 				});
 			},
-			errorHandler
+			function(e){
+				errorHandler(e);
+				callbacks.error();
+			}
 		);
 	};
 
 	/**
 	 * Creates a directory
-	 * @param  {string}						name      name of directory
-	 * @param  {Object.<string, Function>}	callbacks callback functions (error, and success)
+	 * @param  {string}									name      name of directory
+	 * @param  {{success: Function, error: Function}}	callbacks callback functions (error, and success)
 	 */
 	this.createDir = function(name, callbacks){
+		callbacks = callbacks || {success: function(){}, error: function(){}};
 		fs.root.getDirectory(
 			name,
 			{
@@ -304,16 +340,17 @@ function FileManager(){
 				console.log('Directory: '+name+' created (or found)', dirEntry);
 				callbacks.success();
 			},
-			errorHandler
+			callbacks.error
 		);
 	};
 
 	/**
 	 * Deletes a complete directory with all its contents
-	 * @param {string} name name of directory
+	 * @param {string}									name		name of directory
+	 * @param {{success: Function, error: Function}}	callbacks	callback functions (error, and success)
 	 */
-	this.deleteDir = function(name){
-		//name = name || dirName;
+	this.deleteDir = function(name, callbacks){
+		callbacks = callbacks || {success: function(){}, error: function(){}};
 		console.log('going to delete directory: '+name);
 		fs.root.getDirectory(
 			name,
@@ -322,13 +359,98 @@ function FileManager(){
 				dirEntry.removeRecursively(
 					function(){
 						setCurrentQuotaUsed();
-						console.log('Directory: '+name+ ' deleted');
+						callbacks.success();
 					},
-					errorHandler
+					function(e){
+						errorHandler(e);
+						callbacks.error();
+					}
 				);
 			},
 			errorHandler
 		);
+	};
+
+	/**
+	 * Deletes all files stored (for a subsubdomain)
+	 * @param {Function=} callbackComplete	function to call when complete
+	 */
+	this.deleteAll = function(callbackComplete){
+		callbackComplete = callbackComplete || function(){};
+		var process = {
+			entryFound : function(entry){
+				if (entry.isDirectory){
+					entry.removeRecursively(
+						function(){
+							setCurrentQuotaUsed();
+							console.log('Directory: '+entry.name+ ' deleted');
+						},
+						errorHandler
+					);
+				}
+				else{
+					entry.remove(
+						function(){
+							setCurrentQuotaUsed();
+							console.log('File: '+entry.name+ ' deleted');
+						},
+						errorHandler
+					);
+				}
+			},
+			complete : callbackComplete
+		};
+		traverseAll(process);
+	};
+
+	/**
+	 * Lists all files/folders in root (function may not be required)
+	 * @param {Function=} callbackComplete	function to call when complete
+	 */
+	this.listAll = function(callbackComplete){
+		callbackComplete = callbackComplete || function(){};
+		var entries = [],
+			process = {
+				entryFound : function(entry){
+					if (entry.isDirectory){
+						entries.push('folder: '+entry.name);
+					}
+					else{
+						entries.push('file: '+entry.name);
+					}
+				},
+				complete : function(){
+					console.log('entries: ', entries);
+					callbackComplete();
+				}
+		};
+		traverseAll(process);
+	};
+
+	/**
+	 * traverses all folders and files in root
+	 * @param  {{entryFound: Function, complete}} process [description]
+	 */
+	traverseAll = function(process){
+		var entry, type,
+			dirReader = fs.root.createReader();
+	  
+		// Call the reader.readEntries() until no more results are returned.
+		var readEntries = function() {
+			dirReader.readEntries (function(results) {
+				if (!results.length){
+					process.complete();
+				}
+				else {
+					for (var i=0 ; i<results.length ; i++){
+						entry = results[i];
+						process.entryFound(entry);
+					}
+					readEntries();
+				}
+			}, errorHandler);
+		};
+		readEntries();
 	};
 }
 	

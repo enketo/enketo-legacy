@@ -1,5 +1,6 @@
-function getFakeFile(type, mb){
+function getFakeFile(name, type, mb){
 	var i, fakefile, bytes, content = "";
+	name = name || 'fakefile';
 	mb = mb || 1;
 	type = type || "image/png";
 	bytes = mb * 1024 * 1024;
@@ -7,34 +8,29 @@ function getFakeFile(type, mb){
 		content += "abkdksajbl";
 	}
 	fakefile = new Blob([content], { type: type });
-	fakefile.name = "fakefile";
+	fakefile.name = name;
 	return fakefile;
 }
 
-describe("File API supported by this browser", function () {
+describe("File API", function () {
 	var fileManager;
 
-	it('is supported', function(){
+	it('is supported by this browser', function(){
 		fileManager = new FileManager();
 		expect(fileManager.isSupported()).toBe(true);
 	});
 });
 
 describe("FileManager", function(){
-	var fileManager, yayHooray, fuff, result, complete,
+	var fileManager,
+		yayHooray = function(){result = 'success'; complete = true;},
+		fuff = function(){result = 'error'; complete = true;},
+		result = null,
+		complete = null,
 		folder = 'myfolder';
 
 	beforeEach(function(){
 		fileManager = new FileManager();
-		yayHooray = function(){result = 'success'; complete = true;};
-		fuff = function(){result = 'success'; complete = true;};
-	});
-
-	afterEach(function(){
-		fileManager.deleteDir(folder);
-	});
-
-	it('initializes successfully (if user gives permission to store permanent data in the browser)', function(){
 	
 		runs(function(){
 			fileManager.init(folder, {
@@ -45,27 +41,207 @@ describe("FileManager", function(){
 
 		waitsFor(function(){
 			return complete;
-		}, 'the FileManager to initialize', 10000);
-		
+		}, 'the FileManager to initialize', 1000);
+	});
+
+	afterEach(function(){
+		fileManager.deleteDir(folder);
+		complete = null;
+		result = null;
+	});
+
+	it('initializes successfully (if the user gives permission to store permanent data in the browser)', function(){
 		runs(function(){
 			expect(result).toEqual('success');
+		});
+	});
+
+	it('receives the quota it asked for (100Mb) during initialization', function(){
+		runs(function(){
+			expect(fileManager.getCurrentQuota()).toEqual(100*1024*1024);
+		});
+	});
+
+	it('starts with a storage quota used of just 162 bytes required to store a directory', function(){
+		runs(function(){
+			var storageUsed = fileManager.getCurrentQuotaUsed();
+			//expect(storageUsed >= 0  && storageUsed <200).toBe(true);
+			expect(storageUsed).toEqual(162);
+		});
+	});
+
+	/** THIS IS A CRUCIAL TEST, FAILING NOW**/
+	it('detects when the approved storage quota is no longer sufficient', function(){
+		var quotaAvailableMB = fileManager.getCurrentQuota() / (1024 * 1024),
+			file = getFakeFile('toolargefakefile', 'image/png', 110),//quotaAvailableMB + 1),
+			saveResult = null,
+			saveComplete = null,
+			fsURL = null,
+			quotaUsedStart = fileManager.getCurrentQuotaUsed();
+
+		runs(function(){
+			fileManager.saveFile(file, {
+				success: function(url){saveComplete = true; saveResult = 'success'; fsURL = url;},
+				error: function(){saveComplete = true; saveResult = 'error';}
+			});
+		});
+
+		waitsFor(function(){
+			return saveComplete;
+		}, 'the file save operation to complete', 1000);
+
+		runs(function(){
+			//expect(fileManager.getCurrentQuotaUsed()).toEqual(2232);
+			expect(saveResult).toEqual('error');
+		});
+	});
+
+	describe('A directory', function(){
+		var quotaUsedStart,
+			createResult = null,
+			createComplete = null,
+			dirName = "adirectory";
+
+		beforeEach(function(){
+			quotaUsedStart = fileManager.getCurrentQuotaUsed();
+			runs(function(){
+				fileManager.createDir( dirName,{
+					success: function(){createResult = 'success'; createComplete = true;},
+					error: function(){createResult = 'error'; createComplete = true;}
+				});
+			});
+
+			waitsFor(function(){
+				return createComplete;
+			}, 'directory creation is complete', 1000);
+		});
+
+		afterEach(function(){
+			createResult = null;
+			createComplete = null;
+		});
+
+
+		it('is created successfully', function(){
+			expect(createResult).toEqual('success');
+			expect(fileManager.getCurrentQuotaUsed()).toBeGreaterThan(quotaUsedStart);
+		});
+
+		it('is removed successfully when empty', function(){
+			var delResult = null,
+				delComplete = null;
+			
+			runs(function(){
+				fileManager.deleteDir(dirName,{
+					success: function(){delResult = 'success'; delComplete = true;},
+					error: function(){delResult = 'error'; delComplete = true;}
+				});
+			});
+
+			waitsFor(function(){
+				return delComplete;
+			}, 'directory deletion to complete', 1000);
+
+			runs(function(){
+				expect(delResult).toEqual('success');
+				expect(fileManager.getCurrentQuotaUsed()).toBeLessThan(quotaUsedStart);
+			});
 		});
 
 	});
 
-	it('starts with a storage used of 0 bytes', function(){
+	describe('A file', function(){
+		var quotaUsedStart,
+			fileSizeMB = 1.5,
+			file = getFakeFile('fakefile', 'image/png', fileSizeMB),
+			saveResult = null,
+			saveComplete = null,
+			fsURL = null;
 
+		beforeEach(function(){
+			quotaUsedStart = fileManager.getCurrentQuotaUsed();
+
+			runs(function(){
+				fileManager.saveFile(file, {
+					success: function(url){saveComplete = true; saveResult = 'success'; fsURL = url;},
+					error: function(){saveComplete = true; saveResult = 'error';}
+				});
+			});
+
+			waitsFor(function(){
+				return saveComplete;
+			}, 'the file save operation to complete', 1000);
+		});
+
+		afterEach(function(){
+			saveResult = null;
+			fsURL = null;
+			saveComplete = null;
+		});
+
+		it ('is stored successfully', function(){
+			runs(function(){
+				expect(saveResult).toEqual('success');
+				expect(fsURL.indexOf('filesystem:http://')).toEqual(0);
+				expect(fsURL.length).toBeGreaterThan(18);
+				//expect(fileManager.getCurrentQuotaUsed()).toEqual(quotaUsedStart + (fileSizeMB * 1024 * 1024));
+				expect(fileManager.getCurrentQuotaUsed()).toBeGreaterThan(quotaUsedStart);
+			});
+		});
+
+		it('is retrieved successfully', function(){
+			var retrieveResult = null,
+				retrieveLength = null,
+				retrieveComplete = null;
+			
+			runs(function(){
+				fileManager.retrieveFiles(
+					'myfolder',
+					[{nodeName:'whatever', fileName: 'fakefile'}],
+					{
+						success: function(files){retrieveResult = 'success'; retrieveComplete = true; retrieveLength = files.length;},
+						error: function(){retrieveResult = 'error'; retrieveComplete = true;}
+					}
+				);
+			});
+
+			waitsFor(function(){
+				return retrieveResult;
+			}, 'file retrieve attempt to complete', 1000);
+
+			runs(function(){
+				expect(retrieveResult).toEqual('success');
+				expect(retrieveLength).toEqual(1);
+			});
+		});
+
+		it('is deleted successfully', function(){
+			var deleteResult = null,
+				deleteComplete = null;
+
+			runs(function(){
+				fileManager.deleteFile(
+					'fakefile',
+					{
+						success: function(){deleteResult = 'success'; deleteComplete = true;},
+						error: function(){deleteResult = 'error'; deleteComplete = true;}
+					}
+				);
+			});
+
+			waitsFor(function(){
+				return deleteResult;
+			}, 'file delete attempt to complete', 1000);
+
+			runs(function(){
+				expect(deleteResult).toEqual('success');
+				expect(fileManager.getCurrentQuotaUsed()).toEqual(quotaUsedStart);
+			});
+		});
 	});
-
-	it('stores a file successfully', function(){
-
-	});
-
-	it('can retrieved a stored file', function(){
-		
-	});
-
 });
+
+
 
 
 //test that when fileManager.saveFile() fails the instance does not get a value (whether event.stopPropagation works)

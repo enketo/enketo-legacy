@@ -143,7 +143,7 @@ console.dir = function(value) {};
 console.dirxml = function(var_args) {};
 
 /**
- * @param {*} value
+ * @param {*=} value
  */
 console.trace = function(value) {};
 

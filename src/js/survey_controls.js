@@ -326,7 +326,7 @@ function submitEditedForm() {
  * @param	{{success: Function, error: Function}} callbacks
  */
 function prepareFormDataArray(record, callbacks){
-	 var i, j, k, formData, dataO, instanceID, $fileNodes, files;
+	 var i, j, k, formData, dataO, instanceID, $fileNodes, files, recordPrepped;
 	 
 		dataO = form.Data(record.data);
 		instanceID = dataO.getInstanceID();
@@ -350,9 +350,9 @@ function prepareFormDataArray(record, callbacks){
 					for (k = 0 ; k < files.length ; k++){
 						formData.append(files[k].nodeName, files[k].file);
 					}
-					record = { name: record.name, instanceID: instanceID, formData: formData };
-					console.log('returning record with formdata : ', record);
-					callbacks.success(record);
+					recordPrepped = { name: record.name, instanceID: instanceID, formData: formData };
+					console.log('returning record with formdata : ', recordPrepped);
+					callbacks.success(recordPrepped);
 				},
 				error: function(e){
 					console.error('Error occured when trying to retrieve files from local filesystem', e);

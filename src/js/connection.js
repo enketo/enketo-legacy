@@ -148,7 +148,7 @@ Connection.prototype.uploadRecords = function(record, force, callbacks){
 	return true;
 	*/
 	if (!record.name || !record.instanceID || !record.formData){
-		console.error('record missing properties', record);
+		console.error('record missing required properties', record);
 		return false;
 	}
 	
@@ -160,10 +160,8 @@ Connection.prototype.uploadRecords = function(record, force, callbacks){
 			this.forced = force; //TODO ADD FORCE AND CALLBACKS TO EACH RECORD??
 			this.uploadOne(callbacks);
 		}
-		else{
-			return true;
-		}
 	}
+	return true;
 };
 
 /**

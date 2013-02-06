@@ -28,10 +28,10 @@
 function FileManager(){
 	"use strict";
 
-	var fs, requestQuota, requestFileSystem, errorHandler, setCurrentQuotaUsed, traverseAll, dirName, dirPrefix,
+	var fs, requestQuota, requestFileSystem, errorHandler, setCurrentQuotaUsed, traverseAll, retrieveFile, dirName, dirPrefix,
 		currentQuota = null,
 		currentQuotaUsed = null,
-		DEFAULTBYTESREQUESTED = 100 * 1024 * 1024;
+		DEFAULTBYTESREQUESTED = 1 * 1024 * 1024;
 
 	this.getCurrentQuota = function(){return currentQuota;}; //REMOVE, IS TEMPORARY
 	this.getCurrentQuotaUsed = function(){return currentQuotaUsed;};
@@ -99,6 +99,8 @@ function FileManager(){
 	 * @param  {Object.<string, Function>}	callbacks      callback functions (error, and success)
 	 */
 	requestQuota = function(bytesRequested, callbacks){
+		console.log('requesting persistent filesystem quota');
+		$(document).trigger('quotarequest', bytesRequested); //just to facilitate testing
 		window.storageInfo.requestQuota(
 			window.storageInfo.PERSISTENT,
 			bytesRequested ,
@@ -184,6 +186,7 @@ function FileManager(){
 	 * @param  {Object.<string, Function>}	callbacks callback functions (error, and success)
 	 */
 	this.saveFile = function(file, callbacks){
+		var that = this;
 		fs.root.getFile(
 			dirPrefix + file.name,
 			{
@@ -198,7 +201,27 @@ function FileManager(){
 						console.log('file stored, with persistent url:'+fileEntry.toURL());
 						callbacks.success(fileEntry.toURL());
 					};
-					fileWriter.onerror = callbacks.error;
+					fileWriter.onerror = function(e){
+						var newBytesRequest,
+							targetError = e.target.error;
+						if (targetError instanceof FileError && targetError.code === window.FileError.QUOTA_EXCEEDED_ERR){
+							console.log('Required storade exceeding quota, going to request more.');
+							newBytesRequest = ((e.total * 5) < DEFAULTBYTESREQUESTED) ? currentQuota + DEFAULTBYTESREQUESTED : currentQuota + (5 * e.total);
+							requestQuota(
+								newBytesRequest,
+								{
+									success: function(bytes){
+										currentQuota = bytes;
+										that.saveFile(file, callbacks);
+									},
+									error: callbacks.error
+								}
+							);
+						}
+						else{
+							callbacks.error(e);
+						}
+					};
 				}, callbacks.error);
 			},
 			callbacks.error
@@ -207,17 +230,16 @@ function FileManager(){
 
 	/**
 	 * Obtains specified files from a specified directory (asynchronously)
-	 * @param {string}	directoryName								directory to look in for files
-	 * @param  {Array.<{nodeName: string, fileName: string}>} files array of objects with file properties
-	 * @param {{success:Function, error:Function}} callbacks		callback functions (error, and success)
+	 * @param {string}											directoryName	directory to look in for files
+	 * @param {Array.<{nodeName: string, fileName: string}>}	files			array of objects with file properties
+	 * @param {{success:Function, error:Function}}				callbacks		callback functions (error, and success)
 	 */
 	this.retrieveFiles = function(directoryName, files, callbacks){
 		var i,
-			that = this,
 			pathPrefix = (directoryName) ? '/'+directoryName+'/' : dirPrefix,
 			callbacksForFileEntry = {
 				success: function(fileEntry){
-					that.retrieveFile(
+					retrieveFile(
 						fileEntry,
 						{
 							success: function(file){
@@ -261,8 +283,8 @@ function FileManager(){
 
 	/**
 	 * Obtains a fileEntry (asynchronously)
-	 * @param  {string} fullPath						full filesystem path to the file
-	 * @param {{success:Function, error:Function}} callbacks		callback functions (error, and success)
+	 * @param  {string}								fullPath	full filesystem path to the file
+	 * @param {{success:Function, error:Function}}	callbacks	callback functions (error, and success)
 	 */
 	this.retrieveFileEntry = function(fullPath, callbacks){
 		console.debug('retrieving fileEntry for: '+fullPath);
@@ -287,7 +309,7 @@ function FileManager(){
 	 * @param  {FileEntry} fileEntry [description]
 	 * @param  {{success:function(File), error: function(FileError)}} callbacks [description]
 	 */
-	this.retrieveFile = function(fileEntry, callbacks){
+	retrieveFile = function(fileEntry, callbacks){
 		fileEntry.file(
 			callbacks.success,
 			callbacks.error
@@ -341,6 +363,7 @@ function FileManager(){
 				callbacks.success();
 			},
 			callbacks.error
+			//TODO: ADD similar request for additional storage if FileError.QUOTA_EXCEEEDED_ERR is thrown as don in saveFile()
 		);
 	};
 

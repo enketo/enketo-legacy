@@ -23,6 +23,7 @@ describe("File API", function () {
 
 describe("FileManager", function(){
 	var fileManager,
+		quotaRequestSpy,
 		yayHooray = function(){result = 'success'; complete = true;},
 		fuff = function(){result = 'error'; complete = true;},
 		result = null,
@@ -30,6 +31,13 @@ describe("FileManager", function(){
 		folder = 'myfolder';
 
 	beforeEach(function(){
+		quotaRequestSpy = jasmine.createSpy('quotaRequestSpy');
+
+		$(document).on('quotarequest', function(event){
+			console.log('quotarequest detected', event.data);
+			quotaRequestSpy();
+		});
+
 		fileManager = new FileManager();
 	
 		runs(function(){
@@ -45,9 +53,22 @@ describe("FileManager", function(){
 	});
 
 	afterEach(function(){
-		fileManager.deleteDir(folder);
-		complete = null;
-		result = null;
+		var deleteResult = null,
+			deleteComplete = null;
+
+		$(document).off('quotarequest');
+
+		runs(function(){
+			fileManager.deleteDir(folder,
+				{success: function(){deleteResult = 'success'; deleteComplete = true;}
+			});
+			complete = null;
+			result = null;
+		});
+
+		waitsFor(function(){
+			return deleteComplete;
+		}, 'the directory to be deleted', 1000);
 	});
 
 	it('initializes successfully (if the user gives permission to store permanent data in the browser)', function(){
@@ -70,10 +91,17 @@ describe("FileManager", function(){
 		});
 	});
 
-	/** THIS IS A CRUCIAL TEST, FAILING NOW**/
-	it('detects when the approved storage quota is no longer sufficient', function(){
+	/**
+		Some info on this crucial test that may fail. If the quota requested and granted at some time in the past
+		was greater than the quota requested currently for this subdomain, the user will not be prompted to
+		increase storage if the required storage is larger than the available quota but less than that previously
+		granted quota!
+
+		chrome://settings/cookies is your friend to clear all permissions for a subdomain
+	**/
+	it('detects when the approved storage quota is no longer sufficient and asks user for permission to use more', function(){
 		var quotaAvailableMB = fileManager.getCurrentQuota() / (1024 * 1024),
-			file = getFakeFile('toolargefakefile', 'image/png', 110),//quotaAvailableMB + 1),
+			file = getFakeFile('toolargefakefile', 'image/png', quotaAvailableMB + 1),
 			saveResult = null,
 			saveComplete = null,
 			fsURL = null,
@@ -88,11 +116,14 @@ describe("FileManager", function(){
 
 		waitsFor(function(){
 			return saveComplete;
+			//the timeout is meant to be too short for a user to approve additional storage
 		}, 'the file save operation to complete', 1000);
 
 		runs(function(){
 			//expect(fileManager.getCurrentQuotaUsed()).toEqual(2232);
 			expect(saveResult).toEqual('error');
+			expect(quotaRequestSpy).toHaveBeenCalled();
+			expect(quotaRequestSpy.calls.length).toEqual(2);
 		});
 	});
 
@@ -121,7 +152,6 @@ describe("FileManager", function(){
 			createComplete = null;
 		});
 
-
 		it('is created successfully', function(){
 			expect(createResult).toEqual('success');
 			expect(fileManager.getCurrentQuotaUsed()).toBeGreaterThan(quotaUsedStart);
@@ -147,7 +177,6 @@ describe("FileManager", function(){
 				expect(fileManager.getCurrentQuotaUsed()).toBeLessThan(quotaUsedStart);
 			});
 		});
-
 	});
 
 	describe('A file', function(){

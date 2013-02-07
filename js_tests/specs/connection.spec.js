@@ -35,7 +35,8 @@ describe("The Connection Class ", function () {
 			['https://example.org', true],
 			['http://example.org/_-?', true],
 			['http://www.example.org', true],
-			['http://sub.example.org', true]
+			['http://sub.example.org', true],
+			['http://23.21.114.69/xlsform/tmp/tmp20lcND/or_other.xml', true]
 		];
 
 		function test(url, result){

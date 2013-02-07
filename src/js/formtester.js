@@ -74,7 +74,7 @@ $(document).ready(function(){
 			if (file) {
 				$('#form-list ul').empty();
 			}
-			connection.getTransForm(serverURL, formId, file, {
+			connection.getTransForm(serverURL, formId, file, null, {
 				success: function(resp, textStatus, jqXHR){
 					state.server = (serverURL) ? serverURL : null;
 					state.id = (formId) ? formId : null;
@@ -279,9 +279,9 @@ function resetAll(){
 }
 
 function processForm($response){
-	var formStr = new XMLSerializer().serializeToString($response.find('form')[0]);
+	var formStr = new XMLSerializer().serializeToString($response.find(':first>form')[0]);
 	//data as string
-	var jrDataStr = new XMLSerializer().serializeToString($response.find('model')[0]);
+	var jrDataStr = new XMLSerializer().serializeToString($response.find(':first>model')[0]);
 	//extract messages
 	var $xsltMsg = $response.find('xsltmessages message');
 	//var $html5Msg = $response.find('html5validatormessages message');

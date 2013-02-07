@@ -701,7 +701,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 <xsl:attribute name="accept">
                     <xsl:value-of select="@mediatype" />
                     <!-- image/*, video/* or audio/* -->
-                </xsl:attribute>
+               </xsl:attribute>
             </xsl:if>
         </xsl:if>
         <!--

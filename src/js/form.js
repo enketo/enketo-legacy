@@ -2143,7 +2143,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (!this.repeat){
 				var $fileInputs = this.$group.find('input[type="file"]');
 				//TODO: add online file widget in case fileManager is undefined or use file manager with temporary storage?
-				if (typeof fileManager !== 'undefined' && fileManager.isSupported()){
+				if ($fileInputs.length > 0 && typeof fileManager !== 'undefined' && fileManager.isSupported()){
 					var callbacks = {
 						success: function(){
 							console.log('Whoheee, we have permission to use the file system');

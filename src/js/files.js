@@ -64,7 +64,10 @@ function FileManager(){
 										callbacks
 									);
 								},
-								error: errorHandler
+								error: function(e){
+									callbacks.error(e);
+									errorHandler(e);
+								}
 							}
 						);
 					},
@@ -127,7 +130,9 @@ function FileManager(){
 			);
 		}
 		else{
-
+			//actually not correct to treat this as an error
+			console.error('User did not approve storage of local data using the File API');
+			callbacks.error();
 		}
 	};
 
@@ -138,25 +143,27 @@ function FileManager(){
 	errorHandler = function(e){
 		var msg = '';
 
-		switch (e.code) {
-			case window.FileError.QUOTA_EXCEEDED_ERR:
-				msg = 'QUOTA_EXCEEDED_ERR';
-				break;
-			case window.FileError.NOT_FOUND_ERR:
-				msg = 'NOT_FOUND_ERR';
-				break;
-			case window.FileError.SECURITY_ERR:
-				msg = 'SECURITY_ERR';
-				break;
-			case window.FileError.INVALID_MODIFICATION_ERR:
-				msg = 'INVALID_MODIFICATION_ERR';
-				break;
-			case window.FileError.INVALID_STATE_ERR:
-				msg = 'INVALID_STATE_ERR';
-				break;
-			default:
-				msg = 'Unknown Error';
-				break;
+		if (typeof e !== 'undefined'){
+			switch (e.code) {
+				case window.FileError.QUOTA_EXCEEDED_ERR:
+					msg = 'QUOTA_EXCEEDED_ERR';
+					break;
+				case window.FileError.NOT_FOUND_ERR:
+					msg = 'NOT_FOUND_ERR';
+					break;
+				case window.FileError.SECURITY_ERR:
+					msg = 'SECURITY_ERR';
+					break;
+				case window.FileError.INVALID_MODIFICATION_ERR:
+					msg = 'INVALID_MODIFICATION_ERR';
+					break;
+				case window.FileError.INVALID_STATE_ERR:
+					msg = 'INVALID_STATE_ERR';
+					break;
+				default:
+					msg = 'Unknown Error';
+					break;
+			}
 		}
 		console.log('Error occurred: ' + msg);
 		if (typeof console.trace !== 'undefined') console.trace();
@@ -197,20 +204,28 @@ function FileManager(){
 				fileEntry.createWriter(function(fileWriter){
 					fileWriter.write(file);
 					fileWriter.onwriteend = function(e){
-						setCurrentQuotaUsed();
-						console.log('file stored, with persistent url:'+fileEntry.toURL());
-						callbacks.success(fileEntry.toURL());
+						//if a file write does not complete because the file is larger than the granted quota
+						//the onwriteend event still fires. (This may be a browser bug.)
+						//so we're checking if the complete file was saved and if not, do nothing and assume
+						//that the onerror event will fire
+						if(e.total === e.loaded){
+							//console.log('write completed', e);
+							setCurrentQuotaUsed();
+							console.log('complete file stored, with persistent url:'+fileEntry.toURL());
+							callbacks.success(fileEntry.toURL());
+						}
 					};
 					fileWriter.onerror = function(e){
 						var newBytesRequest,
 							targetError = e.target.error;
 						if (targetError instanceof FileError && targetError.code === window.FileError.QUOTA_EXCEEDED_ERR){
-							console.log('Required storade exceeding quota, going to request more.');
+							console.log('Required storage exceeding quota, going to request more.');
 							newBytesRequest = ((e.total * 5) < DEFAULTBYTESREQUESTED) ? currentQuota + DEFAULTBYTESREQUESTED : currentQuota + (5 * e.total);
 							requestQuota(
 								newBytesRequest,
 								{
 									success: function(bytes){
+										console.log('request for additional quota approved! (quota: '+bytes+' bytes)');
 										currentQuota = bytes;
 										that.saveFile(file, callbacks);
 									},
@@ -303,7 +318,6 @@ function FileManager(){
 		);
 	};
 
-
 	/**
 	 * Retrieves a file from a fileEntry (asynchronously)
 	 * @param  {FileEntry} fileEntry [description]
@@ -351,6 +365,8 @@ function FileManager(){
 	 * @param  {{success: Function, error: Function}}	callbacks callback functions (error, and success)
 	 */
 	this.createDir = function(name, callbacks){
+		var that = this;
+
 		callbacks = callbacks || {success: function(){}, error: function(){}};
 		fs.root.getDirectory(
 			name,
@@ -362,7 +378,28 @@ function FileManager(){
 				console.log('Directory: '+name+' created (or found)', dirEntry);
 				callbacks.success();
 			},
-			callbacks.error
+			function(e){
+				var newBytesRequest,
+					targetError = e.target.error;
+				//TODO: test this
+				if (targetError instanceof FileError && targetError.code === window.FileError.QUOTA_EXCEEDED_ERR){
+					console.log('Required storage exceeding quota, going to request more.');
+					newBytesRequest = ((e.total * 5) < DEFAULTBYTESREQUESTED) ? currentQuota + DEFAULTBYTESREQUESTED : currentQuota + (5 * e.total);
+					requestQuota(
+						newBytesRequest,
+						{
+							success: function(bytes){
+								currentQuota = bytes;
+								that.createDir(name, callbacks);
+							},
+							error: callbacks.error
+						}
+					);
+				}
+				else{
+					callbacks.error(e);
+				}
+			}
 			//TODO: ADD similar request for additional storage if FileError.QUOTA_EXCEEEDED_ERR is thrown as don in saveFile()
 		);
 	};

@@ -2146,12 +2146,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				if (typeof fileManager !== 'undefined' && fileManager.isSupported()){
 					var callbacks = {
 						success: function(){
+							console.log('Whoheee, we have permission to use the file system');
 							$fileInputs.on('change.passthrough', function(event){
 								var prevFileName, file, mediaType, $preview, 
 									$input = $(this);
 								console.debug('namespace: '+event.namespace);
 								if (event.namespace === 'passthrough'){
-									console.debug('eturning true');
+									//console.debug('returning true');
 									$input.trigger('change.file');
 									return false;
 								}
@@ -2162,13 +2163,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 									: (mediaType === 'audio/*') ? $('<audio controls="controls"/>')
 									: (mediaType === 'video/*') ? $('<video controls="controls"/>')
 									: $('<span>No preview (unknown mediatype)</span>');
-								$preview.addClass('file-feedback');
-
-								$input.next('.file-feedback').remove();
+								$preview.addClass('file-preview');
 
 								if (prevFileName && (!file || prevFileName !== file.name)){
 									fileManager.deleteFile(prevFileName);
 								}
+
+								$input.siblings('.file-feedback, .file-preview').remove();
 
 								console.debug('file: ', file);
 								if (file && file.size > 0){
@@ -2193,7 +2194,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 								else{
 									return true;
 								}
-							});
+							}).removeClass('ignore')
+								.removeAttr('disabled')
+								.siblings('.file-feedback').remove();
+						},
+						error: function(){
+							$fileInputs.siblings('.file-feedback').remove();
+							$fileInputs.after('<div class="file-feedback text-warning">'+
+								'No permission given to store local data (or an error occurred).</div>');
+
 						}
 					};
 
@@ -2201,20 +2210,22 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						var $input = $(this),
 							fileName = ($input[0].files.length > 0) ? $input[0].files[0].name : '';
 						$input.attr('data-previous-file-name', fileName);
-					}).parent().addClass('with-media clearfix');//.prepend('<div class="text-warning">'+
-						//'File inputs are still very experimental. Use only for testing!</div>');
+					}).attr('disabled', 'disabled')
+						.addClass('ignore')
+						.after('<div class="file-feedback text-info">Awaiting user permission to store local data (files).</div>')
+						.parent().addClass('with-media clearfix');
 
 					fileManager.init(data.getInstanceID(), callbacks);
 				}
 				else{
 					console.debug('File API not supported');
 					$fileInputs
-						.attr('placeholder', 'not supported yet')
+						//.attr('placeholder', 'not supported yet')
 						.attr('disabled', 'disabled')
-						.addClass('.ignore')
+						.addClass('ignore')
 						.hide()
-						.after('<span class="file-feedback text-warning">File uploads not yet supported by your browser'+
-							' (try Chrome instead).</span>');
+						.after('<div class="file-feedback text-warning">File uploads not yet supported by your browser'+
+							' (try Chrome instead).</div>');
 				}
 			}
 			/*

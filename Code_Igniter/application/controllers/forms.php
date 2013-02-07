@@ -78,7 +78,7 @@ class Forms extends CI_Controller {
 		{
 			$result = $this->Form_model->get_formlist_JSON($server_url);
 			$this->output
-				->set_content_type('applicaton/json')
+				->set_content_type('application/json')
 				->set_output(json_encode($result)); 
 		}
 		else 

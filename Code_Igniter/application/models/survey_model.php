@@ -214,6 +214,27 @@ class Survey_model extends CI_Model {
         return $this->_get_record_number();
     }
 
+	private function _get_base_url($subdomain = false, $suffix = false) {
+		if(empty($_SERVER['HTTPS'])) {
+			$protocol = 'http://';
+			$default_port = 80;
+		} else {
+			$protocol = 'https://';
+			$default_port = 443;
+		}
+        $domain = $_SERVER['SERVER_NAME'];
+		// append port to domain only if it's a nonstandard port. don't use HTTP_HOST as it can be manipulated by the client
+		if($_SERVER['SERVER_PORT'] != $default_port) $domain .=  ':' . $_SERVER['SERVER_PORT'];
+		$domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
+
+		if($subdomain) {
+			if($suffix) 
+				$subdomain .= $this->ONLINE_SUBDOMAIN_SUFFIX;
+			$subdomain .= '.';
+		}
+		return $protocol.$subdomain.$domain;
+	}
+
     /**
      * @method _get_full_survey_url turns a subdomain into the full url where the survey is available
      * 
@@ -221,10 +242,7 @@ class Survey_model extends CI_Model {
      */
     private function _get_full_survey_url($subdomain)
     {
-        $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
-        $domain = $_SERVER['SERVER_NAME'];
-        $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
-        return $protocol.$subdomain.'.'.$domain.'/webform';
+        return $this->_get_base_url($subdomain).'/webform';
     }
 
     /**
@@ -234,10 +252,7 @@ class Survey_model extends CI_Model {
      */
     private function _get_full_survey_edit_url($subdomain)
     {
-        $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
-        $domain = $_SERVER['SERVER_NAME'];
-        $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
-        return $protocol.$subdomain.($this->ONLINE_SUBDOMAIN_SUFFIX).'.'.$domain.'/webform/edit';
+        return $this->_get_base_url($subdomain, true).'/webform/edit';
     }
 
     /**
@@ -247,10 +262,7 @@ class Survey_model extends CI_Model {
      */
     private function _get_full_survey_iframe_url($subdomain)
     {
-        $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
-        $domain = $_SERVER['SERVER_NAME'];
-        $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
-        return $protocol.$subdomain.($this->ONLINE_SUBDOMAIN_SUFFIX).'.'.$domain.'/webform/iframe';
+        return $this->_get_base_url($subdomain, true).'/webform/iframe';
     }
 
     /**
@@ -258,10 +270,7 @@ class Survey_model extends CI_Model {
      */
     private function _get_preview_url($server_url, $form_id)
     {
-        $protocol = (empty($_SERVER['HTTPS'])) ? 'http://' : 'https://';
-        $domain = $_SERVER['SERVER_NAME'];
-        $domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain;
-        return $protocol.$domain.'/webform/preview?server='.$server_url.'&id='.$form_id;
+        return $this->_get_base_url().'/webform/preview?server='.$server_url.'&id='.$form_id;
     }
 
 
@@ -391,7 +400,7 @@ class Survey_model extends CI_Model {
         }
         else 
         {
-            log_message('error', 'db query for '.implode(', ', $items)).' returned '.$query_num_rows().' results.';
+            log_message('error', 'db query for '.implode(', ', $items)).' returned '.$query->num_rows().' results.';
             return NULL;   
         }
     }

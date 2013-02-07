@@ -233,7 +233,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, instanceID
 		names=[],
 		contactSupport = 'Contact '+settings['supportEmail']+' please.',
 		contactAdmin = 'Contact the survey administrator please.',
-		serverDown = 'Sorry, the enketo server is down or being maintained. Please try again later or contact '+settings['supportEmail']+' please.',
+		serverDown = 'Sorry, the enketo or formhub server is down. Please try again later or contact '+settings['supportEmail']+' please.',
 		statusMap = {
 			0: {success: false, msg: (typeof jrDataStrToEdit !== 'undefined') ?
 				"Uploading of data failed. Please try again." :

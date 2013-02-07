@@ -21,22 +21,22 @@ var /**@type {Connection}*/connection;
 
 $(document).ready(function() {
 	'use strict';
-	var serverURL, formId, response,
+	var response,
 		$validateButton = $('#validate-form'),
 		$loading = $('progress');
 
-	if (!settings.serverURL || !settings.formId){
-		showError('No server and/or id provided.');
+	if ((!settings.serverURL || !settings.formId ) && !settings.formURL){
+		showError('No server url and/or id provided or no form url provided.');
 		return;
 	}
 
 	connection = new Connection();
-	connection.getTransForm(settings.serverURL, settings.formId, null, {
+	connection.getTransForm(settings.serverURL, settings.formId, null, settings.formURL, {
 		success: function(response){
 			var loadErrors,
 				$response = $(response),
-				formStr = new XMLSerializer().serializeToString($response.find('form')[0]),
-				modelStr = new XMLSerializer().serializeToString($response.find('model')[0]);
+				formStr = new XMLSerializer().serializeToString($response.find(':first>form')[0]),
+				modelStr = new XMLSerializer().serializeToString($response.find(':first>model')[0]);
 
 			if (formStr.length > 0 && modelStr.length > 0){
 				$validateButton.before(formStr);

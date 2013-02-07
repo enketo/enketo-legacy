@@ -12,9 +12,8 @@
 		<header class="navbar navbar-inverse navbar-fixed-top" style="height: 0;"></header>
 			
 	<? require 'elements/dialogs.php'; ?>
-
+		<h3 class="preview">Form Preview</h3>
 		<div class="main">
-			
 			<article class="paper" >
 				<? include_once 'elements/form-header.php'; ?>
 				<progress></progress>

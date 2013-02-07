@@ -128,7 +128,7 @@ describe("The Connection Class ", function () {
 			it('and shows '+anno+' alert when failed upload was conducted with forced:'+forced+' and online: '+online, function(){
 				connection.forced = forced;
 				connection.currentOnlineStatus = online;
-				connection.processOpenRosaResponse(404, 'aname', true);
+				connection.processOpenRosaResponse(404, 'aname', 'MyInstanceID', true);
 				if (alert){
 					expect(gui.alert).toHaveBeenCalled();
 					expect(gui.alert.mostRecentCall.args[1]).toEqual(errorHeading);
@@ -147,7 +147,7 @@ describe("The Connection Class ", function () {
 			it('shows a feedback message when succesful upload was conducted with forced:'+forced+' and online: '+online, function(){
 				connection.forced = forced;
 				connection.currentOnlineStatus = online;
-				connection.processOpenRosaResponse(201, 'aname', true);
+				connection.processOpenRosaResponse(201, 'aname','MyInstanceID', true);
 				expect(gui.alert).not.toHaveBeenCalled();
 				expect(gui.feedback).toHaveBeenCalled();
 			});

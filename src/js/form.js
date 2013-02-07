@@ -1023,14 +1023,22 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		/*
 			legends are a royal pain-in-the-ass, but semantically correct to use. To restoring sanity, the least
 			ugly solution that works regardless of the legend text + hint length (and showing a nice error background)
-			is to use a double fieldset (in hindsight, I should have used <section>s for each question)
+			is to use a double fieldset (in hindsight, I shouldn't have been so stingy with my markup and 
+			just have just used <section>s for each question)
 		 */
 		$form.find('legend').parent('fieldset').each(function(){
 			var $elem = $(this),
+				$parent = $elem.parent(),
 				$prev = $elem.prev(),
 				$wrap = $('<fieldset class="restoring-sanity-to-legends"></fieldset>');
 			$elem.detach().appendTo($wrap);
-			$prev.after($wrap);
+			if ($prev.length > 0) {
+				$prev.after($wrap);
+			}
+			//if it's the first element in a group and a title is missing
+			else{
+				$parent.prepend($wrap);
+			}
 		});
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
@@ -1057,8 +1065,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.preloads.init(); //after event handlers!
 		this.setLangs();
 		this.editStatus.set(false);
-		//setTimeout(function(){$form.fixLegends();}, 500);
-
 	};
 
 	/**

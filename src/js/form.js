@@ -864,7 +864,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {?(number|string|boolean|jQuery)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
-		var i, j, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
+		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
 			index+' and result type: '+resTypeStr);
@@ -969,7 +969,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return result[resultTypes[resTypeNum][2]];
 		}
 		catch(e){
-			console.error('Error occurred trying to evaluate: '+expr+', message: '+e.message);
+			error = 'Error occurred trying to evaluate: '+expr+', message: '+e.message;
+			console.error(error);
+			$(document).trigger('xpatherror', error);
+			loadErrors.push(error);
 			return null;
 		}
 	};
@@ -1119,7 +1122,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				console.error(' total number of branches differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form)');
 			}
 			if ( total.jrConstraint != ( total.hConstraintNotRadioCheck + total.hConstraintRadioCheck)){
-				console.error(' total numberRepeats of constraints differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form).'+
+				console.error(' total number of constraints differs between XML form ('+total.jrConstraint+') and HTML form ('+
+					(total.hConstraintNotRadioCheck + total.hConstraintRadioCheck)+')(not a problem if caused by obsolete bindings in xml form).'+
 					' Note that constraints on &lt;trigger&gt; elements are ignored in the transformation and could cause this error too.');
 			}
 			if ( total.jrCalculate != total.hCalculate ){

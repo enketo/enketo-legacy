@@ -33,9 +33,9 @@ describe("FileManager", function(){
 	beforeEach(function(){
 		quotaRequestSpy = jasmine.createSpy('quotaRequestSpy');
 
-		$(document).on('quotarequest', function(event){
-			console.log('quotarequest detected', event.data);
-			quotaRequestSpy();
+		$(document).on('quotarequest', function(event, bytes){
+			//console.log('quotarequest detected for '+ bytes+' bytes');
+			quotaRequestSpy(bytes);
 		});
 
 		fileManager = new FileManager();
@@ -92,7 +92,14 @@ describe("FileManager", function(){
 	});
 
 	/**
-		Some info on this crucial test that may fail. If the quota requested and granted at some time in the past
+		Some info on this important-but-difficult-to-run test.
+	
+		1. Best to clear all previous permissions for File Storage first.
+		2. Run tests. Approve first permission.
+		3. Run tests again.
+		4. Don't approve second permission request. This should make all tests pass.
+
+		If the quota requested and granted at some time in the past
 		was greater than the quota requested currently for this subdomain, the user will not be prompted to
 		increase storage if the required storage is larger than the available quota but less than that previously
 		granted quota!
@@ -100,8 +107,9 @@ describe("FileManager", function(){
 		chrome://settings/cookies is your friend to clear all permissions for a subdomain
 	**/
 	it('detects when the approved storage quota is no longer sufficient and asks user for permission to use more', function(){
-		var quotaAvailableMB = fileManager.getCurrentQuota() / (1024 * 1024),
-			file = getFakeFile('toolargefakefile', 'image/png', quotaAvailableMB + 1),
+		var quotaAvailable = fileManager.getCurrentQuota();
+			fileSize = quotaAvailable + 1024,
+			file = getFakeFile('toolargefakefile', 'image/png', fileSize / (1024*1024) ),
 			saveResult = null,
 			saveComplete = null,
 			fsURL = null,
@@ -115,15 +123,13 @@ describe("FileManager", function(){
 		});
 
 		waitsFor(function(){
-			return saveComplete;
-			//the timeout is meant to be too short for a user to approve additional storage
-		}, 'the file save operation to complete', 1000);
+			return quotaRequestSpy.calls.length === 2;
+			//user must not approve request (2nd request)
+		}, 'the file save operation to complete', 1500);
 
 		runs(function(){
-			//expect(fileManager.getCurrentQuotaUsed()).toEqual(2232);
-			expect(saveResult).toEqual('error');
-			expect(quotaRequestSpy).toHaveBeenCalled();
-			expect(quotaRequestSpy.calls.length).toEqual(2);
+			expect(saveResult).toEqual(null);
+			expect(quotaRequestSpy.calls[1].args[0]).toBeGreaterThan(fileSize);
 		});
 	});
 
@@ -270,11 +276,7 @@ describe("FileManager", function(){
 	});
 });
 
-
-
-
 //test that when fileManager.saveFile() fails the instance does not get a value (whether event.stopPropagation works)
-//
 //test that data-previous-file-name gets added after successful save
 //test that data-pervious-file-name gets updated to "" when field is cleared
 //test that file is deleted from file system if input is clear or a different file is selected

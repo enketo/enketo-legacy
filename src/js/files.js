@@ -31,7 +31,7 @@ function FileManager(){
 	var fs, requestQuota, requestFileSystem, errorHandler, setCurrentQuotaUsed, traverseAll, retrieveFile, dirName, dirPrefix,
 		currentQuota = null,
 		currentQuotaUsed = null,
-		DEFAULTBYTESREQUESTED = 1 * 1024 * 1024;
+		DEFAULTBYTESREQUESTED = 100 * 1024 * 1024;
 
 	this.getCurrentQuota = function(){return currentQuota;}; //REMOVE, IS TEMPORARY
 	this.getCurrentQuotaUsed = function(){return currentQuotaUsed;};
@@ -107,6 +107,7 @@ function FileManager(){
 		window.storageInfo.requestQuota(
 			window.storageInfo.PERSISTENT,
 			bytesRequested ,
+			//successhandler is called immediately if asking for increase in quota
 			callbacks.success,
 			callbacks.error
 		);
@@ -138,7 +139,7 @@ function FileManager(){
 
 	/**
 	 * generic error handler
-	 * @param  {Error} e [description]
+	 * @param  {(Error|string)=} e [description]
 	 */
 	errorHandler = function(e){
 		var msg = '';
@@ -219,8 +220,8 @@ function FileManager(){
 						var newBytesRequest,
 							targetError = e.target.error;
 						if (targetError instanceof FileError && targetError.code === window.FileError.QUOTA_EXCEEDED_ERR){
-							console.log('Required storage exceeding quota, going to request more.');
 							newBytesRequest = ((e.total * 5) < DEFAULTBYTESREQUESTED) ? currentQuota + DEFAULTBYTESREQUESTED : currentQuota + (5 * e.total);
+							console.log('Required storage exceeding quota, going to request more, in bytes: '+newBytesRequest);
 							requestQuota(
 								newBytesRequest,
 								{

@@ -2098,7 +2098,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//this with a bit of a delay..
 				setTimeout(function(){
 					$form.find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
-						.parent().parent('.jr-group').each(function(){
+						.parent().parent('.jr-appearance-field-list').each(function(){
 							$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
 							$(this).find('label').toLargestWidth();
 							$(this).find('legend').toLargestWidth();
@@ -2699,20 +2699,6 @@ Date.prototype.toISOLocalString = function(){
 
 	return new Date(this.getTime() - (offset.minstotal * 60 * 1000)).toISOString()
 		.replace('Z', offset.direction+offset.hrspart+':'+offset.minspart);
-};
-
-/**
- * Duplicate in common.js.... 
- * Pads a string with prefixed zeros until the requested string length is achieved.
- * @param  {number} digits [description]
- * @return {String|string}        [description]
- */
-String.prototype.pad = function(digits){
-	var x = this;
-	while (x.length < digits){
-		x = '0'+x;
-	}
-	return x;
 };
 
 (function($){

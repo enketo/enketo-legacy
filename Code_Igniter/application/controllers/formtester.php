@@ -42,7 +42,8 @@ class Formtester extends CI_Controller {
 				'/libraries/vkbeautify.js'
 			);
 			$default_main_scripts = array(
-					'/js-source/common.js',
+					'/js-source/helpers.js',
+					'/js-source/gui.js',
 					'/js-source/form.js',
 					'/js-source/widgets.js',
 					'/js-source/formtester.js',

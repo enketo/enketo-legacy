@@ -14,7 +14,8 @@
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="common.js"/>
+        <file name="helpers.js"/>
+        <file name="gui.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
         <file name="formtester.js"/>
@@ -31,7 +32,8 @@
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="common.js"/>
+        <file name="helpers.js"/>
+        <file name="gui.js"/>
         <file name="connection.js"/>
         <!--<file name="front.js"/>-->
       </sources>
@@ -46,8 +48,9 @@
       </externs>
 
       <sources dir="${basedir}/src/js">
+        <file name="helpers.js"/>
         <file name="cache.js"/>
-        <file name="common.js"/>
+        <file name="gui.js"/>
         <file name="storage.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
@@ -66,7 +69,8 @@
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="common.js"/>
+        <file name="helpers.js"/>
+        <file name="gui.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
         <file name="storage.js"/>
@@ -85,7 +89,8 @@
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="common.js"/>
+        <file name="helpers.js"/>
+        <file name="gui.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
         <file name="storage.js"/>
@@ -104,7 +109,8 @@
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="common.js"/>
+        <file name="helpers.js"/>
+        <file name="gui.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
         <file name="storage.js"/>
@@ -124,24 +130,8 @@
       </externs>
 
       <sources dir="${basedir}/src/js">
-        <file name="common.js"/>
-        <file name="storage.js"/>
-        <file name="connection.js"/>
-        <file name="cache.js"/>
-        <file name="formlist.js"/>
-      </sources>
-
-    </jscomp>
-
-    <jscomp compilationLevel="simple" warning="verbose" 
-            debug="false" output="public/js-min/formlist-all-min.js">
-
-      <externs dir="${basedir}/src/js">
-        <file name="extern.js"/>
-      </externs>
-
-      <sources dir="${basedir}/src/js">
-        <file name="common.js"/>
+        <file name="helpers.js"/>
+        <file name="gui.js"/>
         <file name="storage.js"/>
         <file name="connection.js"/>
         <file name="cache.js"/>

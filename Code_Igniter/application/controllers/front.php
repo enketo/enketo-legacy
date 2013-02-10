@@ -106,7 +106,7 @@ class Front extends CI_Controller {
 		{
 			$this->load->helper('subdomain');
 			$number = (full_base_url() == $url.'/') ? 
-				$this->get_number_launched : file_get_contents($url.'/front/get_number_launched');
+				$this->get_number_launched() : file_get_contents($url.'/front/get_number_launched');
 			if (!empty($number))
 			{
 				$result[$name] = (int) $number;

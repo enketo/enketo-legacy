@@ -42,7 +42,8 @@ class Webform extends CI_Controller {
 		);
 		$this->default_main_scripts = array
 		(
-			'/js-source/common.js',
+			'/js-source/helpers.js',
+			'/js-source/gui.js',
 			'/js-source/form.js',
 			'/js-source/widgets.js',
 			'/js-source/storage.js',

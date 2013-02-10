@@ -864,7 +864,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {?(number|string|boolean|jQuery)}            [description]
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
-		var i, j, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
+		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
 			index+' and result type: '+resTypeStr);
@@ -969,7 +969,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return result[resultTypes[resTypeNum][2]];
 		}
 		catch(e){
-			console.error('Error occurred trying to evaluate: '+expr+', message: '+e.message);
+			error = 'Error occurred trying to evaluate: '+expr+', message: '+e.message;
+			console.error(error);
+			$(document).trigger('xpatherror', error);
+			loadErrors.push(error);
 			return null;
 		}
 	};
@@ -1119,7 +1122,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				console.error(' total number of branches differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form)');
 			}
 			if ( total.jrConstraint != ( total.hConstraintNotRadioCheck + total.hConstraintRadioCheck)){
-				console.error(' total numberRepeats of constraints differs between XML form and HTML form (not a problem if caused by obsolete bindings in xml form).'+
+				console.error(' total number of constraints differs between XML form ('+total.jrConstraint+') and HTML form ('+
+					(total.hConstraintNotRadioCheck + total.hConstraintRadioCheck)+')(not a problem if caused by obsolete bindings in xml form).'+
 					' Note that constraints on &lt;trigger&gt; elements are ignored in the transformation and could cause this error too.');
 			}
 			if ( total.jrCalculate != total.hCalculate ){
@@ -2098,7 +2102,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//this with a bit of a delay..
 				setTimeout(function(){
 					$form.find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
-						.parent().parent('.jr-group').each(function(){
+						.parent().parent('.jr-appearance-field-list').each(function(){
 							$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
 							$(this).find('label').toLargestWidth();
 							$(this).find('legend').toLargestWidth();
@@ -2699,20 +2703,6 @@ Date.prototype.toISOLocalString = function(){
 
 	return new Date(this.getTime() - (offset.minstotal * 60 * 1000)).toISOString()
 		.replace('Z', offset.direction+offset.hrspart+':'+offset.minspart);
-};
-
-/**
- * Duplicate in common.js.... 
- * Pads a string with prefixed zeros until the requested string length is achieved.
- * @param  {number} digits [description]
- * @return {String|string}        [description]
- */
-String.prototype.pad = function(digits){
-	var x = this;
-	while (x.length < digits){
-		x = '0'+x;
-	}
-	return x;
 };
 
 (function($){

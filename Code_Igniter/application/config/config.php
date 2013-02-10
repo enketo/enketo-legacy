@@ -18,12 +18,16 @@
 // dynamic base url to allow subdomains (also incorporates https:// if used)
 if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on"){
 	$ssl_set = "s";
+	$default_port = 443;
 }
 else{
 	$ssl_set = "";
-}  
-//$config['base_url'] = 'http'.$ssl_set.'://enketo.formhub.org/';//$_SERVER['HTTP_HOST'];  
-$config['base_url'] = substr($_SERVER['HTTP_HOST'], strpos($_SERVER['HTTP_HOST'], 'enketo'));
+	$default_port = 80;
+}
+//$config['base_url'] = 'http'.$ssl_set.'://enketo.formhub.org/';
+//$config['base_url'] = substr($_SERVER['HTTP_HOST'], strpos($_SERVER['HTTP_HOST'], 'enketo'));
+$config['base_url'] = substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], 'enketo'));
+if($_SERVER['SERVER_PORT'] != $default_port) $config['base_url'] .=  ':' . $_SERVER['SERVER_PORT'];
 
 /*
 |--------------------------------------------------------------------------

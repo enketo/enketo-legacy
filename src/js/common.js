@@ -264,6 +264,7 @@ GUI.prototype.pages = {
 
 		$('#page .content').prepend($page.show()).trigger('change');
 		$('#page').show();
+		$('.overlay').show();
 		
 		$(window).on('resize.pageEvents', function(){
 			$('#page').trigger('change');
@@ -291,6 +292,7 @@ GUI.prototype.pages = {
 			//$('#overlay').hide();
 			$(window).off('.pageEvents');
 		}
+		$('.overlay').hide();
 	}
 };
 

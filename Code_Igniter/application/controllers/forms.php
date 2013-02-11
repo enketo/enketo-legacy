@@ -59,7 +59,8 @@ class Forms extends CI_Controller {
 		else
 		{
 			$data['scripts'] = array_merge($default_scripts, array(
-				'/js-source/common.js',       
+				'/js-source/helpers.js',
+				'/js-source/gui.js',       
 				'/js-source/storage.js',
        			'/js-source/connection.js',
        			'/js-source/cache.js',

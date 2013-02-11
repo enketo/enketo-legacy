@@ -860,11 +860,11 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:choose>
                         <xsl:when test="@form = 'long' or @form = 'short' or not(@form) ">
                             <span>
-                                <xsl:if test="string($lang)" >
+                                <!--<xsl:if test="string($lang)" >-->
                                     <xsl:attribute name="lang">
                                         <xsl:value-of select="$lang"/>
                                     </xsl:attribute>
-                                </xsl:if>
+                                <!--</xsl:if>-->
                                 <xsl:if test="string($class)">
                                     <xsl:attribute name="class">
                                         <xsl:value-of select="$class" />
@@ -881,8 +881,11 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                                 <xsl:call-template name="text-content" />
                             </span>
                         </xsl:when>
-                        <xsl:when test="@form = 'image'" >
+                        <xsl:when test="@form = 'image' and not($class = 'jr-hint')" >
                             <img>
+                                <xsl:attribute name="lang">
+                                    <xsl:value-of select="$lang"/>
+                                </xsl:attribute>
                                 <xsl:attribute name="src">
                                     <xsl:call-template name="strip_namespace_media">
                                         <xsl:with-param name="string" select="." />
@@ -891,8 +894,11 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                                 <xsl:attribute name="alt">image</xsl:attribute>
                             </img>
                         </xsl:when>
-                        <xsl:when test="@form = 'audio' ">
+                        <xsl:when test="@form = 'audio' and not($class = 'jr-hint')">
                             <audio controls="controls">
+                                <xsl:attribute name="lang">
+                                    <xsl:value-of select="$lang"/>
+                                </xsl:attribute>
                                 <xsl:attribute name="src">
                                     <xsl:call-template name="strip_namespace_media">
                                         <xsl:with-param name="string" select="." />
@@ -901,8 +907,11 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                                 <xsl:text>Your browser does not support HTML5 audio.</xsl:text>
                             </audio>
                         </xsl:when>
-                        <xsl:when test="@form = 'video' ">
+                        <xsl:when test="@form = 'video' and not($class = 'jr-hint')">
                             <video controls="controls">
+                                <xsl:attribute name="lang">
+                                    <xsl:value-of select="$lang"/>
+                                </xsl:attribute>
                                 <xsl:attribute name="src">
                                     <xsl:call-template name="strip_namespace_media">
                                         <xsl:with-param name="string" select="." />

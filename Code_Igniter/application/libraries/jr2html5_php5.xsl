@@ -693,6 +693,9 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         <xsl:attribute name="data-type-xml">
             <xsl:value-of select="$xml-type"/>
         </xsl:attribute>
+        <xsl:if test="$xml-type = 'decimal'">
+            <xsl:attribute name="step">any</xsl:attribute>
+        </xsl:if>
         <xsl:if test="$binding/@readonly = 'true()' and not($html-input-type = 'hidden')" >
             <xsl:attribute name="readonly">readonly</xsl:attribute>
         </xsl:if>

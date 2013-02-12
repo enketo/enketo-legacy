@@ -28,7 +28,7 @@ class Survey_model extends CI_Model {
     	$this->subdomain = get_subdomain();
         $this->ONLINE_SUBDOMAIN_SUFFIX = '-0';
         $this->db_subdomain = ( $this->_has_subdomain_suffix() ) ? substr($this->subdomain, 0, strlen($this->subdomain)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) : $this->subdomain;
-        date_default_timezone_set('UTC');
+        //date_default_timezone_set('UTC');
     }
     
     // returns true if a requested survey form is live / published, used for manifest

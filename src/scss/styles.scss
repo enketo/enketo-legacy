@@ -117,8 +117,25 @@ progress{
     .component{
       font-size: 0.4em;} } 
   nav{
-    float:right; } }
-  
+    float:right;
+    a{
+      text-align: right; }
+    img{
+      width: 1em;
+      height: 1em; } } }
+
+.overlay{
+  position:absolute;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  background: black;
+  opacity: 0.8;
+  display: none;
+}
+
 .paper{
 	background-color: #fff;
 	border-radius: 7px;
@@ -249,7 +266,7 @@ label#data-template-show {
 .popover{
   font-size: $baseFontSize !important;
   color: black !important;
-}
+  min-width: 30%; }
 
 .page-break{
   display: none; }
@@ -304,10 +321,12 @@ label#data-template-show {
   z-index: 12;
   top: -320px;
   width: 100%;
-  background-color: $pagecolor;
-  color: $shadow;
+  background-color: white;
+  //background-color: $pagecolor;
+  //color: $shadow;
   border: none;
   border-top: $border;
+  border-bottom: $border;
   #settings{
     .btn-toolbar{
       margin-top: 70px; } }

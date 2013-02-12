@@ -33,9 +33,6 @@ class Front extends CI_Controller {
 
 	public function index()
 	{
-		
-		
-
 		$default_library_scripts = array
 		(
 			'/libraries/jquery.min.js',
@@ -46,15 +43,14 @@ class Front extends CI_Controller {
 		(
 			'/js-source/helpers.js',
 			'/js-source/gui.js',
-			'/js-source/connection.js'//,
-			//'/js-source/front.js'
+			'/js-source/connection.js',
+			'/js-source/front.js'
 		);
 
 		$default_stylesheets = array
 		(
-			//array( 'href' => '/libraries/bootstrap/css/bootstrap.min.css', 'media' => 'screen'),
 			array( 'href' => '/css/styles.css', 'media' => 'screen'),
-			//array( 'href' => '/css/front.css', 'media' => 'screen'),
+			array( 'href' => '/css/front.css', 'media' => 'screen'),
 			array( 'href' => '/css/print.css', 'media' => 'print')
 		);
 		$data = array(
@@ -95,7 +91,7 @@ class Front extends CI_Controller {
 	public function get_number_launched()
 	{
 		$this->load->model('Survey_model','',TRUE);
-		echo (int) $this->Survey_model->number_surveys();
+		return (int) $this->Survey_model->number_surveys();
 	}
 
 	public function get_number_launched_everywhere()
@@ -110,7 +106,7 @@ class Front extends CI_Controller {
 		{
 			$this->load->helper('subdomain');
 			$number = (full_base_url() == $url.'/') ? 
-				$this->get_number_launched : file_get_contents($url.'/front/get_number_launched');
+				$this->get_number_launched() : file_get_contents($url.'/front/get_number_launched');
 			if (!empty($number))
 			{
 				$result[$name] = (int) $number;

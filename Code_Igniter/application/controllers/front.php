@@ -44,7 +44,8 @@ class Front extends CI_Controller {
 		);
 		$default_main_scripts = array
 		(
-			'/js-source/common.js',
+			'/js-source/helpers.js',
+			'/js-source/gui.js',
 			'/js-source/connection.js'//,
 			//'/js-source/front.js'
 		);

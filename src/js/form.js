@@ -2250,9 +2250,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//console.debug('date preloader called with current val: '+o.curVal);
 			if (o.curVal.length === 0){
 				today = new Date(data.evaluate('today()', 'string'));
-				year = today.getUTCFullYear().toString().pad(4);
-				month = (today.getUTCMonth() + 1).toString().pad(2);
-				day = today.getUTCDate().toString().pad(2);
+				year = today.getFullYear().toString().pad(4);
+				month = (today.getMonth() + 1).toString().pad(2);
+				day = today.getDate().toString().pad(2);
 
 				return year+'-'+month+'-'+day;
 			}

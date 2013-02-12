@@ -26,7 +26,7 @@ class Webform extends CI_Controller {
 
 		$this->load->helper(array('subdomain','url'));
 		$this->load->model('Survey_model','',TRUE);
-		
+
 		$this->default_library_scripts = array
 		(
 			'/libraries/jquery.min.js',
@@ -63,10 +63,9 @@ class Webform extends CI_Controller {
 		{
 			$form_props = $this->Survey_model->get_form_props();
 			$this->server_url= (isset($form_props['server_url'])) ? $form_props['server_url'] : NULL; //$this->Survey_model->get_server_url();
-			$this->form_id = (isset($form_props['form_id'])) ? $form_props['form_id'] : NULL; //$this->Survey_model->get_form_id();
+			$this->form_id = (isset($form_props['form_id'])) ? $form_props['form_id'] : NULL; //$logthis->Survey_model->get_form_id();
 			$this->form_hash = (isset($form_props['hash'])) ? $form_props['hash'] : NULL; //$this->Survey_model->get_form_
 		}
-
 	}
 
 	public function index()
@@ -74,7 +73,6 @@ class Webform extends CI_Controller {
 		
 		if (isset($this->subdomain))
 		{
-			
 			//if ($this->Survey_model->is_live_survey($subdomain))
 			if (!$this->Survey_model->is_launched_survey())
 			{
@@ -127,7 +125,7 @@ class Webform extends CI_Controller {
 					)
 				);
 			}
-			$this->output->enable_profiler(FALSE);
+			//$this->output->enable_profiler(FALSE);
 			$this->load->view('webform_view', $data);
 		}
 		else 
@@ -353,9 +351,10 @@ class Webform extends CI_Controller {
 		}
 		$this->load->model('Form_model', '', TRUE);
 
-		if ($this->Form_model->content_unchanged($this->server_url, $this->form_id, $this->form_hash))
+		if ($this->Form_model->content_unchanged($this->server_url, $this->form_id, $this->form_hash) 
+			&& $this->Form_model->stylesheets_unchanged())
 		{
-			log_message('debug', 'unchanged form, loading transformation result from database');
+			log_message('debug', 'unchanged form and stylesheets, loading transformation result from database');
 			$form = $this->Survey_model->get_transform_result();
 
 			if (empty($form->title) || empty($form->html) || empty($form->default_instance))
@@ -366,7 +365,7 @@ class Webform extends CI_Controller {
 		}
 		else
 		{
-			log_message('debug', 'form changed or never transformed before, going to perform transformation');
+			log_message('debug', 'form changed, stylesheet changed or form never transformed before, going to perform transformation');
 			$transf_result = $this->Form_model->transform($this->server_url, $this->form_id, FALSE);
 			
 			$title = $transf_result->form->xpath('//h3[@id="form-title"]');

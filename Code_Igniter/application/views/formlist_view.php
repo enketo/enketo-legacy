@@ -21,7 +21,7 @@
 			</div>
 		</article>
 	</div>
-	<article class="page" id="settings" data-title="load forms">
+	<article id="settings" class="page" data-title="load forms" data-display-icon="settings.png">
 		<div class="btn-toolbar">
 			<div class="<? if (!$integrated): ?>input-prepend<? endif ?> input-append btn-group">
 			<? if(!$integrated): ?>
@@ -44,13 +44,18 @@
 		</div>
 	</article>
 	
-<article id="about" class="page">
-	<p>This form list provides easy access to your forms. This list also works while offline (in modern browsers).</p>
-	<p>When a form has been manually loaded once (by clicking on it), that form will also be accessible offline.</p>
-	<p>Make sure to bookmark this page for offline use!</p>	
-	<p>
-		Please write <a href="mailto:<?= $this->config->item('support_email') ?>"><?= $this->config->item('support_email') ?></a> for any comments, questions or bug reports.
-	</p>			
-</article>
+	<article id="about" class="page" data-display="?">
+		<h3>What is this?</h3>
+		<p>
+			This form list provides easy access to all your forms. The list is also available offline (in modern browsers).
+		</p>
+			After you load a form, that form will also be accessible offline. We recommend to bookmark this page if you intend to use the offline capability so that you will be able to find it easily.
+		</p>
+		<? if (!$integrated): ?>
+		 	<? require_once 'elements/about_standalone_snippet.php';?>
+		<? else: ?>
+			Please use the <a href="https://groups.google.com/forum/?fromgroups#!forum/formhub-users">users forum</a> or contact <a href="mailto:<?= $this->config->item('support_email') ?>"><?= $this->config->item('support_email') ?></a> for any comments, questions or bug reports.
+		<? endif; ?>
+	</article>
 
 <? require 'elements/footer++.php' ?>

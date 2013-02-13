@@ -97,7 +97,9 @@ class Webform extends CI_Controller {
 				'html_title' => $form->title,
 				'form'=> $form->html,
 				'form_data'=> $form->default_instance,
-				'stylesheets'=> $this->default_stylesheets
+				'stylesheets'=> $this->default_stylesheets,
+				'server_url' => $this->server_url,
+				'form_id' => $this->form_id
 			);
 
 			if (ENVIRONMENT === 'production')

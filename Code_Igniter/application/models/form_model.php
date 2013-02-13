@@ -41,10 +41,28 @@ class Form_model extends CI_Model {
     function content_unchanged($server_url, $form_id, $previous_hash=NULL)
     {
         $current_hash = (string) $this->_get_hash($server_url, $form_id);
-        $previous_has = (string) $previous_hash;
-        //log_message('debug', 'previous hash: '.$previous_hash);
-        //log_message('debug', 'current_hash: '.$current_hash);
+        $previous_hash = (string) $previous_hash;
+        log_message('debug', 'previous hash: '.$previous_hash);
+        log_message('debug', 'current_hash: '.$current_hash);
         return (!empty($current_hash) && !empty($previous_hash) && $current_hash === $previous_hash);
+    }
+
+    function stylesheets_unchanged()
+    {
+        //$start_time = microtime(true);
+        $props = $this->_get_properties(array('form_xsl_hash', 'model_xsl_hash'));
+        $form_xsl_hash_prev = $props['form_xsl_hash'];
+        $model_xsl_hash_prev = $props['model_xsl_hash'];
+        $form_xsl_hash_now = md5_file($this->file_path_to_jr2HTML5_XSL);
+        $model_xsl_hash_now = md5_file($this->file_path_to_jr2Data_XSL);
+       // log_message('debug', 'xslt hash check took '. (microtime(true) - $start_time) . 'seconds');
+        if($form_xsl_hash_prev !== $form_xsl_hash_now || $model_xsl_hash_prev !== $model_xsl_hash_now)
+        {
+            $this->_update_properties(array('form_xsl_hash' => $form_xsl_hash_now, 'model_xsl_hash' => $model_xsl_hash_now));
+            log_message('debug', 'detected that XSLT stylesheet(s) changed');
+            return FALSE;
+        }
+        return TRUE;
     }
 
     function transform($server_url=NULL, $form_id = NULL, $file_path = NULL, $feedback = FALSE)
@@ -674,7 +692,38 @@ class Form_model extends CI_Model {
     	$names_arr = explode(";", $names);
     	return trim($names_arr[0]);
     }    
-             
-}
 
+    private function _get_properties($items)
+    {  
+        $this->db->select($items);
+        $query = $this->db->get('properties', 1); 
+        if ($query->num_rows() === 1) 
+        {
+            $row = $query->row_array();
+            //log_message('debug', 'db query returning row: '.json_encode($row));
+            return $row;
+        }
+        else 
+        {
+            log_message('error', 'db query for '.implode(', ', $items)).' returned '.$query->num_rows().' results.';
+            return NULL;   
+        }
+    }
+
+    private function _update_properties($data)
+    {
+        $this->db->limit(1);
+        $query = $this->db->update('properties', $data); 
+        if ($this->db->affected_rows() > 0) 
+        {
+            return TRUE;
+        }
+        else 
+        {
+            log_message('error', 'database update on properties table failed for'.json_encode($data));
+            return FALSE;   
+        }
+
+    }
+}
 ?>

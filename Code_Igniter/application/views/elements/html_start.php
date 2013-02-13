@@ -50,6 +50,12 @@
 <? if (!empty($default_server_url_helper)): ?>
 			settings['defaultServerURLHelper'] = '<?= $default_server_url_helper ?>';
 <? endif; ?>
+<? if (!empty($server_url)): ?>
+			settings['serverURL'] = '<?= $server_url ?>';
+<? endif; ?>
+<? if (!empty($form_id)): ?>
+			settings['formId'] = '<?= $form_id ?>';
+<? endif; ?>
 			//settings['autoUpload'] = true;
 			settings['modernBrowsersURL'] = 'modern_browsers';
 		</script>

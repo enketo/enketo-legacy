@@ -318,7 +318,7 @@ function exportData(finalOnly){
  */
 function exportToFile(){
 	"use strict";
-	var i, dataArr, dataStr, bb, blob,
+	var i, dataArr, dataStr, bb, blob, server,
 		finalOnly = true,
 		fileName = form.getName()+'_data_backup.xml';
 
@@ -335,7 +335,8 @@ function exportToFile(){
 				gui.alert('No records in queue. The records may have been successfully submitted already.');
 			}
 			else{
-				dataStr = vkbeautify.xml('<exported>'+dataArr.join('')+'</exported>');
+				server = settings['serverURL'] || '';
+				dataStr = vkbeautify.xml('<exported server="'+server+'">'+dataArr.join('')+'</exported>');
 				bb = new BlobBuilder();
 				bb.append(dataStr);
 				blob = bb.getBlob("application/octet-stream; charset=utf-8");

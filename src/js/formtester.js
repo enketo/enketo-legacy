@@ -222,7 +222,7 @@ State.prototype.init = function (){
 	var that,
 		serverGetVar = decodeURIComponent(decodeURI(getQueryVar('server')));
 
-	this.initialURL = initialURL = location.href,
+	this.initialURL = location.href,
 	this.server = ( serverGetVar && connection.isValidURL(serverGetVar) ) ? serverGetVar : null;
 	this.id = getQueryVar('id') || null; //CHECK THIS FOR 'VALIDITY'
 	this.source = getQueryVar('source') || false;
@@ -235,7 +235,7 @@ State.prototype.init = function (){
 	$(window).on('popstate', function(event){
 		//console.debug('state popped! with everPushedState:'+that.everPushedState);
 		// Ignore inital popstate that some browsers fire on page load
-		if ( that.everPushedState && (location.href !== this.initialURL )){
+		if ( that.everPushedState && (location.href !== that.initialURL )){
 			//console.debug('popstate event fired with state props: ', event.originalEvent.state);
 			window.location = location.href;
 		}

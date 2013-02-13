@@ -199,8 +199,13 @@ $(document).ready(function(){
 
 	if (state.server){
 		$('#upload-form input[name="server_url"]').val(state.server);
-			$('#upload-form input[name="form_id"]').val(state.id);
+		$('#upload-form input[name="form_id"]').val(state.id);
 		$('#upload-form').submit();
+	}
+	else{
+		console.log('no server in state');
+		$('.hurry').show();
+		gui.parseFormlist({}, $('#form-list'), true);
 	}
 });
 
@@ -214,27 +219,28 @@ function State(){
 }
 
 State.prototype.init = function (){
-	var first = true,
+	var that,
 		serverGetVar = decodeURIComponent(decodeURI(getQueryVar('server')));
 
+	this.initialURL = initialURL = location.href,
 	this.server = ( serverGetVar && connection.isValidURL(serverGetVar) ) ? serverGetVar : null;
 	this.id = getQueryVar('id') || null; //CHECK THIS FOR 'VALIDITY'
 	this.source = getQueryVar('source') || false;
 	this.debug = getQueryVar('debug') || false;
+	this.everPushedState = false;
+	that = this;
 
 	state.setUrl();
 
 	$(window).on('popstate', function(event){
-		//if (!first){
-		//TODO: FIX THIS
-			console.debug('popstate event: ', event);
-			console.debug('popstate state props ', event.state);
-			//window.location = location.href;
-		//}
-		first = false;
+		//console.debug('state popped! with everPushedState:'+that.everPushedState);
+		// Ignore inital popstate that some browsers fire on page load
+		if ( that.everPushedState && (location.href !== this.initialURL )){
+			//console.debug('popstate event fired with state props: ', event.originalEvent.state);
+			window.location = location.href;
+		}
 	});
-	// really not elegant....
-	setTimeout(function(){first=false;}, 5000);
+	setTimeout(function(){that.everPushedState = true;}, 1000);
 };
 
 State.prototype.setUrl = function(){
@@ -247,12 +253,12 @@ State.prototype.setUrl = function(){
 	urlAppend = (this.debug == 'true' || this.debug === true ) ? urlAppend+'&debug='+encodeURIComponent(this.debug) : urlAppend;
 	urlAppend = (urlAppend.substring(0,1) == '&') ? urlAppend.substring(1) : urlAppend;
 	url = (urlAppend.length > 0) ? url+'?'+urlAppend : url;
-	if (location.href !== location.protocol+'//'+location.hostname+'/'+url ){
-		console.debug('pushing history state ');
-		console.debug(location.href);
-		console.debug(location.hostname+'/'+url);
-		console.debug(stateProps);
-		history.pushState( stateProps, 'Enketo Launch', url);
+	if ((location.href !== location.protocol+'//'+location.hostname+'/'+url) || this.everPushedState){
+		//console.debug('pushing history state ', location.href);
+		//console.debug(location.hostname+'/'+url);
+		//console.debug(stateProps);
+		//this.everPushedState = true;
+		history.pushState( stateProps, 'Enketo Form Tester', url);
 	}
 };
 
@@ -265,7 +271,7 @@ State.prototype.reset = function(){
 
 function resetAll(){
 	"use strict";
-	state.reset();
+	//state.reset();
 	$('#upload-form')[0].reset();
 	$('#upload-form input[type="hidden"]').val('');
 	//$('#form-list ul').empty().hide();
@@ -347,11 +353,10 @@ function processForm($response){
 	}
 }
 
-
 function processFormlist(list)
 {
 	"use strict";
-	$('.hurry').remove();
+	$('.hurry').hide();
 	gui.parseFormlist(list, $('#form-list'));
 }
 

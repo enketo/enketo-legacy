@@ -1,8 +1,9 @@
 describe("LocalStorage", function () {
-	var store;
+	var store, record;
 
 	beforeEach(function(){
 		store = new StorageLocal();
+		record = {data: 'bla'};
 	});
 
 	afterEach(function(){
@@ -14,8 +15,7 @@ describe("LocalStorage", function () {
 	});
 
 	describe('attempts to save records', function(){
-		var record = {data:'bla'},
-			name = 'myname',
+		var name = 'myname',
 			otherName = 'anothername',
 			testKeys = function(keys, expectedResp){
 				for (var i = 0; i<keys.length ; i++){
@@ -53,18 +53,20 @@ describe("LocalStorage", function () {
 
 	});
 
-	describe('storage space', function(){
+	describe('storage space limit', function(){
+		var dataCharsStored = 0,
+			str = 'dsbaadbcdd',
+			result,
+			i, j;
 
 		it('is at least 5Mb', function(){
-			var dataCharsStored = 0,
-				record = {data:''},
-				str = 'dsbaadbcdd';
-			for (var i = 0; i<1000 ; i++){
+			for (i = 0; i<1000 ; i++){
 				record.data += str;
 			}
-			for (var j=0; j<1000; j++){
+			for (j=0; j<10000; j++){
 				var key = j.toString();
-				if (store.setRecord(key, record) === 'success'){
+				result = store.setRecord(key, record);
+				if ( result === 'success'){
 					var storedRecord = store.getRecord(key);
 					if (storedRecord){
 						dataCharsStored += JSON.stringify(storedRecord).length + key.length;
@@ -75,22 +77,43 @@ describe("LocalStorage", function () {
 					}
 				}
 				else break;
-				console.log ('characters stored so far:'+dataCharsStored); // DEBUG
 			}
-			//1 character in javascript takes up 2 bytes. To cater to storage overhead 1024 is rounded down to 1000
+			//1 character in javascript takes up 2 bytes. To cater to some storage overhead 1024 is rounded down to 1000
+			//Note: FF does not even reach the limit at 200 Mb.
 			expect(dataCharsStored).toBeGreaterThan(5 * 1000 * 1000 / 2);
-			
-			//real tests
-			//ok(charsStored>72000, 'passes if more than 80,000 characters can be stored in localStorage');
-			//notEqual(charsStored, -1, 'to easily get a value of the amount of characters that can be stored ('+charsStored+')');
-			// Firefox on OS X and IE9 on W7 appear to have highest default storage space available
-			// Opera appears to have the lowest default storage space available
-			// Both Firefox and Opera on OS X ask the user to increase storage space! = VERY GOOD
 		});
 		
+		it('when exceeded during saving a record, returns "full", otherwise "success"', function(){
+			expect( (j < 10000 && result === 'full') || (j === 10000 && result === 'success') ).toBe(true);
+		});
 	});
 
+	describe('attemps to load a record', function(){
+		var retrievedRecord;
+		it('return the record as an object when it is available', function(){
+			var recordName = 'a';
+			store.setRecord(recordName, record);
+			retrievedRecord = store.getRecord(recordName);
+			expect(typeof retrievedRecord).toEqual('object');
+			expect(retrievedRecord.data).toEqual('bla');
+		});
+		it('return null when the record does not exist', function(){
+			retrievedRecord = store.getRecord('b');
+			expect(retrievedRecord).toEqual(null);
+		});
+	});
 
+	describe('attempts to remove a record', function(){
+		it('succeed if the record exists', function(){
+			var recordName = 'c';
+			store.setRecord(recordName, record);
+			expect(store.getRecord(recordName).data).toEqual('bla');
+			store.removeRecord(recordName);
+			expect(store.getRecord(recordName)).toEqual(null);
+		});
+		//how to make this fail?
+	});
 
+	
 
 });

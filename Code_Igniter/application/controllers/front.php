@@ -91,6 +91,12 @@ class Front extends CI_Controller {
 	public function get_number_launched()
 	{
 		$this->load->model('Survey_model','',TRUE);
+		echo $this->Survey_model->number_surveys();
+	}
+
+	private function _get_number_launched()
+	{
+		$this->load->model('Survey_model','',TRUE);
 		return (int) $this->Survey_model->number_surveys();
 	}
 
@@ -106,7 +112,7 @@ class Front extends CI_Controller {
 		{
 			$this->load->helper('subdomain');
 			$number = (full_base_url() == $url.'/') ? 
-				$this->get_number_launched() : file_get_contents($url.'/front/get_number_launched');
+				$this->_get_number_launched() : file_get_contents($url.'/front/get_number_launched');
 			if (!empty($number))
 			{
 				$result[$name] = (int) $number;

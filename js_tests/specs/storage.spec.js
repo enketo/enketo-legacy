@@ -77,7 +77,7 @@ describe("LocalStorage", function () {
 				else break;
 				console.log ('characters stored so far:'+dataCharsStored); // DEBUG
 			}
-			//1 character in javascript takes up 2 bytes. To cater to some storage overhead 1024 is rounded down to 1000
+			//1 character in javascript takes up 2 bytes. To cater to storage overhead 1024 is rounded down to 1000
 			expect(dataCharsStored).toBeGreaterThan(5 * 1000 * 1000 / 2);
 			
 			//real tests

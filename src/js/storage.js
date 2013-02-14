@@ -57,26 +57,22 @@ function StorageLocal(){
 	 * @return {string}
 	 */
 	this.setRecord = function(newKey, record, del, overwrite, oldKey) {
-		if (!newKey || newKey.length < 1){
-			console.error('no key provided for record');
+		if (!newKey || typeof newKey !== 'string' || newKey.length < 1){
+			console.error('no key or empty key provided for record: '+newKey);
 			return 'require';
 		}
 		newKey = newKey.trim();
 		oldKey = (typeof oldKey === 'string') ? oldKey.trim() : null;
 		overwrite = (typeof overwrite !== 'undefined' && overwrite === true) ? true : false;
 		
-		//TODO: CATCH ERROR WHEN LOCALSTORAGE SPACE IS FULL
-		
-		//using the knowledge that only survey data is provided as a "data" property (and is  a string)
+		//using the knowledge that only survey data is provided as a "data" property (and is a string)
 		if (typeof record['data'] === 'string' && isReservedKey(newKey)){
 			return 'forbidden';
 		}
-		// if the record has an existing key, but was not loaded from the store with this key, do not overwrite
-		if (typeof record['data'] === 'string' && oldKey !== newKey && isExistingKey(newKey) && overwrite !== true) {
-			
-			//if (oldKey !== newKey && overwrite === false) {
+		if (typeof record['data'] === 'string' &&
+			( oldKey !== newKey && isExistingKey(newKey) && overwrite !== true ) ||
+			( oldKey === newKey && overwrite !== true) ) {
 			return 'existing';
-			//}
 		}
 		try {
 			//add timestamp to survey data
@@ -99,6 +95,7 @@ function StorageLocal(){
 			return 'success';
 		}
 		catch(e){
+			//TODO: HANDLE ERROR WHEN LOCALSTORAGE SPACE IS FULL
 			console.log('error in store.setRecord:'+e.message);
 			return 'error';
 		}

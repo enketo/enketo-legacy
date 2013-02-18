@@ -57,26 +57,22 @@ function StorageLocal(){
 	 * @return {string}
 	 */
 	this.setRecord = function(newKey, record, del, overwrite, oldKey) {
-		if (!newKey || newKey.length < 1){
-			console.error('no key provided for record');
+		if (!newKey || typeof newKey !== 'string' || newKey.length < 1){
+			console.error('no key or empty key provided for record: '+newKey);
 			return 'require';
 		}
 		newKey = newKey.trim();
 		oldKey = (typeof oldKey === 'string') ? oldKey.trim() : null;
 		overwrite = (typeof overwrite !== 'undefined' && overwrite === true) ? true : false;
 		
-		//TODO: CATCH ERROR WHEN LOCALSTORAGE SPACE IS FULL
-		
-		//using the knowledge that only survey data is provided as a "data" property (and is  a string)
+		//using the knowledge that only survey data is provided as a "data" property (and is a string)
 		if (typeof record['data'] === 'string' && isReservedKey(newKey)){
 			return 'forbidden';
 		}
-		// if the record has an existing key, but was not loaded from the store with this key, do not overwrite
-		if (typeof record['data'] === 'string' && oldKey !== newKey && isExistingKey(newKey) && overwrite !== true) {
-			
-			//if (oldKey !== newKey && overwrite === false) {
+		if (typeof record['data'] === 'string' &&
+			( oldKey !== newKey && isExistingKey(newKey) && overwrite !== true ) ||
+			( oldKey === newKey && overwrite !== true) ) {
 			return 'existing';
-			//}
 		}
 		try {
 			//add timestamp to survey data
@@ -99,7 +95,10 @@ function StorageLocal(){
 			return 'success';
 		}
 		catch(e){
-			console.log('error in store.setRecord:'+e.message);
+			if (e.name === 'QUOTA_EXCEEDED_ERR'){
+				return 'full';
+			}
+			console.log('error in store.setRecord:'+e.message, e);
 			return 'error';
 		}
 	};
@@ -245,41 +244,6 @@ function StorageLocal(){
 	};
 
 	/**
-	 * [getSurveyDataXMLStr description]
-	 * @param  {boolean=} finalOnly [description]
-	 * @return {?string}           [description]
-	 */
-//	this.getSurveyDataXMLStr = function(finalOnly){
-//		var i,
-//			dataObjArr = this.getSurveyDataArr(finalOnly),
-//			dataOnlyArr =[];
-//		for (i=0 ; i<dataObjArr.length ; i++){
-//			dataOnlyArr.push(dataObjArr[i].data);
-//		}
-//		return (dataOnlyArr.length>0) ? '<exported>'+dataOnlyArr.join('')+'</exported>' : null;
-//	};
-	
-	
-	// MOVE TO STORE?
-	//function to get settings from the store - all settings or one particular setting
-	//this.getSettings = function(name){
-//		var settings={};
-//		var settingsRec = this.getRecord('settings');
-//		//console.log('settings record:'+settingsRec);
-//		if (settingsRec){
-//			settings = settingsRec;
-//		}
-//		else {
-//			settings = DEFAULT_SETTINGS;
-//		}
-//		if (name){
-//			settings = settings[name]; // still to be tested
-//		}
-//		// console.log('returning settings: '+settings); //DEBUG
-//		return settings;
-//	};
-
-	/**
 	 * private function to check if key is forbidden
 	 * @param  {string}  k [description]
 	 * @return {boolean}   [description]
@@ -325,68 +289,3 @@ function StorageLocal(){
 function isNumber(n){
 	return !isNaN(parseFloat(n)) && isFinite(n);
 }
-
-///**
-// * Settings class depends on Store Class
-// * TODO MAKE THIS CLASS FUNCTION WITHOUT STORAGE TOO (GLOBAL VAR)
-// * @constructor
-// */
-//function Settings(){
-//	"use strict";
-//}//
-
-//Settings.prototype.init = function(){
-//	"use strict";
-//	var i, value, name,
-//		settings = this.get(),
-//		that = this;
-//
-//	//set settings (loose coupling with GUI)
-//	$(document).trigger('setsettings', settings);
-//	//perform actions based on settings at launch
-//	//for (var prop in settings){
-//		
-//	//}
-//};//
-
-////communicates with local storage
-///**
-// * [get description]
-// * @return {Object.<string, (boolean|string)>}         [description]
-// */
-//Settings.prototype.get = function(){
-//	"use strict";
-//	//DISABLED SETTINGS IN LOCAL STORAGE AS IT IS NOT REQUIRED FOR NOW
-//	//return store.getRecord('__settings') || DEFAULT_SETTINGS;
-//	return DEFAULT_SETTINGS;
-//};//
-
-///**
-// * [getOne description]
-// * @param  {string} setting [description]
-// * @return {?(string|boolean)}         [description]
-// */
-//Settings.prototype.getOne = function(setting){
-//	var settings = this.get();//store.getRecord('__settings') || DEFAULT_SETTINGS;
-//	return (typeof setting !== 'undefined' && typeof settings[setting] !== 'undefined') ? settings[setting] : null;
-//};//
-
-///**
-// * Communicates with local storage and perform action linked with setting. Called by eventhandler in GUI.
-// *
-// * @param {string} setting [description]
-// * @param {string|boolean} value   [description]
-// */
-//Settings.prototype.set = function(setting, value){
-//	"use strict";
-//	var result,
-//		settings = this.get();
-//	console.debug('going to store setting: '+setting+' with value:'+value);
-//	settings[setting] = value;
-//	result = store.setRecord('__settings', settings);
-//	//perform action linked to setting
-//	if (typeof this[setting] !== 'undefined'){
-//		this[setting](value);
-//	}
-//	return (result === 'success' ) ? true : console.error('error storing settings');
-//};

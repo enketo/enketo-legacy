@@ -50,7 +50,7 @@ class Survey_model extends CI_Model {
     
     public function get_form_props()
     {
-        return $this->_get_items(array('server_url', 'form_id', 'hash'));
+        return $this->_get_items(array('server_url', 'form_id', 'hash', 'xsl_version'));
     }
 
     public function get_server_url()
@@ -98,13 +98,14 @@ class Survey_model extends CI_Model {
         return $form;
     }
 
-    public function update_transform_result($form, $hash)
+    public function update_transform_result($form, $hash, $xsl_version)
     {
         $values = array(
             'transform_result_title' => (string) $form->title,
             'transform_result_model' => (string) $form->default_instance,
-            'transform_result_form' => (string) $form->html, 
-            'hash' => (string) $hash
+            'transform_result_form' => (string) $form->html,
+            'hash' => (string) $hash,
+            'xsl_version' =>  $xsl_version
         );
         $this->_update_items($values);
     }

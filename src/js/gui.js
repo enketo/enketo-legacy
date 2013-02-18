@@ -70,6 +70,7 @@ function setSettings(){
  */
 function GUI(){
 	"use strict";
+	this.supportLink = '<a href="mailto:'+settings['supportEmail']+'">'+settings['supportEmail']+'</a>';
 }
 
 /**

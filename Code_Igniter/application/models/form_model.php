@@ -47,22 +47,28 @@ class Form_model extends CI_Model {
         return (!empty($current_hash) && !empty($previous_hash) && $current_hash === $previous_hash);
     }
 
-    function stylesheets_unchanged()
+    function stylesheets_changed($xsl_version_last_used)
     {
         //$start_time = microtime(true);
-        $props = $this->_get_properties(array('form_xsl_hash', 'model_xsl_hash'));
+        $props = $this->_get_properties(array('xsl_version', 'form_xsl_hash', 'model_xsl_hash'));
+        $xsl_version_prev = $props['xsl_version'];
         $form_xsl_hash_prev = $props['form_xsl_hash'];
         $model_xsl_hash_prev = $props['model_xsl_hash'];
-        $form_xsl_hash_now = md5_file($this->file_path_to_jr2HTML5_XSL);
-        $model_xsl_hash_now = md5_file($this->file_path_to_jr2Data_XSL);
+        $form_xsl_hash_new = md5_file($this->file_path_to_jr2HTML5_XSL);
+        $model_xsl_hash_new = md5_file($this->file_path_to_jr2Data_XSL);
        // log_message('debug', 'xslt hash check took '. (microtime(true) - $start_time) . 'seconds');
-        if($form_xsl_hash_prev !== $form_xsl_hash_now || $model_xsl_hash_prev !== $model_xsl_hash_now)
+        if($form_xsl_hash_prev !== $form_xsl_hash_new || $model_xsl_hash_prev !== $model_xsl_hash_new)
         {
-            $this->_update_properties(array('form_xsl_hash' => $form_xsl_hash_now, 'model_xsl_hash' => $model_xsl_hash_now));
+            $xsl_version_new = (int) $xsl_version_prev + 1;
+            $this->_update_properties(array(
+                'xsl_version' => $xsl_version_new,
+                'form_xsl_hash' => $form_xsl_hash_new, 
+                'model_xsl_hash' => $model_xsl_hash_new
+            ));
             log_message('debug', 'detected that XSLT stylesheet(s) changed');
-            return FALSE;
+            return $xsl_version_new;
         }
-        return TRUE;
+        return FALSE;
     }
 
     function transform($server_url=NULL, $form_id = NULL, $file_path = NULL, $feedback = FALSE)
@@ -678,7 +684,7 @@ class Form_model extends CI_Model {
     	}
     	$last_query = $this->db->last_query();
     	//log_message('debug', 'db query: '.$last_query);
-    return array('lang'=>$lang, 'lang_name'=>$lang_name);
+        return array('lang'=>$lang, 'lang_name'=>$lang_name);
     }
     
     //removes alternative options (separated by ';' in database)
@@ -692,7 +698,7 @@ class Form_model extends CI_Model {
     	$names_arr = explode(";", $names);
     	return trim($names_arr[0]);
     }    
-
+    
     private function _get_properties($items)
     {  
         $this->db->select($items);
@@ -723,7 +729,6 @@ class Form_model extends CI_Model {
             log_message('error', 'database update on properties table failed for'.json_encode($data));
             return FALSE;   
         }
-
     }
 }
 ?>

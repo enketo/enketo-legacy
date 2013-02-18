@@ -51,21 +51,27 @@ class Form_model extends CI_Model {
     {
         //$start_time = microtime(true);
         $props = $this->_get_properties(array('xsl_version', 'form_xsl_hash', 'model_xsl_hash'));
+        
         $xsl_version_prev = $props['xsl_version'];
         $form_xsl_hash_prev = $props['form_xsl_hash'];
         $model_xsl_hash_prev = $props['model_xsl_hash'];
+
+        $xsl_version_new = $xsl_version_prev;
         $form_xsl_hash_new = md5_file($this->file_path_to_jr2HTML5_XSL);
         $model_xsl_hash_new = md5_file($this->file_path_to_jr2Data_XSL);
        // log_message('debug', 'xslt hash check took '. (microtime(true) - $start_time) . 'seconds');
         if($form_xsl_hash_prev !== $form_xsl_hash_new || $model_xsl_hash_prev !== $model_xsl_hash_new)
         {
-            $xsl_version_new = (int) $xsl_version_prev + 1;
+            $xsl_version_new++;
             $this->_update_properties(array(
                 'xsl_version' => $xsl_version_new,
                 'form_xsl_hash' => $form_xsl_hash_new, 
                 'model_xsl_hash' => $model_xsl_hash_new
             ));
             log_message('debug', 'detected that XSLT stylesheet(s) changed');
+            //return $xsl_version_new;
+        }
+        if ($xsl_version_new !== $xsl_version_last_used){
             return $xsl_version_new;
         }
         return FALSE;

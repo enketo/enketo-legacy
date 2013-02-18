@@ -135,6 +135,11 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 	//else if (result === 'require'){
 	//	gui.alert (form.KEY_LABEL+' is required. Please provide this.');
 	//}
+	else if (result === 'full'){
+		gui.alert('<p>Storage is full. If you are online this should not have happened, please contact '+gui.supportLink+
+		'.</p><p>If you are working offline, you will have to go online to upload saved records first or switch to a different'+
+		' browser/device that you have loaded this form on.</p>', 'Storage Full');
+	}
 	else if (result === 'existing'){
 		message = 'Record with name '+confirmedRecordName+' already exists. Would you like to overwrite existing record? ';
 		choices = {
@@ -145,11 +150,11 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 		gui.confirm(message, choices);
 	}
 	else if (result === 'forbidden'){
-		gui.alert ('This name is not allowed. Please change it');
+		gui.alert ('This name is not allowed. Please change it', 'Record Name not allowed');
 		gui.feedback ('Form was NOT saved.');
 	}
 	else {
-		gui.feedback('Error occurred. Form was NOT saved.');
+		gui.alert('Error occurred. Form was NOT saved.', 'Save Error');
 	}
 }
 

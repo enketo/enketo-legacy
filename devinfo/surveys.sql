@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 29, 2013 at 04:54 AM
+-- Generation Time: Feb 18, 2013 at 04:09 PM
 -- Server version: 5.5.29
 -- PHP Version: 5.4.6-1ubuntu1.1
 
@@ -35,9 +35,10 @@ CREATE TABLE IF NOT EXISTS `surveys` (
   `data_url` varchar(100) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
   `hash` varchar(40) NOT NULL,
-  `transform_result_model` text NOT NULL,
+  `transform_result_model` mediumtext NOT NULL,
   `transform_result_form` longtext NOT NULL,
   `transform_result_title` text NOT NULL,
+  `xsl_version` int(11) NOT NULL,
   `launch_date` datetime NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`subdomain`)

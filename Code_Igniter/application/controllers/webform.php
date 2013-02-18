@@ -65,6 +65,7 @@ class Webform extends CI_Controller {
 			$this->server_url= (isset($form_props['server_url'])) ? $form_props['server_url'] : NULL; //$this->Survey_model->get_server_url();
 			$this->form_id = (isset($form_props['form_id'])) ? $form_props['form_id'] : NULL; //$logthis->Survey_model->get_form_id();
 			$this->form_hash = (isset($form_props['hash'])) ? $form_props['hash'] : NULL; //$this->Survey_model->get_form_
+			$this->xsl_version_last = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; //$this->Survey_model->get_form_
 		}
 	}
 
@@ -352,9 +353,10 @@ class Webform extends CI_Controller {
 			return FALSE;
 		}
 		$this->load->model('Form_model', '', TRUE);
+		$stylesheets_new_version = $this->Form_model->stylesheets_changed($this->xsl_version_last);
 
 		if ($this->Form_model->content_unchanged($this->server_url, $this->form_id, $this->form_hash) 
-			&& $this->Form_model->stylesheets_unchanged())
+			&&  !$stylesheets_new_version)
 		{
 			log_message('debug', 'unchanged form and stylesheets, loading transformation result from database');
 			$form = $this->Survey_model->get_transform_result();
@@ -388,7 +390,7 @@ class Webform extends CI_Controller {
 			$form->default_instance = json_encode($form->default_instance);
 			if (!empty($form->html) && !empty($form->default_instance))
 			{
-				$this->Survey_model->update_transform_result($form, $hash);
+				$this->Survey_model->update_transform_result($form, $hash, $stylesheets_new_version);
 				//log_message('debug', 'hash in transformation result: '. $hash);
 			}
 			//$this->Survey_model->update_hash($hash);

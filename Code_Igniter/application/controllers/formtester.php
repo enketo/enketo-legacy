@@ -46,9 +46,9 @@ class Formtester extends CI_Controller {
 					'/js-source/gui.js',
 					'/js-source/form.js',
 					'/js-source/widgets.js',
-					'/js-source/formtester.js',
 					'/js-source/connection.js',
-					'/js-source/debug.js'
+					'/js-source/debug.js',
+					'/js-source/formtester.js',
 			);
 			$default_stylesheets = array
 			(

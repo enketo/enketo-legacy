@@ -52,6 +52,15 @@ function setDebugEventHandlers(){
 	}
 }
 
+function Profiler(taskName){
+	var start = new Date().getTime();
+	this.report = function(){
+		console.error('time taken for '+taskName+' to execute in milliseconds: '+ (new Date().getTime() - start));
+	};
+}
+
+var xpathEvalTime = 0;
+
 // helper function to set up and close test by removing and returning all survey data in localStorage
 
 /**

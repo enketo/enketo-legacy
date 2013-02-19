@@ -49,7 +49,15 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         </xsl:if>
     </xsl:variable>
     <xsl:variable name="default-lang">
-        <xsl:value-of select="h:html/h:head/xf:model/xf:itext/xf:translation[@default]/@lang" />
+        <xsl:choose>
+            <xsl:when test="h:html/h:head/xf:model/xf:itext/xf:translation[@default]/@lang">
+                <xsl:value-of select="h:html/h:head/xf:model/xf:itext/xf:translation[@default]/@lang" />
+            </xsl:when>
+            <xsl:otherwise>
+                <!-- first language or empty if itext was not used -->
+                <xsl:value-of select="h:html/h:head/xf:model/xf:itext/xf:translation[1]/@lang" />
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:variable>
 
     <xsl:template match="/">
@@ -116,6 +124,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                             </xsl:otherwise>
                         </xsl:choose>
 	                </h3>
+                <!--
                     <div id="stats" style="display: none;">
                         <span id="jrSelect"><xsl:value-of select="count(/h:html/h:body//xf:select)"/></span>
                         <span id="jrSelect1"><xsl:value-of select="count(/h:html/h:body//xf:select1)"/></span>
@@ -130,16 +139,15 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                         <span id="jrCalculate"><xsl:value-of select="count(/h:html/h:head/xf:model/xf:bind[@calculate])"/></span>
                         <span id="jrPreload"><xsl:value-of select="count(/h:html/h:head/xf:model/xf:bind[@jr:preload])"/></span>
                     </div>
+                -->
 	                <xsl:if test="//*/@lang" >
 	                    <select id="form-languages">
 	                    	<xsl:if test="$translated != 'true'">
 	                        	<xsl:attribute name="style">display:none;</xsl:attribute>
 	                        </xsl:if>
-	                        <xsl:if test="$default-lang">
-	                            <xsl:attribute name="data-default-lang">
-	                                <xsl:value-of select="$default-lang" />
-	                            </xsl:attribute>
-	                        </xsl:if>
+                            <xsl:attribute name="data-default-lang">
+                                <xsl:value-of select="$default-lang" />
+                            </xsl:attribute>
 	                        <xsl:call-template name="languages" />
 	                    </select>
 	                </xsl:if>
@@ -756,7 +764,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
             <xsl:when test="not(string(./@ref)) and string(.) and not(contains(.,'itext('))">
                 <span lang="">                    
                     <xsl:attribute name="class">
-                        <xsl:value-of select="$class" />
+                        <xsl:value-of select="concat($class, ' active')" />
                     </xsl:attribute>
                     <xsl:call-template name="text-content" />
                 </span>
@@ -831,7 +839,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     select="substring(substring-after(@value, 'itext('),2,string-length(substring-after(@value, 'itext('))-3)"/>
             <xsl:attribute name="data-value">
                 <!-- this is just a quick hack! Need a robust itext processor that can make a distinction 
-                between id and node and figure out with instance to take node from with multiple instances -->
+                between id and node and figure out which instance to take node from with multiple instances -->
                 <xsl:choose>
                     <xsl:when test="string-length($itext) > 0" >
                         <xsl:value-of select="$itext"/>
@@ -859,6 +867,9 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         <xsl:param name="class"/>
         <xsl:for-each select="/h:html/h:head/xf:model/xf:itext/xf:translation/xf:text[@id=$id]">
             <xsl:variable name="lang" select="ancestor::xf:translation/@lang"/>
+            <xsl:variable name="active">
+                <xsl:if test="string($lang) = string($default-lang)">active</xsl:if>
+            </xsl:variable>
             <xsl:for-each select="./xf:value" >
                     <xsl:choose>
                         <xsl:when test="@form = 'long' or @form = 'short' or not(@form) ">
@@ -868,14 +879,15 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                                         <xsl:value-of select="$lang"/>
                                     </xsl:attribute>
                                 <!--</xsl:if>-->
-                                <xsl:if test="string($class)">
+                                <xsl:if test="string($class) or @form or string($active)">
                                     <xsl:attribute name="class">
-                                        <xsl:value-of select="$class" />
-                                    </xsl:attribute>
-                                </xsl:if>
-                                <xsl:if test="@form">
-                                    <xsl:attribute name="class">
-                                        <xsl:value-of select="concat(' jr-form-', @form)" />
+                                        <xsl:value-of select="concat($class, ' ')" />
+                                        <xsl:if test="@form">
+                                            <xsl:value-of select="concat(' jr-form-', @form, ' ')" />
+                                        </xsl:if>
+                                        <xsl:if test="@form = 'long' or (@form = 'short' and not(../@form = 'long')) or not(@form)">
+                                            <xsl:value-of select="$active" />
+                                        </xsl:if>
                                     </xsl:attribute>
                                 </xsl:if>
                                 <xsl:attribute name="data-itext-id">
@@ -889,6 +901,11 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                                 <xsl:attribute name="lang">
                                     <xsl:value-of select="$lang"/>
                                 </xsl:attribute>
+                                <xsl:if test="string($active)">
+                                    <xsl:attribute name="class">
+                                        <xsl:value-of select="$active" />
+                                    </xsl:attribute>
+                                </xsl:if>
                                 <xsl:attribute name="src">
                                     <xsl:call-template name="strip_namespace_media">
                                         <xsl:with-param name="string" select="." />
@@ -902,6 +919,11 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                                 <xsl:attribute name="lang">
                                     <xsl:value-of select="$lang"/>
                                 </xsl:attribute>
+                                <xsl:if test="string($active)">
+                                    <xsl:attribute name="class">
+                                        <xsl:value-of select="$active" />
+                                    </xsl:attribute>
+                                </xsl:if>
                                 <xsl:attribute name="src">
                                     <xsl:call-template name="strip_namespace_media">
                                         <xsl:with-param name="string" select="." />
@@ -915,6 +937,11 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                                 <xsl:attribute name="lang">
                                     <xsl:value-of select="$lang"/>
                                 </xsl:attribute>
+                                <xsl:if test="string($active)">
+                                    <xsl:attribute name="class">
+                                        <xsl:value-of select="$active" />
+                                    </xsl:attribute>
+                                </xsl:if>
                                 <xsl:attribute name="src">
                                     <xsl:call-template name="strip_namespace_media">
                                         <xsl:with-param name="string" select="." />

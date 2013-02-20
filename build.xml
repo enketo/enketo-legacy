@@ -7,7 +7,7 @@
   <target name="compile">
     
     <jscomp compilationLevel="simple" warning="verbose" 
-            debug="false" output="public/js-min/test-all-min.js">
+            debug="false" output="public/js-min/tester-all-min.js">
 
       <externs dir="${basedir}/src/js">
         <file name="extern.js"/>
@@ -18,6 +18,8 @@
         <file name="gui.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
+        <file name="storage.js"/>
+        <file name="survey_controls.js"/>
         <file name="formtester.js"/>
         <file name="connection.js"/>
       </sources>

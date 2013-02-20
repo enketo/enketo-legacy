@@ -178,7 +178,7 @@
     </jscomp>
 
      <jscomp compilationLevel="simple" warning="quiet" 
-            debug="false" output="dristhi/js/libraries-all-min.js">
+            debug="false" output="drishti/js/libraries-all-min.js">
 
       <sources dir="${basedir}/public/libraries">
         <file name="jquery.min.js"/>

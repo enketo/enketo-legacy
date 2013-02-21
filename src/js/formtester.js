@@ -17,8 +17,7 @@
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global GUI, gui, Form, Connection, Modernizr, getGetVariable, vkbeautify*/
 var form, source, url, $tabs, $upload, _error, state, connection,
 	error_msg = 'There were errors. Please see the "report" tab for details.',
-	templateShow = false,
-	store = {};
+	templateShow = false;
 
 $(document).ready(function(){
 	"use strict";
@@ -205,7 +204,7 @@ $(document).ready(function(){
 	else{
 		console.log('no server in state');
 		$('.hurry').show();
-		gui.parseFormlist({}, $('#form-list'), true);
+		gui.parseFormlist(null, $('#form-list'), true);
 	}
 });
 

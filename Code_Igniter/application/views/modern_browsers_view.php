@@ -30,7 +30,7 @@
 <body>
 	<h1>Modern Browsers</h1>
 	<p>
-		Enketo uses several state-of-the-art technologies that are not yet supported by sub-standard browsers such as all versions of Internet Explorer<span id="not-supported"></span>.
+		Enketo uses several state-of-the-art technologies that are not yet supported by sub-standard browsers such as all older versions of Internet Explorer<span id="not-supported"></span>.
 	</p>
 	<p>
 	 	We <strong>recommend</strong> using a recent version of one of the following excellent modern browsers:	
@@ -42,11 +42,8 @@
 		</ul>
 	</p>
 	<h2>Why not Internet Explorer?</h2>
-	<p>We understand that some people, especially those working for large bureaucracies, do not have access to modern browsers. Normally, we would provide workarounds to support these. However, Enketo uses a technology that allows web applications to launch offline - a key feature of Enketo, and in fact it was the reason it was developed. This technology is not available in Internet Explorer. Until this is supported by Internet Explorer (maybe in version 10), those users are unfortunately out of luck. 
-	<!--<h2>Internet Explorer (IE) users</h2>
 	<p>
-		Internet Explorer (even the latest version) is lagging behind in the support of technologies used in this application. 		However, it is possible to use IE8 and higher. To enable offline launch in IE, the <a href="http://gears.google.com" 		target="_blank">Gears plugin</a> is required.
-		Note that Gears is officially not supported (by Google) on IE9 and although it appears to function, bugs could arise 		in future browser updates that cannot be solved. On the other hand, future updates of IE may avoid the need for the 		Gears plugin altogether.
-	</p>-->
+		We understand that some people, especially those working for large bureaucracies, do not have access to modern browsers. Since we know how great the web could be, we have great empathy for users in that unfortunate situation. Normally, we would provide workarounds to support outdated, but still used, browsers. However, enketo uses a technology that allows web applications to launch offline. This is a key feature and in fact it was the reason it was developed. This technology is not available in Internet Explorer (except in version 10 and later) and users on older browsers are unfortunately out of luck.
+	<p>
 </body>
 </html>

@@ -45,10 +45,12 @@ class Formtester extends CI_Controller {
 					'/js-source/helpers.js',
 					'/js-source/gui.js',
 					'/js-source/form.js',
+					'/js-source/storage.js',
 					'/js-source/widgets.js',
+					'/js-source/survey_controls.js',
 					'/js-source/connection.js',
 					'/js-source/debug.js',
-					'/js-source/formtester.js',
+					'/js-source/formtester.js'
 			);
 			$default_stylesheets = array
 			(
@@ -61,7 +63,7 @@ class Formtester extends CI_Controller {
 				$data['scripts'] = array
 				(
 					'libraries/libraries-all-min.js',
-					'js-min/test-all-min.js'
+					'js-min/tester-all-min.js'
 				);
 			}
 			else

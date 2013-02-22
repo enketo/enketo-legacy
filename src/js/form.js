@@ -1077,6 +1077,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		profiler = new Profiler('setLangs()');
 		this.setLangs();
 		profiler.report();
+		profiler = new Profiler('setHints()');
+		this.setHints();
+		profiler.report();
 		this.editStatus.set(false);
 		//console.error('time taken across all functions to evaluate XPath with XPathJS_javarosa: '+xpathEvalTime);
 	};
@@ -1376,12 +1379,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//$form.find('[lang]').not('.jr-hint, .jr-constraint-msg, jr-option-translations>*').show().not('[lang="'+lang+'"], [lang=""], #form-languages a').hide();
 			$form.find('[lang]').removeClass('active').filter('[lang="'+lang+'"], [lang=""]').addClass('active');
 
-			//hide the short versions if long versions exist
-			$form.find('.jr-form-short.active').each(function(){
+			//hide the short versions if long versions exist - DONE IN XSLT NOW
+			/*$form.find('.jr-form-short.active').each(function(){
 				if ($(this).siblings('.jr-form-long.active').length > 0){
 					$(this).removeClass('active');
 				}
-			});
+			});*/
 
 			//swap language of <select> <option>s
 			$form.find('select > option').not('[value=""]').each(function(){
@@ -1406,16 +1409,24 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			that.setHints();
 			$form.trigger('changelanguage');
 		});
+		//this.setHints();
 		//$('#form-languages').val(defaultLang).trigger('change');
 	};
 		
 	/**
 	 * setHints updates the hints. It is called whenever the language or output value is changed.
+	 * @param { {outputsOnly: boolean}} options options
 	 */
-	FormHTML.prototype.setHints = function(){
-		var hint, $wrapNode;
-		//console.log('setting hints, lang is '+lang);
-		$form.find('*>.jr-hint').parent().each(function(){
+	FormHTML.prototype.setHints = function(options){
+		var hint, $hints, $wrapNode;
+
+		options = options || {};
+		options.outputsOnly = options.outputsOnly || false;
+
+		//not sure why *> is in selectors - could be a performance issue
+		$hints = (options.outputsOnly) ? $form.find('*>.jr-hint>.jr-output').parent() : $form.find('*>.jr-hint');
+
+		$hints.parent().each(function(){
 			if ($(this).prop('nodeName').toLowerCase() !== 'label' && $(this).prop('nodeName').toLowerCase() !== 'fieldset' ){
 				$wrapNode = $(this).parent('fieldset');
 			}
@@ -1700,7 +1711,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});			
 		});
 		if (needToUpdateLangs){
-			that.setLangs();
+			//that.setLangs();
+			$('#form-languages').trigger('change');
 		}	
 	};
 
@@ -1710,8 +1722,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} changedNodeNames Comma-separated node names that (may have changed)
 	 */
 	FormHTML.prototype.outputUpdate = function(changedNodeNames){
-		var i, $inputNode, contextPath, contextIndex, expr, namesArr, cleverSelector, 
-			that=this,
+		var i, expr, namesArr, cleverSelector, 
+			outputChanged = false,
+			outputCache = {},
 			val='';
 		/** 
 		 * issue #141 on modilabs/enketo was found to be a very mysterious one. In a very short form (random.xml)
@@ -1728,25 +1741,27 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			for (i=0 ; i<namesArr.length ; i++){
 				cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
 			}
-			//console.debug('the clever selector created: '+cleverSelector.join());
-			//console.debug($form.find('*:not([disabled]) span.active'));
+			
 			$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
-				//console.log('found outputs');
-				//try{
-					expr = $(this).attr('data-value');
+				expr = $(this).attr('data-value');
+
+				if (typeof outputCache[expr] !== 'undefined'){
+					val = outputCache[expr];
+				}
+				else{
 					val = data.evaluate(expr, 'string');
-					//console.log('value: '+val);
-				//}
-				/*catch(e){
-					console.error('error occurred trying to evaluate output value from expression: '+
-					expr+', (message:'+e.message+')');
-					val = '[ERROR]';
-				}*/
-				$(this).text(val);
+					outputCache[expr] = val;
+				}
+				if ($(this).text !== val){
+					$(this).text(val);
+					outputChanged = true;
+				}
 			});
-			//$form.fixLegends();
+
 			//hints may have changed too
-			that.setHints();
+			if (outputChanged){
+				this.setHints({outputsOnly: true});
+			}
 			profiler.report();
 		//}, 1);
 	};

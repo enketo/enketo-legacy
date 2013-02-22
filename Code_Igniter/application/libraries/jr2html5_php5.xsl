@@ -342,10 +342,10 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
 
             <xsl:if test="not(local-name() = 'item')">
                 <xsl:apply-templates select="$binding/@jr:constraintMsg" />
+                <xsl:apply-templates select="xf:label" />
             </xsl:if>
-            <xsl:apply-templates select="xf:label" />
             <!-- 
-                note: Hints should actually be placed in title attribute (of input).
+                note: Hints should actually be placed in title attribute (of input) as it is semantically nicer.
                 However, to support multiple languages and parse all of them (to be available offline)
                 they are placed in the label instead.
             -->
@@ -381,6 +381,9 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:text> </xsl:text>
                 </xsl:if>
             </xsl:element>
+            <xsl:if test="local-name() = 'item'">
+                <xsl:apply-templates select="xf:label" />
+            </xsl:if>
         </label>
     </xsl:template>
 

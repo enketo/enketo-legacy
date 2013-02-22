@@ -1023,6 +1023,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 		profiler.report();
 
+		profiler = new Profiler('adding hint icons');
 		//add 'hint' icon
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
@@ -1030,6 +1031,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
 			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 		}
+		profiler.report();
 
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
@@ -1054,31 +1056,35 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.itemsetUpdate();
 		profiler.report();
 		this.setAllVals();
-		profiler = new Profiler('widgets.init()');
+		
 		this.widgets.init(); //after setAllVals()
-		profiler.report();
+		
 		profiler = new Profiler('bootstrapify');
 		this.bootstrapify(); 
 		profiler.report();
+
 		profiler = new Profiler('branch.init()');
 		this.branch.init();
 		profiler.report();
-		profiler = new Profiler('preloads.init()');
+		
 		this.preloads.init(); //after event handlers! NOT NECESSARY ANY MORE I THINK
-		profiler.report();
+		
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
-		profiler = new Profiler('calcUpdate');
+		
 		this.calcUpdate();
-		profiler.report();
+		
 		profiler = new Profiler('outputUpdate initial');
 		this.outputUpdate();
 		profiler.report();
+
 		profiler = new Profiler('setLangs()');
 		this.setLangs();
 		profiler.report();
+
 		profiler = new Profiler('setHints()');
 		this.setHints();
 		profiler.report();
+
 		this.setEventHandlers();
 		this.editStatus.set(false);
 		//console.error('time taken across all functions to evaluate XPath with XPathJS_javarosa: '+xpathEvalTime);
@@ -1850,10 +1856,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.find('.trigger').addClass('alert alert-block');
 		//$form.find('label:not(.geo), fieldset').addClass('clearfix');
-		$form.find(':checkbox, :radio').each(function(){
+		/*$form.find(':checkbox, :radio').each(function(){
 			var $p = $(this).parent('label'); 
 			$(this).detach().prependTo($p);
-		});
+		});*/
 		//move constraint message to bottom of question and add message for required (could also be done in XSLT)
 		$form.find('.jr-constraint-msg').parent().each(function(){
 			var $msg = $(this).find('.jr-constraint-msg').detach(),
@@ -1870,7 +1876,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 *
 	 * In the future it would probably be wise to standardize this. E.g. each form control widget needs to:
 	 * - have a widget class attribute
-	 * - load default values
+	 * - load default values from the original input element
 	 * - have a 'swap language' function responding to a 'changelanguage' event
 	 * - disable when its parent branch is hidden (also when hidden upon initialization)
 	 * - enable when its parent branch is revealed 

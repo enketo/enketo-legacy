@@ -321,15 +321,23 @@
             }
             
             if (!this.touch){
-                this.$form.on('googlemapsscriptloaded', function(){
-                    if (that.dynamicMapAvailable()){
-                        //default map view
-                        that.updateMap(0,0,1);
-                        if (that.$search){
-                            that.enableSearch();
-                        }
+                if (that.dynamicMapAvailable()){
+                    that.updateMap(0,0,1);
+                    if (that.$search){
+                        that.enableSearch();
                     }
-                });
+                }
+                else{
+                    this.$form.on('googlemapsscriptloaded', function(){
+                        if (that.dynamicMapAvailable()){
+                            //default map view
+                            that.updateMap(0,0,1);
+                            if (that.$search){
+                                that.enableSearch();
+                            }
+                        }
+                    });
+                }
             }
             else if(this.$map){
                 this.updateMapFn = "updateStaticMap";

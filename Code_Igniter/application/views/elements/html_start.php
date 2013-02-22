@@ -20,7 +20,7 @@
 		<meta name="robots" content="<?= $robots ?>"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<!--[if lt IE 8]>
+		<!--[if lt IE 9]>
         	<script type="text/javascript">window.location = 'modern_browsers';</script>
 		<![endif]-->
 <? foreach ($stylesheets as $css): ?>
@@ -49,6 +49,12 @@
 <? endif; ?>
 <? if (!empty($default_server_url_helper)): ?>
 			settings['defaultServerURLHelper'] = '<?= $default_server_url_helper ?>';
+<? endif; ?>
+<? if (!empty($server_url)): ?>
+			settings['serverURL'] = '<?= $server_url ?>';
+<? endif; ?>
+<? if (!empty($form_id)): ?>
+			settings['formId'] = '<?= $form_id ?>';
 <? endif; ?>
 			//settings['autoUpload'] = true;
 			settings['modernBrowsersURL'] = 'modern_browsers';

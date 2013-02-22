@@ -54,8 +54,9 @@ function setDebugEventHandlers(){
 
 function Profiler(taskName){
 	var start = new Date().getTime();
-	this.report = function(){
-		console.error('time taken for '+taskName+' to execute in milliseconds: '+ (new Date().getTime() - start));
+	this.report = function(message){
+		message = message || 'time taken for '+taskName+' to execute in milliseconds: '+ (new Date().getTime() - start);
+		console.error(message);
 	};
 }
 

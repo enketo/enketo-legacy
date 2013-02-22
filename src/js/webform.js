@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, Connection, Cache, vkbeautify, saveAs, gui, jrDataStr, settings, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, Profiler, Connection, Cache, vkbeautify, saveAs, gui, jrDataStr, settings, Form, store:true, StorageLocal:true, Settings, Modernizr*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var /**@type {Form}*/form;
@@ -25,9 +25,11 @@ var /**@type {Cache}*/cache;
 $(document).ready(function() {
 	'use strict';
 	var message, choices, loadErrors;
-
+	//var profiler;
+	var timeStart = new Date().getTime();
 	//store = new StorageLocal();
 	//store.init();
+	
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	//settings = new Settings();
 	//settings.init();
@@ -60,6 +62,7 @@ $(document).ready(function() {
 			gui.confirm({msg: message, heading:'Application cannot launch offline'}, choices);
 		}
 	}
+
 	loadErrors = form.init();
 	if (loadErrors.length > 0){
 		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
@@ -76,4 +79,6 @@ $(document).ready(function() {
 		//getCurrentRecordName() to prevent currenty open record from being submitted
 		connection.uploadRecords(store.getSurveyDataArr(true));
 	}, 15*1000);
+
+	//console.error('total time from start of webform.js until now: '+ (new Date().getTime() - timeStart));
 });

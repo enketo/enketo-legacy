@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Profiler, Modernizr, google, settings, connection*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Profiler, Modernizr, google, settings, connection, xPathEvalTime*/
 
 /**
  * Class: Form
@@ -59,9 +59,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		data = new DataXML(dataStr);
 		form = new FormHTML(formSelector);
 
-		var profiler = new Profiler('data.init()');
+		//var profiler = new Profiler('data.init()');
 		data.init();
-		profiler.report();
+		//profiler.report();
 
 		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit.length > 0){
 			dataToEdit = new DataXML(dataStrToEdit);
@@ -69,9 +69,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			data.load(dataToEdit);
 		}
 
-		profiler = new Profiler('form.init()');
+		//profiler = new Profiler('form.init()');
 		form.init();
-		profiler.report();
+		//profiler.report();
 		
 		if (loadErrors.length > 0){
 			console.error('loadErrors: ',loadErrors);
@@ -956,7 +956,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum >0 && resTypeNum<4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
-						xpathEvalTime += new Date().getTime() - timeStart;
+						//xpathEvalTime += new Date().getTime() - timeStart;
 						return result;
 					}
 				}
@@ -971,11 +971,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
-				xpathEvalTime += new Date().getTime() - timeStart;
+				//xpathEvalTime += new Date().getTime() - timeStart;
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
-			xpathEvalTime += new Date().getTime() - timeStart;
+			//xpathEvalTime += new Date().getTime() - timeStart;
 			return result[resultTypes[resTypeNum][2]];
 		}
 		catch(e){
@@ -983,7 +983,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			console.error(error);
 			$(document).trigger('xpatherror', error);
 			loadErrors.push(error);
-			xpathEvalTime += new Date().getTime() - timeStart;
+			//xpathEvalTime += new Date().getTime() - timeStart;
 			return null;
 		}
 	};
@@ -1011,19 +1011,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 		
-		var profiler = new Profiler('adding required clues');
+		//var profiler = new Profiler('adding required clues');
 		//add 'required field'
 		$required = '<span class="required">*</span>';//<br />';
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
 			.find('legend:eq(0) span:not(.jr-hint):last').after($required);
+		
 		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
 			.not('[type="checkbox"], [type="radio"], [readonly]').parent()
 			.each(function(){
 				$(this).children('span:not(.jr-option-translations, .jr-hint):last').after($required);
 			});
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('adding hint icons');
+		//profiler = new Profiler('adding hint icons');
 		//add 'hint' icon
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
@@ -1031,14 +1032,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
 			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 		}
-		profiler.report();
+		//profiler.report();
 
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 
-		profiler = new Profiler('repeat.init()');
+		//profiler = new Profiler('repeat.init()');
 		this.repeat.init(this); //before double-fieldset magic to fix legend issues
-		profiler.report();
+		//profiler.report();
 
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
@@ -1052,20 +1053,22 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 
 		$form.find('h2').first().append('<span/>');
-		profiler = new Profiler('itemsetUpdate()');
+
+		//profiler = new Profiler('itemsetUpdate()');
 		this.itemsetUpdate();
-		profiler.report();
+		//profiler.report();
+		//
 		this.setAllVals();
 		
 		this.widgets.init(); //after setAllVals()
 		
-		profiler = new Profiler('bootstrapify');
+		//profiler = new Profiler('bootstrapify');
 		this.bootstrapify(); 
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('branch.init()');
+		//profiler = new Profiler('branch.init()');
 		this.branch.init();
-		profiler.report();
+		//profiler.report();
 		
 		this.preloads.init(); //after event handlers! NOT NECESSARY ANY MORE I THINK
 		
@@ -1073,21 +1076,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		
 		this.calcUpdate();
 		
-		profiler = new Profiler('outputUpdate initial');
+		//profiler = new Profiler('outputUpdate initial');
 		this.outputUpdate();
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('setLangs()');
+		//profiler = new Profiler('setLangs()');
 		this.setLangs();
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('setHints()');
+		//profiler = new Profiler('setHints()');
 		this.setHints();
-		profiler.report();
+		//profiler.report();
 
 		this.setEventHandlers();
 		this.editStatus.set(false);
-		//console.error('time taken across all functions to evaluate XPath with XPathJS_javarosa: '+xpathEvalTime);
+		//profiler.report('time taken across all functions to evaluate XPath with XPathJS_javarosa: '+xpathEvalTime);
 	};
 
 	/**
@@ -1421,16 +1424,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		
 	/**
 	 * setHints updates the hints. It is called whenever the language or output value is changed.
-	 * @param { {outputsOnly: boolean}} options options
+	 * @param { {outputsOnly: boolean}=} options options
 	 */
 	FormHTML.prototype.setHints = function(options){
-		var hint, $hints, $wrapNode;
+		var hint, $hints, $wrapNode, o;
 
-		options = options || {};
-		options.outputsOnly = options.outputsOnly || false;
+		o = options || {};
+		o.outputsOnly = options.outputsOnly || false;
 
 		//not sure why *> is in selectors - could be a performance issue
-		$hints = (options.outputsOnly) ? $form.find('*>.jr-hint>.jr-output').parent() : $form.find('*>.jr-hint');
+		$hints = (o.outputsOnly) ? $form.find('*>.jr-hint>.jr-output').parent() : $form.find('*>.jr-hint');
 
 		$hints.parent().each(function(){
 			if ($(this).prop('nodeName').toLowerCase() !== 'label' && $(this).prop('nodeName').toLowerCase() !== 'fieldset' ){

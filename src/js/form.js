@@ -1086,7 +1086,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.branch.init();
 		//profiler.report();
 		
-		this.preloads.init(); //after event handlers! NOT NECESSARY ANY MORE I THINK
+		this.preloads.init(this); //after event handlers! NOT NECESSARY ANY MORE I THINK
 		
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 		

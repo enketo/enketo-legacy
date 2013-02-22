@@ -1506,9 +1506,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {?boolean}                  [description]
 		 */
 		this.update = function(changedNodeNames){
-			var i, p, $branchNode, result, namesArr, cleverSelector,	
-				relevantCache = {},
-				alreadyCovered = {},
+			var i, p, $branchNode, result, namesArr, cleverSelector, //cacheIndex,
+				//relevantCache = {},
+				alreadyCovered = [],
 				that = this;
 
 			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
@@ -1521,7 +1521,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			$form.find(cleverSelector.join()).each(function(){
 				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
-				if (alreadyCovered[$(this).attr('name')]){
+				if ($.inArray($(this).attr('name'), alreadyCovered) !== -1){
 					return;
 				}
 
@@ -1534,16 +1534,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					console.error('could not find branch node');
 					return;
 				}
+				//note:caching would be meaningless without first detecting whether an expression contains relative
+				//paths in order to determine whether the context path+index needs to be added to cacheIndex to e.g.
+				//support evaluating branches inside repeats - to be continued.
+				//cacheIndex = p.relevant+'__'+p.path+'__'+p.ind;
 
-				if (typeof relevantCache[p.relevant] !== 'undefined'){
-					result = relevantCache[p.relevant];
-				}
-				else{
-					result = data.evaluate(p.relevant, 'boolean', p.path, p.ind);
-					relevantCache[p.relevant] = result;
-				}
+				//if (typeof relevantCache[cacheIndex] !== 'undefined'){
+				//	result = relevantCache[cacheIndex];
+				//}
+				//else{
+				result = data.evaluate(p.relevant, 'boolean', p.path, p.ind);
+				//	relevantCache[cacheIndex] = result;
+				//}
 			
-				alreadyCovered[$(this).attr('name')] = true;
+				alreadyCovered.push($(this).attr('name'));
 				//console.debug('relevant nodes already covered:',  alreadyCovered);
 				//console.debug('relevant expression results cached:', relevantCache);
 

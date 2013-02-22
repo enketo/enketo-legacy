@@ -1427,13 +1427,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param { {outputsOnly: boolean}=} options options
 	 */
 	FormHTML.prototype.setHints = function(options){
-		var hint, $hints, $wrapNode, o;
+		var hint, $hints, $wrapNode, outputsOnly;
 
-		o = options || {};
-		o.outputsOnly = options.outputsOnly || false;
+		outputsOnly = (options && options.outputsOnly) ? options.outputsOnly : false;
 
 		//not sure why *> is in selectors - could be a performance issue
-		$hints = (o.outputsOnly) ? $form.find('*>.jr-hint>.jr-output').parent() : $form.find('*>.jr-hint');
+		$hints = (outputsOnly) ? $form.find('*>.jr-hint>.jr-output').parent() : $form.find('*>.jr-hint');
 
 		$hints.parent().each(function(){
 			if ($(this).prop('nodeName').toLowerCase() !== 'label' && $(this).prop('nodeName').toLowerCase() !== 'fieldset' ){

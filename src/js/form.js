@@ -1063,6 +1063,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		profiler = new Profiler('branch.init()');
 		this.branch.init();
 		profiler.report();
+		profiler = new Profiler('preloads.init()');
+		this.preloads.init(); //after event handlers! NOT NECESSARY ANY MORE I THINK
+		profiler.report();
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 		profiler = new Profiler('calcUpdate');
 		this.calcUpdate();
@@ -1070,16 +1073,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		profiler = new Profiler('outputUpdate initial');
 		this.outputUpdate();
 		profiler.report();
-		this.setEventHandlers();
-		profiler = new Profiler('preloads.init()');
-		this.preloads.init(); //after event handlers!
-		profiler.report();
 		profiler = new Profiler('setLangs()');
 		this.setLangs();
 		profiler.report();
 		profiler = new Profiler('setHints()');
 		this.setHints();
 		profiler.report();
+		this.setEventHandlers();
 		this.editStatus.set(false);
 		//console.error('time taken across all functions to evaluate XPath with XPathJS_javarosa: '+xpathEvalTime);
 	};
@@ -1738,35 +1738,34 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 */	
 		//TODO: DOES THIS REQUIRE EVALUATE?? OR WOULD data.node(expr).getVal()[0] WORK TOO??
 		//setTimeout(function(){
-			//console.log('updating active outputs that contain: '+changedNodeNames);
-			var profiler = new Profiler('updating outputs, and setting hints');
-			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
-			cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
-			for (i=0 ; i<namesArr.length ; i++){
-				cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
-			}
-			
-			$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
-				expr = $(this).attr('data-value');
+		//console.log('updating active outputs that contain: '+changedNodeNames);
+		
+		namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
+		cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
+		for (i=0 ; i<namesArr.length ; i++){
+			cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
+		}
+		
+		$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
+			expr = $(this).attr('data-value');
 
-				if (typeof outputCache[expr] !== 'undefined'){
-					val = outputCache[expr];
-				}
-				else{
-					val = data.evaluate(expr, 'string');
-					outputCache[expr] = val;
-				}
-				if ($(this).text !== val){
-					$(this).text(val);
-					outputChanged = true;
-				}
-			});
-
-			//hints may have changed too
-			if (outputChanged){
-				this.setHints({outputsOnly: true});
+			if (typeof outputCache[expr] !== 'undefined'){
+				val = outputCache[expr];
 			}
-			profiler.report();
+			else{
+				val = data.evaluate(expr, 'string');
+				outputCache[expr] = val;
+			}
+			if ($(this).text !== val){
+				$(this).text(val);
+				outputChanged = true;
+			}
+		});
+
+		//hints may have changed too
+		if (outputChanged){
+			this.setHints({outputsOnly: true});
+		}
 		//}, 1);
 	};
 
@@ -2183,9 +2182,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				param = $(this).attr('data-preload-params').toLowerCase();
 				name = $(this).attr('name');
 				if (typeof that[item] !== 'undefined'){
+					dataNode = data.node(name);
 					//proper way would be to add index
-					curVal = data.node(name).getVal()[0];
-					that.setVal($(this), that[item]({param: param, curVal:curVal, node: $(this)}));
+					curVal = dataNode.getVal()[0];
+					//that.setVal($(this), that[item]({param: param, curVal:curVal, node: $(this)}));
+					that.setDataVal(dataNode, that[item]({param: param, curVal:curVal, node: $(this)}), 'string');
 				}
 				else{
 					console.error('Preload "'+item+'"" not supported. May or may not be a big deal.');
@@ -2223,11 +2224,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});
 		},
+		/**TODO: remove this, it seems better to directly set value in model instead of going through input **/
 		setVal: function($node, val){
 			$node.val(val.toString()).trigger('change');
 		},
 		setDataVal: function(node, val){
-			//console.debug('setting meta data value to: '+val);
+			//console.debug('setting preloader data value to: '+val);
 			node.setVal(val, null, 'string');
 		},
 		'timestamp' : function(o){

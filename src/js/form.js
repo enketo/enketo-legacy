@@ -2173,7 +2173,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	//functions are design to fail silently if unknown preloaders are called
 	FormHTML.prototype.preloads = {
 		init: function(){
-			var item, param, name, curVal, meta, dataNode,
+			var item, param, name, curVal, meta, dataNode, xmlType,
 				that = this;
 			//console.log('initializing preloads');
 			//these initialize actual preload items
@@ -2181,12 +2181,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				item = $(this).attr('data-preload').toLowerCase();
 				param = $(this).attr('data-preload-params').toLowerCase();
 				name = $(this).attr('name');
+				xmlType = $(this).attr('data-type-xml');
 				if (typeof that[item] !== 'undefined'){
 					dataNode = data.node(name);
 					//proper way would be to add index
 					curVal = dataNode.getVal()[0];
 					//that.setVal($(this), that[item]({param: param, curVal:curVal, node: $(this)}));
-					that.setDataVal(dataNode, that[item]({param: param, curVal:curVal, node: $(this)}), 'string');
+					that.setDataVal(dataNode, that[item]({param: param, curVal:curVal, node: $(this)}), xmlType);
 				}
 				else{
 					console.error('Preload "'+item+'"" not supported. May or may not be a big deal.');
@@ -2228,9 +2229,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		setVal: function($node, val){
 			$node.val(val.toString()).trigger('change');
 		},
-		setDataVal: function(node, val){
-			//console.debug('setting preloader data value to: '+val);
-			node.setVal(val, null, 'string');
+		setDataVal: function(node, val, type){
+			type = type || 'string';
+			console.debug('setting preloader data value to: '+val+' with xml type: '+type);
+			node.setVal(val, null, type);
 		},
 		'timestamp' : function(o){
 			var value,

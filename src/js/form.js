@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Modernizr, google, settings, connection*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Profiler, Modernizr, google, settings, connection, xPathEvalTime*/
 
 /**
  * Class: Form
@@ -59,7 +59,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		data = new DataXML(dataStr);
 		form = new FormHTML(formSelector);
 
+		//var profiler = new Profiler('data.init()');
 		data.init();
+		//profiler.report();
 
 		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit.length > 0){
 			dataToEdit = new DataXML(dataStrToEdit);
@@ -67,7 +69,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			data.load(dataToEdit);
 		}
 
+		//profiler = new Profiler('form.init()');
 		form.init();
+		//profiler.report();
 		
 		if (loadErrors.length > 0){
 			console.error('loadErrors: ',loadErrors);
@@ -866,6 +870,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
+
+		var timeStart = new Date().getTime();
+
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
 			index+' and result type: '+resTypeStr);
 		resTypeStr = resTypeStr || 'any';
@@ -949,6 +956,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum >0 && resTypeNum<4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
+						//xpathEvalTime += new Date().getTime() - timeStart;
 						return result;
 					}
 				}
@@ -963,9 +971,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
+				//xpathEvalTime += new Date().getTime() - timeStart;
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
+			//xpathEvalTime += new Date().getTime() - timeStart;
 			return result[resultTypes[resTypeNum][2]];
 		}
 		catch(e){
@@ -973,6 +983,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			console.error(error);
 			$(document).trigger('xpatherror', error);
 			loadErrors.push(error);
+			//xpathEvalTime += new Date().getTime() - timeStart;
 			return null;
 		}
 	};
@@ -994,22 +1005,26 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	FormHTML.prototype.init = function(){
 		var name, $required, $hint;
 
-		this.checkForErrors();
+		//this.checkForErrors();
 
 		if (typeof data == 'undefined' || !(data instanceof DataXML)){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 		
+		//var profiler = new Profiler('adding required clues');
 		//add 'required field'
 		$required = '<span class="required">*</span>';//<br />';
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
 			.find('legend:eq(0) span:not(.jr-hint):last').after($required);
+		
 		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
 			.not('[type="checkbox"], [type="radio"], [readonly]').parent()
 			.each(function(){
 				$(this).children('span:not(.jr-option-translations, .jr-hint):last').after($required);
 			});
+		//profiler.report();
 
+		//profiler = new Profiler('adding hint icons');
 		//add 'hint' icon
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
@@ -1017,32 +1032,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
 			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 		}
+		//profiler.report();
 
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 
+		//profiler = new Profiler('repeat.init()');
 		this.repeat.init(this); //before double-fieldset magic to fix legend issues
-		
-		/*
-			legends are a royal pain-in-the-ass, but semantically correct to use. To restoring sanity, the least
-			ugly solution that works regardless of the legend text + hint length (and showing a nice error background)
-			is to use a double fieldset (in hindsight, I shouldn't have been so stingy with my markup and 
-			just have just used <section>s for each question)
-		 */
-		$form.find('legend').parent('fieldset').each(function(){
-			var $elem = $(this),
-				$parent = $elem.parent(),
-				$prev = $elem.prev(),
-				$wrap = $('<fieldset class="restoring-sanity-to-legends"></fieldset>');
-			$elem.detach().appendTo($wrap);
-			if ($prev.length > 0) {
-				$prev.after($wrap);
-			}
-			//if it's the first element in a group and a title is missing
-			else{
-				$parent.prepend($wrap);
-			}
-		});
+		//profiler.report();
+
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
 			Repeated radiobuttons would all have the same name which means they wouldn't work right.
@@ -1056,18 +1054,43 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.find('h2').first().append('<span/>');
 
+		//profiler = new Profiler('itemsetUpdate()');
 		this.itemsetUpdate();
+		//profiler.report();
+		//
 		this.setAllVals();
+		
 		this.widgets.init(); //after setAllVals()
+		
+		//profiler = new Profiler('bootstrapify');
 		this.bootstrapify(); 
+		//profiler.report();
+
+		//profiler = new Profiler('branch.init()');
 		this.branch.init();
+		//profiler.report();
+		
+		this.preloads.init(); //after event handlers! NOT NECESSARY ANY MORE I THINK
+		
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
+		
 		this.calcUpdate();
+		
+		//profiler = new Profiler('outputUpdate initial');
 		this.outputUpdate();
-		this.setEventHandlers();
-		this.preloads.init(); //after event handlers!
+		//profiler.report();
+
+		//profiler = new Profiler('setLangs()');
 		this.setLangs();
+		//profiler.report();
+
+		//profiler = new Profiler('setHints()');
+		this.setHints();
+		//profiler.report();
+
+		this.setEventHandlers();
 		this.editStatus.set(false);
+		//profiler.report('time taken across all functions to evaluate XPath with XPathJS_javarosa: '+xpathEvalTime);
 	};
 
 	/**
@@ -1356,6 +1379,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 
 		$('#form-languages').change(function(event){
+			console.error('form-language change event detected!');
 			event.preventDefault();
 			lang = $(this).val();//attr('lang');
 			$('#form-languages option').removeClass('active');
@@ -1364,12 +1388,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//$form.find('[lang]').not('.jr-hint, .jr-constraint-msg, jr-option-translations>*').show().not('[lang="'+lang+'"], [lang=""], #form-languages a').hide();
 			$form.find('[lang]').removeClass('active').filter('[lang="'+lang+'"], [lang=""]').addClass('active');
 
-			//hide the short versions if long versions exist
-			$form.find('.jr-form-short.active').each(function(){
+			//hide the short versions if long versions exist - DONE IN XSLT NOW
+			/*$form.find('.jr-form-short.active').each(function(){
 				if ($(this).siblings('.jr-form-long.active').length > 0){
 					$(this).removeClass('active');
 				}
-			});
+			});*/
 
 			//swap language of <select> <option>s
 			$form.find('select > option').not('[value=""]').each(function(){
@@ -1392,19 +1416,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});
 
 			that.setHints();
-			//$form.fixLegends();
 			$form.trigger('changelanguage');
 		});
-		$('#form-languages').val(defaultLang).trigger('change');
+		//this.setHints();
+		//$('#form-languages').val(defaultLang).trigger('change');
 	};
 		
 	/**
 	 * setHints updates the hints. It is called whenever the language or output value is changed.
+	 * @param { {outputsOnly: boolean}=} options options
 	 */
-	FormHTML.prototype.setHints = function(){
-		var hint, $wrapNode;
-		//console.log('setting hints, lang is '+lang);
-		$form.find('*>.jr-hint').parent().each(function(){
+	FormHTML.prototype.setHints = function(options){
+		var hint, $hints, $wrapNode, outputsOnly;
+
+		outputsOnly = (options && options.outputsOnly) ? options.outputsOnly : false;
+
+		//not sure why *> is in selectors - could be a performance issue
+		$hints = (outputsOnly) ? $form.find('*>.jr-hint>.jr-output').parent() : $form.find('*>.jr-hint');
+
+		$hints.parent().each(function(){
 			if ($(this).prop('nodeName').toLowerCase() !== 'label' && $(this).prop('nodeName').toLowerCase() !== 'fieldset' ){
 				$wrapNode = $(this).parent('fieldset');
 			}
@@ -1475,33 +1505,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * Initializes branches, sets delegated event handlers
 		 */
 		this.init = function(){
-			var $branchNode;//,
-				//that=this;
-			//console.debug('initializing branches');
-			//$form.on('click', '.jr-branch', function(event){
-			//	var $that = $(this);
-			//	if(!$(this).hasClass('busy')){
-			//		if ($(this).hasClass('show')){
-			//			$(this).addClass('busy').removeClass('show').next().hide( 600, function(){
-			//				$that.removeClass('busy');
-			//			});
-			//		}
-			//		else{
-			//			$(this).addClass('busy show').next().show(600, function(){
-			//				$that.removeClass('busy');
-			//				$that.next().fixLegends();
-			//			});
-			//		}
-			//	}	
-			//});
-			$form.find('[data-relevant]').each(function(){
-				$branchNode = parent.input.getWrapNodes($(this));
-				if ($branchNode.length !== 1){
-					console.error('branchNode wrapper could not be identified for node: ', $(this));
-				}
-				$branchNode.addClass('jr-branch');
-			});
-
 			this.update();
 		};
 		/**
@@ -1511,10 +1514,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {?boolean}                  [description]
 		 */
 		this.update = function(changedNodeNames){
-			var i, p, branchNode, result, namesArr, cleverSelector,	
-				alreadyCovered = {},
+			var i, p, $branchNode, result, namesArr, cleverSelector, //cacheIndex,
+				//relevantCache = {},
+				alreadyCovered = [],
 				that = this;
-			
+
 			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 			cleverSelector = (namesArr.length > 0) ? [] : ['[data-relevant]'];
 			
@@ -1524,42 +1528,50 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//console.debug('the clever selector created: '+cleverSelector.join());
 
 			$form.find(cleverSelector.join()).each(function(){
-
-				p = parent.input.getProps($(this));
-				branchNode = parent.input.getWrapNodes($(this));
-				
 				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
-				if ((p.inputType == 'radio' || p.inputType == 'checkbox') && alreadyCovered[$(this).attr('name')]){
+				if ($.inArray($(this).attr('name'), alreadyCovered) !== -1){
 					return;
 				}
-				if(branchNode.length !== 1){
+
+				p = parent.input.getProps($(this));
+				$branchNode = parent.input.getWrapNodes($(this));
+				
+				//var profiler = new Profiler('updating branches with relevant expression: '+p.relevant);				
+				
+				if($branchNode.length !== 1){
 					console.error('could not find branch node');
 					return;
 				}
-				try{
-					//var result = evaluator.evaluate(expr, context.documentElement, null, XPathResult.BOOLEAN_TYPE, null);
-					result = data.evaluate(p.relevant, 'boolean', p.path, p.ind);
-					//console.debug('evaluated branch logic to: '+result+' (type: '+(typeof result)+')');
-				}
-				catch(e){
-					console.error('Serious error occurred trying to evaluate skip logic '+
-					'for node with name: "'+p.path+'" (message: '+e.message+')');
-					return;
-				}
+				//note:caching would be meaningless without first detecting whether an expression contains relative
+				//paths in order to determine whether the context path+index needs to be added to cacheIndex to e.g.
+				//support evaluating branches inside repeats - to be continued.
+				//cacheIndex = p.relevant+'__'+p.path+'__'+p.ind;
+
+				//if (typeof relevantCache[cacheIndex] !== 'undefined'){
+				//	result = relevantCache[cacheIndex];
+				//}
+				//else{
+				result = data.evaluate(p.relevant, 'boolean', p.path, p.ind);
+				//	relevantCache[cacheIndex] = result;
+				//}
 			
-				alreadyCovered[$(this).attr('name')] = true;
-				console.debug(alreadyCovered);
+				alreadyCovered.push($(this).attr('name'));
+				//console.debug('relevant nodes already covered:',  alreadyCovered);
+				//console.debug('relevant expression results cached:', relevantCache);
 
 				//for mysterious reasons '===' operator fails after Advanced Compilation even though result has value true 
 				//and type boolean
 				if (result === true){
-					that.enable(branchNode);
+					that.enable($branchNode);
 				}
 				else {
-					that.disable(branchNode);
+					that.disable($branchNode);
 				}
+				//profiler.report();	
 			});
+	
 			return true;
+
 		},
 		/**
 		 * Enables and reveals a branch node/group
@@ -1569,10 +1581,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.enable = function($branchNode){
 			var type;
 			console.debug('enabling branch');
-
-			//branchNode.prev('.jr-branch').hide(600, function(){$(this).remove();});
 			
-			$branchNode.removeClass('disabled').show(1000);//, function(){$(this).fixLegends();} );
+			$branchNode.removeClass('disabled pre-init').show(250);//, function(){$(this).fixLegends();} );
 
 			type = $branchNode.prop('nodeName').toLowerCase();
 
@@ -1590,26 +1600,26 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 */
 		this.disable = function($branchNode){
 			var type = $branchNode.prop('nodeName').toLowerCase(),
-				currentlyDisabled = $branchNode.hasClass('disabled');
+				currentlyDisabled = $branchNode.hasClass('disabled'),
+				virgin = $branchNode.hasClass('pre-init');
 
 			console.debug('disabling branch');
-			$branchNode.addClass('disabled');
+			$branchNode.addClass('disabled').removeClass('pre-init');
 
 			if (typeof settings !== 'undefined' && typeof settings.showBranch !== 'undefined' && !settings.showBranch){
-				$branchNode.hide(1000);
+				$branchNode.hide(250);
 			} 
 			
 			//if the branch was previously enabled
-			if (!currentlyDisabled){
-				//if the branch was hidden upon form initialization, then shown and then hidden again
-				//difficult to detect. Maybe better to just replace clearInputs with setDefaults	
+			if (!currentlyDisabled && !virgin){
 				$branchNode.clearInputs('change');
-			}
+			
 
-			//all remaining fields marked as invalid can now be marked as valid
-			$branchNode.find('.invalid-required, .invalid-constraint').find('input, select, textarea').each(function(){
-				parent.setValid($(this));
-			});
+				//all remaining fields marked as invalid can now be marked as valid
+				$branchNode.find('.invalid-required, .invalid-constraint').find('input, select, textarea').each(function(){
+					parent.setValid($(this));
+				});
+			}
 
 			if (type == 'label'){
 				$branchNode.children('input, select, textarea').attr('disabled', 'disabled');
@@ -1713,7 +1723,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			});			
 		});
 		if (needToUpdateLangs){
-			that.setLangs();
+			//that.setLangs();
+			$('#form-languages').trigger('change');
 		}	
 	};
 
@@ -1723,8 +1734,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} changedNodeNames Comma-separated node names that (may have changed)
 	 */
 	FormHTML.prototype.outputUpdate = function(changedNodeNames){
-		var i, $inputNode, contextPath, contextIndex, expr, namesArr, cleverSelector, 
-			that=this,
+		var i, expr, namesArr, cleverSelector, 
+			outputChanged = false,
+			outputCache = {},
 			val='';
 		/** 
 		 * issue #141 on modilabs/enketo was found to be a very mysterious one. In a very short form (random.xml)
@@ -1733,33 +1745,36 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * delay in executing the code below, the issue was resolved. To be properly fixed later...
 		 */	
 		//TODO: DOES THIS REQUIRE EVALUATE?? OR WOULD data.node(expr).getVal()[0] WORK TOO??
-		setTimeout(function(){
-			//console.log('updating active outputs that contain: '+changedNodeNames);
-			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
-			cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
-			for (i=0 ; i<namesArr.length ; i++){
-				cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
+		//setTimeout(function(){
+		//console.log('updating active outputs that contain: '+changedNodeNames);
+		
+		namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
+		cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
+		for (i=0 ; i<namesArr.length ; i++){
+			cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
+		}
+		
+		$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
+			expr = $(this).attr('data-value');
+
+			if (typeof outputCache[expr] !== 'undefined'){
+				val = outputCache[expr];
 			}
-			//console.debug('the clever selector created: '+cleverSelector.join());
-			//console.debug($form.find('*:not([disabled]) span.active'));
-			$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
-				//console.log('found outputs');
-				try{
-					expr = $(this).attr('data-value');
-					val = data.evaluate(expr, 'string');
-					//console.log('value: '+val);
-				}
-				catch(e){
-					console.error('error occurred trying to evaluate output value from expression: '+
-					expr+', (message:'+e.message+')');
-					val = '[ERROR]';
-				}
+			else{
+				val = data.evaluate(expr, 'string');
+				outputCache[expr] = val;
+			}
+			if ($(this).text !== val){
 				$(this).text(val);
-			});
-			//$form.fixLegends();
-			//hints may have changed too
-			that.setHints();
-		}, 1);
+				outputChanged = true;
+			}
+		});
+
+		//hints may have changed too
+		if (outputChanged){
+			this.setHints({outputsOnly: true});
+		}
+		//}, 1);
 	};
 
 	/**
@@ -1843,10 +1858,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.find('.trigger').addClass('alert alert-block');
 		//$form.find('label:not(.geo), fieldset').addClass('clearfix');
-		$form.find(':checkbox, :radio').each(function(){
+		/*$form.find(':checkbox, :radio').each(function(){
 			var $p = $(this).parent('label'); 
 			$(this).detach().prependTo($p);
-		});
+		});*/
 		//move constraint message to bottom of question and add message for required (could also be done in XSLT)
 		$form.find('.jr-constraint-msg').parent().each(function(){
 			var $msg = $(this).find('.jr-constraint-msg').detach(),
@@ -1863,7 +1878,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 *
 	 * In the future it would probably be wise to standardize this. E.g. each form control widget needs to:
 	 * - have a widget class attribute
-	 * - load default values
+	 * - load default values from the original input element
 	 * - have a 'swap language' function responding to a 'changelanguage' event
 	 * - disable when its parent branch is hidden (also when hidden upon initialization)
 	 * - enable when its parent branch is revealed 
@@ -2087,10 +2102,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					//var $spans = $(this).find('span').not('.question-icons span').detach(); 
 					var html = $(this).html(),
 						relevant = $(this).find('input').attr('data-relevant'),
+						branch = (relevant) ? ' jr-branch pre-init' : '',
 						name = 'name="'+$(this).find('input').attr('name')+'"',
 						attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name,
 						value = $(this).find('input, select, textarea').val();
-					$('<fieldset class="trigger" '+attributes+'></fieldset>')
+					$('<fieldset class="trigger'+branch+'" '+attributes+'></fieldset>')
 						.insertBefore($(this)).append(html).append('<div class="note-value">'+value+'</div>').find('input').remove(); 
 					$(this).remove();
 				});
@@ -2165,7 +2181,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	//functions are design to fail silently if unknown preloaders are called
 	FormHTML.prototype.preloads = {
 		init: function(){
-			var item, param, name, curVal, meta, dataNode,
+			var item, param, name, curVal, meta, dataNode, xmlType,
 				that = this;
 			//console.log('initializing preloads');
 			//these initialize actual preload items
@@ -2173,10 +2189,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				item = $(this).attr('data-preload').toLowerCase();
 				param = $(this).attr('data-preload-params').toLowerCase();
 				name = $(this).attr('name');
+				xmlType = $(this).attr('data-type-xml');
 				if (typeof that[item] !== 'undefined'){
+					dataNode = data.node(name);
 					//proper way would be to add index
-					curVal = data.node(name).getVal()[0];
-					that.setVal($(this), that[item]({param: param, curVal:curVal, node: $(this)}));
+					curVal = dataNode.getVal()[0];
+					//that.setVal($(this), that[item]({param: param, curVal:curVal, node: $(this)}));
+					that.setDataVal(dataNode, that[item]({param: param, curVal:curVal, node: $(this)}), xmlType);
 				}
 				else{
 					console.error('Preload "'+item+'"" not supported. May or may not be a big deal.');
@@ -2214,12 +2233,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});
 		},
+		/**TODO: remove this, it seems better to directly set value in model instead of going through input **/
 		setVal: function($node, val){
 			$node.val(val.toString()).trigger('change');
 		},
-		setDataVal: function(node, val){
-			//console.debug('setting meta data value to: '+val);
-			node.setVal(val, null, 'string');
+		setDataVal: function(node, val, type){
+			type = type || 'string';
+			console.debug('setting preloader data value to: '+val+' with xml type: '+type);
+			node.setVal(val, null, type);
 		},
 		'timestamp' : function(o){
 			var value,

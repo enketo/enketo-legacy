@@ -620,7 +620,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//set the value
 				target.setVal(value, null, xmlDataType);
 			}
-			//if there is not a corresponding data node but there is a corresponding template node (=> <repeat>)
+			//if there is no corresponding data node but there is a corresponding template node (=> <repeat>)
 			//this use of node(,,).get() is a bit of a trick that is difficult to wrap one's head around
 			else if (that.node(path, index, {noTemplate:false}).get().length > 0){
 				//clone the template node 
@@ -706,26 +706,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 		}
 	};
-/**
+
+	/**
 	 * Function: cloneAllTemplates
 	 *
 	 * Initialization function that creates <repeat>able data nodes with the defaults from the template if no repeats have been created yet. 
 	 * Strictly speaking this is not "according to the spec" as the user should be asked first whether it has any data for this question
 	 * but seems usually always better to assume at least one 'repeat' (= 1 question). It doesn't make use of the Nodeset subclass (CHANGE?)
 	 *
-	 * Parameters:
-	 *
-	 *   startNode - Provides the scope (default is the whole data object) from which to start cloning.
-	 *
-	 * Returns:
-	 *
-	 *   -
-	 *
-	 * See Also:
-	 *
-	 *   In JavaRosa, the documentation on the jr:template attribute.
+	 * See also: In JavaRosa, the documentation on the jr:template attribute.
 	 * 
-	 * @param {jQuery=} startNode
+	 * @param {jQuery=} startNode Provides the scope (default is the whole data object) from which to start cloning.
 	 */ 
 	DataXML.prototype.cloneAllTemplates = function(startNode){
 		var _this = this;
@@ -1582,7 +1573,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var type;
 			console.debug('enabling branch');
 			
-			$branchNode.removeClass('disabled pre-init').show(250);//, function(){$(this).fixLegends();} );
+			$branchNode.removeClass('disabled pre-init').show(250, function(){
+				//to recalculate table column widths
+				parent.widgets.tableWidget($branchNode);
+			});//, function(){$(this).fixLegends();} );
 
 			type = $branchNode.prop('nodeName').toLowerCase();
 
@@ -1592,6 +1586,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			else{
 				$branchNode.removeAttr('disabled');
 			}
+			
 		};
 		/**
 		 * Disables and hides a branch node/group
@@ -2112,19 +2107,22 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				});
 			}
 		},
-		tableWidget :function(){
-			if (!this.repeat){
+		tableWidget :function($group){
+			//if (!this.repeat){
 				//when loading a form dynamically the DOM elements don't have a width yet (width = 0), so we call
 				//this with a bit of a delay..
-				setTimeout(function(){
-					$form.find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
-						.parent().parent('.jr-appearance-field-list').each(function(){
-							$(this).find('.jr-appearance-label label>img').parent().toSmallestWidth();
-							$(this).find('label').toLargestWidth();
-							$(this).find('legend').toLargestWidth();
-					});
-				}, 500);	
-			}
+			var $g = $group || $form;
+
+			setTimeout(function(){
+				console.debug('setting table column widths');
+				$g.parent().find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
+					.parent().parent('.jr-appearance-field-list').each(function(){
+						$(this).find('.jr-appearance-label label>img').parent().css('width', 'auto').toSmallestWidth();
+						$(this).find('label').css('width', 'auto').toLargestWidth();
+						$(this).find('legend').css('width', 'auto').toLargestWidth();
+				});
+			}, 50);
+			//}
 			//$form.find('.jr-appearance-compact label img').selectable();
 		},
 		spinnerWidget :function(){
@@ -2382,17 +2380,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//prevent default
 				return false;
 			});
-			//if the number of repeats is fixed
-			//$form.find('fieldset.jr-repeat[data-repeat-fixed]').each(function(){
-//				var numberOfRepeats = 1;
-//				//ADD CODE TO determine number of repeats from Xpath reference
-//				for (i=1 ; i <  numberOfRepeats ; i++){
-//				//call repeatNode from child of $(this)
-//				}
-//			});
 
 			//clone form fields to create the default number 
-			//NOTE THIS ASSUMES THE DEFAULT NUMBER IS STATIC, NOT DYNAMIC!!
+			//NOTE THIS ASSUMES THE DEFAULT NUMBER IS STATIC, NOT DYNAMIC
 			$form.find('fieldset.jr-repeat').each(function(){
 				repCountPath = $(this).attr('data-repeat-count') || "";
 				numRepsInCount = (repCountPath.length > 0) ? parseInt(data.node(repCountPath).getVal()[0], 10) : 0;
@@ -2434,11 +2424,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			$clone.insertAfter($node)
 				.parent('.jr-group').numberRepeats();
-			$clone.hide().show(600).clearInputs('');
+			$clone.hide().clearInputs('').show(400, function(){
+				//re-initiate widgets in clone
+				that.formO.widgets.init($clone);
+			});
 
-			//re-initiate widgets in clone
-			this.formO.widgets.init($clone);
-			
 			//note: in http://formhub.org/formhub_u/forms/hh_polio_survey_cloned/form.xml a parent group of a repeat
 			//has the same ref attribute as the nodeset attribute of the repeat. This would cause a problem determining 
 			//the proper index if .jr-repeat was not included in the selector

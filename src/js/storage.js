@@ -95,7 +95,7 @@ function StorageLocal(){
 			return 'success';
 		}
 		catch(e){
-			if (e.name === 'QUOTA_EXCEEDED_ERR'){
+			if (e.code === 22){//} (e.name==='QUOTA_EXCEEDED_ERR'){
 				return 'full';
 			}
 			console.log('error in store.setRecord:'+e.message, e);

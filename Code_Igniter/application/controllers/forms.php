@@ -60,6 +60,7 @@ class Forms extends CI_Controller {
 		{
 			$data['scripts'] = array_merge($default_scripts, array(
 				'/js-source/helpers.js',
+				'/js-source/debug.js',
 				'/js-source/gui.js',       
 				'/js-source/storage.js',
        			'/js-source/connection.js',

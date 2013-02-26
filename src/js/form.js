@@ -2358,7 +2358,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @param  {FormHTML} formO the parent form object
 		 */
 		init : function(formO){
-			var i, numRepsInCount, repCountPath, numRepsInInstance, numRepsDefault,
+			var i, numRepsInCount, repCountPath, numRepsInInstance, numRepsDefault, cloneDefaultReps, repLevel, $dataRepeat, index,
 				that=this;
 			//console.debug('initializing repeats');
 			this.formO = formO;
@@ -2381,21 +2381,33 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				return false;
 			});
 
-			//clone form fields to create the default number 
-			//NOTE THIS ASSUMES THE DEFAULT NUMBER IS STATIC, NOT DYNAMIC
-			$form.find('fieldset.jr-repeat').each(function(){
-				repCountPath = $(this).attr('data-repeat-count') || "";
+			cloneDefaultReps = function($repeat){
+				repLevel++;
+				repCountPath = $repeat.attr('data-repeat-count') || "";
 				numRepsInCount = (repCountPath.length > 0) ? parseInt(data.node(repCountPath).getVal()[0], 10) : 0;
 				//console.debug('number of reps in count attribute: ' +numRepsInCount);
-				numRepsInInstance = data.node($(this).attr('name')).get().length;
+				index = $form.find('.jr-repeat[name="'+$repeat.attr('name')+'"]').index($repeat);
+				$dataRepeat = data.node($repeat.attr('name'), index).get();
+				numRepsInInstance = $dataRepeat.siblings($dataRepeat.prop('nodeName')+':not([template])').addBack().length;
 				numRepsDefault = (numRepsInCount > numRepsInInstance) ? numRepsInCount : numRepsInInstance;
-				
-				//console.log('default number of repeats for '+$(this).attr('name')+' is '+numRepsDefault);
-				//1st rep is already included (by XSLT transformation)
+				//console.debug('default number of repeats for '+$repeat.attr('name')+' is '+numRepsDefault);
+				//first rep is already included (by XSLT transformation)
 				for (i = 1 ; i<numRepsDefault ; i++){
-					that.clone($(this).siblings().addBack().last(), '');
+					that.clone($repeat.siblings().addBack().last(), '');
 				}
-			});
+				//now check the defaults of all the descendants of this repeat and its new siblings, level-by-level
+				$repeat.siblings('.jr-repeat').addBack().find('.jr-repeat')
+					.filter(function(i){return $(this).parents('.jr-repeat').length === repLevel;}).each(function(){
+						cloneDefaultReps($(this));
+				});
+			};
+
+			//clone form fields to create the default number 
+			//NOTE THIS ASSUMES THE DEFAULT NUMBER IS STATIC, NOT DYNAMIC
+			$form.find('.jr-repeat').filter(function(i){return $(this).parents('.jr-repeat').length === 0;}).each(function(){
+				repLevel = 0;
+				cloneDefaultReps($(this));
+			});	
 		},
 		/**
 		 * clone a repeat group/node

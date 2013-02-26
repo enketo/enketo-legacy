@@ -81,6 +81,7 @@ describe("LocalStorage", function () {
 			//1 character in javascript takes up 2 bytes. To cater to some storage overhead 1024 is rounded down to 1000
 			//Note: FF does not even reach the limit at 200 Mb.
 			expect(dataCharsStored).toBeGreaterThan(5 * 1000 * 1000 / 2);
+			//expect(dataCharsStored).toEqual(-1);
 		});
 		
 		it('when exceeded during saving a record, returns "full", otherwise "success"', function(){

@@ -1344,15 +1344,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		if ($('#form-languages option').length < 2 ){
 			$langSelector.hide();
-			//$form.find('[lang]').addClass('active');
-			//hide the short versions if long versions exist
-			/*$form.find('.jr-form-short.active').each(function(){
-				if ($(this).siblings('.jr-form-long.active').length > 0){
-					$(this).removeClass('active');
-				}
-			});
-			this.setHints();//defaultLang);*/
-			//$form.trigger('changelanguage');
 			return;
 		}
 
@@ -1363,15 +1354,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$('#form-languages option').removeClass('active');
 			$(this).addClass('active');
 
-			//$form.find('[lang]').not('.jr-hint, .jr-constraint-msg, jr-option-translations>*').show().not('[lang="'+lang+'"], [lang=""], #form-languages a').hide();
 			$form.find('[lang]').removeClass('active').filter('[lang="'+lang+'"], [lang=""]').addClass('active');
-
-			//hide the short versions if long versions exist - DONE IN XSLT NOW
-			/*$form.find('.jr-form-short.active').each(function(){
-				if ($(this).siblings('.jr-form-long.active').length > 0){
-					$(this).removeClass('active');
-				}
-			});*/
 
 			//swap language of <select> <option>s
 			$form.find('select > option').not('[value=""]').each(function(){
@@ -1396,8 +1379,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			that.setHints();
 			$form.trigger('changelanguage');
 		});
-		//this.setHints();
-		//$('#form-languages').val(defaultLang).trigger('change');
 	};
 		
 	/**
@@ -1426,7 +1407,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//console.debug('hint: '+hint);
 			if (hint.length > 0){
 				//console.debug('setting hint: '+hint);
-				//$(this).find('input, select, textarea').attr('title', hint);
 				$wrapNode.find('.hint').attr('title', hint);
 			}
 			else{
@@ -1435,7 +1415,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 		//make asynchronous?
 		if (!Modernizr.touch){
-			$form.find('[title]').tooltip('destroy').tooltip({placement: 'right'}); 
+			$form.find('[title]').tooltip('destroy').tooltip({placement: 'right'});
 		}
 		//profiler.report();
 	};

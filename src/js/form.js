@@ -999,7 +999,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if (typeof data == 'undefined' || !(data instanceof DataXML)){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
-		//var profiler = new Profiler('adding hint icons');
+		
+		var profiler = new Profiler('adding hint icons');
 		//add 'hint' icon, could be moved to XSLT, but is very fast even on super large forms - 31 msecs on bench6 form
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
@@ -1007,15 +1008,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
 			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 		}
-		//profiler.report();
+		profiler.report();
+		
 		//TODO: don't add to preload and calculated items
-		var profiler = new Profiler('brs');
+		profiler = new Profiler('brs');
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 		profiler.report();
-		//profiler = new Profiler('repeat.init()');
+		
+		profiler = new Profiler('repeat.init()');
 		this.repeat.init(this); //before double-fieldset magic to fix legend issues
-		//profiler.report();
+		profiler.report();
 
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
@@ -1028,32 +1031,34 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$(this).attr('data-name', name);
 		});
 
-		$form.find('h2').first().append('<span/>');
+		//$form.find('h2').first().append('<span/>');//what's this for then?
 
-		//profiler = new Profiler('itemsetUpdate()');
+		profiler = new Profiler('itemsetUpdate()');
 		this.itemsetUpdate();
-		//profiler.report();
+		profiler.report();
 		
 		this.setAllVals();
 		
 		this.widgets.init(); //after setAllVals()
 		
-		//profiler = new Profiler('bootstrapify');
+		profiler = new Profiler('bootstrapify');
 		this.bootstrapify(); 
-		//profiler.report();
+		profiler.report();
 
 		profiler = new Profiler('branch.init()');
 		this.branch.init();
 		profiler.report();
 		
-		//profiler = new Profiler('preloads.init()');
+		profiler = new Profiler('preloads.init()');
 		this.preloads.init(); //after event handlers! NOT NECESSARY ANY MORE I THINK
-		//profiler.report();
+		profiler.report();
 
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 
+		profiler = new Profiler('calcupdate');
 		this.calcUpdate();
-		
+		profiler.report();
+
 		profiler = new Profiler('outputUpdate initial');
 		this.outputUpdate();
 		profiler.report();
@@ -1386,35 +1391,35 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param { {outputsOnly: boolean}=} options options
 	 */
 	FormHTML.prototype.setHints = function(options){
-		var hint, $hints, $wrapNode, outputsOnly;
 		//var profiler = new Profiler('setting hints');
-		outputsOnly = (options && options.outputsOnly) ? options.outputsOnly : false;
-
-		//not sure why *> is in selectors - could be a performance issue
-		$hints = (outputsOnly) ? $form.find('*>.jr-hint>.jr-output').parent() : $form.find('*>.jr-hint');
-
-		$hints.parent().each(function(){
-			if ($(this).prop('nodeName').toLowerCase() !== 'label' && $(this).prop('nodeName').toLowerCase() !== 'fieldset' ){
-				$wrapNode = $(this).parent('fieldset');
-			}
-			else{
-				$wrapNode = $(this);
-			}
-			
-			hint = ($wrapNode.length > 0 ) ? //&& lang !== 'undefined' && lang !== '') ? 
-				$(this).find('.jr-hint.active').text().trim() : $(this).find('span.jr-hint').text().trim();
-			
-			//console.debug('hint: '+hint);
-			if (hint.length > 0){
-				//console.debug('setting hint: '+hint);
-				$wrapNode.find('.hint').attr('title', hint);
-			}
-			else{
-				$wrapNode.find('.hint').removeAttr('title');
-			}
-		});
-		//make asynchronous?
 		if (!Modernizr.touch){
+			var hint, $hints, $wrapNode, outputsOnly;
+
+			outputsOnly = (options && options.outputsOnly) ? options.outputsOnly : false;
+
+			//not sure why *> is in selectors - could be a performance issue
+			$hints = (outputsOnly) ? $form.find('*>.jr-hint>.jr-output').parent() : $form.find('*>.jr-hint');
+
+			$hints.parent().each(function(){
+				if ($(this).prop('nodeName').toLowerCase() !== 'label' && $(this).prop('nodeName').toLowerCase() !== 'fieldset' ){
+					$wrapNode = $(this).parent('fieldset');
+				}
+				else{
+					$wrapNode = $(this);
+				}
+				
+				hint = ($wrapNode.length > 0 ) ? //&& lang !== 'undefined' && lang !== '') ? 
+					$(this).find('.jr-hint.active').text().trim() : $(this).find('span.jr-hint').text().trim();
+				
+				//console.debug('hint: '+hint);
+				if (hint.length > 0){
+					//console.debug('setting hint: '+hint);
+					$wrapNode.find('.hint').attr('title', hint);
+				}
+				else{
+					$wrapNode.find('.hint').removeAttr('title');
+				}
+			});
 			$form.find('[title]').tooltip('destroy').tooltip({placement: 'right'});
 		}
 		//profiler.report();

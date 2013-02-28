@@ -861,8 +861,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
 		
-		var timeStart = new Date().getTime();
-		xpathEvalNum++;
+		//var timeStart = new Date().getTime();
+		//xpathEvalNum++;
 
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
 			index+' and result type: '+resTypeStr);
@@ -895,7 +895,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//console.debug('contextDoc:', contextDoc.$);
 
 		if (typeof selector !== 'undefined' && selector !== null) {
-			console.debug('contextNode: ', contextDoc.$.xfind(selector).eq(index));
+			//console.debug('contextNode: ', contextDoc.$.xfind(selector).eq(index));
 			context = contextDoc.$.xfind(selector).eq(index)[0];
 			/**
 			 * If the expressions is bound to a node that is inside a repeat.... see makeBugCompliant()
@@ -938,7 +938,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
-		console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
+		//console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
 			if (resTypeNum === 0){
@@ -947,7 +947,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum >0 && resTypeNum<4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
-						xpathEvalTime += new Date().getTime() - timeStart;
+						//xpathEvalTime += new Date().getTime() - timeStart;
 						return result;
 					}
 				}
@@ -962,11 +962,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
-				xpathEvalTime += new Date().getTime() - timeStart;
+				//xpathEvalTime += new Date().getTime() - timeStart;
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
-			xpathEvalTime += new Date().getTime() - timeStart;
+			//xpathEvalTime += new Date().getTime() - timeStart;
 			return result[resultTypes[resTypeNum][2]];
 		}
 		catch(e){
@@ -974,7 +974,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			console.error(error);
 			$(document).trigger('xpatherror', error);
 			loadErrors.push(error);
-			xpathEvalTime += new Date().getTime() - timeStart;
+			//xpathEvalTime += new Date().getTime() - timeStart;
 			return null;
 		}
 	};
@@ -1002,8 +1002,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 		
-		var profiler = new Profiler('adding required clues');
-		//add 'required field'
+		//var profiler = new Profiler('adding required clues');
+		//add 'required field'	
 		$required = '<span class="required">*</span>';//<br />';
 		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
 			.find('legend:eq(0) span:not(.jr-hint):last').after($required);
@@ -1013,9 +1013,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			.each(function(){
 				$(this).children('span:not(.jr-option-translations, .jr-hint):last').after($required);
 			});
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('adding hint icons');
+		//profiler = new Profiler('adding hint icons');
 		//add 'hint' icon
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
@@ -1023,14 +1023,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
 			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 		}
-		profiler.report();
+		//profiler.report();
 
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 
-		profiler = new Profiler('repeat.init()');
+		//profiler = new Profiler('repeat.init()');
 		this.repeat.init(this); //before double-fieldset magic to fix legend issues
-		profiler.report();
+		//profiler.report();
 
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
@@ -1045,47 +1045,45 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.find('h2').first().append('<span/>');
 
-		profiler = new Profiler('itemsetUpdate()');
+		//profiler = new Profiler('itemsetUpdate()');
 		this.itemsetUpdate();
-		profiler.report();
+		//profiler.report();
 		
 		this.setAllVals();
 		
 		this.widgets.init(); //after setAllVals()
 		
-		profiler = new Profiler('bootstrapify');
+		//profiler = new Profiler('bootstrapify');
 		this.bootstrapify(); 
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('branch.init()');
+		//profiler = new Profiler('branch.init()');
 		this.branch.init();
-		profiler.report();
+		//profiler.report();
 		
-		profiler = new Profiler('preloads.init()');
+		//profiler = new Profiler('preloads.init()');
 		this.preloads.init(); //after event handlers! NOT NECESSARY ANY MORE I THINK
-		profiler.report();
+		//profiler.report();
 
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 
 		this.calcUpdate();
 		
-		profiler = new Profiler('outputUpdate initial');
+		//profiler = new Profiler('outputUpdate initial');
 		this.outputUpdate();
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('setLangs()');
+		//profiler = new Profiler('setLangs()');
 		this.setLangs();
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('setHints()');
+		//profiler = new Profiler('setHints()');
 		this.setHints();
-		profiler.report();
+		//profiler.report();
 
 		this.setEventHandlers();
 		this.editStatus.set(false);
-		profiler.report('time taken across all functions to evaluate '+xpathEvalNum+' XPath expressions: '+xpathEvalTime);
-
-
+		//profiler.report('time taken across all functions to evaluate '+xpathEvalNum+' XPath expressions: '+xpathEvalTime);
 	};
 
 	/**
@@ -1423,7 +1421,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 */
 	FormHTML.prototype.setHints = function(options){
 		var hint, $hints, $wrapNode, outputsOnly;
-		var profiler = new Profiler('setting hints');
+		//var profiler = new Profiler('setting hints');
 		outputsOnly = (options && options.outputsOnly) ? options.outputsOnly : false;
 
 		//not sure why *> is in selectors - could be a performance issue
@@ -1451,7 +1449,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 		});
 		$form.find('[title]').tooltip('destroy').tooltip({placement: 'right'}); 
-		profiler.report();
+		//profiler.report();
 	};
 
 	FormHTML.prototype.editStatus = {
@@ -1517,7 +1515,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				that = this,
 				evaluations = 0;
 
-			var profiler = new Profiler('branch update');
+			//var profiler = new Profiler('branch update');
 
 			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 			cleverSelector = (namesArr.length > 0) ? [] : ['[data-relevant]'];
@@ -1525,7 +1523,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			for (i=0 ; i<namesArr.length ; i++){
 				cleverSelector.push('[data-relevant*="'+namesArr[i]+'"]');
 			}
-			//console.debug('the clever selector created: '+cleverSelector.join());
 
 			$form.find(cleverSelector.join()).each(function(){
 				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
@@ -1544,14 +1541,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 				
 				/*
-					Caching is only possible for expression that do not contain relative paths to nodes.
+					Caching is only possible for expressions that do not contain relative paths to nodes.
 					So, first do a *very* aggresive check to see if the expression contains a relative path. 
 					This check assumes that child nodes (e.g. "mychild = 'bob'") are NEVER used in a relevant
 					expression, which may prove to be incorrect.
 				 */
 				if (p.relevant.indexOf('..') === -1){
 					/*
-						For now, let's just not cache relevants inside a repeat. TODO: add the index for repeats
+						For now, let's just not cache relevants inside a repeat. 
 					 */
 					if ($branchNode.parents('.jr-repeat').length === 0){
 						cacheIndex = p.relevant;
@@ -1565,30 +1562,66 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					result = relevantCache[cacheIndex];
 				}
 				else{
-					result = data.evaluate(p.relevant, 'boolean', p.path, p.ind);
+					result = that.evaluate(p.relevant, p.path, p.ind);
 					evaluations++;
 					relevantCache[cacheIndex] = result;
 				}
-			
+
 				alreadyCovered.push($(this).attr('name'));
 				//console.debug('relevant nodes already covered:',  alreadyCovered);
-				//
-
-				//for mysterious reasons '===' operator fails after Advanced Compilation even though result has value true 
-				//and type boolean
-				if (result === true){
-					that.enable($branchNode);
-				}
-				else {
-					that.disable($branchNode);
-				}
-				//profiler.report();
 				
+				that.process($branchNode, result);
+				//profiler.report();
 			});
+
 			console.debug('relevant expression results cached:', relevantCache);
-			console.error(evaluations+ ' evaluations performed for branching');	
-			profiler.report();
+			//console.error(evaluations+ ' evaluations performed for branching');	
+			//profiler.report();
 			return true;
+		},
+		/**
+		 * evaluates a relevant expression (for future fancy stuff this is placed in a separate function)
+		 * @param  {string} expr        [description]
+		 * @param  {string} contextPath [description]
+		 * @param  {number} index       [description]
+		 * @return {boolean}             [description]
+		 */
+		this.evaluate = function(expr, contextPath, index){
+			var result = data.evaluate(expr, 'boolean', contextPath, index);
+			return result;
+		},
+		/**
+		 * Processes the evaluation result for a branch
+		 * @param  {jQuery} $branchNode [description]
+		 * @param  {boolean} result      [description]
+		 */
+		this.process = function($branchNode, result){
+			//for mysterious reasons '===' operator fails after Advanced Compilation even though result has value true 
+			//and type boolean
+			if (result === true){
+				console.log('going to enable ', $branchNode);
+				this.enable($branchNode);
+			}
+			else {
+				console.log('going to disable ', $branchNode);
+				this.disable($branchNode);
+			}
+		},
+		/**
+		 * whether branch currently has 'relevant' state
+		 * @param  {jQuery} $branchNode [description]
+		 * @return {boolean}             [description]
+		 */
+		this.selfRelevant = function($branchNode){
+			return !$branchNode.hasClass('disabled');
+		},
+		/**
+		 * whether branch currently only has 'relevant' ancestors
+		 * @param  {jQuery} $branchNode [description]
+		 * @return {boolean}             [description]
+		 */
+		this.ancestorRelevant = function($branchNode){
+			return ($branchNode.parents('.disabled').length === 0);
 		},
 		/**
 		 * Enables and reveals a branch node/group
@@ -1596,23 +1629,28 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @param  {jQuery} $branchNode The jQuery object to reveal and enable
 		 */
 		this.enable = function($branchNode){
-			var type;
-			console.debug('enabling branch');
-			
-			$branchNode.removeClass('disabled pre-init').show(250, function(){
-				//to recalculate table column widths
-				parent.widgets.tableWidget($branchNode);
-			});//, function(){$(this).fixLegends();} );
+			var type,
+				that = this;//, 
+				//currentlyDisabled = this.currentlyDisabled($branchNode);
+			if (!this.selfRelevant($branchNode)){
+				console.debug('enabling branch');
+				
+				$branchNode.removeClass('disabled').show(250, function(){
+					//to recalculate table column widths
+					if (that.ancestorRelevant($branchNode)){
+						parent.widgets.tableWidget($branchNode);
+					}
+				});//, function(){$(this).fixLegends();} );
 
-			type = $branchNode.prop('nodeName').toLowerCase();
+				type = $branchNode.prop('nodeName').toLowerCase();
 
-			if (type == 'label') {
-				$branchNode.children('input, select, textarea').removeAttr('disabled');
+				if (type == 'label') {
+					$branchNode.children('input, select, textarea').removeAttr('disabled');
+				}
+				else{
+					$branchNode.removeAttr('disabled');
+				}
 			}
-			else{
-				$branchNode.removeAttr('disabled');
-			}
-			
 		};
 		/**
 		 * Disables and hides a branch node/group
@@ -1621,32 +1659,33 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 */
 		this.disable = function($branchNode){
 			var type = $branchNode.prop('nodeName').toLowerCase(),
-				currentlyDisabled = $branchNode.hasClass('disabled'),
+				//currentlyDisabled = this.currentlyDisabled($branchNode);//.hasClass('disabled');//,
 				virgin = $branchNode.hasClass('pre-init');
 
-			console.debug('disabling branch');
-			$branchNode.addClass('disabled').removeClass('pre-init');
+			if (this.selfRelevant($branchNode) || virgin){
+				console.debug('disabling branch');
+				$branchNode.addClass('disabled');//.removeClass('pre-init');
 
-			if (typeof settings !== 'undefined' && typeof settings.showBranch !== 'undefined' && !settings.showBranch){
-				$branchNode.hide(250);
-			} 
-			
-			//if the branch was previously enabled
-			if (!currentlyDisabled && !virgin){
-				$branchNode.clearInputs('change');
-			
+				if (typeof settings !== 'undefined' && typeof settings.showBranch !== 'undefined' && !settings.showBranch){
+					$branchNode.hide(250);
+				} 
+				
+				//if the branch was previously enabled
+				if (!virgin){//} && !virgin){
+					$branchNode.clearInputs('change');
+				
+					//all remaining fields marked as invalid can now be marked as valid
+					$branchNode.find('.invalid-required, .invalid-constraint').find('input, select, textarea').each(function(){
+						parent.setValid($(this));
+					});
+				}
 
-				//all remaining fields marked as invalid can now be marked as valid
-				$branchNode.find('.invalid-required, .invalid-constraint').find('input, select, textarea').each(function(){
-					parent.setValid($(this));
-				});
-			}
-
-			if (type == 'label'){
-				$branchNode.children('input, select, textarea').attr('disabled', 'disabled');
-			}
-			else{
-				$branchNode.attr('disabled', 'disabled');
+				if (type == 'label'){
+					$branchNode.children('input, select, textarea').attr('disabled', 'disabled');
+				}
+				else{
+					$branchNode.attr('disabled', 'disabled');
+				}
 			}
 		};
 	};
@@ -1768,7 +1807,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//TODO: DOES THIS REQUIRE EVALUATE?? OR WOULD data.node(expr).getVal()[0] WORK TOO??
 		//setTimeout(function(){
 		//console.log('updating active outputs that contain: '+changedNodeNames);
-		var profiler = new Profiler('output update');
+		//var profiler = new Profiler('output update');
 		namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 		cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
 		for (i=0 ; i<namesArr.length ; i++){
@@ -1795,7 +1834,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if (outputChanged){
 			this.setHints({outputsOnly: true});
 		}
-		profiler.report();
+		//profiler.report();
 		//}, 1);
 	};
 
@@ -1857,6 +1896,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			.find('label, legend').each(function(){
 			var $label = $(this);
 			if ($label.siblings('legend').length === 0 && 
+				$label.parent('#jr-calculated-items, #jr-preload-items').length === 0 &&
 				$label.find('.jr-constraint-msg').length === 0 && 
 				($label.prop('nodeName').toLowerCase() == 'legend' || 
 					$label.children('input.ignore').length !== $label.children('input').length  ||

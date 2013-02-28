@@ -210,7 +210,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:value-of select="'jr-group '" />
                 </xsl:if>
                 <xsl:if test="$binding/@relevant">
-                    <xsl:value-of select="'jr-branch '"/>
+                    <xsl:value-of select="'jr-branch pre-init '"/>
                 </xsl:if>
                 <xsl:call-template name="appearance" />
             </xsl:attribute>
@@ -266,9 +266,9 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         <fieldset>
             <xsl:attribute name="class">
                 <xsl:value-of select="'jr-repeat '" />
-                <!-- watch out jr-branch added to jr-group parent! -->
+                <!-- watch out jr-branch pre-init added to jr-group parent! -->
                 <!--<xsl:if test="$binding/@relevant">
-                    <xsl:value-of select="'jr-branch '"/>
+                    <xsl:value-of select="'jr-branch pre-init '"/>
                 </xsl:if>-->
                 <xsl:call-template name="appearance" />
             </xsl:attribute>
@@ -335,7 +335,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         <label>
             <xsl:attribute name="class">
                 <xsl:if test="(local-name() = 'input' or local-name() = 'upload') and $binding/@relevant">
-                    <xsl:value-of select="'jr-branch '"/>
+                    <xsl:value-of select="'jr-branch pre-init '"/>
                 </xsl:if>
                 <xsl:call-template name="appearance" />
             </xsl:attribute>
@@ -580,7 +580,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:call-template name="appearance" />
                 </xsl:if>
                 <xsl:if test="$binding/@relevant">
-                    <xsl:value-of select="' jr-branch '"/>
+                    <xsl:value-of select="' jr-branch pre-init '"/>
                 </xsl:if>
             </xsl:attribute>
             <xsl:apply-templates select="$binding/@jr:constraintMsg" />
@@ -633,7 +633,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
             <xsl:attribute name="class">
                 <xsl:value-of select="'restoring-sanity-to-legends '"/>
                 <xsl:if test="$binding/@relevant">
-                    <xsl:value-of select="'jr-branch '"/>
+                    <xsl:value-of select="'jr-branch pre-init '"/>
                 </xsl:if>
             </xsl:attribute>
             <fieldset>
@@ -868,7 +868,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:attribute name="class">
                         <xsl:value-of select="'trigger '"/>
                         <xsl:if test="$binding/@relevant">
-                            <xsl:value-of select="'jr-branch'"/>
+                            <xsl:value-of select="'jr-branch pre-init'"/>
                         </xsl:if>
                     </xsl:attribute>
                     <xsl:attribute name="name">

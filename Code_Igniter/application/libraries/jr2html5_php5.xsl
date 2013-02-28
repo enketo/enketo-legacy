@@ -340,9 +340,12 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 <xsl:call-template name="appearance" />
             </xsl:attribute>
 
-            <xsl:if test="not(local-name() = 'item')">
+            <xsl:if test="not(local-name() = 'item' or local-name() = 'bind')">
                 <xsl:apply-templates select="$binding/@jr:constraintMsg" />
                 <xsl:apply-templates select="xf:label" />
+                <xsl:if test="not($binding/@readonly = 'true()')">
+                    <xsl:apply-templates select="$binding/@required"/>
+                </xsl:if>
             </xsl:if>
             <!-- 
                 note: Hints should actually be placed in title attribute (of input) as it is semantically nicer.
@@ -586,6 +589,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
             <xsl:apply-templates select="$binding/@jr:constraintMsg" />
             <xsl:apply-templates select="xf:label" />
             <xsl:apply-templates select="xf:hint" />
+            <xsl:apply-templates select="$binding/@required"/>
             <select>
                 <xsl:call-template name="binding-attributes">
                     <xsl:with-param name="nodeset" select="$nodeset" />
@@ -649,6 +653,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:apply-templates select="$binding/@jr:constraintMsg" />
                     <xsl:apply-templates select="xf:label" />
                     <xsl:apply-templates select="xf:hint" />
+                    <xsl:apply-templates select="$binding/@required"/>
                     <xsl:text>
                     </xsl:text>
                 </legend>
@@ -830,15 +835,19 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:message>ERROR: itext(id) found with non-existing id: "<xsl:value-of select="$refid"/>". Maybe itext(path/to/node) construct was used, which is not supported.</xsl:message>
                 </xsl:if>
             -->
-                    <xsl:call-template name="translations">
-                        <xsl:with-param name="id" select="$refid"/>
-                        <xsl:with-param name="class" select="$class"/>
-                    </xsl:call-template>
+                <xsl:call-template name="translations">
+                    <xsl:with-param name="id" select="$refid"/>
+                    <xsl:with-param name="class" select="$class"/>
+                </xsl:call-template>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 
-
+    <xsl:template match="xf:bind/@required">
+        <xsl:if test=". = 'true()'">
+            <span class="required">*</span>
+        </xsl:if>
+    </xsl:template>
 
     <xsl:template match="xf:trigger">
         <fieldset>

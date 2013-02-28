@@ -1001,19 +1001,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if (typeof data == 'undefined' || !(data instanceof DataXML)){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
-		
-		//var profiler = new Profiler('adding required clues');
-		//add 'required field'	
-		$required = '<span class="required">*</span>';//<br />';
-		$form.find('label>input[type="checkbox"][required], label>input[type="radio"][required]').parent().parent('fieldset')
-			.find('legend:eq(0) span:not(.jr-hint):last').after($required);
-		
-		$form.parent().find('label>select[required], label>textarea[required], :not(#jr-preload-items, #jr-calculated-items)>label>input[required]')
-			.not('[type="checkbox"], [type="radio"], [readonly]').parent()
-			.each(function(){
-				$(this).children('span:not(.jr-option-translations, .jr-hint):last').after($required);
-			});
-		//profiler.report();
 
 		//profiler = new Profiler('adding hint icons');
 		//add 'hint' icon
@@ -1024,7 +1011,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 		}
 		//profiler.report();
-
+		//TODO: don't add to preload and calculated items
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 

@@ -861,8 +861,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
 		
-		//var timeStart = new Date().getTime();
-		//xpathEvalNum++;
+		var timeStart = new Date().getTime();
+		xpathEvalNum++;
 
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
 			index+' and result type: '+resTypeStr);
@@ -947,7 +947,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum >0 && resTypeNum<4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
-						//xpathEvalTime += new Date().getTime() - timeStart;
+						xpathEvalTime += new Date().getTime() - timeStart;
 						return result;
 					}
 				}
@@ -962,11 +962,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
-				//xpathEvalTime += new Date().getTime() - timeStart;
+				xpathEvalTime += new Date().getTime() - timeStart;
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
-			//xpathEvalTime += new Date().getTime() - timeStart;
+			xpathEvalTime += new Date().getTime() - timeStart;
 			return result[resultTypes[resTypeNum][2]];
 		}
 		catch(e){
@@ -974,7 +974,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			console.error(error);
 			$(document).trigger('xpatherror', error);
 			loadErrors.push(error);
-			//xpathEvalTime += new Date().getTime() - timeStart;
+			xpathEvalTime += new Date().getTime() - timeStart;
 			return null;
 		}
 	};
@@ -995,15 +995,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 	FormHTML.prototype.init = function(){
 		var name, $required, $hint;
-
 		//this.checkForErrors();
-
 		if (typeof data == 'undefined' || !(data instanceof DataXML)){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
-
-		//profiler = new Profiler('adding hint icons');
-		//add 'hint' icon
+		//var profiler = new Profiler('adding hint icons');
+		//add 'hint' icon, could be moved to XSLT, but is very fast even on super large forms - 31 msecs on bench6 form
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
 			$form.find('.jr-hint ~ input, .jr-hint ~ select, .jr-hint ~ textarea').before($hint);
@@ -1012,9 +1009,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 		//profiler.report();
 		//TODO: don't add to preload and calculated items
+		var profiler = new Profiler('brs');
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
-
+		profiler.report();
 		//profiler = new Profiler('repeat.init()');
 		this.repeat.init(this); //before double-fieldset magic to fix legend issues
 		//profiler.report();
@@ -1044,9 +1042,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.bootstrapify(); 
 		//profiler.report();
 
-		//profiler = new Profiler('branch.init()');
+		profiler = new Profiler('branch.init()');
 		this.branch.init();
-		//profiler.report();
+		profiler.report();
 		
 		//profiler = new Profiler('preloads.init()');
 		this.preloads.init(); //after event handlers! NOT NECESSARY ANY MORE I THINK
@@ -1056,21 +1054,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		this.calcUpdate();
 		
-		//profiler = new Profiler('outputUpdate initial');
+		profiler = new Profiler('outputUpdate initial');
 		this.outputUpdate();
-		//profiler.report();
+		profiler.report();
 
-		//profiler = new Profiler('setLangs()');
+		profiler = new Profiler('setLangs()');
 		this.setLangs();
-		//profiler.report();
+		profiler.report();
 
-		//profiler = new Profiler('setHints()');
+		profiler = new Profiler('setHints()');
 		this.setHints();
-		//profiler.report();
+		profiler.report();
 
 		this.setEventHandlers();
 		this.editStatus.set(false);
-		//profiler.report('time taken across all functions to evaluate '+xpathEvalNum+' XPath expressions: '+xpathEvalTime);
+		profiler.report('time taken across all functions to evaluate '+xpathEvalNum+' XPath expressions: '+xpathEvalTime);
 	};
 
 	/**
@@ -1346,20 +1344,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		if ($('#form-languages option').length < 2 ){
 			$langSelector.hide();
-			$form.find('[lang]').addClass('active');
+			//$form.find('[lang]').addClass('active');
 			//hide the short versions if long versions exist
-			$form.find('.jr-form-short.active').each(function(){
+			/*$form.find('.jr-form-short.active').each(function(){
 				if ($(this).siblings('.jr-form-long.active').length > 0){
 					$(this).removeClass('active');
 				}
 			});
-			this.setHints();//defaultLang);
-			$form.trigger('changelanguage');
+			this.setHints();//defaultLang);*/
+			//$form.trigger('changelanguage');
 			return;
 		}
 
 		$('#form-languages').change(function(event){
-			console.error('form-language change event detected!');
+			console.debug('form-language change event detected!');
 			event.preventDefault();
 			lang = $(this).val();//attr('lang');
 			$('#form-languages option').removeClass('active');
@@ -1435,7 +1433,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$wrapNode.find('.hint').removeAttr('title');
 			}
 		});
-		$form.find('[title]').tooltip('destroy').tooltip({placement: 'right'}); 
+		//make asynchronous?
+		if (!Modernizr.touch){
+			$form.find('[title]').tooltip('destroy').tooltip({placement: 'right'}); 
+		}
 		//profiler.report();
 	};
 

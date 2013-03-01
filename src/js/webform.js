@@ -25,7 +25,7 @@ var /**@type {Cache}*/cache;
 $(document).ready(function() {
 	'use strict';
 	var message, choices, loadErrors;
-	var profiler = new Profiler('app initialization');
+	//var profiler = new Profiler('app initialization');
 	//store = new StorageLocal();
 	//store.init();
 
@@ -78,5 +78,5 @@ $(document).ready(function() {
 		//getCurrentRecordName() to prevent currenty open record from being submitted
 		connection.uploadRecords(store.getSurveyDataArr(true));
 	}, 15*1000);
-	profiler.report();
+	//profiler.report();
 });

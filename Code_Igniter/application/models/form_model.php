@@ -227,20 +227,24 @@ class Form_model extends CI_Model {
     {
         $formlist_sxe = $this->_get_formlist($server_url);
 
-        //rather inefficient but am trying to avoid using xpath() because of default namespace in xformslist
-        foreach ($formlist_sxe->xform as $form)
+        if ($formlist_sxe)
         {
-            if ($form->formID == $form_id){
-                $info = array('xml' => $form->downloadUrl);
-                if (isset($form->manifestUrl))
+            //rather inefficient but am trying to avoid using xpath() because of default namespace in xformslist
+            foreach ($formlist_sxe->xform as $form)
+            {
+                if ($form->formID == $form_id)
                 {
-                    $info['manifest'] = $form->manifestUrl;
+                    $info = array('xml' => $form->downloadUrl);
+                    if (isset($form->manifestUrl))
+                    {
+                        $info['manifest'] = $form->manifestUrl;
+                    }
+                    if (isset($form->hash))
+                    {
+                        $info['hash'] = $form->hash;
+                    }
+                    return $info;
                 }
-                if (isset($form->hash))
-                {
-                    $info['hash'] = $form->hash;
-                }
-                return $info;
             }
         }
         log_message('error', 'Form with id: '.$form_id.' could not be found in formlist for '.$server_url);

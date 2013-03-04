@@ -25,16 +25,15 @@ var /**@type {Cache}*/cache;
 $(document).ready(function() {
 	'use strict';
 	var message, choices, loadErrors;
-	//var profiler;
-	var timeStart = new Date().getTime();
+	//var profiler = new Profiler('app initialization');
 	//store = new StorageLocal();
 	//store.init();
-	
+
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	//settings = new Settings();
 	//settings.init();
 	connection = new Connection();
-	
+
 	if (!store.isSupported()){
 		window.location = settings['modernBrowsersURL'];
 	}
@@ -43,7 +42,7 @@ $(document).ready(function() {
 	}
 
 	gui.updateStatus.offlineLaunch(false);
-	
+
 	if ($('html').attr('manifest')){
 		cache = new Cache();
 		if (cache.isSupported()){
@@ -79,6 +78,5 @@ $(document).ready(function() {
 		//getCurrentRecordName() to prevent currenty open record from being submitted
 		connection.uploadRecords(store.getSurveyDataArr(true));
 	}, 15*1000);
-
-	//console.error('total time from start of webform.js until now: '+ (new Date().getTime() - timeStart));
+	//profiler.report();
 });

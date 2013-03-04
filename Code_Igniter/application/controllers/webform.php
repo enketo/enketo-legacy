@@ -239,7 +239,7 @@ class Webform extends CI_Controller {
 		
 		if (!isset($this->subdomain))
 		{
-			show_error('Edit view should be launched from survey subdomain', 404);
+			show_error('Iframe view should be launched from a survey subdomain', 404);
 			return;
 		}
 		if (!$this->Survey_model->is_launched_survey())
@@ -249,7 +249,7 @@ class Webform extends CI_Controller {
 		}
 		if ($this->Survey_model->has_offline_launch_enabled())
 		{
-			return show_error('The edit view can only be launched in offline mode', 404);
+			return show_error('The iframe view can only be launched in offline mode', 404);
 		}
 	    
 		$form = $this->_get_form();

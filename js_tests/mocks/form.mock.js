@@ -390,14 +390,14 @@ var formStr6 =
                 '<input name="/data/nodeA" type="text" data-type-xml="string"/>'+
             '</label>'+
         '</fieldset>'+
-        '<fieldset class="jr-group " name="/data/group" data-relevant="/data/nodeA = &quot;yes&quot">'+
+        '<fieldset class="jr-group jr-branch pre-init" name="/data/group" data-relevant="/data/nodeA = &quot;yes&quot">'+
             '<h4><span lang="en">Group with relevant binding</span></h4>'+
             '<label>'+
                 '<span lang="en">Enter 2 to reveal select1</span>'+
                 '<input name="/data/group/nodeB" type="number" data-type-xml="int" required="required"/>'+
             '</label>'+
         '</fieldset>'+
-        '<label class="jr-appearance-minimal">'+
+        '<label class="jr-branch pre-init jr-appearance-minimal">'+
             '<span lang="en">Select 1 option</span>'+
             '<select name="/data/nodeC" data-relevant="/data/group/nodeB = 2">'+
                 '<option value="">...</option>'+
@@ -435,3 +435,42 @@ var dataStr8 =
             '</root>'+
         '</instance>'+
     '</model>';
+
+var dataEditStr_nested_repeats =
+    '<nested_repeats id="nested_repeats">'+
+        '<formhub>'+
+            '<uuid>f19b44ccf710492eb4d1ed6f468324f1</uuid>'+
+        '</formhub>'+
+        '<kids>'+
+            '<has_kids>1</has_kids>'+
+            '<kids_details>'+
+                '<kids_name>Tom</kids_name>'+
+                '<kids_age>2</kids_age>'+
+                '<immunization_info>'+
+                    '<vaccine>Polio</vaccine>'+
+                '</immunization_info>'+
+                '<immunization_info>'+
+                    '<vaccine>Rickets</vaccine>'+
+                '</immunization_info>'+
+            '</kids_details>'+
+            '<kids_details>'+
+                '<kids_name>Dick</kids_name>'+
+                '<kids_age>5</kids_age>'+
+                '<immunization_info>'+
+                    '<vaccine>Malaria</vaccine>'+
+                '</immunization_info>'+
+                '<immunization_info>'+
+                    '<vaccine>Flu</vaccine>'+
+                '</immunization_info>'+
+                '<immunization_info>'+
+                    '<vaccine>Polio</vaccine>'+
+                '</immunization_info>'+
+            '</kids_details>'+
+            '<nested_group>'+
+                '<nested_name>Yo</nested_name>'+
+                '<nested_age>25</nested_age>'+
+            '</nested_group>'+
+        '</kids>'+
+        '<gps>-1.2627107 36.7925771 0.0 37.5</gps>'+
+        '<web_browsers>firefox chrome safari</web_browsers>'+
+    '</nested_repeats>';

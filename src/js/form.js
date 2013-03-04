@@ -1920,6 +1920,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * - enable when its parent branch is revealed 
 	 * - allow setting an empty value (that empties node in instance)
 	 * - send a focus event to the original input when the widget gets focus
+	 * - for extra robustness: if the widget already exists, destroy it first
 	 *
 	 * Considering the ever-increasing code size of the widgets and their dependence on the UI library being used,
 	 * it would be good to move them to a separate javascript file. 
@@ -1996,6 +1997,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$fakeDate = $('<div class="widget input-append date"><input class="ignore input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
 						'<span class="add-on"><i class="icon-calendar"></i></span></div>'),
 					$fakeDateI = $fakeDate.find('input');
+				$dateI.next('.widget.date').remove();
 				$dateI.hide().after($fakeDate);
 
 				$fakeDateI.on('change', function(){
@@ -2040,7 +2042,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						'<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
 						'<span class="add-on"><i class="icon-time"></i></span></div>'),
 					$fakeTimeI = $fakeTime.find('input');
-				
+
+				$timeI.next('.widget.bootstrap-timepicker-component').remove();
 				$timeI.hide().after($fakeTime);
 				$fakeTimeI.timepicker({
 					defaultTime: (timeVal.length > 0) ? 'value' : 'current',
@@ -2081,6 +2084,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$fakeDateI = $fakeDate.find('input'),
 					$fakeTimeI = $fakeTime.find('input');
 
+				$dateTimeI.next('.widget.datetimepicker').remove();
 				$dateTimeI.hide().after('<div class="datetimepicker widget" />');
 				$dateTimeI.siblings('.datetimepicker').append($fakeDate).append($fakeTime);
 				$fakeDate.datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true});
@@ -2466,8 +2470,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$master = $parent.children('fieldset.jr-repeat:not(.clone)').eq(0);
 			$clone = $master.clone(false);//deep cloning with button events causes problems
 			
-			//add clone class, remove any clones inside this clone.. (cloned repeats within repeats..)
-			//also remove all widgets
+			//add clone class 
+			//remove any clones inside this clone.. (cloned repeats within repeats..), also remove all widgets 
+			//NOTE: widget removal doesn't work atm (jQuery bug?), it is covered by the date/time/datetime widgets though)
 			$clone.addClass('clone').find('.clone, .widget').remove();
 			
 			//mark all cloned fields as valid
@@ -2477,6 +2482,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			$clone.insertAfter($node)
 				.parent('.jr-group').numberRepeats();
+
 			$clone.hide().clearInputs('').show(400, function(){
 				//re-initiate widgets in clone
 				that.formO.widgets.init($clone);

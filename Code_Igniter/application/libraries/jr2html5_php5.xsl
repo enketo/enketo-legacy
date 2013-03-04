@@ -210,7 +210,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:value-of select="'jr-group '" />
                 </xsl:if>
                 <xsl:if test="$binding/@relevant">
-                    <xsl:value-of select="'jr-branch '"/>
+                    <xsl:value-of select="'jr-branch pre-init '"/>
                 </xsl:if>
                 <xsl:call-template name="appearance" />
             </xsl:attribute>
@@ -266,9 +266,9 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         <fieldset>
             <xsl:attribute name="class">
                 <xsl:value-of select="'jr-repeat '" />
-                <!-- watch out jr-branch added to jr-group parent! -->
+                <!-- watch out jr-branch pre-init added to jr-group parent! -->
                 <!--<xsl:if test="$binding/@relevant">
-                    <xsl:value-of select="'jr-branch '"/>
+                    <xsl:value-of select="'jr-branch pre-init '"/>
                 </xsl:if>-->
                 <xsl:call-template name="appearance" />
             </xsl:attribute>
@@ -335,14 +335,17 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
         <label>
             <xsl:attribute name="class">
                 <xsl:if test="(local-name() = 'input' or local-name() = 'upload') and $binding/@relevant">
-                    <xsl:value-of select="'jr-branch '"/>
+                    <xsl:value-of select="'jr-branch pre-init '"/>
                 </xsl:if>
                 <xsl:call-template name="appearance" />
             </xsl:attribute>
 
-            <xsl:if test="not(local-name() = 'item')">
+            <xsl:if test="not(local-name() = 'item' or local-name() = 'bind')">
                 <xsl:apply-templates select="$binding/@jr:constraintMsg" />
                 <xsl:apply-templates select="xf:label" />
+                <xsl:if test="not($binding/@readonly = 'true()')">
+                    <xsl:apply-templates select="$binding/@required"/>
+                </xsl:if>
             </xsl:if>
             <!-- 
                 note: Hints should actually be placed in title attribute (of input) as it is semantically nicer.
@@ -580,12 +583,13 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:call-template name="appearance" />
                 </xsl:if>
                 <xsl:if test="$binding/@relevant">
-                    <xsl:value-of select="' jr-branch '"/>
+                    <xsl:value-of select="' jr-branch pre-init '"/>
                 </xsl:if>
             </xsl:attribute>
             <xsl:apply-templates select="$binding/@jr:constraintMsg" />
             <xsl:apply-templates select="xf:label" />
             <xsl:apply-templates select="xf:hint" />
+            <xsl:apply-templates select="$binding/@required"/>
             <select>
                 <xsl:call-template name="binding-attributes">
                     <xsl:with-param name="nodeset" select="$nodeset" />
@@ -633,7 +637,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
             <xsl:attribute name="class">
                 <xsl:value-of select="'restoring-sanity-to-legends '"/>
                 <xsl:if test="$binding/@relevant">
-                    <xsl:value-of select="'jr-branch '"/>
+                    <xsl:value-of select="'jr-branch pre-init '"/>
                 </xsl:if>
             </xsl:attribute>
             <fieldset>
@@ -649,6 +653,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:apply-templates select="$binding/@jr:constraintMsg" />
                     <xsl:apply-templates select="xf:label" />
                     <xsl:apply-templates select="xf:hint" />
+                    <xsl:apply-templates select="$binding/@required"/>
                     <xsl:text>
                     </xsl:text>
                 </legend>
@@ -830,15 +835,19 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:message>ERROR: itext(id) found with non-existing id: "<xsl:value-of select="$refid"/>". Maybe itext(path/to/node) construct was used, which is not supported.</xsl:message>
                 </xsl:if>
             -->
-                    <xsl:call-template name="translations">
-                        <xsl:with-param name="id" select="$refid"/>
-                        <xsl:with-param name="class" select="$class"/>
-                    </xsl:call-template>
+                <xsl:call-template name="translations">
+                    <xsl:with-param name="id" select="$refid"/>
+                    <xsl:with-param name="class" select="$class"/>
+                </xsl:call-template>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 
-
+    <xsl:template match="xf:bind/@required">
+        <xsl:if test=". = 'true()'">
+            <span class="required">*</span>
+        </xsl:if>
+    </xsl:template>
 
     <xsl:template match="xf:trigger">
         <fieldset>
@@ -868,7 +877,7 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                     <xsl:attribute name="class">
                         <xsl:value-of select="'trigger '"/>
                         <xsl:if test="$binding/@relevant">
-                            <xsl:value-of select="'jr-branch'"/>
+                            <xsl:value-of select="'jr-branch pre-init'"/>
                         </xsl:if>
                     </xsl:attribute>
                     <xsl:attribute name="name">

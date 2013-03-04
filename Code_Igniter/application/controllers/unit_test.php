@@ -102,7 +102,8 @@ class Unit_test extends CI_Controller {
 		$xml_forms = array(
 			'issue208.xml', 
 			'cascading_mixture_itext_noitext.xml', 
-			'new_cascading_selections.xml'
+			'new_cascading_selections.xml',
+			'nested_repeats.xml'
 		);
 		$xml_forms_path = '../devinfo/Forms/';
 		$save_result_path = '../js_tests/mocks/form_generated.mock.js';

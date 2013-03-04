@@ -390,14 +390,14 @@ var formStr6 =
                 '<input name="/data/nodeA" type="text" data-type-xml="string"/>'+
             '</label>'+
         '</fieldset>'+
-        '<fieldset class="jr-group " name="/data/group" data-relevant="/data/nodeA = &quot;yes&quot">'+
+        '<fieldset class="jr-group jr-branch pre-init" name="/data/group" data-relevant="/data/nodeA = &quot;yes&quot">'+
             '<h4><span lang="en">Group with relevant binding</span></h4>'+
             '<label>'+
                 '<span lang="en">Enter 2 to reveal select1</span>'+
                 '<input name="/data/group/nodeB" type="number" data-type-xml="int" required="required"/>'+
             '</label>'+
         '</fieldset>'+
-        '<label class="jr-appearance-minimal">'+
+        '<label class="jr-branch pre-init jr-appearance-minimal">'+
             '<span lang="en">Select 1 option</span>'+
             '<select name="/data/nodeC" data-relevant="/data/group/nodeB = 2">'+
                 '<option value="">...</option>'+

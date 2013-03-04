@@ -1011,25 +1011,29 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//profiler.report();
 		
 		//TODO: don't add to preload and calculated items
+		//TODO: move to XSLT
 		//profiler = new Profiler('brs');
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 		//profiler.report();
 		
-		//profiler = new Profiler('repeat.init()');
-		this.repeat.init(this);
-		//profiler.report();
+		
 
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
 			Repeated radiobuttons would all have the same name which means they wouldn't work right.
 			Therefore, radiobuttons store their path in data-name instead and cloned repeats will add a 
 			different name attribute.
+			TODO: move to XSLT
 		 */
 		$form.find('input[type="radio"]').each(function(){
 			name = /**@type {string} */$(this).attr('name');
 			$(this).attr('data-name', name);
 		});
+
+		//profiler = new Profiler('repeat.init()');
+		this.repeat.init(this); //after data-name setting
+		//profiler.report();
 
 		//$form.find('h2').first().append('<span/>');//what's this for then?
 
@@ -1278,13 +1282,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return (!$node.val()) ? '' : ($.isArray($node.val())) ? $node.val().join(' ').trim() : $node.val().trim();
 		},
 		setVal : function(name, index, value){
-			var $inputNodes, type, date;//, 
+			var $inputNodes, type, date, $target;//, 
 				//values = value.split(' ');
 			index = index || 0;
 
 			if (this.getInputType($form.find('[data-name="'+name+'"]').eq(0)) == 'radio'){
+				$target = this.getWrapNodes($form.find('[data-name="'+name+'"]')).eq(index).find('input[value="'+value+'"]');
 				//why not use this.getIndex?
-				return this.getWrapNodes($form.find('[data-name="'+name+'"]')).eq(index).find('input[value="'+value+'"]').prop('checked', true);
+				$target.prop('checked', true);
+				return;
 			}
 			else {
 				//why not use this.getIndex?
@@ -1502,7 +1508,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 
 			clonedRepeatsPresent = ($form.find('.jr-repeat.clone').length > 0) ? true : false;
-			console.debug('cloned repeats present in the form: '+clonedRepeatsPresent);
 
 			$form.find(cleverSelector.join()).each(function(){
 				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
@@ -1535,7 +1540,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				*/
 				insideRepeat = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat').length > 0) ? true : false;
 				insideRepeatClone = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat.clone').length > 0) ? true : false;
-				console.debug('name: '+$branchNode.attr('name')+' inside repeat: '+insideRepeat);
+				
 				if (insideRepeatClone){
 					p.ind = parent.input.getIndex($(this));
 				}
@@ -1575,8 +1580,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				that.process($branchNode, result);
 			});
 			
-			console.debug('already covered: ', alreadyCovered);
-			console.debug('relevant expression results cached:', relevantCache);
+			//console.debug('already covered: ', alreadyCovered);
+			//console.debug('relevant expression results cached:', relevantCache);
 			return true;
 		},
 		/**
@@ -2665,6 +2670,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.on('changerepeat', function(event){
 			//set defaults of added repeats, setAllVals does not trigger change event
+			//TODO: only do this for the repeat that trigger it
 			that.setAllVals();
 			//the cloned fields may have been marked as invalid, so after setting thee default values, validate the invalid ones
 			//that.validateInvalids();
@@ -2835,11 +2841,7 @@ Date.prototype.toISOLocalString = function(){
  */
 	$.fn.clearInputs = function(ev) {
 		ev = ev || 'edit';
-		////console.log('objects received to clear: '+this.length);
-		////console.debug(this);
-		////console.log('event to fire: '+ev);
 		return this.each(function(){
-			////console.debug($(this));
 			$(this).find('input, select, textarea').each(function(){
 				var type = $(this).attr('type');
 				if ($(this).prop('nodeName').toUpperCase() === 'SELECT'){

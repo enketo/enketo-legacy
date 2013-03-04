@@ -1607,7 +1607,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {boolean}             [description]
 		 */
 		this.selfRelevant = function($branchNode){
-			return !$branchNode.hasClass('disabled');
+			return !$branchNode.hasClass('disabled') && !$branchNode.hasClass('pre-init');
 		},
 		/**
 		 * whether branch currently only has 'relevant' ancestors

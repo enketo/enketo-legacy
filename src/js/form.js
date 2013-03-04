@@ -1017,7 +1017,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//profiler.report();
 		
 		//profiler = new Profiler('repeat.init()');
-		this.repeat.init(this); //before double-fieldset magic to fix legend issues
+		this.repeat.init(this);
 		//profiler.report();
 
 		/*
@@ -1484,7 +1484,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {?boolean}                  [description]
 		 */
 		this.update = function(changedNodeNames){
-			var i, p, $branchNode, result, namesArr, cleverSelector, insideRepeat,
+			var i, p, $branchNode, result, namesArr, cleverSelector, insideRepeat, insideRepeatClone,
 				cacheIndex = null,
 				relevantCache = {},
 				alreadyCovered = [],
@@ -1502,6 +1502,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 
 			clonedRepeatsPresent = ($form.find('.jr-repeat.clone').length > 0) ? true : false;
+			console.debug('cloned repeats present in the form: '+clonedRepeatsPresent);
 
 			$form.find(cleverSelector.join()).each(function(){
 				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
@@ -1532,9 +1533,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					The first condition is usually false (and is a very quick one-time check) so this presents a big performance boost
 					(6-7 seconds of loading time on the bench6 form)
 				*/
-				insideRepeat = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat.clone').length > 0) ? true : false;
-				
-				if (insideRepeat){
+				insideRepeat = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat').length > 0) ? true : false;
+				insideRepeatClone = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat.clone').length > 0) ? true : false;
+				console.debug('name: '+$branchNode.attr('name')+' inside repeat: '+insideRepeat);
+				if (insideRepeatClone){
 					p.ind = parent.input.getIndex($(this));
 				}
 
@@ -1566,11 +1568,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					relevantCache[cacheIndex] = result;
 				}
 
-				alreadyCovered.push($(this).attr('name'));		
+				if (!insideRepeat){
+					alreadyCovered.push($(this).attr('name'));
+				}
+
 				that.process($branchNode, result);
 			});
-
-			//console.debug('relevant expression results cached:', relevantCache);
+			
+			console.debug('already covered: ', alreadyCovered);
+			console.debug('relevant expression results cached:', relevantCache);
 			return true;
 		},
 		/**
@@ -1626,7 +1632,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var type,
 				that = this;
 			if (!this.selfRelevant($branchNode)){
-				console.debug('enabling branch');
+				console.debug('enabling branch with name: '+$branchNode.attr('name'));
 				
 				$branchNode.removeClass('disabled pre-init').show(250, function(){
 					//to recalculate table column widths
@@ -2438,7 +2444,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//console.debug('default number of repeats for '+$repeat.attr('name')+' is '+numRepsDefault);
 				//first rep is already included (by XSLT transformation)
 				for (i = 1 ; i<numRepsDefault ; i++){
-					that.clone($repeat.siblings().addBack().last(), '');
+					that.clone($repeat.siblings().addBack().last(), false);
 				}
 				//now check the defaults of all the descendants of this repeat and its new siblings, level-by-level
 				$repeat.siblings('.jr-repeat').addBack().find('.jr-repeat')
@@ -2456,12 +2462,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		/**
 		 * clone a repeat group/node
-		 * @param  {jQuery} $node node to clone
-		 * @return {boolean}       [description]
+		 * @param   {jQuery} $node node to clone
+		 * @param 	{boolean=} animate whether to anim@param 	{boolean?} animate whether to animate the cloningate the cloning
+		 * @return  {boolean}       [description]
 		 */
-		clone : function($node){
-			var $master, $clone, $parent, index, radioNames, i, path, timestamp,
+		clone : function($node, animate){
+			var $master, $clone, $parent, index, radioNames, i, path, timestamp, duration,
 				that = this;
+			duration = (animate === false) ? 0 : 400;
 			if ($node.length !== 1){
 				console.error('Nothing to clone');
 				return false;
@@ -2483,7 +2491,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$clone.insertAfter($node)
 				.parent('.jr-group').numberRepeats();
 
-			$clone.hide().clearInputs('').show(400, function(){
+			$clone.hide().clearInputs('').show(duration, function(){
 				//re-initiate widgets in clone
 				that.formO.widgets.init($clone);
 			});

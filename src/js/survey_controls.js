@@ -242,7 +242,7 @@ function submitForm() {
 	record = { 'data': form.getDataStr(true, true), 'ready': true};
 	name = form.getName()+' - '+store.getCounterValue();
 	saveResult = store.setRecord(name, record, false, false);
-	
+
 	console.log('result of save: '+saveResult);
 	if (saveResult === 'success'){
 		gui.feedback('Record queued for submission.', 3);
@@ -282,15 +282,15 @@ function submitEditedForm() {
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
-	redirect = (typeof settings !== 'undefined' && typeof settings['returnURL'] !== 'undefined') ? true : false;
+	redirect = (typeof settings !== 'undefined' && typeof settings['returnURL'] !== 'undefined' && settings['returnURL']) ? true : false;
 	beforeMsg = (redirect) ? 'You will be automatically redirected after submission. ' : '';
 
 	gui.alert(beforeMsg + '<br />'+
 		'<progress style="text-align: center;"/>', 'Submitting...');
 	//name = (Math.floor(Math.random()*100001)).toString();
 	//console.debug('temporary record name: '+name);
-	record = {'name':'', 'data': form.getDataStr(true, true)};
-	
+	record = {'name':'iframe_record', 'data': form.getDataStr(true, true)};
+
 	callbacks = {
 		error: function(){
 			gui.alert('Please try submitting again.', 'Submission failed');
@@ -331,22 +331,23 @@ function submitEditedForm() {
  * @param	{{success: Function, error: Function}} callbacks
  */
 function prepareFormDataArray(record, callbacks){
-	 var i, j, k, formData, dataO, instanceID, $fileNodes, files, recordPrepped;
-	 
-		dataO = form.Data(record.data);
-		instanceID = dataO.getInstanceID();
-		$fileNodes = dataO.$.find('[type="file"]').removeAttr('type');
+	var i, j, k, formData, dataO, instanceID, $fileNodes, files, recordPrepped;
 
-		formData = new FormData();
-		formData.append('xml_submission_data', dataO.getStr(true, true));
-		
-		files = [];
+	dataO = form.Data(record.data);
+	instanceID = dataO.getInstanceID();
+	$fileNodes = dataO.$.find('[type="file"]').removeAttr('type');
 
-		for (j = 0 ; j < $fileNodes.length ; j++){
-			files.push({nodeName: $fileNodes[j].nodeName, fileName: $fileNodes.eq(j).text()});
-		}
-		console.debug('files to find in local filesystem for instanceID '+instanceID+': ', files);
+	formData = new FormData();
+	formData.append('xml_submission_data', dataO.getStr(true, true));
 
+	files = [];
+
+	for (j = 0 ; j < $fileNodes.length ; j++){
+		files.push({nodeName: $fileNodes[j].nodeName, fileName: $fileNodes.eq(j).text()});
+	}
+	console.debug('files to find in local filesystem for instanceID '+instanceID+': ', files);
+
+	if(typeof fileManager !== 'undefined' && files.length > 0){
 		fileManager.retrieveFiles(
 			instanceID,
 			files,
@@ -365,7 +366,11 @@ function prepareFormDataArray(record, callbacks){
 				}
 			}
 		);
-	 //}
+	}
+	else{
+		recordPrepped = { name: record.name, instanceID: instanceID, formData: formData };
+		callbacks.success(recordPrepped);
+	}
 }
 
 /**
@@ -380,7 +385,7 @@ function exportData(finalOnly){
 	finalOnly = finalOnly || true;
 
 	dataArr = store.getSurveyDataOnlyArr(finalOnly);
-	
+
 	if (dataArr.length === 0){
 		gui.feedback('No data to export.');
 	}

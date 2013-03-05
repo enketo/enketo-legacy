@@ -1011,25 +1011,29 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//profiler.report();
 		
 		//TODO: don't add to preload and calculated items
+		//TODO: move to XSLT
 		//profiler = new Profiler('brs');
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 		//profiler.report();
 		
-		//profiler = new Profiler('repeat.init()');
-		this.repeat.init(this); //before double-fieldset magic to fix legend issues
-		//profiler.report();
+		
 
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
 			Repeated radiobuttons would all have the same name which means they wouldn't work right.
 			Therefore, radiobuttons store their path in data-name instead and cloned repeats will add a 
 			different name attribute.
+			TODO: move to XSLT
 		 */
 		$form.find('input[type="radio"]').each(function(){
 			name = /**@type {string} */$(this).attr('name');
 			$(this).attr('data-name', name);
 		});
+
+		//profiler = new Profiler('repeat.init()');
+		this.repeat.init(this); //after data-name setting
+		//profiler.report();
 
 		//$form.find('h2').first().append('<span/>');//what's this for then?
 
@@ -1278,13 +1282,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return (!$node.val()) ? '' : ($.isArray($node.val())) ? $node.val().join(' ').trim() : $node.val().trim();
 		},
 		setVal : function(name, index, value){
-			var $inputNodes, type, date;//, 
+			var $inputNodes, type, date, $target;//, 
 				//values = value.split(' ');
 			index = index || 0;
 
 			if (this.getInputType($form.find('[data-name="'+name+'"]').eq(0)) == 'radio'){
+				$target = this.getWrapNodes($form.find('[data-name="'+name+'"]')).eq(index).find('input[value="'+value+'"]');
 				//why not use this.getIndex?
-				return this.getWrapNodes($form.find('[data-name="'+name+'"]')).eq(index).find('input[value="'+value+'"]').prop('checked', true);
+				$target.prop('checked', true);
+				return;
 			}
 			else {
 				//why not use this.getIndex?
@@ -1484,7 +1490,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {?boolean}                  [description]
 		 */
 		this.update = function(changedNodeNames){
-			var i, p, $branchNode, result, namesArr, cleverSelector, insideRepeat,
+			var i, p, $branchNode, result, namesArr, cleverSelector, insideRepeat, insideRepeatClone,
 				cacheIndex = null,
 				relevantCache = {},
 				alreadyCovered = [],
@@ -1532,9 +1538,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					The first condition is usually false (and is a very quick one-time check) so this presents a big performance boost
 					(6-7 seconds of loading time on the bench6 form)
 				*/
-				insideRepeat = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat.clone').length > 0) ? true : false;
+				insideRepeat = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat').length > 0) ? true : false;
+				insideRepeatClone = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat.clone').length > 0) ? true : false;
 				
-				if (insideRepeat){
+				if (insideRepeatClone){
 					p.ind = parent.input.getIndex($(this));
 				}
 
@@ -1566,10 +1573,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					relevantCache[cacheIndex] = result;
 				}
 
-				alreadyCovered.push($(this).attr('name'));		
+				if (!insideRepeat){
+					alreadyCovered.push($(this).attr('name'));
+				}
+
 				that.process($branchNode, result);
 			});
-
+			
+			//console.debug('already covered: ', alreadyCovered);
 			//console.debug('relevant expression results cached:', relevantCache);
 			return true;
 		},
@@ -1607,7 +1618,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {boolean}             [description]
 		 */
 		this.selfRelevant = function($branchNode){
-			return !$branchNode.hasClass('disabled');
+			return !$branchNode.hasClass('disabled') && !$branchNode.hasClass('pre-init');
 		},
 		/**
 		 * whether branch currently only has 'relevant' ancestors
@@ -1626,7 +1637,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var type,
 				that = this;
 			if (!this.selfRelevant($branchNode)){
-				console.debug('enabling branch');
+				console.debug('enabling branch with name: '+$branchNode.attr('name'));
 				
 				$branchNode.removeClass('disabled pre-init').show(250, function(){
 					//to recalculate table column widths
@@ -1920,6 +1931,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * - enable when its parent branch is revealed 
 	 * - allow setting an empty value (that empties node in instance)
 	 * - send a focus event to the original input when the widget gets focus
+	 * - for extra robustness: if the widget already exists, destroy it first
 	 *
 	 * Considering the ever-increasing code size of the widgets and their dependence on the UI library being used,
 	 * it would be good to move them to a separate javascript file. 
@@ -1996,6 +2008,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$fakeDate = $('<div class="widget input-append date"><input class="ignore input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
 						'<span class="add-on"><i class="icon-calendar"></i></span></div>'),
 					$fakeDateI = $fakeDate.find('input');
+				$dateI.next('.widget.date').remove();
 				$dateI.hide().after($fakeDate);
 
 				$fakeDateI.on('change', function(){
@@ -2040,7 +2053,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						'<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
 						'<span class="add-on"><i class="icon-time"></i></span></div>'),
 					$fakeTimeI = $fakeTime.find('input');
-				
+
+				$timeI.next('.widget.bootstrap-timepicker-component').remove();
 				$timeI.hide().after($fakeTime);
 				$fakeTimeI.timepicker({
 					defaultTime: (timeVal.length > 0) ? 'value' : 'current',
@@ -2081,6 +2095,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$fakeDateI = $fakeDate.find('input'),
 					$fakeTimeI = $fakeTime.find('input');
 
+				$dateTimeI.next('.widget.datetimepicker').remove();
 				$dateTimeI.hide().after('<div class="datetimepicker widget" />');
 				$dateTimeI.siblings('.datetimepicker').append($fakeDate).append($fakeTime);
 				$fakeDate.datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true});
@@ -2434,7 +2449,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//console.debug('default number of repeats for '+$repeat.attr('name')+' is '+numRepsDefault);
 				//first rep is already included (by XSLT transformation)
 				for (i = 1 ; i<numRepsDefault ; i++){
-					that.clone($repeat.siblings().addBack().last(), '');
+					that.clone($repeat.siblings().addBack().last(), false);
 				}
 				//now check the defaults of all the descendants of this repeat and its new siblings, level-by-level
 				$repeat.siblings('.jr-repeat').addBack().find('.jr-repeat')
@@ -2452,12 +2467,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		/**
 		 * clone a repeat group/node
-		 * @param  {jQuery} $node node to clone
-		 * @return {boolean}       [description]
+		 * @param   {jQuery} $node node to clone
+		 * @param 	{boolean=} animate whether to anim@param 	{boolean?} animate whether to animate the cloningate the cloning
+		 * @return  {boolean}       [description]
 		 */
-		clone : function($node){
-			var $master, $clone, $parent, index, radioNames, i, path, timestamp,
+		clone : function($node, animate){
+			var $master, $clone, $parent, index, radioNames, i, path, timestamp, duration,
 				that = this;
+			duration = (animate === false) ? 0 : 400;
 			if ($node.length !== 1){
 				console.error('Nothing to clone');
 				return false;
@@ -2466,8 +2483,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$master = $parent.children('fieldset.jr-repeat:not(.clone)').eq(0);
 			$clone = $master.clone(false);//deep cloning with button events causes problems
 			
-			//add clone class, remove any clones inside this clone.. (cloned repeats within repeats..)
-			//also remove all widgets
+			//add clone class 
+			//remove any clones inside this clone.. (cloned repeats within repeats..), also remove all widgets 
+			//NOTE: widget removal doesn't work atm (jQuery bug?), it is covered by the date/time/datetime widgets though)
 			$clone.addClass('clone').find('.clone, .widget').remove();
 			
 			//mark all cloned fields as valid
@@ -2477,7 +2495,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			$clone.insertAfter($node)
 				.parent('.jr-group').numberRepeats();
-			$clone.hide().clearInputs('').show(400, function(){
+
+			$clone.hide().clearInputs('').show(duration, function(){
 				//re-initiate widgets in clone
 				that.formO.widgets.init($clone);
 			});
@@ -2651,6 +2670,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.on('changerepeat', function(event){
 			//set defaults of added repeats, setAllVals does not trigger change event
+			//TODO: only do this for the repeat that trigger it
 			that.setAllVals();
 			//the cloned fields may have been marked as invalid, so after setting thee default values, validate the invalid ones
 			//that.validateInvalids();
@@ -2821,11 +2841,7 @@ Date.prototype.toISOLocalString = function(){
  */
 	$.fn.clearInputs = function(ev) {
 		ev = ev || 'edit';
-		////console.log('objects received to clear: '+this.length);
-		////console.debug(this);
-		////console.log('event to fire: '+ev);
 		return this.each(function(){
-			////console.debug($(this));
 			$(this).find('input, select, textarea').each(function(){
 				var type = $(this).attr('type');
 				if ($(this).prop('nodeName').toUpperCase() === 'SELECT'){

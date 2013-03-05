@@ -11,6 +11,7 @@
               <kids_age/>
               <immunization_info jr:template="">
                 <vaccine/>
+                <date/>
               </immunization_info>
             </kids_details>
             <kids_details>
@@ -18,9 +19,11 @@
               <kids_age>2</kids_age>
               <immunization_info>
                 <vaccine>Polio</vaccine>
+                <date/>
               </immunization_info>
               <immunization_info>
                 <vaccine>Rickets</vaccine>
+                <date/>
               </immunization_info>
             </kids_details>
             <kids_details>
@@ -28,12 +31,15 @@
               <kids_age>5</kids_age>
               <immunization_info>
                 <vaccine>Malaria</vaccine>
+                <date/>
               </immunization_info>
               <immunization_info>
                 <vaccine>Flu</vaccine>
+                <date/>
               </immunization_info>
               <immunization_info>
                 <vaccine>Polio</vaccine>
+                <date/>
               </immunization_info>
             </kids_details>
             <nested_group>
@@ -51,6 +57,7 @@
       <bind nodeset="/nested_repeats/kids/kids_details/kids_name" type="string"/>
       <bind nodeset="/nested_repeats/kids/kids_details/kids_age" type="int"/>
       <bind nodeset="/nested_repeats/kids/kids_details/immunization_info/vaccine" type="string"/>
+      <bind nodeset="/nested_repeats/kids/kids_details/immunization_info/date" type="date"/>
       <bind nodeset="/nested_repeats/kids/nested_group/nested_name" type="string"/>
       <bind nodeset="/nested_repeats/kids/nested_group/nested_age" type="int"/>
       <bind nodeset="/nested_repeats/gps" type="geopoint"/>
@@ -85,6 +92,9 @@
             <repeat nodeset="/nested_repeats/kids/kids_details/immunization_info">
               <input ref="/nested_repeats/kids/kids_details/immunization_info/vaccine">
                 <label>An immunization record</label>
+              </input>
+              <input ref="/nested_repeats/kids/kids_details/immunization_info/date">
+                <label>date</label>
               </input>
             </repeat>
           </group>

@@ -11,6 +11,25 @@ String.prototype.pad = function(digits){
 	return x;
 };
 
+var profilerRecords = [];
+
+/**
+ * Little profiling object
+ * @param {string} taskName [description]
+ * @constructor
+ */
+function Profiler(taskName){
+	var start = new Date().getTime();
+	/**
+	 * @param  {string=} message [description]
+	 */
+	this.report = function(message){
+		message = message || 'time taken for '+taskName+' to execute in milliseconds: '+ (new Date().getTime() - start);
+		//console.error(message);
+		profilerRecords.push(message);
+	};
+}
+
 (function($){
 	"use strict";
 	// give a set of elements the same (longest) width

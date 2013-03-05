@@ -62,8 +62,8 @@ class Formtester extends CI_Controller {
 			{
 				$data['scripts'] = array
 				(
-					'libraries/libraries-all-min.js',
-					'js-min/tester-all-min.js'
+					'/libraries/libraries-all-min.js',
+					'/js-min/tester-all-min.js'
 				);
 			}
 			else

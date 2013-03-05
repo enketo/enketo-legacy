@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global Connection, FileManager, Cache, gui, jrDataStr, settings, Form, store:true, StorageLocal:true, Settings, prepareFormDataArray*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global Connection, FileManager, Cache, Profiler, profilerRecords, gui, jrDataStr, settings, Form, store:true, StorageLocal:true, Settings,prepareFormDataArray*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var /**@type {Form}*/form;
@@ -27,17 +26,16 @@ var /**@type {FileManager}*/fileManager;
 $(document).ready(function() {
 	'use strict';
 	var message, choices, loadErrors;
-	//var profiler;
-	var timeStart = new Date().getTime();
+	var profiler = new Profiler('app initialization');
 	//store = new StorageLocal();
 	//store.init();
-	
+
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	fileManager = new FileManager();
 	//settings = new Settings();
 	//settings.init();
 	connection = new Connection();
-	
+
 	if (!store.isSupported()){
 		window.location = settings['modernBrowsersURL'];
 	}
@@ -46,7 +44,7 @@ $(document).ready(function() {
 	}
 
 	gui.updateStatus.offlineLaunch(false);
-	
+
 	if ($('html').attr('manifest')){
 		cache = new Cache();
 		if (cache.isSupported()){
@@ -98,7 +96,6 @@ $(document).ready(function() {
 		}
 	}, 30*1000);
 
-
-	//console.error('total time from start of webform.js until now: '+ (new Date().getTime() - timeStart));
-
+	profiler.report();
+	$(profilerRecords).each(function(i,v){console.log(v);});
 });

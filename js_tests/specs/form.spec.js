@@ -589,9 +589,20 @@ describe('repeat functionality', function(){
 			$1stLevelTargetRepeat = formH.$.find('.jr-repeat[name="/nested_repeats/kids/kids_details"]').eq(1),
 			$2ndLevelTargetRepeats = $1stLevelTargetRepeat.find('.jr-repeat[name="/nested_repeats/kids/kids_details/immunization_info"]');
 
-		console.log('repeatapeteat: ', formH.$.html());
+		//console.log('repeatapeteat: ', formH.$.html());
 		expect($1stLevelTargetRepeat.length).toEqual(1);
 		expect($2ndLevelTargetRepeats.length).toEqual(3);
+	});
+
+	it ("doesn't duplicate date widgets in a cloned repeat", function(){
+		form = loadForm('nested_repeats.xml');
+		form.init();
+		var formH = form.getFormO(),
+			model = form.getDataO(),
+			$dates = formH.$.find('[name="/nested_repeats/kids/kids_details/immunization_info/date"]');
+
+		expect($dates.length).toEqual(5);
+		expect($dates.parent().find('.widget.date').length).toEqual(5);
 	});
 });
 

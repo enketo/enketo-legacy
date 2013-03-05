@@ -958,7 +958,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				for (resTypeNum in resultTypes){
 					resTypeNum = Number(resTypeNum);
 					if (resTypeNum == Number(result.resultType)){
-						result = (resTypeNum >0 && resTypeNum<4) ? result[resultTypes[resTypeNum][2]] : result;
+						result = (resTypeNum > 0 && resTypeNum < 4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
 						//xpathEvalTime += new Date().getTime() - timeStart;
 						return result;
@@ -1012,6 +1012,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if (typeof data == 'undefined' || !(data instanceof DataXML)){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
+
+		//profiler = new Profiler('preloads.init()');
+		this.preloads.init(this); //before widgets.init (as instanceID used in offlineFileWidget)
+		//profiler.report();
 		
 		//var profiler = new Profiler('adding hint icons');
 		//add 'hint' icon, could be moved to XSLT, but is very fast even on super large forms - 31 msecs on bench6 form
@@ -1062,10 +1066,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		//profiler = new Profiler('branch.init()');
 		this.branch.init();
-		//profiler.report();
-		
-		//profiler = new Profiler('preloads.init()');
-		this.preloads.init(); //after event handlers! NOT NECESSARY ANY MORE I THINK
 		//profiler.report();
 
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
@@ -2346,7 +2346,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * Note that preloaders may be deprecated in the future and be handled as metadata without bindings at all, in which
 	 * case all this stuff should perhaps move to DataXML
 	 */
-	//functions are design to fail silently if unknown preloaders are called
+	//functions are designed to fail silently if unknown preloaders are called
 	FormHTML.prototype.preloads = {
 		init: function(parentO){
 			var item, param, name, curVal, newVal, meta, dataNode, props, xmlType,

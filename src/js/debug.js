@@ -52,14 +52,6 @@ function setDebugEventHandlers(){
 	}
 }
 
-function Profiler(taskName){
-	var start = new Date().getTime();
-	this.report = function(message){
-		message = message || 'time taken for '+taskName+' to execute in milliseconds: '+ (new Date().getTime() - start);
-		console.error(message);
-	};
-}
-
 var xpathEvalTime = 0;
 var xpathEvalNum = 0;
 

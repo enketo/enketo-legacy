@@ -1889,6 +1889,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 	FormHTML.prototype.bootstrapify = function(){				
 		//if no constraintmessage use a default
+		//TODO: move to XSLT
 		$form.addClass('clearfix')
 			.find('label, legend').each(function(){
 			var $label = $(this);
@@ -1899,7 +1900,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$label.children('input.ignore').length !== $label.children('input').length  ||
 					$label.children('select.ignore').length !== $label.children('select').length ||
 					$label.children('textarea.ignore').length !== $label.children('textarea').length ) ){
-				$label.prepend('<span class="jr-constraint-msg" lang="">Value not allowed</span>');
+				$label.prepend('<span class="jr-constraint-msg active" lang="">Value not allowed</span>');
 			}
 		});
 
@@ -1909,12 +1910,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			var $p = $(this).parent('label'); 
 			$(this).detach().prependTo($p);
 		});*/
+
 		//move constraint message to bottom of question and add message for required (could also be done in XSLT)
+		//TODO: move to XSLT
 		$form.find('.jr-constraint-msg').parent().each(function(){
 			var $msg = $(this).find('.jr-constraint-msg').detach(),
 				$wrapper = $(this).closest('label, fieldset');
-			$msg.after('<span class="jr-required-msg" lang="">This field is required</span>');
 			$wrapper.append($msg);
+			$msg.after('<span class="jr-required-msg active" lang="">This field is required</span>');
 		});
 
 		$('.form-header [title]').tooltip({placement: 'bottom'});

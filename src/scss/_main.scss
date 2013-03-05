@@ -600,8 +600,7 @@ html.touch{
     //margin-top: 10px;
     padding-left: $pad;
     padding-right: $pad;
-    padding-bottom: $pad;
-  }
+    padding-bottom: $pad;}
   .invalid-required{
     .jr-required-msg.active{
       @include error-text; } }

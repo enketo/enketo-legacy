@@ -213,7 +213,7 @@ function StorageLocal(){
 	 * [getSurveyDataArr description]
 	 * @param  {boolean=} finalOnly   [description]
 	 * @param  {?string=} excludeName the (currently open) record name to exclude from the returned data set
-	 * @return {Array.<Object.<string, string>>}             [description]
+	 * @return {Array.<{name: string, data: string}>}             [description]
 	 */
 	this.getSurveyDataArr = function(finalOnly, excludeName){
 		var i, records,

@@ -30,6 +30,7 @@ $(document).ready(function(){
  * @param  {string} formName  The name of the form to load (key of local db).
  * @param  {boolean=} confirmed Whether unsaved data can be discarded and lost forever.
  */
+/*
 function loadForm(formName, confirmed){
 	'use strict';
 	var message, choices, record;
@@ -71,6 +72,7 @@ function loadForm(formName, confirmed){
 		}
 	}
 }
+*/
 /**
  * [saveForm description]
  * @param  {string=} confirmedRecordName  [description]
@@ -78,6 +80,7 @@ function loadForm(formName, confirmed){
  * @param  {boolean=} deleteOldName        [description]
  * @param  {boolean=} overwriteExisting    [description]                   [description]
  */
+/*
 function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, overwriteExisting){
 	'use strict';
 	var result, message, choices,
@@ -157,7 +160,7 @@ function saveForm(confirmedRecordName, confirmedFinalStatus, deleteOldName, over
 		gui.alert('Error occurred. Form was NOT saved.', 'Save Error');
 	}
 }
-
+*/
 /**
  * Controller function to reset to a blank form. Checks whether all changes have been saved first
  * @param  {boolean=} confirmed Whether unsaved changes can be discarded and lost forever
@@ -188,6 +191,7 @@ function resetForm(confirmed){
  * Controller function to delete a record of form data.
  * @param  {boolean=} confirmed whether the user has confirmed that he/she wants to delete the data
  */
+/*
 function deleteForm(confirmed) {
 	'use strict';
 	var message, choices, key = form.getRecordName();
@@ -218,7 +222,7 @@ function deleteForm(confirmed) {
 	}
 	return;
 }
-
+*/
 
 /**
  * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a queue, without saved data loading
@@ -229,24 +233,37 @@ function deleteForm(confirmed) {
  * resetForm() does not function as expected.
  */
 function submitForm() {
-	var record, saveResult;
+	var record, name, saveResult;
 	$('form.jr').trigger('beforesave');
 	if (!form.isValid()){
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
 	record = { 'data': form.getDataStr(true, true), 'ready': true};
-	saveResult = store.setRecord(form.getName()+' - '+store.getCounterValue(), record, false, false);
-	
+	name = form.getName()+' - '+store.getCounterValue();
+	saveResult = store.setRecord(name, record, false, false);
+
 	console.log('result of save: '+saveResult);
 	if (saveResult === 'success'){
 		gui.feedback('Record queued for submission.', 3);
 		resetForm(true);
 		$('form.jr').trigger('save', JSON.stringify(store.getRecordList()));
 		//attempt uploading the data (all data in localStorage)
-		//NOTE: THIS (force=true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
+		//TODO: THIS (force=true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
 		//TODO: add second parameter getCurrentRecordName() to prevent currenty open record from being submitted
-		connection.uploadRecords(store.getSurveyDataArr(true), true);
+		//connection.uploadRecords(store.getSurveyDataArr(true), true);
+		prepareFormDataArray(
+			//store.getSurveyDataArr(true),
+			{name: name, data: record.data},
+			{
+				success: function(formDataArr){
+					connection.uploadRecords(formDataArr, true);
+				},
+				error: function(){
+					gui.alert('Something went wrong while trying to prepare the record(s) for uploading.', 'Record Error');
+				}
+			}
+		);
 	}
 	else{
 		gui.alert('Error trying to save data locally before submit');
@@ -265,15 +282,15 @@ function submitEditedForm() {
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
-	redirect = (typeof settings !== 'undefined' && typeof settings['returnURL'] !== 'undefined') ? true : false;
+	redirect = (typeof settings !== 'undefined' && typeof settings['returnURL'] !== 'undefined' && settings['returnURL']) ? true : false;
 	beforeMsg = (redirect) ? 'You will be automatically redirected after submission. ' : '';
 
 	gui.alert(beforeMsg + '<br />'+
 		'<progress style="text-align: center;"/>', 'Submitting...');
 	//name = (Math.floor(Math.random()*100001)).toString();
 	//console.debug('temporary record name: '+name);
-	record = {'data': form.getDataStr(true, true)};
-	
+	record = {'name':'iframe_record', 'data': form.getDataStr(true, true)};
+
 	callbacks = {
 		error: function(){
 			gui.alert('Please try submitting again.', 'Submission failed');
@@ -292,7 +309,68 @@ function submitEditedForm() {
 		complete: function(){}
 	};
 
-	connection.uploadRecords(record, true, callbacks);
+	//connection.uploadRecords(record, true, callbacks);
+	//only upload the last one
+	prepareFormDataArray(
+		record,
+		{
+			success: function(formDataArr){
+				connection.uploadRecords(formDataArr, true, callbacks);
+			},
+			error: function(){
+				gui.alert('Something went wrong while trying to prepare the record(s) for uploading.', 'Record Error');
+			}
+		}
+	);
+}
+
+
+/**
+ * Asynchronous function that builds up a form data array including media files
+ * @param  {{name: string, data: string}} record [description]
+ * @param	{{success: Function, error: Function}} callbacks
+ */
+function prepareFormDataArray(record, callbacks){
+	var i, j, k, formData, dataO, instanceID, $fileNodes, files, recordPrepped;
+
+	dataO = form.Data(record.data);
+	instanceID = dataO.getInstanceID();
+	$fileNodes = dataO.$.find('[type="file"]').removeAttr('type');
+
+	formData = new FormData();
+	formData.append('xml_submission_data', dataO.getStr(true, true));
+
+	files = [];
+
+	for (j = 0 ; j < $fileNodes.length ; j++){
+		files.push({nodeName: $fileNodes[j].nodeName, fileName: $fileNodes.eq(j).text()});
+	}
+	console.debug('files to find in local filesystem for instanceID '+instanceID+': ', files);
+
+	if(typeof fileManager !== 'undefined' && files.length > 0){
+		fileManager.retrieveFiles(
+			instanceID,
+			files,
+			{
+				success: function(files){
+					for (k = 0 ; k < files.length ; k++){
+						formData.append(files[k].nodeName, files[k].file);
+					}
+					recordPrepped = { name: record.name, instanceID: instanceID, formData: formData };
+					console.log('returning record with formdata : ', recordPrepped);
+					callbacks.success(recordPrepped);
+				},
+				error: function(e){
+					console.error('Error occured when trying to retrieve files from local filesystem', e);
+					//TODO: sent it anyway without files?
+				}
+			}
+		);
+	}
+	else{
+		recordPrepped = { name: record.name, instanceID: instanceID, formData: formData };
+		callbacks.success(recordPrepped);
+	}
 }
 
 /**
@@ -307,7 +385,7 @@ function exportData(finalOnly){
 	finalOnly = finalOnly || true;
 
 	dataArr = store.getSurveyDataOnlyArr(finalOnly);
-	
+
 	if (dataArr.length === 0){
 		gui.feedback('No data to export.');
 	}
@@ -356,20 +434,23 @@ function exportToFile(){
 GUI.prototype.setCustomEventHandlers = function(){
 	"use strict";
 	var settingsForm, that = this;
-	
+	/*
 	$('button#save-form')
 		.click(function(){
 			form.validateForm();
 			saveForm();
 		});
+	*/
 	$('button#reset-form')
 		.click(function(){
 			resetForm();
 		});
+	/*
 	$('button#delete-form')
 		.click(function(){
 			deleteForm(false);
 		});
+	*/
 	$('button#submit-form').button()
 		.click(function(){
 			form.validateForm();
@@ -467,7 +548,7 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
 	$page.find('#records-draft-qty').text(draftFormsQty);
 	$page.find('#records-final-qty').text(finishedFormsQty);
 };
-
+/*
 GUI.prototype.saveConfirm = function(){
 	"use strict";
 	var $saveConfirm = $('#dialog-save');
@@ -505,4 +586,5 @@ GUI.prototype.saveConfirm = function(){
 		}
 	);
 };
+*/
 

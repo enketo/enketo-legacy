@@ -47,8 +47,8 @@ function setDebugEventHandlers(){
 			$(elDOM).on(ev, handler);//function(e, a, b, c){
 		}
 	}
-	function handler(e, a){
-		console.log(e.type + ' event was triggered with param: '+ a, e);
+	function handler(e, a, b){
+		console.log(e.type + ' event was triggered with param: '+ a, b, e);
 	}
 }
 

@@ -151,7 +151,7 @@ Connection.prototype.uploadRecords = function(record, force, callbacks){
 		console.error('record missing required properties', record);
 		return false;
 	}
-	
+
 	//if ($.inArray(record.name, namesInQueue) === -1){ //THIS CHECK DOESN"T WORK I THINK
 	if ($.grep(this.uploadQueue, function(item){return record.name === item.name; }).length === 0){
 		this.uploadQueue.push(record);
@@ -193,7 +193,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 		},
 		success: function(){}
 	} : callbacks;
-	
+
 	if (this.uploadQueue.length > 0){
 		record = this.uploadQueue.pop();
 		if (this.getOnlineStatus() === false){
@@ -253,7 +253,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, instanceID
 		};
 
 	console.debug('submission results for: '+name+', instanceID: '+instanceID+' => status: '+status);
-	
+
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
 			$(document).trigger('submissionsuccess', [name, instanceID]);
@@ -276,7 +276,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, instanceID
 		console.error ('Error during uploading, received unexpected statuscode: '+status);
 		this.uploadResult.fail.push([name, statusMap['2xx'].msg]);
 	}
-	
+
 	if (last !== true){
 		return;
 	}

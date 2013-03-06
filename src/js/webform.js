@@ -27,13 +27,9 @@ $(document).ready(function() {
 	'use strict';
 	var message, choices, loadErrors;
 	var profiler = new Profiler('app initialization');
-	//store = new StorageLocal();
-	//store.init();
 
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	fileManager = new FileManager();
-	//settings = new Settings();
-	//settings.init();
 	connection = new Connection();
 
 	if (!store.isSupported()){

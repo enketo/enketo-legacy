@@ -44,7 +44,7 @@ function FileManager(){
 	 * @return {boolean}					returns true/false if File API is supported by browser
 	 */
 	this.init = function(directory, callbacks){
-		if (this.isSupported()){
+		if (this.isSupported() && directory && directory.length > 0){
 			var that = this;
 			dirName = directory;
 			dirPrefix = '/'+directory+'/';

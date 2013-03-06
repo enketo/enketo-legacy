@@ -625,7 +625,7 @@ html.touch{
     $input-width: 27%;
     $separator-width: 4%;
     $detect-width: 40px;
-    $search-width: 70%;
+    $search-width: 85%;
     margin-top: 25px;
     .geo-inputs{
       min-width: 160px;
@@ -646,6 +646,8 @@ html.touch{
       img{
         width: 100%;
         height: 100%; } }
+    .search-bar .input-append{
+      width: $search-width;}
     button{
       height: 40px;
       &[name="geodetect"]{
@@ -684,7 +686,7 @@ html.touch{
         font-size: 0.75 * $baseFontSize; } }
     input{
       &[name="search"]{
-        width: $search-width;}
+        /*width: $search-width;*/}
       &[name="lat"],&[name="long"]{
         float: none;
         @include border-box;

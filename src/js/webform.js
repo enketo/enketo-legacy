@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global BlobBuilder, Profiler, profilerRecords, Connection, Cache, vkbeautify, saveAs, gui, jrDataStr, settings, Form, store:true, StorageLocal:true, Settings, Modernizr*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global Connection, FileManager, Cache, Profiler, profilerRecords, gui, jrDataStr, settings, Form, store:true, StorageLocal:true, Settings,prepareFormDataArray*/
 
 /* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var /**@type {Cache}*/cache;
+var /**@type {FileManager}*/fileManager;
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 $(document).ready(function() {
 	'use strict';
 	var message, choices, loadErrors;
 	var profiler = new Profiler('app initialization');
-	//store = new StorageLocal();
-	//store.init();
 
 	form = new Form('form.jr:eq(0)', jrDataStr);
-	//settings = new Settings();
-	//settings.init();
+	//fileManager = new FileManager();
 	connection = new Connection();
 
 	if (!store.isSupported()){
@@ -76,8 +74,24 @@ $(document).ready(function() {
 	window.setInterval(function(){
 		//TODO: add second parameter to getSurveyDataArr() to
 		//getCurrentRecordName() to prevent currenty open record from being submitted
-		connection.uploadRecords(store.getSurveyDataArr(true));
-	}, 15*1000);
+		//connection.uploadRecords(store.getSurveyDataArr(true));
+		var i,
+			records = store.getSurveyDataArr(true);
+		for ( i = 0 ; i< records.length ; i++){
+			prepareFormDataArray(
+				records[i],
+				{
+					success: function(recordPrepped){
+						connection.uploadRecords(recordPrepped);
+					},
+					error: function(){
+						console.error('Something went wrong while trying to prepare the record(s) for uploading.');
+					}
+				}
+			);
+		}
+	}, 30*1000);
+
 	profiler.report();
 	$(profilerRecords).each(function(i,v){console.log(v);});
 });

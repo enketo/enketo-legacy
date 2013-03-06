@@ -79,7 +79,7 @@ var formStr1 =
     '</form>';
 
 var dataStr2 =
-     "<model>"+
+    "<model>"+
         '<instance xmlns="http://www.w3.org/2002/xforms">'+
             '<random id="random"><formhub><uuid/></formhub>'+
               '<random__/>'+
@@ -92,9 +92,8 @@ var dataStr2 =
                 '<timeEnd/>'+
               '</meta>'+
             '</random>'+
-          '</instance>'+
-          '</model>';
-
+        '</instance>'+
+    '</model>';
 
 var formStr2 =
     '<form class="jr">'+

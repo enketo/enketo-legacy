@@ -18,6 +18,7 @@
 
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
+var /**@type {FileManager}*/fileManager;
 
 $(document).ready(function() {
 	'use strict';

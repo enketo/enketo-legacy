@@ -94,7 +94,7 @@ describe("The Connection Class ", function () {
 		});
 
 		function testFail(statusCode){
-			it ('correctly identifies statusCode '+statusCode+' as a failed submission.', function(){
+			it ('and correctly identifies statusCode '+statusCode+' as a failed submission.', function(){
 				connection.processOpenRosaResponse(statusCode, 'aname', true);
 				expect(connection.uploadResult.win.length).toBe(0);
 				expect(connection.uploadResult.fail.length).toBe(1);
@@ -106,7 +106,7 @@ describe("The Connection Class ", function () {
 		}
 
 		function testWin(statusCode){
-			it ('correctly identifies statusCode '+statusCode+' as a succesful submission.', function(){
+			it ('and correctly identifies statusCode '+statusCode+' as a succesful submission.', function(){
 				connection.processOpenRosaResponse(statusCode, 'aname', true);
 				expect(connection.uploadResult.win.length).toBe(1);
 				expect(connection.uploadResult.fail.length).toBe(0);
@@ -119,10 +119,10 @@ describe("The Connection Class ", function () {
 
 		function testFailAlert(forced, online, alert){
 			var anno = (alert) ? 'an' : 'NO';
-			it('shows '+anno+' alert when failed upload was conducted with forced:'+forced+' and online: '+online, function(){
+			it('and shows '+anno+' alert when failed upload was conducted with forced:'+forced+' and online: '+online, function(){
 				connection.forced = forced;
 				connection.currentOnlineStatus = online;
-				connection.processOpenRosaResponse(404, 'aname', true);
+				connection.processOpenRosaResponse(404, 'aname', 'MyInstanceID', true);
 				if (alert){
 					expect(gui.alert).toHaveBeenCalled();
 					expect(gui.alert.mostRecentCall.args[1]).toEqual(errorHeading);
@@ -141,7 +141,7 @@ describe("The Connection Class ", function () {
 			it('shows a feedback message when succesful upload was conducted with forced:'+forced+' and online: '+online, function(){
 				connection.forced = forced;
 				connection.currentOnlineStatus = online;
-				connection.processOpenRosaResponse(201, 'aname', true);
+				connection.processOpenRosaResponse(201, 'aname','MyInstanceID', true);
 				expect(gui.alert).not.toHaveBeenCalled();
 				expect(gui.feedback).toHaveBeenCalled();
 			});

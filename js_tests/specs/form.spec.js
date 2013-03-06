@@ -161,6 +161,22 @@ describe('Data node XML data type conversion & validation', function(){
 		node.setVal('value', null, 'string');
 		expect(node.setVal('')).toBe(true);
 	});
+
+	it('adds a file attribute to data nodes with a value and with xml-type: binary', function(){
+		node = data.node('/thedata/nodeA', null, null);
+		expect(node.get().attr('type')).toBe(undefined);
+		node.setVal('this.jpg', null, 'binary');
+		expect(node.get().attr('type')).toBe('file');
+	});
+
+	it('removes a file attribute from EMPTY data nodes with xml-type: binary', function(){
+		node = data.node('/thedata/nodeA', null, null);
+		node.setVal('this.jpg', null, 'binary');
+		expect(node.get().attr('type')).toBe('file');
+		node.setVal('', null, 'binary');
+		expect(node.get().attr('type')).toBe(undefined);
+	});
+
 });
 
 describe("Data node cloner", function(){

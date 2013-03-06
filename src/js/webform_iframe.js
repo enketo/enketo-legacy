@@ -20,6 +20,7 @@
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var	currentOnlineStatus = false;
+var /**@type {FileManager}*/fileManager;
 
 $(document).ready(function() {
 	'use strict';

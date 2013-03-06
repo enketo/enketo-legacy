@@ -15,7 +15,7 @@
  */
 
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true*//*global GUI, gui, Form, Connection, Modernizr, getGetVariable, vkbeautify*/
-var form, source, url, $tabs, $upload, _error, state, connection,
+var form, source, url, $tabs, $upload, _error, state, connection, fileManager,
 	error_msg = 'There were errors. Please see the "report" tab for details.',
 	templateShow = false;
 

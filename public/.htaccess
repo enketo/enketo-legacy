@@ -15,11 +15,7 @@ RewriteRule ^(.*)$ /index.php/$1 [L]
 #attempt to allow .appcache extension for manifest files (not working yet)
 #RewriteRule ^(.*)manifest\.appcache /$1 [NC,L]
 
-#to use proxy for cross-domain ajax request (can't get CURL to work in php…)
-#RewriteRule ^html5validate/(.*)$ http://html5.validator.nu/$1 [P]
-#RewriteRule ^formtranslate(.*)$ http://www.commcarehq.org/formtranslate$1 [P]
-
-#make sure .ttf files are served with the right Content-type
+#make sure certain files are served with the right Content-type
 AddType font/ttf .ttf
 AddType application/x-font-woff .woff
 #AddType text/cache-manifest .appcache
@@ -29,4 +25,4 @@ ExpiresByType text/cache-manifest "access plus 0 seconds"
 
 #allow larger file size (can also be set in php.ini)
 php_value upload_max_filesize 10M
-php_value post_max_size 10M
+php_value post_max_size 250M

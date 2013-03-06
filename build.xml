@@ -17,6 +17,7 @@
         <file name="helpers.js"/>
         <file name="gui.js"/>
         <file name="form.js"/>
+        <file name="files.js"/>
         <file name="widgets.js"/>
         <file name="storage.js"/>
         <file name="survey_controls.js"/>
@@ -56,6 +57,7 @@
         <file name="storage.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
+        <file name="files.js"/>
         <file name="connection.js"/>
         <file name="survey_controls.js"/>
         <file name="webform.js"/>
@@ -97,6 +99,7 @@
         <file name="gui.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
+        <file name="files.js"/>
         <file name="storage.js"/>
         <file name="connection.js"/>
         <file name="survey_controls.js"/>
@@ -117,6 +120,7 @@
         <file name="gui.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
+        <file name="files.js"/>
         <file name="storage.js"/>
         <file name="connection.js"/>
         <file name="survey_controls.js"/>
@@ -137,6 +141,7 @@
         <file name="gui.js"/>
         <file name="form.js"/>
         <file name="widgets.js"/>
+        <file name="files.js"/>
         <file name="storage.js"/>
         <file name="connection.js"/>
         <file name="survey_controls.js"/>

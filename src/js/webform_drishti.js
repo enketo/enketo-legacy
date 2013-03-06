@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global vkbeautify, gui, jrDataStr, StorageLocal, Form*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global vkbeautify, gui, jrDataStr, StorageLocal, FileManager, Form*/
 
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var /**@type {StorageLocal}*/store;
+var /**@type {FileManager}*/fileManager;
 
 $(document).ready(function() {
 	'use strict';

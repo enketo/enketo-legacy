@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Profiler, Modernizr, google, settings, connection, xPathEvalTime*/
+
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Profiler, Modernizr, google, settings, connection, fileManager, xPathEvalTime*/
 
 /**
  * Class: Form
@@ -297,6 +298,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//then return validation result
 				success = this.validate(expr, xmlDataType);
 				$form.trigger('dataupdate', $target.prop('nodeName'));
+				//add type="file" attribute for file references
+				if (xmlDataType === 'binary'){
+					if (newVal.length > 0 ){
+						$target.attr('type', 'file');
+					}
+					else{
+						$target.removeAttr('type');
+					}
+				}
 				return success;
 			}
 			if ($target.length > 1){
@@ -573,6 +583,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		return;
 	};
 
+	DataXML.prototype.getInstanceID = function(){
+		return this.node(':first>meta>instanceID').getVal()[0];
+	};
 	/**
 	 * Function to load an (possibly incomplete) instance so that it can be edited.
 	 * 
@@ -945,7 +958,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				for (resTypeNum in resultTypes){
 					resTypeNum = Number(resTypeNum);
 					if (resTypeNum == Number(result.resultType)){
-						result = (resTypeNum >0 && resTypeNum<4) ? result[resultTypes[resTypeNum][2]] : result;
+						result = (resTypeNum > 0 && resTypeNum < 4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
 						//xpathEvalTime += new Date().getTime() - timeStart;
 						return result;
@@ -999,6 +1012,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		if (typeof data == 'undefined' || !(data instanceof DataXML)){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
+
+		//profiler = new Profiler('preloads.init()');
+		this.preloads.init(this); //before widgets.init (as instanceID used in offlineFileWidget)
+		//profiler.report();
 		
 		//var profiler = new Profiler('adding hint icons');
 		//add 'hint' icon, could be moved to XSLT, but is very fast even on super large forms - 31 msecs on bench6 form
@@ -1009,7 +1026,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 		}
 		//profiler.report();
-		
+
 		//TODO: don't add to preload and calculated items
 		//TODO: move to XSLT
 		//profiler = new Profiler('brs');
@@ -1017,8 +1034,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
 		//profiler.report();
 		
-		
-
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
 			Repeated radiobuttons would all have the same name which means they wouldn't work right.
@@ -1032,7 +1047,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 
 		//profiler = new Profiler('repeat.init()');
-		this.repeat.init(this); //after data-name setting
+		this.repeat.init(this); //after radio button data-name setting
 		//profiler.report();
 
 		//$form.find('h2').first().append('<span/>');//what's this for then?
@@ -1051,10 +1066,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		//profiler = new Profiler('branch.init()');
 		this.branch.init();
-		//profiler.report();
-		
-		//profiler = new Profiler('preloads.init()');
-		this.preloads.init(); //after event handlers! NOT NECESSARY ANY MORE I THINK
 		//profiler.report();
 
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
@@ -1971,7 +1982,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.spinnerWidget();
 			this.sliderWidget();	
 			this.barcodeWidget();
-			this.fileWidget();
+			this.offlineFileWidget();
 			this.mediaLabelWidget();
 			this.radioWidget();
 		},
@@ -1995,7 +2006,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (!this.repeat){
 				$form.find('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact, .jr-appearance-label, .jr-appearance-list-nolabel )')
 					.children('label')
-					.children('input[type="radio"], input[type="checkbox"]').parent('label').addClass('btn');
+					.children('input[type="radio"], input[type="checkbox"]')
+					.parent('label')
+					.addClass('btn');
 			}
 		},
 		dateWidget : function(){
@@ -2200,10 +2213,108 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		barcodeWidget : function(){
 			//$form.find('input[data-type-xml="barcode"]').attr('placeholder', 'not supported in browser data entry').attr('disabled', 'disabled');
 		},
-		fileWidget : function(){
+		offlineFileWidget : function(){
 			if (!this.repeat){
-				this.$group.find('input[type="file"]').attr('placeholder', 'not supported yet').attr('disabled', 'disabled')
-					.hide().after('<span class="text-warning">Image/Video/Audio uploads are not (yet) supported in enketo.</span>');
+				var feedbackMsg = 'Awaiting user permission to store local data (files)',
+					feedbackClass = 'info',
+					allClear = false,
+					$fileInputs = this.$group.find('input[type="file"]');
+				
+				if ($fileInputs.length === 0){
+					return;
+				}
+				//TODO: add online file widget in case fileManager is undefined or use file manager with temporary storage?
+				if (typeof fileManager == 'undefined'){
+					feedbackClass = 'warning';
+					feedbackMsg ="File uploads not supported.";//" in previews and iframed views.";
+				} 
+				else if (!fileManager.isSupported()){
+					feedbackClass = 'warning';
+					feedbackMsg = "File uploads not supported by your browser";
+				}
+				else {
+					allClear = true;
+				}
+
+				$fileInputs
+					.attr('disabled', 'disabled')
+					.addClass('ignore')
+					.after('<div class="file-feedback text-'+feedbackClass+'">'+feedbackMsg+'</div>');
+
+				if (!allClear){
+					$fileInputs.hide();
+					return;
+				}
+
+				var callbacks = {
+					success: function(){
+						console.log('Whoheee, we have permission to use the file system');
+						$fileInputs.on('change.passthrough', function(event){
+							var prevFileName, file, mediaType, $preview, 
+								$input = $(this);
+							console.debug('namespace: '+event.namespace);
+							if (event.namespace === 'passthrough'){
+								//console.debug('returning true');
+								$input.trigger('change.file');
+								return false;
+							}
+							prevFileName = $input.attr('data-previous-file-name');
+							file = $input[0].files[0];
+							mediaType = $input.attr('accept');
+							$preview = (mediaType && mediaType === 'image/*') ? $('<img />')
+								: (mediaType === 'audio/*') ? $('<audio controls="controls"/>')
+								: (mediaType === 'video/*') ? $('<video controls="controls"/>')
+								: $('<span>No preview (unknown mediatype)</span>');
+							$preview.addClass('file-preview');
+
+							if (prevFileName && (!file || prevFileName !== file.name)){
+								fileManager.deleteFile(prevFileName);
+							}
+
+							$input.siblings('.file-feedback, .file-preview').remove();
+
+							console.debug('file: ', file);
+							if (file && file.size > 0){
+								fileManager.saveFile(
+									file,
+									{
+										success: function(fsURL){
+											$preview.attr('src', fsURL);
+											$input.trigger('change.passthrough').after($preview);
+										}, 
+										error: function(e){
+											console.error('error: ',e);
+											$input.val('');
+											$input.after('<span class="file-feedback text-error">'+
+													'Failed to save file</span>');
+										}
+									}
+								);
+								return false;
+							}
+							//clear instance value by letting it bubble up to normal change handler
+							else{
+								return true;
+							}
+						}).removeClass('ignore')
+							.removeAttr('disabled')
+							.siblings('.file-feedback').remove();
+					},
+					error: function(){
+						$fileInputs.siblings('.file-feedback').remove();
+						$fileInputs.after('<div class="file-feedback text-warning">'+
+							'No permission given to store local data (or an error occurred).</div>');
+
+					}
+				};
+
+				$fileInputs.each(function(){
+					var $input = $(this),
+						fileName = ($input[0].files.length > 0) ? $input[0].files[0].name : '';
+					$input.attr('data-previous-file-name', fileName);
+				}).parent().addClass('with-media clearfix');
+
+				fileManager.init(data.getInstanceID(), callbacks);
 			}
 			/*
 				Some cool code to use for image previews:
@@ -2235,24 +2346,23 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * Note that preloaders may be deprecated in the future and be handled as metadata without bindings at all, in which
 	 * case all this stuff should perhaps move to DataXML
 	 */
-	//functions are design to fail silently if unknown preloaders are called
+	//functions are designed to fail silently if unknown preloaders are called
 	FormHTML.prototype.preloads = {
-		init: function(){
-			var item, param, name, curVal, meta, dataNode, xmlType,
+		init: function(parentO){
+			var item, param, name, curVal, newVal, meta, dataNode, props, xmlType,
 				that = this;
 			//console.log('initializing preloads');
 			//these initialize actual preload items
 			$form.find('#jr-preload-items input').each(function(){
+				props = parentO.input.getProps($(this));
 				item = $(this).attr('data-preload').toLowerCase();
 				param = $(this).attr('data-preload-params').toLowerCase();
-				name = $(this).attr('name');
-				xmlType = $(this).attr('data-type-xml');
+
 				if (typeof that[item] !== 'undefined'){
-					dataNode = data.node(name);
-					//proper way would be to add index
+					dataNode = data.node(props.path, props.index);
 					curVal = dataNode.getVal()[0];
-					//that.setVal($(this), that[item]({param: param, curVal:curVal, node: $(this)}));
-					that.setDataVal(dataNode, that[item]({param: param, curVal:curVal, node: $(this)}), xmlType);
+					newVal = that[item]({param: param, curVal:curVal, dataNode: dataNode});
+					dataNode.setVal(newVal, null, props.xmlType);
 				}
 				else{
 					console.error('Preload "'+item+'"" not supported. May or may not be a big deal.');
@@ -2273,31 +2383,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					switch (name){
 						case 'instanceID':
 							item = 'instance';
+							xmlType = 'string';
 							param = '';
 							break;
 						case 'timeStart':
 							item = 'timestamp';
+							xmlType = 'datetime';
 							param = 'start';
 							break;
 						case 'timeEnd':
 							item = 'timestamp';
+							xmlType = 'datetime';
 							param = 'end';
 							break;
 					}
 				}
 				if (item){
-					that.setDataVal(dataNode, that[item]({param: param, curVal:curVal, dataNode:dataNode}), null, 'string');
+					dataNode.setVal(that[item]({param: param, curVal:curVal, dataNode:dataNode}), null, xmlType);
 				}
 			});
-		},
-		/**TODO: remove this, it seems better to directly set value in model instead of going through input **/
-		setVal: function($node, val){
-			$node.val(val.toString()).trigger('change');
-		},
-		setDataVal: function(node, val, type){
-			type = type || 'string';
-			console.debug('setting preloader data value to: '+val+' with xml type: '+type);
-			node.setVal(val, null, type);
 		},
 		'timestamp' : function(o){
 			var value,
@@ -2310,18 +2414,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//set event handler for each save event (needs to be triggered!)
 				$form.on('beforesave', function(){
 					value = data.evaluate('now()', 'string');
-					//if this is a preload item (and has a html input node)
-					if (o.node){
-						that.setVal(o.node, value);
-					}
-					//otherwise this is a metadata node
-					else{
-						that.setDataVal(o.dataNode, value);
-					}
+					o.dataNode.setVal(value, null, 'datetime');
 				});
 				return data.evaluate('now()', 'string');
 			}
-			return '';
+			return 'error - unknown timestamp parameter';
 		},
 		'date' : function(o){
 			var today, year, month, day;
@@ -2580,7 +2677,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//first prevent default submission, e.g. when text field is filled in and Enter key is pressed
 		$('form.jr').attr('onsubmit', 'return false;');
 
-		$form.on('change validate', 'input:not(.ignore), select:not(.ignore), textarea:not(.ignore)', function(event){
+		$form.on('change.file validate', 'input:not(.ignore), select:not(.ignore), textarea:not(.ignore)', function(event){
 			var validCons, validReq, 
 				n = that.input.getProps($(this));
 
@@ -2588,6 +2685,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//console.debug('event: '+event.type);
 			//console.log('node props: ', n);
+
+			//set file input values to the actual name of file (without c://fakepath or anything like that)
+			if (n.val.length > 0 && n.inputType === 'file' && $(this)[0].files[0] && $(this)[0].files[0].size > 0){
+				n.val = $(this)[0].files[0].name;
+				$(this).attr('data-previous-file-name', n.val);
+			}
 			
 			if (event.type === 'validate'){
 				//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
@@ -2650,7 +2753,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					}
 				}
 			}
-
 		});
 
 		//nodeNames is comma-separated list as a string

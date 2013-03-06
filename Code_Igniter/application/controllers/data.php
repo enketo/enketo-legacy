@@ -63,11 +63,7 @@ class Data extends CI_Controller {
 		$subdomain = get_subdomain();
 		$submission_url = $this->Survey_model->get_form_submission_url();
 
-		//extract data from the post
 		extract($_POST);
-		
-		//$submission_url = 'http://formhub.org/martijnr/submission';
-		//$url = 'https://jrosaforms.appspot.com/submission';
 
 		if (!$submission_url){
 			return $this->output->set_status_header(500, 'OpenRosa server submission url not set');
@@ -75,7 +71,7 @@ class Data extends CI_Controller {
 
 		if(!isset($xml_submission_data) || $xml_submission_data == '')
 		{
-			return $this->output->set_status_header(500, 'Did not receive data (Enketo server)');
+			return $this->output->set_status_header(500, 'Enketo server did not receive data');
 		}
 
 		$xml_submission_filepath = "/tmp/".random_string('alpha', 10).".xml";//*/"/tmp/data_submission.xml";
@@ -89,47 +85,54 @@ class Data extends CI_Controller {
 		fwrite($xml_submission_file, $xml_submission_data);
 		fclose($xml_submission_file);
 		
-		$fields = array('xml_submission_file'=>'@'.$xml_submission_filepath.';type=text/xml');   
-		//log_message('debug','xml_submission_file to be sent: '.$xml_submission_file);
+		$fields = array('xml_submission_file'=>'@'.$xml_submission_filepath.';type=text/xml');  
 
-		//open connection
+		if (!empty($_FILES))
+		{
+			//print_r($_FILES);
+			foreach($_FILES as $nodeName => $file)
+			{
+				$new_location =  '/tmp/'.$file['name'];
+				$valid = move_uploaded_file($file['tmp_name'], $new_location);
+				if ($valid)
+				{
+					$fields[$nodeName] = '@'.$new_location.';type='.$file['type'];
+				}
+				//TODO: USER FEEDBACK IF NOT VALID?
+				//echo $fields[$nodeName];
+			}
+		}
+
 		$ch = curl_init();
-
-		//set the url, number of POST vars, POST data
 		curl_setopt($ch,CURLOPT_URL,$submission_url);
-
-		//set custom HTTP headers
 		curl_setopt($ch,CURLOPT_HTTPHEADER, array
 			(
 			'X-OpenRosa-Version: 1.0',
 			'Date: '.$Date
 			)
 		);
-
-		//add POST content
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-		//timeout high as it is dealt with in javascript
-		//curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-		
-		//log_message('debug', 'data submission from start to sending to OpenRosa server took '.(time()-$time_start).' seconds.');
-		//execute post
+
 		$result = curl_exec($ch);
-		//log_message('debug', 'data submission from start to receiving response from OpenRosa server took '.(time()-$time_start).' seconds.');
-		if (curl_errno($ch))
+
+		$info = curl_getinfo($ch);
+
+		if ($result)
 		{
-			return 'curl_error:'.curl_error($ch).' number: '+curl_errno();
+			$response = '';
+			//foreach ($info as $property => $value) 
+			//{ 
+			//	$response .= $property . " : " . $value . "<br />"; 
+			//}
+			$http_code = $info['http_code'];
+			log_message('debug', 'data submission took '.(time()-$time_start).' seconds.');
+			$this->output->set_status_header($http_code, $result);
 		}
-		//$response = curl_getinfo($ch);
-		//debugging:
-		$response = '';
-		foreach (curl_getinfo($ch) as $property=>$value) { 
-			$response .= $property . " : " . $value . "<br />"; 
-		}	  
-		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		//close connection
+		else {
+			print_r($info);
+			echo 'curl_error:'.curl_error($ch).' number: '+curl_errno($ch);
+		}
 		curl_close($ch);
-		log_message('debug', 'data submission took '.(time()-$time_start).' seconds.');
-		$this->output->set_status_header($http_code, $response);
 	}
 
 //	public function remove_instance()
@@ -151,9 +154,6 @@ class Data extends CI_Controller {
 	public function edit_url()
 	{
 		log_message('debug', 'edit url function started');
-		//$this->load->helper('subdomain');
-		//$this->load->model('Survey_model', '', TRUE);
-		//$this->load->model('Instance_model', '', TRUE);
 		$subdomain = get_subdomain();
 
 		if (isset($subdomain))

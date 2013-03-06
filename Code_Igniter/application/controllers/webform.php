@@ -47,6 +47,7 @@ class Webform extends CI_Controller {
 			'/js-source/form.js',
 			'/js-source/widgets.js',
 			'/js-source/storage.js',
+			'/js-source/files.js',
 			'/js-source/connection.js',
 			'/js-source/survey_controls.js',
 			'/js-source/debug.js'

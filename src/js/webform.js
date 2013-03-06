@@ -29,7 +29,7 @@ $(document).ready(function() {
 	var profiler = new Profiler('app initialization');
 
 	form = new Form('form.jr:eq(0)', jrDataStr);
-	fileManager = new FileManager();
+	//fileManager = new FileManager();
 	connection = new Connection();
 
 	if (!store.isSupported()){

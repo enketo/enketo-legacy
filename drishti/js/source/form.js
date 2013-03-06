@@ -2226,11 +2226,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//TODO: add online file widget in case fileManager is undefined or use file manager with temporary storage?
 				if (typeof fileManager == 'undefined'){
 					feedbackClass = 'warning';
-					feedbackMsg ="File uploads not supported.";
+					feedbackMsg ="File uploads not supported.";//" in previews and iframed views.";
 				} 
 				else if (!fileManager.isSupported()){
 					feedbackClass = 'warning';
-					feedbackMsg = "File uploads not supported by your browser (try Chrome instead)";
+					feedbackMsg = "File uploads not supported by your browser";
 				}
 				else {
 					allClear = true;

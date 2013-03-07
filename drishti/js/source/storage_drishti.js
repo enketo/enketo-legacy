@@ -42,7 +42,6 @@ function StorageLocal(){
 
 }
 
-
 /**
  * Class dealing with JSON <-> XML transformation
  * 
@@ -77,7 +76,30 @@ function Transformer(){
 	 * @param {string} xData string of xml data
 	 */
 	this.XMLToJSON = function(xData){
-
+		//use getName function in Form class
+		var $leaf,
+			jData = {},
+			values = [],
+			$data = $($.parseXML(xData)),
+			$leaves = $data.find('*').filter(
+				function(){
+					return $(this).children().length === 0;
+				}
+			);
+		$leaves.each(function(){
+			$leaf = $(this);
+			values.push(
+				{
+					"fieldName" : $leaf.prop('nodeName'),
+					"fieldValue" : $leaf.text(),
+					"bindPath" : '/instance' + $leaf.getXPath('model')
+				}
+			);
+		});
+		jData.formId = settings.formId;
+		jData.instanceId = $data.find('meta>instanceID').text();
+		jData.values = values;
+		return jData;
 	};
 
 	/**
@@ -90,7 +112,7 @@ function Transformer(){
 	function addXMLNodeAndValue ($doc, path, value){
 		var j, $current = $doc,
 			nodeNames = path.substring(1).split('/');
-
+		//TODO: protect capitalization
 		for (j = 0; j<nodeNames.length ; j++){
 			//console.log('nodeName to find:'+nodeNames[j]);
 			if (nodeNames[j].indexOf('[') !== -1) return console.error('position selector not yet supported');

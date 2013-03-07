@@ -26,7 +26,7 @@
  * 
  * @param {string} formSelector  jquery selector for the form
  * @param {string} dataStr       <instance> as XML string
- * @param {string=} dataStrToEdit <instance> as XML string that is to be edit. This may not be a complete instance (empty nodes could be missing) and may have additional nodes.
+ * @param {?string=} dataStrToEdit <instance> as XML string that is to be edit. This may not be a complete instance (empty nodes could be missing) and may have additional nodes.
  *
  * @constructor
  */
@@ -64,7 +64,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		data.init();
 		//profiler.report();
 
-		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit.length > 0){
+		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit && dataStrToEdit.length > 0){
 			dataToEdit = new DataXML(dataStrToEdit);
 			dataToEdit.init();
 			data.load(dataToEdit);
@@ -2866,8 +2866,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 	};
 }
-
-GUI.prototype.setCustomEventHandlers = function(){};
 
 /**
  * Converts a native Date UTC String to a RFC 3339-compliant date string with local offsets

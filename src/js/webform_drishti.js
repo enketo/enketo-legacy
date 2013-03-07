@@ -20,13 +20,23 @@ var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var /**@type {StorageLocal}*/store;
 var /**@type {FileManager}*/fileManager;
+var /**@type {Transformer}*/transformer;
 
 $(document).ready(function() {
 	'use strict';
-	var loadErrors;
+	var loadErrors, formParts, existingInstanceJ, instanceToEdit;
 	connection = new Connection();
-	form = new Form('form.jr:eq(0)', jrDataStr);
 	store = new StorageLocal();
+	transformer = new Transformer();
+
+	//TODO: add error checks
+	formParts = store.getForm(settings.formId);
+	$('.main form').replaceWith(formParts.form);
+
+	existingInstanceJ = store.getInstanceJ(settings.instanceId);
+	instanceToEdit = (existingInstanceJ) ? transformer.jsonToXML(existingInstanceJ) : null;
+
+	form = new Form('form.jr:eq(0)', formParts.model, instanceToEdit);
 
 	loadErrors = form.init();
 	if (loadErrors.length > 0){

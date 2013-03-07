@@ -30,6 +30,25 @@ function Profiler(taskName){
 	};
 }
 
+window.onload = function(){
+	setTimeout(function(){
+		var loadLog,
+			t = window.performance.timing,
+			loadingTime = t.loadEventEnd - t.responseEnd,
+			exLog = window.localStorage.getItem('__loadLog');
+		if (settings.debug){
+			loadLog = (exLog) ? JSON.parse(exLog) : [];
+			loadLog.push(loadingTime);
+			if (loadLog.length > 10){
+				loadLog.shift();
+			}
+			window.localStorage.setItem('__loadLog', JSON.stringify(loadLog));
+		}
+		profilerRecords.push('total loading time: '+ loadingTime);
+		$(profilerRecords).each(function(i,v){console.log(v);});
+	}, 0);
+};
+
 (function($){
 	"use strict";
 	// give a set of elements the same (longest) width
@@ -54,10 +73,10 @@ function Profiler(taskName){
 			$(this).width(smallestWidth);
 		});
 	};
-	
+
 	//reverse jQuery collection
 	$.fn.reverse = [].reverse;
-	
+
 	// Alphanumeric plugin for form input elements see http://www.itgroup.com.ph/alphanumeric/
 	$.fn.alphanumeric = function(p) {
 
@@ -71,11 +90,11 @@ function Profiler(taskName){
 
 			if (p.nocaps) p.nchars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			if (p.allcaps) p.nchars += "abcdefghijklmnopqrstuvwxyz";
-			
+
 			var s = p.allow.split('');
 			for (var i=0;i<s.length;i++) if (p.ichars.indexOf(s[i]) != -1) s[i] = "\\" + s[i];
 			p.allow = s.join('|');
-			
+
 			var reg = new RegExp(p.allow,'gi');
 			var ch = p.ichars + p.nchars;
 			ch = ch.replace(reg,'');
@@ -87,20 +106,20 @@ function Profiler(taskName){
 							var k;
 							if (!e.charCode) k = String.fromCharCode(e.which);
 								else k = String.fromCharCode(e.charCode);
-								
+
 							if (ch.indexOf(k) != -1) e.preventDefault();
 							if (e.ctrlKey&&k=='v') e.preventDefault();
-							
+
 						}
-						
+
 				);
-				
+
 			$(this).bind('contextmenu',function () {return false;});
 		});
 	};
 
 	$.fn.numeric = function(p) {
-	
+
 		var az = "abcdefghijklmnopqrstuvwxyz";
 		az += az.toUpperCase();
 
@@ -113,9 +132,9 @@ function Profiler(taskName){
 				$(this).alphanumeric(p);
 			}
 		);
-			
+
 	};
-	
+
 	$.fn.alpha = function(p) {
 
 		var nm = "1234567890";
@@ -129,7 +148,7 @@ function Profiler(taskName){
 				$(this).alphanumeric(p);
 			}
 		);
-			
+
 	};
 
 	// plugin to select the first word(s) of a string and capitalize it
@@ -145,7 +164,7 @@ function Profiler(taskName){
 
 		if (!node.length)
 			return;
-	
+
 		node[0].nodeValue = text.slice(first.length);
 		node.before('<span class="capitalize">' + first + '</span>');
 	};

@@ -50,10 +50,11 @@ function StorageLocal(){
 function Transformer(){
 	/**
 	 * Transforms JSON to an XML string
+	 * NOTE: alternatively, we could could overwrite Form.init() to use JSON data instead of XML for instantiation
 	 * @param  {(*|string)} jData	JSON object or JSON string
 	 * @return {string}			XML string
 	 */
-	this.jsonToXML = function(jData){
+	this.JSONToXML = function(jData){
 		var i, n, path, value,
 			$instance = $('<root />');
 		for (i = 0; i<jData.values.length; i++){
@@ -73,10 +74,33 @@ function Transformer(){
 
 	/**
 	 * Transforms XML submission instance into JSON
+	 * NOTE: alternatively, we could turn this into a Form.getJSON() function
 	 * @param {string} xData string of xml data
 	 */
 	this.XMLToJSON = function(xData){
-		//use getName function in Form class
+		var $leaf,
+			jData = {},
+			values = [],
+			$data = $($.parseXML(xData)),
+			$leaves = $data.find('*').filter(
+				function(){
+					return $(this).children().length === 0;
+				}
+			);
+		$leaves.each(function(){
+			$leaf = $(this);
+			values.push(
+				{
+					"fieldName" : $leaf.prop('nodeName'),
+					"fieldValue" : $leaf.text(),
+					"bindPath" : '/instance' + $leaf.getXPath('model')
+				}
+			);
+		});
+		jData.formId = settings.formId;
+		jData.instanceId = $data.find('meta>instanceID').text();
+		jData.values = values;
+		return jData;
 	};
 
 	/**
@@ -89,7 +113,7 @@ function Transformer(){
 	function addXMLNodeAndValue ($doc, path, value){
 		var j, $current = $doc,
 			nodeNames = path.substring(1).split('/');
-
+		//TODO: protect capitalization
 		for (j = 0; j<nodeNames.length ; j++){
 			//console.log('nodeName to find:'+nodeNames[j]);
 			if (nodeNames[j].indexOf('[') !== -1) return console.error('position selector not yet supported');

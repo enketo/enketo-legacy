@@ -26,7 +26,7 @@
  * 
  * @param {string} formSelector  jquery selector for the form
  * @param {string} dataStr       <instance> as XML string
- * @param {string=} dataStrToEdit <instance> as XML string that is to be edit. This may not be a complete instance (empty nodes could be missing) and may have additional nodes.
+ * @param {?string=} dataStrToEdit <instance> as XML string that is to be edit. This may not be a complete instance (empty nodes could be missing) and may have additional nodes.
  *
  * @constructor
  */
@@ -64,7 +64,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		data.init();
 		//profiler.report();
 
-		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit.length > 0){
+		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit && dataStrToEdit.length > 0){
 			dataToEdit = new DataXML(dataStrToEdit);
 			dataToEdit.init();
 			data.load(dataToEdit);
@@ -2867,8 +2867,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 }
 
-GUI.prototype.setCustomEventHandlers = function(){};
-
 /**
  * Converts a native Date UTC String to a RFC 3339-compliant date string with local offsets
  * used in JavaRosa, so it replaces the Z in the ISOstring with a local offset
@@ -3071,5 +3069,34 @@ Date.prototype.toISOLocalString = function(){
             //if performance becomes an issue, it's worthwhile implementing this with native XPath instead.
             return this.find(selector);
     };
+
+
+    /**
+     * Creates an XPath from a node (currently not used inside this Class (instead FormHTML.prototype.generateName is used) but will be in future);
+     * @param  {string=} rootNodeName	if absent the root is #document
+     * @return {string}                 XPath
+     */
+    $.fn.getXPath = function(rootNodeName){
+		//other nodes may have the same XPath but because this function is used to determine the corresponding input name of a data node, index is not included 
+		var position,
+			$node = this.first(),
+			nodeName = $node.prop('nodeName'),
+			$sibSameNameAndSelf = $node.siblings(nodeName).addBack(),
+			steps = [], 
+			$parent = $node.parent(),
+			parentName = $parent.prop('nodeName');
+
+		position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($node)+1)+']' : '';
+		steps.push(nodeName+position);
+
+		while ($parent.length == 1 && parentName !== rootNodeName && parentName !== '#document'){
+			$sibSameNameAndSelf = $parent.siblings(parentName).addBack();
+			position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($parent)+1)+']' : '';
+			steps.push(parentName+position);
+			$parent = $parent.parent();
+			parentName = $parent.prop('nodeName');
+		}
+		return '/'+steps.reverse().join('/');
+	};
 
 })(jQuery);

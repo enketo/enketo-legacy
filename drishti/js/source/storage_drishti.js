@@ -1,3 +1,5 @@
+/*global mockForms2, mockInstances*/
+
 /**
  * Storage Class
  * @constructor
@@ -11,12 +13,12 @@ function StorageLocal(){
 	 * @return {{form:string, model:string}}	returns object with HTML form as form property and default XML instance as model property
 	 */
 	this.getForm = function(formId){
-		//temporarily mocked, but simply detaching the <form> from the DOM and returning this as a string
-		var $form = $('form.jr'),
-			form = $form[0].outerHTML,
-			model = jrDataStr;
-		$form.replaceWith('<form></form>');
-		return {form: form, model: model};
+		// temporarily mocked
+		if (typeof mockForms2 !== 'undefined' && mockForms2[formId] !== 'undefined'){
+			var formParts = mockForms2[formId];
+			return {form: formParts.html_form, model: formParts.xml_model};
+		}
+		return null;
 	};
 
 	/**
@@ -25,10 +27,11 @@ function StorageLocal(){
 	 * @return {?*}       [description]
 	 */
 	this.getInstanceJ = function(instanceId){
-		if (instanceId){
-			//get JSON from drishti app
+		// temporarily mocked
+		if (instanceId && typeof mockInstances[instanceId] !== 'undefined'){
+			return mockInstances[instanceId];
 		}
-		else return null;
+		return null;
 	};
 
 	/**
@@ -39,7 +42,6 @@ function StorageLocal(){
 	this.storeInstanceJ = function(dataJ){
 
 	};
-
 }
 
 /**
@@ -69,6 +71,12 @@ function Transformer(){
 				return null;
 			}
 		}
+		//TODO: add support for [repeats]
+		//TODO: preserve case
+		//TODO: add id property to root
+		//TODO: for easier testing: add xmlns to instance
+		//TODO: for easier testing: output selfclosing syntax for empty leaf nodes
+		//$instance.find('root>*:first').attr('id', jData.formId);
 		return (new XMLSerializer()).serializeToString($instance.find('instance>*:eq(0)')[0]);
 	};
 
@@ -82,11 +90,19 @@ function Transformer(){
 			jData = {},
 			values = [],
 			$data = $($.parseXML(xData)),
+			formId = $data.find('*:first').attr('id'),
 			$leaves = $data.find('*').filter(
 				function(){
 					return $(this).children().length === 0;
 				}
 			);
+		/** 
+			WATCH OUT for repeats:
+			If child is a repeat but it is not repeated (yet) the bindPath is: /myform/child
+			If child is a repeat and it is repeated the first child gets: /myform/child[1]
+			These are the same node, but the path changes over time if the record is edited!
+			If this is a problem we could just never add index 1
+		 **/
 		$leaves.each(function(){
 			$leaf = $(this);
 			values.push(
@@ -97,7 +113,7 @@ function Transformer(){
 				}
 			);
 		});
-		jData.formId = settings.formId;
+		jData.formId = formId;
 		jData.instanceId = $data.find('meta>instanceID').text();
 		jData.values = values;
 		return jData;
@@ -114,6 +130,7 @@ function Transformer(){
 		var j, $current = $doc,
 			nodeNames = path.substring(1).split('/');
 		//TODO: protect capitalization
+		//TODO: add support for [pos] selector (for repeats)
 		for (j = 0; j<nodeNames.length ; j++){
 			//console.log('nodeName to find:'+nodeNames[j]);
 			if (nodeNames[j].indexOf('[') !== -1) return console.error('position selector not yet supported');

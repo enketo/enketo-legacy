@@ -35,7 +35,7 @@ window.onload = function(){
 		var loadLog,
 			t = window.performance.timing,
 			loadingTime = t.loadEventEnd - t.responseEnd,
-			exLog = window.localStorage.getItem('__loadLog');
+			exLog = /**@type {string} */window.localStorage.getItem('__loadLog');
 		if (settings.debug){
 			loadLog = (exLog) ? JSON.parse(exLog) : [];
 			loadLog.push(loadingTime);

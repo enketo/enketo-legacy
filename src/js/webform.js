@@ -26,7 +26,6 @@ var /**@type {FileManager}*/fileManager;
 $(document).ready(function() {
 	'use strict';
 	var message, choices, loadErrors;
-	var profiler = new Profiler('app initialization');
 
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	//fileManager = new FileManager();
@@ -91,7 +90,4 @@ $(document).ready(function() {
 			);
 		}
 	}, 30*1000);
-
-	profiler.report();
-	$(profilerRecords).each(function(i,v){console.log(v);});
 });

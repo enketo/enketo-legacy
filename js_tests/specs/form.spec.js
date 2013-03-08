@@ -1,5 +1,5 @@
 loadForm = function(filename, editStr){
-	var strings = generated_forms[filename];
+	var strings = mockForms1[filename];
 	return new Form(strings.html_form, strings.xml_model, editStr);
 };
 

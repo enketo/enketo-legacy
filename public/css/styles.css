@@ -6201,26 +6201,7 @@ body .form-header {
 
   body {
     background: none;
-    font-size: 16.8px;
     line-height: 21px;
-  }
-  body h1 {
-    font-size: 46.2px;
-  }
-  body h2 {
-    font-size: 37.8px;
-  }
-  body h3 {
-    font-size: 29.4px;
-  }
-  body h4 {
-    font-size: 21px;
-  }
-  body h5 {
-    font-size: 16.8px;
-  }
-  body h6 {
-    font-size: 14.28px;
   }
   body .main {
     margin: 0;
@@ -6246,26 +6227,7 @@ body .form-header {
 
   body {
     background: none;
-    font-size: 17.44px;
     line-height: 21.8px;
-  }
-  body h1 {
-    font-size: 47.96px;
-  }
-  body h2 {
-    font-size: 39.24px;
-  }
-  body h3 {
-    font-size: 30.52px;
-  }
-  body h4 {
-    font-size: 21.8px;
-  }
-  body h5 {
-    font-size: 17.44px;
-  }
-  body h6 {
-    font-size: 14.824px;
   }
   body .main {
     margin: 0;
@@ -6751,8 +6713,7 @@ html.touch .jr legend .jr-hint.active {
 .jr h3 {
   padding: 5px 0 15px 0;
   font-weight: bolder;
-  /*border-top: solid 9px #000;*/
-  /*border-bottom: $line;*/
+  word-wrap: break-word;
 }
 .jr h4 {
   text-align: left;
@@ -6809,6 +6770,10 @@ html.touch .jr legend .jr-hint.active {
   text-align: left;
   margin-bottom: .4em;
 }
+.jr legend ~ label .active {
+  display: block;
+  margin-left: 2.2em;
+}
 .jr label, .jr legend, .jr .trigger {
   font-size: 1em;
 }
@@ -6831,6 +6796,7 @@ html.touch .jr legend .jr-hint.active {
   width: 144px;
 }
 .jr input[type=radio], .jr input[type=checkbox] {
+  float: left;
   margin: 0 10px 1px 10px;
 }
 .jr textarea {

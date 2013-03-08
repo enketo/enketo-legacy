@@ -22,7 +22,7 @@
  */
 function StorageLocal(){
 	"use strict";
-	var RESERVED_KEYS = ['__settings', 'null','__history', 'Firebug', 'undefined', '__bookmark', '__counter', '__current_server'],
+	var RESERVED_KEYS = ['__settings', 'null','__history', 'Firebug', 'undefined', '__bookmark', '__counter', '__current_server', '__loadLog'],
 		localStorage = window.localStorage;
 
 	this.init = function() {

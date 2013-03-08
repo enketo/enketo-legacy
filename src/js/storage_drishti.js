@@ -9,8 +9,8 @@ function StorageLocal(){
 
 	/**
 	 * Gets both the HTML Form and the default XML Instance
-	 * @param  {string} formID					the unique form id used to query the Drishti DB to get the transformation results
-	 * @return {{form:string, model:string}}	returns object with HTML form as form property and default XML instance as model property
+	 * @param  {string} formId					the unique form id used to query the Drishti DB to get the transformation results
+	 * @return {?{form:string, model:string}}	returns object with HTML form as form property and default XML instance as model property
 	 */
 	this.getForm = function(formId){
 		// temporarily mocked
@@ -39,8 +39,8 @@ function StorageLocal(){
 	 * @param  {*} dataJ	JSON object with data
 	 * @return {boolean}     
 	 */
-	this.storeInstanceJ = function(dataJ){
-
+	this.saveInstanceJ = function(dataJ){
+		return true;
 	};
 }
 
@@ -54,11 +54,11 @@ function Transformer(){
 	 * Transforms JSON to an XML string
 	 * NOTE: alternatively, we could could overwrite Form.init() to use JSON data instead of XML for instantiation
 	 * @param  {(*|string)} jData	JSON object or JSON string
-	 * @return {string}			XML string
+	 * @return {?string}			XML string
 	 */
 	this.JSONToXML = function(jData){
-		var i, n, path, value,
-			$instance = $('<root />');
+		var i, n, path, value, $formInstanceFirst,
+			$instance = $($.parseXML('<root />'));
 		for (i = 0; i<jData.values.length; i++){
 			n = jData.values[i];
 			path = n.bindPath;
@@ -71,13 +71,10 @@ function Transformer(){
 				return null;
 			}
 		}
-		//TODO: add support for [repeats]
-		//TODO: preserve case
-		//TODO: add id property to root
-		//TODO: for easier testing: add xmlns to instance
-		//TODO: for easier testing: output selfclosing syntax for empty leaf nodes
-		//$instance.find('root>*:first').attr('id', jData.formId);
-		return (new XMLSerializer()).serializeToString($instance.find('instance>*:eq(0)')[0]);
+		//TODO: add support for [repeats]?
+		$formInstanceFirst = $instance.find('instance>*:first');
+		$formInstanceFirst.attr('id', jData.formId);
+		return (new XMLSerializer()).serializeToString($formInstanceFirst[0]);
 	};
 
 	/**
@@ -127,7 +124,8 @@ function Transformer(){
 	 * @return {jQuery}			jQuery doc with added node and value
 	 */
 	function addXMLNodeAndValue ($doc, path, value){
-		var j, $current = $doc,
+		var j, $node,
+			$current = $doc.find('root'),
 			nodeNames = path.substring(1).split('/');
 		//TODO: protect capitalization
 		//TODO: add support for [pos] selector (for repeats)
@@ -136,7 +134,8 @@ function Transformer(){
 			if (nodeNames[j].indexOf('[') !== -1) return console.error('position selector not yet supported');
 			if ($current.children(nodeNames[j]).length === 0){
 				//console.log('nodeName does not exist, going to create it as child of ', $current[0]);
-				$current.append($('<'+nodeNames[j]+'/>'));
+				$node = $($.parseXML('<'+nodeNames[j]+'/>').documentElement);
+				$current.append($node);
 			}
 			//else{
 				//console.log('nodeName found, going to next node');

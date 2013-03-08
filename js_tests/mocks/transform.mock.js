@@ -1,16 +1,16 @@
 var json1 =
 	{
-		"formId": "edit_form",
+		"formId": "Edit_form",
 		"instanceID": "X",
 		"query": "select ec.wifename as wifename, m.thayi_card as thayi_card from ec , mother m ",
 		"values": [
 			{
-			"bindPath": "/instance/edit_form/wifeName",
+			"bindPath": "/instance/Edit_form/wifeName",
 			"fieldName": "wifeName",
 			"fieldValue": "Asha"
 			},
 			{
-			"bindPath": "/instance/edit_form/wifeAge",
+			"bindPath": "/instance/Edit_form/wifeAge",
 			"fieldName": "wifeAge",
 			"fieldValue": "27"
 			}

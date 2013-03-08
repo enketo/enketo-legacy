@@ -1,6 +1,7 @@
 describe("Dristhi-style JSON to XML instance transformer", function () {
 	var transformer = new Transformer(),
 		instanceXML = transformer.JSONToXML(json1),
+		$instance = $($.parseXML(instanceXML)),
 		mockForm = new Form('', '<model><instance>'+instanceXML+'</instance></model>'),
 		dataO;
 
@@ -8,15 +9,19 @@ describe("Dristhi-style JSON to XML instance transformer", function () {
 	dataO = mockForm.getDataO();
 
 	it('creates valid XML', function(){
-		expect($.parseXML(instanceXML)).toBeTruthy();
+		expect($instance).toBeTruthy();
 	});
 
-	it('creates XML that can be used to instantiate a form object without load errors', function(){
+	it('preserves cAsE of XML node names', function(){
+		expect($instance.find('*:first').prop('nodeName')).toEqual('Edit_form');
+	});
+
+	xit('creates XML that can be used to instantiate a form object without load errors', function(){
 
 	});
 
 	function testDataValue(path, value){
-		it('succesfully added XML node with path '+path+' and value '+value, function(){
+		it('correctly added XML node with path '+path+' and value '+value, function(){
 			expect(dataO.node(path.substring(9)).getVal()[0]).toEqual(value);
 		});
 	}
@@ -29,17 +34,23 @@ describe("Dristhi-style JSON to XML instance transformer", function () {
 describe("Translating back and forth from JSON to XML to JSON", function() {
 	var transformer = new Transformer();
 
-	function transformAndBackTest(name, instanceXML){
+	function transformAndBackTest(name, submissionXML){
 		it("Results in the same original for form: "+name, function(){
-			var jData = transformer.XMLToJSON(instanceXML);
+			var jData = transformer.XMLToJSON(submissionXML);
 			var xData = transformer.JSONToXML(jData);
-			expect('<model>'+xData+'</model>').toEqual(instanceXML);
+			//for some reason JSONToXML doesn't output self-closing xml tags. To fix this:
+			xData = new XMLSerializer().serializeToString($($.parseXML(xData))[0]);
+			expect(xData).toEqual(submissionXML);
 		});
 	}
 
-	for (var form in mockForms2){
-		if (mockForms2.hasOwnProperty(form)){
-			transformAndBackTest(form, mockForms2[form].xml_model);
+	for (var formName in mockForms2){
+		if (mockForms2.hasOwnProperty(formName)){
+			//strip model and instance nodes and namespace to simulate a submission
+			//note: this test fails if the instance has template nodes
+			var cleanedXML = mockForms2[formName].xml_model.replace('xmlns="http://www.w3.org/2002/xforms"', '');
+			var submissionXML = (new XMLSerializer()).serializeToString($($.parseXML(cleanedXML)).find('instance>*:first')[0]);
+			transformAndBackTest(formName, submissionXML);
 		}
 	}
 });

@@ -29,12 +29,27 @@ $(document).ready(function() {
 	store = new StorageLocal();
 	transformer = new Transformer();
 
-	//TODO: add error checks
 	formParts = store.getForm(settings.formId);
+
+	if (!formParts){
+		$('.main form').append('<div class="alert alert-error">Form with id: '+settings.formId+' could not be found.</div>');
+		return;
+	}
+
 	$('.main form').replaceWith(formParts.form);
 
 	existingInstanceJ = store.getInstanceJ(settings.instanceId);
-	instanceToEdit = (existingInstanceJ) ? transformer.jsonToXML(existingInstanceJ) : null;
+
+	if (settings.instanceId && !existingInstanceJ){
+		gui.alert('Instance with id "'+settings.instanceId+'" could not be found. Loading empty form instead.');
+	}
+	if (existingInstanceJ && existingInstanceJ.formId !== settings.formId){
+		gui.alert('<p>Could not load existing record because this record, with id: "'+settings.instanceId+
+			'", belongs to form "'+existingInstanceJ.formId+'".<p><p>Loaded empty form instead.</p>');
+		existingInstanceJ = null;
+	}
+
+	instanceToEdit = (existingInstanceJ) ? transformer.JSONToXML(existingInstanceJ) : null;
 
 	form = new Form('form.jr:eq(0)', formParts.model, instanceToEdit);
 
@@ -44,11 +59,23 @@ $(document).ready(function() {
 	}
 
 	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
+		var jDataStr;
 		if (typeof form !== 'undefined'){
 			form.validateForm();
 			if (!form.isValid()){
 				gui.alert('Form contains errors <br/>(please see fields marked in red)');
 				return;
+			}
+			else{
+				jDataStr = vkbeautify.json(JSON.stringify(transformer.XMLToJSON(form.getDataStr(true, true))));
+				console.log(jDataStr);
+				gui.alert(
+					'<p>The following JSON object has been prepared for submission:</p><br/>'+
+					'<pre style="font-size: 0.6em; width: 100%;">'+jDataStr+'</pre>',
+					'Record is ready to Submit!',
+					'info'
+				);
+				$('#dialog-alert').css({'width' : '80%', 'margin-left': '-40%'});//temporary to show JSON
 			}
 		}
 	});

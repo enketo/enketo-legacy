@@ -1,4 +1,4 @@
-var jrDataStr, jrDataStrToEdit;
+var jrDataStr, jrDataStrToEdit, mockForms1, mockForms2, mockInstances;
 
 /** @type {{returnURL: string, serverURL: string, formId: string, instanceId: string, formURL: string, mapsStaticAPIKey:string, mapsDynamicAPIKey:string,
 	 defaultServerURLHelper:string, supportEmail:string, modernBrowsersURL:string, showBranch:boolean}}

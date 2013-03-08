@@ -6905,7 +6905,6 @@ html.touch .jr legend .jr-hint.active {
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 10px;
-  color: black;
 }
 .jr .invalid-required .jr-required-msg.active {
   display: block;
@@ -6965,6 +6964,9 @@ html.touch .jr legend .jr-hint.active {
   width: 100%;
   height: 100%;
 }
+.jr .geopoint .search-bar .input-append {
+  width: 85%;
+}
 .jr .geopoint button {
   height: 40px;
 }
@@ -7014,7 +7016,7 @@ html.touch .jr legend .jr-hint.active {
   font-size: 12px;
 }
 .jr .geopoint input[name="search"] {
-  width: 70%;
+  /*width: $search-width;*/
 }
 .jr .geopoint input[name="lat"], .jr .geopoint input[name="long"] {
   float: none;

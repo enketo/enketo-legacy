@@ -530,7 +530,10 @@ html.touch{
         &.btn{
           width: 100%;
           text-align: left;
-          margin-bottom: .4em; } } }
+          margin-bottom: .4em; }
+        .active{
+          display: block;
+          margin-left: 2.2em; } } }
   label, legend, .trigger {
     font-size: 1em; }
   img, audio, video{
@@ -550,6 +553,7 @@ html.touch{
     &[type=date], &[type=number], &[type=email], &[type=password] {
       width: $input-min-width;}
     &[type=radio], &[type=checkbox] {
+      float: left;
       margin: 0 10px 1px 10px;} }
   textarea{
     width: $input-max-width;

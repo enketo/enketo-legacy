@@ -54,7 +54,9 @@ function setSettings(){
 			{q: 'touch', s: 'touch'},
 			{q: 'server', s: 'serverURL'},
 			{q: 'form', s:'formURL'},
-			{q: 'id', s: 'formId'}
+			{q: 'id', s: 'formId'},
+			{q: 'formId', s: 'formId'},
+			{q: 'instanceId', s: 'instanceId'}
 		];
 	for (i=0 ; i< settingsMap.length ; i++){
 		queryVar = getQueryVar(settingsMap[i].q);
@@ -78,7 +80,7 @@ function GUI(){
  */
 GUI.prototype.init = function(){
 	"use strict";
-		
+
 	this.nav.setup();
 	this.pages.init();
 	this.setEventHandlers();
@@ -86,7 +88,7 @@ GUI.prototype.init = function(){
 	if (typeof this.setCustomEventHandlers === 'function'){
 		this.setCustomEventHandlers();
 	}
-	
+
 	$('.dialog [title]').tooltip({});
 
 	// checking for support for specific fancy css3 visual stuff
@@ -106,14 +108,14 @@ GUI.prototype.setup = function(){
 	"use strict";
 	$(window).trigger('resize');
 };
-	
+
 /**
  * Sets the default (common) UI eventhandlers (extended in each class for custom handlers)
  */
 GUI.prototype.setEventHandlers = function(){
 	"use strict";
 	var that=this;
-	
+
 	$(document).on('click', '#feedback-bar .close', function(event){
 		that.feedbackBar.hide();
 		return false;
@@ -135,7 +137,7 @@ GUI.prototype.setEventHandlers = function(){
 	//$(document).on('click', '.touch #page', function(event){
 	//	that.pages.close();
 	//});
-	
+
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
 	$(document).on('click', 'a[href^="#"]:not([href="#"]):not(nav ul li a)', function(event){
 		var href = $(this).attr('href');
@@ -155,7 +157,7 @@ GUI.prototype.setEventHandlers = function(){
 			that.pages.open(targetPage);
 			$(this).closest('li').addClass('active').siblings().removeClass('active');
 		});
-	
+
 	// handlers for status icons in header
 	$(window).on('onlinestatuschange', function(e,online){
 		that.updateStatus.connection(online);
@@ -181,7 +183,7 @@ GUI.prototype.setEventHandlers = function(){
 			' with this error:<ul class="error-list"><li>'+error+'</li></ul>', 'Formula Error');
 	});
 };
-	
+
 GUI.prototype.nav = {
 	setup : function(){
 		"use strict";
@@ -205,7 +207,7 @@ GUI.prototype.nav = {
 			else link = '#'+id;
 			$('<li class=""><a href="'+link+'" title="'+title+'" >'+display+'</a></li>')
 				.appendTo($('nav ul'));
-		
+
 		});
 	},
 	reset : function(){
@@ -272,7 +274,7 @@ GUI.prototype.pages = {
 		$('#page .content').prepend($page.show()).trigger('change');
 		$('#page').show();
 		$('.overlay').show();
-		
+
 		$(window).on('resize.pageEvents', function(){
 			$('#page').trigger('change');
 		});
@@ -286,7 +288,7 @@ GUI.prototype.pages = {
 			});
 		}, 1000);
 	},
-	
+
 	/**
 	 * Closes the currently shown page
 	 */
@@ -432,14 +434,14 @@ GUI.prototype.alert = function(message, heading, level, duration){
 GUI.prototype.confirm = function(texts, choices, duration){
 	"use strict";
 	var msg, heading, errorMsg, closeFn, dialogName, $dialog, timer;
-	
+
 	if (typeof texts === 'string'){
 		msg = texts;
 	}
 	else if (typeof texts.msg === 'string'){
 		msg = texts.msg;
 	}
-	
+
 	msg = (typeof msg !== 'undefined') ? msg : 'Please confirm action';
 	heading = (typeof texts.heading !== 'undefined') ? texts.heading : 'Are you sure?';
 	errorMsg = (typeof texts.errorMsg !== 'undefined') ? texts.errorMsg : '';
@@ -452,7 +454,7 @@ GUI.prototype.confirm = function(texts, choices, duration){
 	choices.beforeAction = choices.beforeAction || function(){};
 
 	$dialog = $('#dialog-'+dialogName);
-	
+
 	//write content into confirmation dialog
 	$dialog.find('.modal-header h3').text(heading);
 	$dialog.find('.modal-body .msg').html(msg).capitalizeStart();
@@ -524,7 +526,7 @@ GUI.prototype.confirm = function(texts, choices, duration){
 
 	 */
 };
-	
+
 /**
  * Shows modal with load errors
  * @param  {Array.<string>} loadErrors	load error messagesg
@@ -643,7 +645,7 @@ GUI.prototype.setSettings = function(settings){
 	var $input,
 		that = this;
 	console.log('gui updateSettings() started'); //DEBUG
-	
+
 	$.each(settings, function(key, value){ //iterate through each item in object
 		//console.log('key:'+key+' value:'+value);// DEBUG
 		$input = (value) ? that.pages.get('settings').find('input[name="'+key+'"][value="'+value+'"]') :
@@ -810,7 +812,7 @@ Print.prototype.removePossiblePageBreaks = function(){
  */
 Print.prototype.addPossiblePageBreaks = function(){
 	var possible_break = $("<hr>", {"class": "possible-break"/*, "style":"background-color:blue; height: 1px"*/});
-	
+
 	this.removePossiblePageBreaks();
 
 	$('form.jr').before(possible_break.clone()).after(possible_break.clone())
@@ -832,7 +834,7 @@ Print.prototype.addPossiblePageBreaks = function(){
 				return $this.before(possible_break.clone());
 			}
 		});
-	
+
 	//correction of placing two direct sibling breaks
 	$('.possible-break').each(function() {
 		if ($(this).prev().hasClass('possible-break')) {
@@ -913,7 +915,7 @@ Print.prototype.addPageBreaks = function(){
 	}
 
 	pages.push(page_a);
-	
+
 	console.debug('pages: ', pages);
 
 	//skip the first page

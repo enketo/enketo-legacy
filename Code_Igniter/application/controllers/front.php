@@ -49,9 +49,7 @@ class Front extends CI_Controller {
 
 		$default_stylesheets = array
 		(
-			array( 'href' => '/css/styles.css', 'media' => 'screen'),
-			array( 'href' => '/css/front.css', 'media' => 'screen'),
-			array( 'href' => '/css/print.css', 'media' => 'print')
+			array( 'href' => '/css/front.css', 'media' => 'screen')
 		);
 		$data = array(
 			'offline'=>FALSE, 

@@ -41,7 +41,7 @@ class Forms extends CI_Controller {
 
 		$default_stylesheets = array
 		(
-			array( 'href' => '/css/styles.css', 'media' => 'screen')
+			array( 'href' => '/css/forms.css', 'media' => 'screen')
 		);
 
 		$data = array(

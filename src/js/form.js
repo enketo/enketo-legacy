@@ -1968,10 +1968,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.$group = $group || $form;
 			this.readonlyWidget(); //call before other widgets
 			this.pageBreakWidget();
-			if (!Modernizr.touch){
+			if (!Modernizr.touch || !Modernizr.inputtypes.date){
 				this.dateWidget();
+			}
+			if (!Modernizr.touch || !Modernizr.inputtypes.time){
 				this.timeWidget();
+			}
+			if (!Modernizr.touch || !Modernizr.inputtypes.datetime){
 				this.dateTimeWidget();
+			}
+			if (!Modernizr.touch){
 				this.selectWidget();
 			}
 			else{
@@ -1997,7 +2003,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					var visibility = ($(this).is(':checked')) ? 'visible' : 'hidden';
 					$(this).parent().siblings('.reset-radio').css('visibility', visibility);
 				});
-				
+
 				$form.on('click', '.reset-radio', function(event){
 					$(this).siblings('label').clearInputs('change');
 					return false;

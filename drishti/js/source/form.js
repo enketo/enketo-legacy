@@ -1968,10 +1968,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.$group = $group || $form;
 			this.readonlyWidget(); //call before other widgets
 			this.pageBreakWidget();
-			if (!Modernizr.touch){
+			if (!Modernizr.touch || !Modernizr.inputtypes.date){
 				this.dateWidget();
+			}
+			if (!Modernizr.touch || !Modernizr.inputtypes.time){
 				this.timeWidget();
+			}
+			if (!Modernizr.touch || !Modernizr.inputtypes.datetime){
 				this.dateTimeWidget();
+			}
+			if (!Modernizr.touch){
 				this.selectWidget();
 			}
 			else{
@@ -1988,18 +1994,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		radioWidget : function(){
 			if (!this.repeat){
-				$form.on('click', 'label[data-checked="true"]', function(event){
-					$(this).removeAttr('data-checked');
-					$(this).parent().find('input').prop('checked', false).trigger('change');
-					if (event.target.nodeName.toLowerCase() !== 'input'){
-						return false;
-					}
+				var $radios = $form.find('input[type="radio"]');
+
+				$('<i class="icon-trash reset-radio" href=""></i>').insertAfter($radios.parent('label:last-of-type'))
+					.siblings('label').find('input:checked').parent().siblings('.reset-radio').css('visibility', 'visible');
+
+				$form.on('change', 'input:radio', function(){
+					var visibility = ($(this).is(':checked')) ? 'visible' : 'hidden';
+					$(this).parent().siblings('.reset-radio').css('visibility', visibility);
 				});
-				$form.on('click', 'input[type="radio"]:checked', function(event){
-					$(this).parent('label').attr('data-checked', 'true');
-				});
-				//defaults
-				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');
+
+				$form.on('click', '.reset-radio', function(event){
+					$(this).siblings('label').clearInputs('change');
+					return false;
+				});	
 			}
 		},
 		touchRadioCheckWidget : function(){
@@ -2473,7 +2481,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		'browser' : function(o){
 			//console.debug('evaluation browser preload');
-			if (o.curVal.length === 0){
+			/*if (o.curVal.length === 0){
 				if (o.param == 'name'){	
 					var a = ($.browser.webkit) ? 'webkit' : ($.browser.mozilla) ? 'mozilla' : ($.browser.opera) ? 'opera' : ($.browser.msie) ? 'msie' : 'unknown';
 					//console.debug(a);
@@ -2484,7 +2492,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 				return o.param+' not supported in enketo';
 			}
-			return o.curVal;
+			return o.curVal;*/
 		},
 		'os': function(o){
 			if (o.curVal.length === 0){

@@ -422,10 +422,10 @@ describe("Preload and MetaData functionality", function(){
 		['/widgets/patient', 'this one'],
 		['/widgets/user', 'John Doe'],
 		['/widgets/uid', 'John Doe'],
-		['/widgets/browser_name', 'fake'],
-		['/widgets/browser_version', 'xx'],
-		['/widgets/os_name', 'fake'],
-		['/widgets/os_version', 'xx'],
+		//['/widgets/browser_name', 'fake'],
+		//['/widgets/browser_version', 'xx'],
+		//['/widgets/os_name', 'fake'],
+		//['/widgets/os_version', 'xx'],
 		['/widgets/meta/instanceID', 'uuid:56c19c6c-08e6-490f-a783-e7f3db788ba8']
 	];
 	

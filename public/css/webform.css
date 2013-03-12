@@ -6621,6 +6621,16 @@ html.touch .jr legend .jr-hint.active {
 .jr .itemset-template, .jr .itemset-labels {
   display: none;
 }
+.jr .reset-radio {
+  visibility: hidden;
+  display: block;
+  margin-bottom: -14px;
+  margin-left: 9px;
+  opacity: 0.6;
+}
+.jr .reset-radio:hover {
+  opacity: 0.4;
+}
 .jr .add-on {
   padding: 9px 5px;
   margin-top: 8px;
@@ -6859,6 +6869,10 @@ html.touch .jr legend .jr-hint.active {
 .jr .restoring-sanity-to-legends .jr-appearance-list-nolabel label .active, .jr .restoring-sanity-to-legends .jr-appearance-label label .active {
   margin: 0 auto;
 }
+.jr .restoring-sanity-to-legends .jr-appearance-list-nolabel .reset-radio, .jr .restoring-sanity-to-legends .jr-appearance-label .reset-radio {
+  float: left;
+  margin-top: 5px;
+}
 .jr .restoring-sanity-to-legends .jr-appearance-list-nolabel input, .jr .restoring-sanity-to-legends .jr-appearance-label input {
   text-align: center;
 }
@@ -6893,6 +6907,10 @@ html.touch .jr legend .jr-hint.active {
 .jr .jr-appearance-compact legend ~ label span.active:not(.jr-hint):not(.jr-constraint-msg), .jr .jr-appearance-quickcompact legend ~ label span.active:not(.jr-hint):not(.jr-constraint-msg) {
   margin-left: 0;
   display: none;
+}
+.jr .jr-appearance-compact .reset-radio, .jr .jr-appearance-quickcompact .reset-radio {
+  float: left;
+  margin-top: 5px;
 }
 .jr .jr-appearance-compact input, .jr .jr-appearance-quickcompact input {
   display: none;

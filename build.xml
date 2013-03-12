@@ -85,7 +85,7 @@
     <copy file="src/js/form.js" todir="drishti/js/source" />
     <copy file="src/js/widgets.js" todir="drishti/js/source" />
     <copy file="src/js/webform_drishti.js" todir="drishti/js/source" />
-    <copy file="public/css/styles_drishti.css" todir="drishti/css" />
+    <copy file="public/css/drishti.css" todir="drishti/css" />
 
      <jscomp compilationLevel="simple" warning="verbose" 
             debug="false" output="public/js-min/webform-edit-all-min.js">

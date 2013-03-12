@@ -193,7 +193,9 @@ html.touch{
   	display: block;
   	margin-bottom: -14px;
   	margin-left: 9px;
-  	opacity: 0.6; }
+  	opacity: 0.6;
+  	&:hover{
+  		opacity: 0.4;} }
   .add-on{
     padding: 9px 5px;
     margin-top: 8px;

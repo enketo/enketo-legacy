@@ -371,6 +371,9 @@ html.touch{
       text-align: center;
   		.active{
   			margin: 0 auto;	} }
+  	.reset-radio{
+  		float: left;
+  		margin-top: 5px;}
     input{
       text-align: center;} }
   .jr-appearance-list-nolabel{
@@ -401,6 +404,9 @@ html.touch{
       span.active:not(.jr-hint):not(.jr-constraint-msg){
       	margin-left: 0;
         display: none; } } }
+    .reset-radio{
+    	float: left;
+    	margin-top: 5px;}
     input{
       display: none;
       ~ img.active{

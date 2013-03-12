@@ -53,14 +53,15 @@ window.onload = function(){
 (function($){
 	"use strict";
 	// give a set of elements the same (longest) width
-	$.fn.toLargestWidth = function(){
+	$.fn.toLargestWidth = function(plus){
 		var largestWidth = 0;
+		plus = plus || 0;
 		return this.each(function(){
 			if ($(this).width() > largestWidth) {
 				largestWidth = $(this).width();
 			}
 		}).each(function(){
-			$(this).width(largestWidth);
+			$(this).width(largestWidth + plus);
 		});
 	};
 

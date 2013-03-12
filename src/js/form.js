@@ -2199,7 +2199,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					.parent().parent('.jr-appearance-field-list').each(function(){
 						$(this).find('.jr-appearance-label label>img').parent().css('width', 'auto').toSmallestWidth();
 						$(this).find('label').css('width', 'auto').toLargestWidth();
-						$(this).find('legend').css('width', 'auto').toLargestWidth();
+						$(this).find('legend').css('width', 'auto').toLargestWidth(35);
 				});
 			}, 50);
 			//}

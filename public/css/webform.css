@@ -6466,12 +6466,6 @@ progress {
   margin: 0 0 0 1em;
   font-size: 0.9em;
 }
-.paper.tab-pane .form-language-selector {
-  padding-right: 0;
-  border-right: 0;
-  margin-top: -30px;
-  margin-right: -25px;
-}
 .paper #submit-form, .paper #submit-edited-data, .paper #validate-form, .paper #launch-form {
   position: relative;
   width: 150px;
@@ -6487,11 +6481,6 @@ progress {
 }
 .paper .enketo-power a {
   font-style: italic;
-}
-.paper #refresh-list {
-  float: right;
-  margin: -2px -14px 0 14px;
-  width: 60px;
 }
 
 .jr [lang]:not(.active), .jr-hint, .jr-option-translations, .jr-appearance-page-break, .jr-constraint-msg, .jr-required-msg {
@@ -6829,10 +6818,10 @@ html.touch .jr legend .jr-hint.active {
 .jr .geopoint .map-canvas img {
   max-width: none;
 }
-.jr .geopoint .bootstrap-select {
+.jr .bootstrap-select {
   margin-top: 15px;
 }
-.jr .geopoint .bootstrap-select .dropdown-toggle {
+.jr .bootstrap-select .dropdown-toggle {
   line-height: 30px;
   min-width: 130px;
   font-weight: normal;
@@ -6840,78 +6829,83 @@ html.touch .jr legend .jr-hint.active {
   text-align: left;
   min-width: 144px -14px;
 }
-.jr .geopoint .bootstrap-select .dropdown-toggle a .filter-option {
+.jr .bootstrap-select .dropdown-toggle a .filter-option {
   padding-right: 10px;
 }
-.jr .geopoint .bootstrap-select .dropdown-toggle ~ .dropdown-menu label {
+.jr .bootstrap-select .dropdown-toggle ~ .dropdown-menu label {
   font-weight: normal;
   padding-top: 0px;
   padding-left: 0px;
   font-size: 1em;
 }
-.jr .geopoint .bootstrap-select .dropdown-toggle ~ .dropdown-menu label input[type="checkbox"] {
+.jr .bootstrap-select .dropdown-toggle ~ .dropdown-menu label input[type="checkbox"] {
   margin: 5px 10px 1px 0;
 }
-.jr .geopoint .restoring-sanity-to-legends .jr-appearance-list-nolabel, .jr .geopoint .restoring-sanity-to-legends .jr-appearance-label {
+.jr .restoring-sanity-to-legends .jr-appearance-list-nolabel, .jr .restoring-sanity-to-legends .jr-appearance-label {
   margin: -0.9em 0 -0.7em 0;
 }
-.jr .geopoint .restoring-sanity-to-legends .jr-appearance-list-nolabel legend, .jr .geopoint .restoring-sanity-to-legends .jr-appearance-label legend {
+.jr .restoring-sanity-to-legends .jr-appearance-list-nolabel legend, .jr .restoring-sanity-to-legends .jr-appearance-label legend {
   float: left;
   border: none;
   line-height: 17px;
   max-width: 40%;
   min-height: 1px;
 }
-.jr .geopoint .restoring-sanity-to-legends .jr-appearance-list-nolabel label, .jr .geopoint .restoring-sanity-to-legends .jr-appearance-label label {
+.jr .restoring-sanity-to-legends .jr-appearance-list-nolabel label, .jr .restoring-sanity-to-legends .jr-appearance-label label {
   float: left;
   display: block;
   text-align: center;
 }
-.jr .geopoint .restoring-sanity-to-legends .jr-appearance-list-nolabel input, .jr .geopoint .restoring-sanity-to-legends .jr-appearance-label input {
+.jr .restoring-sanity-to-legends .jr-appearance-list-nolabel label .active, .jr .restoring-sanity-to-legends .jr-appearance-label label .active {
+  margin: 0 auto;
+}
+.jr .restoring-sanity-to-legends .jr-appearance-list-nolabel input, .jr .restoring-sanity-to-legends .jr-appearance-label input {
   text-align: center;
 }
-.jr .geopoint .jr-appearance-list-nolabel label span.active, .jr .geopoint .jr-appearance-list-nolabel img {
-  display: none;
+.jr .jr-appearance-list-nolabel label .active {
+  display: none !important;
   float: none;
 }
-.jr .geopoint .jr-appearance-label label:hover {
+.jr .jr-appearance-label label:hover {
   background: none;
 }
-.jr .geopoint .jr-appearance-label input {
+.jr .jr-appearance-label input {
   float: none;
-  display: none;
+  display: none !important;
 }
-.jr .geopoint .jr-appearance-label img {
+.jr .jr-appearance-label img {
   display: inline-block;
   float: none;
 }
-.jr .geopoint .with-media > input[type="radio"] ~ span.active:not(.jr-hint):not(.jr-constraint-msg), .jr .geopoint .with-media > input[type="checkbox"] ~ span.active:not(.jr-hint):not(.jr-constraint-msg) {
+.jr .with-media > input[type="radio"] ~ span.active:not(.jr-hint):not(.jr-constraint-msg), .jr .with-media > input[type="checkbox"] ~ span.active:not(.jr-hint):not(.jr-constraint-msg) {
   display: block;
   margin: -18px 0 0 40px;
 }
-.jr .geopoint .jr-appearance-compact legend, .jr .geopoint .jr-appearance-quickcompact legend {
+.jr .jr-appearance-compact legend, .jr .jr-appearance-quickcompact legend {
   border: none;
 }
-.jr .geopoint .jr-appearance-compact label, .jr .geopoint .jr-appearance-quickcompact label {
+.jr .jr-appearance-compact legend ~ label, .jr .jr-appearance-quickcompact legend ~ label {
   float: left;
 }
-.jr .geopoint .jr-appearance-compact label:hover, .jr .geopoint .jr-appearance-quickcompact label:hover {
+.jr .jr-appearance-compact legend ~ label:hover, .jr .jr-appearance-quickcompact legend ~ label:hover {
   background: none;
 }
-.jr .geopoint .jr-appearance-compact label span.active:not(.jr-hint):not(.jr-constraint-msg), .jr .geopoint .jr-appearance-quickcompact label span.active:not(.jr-hint):not(.jr-constraint-msg) {
+.jr .jr-appearance-compact legend ~ label span.active:not(.jr-hint):not(.jr-constraint-msg), .jr .jr-appearance-quickcompact legend ~ label span.active:not(.jr-hint):not(.jr-constraint-msg) {
+  margin-left: 0;
   display: none;
 }
-.jr .geopoint .jr-appearance-compact input, .jr .geopoint .jr-appearance-quickcompact input {
+.jr .jr-appearance-compact input, .jr .jr-appearance-quickcompact input {
   display: none;
 }
-.jr .geopoint .jr-appearance-compact input ~ img, .jr .geopoint .jr-appearance-quickcompact input ~ img {
+.jr .jr-appearance-compact input ~ img.active, .jr .jr-appearance-quickcompact input ~ img.active {
+  margin-left: 0;
   max-width: 150px;
   max-height: 150px;
   border: 2px solid transparent;
 }
-.jr .geopoint .jr-appearance-compact input ~ img:hover, .jr .geopoint .jr-appearance-quickcompact input ~ img:hover {
+.jr .jr-appearance-compact input ~ img:hover, .jr .jr-appearance-quickcompact input ~ img:hover {
   border-color: #faa474;
 }
-.jr .geopoint .jr-appearance-compact input:checked ~ img, .jr .geopoint .jr-appearance-compact input:checked ~ img:hover, .jr .geopoint .jr-appearance-quickcompact input:checked ~ img, .jr .geopoint .jr-appearance-quickcompact input:checked ~ img:hover {
+.jr .jr-appearance-compact input:checked ~ img, .jr .jr-appearance-compact input:checked ~ img:hover, .jr .jr-appearance-quickcompact input:checked ~ img, .jr .jr-appearance-quickcompact input:checked ~ img:hover {
   border-color: #ce4f07;
 }

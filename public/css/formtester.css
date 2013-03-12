@@ -2100,7 +2100,7 @@ table th[class*="span"],
   *margin-right: .3em;
   line-height: 14px;
   vertical-align: text-top;
-  background-image: url("../images/glyphicons-halflings.png");
+  background-image: url("/images/glyphicons-halflings.png");
   background-position: 14px 14px;
   background-repeat: no-repeat;
   margin-top: 1px;
@@ -2124,7 +2124,7 @@ table th[class*="span"],
 .dropdown-submenu:focus > a > [class^="icon-"],
 .dropdown-submenu:hover > a > [class*=" icon-"],
 .dropdown-submenu:focus > a > [class*=" icon-"] {
-  background-image: url("../images/glyphicons-halflings-white.png");
+  background-image: url("/images/glyphicons-halflings-white.png");
 }
 
 .icon-glass {
@@ -6139,9 +6139,6 @@ a.label:hover, a.label:focus, a.badge:hover, a.badge:focus {
   background-position: -5px -5px;
 }
 
-/****************************
- ****     GENERAL GUI    ****
- ****************************/
 body {
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
   background: #dddddd url(../images/tex2res2.png) repeat;
@@ -6271,26 +6268,6 @@ progress {
   text-decoration: underline;
 }
 
-.navbar.navbar-fixed-top {
-  margin-bottom: 0;
-}
-.navbar .brand {
-  font-size: 2em;
-}
-.navbar .brand .component {
-  font-size: 0.4em;
-}
-.navbar nav {
-  float: right;
-}
-.navbar nav a {
-  text-align: right;
-}
-.navbar nav img {
-  width: 1em;
-  height: 1em;
-}
-
 .overlay {
   position: absolute;
   top: 0;
@@ -6327,77 +6304,6 @@ progress {
 }
 .main ul.nav-tabs li a {
   background: none;
-}
-
-textarea.source {
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -ms-box-sizing: border-box;
-  width: 100%;
-  height: 500px;
-  font-size: .8em;
-  padding: 5px;
-}
-
-label#data-template-show {
-  float: right;
-}
-
-#upload form {
-  margin-top: 2em;
-  text-align: center;
-}
-#upload form #input-switcher {
-  margin-top: 5em;
-  text-align: center;
-}
-#upload form fieldset {
-  position: relative;
-  height: 70px;
-}
-#upload form fieldset label {
-  text-align: center;
-  margin-top: 20px;
-  padding: 0 5%;
-  display: block;
-  z-index: 0;
-  width: 80%;
-}
-#upload form fieldset label > span {
-  display: block;
-}
-#upload form fieldset .fakefileinput span {
-  vertical-align: middle;
-}
-#upload form fieldset input, #upload form fieldset .fakefileinput {
-  position: absolute;
-  box-sizing: border-box;
-  top: 0;
-  left: 0px;
-  display: block;
-  width: 100%;
-  margin: 10px 0 10px 0;
-  height: 100%;
-  text-align: center;
-}
-#upload form fieldset input span, #upload form fieldset .fakefileinput span {
-  line-height: 60px;
-}
-#upload form fieldset input[type=file] {
-  z-index: 5;
-  opacity: 0;
-}
-#upload form .hurry {
-  font-size: .8em;
-  margin: 5em 0 3em 0;
-}
-#upload #form-list {
-  margin-top: 4em;
-}
-#upload #form-list ul {
-  width: 100%;
-  list-style-type: none;
 }
 
 .formlist ul {
@@ -6449,13 +6355,6 @@ label#data-template-show {
   display: none;
 }
 
-/*#launch form{
-  margin-top: 20px; 
-  input{
-    width: 300px; } }*/
-/***************************
- ** FEEDBACK BAR & PAGE **
- ***************************/
 #feedback-bar {
   -webkit-transition: all 1s ease-out;
   -moz-transition: all 1s ease-out;
@@ -6496,6 +6395,26 @@ label#data-template-show {
 }
 #feedback-bar .close {
   right: 20px;
+}
+
+.navbar.navbar-fixed-top {
+  margin-bottom: 0;
+}
+.navbar .brand {
+  font-size: 2em;
+}
+.navbar .brand .component {
+  font-size: 0.4em;
+}
+.navbar nav {
+  float: right;
+}
+.navbar nav a {
+  text-align: right;
+}
+.navbar nav img {
+  width: 1em;
+  height: 1em;
 }
 
 .page {
@@ -6563,9 +6482,6 @@ label#data-template-show {
   height: 100%;
 }
 
-/**************************
-****    SURVEY FORM    ****
-**************************/
 .paper {
   position: relative;
 }
@@ -6689,19 +6605,6 @@ html.touch .jr legend .jr-hint.active {
   padding-bottom: .6em;
 }
 
-.jr {
-  /*.jr-constraint-msg.alert-error {
-   @include transition-fast; }*/
-  /*fieldset{
-    padding: 0;
-    margin: 0;}
-  th{
-    input{
-      display: none;} }
-  td{
-    label>span.active{
-      display: none; } }*/
-}
 .jr .form-logo img {
   position: relative;
   float: none;
@@ -6981,9 +6884,6 @@ html.touch .jr legend .jr-hint.active {
   line-height: 45px;
   font-size: 12px;
 }
-.jr .geopoint input[name="search"] {
-  /*width: $search-width;*/
-}
 .jr .geopoint input[name="lat"], .jr .geopoint input[name="long"] {
   float: none;
   -moz-box-sizing: border-box;
@@ -7013,12 +6913,11 @@ html.touch .jr legend .jr-hint.active {
 }
 .jr .geopoint .map-canvas img {
   max-width: none;
-  /*correction*/
 }
-.jr .bootstrap-select {
+.jr .geopoint .bootstrap-select {
   margin-top: 15px;
 }
-.jr .bootstrap-select .dropdown-toggle {
+.jr .geopoint .bootstrap-select .dropdown-toggle {
   line-height: 30px;
   min-width: 130px;
   font-weight: normal;
@@ -7026,86 +6925,154 @@ html.touch .jr legend .jr-hint.active {
   text-align: left;
   min-width: 144px -14px;
 }
-.jr .bootstrap-select .dropdown-toggle a .filter-option {
+.jr .geopoint .bootstrap-select .dropdown-toggle a .filter-option {
   padding-right: 10px;
 }
-.jr .bootstrap-select .dropdown-toggle ~ .dropdown-menu label {
+.jr .geopoint .bootstrap-select .dropdown-toggle ~ .dropdown-menu label {
   font-weight: normal;
   padding-top: 0px;
   padding-left: 0px;
   font-size: 1em;
 }
-.jr .bootstrap-select .dropdown-toggle ~ .dropdown-menu label input[type="checkbox"] {
+.jr .geopoint .bootstrap-select .dropdown-toggle ~ .dropdown-menu label input[type="checkbox"] {
   margin: 5px 10px 1px 0;
 }
-.jr .restoring-sanity-to-legends .jr-appearance-list-nolabel, .jr .restoring-sanity-to-legends .jr-appearance-label {
+.jr .geopoint .restoring-sanity-to-legends .jr-appearance-list-nolabel, .jr .geopoint .restoring-sanity-to-legends .jr-appearance-label {
   margin: -0.9em 0 -0.7em 0;
 }
-.jr .restoring-sanity-to-legends .jr-appearance-list-nolabel legend, .jr .restoring-sanity-to-legends .jr-appearance-label legend {
+.jr .geopoint .restoring-sanity-to-legends .jr-appearance-list-nolabel legend, .jr .geopoint .restoring-sanity-to-legends .jr-appearance-label legend {
   float: left;
   border: none;
   line-height: 17px;
   max-width: 40%;
   min-height: 1px;
 }
-.jr .restoring-sanity-to-legends .jr-appearance-list-nolabel label, .jr .restoring-sanity-to-legends .jr-appearance-label label {
+.jr .geopoint .restoring-sanity-to-legends .jr-appearance-list-nolabel label, .jr .geopoint .restoring-sanity-to-legends .jr-appearance-label label {
   float: left;
   display: block;
   text-align: center;
 }
-.jr .restoring-sanity-to-legends .jr-appearance-list-nolabel input, .jr .restoring-sanity-to-legends .jr-appearance-label input {
+.jr .geopoint .restoring-sanity-to-legends .jr-appearance-list-nolabel input, .jr .geopoint .restoring-sanity-to-legends .jr-appearance-label input {
   text-align: center;
 }
-.jr .jr-appearance-list-nolabel label span.active, .jr .jr-appearance-list-nolabel img {
+.jr .geopoint .jr-appearance-list-nolabel label span.active, .jr .geopoint .jr-appearance-list-nolabel img {
   display: none;
   float: none;
 }
-.jr .jr-appearance-label label:hover {
+.jr .geopoint .jr-appearance-label label:hover {
   background: none;
 }
-.jr .jr-appearance-label input {
+.jr .geopoint .jr-appearance-label input {
   float: none;
   display: none;
 }
-.jr .jr-appearance-label img {
+.jr .geopoint .jr-appearance-label img {
   display: inline-block;
   float: none;
 }
-.jr .with-media > input[type="radio"] ~ span.active:not(.jr-hint):not(.jr-constraint-msg), .jr .with-media > input[type="checkbox"] ~ span.active:not(.jr-hint):not(.jr-constraint-msg) {
+.jr .geopoint .with-media > input[type="radio"] ~ span.active:not(.jr-hint):not(.jr-constraint-msg), .jr .geopoint .with-media > input[type="checkbox"] ~ span.active:not(.jr-hint):not(.jr-constraint-msg) {
   display: block;
   margin: -18px 0 0 40px;
 }
-.jr .jr-appearance-compact legend, .jr .jr-appearance-quickcompact legend {
+.jr .geopoint .jr-appearance-compact legend, .jr .geopoint .jr-appearance-quickcompact legend {
   border: none;
 }
-.jr .jr-appearance-compact label, .jr .jr-appearance-quickcompact label {
+.jr .geopoint .jr-appearance-compact label, .jr .geopoint .jr-appearance-quickcompact label {
   float: left;
-  /*width: 120px; */
 }
-.jr .jr-appearance-compact label:hover, .jr .jr-appearance-quickcompact label:hover {
+.jr .geopoint .jr-appearance-compact label:hover, .jr .geopoint .jr-appearance-quickcompact label:hover {
   background: none;
 }
-.jr .jr-appearance-compact label span.active:not(.jr-hint):not(.jr-constraint-msg), .jr .jr-appearance-quickcompact label span.active:not(.jr-hint):not(.jr-constraint-msg) {
+.jr .geopoint .jr-appearance-compact label span.active:not(.jr-hint):not(.jr-constraint-msg), .jr .geopoint .jr-appearance-quickcompact label span.active:not(.jr-hint):not(.jr-constraint-msg) {
   display: none;
 }
-.jr .jr-appearance-compact input, .jr .jr-appearance-quickcompact input {
+.jr .geopoint .jr-appearance-compact input, .jr .geopoint .jr-appearance-quickcompact input {
   display: none;
 }
-.jr .jr-appearance-compact input ~ img, .jr .jr-appearance-quickcompact input ~ img {
+.jr .geopoint .jr-appearance-compact input ~ img, .jr .geopoint .jr-appearance-quickcompact input ~ img {
   max-width: 150px;
   max-height: 150px;
   border: 2px solid transparent;
 }
-.jr .jr-appearance-compact input ~ img:hover, .jr .jr-appearance-quickcompact input ~ img:hover {
+.jr .geopoint .jr-appearance-compact input ~ img:hover, .jr .geopoint .jr-appearance-quickcompact input ~ img:hover {
   border-color: #faa474;
 }
-.jr .jr-appearance-compact input:checked ~ img, .jr .jr-appearance-compact input:checked ~ img:hover, .jr .jr-appearance-quickcompact input:checked ~ img, .jr .jr-appearance-quickcompact input:checked ~ img:hover {
+.jr .geopoint .jr-appearance-compact input:checked ~ img, .jr .geopoint .jr-appearance-compact input:checked ~ img:hover, .jr .geopoint .jr-appearance-quickcompact input:checked ~ img, .jr .geopoint .jr-appearance-quickcompact input:checked ~ img:hover {
   border-color: #ce4f07;
 }
-.jr label > input[type="radio"] + img, .jr label > input[type="checkbox"] + img {
-  /*margin-top: -25px;*/
+
+textarea.source {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  width: 100%;
+  height: 500px;
+  font-size: .8em;
+  padding: 5px;
 }
 
-.paper .form-language-selector {
-  border-right: none;
+label#data-template-show {
+  float: right;
 }
+
+#upload form {
+  margin-top: 2em;
+  text-align: center;
+}
+#upload form #input-switcher {
+  margin-top: 5em;
+  text-align: center;
+}
+#upload form fieldset {
+  position: relative;
+  height: 70px;
+}
+#upload form fieldset label {
+  text-align: center;
+  margin-top: 20px;
+  padding: 0 5%;
+  display: block;
+  z-index: 0;
+  width: 80%;
+}
+#upload form fieldset label > span {
+  display: block;
+}
+#upload form fieldset .fakefileinput span {
+  vertical-align: middle;
+}
+#upload form fieldset input, #upload form fieldset .fakefileinput {
+  position: absolute;
+  box-sizing: border-box;
+  top: 0;
+  left: 0px;
+  display: block;
+  width: 100%;
+  margin: 10px 0 10px 0;
+  height: 100%;
+  text-align: center;
+}
+#upload form fieldset input span, #upload form fieldset .fakefileinput span {
+  line-height: 60px;
+}
+#upload form fieldset input[type=file] {
+  z-index: 5;
+  opacity: 0;
+}
+#upload form .hurry {
+  font-size: .8em;
+  margin: 5em 0 3em 0;
+}
+#upload #form-list {
+  margin-top: 4em;
+}
+#upload #form-list ul {
+  width: 100%;
+  list-style-type: none;
+}
+
+/*#launch form{
+  margin-top: 20px; 
+  input{
+    width: 300px; } }*/

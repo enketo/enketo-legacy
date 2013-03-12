@@ -92,9 +92,9 @@ GUI.prototype.init = function(){
 	$('.dialog [title]').tooltip({});
 
 	// checking for support for specific fancy css3 visual stuff
-	if (Modernizr.borderradius && Modernizr.boxshadow && Modernizr.csstransitions && Modernizr.opacity){
-		$(document).trigger('browsersupport', 'fancy-visuals');
-	}
+	//if (Modernizr.borderradius && Modernizr.boxshadow && Modernizr.csstransitions && Modernizr.opacity){
+	//	$(document).trigger('browsersupport', 'fancy-visuals');
+	//}
 
 	$('footer').detach().appendTo('#container');
 	//this.nav.reset();

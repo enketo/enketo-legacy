@@ -326,7 +326,7 @@ html.touch{
       margin-top: 10px;
       height: $map-height;
       img{
-        max-width: none; } } 
+        max-width: none; } } } 
   .bootstrap-select{
     margin-top: 15px;
     .dropdown-toggle{
@@ -365,14 +365,14 @@ html.touch{
       text-align: center;} }
   .jr-appearance-list-nolabel{
     label span.active, img{
-        display: none;
+        display: none !important;
         float: none; } }
   .jr-appearance-label{
       label:hover{
         background: none;}
       input{
           float: none;
-          display: none; } 
+          display: none !important; } 
       img{
         display: inline-block;
         float: none;} } 
@@ -383,13 +383,13 @@ html.touch{
       margin: -18px 0 0 40px;} } } 
   .jr-appearance-compact, .jr-appearance-quickcompact{
     legend{
-      border: none;}
-    label{
+      border: none;
+    ~ label{
       float: left;
       &:hover{
         background: none;}
       span.active:not(.jr-hint):not(.jr-constraint-msg){
-        display: none; } }
+        display: none; } } }
     input{
       display: none;
       ~ img{
@@ -399,4 +399,4 @@ html.touch{
       ~ img:hover{
         border-color: lighten($title, 30%);}
       &:checked ~ img, &:checked ~ img:hover{
-        border-color: $title; } } } } }
+        border-color: $title; } } } }

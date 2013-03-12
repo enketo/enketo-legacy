@@ -360,11 +360,13 @@ html.touch{
       //border: 1px solid red;
       display: block;
       //width: 100px;
-      text-align: center;}
+      text-align: center;
+  		.active{
+  			margin: 0 auto;	} }
     input{
       text-align: center;} }
   .jr-appearance-list-nolabel{
-    label span.active, img{
+    label .active{
         display: none !important;
         float: none; } }
   .jr-appearance-label{
@@ -389,10 +391,12 @@ html.touch{
       &:hover{
         background: none;}
       span.active:not(.jr-hint):not(.jr-constraint-msg){
+      	margin-left: 0;
         display: none; } } }
     input{
       display: none;
-      ~ img{
+      ~ img.active{
+      	margin-left: 0;
         max-width: 150px;
         max-height: 150px;
         border: 2px solid transparent;}

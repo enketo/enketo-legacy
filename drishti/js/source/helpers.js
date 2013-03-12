@@ -45,6 +45,7 @@ window.onload = function(){
 			window.localStorage.setItem('__loadLog', JSON.stringify(loadLog));
 		}
 		profilerRecords.push('total loading time: '+ loadingTime);
+		if (window.opener) window.opener.postMessage(JSON.stringify(window.performance), '*');
 		$(profilerRecords).each(function(i,v){console.log(v);});
 	}, 0);
 };

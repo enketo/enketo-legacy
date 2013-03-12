@@ -54,8 +54,8 @@ class Webform extends CI_Controller {
 		);
 		$this->default_stylesheets = array
 		(
-			array( 'href' => '/css/styles.css', 'media' => 'all'),
-			array( 'href' => '/css/print.css', 'media' => 'print')
+			array( 'href' => '/css/webform.css', 'media' => 'all'),
+			array( 'href' => '/css/webform_print.css', 'media' => 'print')
 		);
 		$sub = get_subdomain();
 		$suf = $this->Survey_model->ONLINE_SUBDOMAIN_SUFFIX;

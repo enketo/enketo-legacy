@@ -2481,7 +2481,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		'browser' : function(o){
 			//console.debug('evaluation browser preload');
-			if (o.curVal.length === 0){
+			/*if (o.curVal.length === 0){
 				if (o.param == 'name'){	
 					var a = ($.browser.webkit) ? 'webkit' : ($.browser.mozilla) ? 'mozilla' : ($.browser.opera) ? 'opera' : ($.browser.msie) ? 'msie' : 'unknown';
 					//console.debug(a);
@@ -2492,7 +2492,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 				return o.param+' not supported in enketo';
 			}
-			return o.curVal;
+			return o.curVal;*/
 		},
 		'os': function(o){
 			if (o.curVal.length === 0){

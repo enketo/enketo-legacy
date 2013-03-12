@@ -2,7 +2,7 @@ $iconSpritePath: '../images/glyphicons-halflings.png'; //patches bug in bootstra
 $iconWhiteSpritePath: '../images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
 
 @import "_main";
+@import "_form";
 
 .paper .form-language-selector {
-  border-right: none;
-}
+  border-right: none;}

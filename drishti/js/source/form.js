@@ -1994,20 +1994,18 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		radioWidget : function(){
 			if (!this.repeat){
-				var $radios = $form.find('input[type="radio"]');
-
-				$('<i class="icon-trash reset-radio" href=""></i>').insertAfter($radios.parent('label:last-of-type'))
-					.siblings('label').find('input:checked').parent().siblings('.reset-radio').css('visibility', 'visible');
-
-				$form.on('change', 'input:radio', function(){
-					var visibility = ($(this).is(':checked')) ? 'visible' : 'hidden';
-					$(this).parent().siblings('.reset-radio').css('visibility', visibility);
+				$form.on('click', 'label[data-checked="true"]', function(event){
+					$(this).removeAttr('data-checked');
+					$(this).parent().find('input').prop('checked', false).trigger('change');
+					if (event.target.nodeName.toLowerCase() !== 'input'){
+						return false;
+					}
 				});
-
-				$form.on('click', '.reset-radio', function(event){
-					$(this).siblings('label').clearInputs('change');
-					return false;
-				});	
+				$form.on('click', 'input[type="radio"]:checked', function(event){
+					$(this).parent('label').attr('data-checked', 'true');
+				});
+				//defaults
+				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');
 			}
 		},
 		touchRadioCheckWidget : function(){

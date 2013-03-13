@@ -37,7 +37,7 @@ describe("Data node getter", function () {
 		],
 		form = new Form("", ""),
 		data = form.Data(dataStr1);
-	
+
 	function test(node){
 		it("obtains nodes (selector: "+node.selector+", index: "+node.index+", filter: "+JSON.stringify(node.filter)+")", function() {
 			expect(data.node(node.selector, node.index, node.filter).get().length).toEqual(node.result);

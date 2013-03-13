@@ -2001,19 +2001,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						return false;
 					}
 				});
-<<<<<<< HEAD
-
-				$form.on('click', '.reset-radio', function(event){
-					$(this).siblings('label').clearInputs('change');
-					return false;
-				});	
-=======
 				$form.on('click', 'input[type="radio"]:checked', function(event){
 					$(this).parent('label').attr('data-checked', 'true');
 				});
 				//defaults
 				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');
->>>>>>> parent of b492e1d... less buggy radio unselect (for testing on mobile), #351
 			}
 		},
 		touchRadioCheckWidget : function(){

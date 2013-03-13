@@ -100,6 +100,7 @@ class Unit_test extends CI_Controller {
 	public function generate_js_test_form_mocks()
 	{
 		$xml_forms = array(
+			'thedata.xml',
 			'issue208.xml', 
 			'cascading_mixture_itext_noitext.xml', 
 			'new_cascading_selections.xml',

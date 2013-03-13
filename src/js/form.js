@@ -2574,7 +2574,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		/**
 		 * clone a repeat group/node
 		 * @param   {jQuery} $node node to clone
-		 * @param 	{boolean=} animate whether to anim@param 	{boolean?} animate whether to animate the cloningate the cloning
+		 * @param 	{boolean=} animate whether to animate the cloning
 		 * @return  {boolean}       [description]
 		 */
 		clone : function($node, animate){
@@ -2602,6 +2602,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$clone.insertAfter($node)
 				.parent('.jr-group').numberRepeats();
 
+			//this code causes an exception in Jasmine unit tests with jQuery 1.9 and 2.0
+			//Maybe because the form is not added to the DOM?
 			$clone.hide().clearInputs('').show(duration, function(){
 				//re-initiate widgets in clone
 				that.formO.widgets.init($clone);

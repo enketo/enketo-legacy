@@ -370,8 +370,8 @@ html.touch{
         display: none !important;
         float: none; } }
   .jr-appearance-label{
-      label:hover{
-        background: none;}
+      legend ~ label:hover{
+        background-color: transparent;}
       input{
           float: none;
           display: none !important; } 

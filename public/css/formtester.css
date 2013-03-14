@@ -6951,8 +6951,8 @@ html.touch .jr legend .jr-hint.active {
   display: none !important;
   float: none;
 }
-.jr .jr-appearance-label label:hover {
-  background: none;
+.jr .jr-appearance-label legend ~ label:hover {
+  background-color: transparent;
 }
 .jr .jr-appearance-label input {
   float: none;

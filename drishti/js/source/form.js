@@ -1539,7 +1539,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$branchNode = $(this).closest('.jr-branch');
 				
 				if($branchNode.length !== 1){
-					console.error('could not find branch node for ', $(this));
+					if ($(this).parents('#jr-calculated-items').length === 0){
+						console.error('could not find branch node for ', $(this));
+					}
 					return;
 				}
 
@@ -1685,12 +1687,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				
 				//if the branch was previously enabled
 				if (!virgin){
-					$branchNode.clearInputs('change').removeClass('pre-init');
+					$branchNode.clearInputs('change');
 				
 					//all remaining fields marked as invalid can now be marked as valid
 					$branchNode.find('.invalid-required, .invalid-constraint').find('input, select, textarea').each(function(){
 						parent.setValid($(this));
 					});
+				}
+				else{
+					$branchNode.removeClass('pre-init');
 				}
 
 				if (type == 'label'){
@@ -1870,13 +1875,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param {string=} changedNodeNames - [type/description]
 	 */
 	FormHTML.prototype.calcUpdate = function(changedNodeNames){
-		var i, name, expr, dataType, result, constraint, namesArr, valid, cleverSelector;
+		var i, name, expr, dataType, relevant, relevantExpr, result, constraint, namesArr, valid, cleverSelector;
 		
 		//console.log('updating calculated items with expressions that contain: '+changedNodeNames);
 		namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 		cleverSelector = (namesArr.length > 0) ? [] : ['input[data-calculate]'];
 		for (i=0 ; i<namesArr.length ; i++){
-			cleverSelector.push('input[data-calculate*="'+namesArr[i]+'"]');
+			cleverSelector.push('input[data-calculate*="'+namesArr[i]+'"], input[data-relevant*="'+namesArr[i]+'"]');
 		}
 			
 		$form.find('#jr-calculated-items').find(cleverSelector.join()).each(function(){
@@ -1884,10 +1889,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			expr = $(this).attr('data-calculate');
 			dataType = $(this).attr('data-type-xml');
 			constraint = $(this).attr('data-constraint'); //obsolete?
+			relevantExpr = $(this).attr('data-relevant');
+			relevant = (relevantExpr) ? data.evaluate(relevantExpr, 'boolean', name) : true;
 			
-			//var p = new Profiler('calculate evaluation');
-			result = data.evaluate(expr, 'string', name, null); //not sure if using 'string' is always correct
-			//p.report();
+			//not sure if using 'string' is always correct
+			result = (relevant) ? data.evaluate(expr, 'string', name, null) : ''; 
 			
 			//console.debug('evaluated calculation: '+expr+' with result: '+result);
 			valid = data.node(name, null).setVal(result, constraint, dataType);
@@ -2574,7 +2580,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		/**
 		 * clone a repeat group/node
 		 * @param   {jQuery} $node node to clone
-		 * @param 	{boolean=} animate whether to anim@param 	{boolean?} animate whether to animate the cloningate the cloning
+		 * @param 	{boolean=} animate whether to animate the cloning
 		 * @return  {boolean}       [description]
 		 */
 		clone : function($node, animate){
@@ -2602,10 +2608,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$clone.insertAfter($node)
 				.parent('.jr-group').numberRepeats();
 
-			$clone.hide().clearInputs('').show(duration, function(){
-				//re-initiate widgets in clone
-				that.formO.widgets.init($clone);
-			});
+			//if not done asynchronously, this code causes a style undefined exception in Jasmine unit tests with jQuery 1.9 and 2.0
+			setTimeout(function(){
+				$clone.hide().clearInputs('').show(duration, function(){
+					//re-initiate widgets in clone
+					that.formO.widgets.init($clone);
+				});
+			}, 0);
 
 			//note: in http://formhub.org/formhub_u/forms/hh_polio_survey_cloned/form.xml a parent group of a repeat
 			//has the same ref attribute as the nodeset attribute of the repeat. This would cause a problem determining 

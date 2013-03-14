@@ -2602,12 +2602,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$clone.insertAfter($node)
 				.parent('.jr-group').numberRepeats();
 
-			//this code causes an exception in Jasmine unit tests with jQuery 1.9 and 2.0
-			//Maybe because the form is not added to the DOM?
-			$clone.hide().clearInputs('').show(duration, function(){
-				//re-initiate widgets in clone
-				that.formO.widgets.init($clone);
-			});
+			//if not done asynchronously, this code causes a style undefined exception in Jasmine unit tests with jQuery 1.9 and 2.0
+			setTimeout(function(){
+				$clone.hide().clearInputs('').show(duration, function(){
+					//re-initiate widgets in clone
+					that.formO.widgets.init($clone);
+				});
+			}, 0);
 
 			//note: in http://formhub.org/formhub_u/forms/hh_polio_survey_cloned/form.xml a parent group of a repeat
 			//has the same ref attribute as the nodeset attribute of the repeat. This would cause a problem determining 

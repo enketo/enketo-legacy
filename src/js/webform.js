@@ -28,7 +28,7 @@ $(document).ready(function() {
 	var message, choices, loadErrors;
 
 	form = new Form('form.jr:eq(0)', jrDataStr);
-	//fileManager = new FileManager();
+	fileManager = new FileManager();
 	connection = new Connection();
 
 	if (!store.isSupported()){

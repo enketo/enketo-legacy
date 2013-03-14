@@ -25,7 +25,7 @@ var /**@type {FileManager}*/fileManager;
 //tight coupling with Form and Storage class, but loose coupling with GUI
 $(document).ready(function() {
 	'use strict';
-	var message, choices, loadErrors;
+	var message, choices, loadErrors, trySubmission;
 
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	fileManager = new FileManager();
@@ -71,6 +71,10 @@ $(document).ready(function() {
 	$('form.jr').trigger('save', JSON.stringify(store.getRecordList()));
 
 	window.setInterval(function(){
+		trySubmission();
+	}, 30*1000);
+
+	trySubmission = function(){
 		//TODO: add second parameter to getSurveyDataArr() to
 		//getCurrentRecordName() to prevent currenty open record from being submitted
 		//connection.uploadRecords(store.getSurveyDataArr(true));
@@ -89,5 +93,5 @@ $(document).ready(function() {
 				}
 			);
 		}
-	}, 30*1000);
+	};
 });

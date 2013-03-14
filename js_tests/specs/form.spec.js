@@ -768,6 +768,14 @@ describe('Required field validation', function(){
 	});
 });
 
+describe('Readonly items', function(){
+	it('preserve their default value', function(){
+		var form = loadForm('readonly.xml');
+		form.init();
+		expect(form.getFormO().$.find('[name="/readonly/a"] .note-value').text()).toEqual('martijn');
+	});
+});
+
 describe('Itemset functionality', function(){
 	var form;
 

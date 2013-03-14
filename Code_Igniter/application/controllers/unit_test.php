@@ -105,7 +105,8 @@ class Unit_test extends CI_Controller {
 			'cascading_mixture_itext_noitext.xml', 
 			'new_cascading_selections.xml',
 			'nested_repeats.xml',
-			'calcs.xml'
+			'calcs.xml',
+			'readonly.xml'
 		);
 		$xml_forms_path = '../devinfo/Forms/';
 		$save_result_path = '../js_tests/mocks/transforms.mock.js';

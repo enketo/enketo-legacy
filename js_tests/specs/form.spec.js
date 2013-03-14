@@ -694,6 +694,30 @@ describe('branching functionality', function(){
 			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().attr('disabled')).toEqual(undefined);
 
 	});
+
+	describe('when used with calculated items', function(){
+		form = loadForm('calcs.xml');
+		form.init();
+		var $node = form.getFormO().$.find('[name="/calcs/cond1"]');
+		var dataO = form.getDataO();
+
+		it ('evaluates a calculated item only when it becomes relevant', function(){
+			//node without relevant attribute:
+			expect(dataO.node('/calcs/calc2').getVal()[0]).toEqual('12');
+			//node that is irrelevant
+			expect(dataO.node('/calcs/calc1').getVal()[0]).toEqual('');
+			$node.val('yes').trigger('change');
+			//node that has become relevant
+			expect(dataO.node('/calcs/calc1').getVal()[0]).toEqual('3');
+		});
+
+		it ('empties an already calculated item once it becomes irrelevant', function(){
+			$node.val('yes').trigger('change');
+			expect(dataO.node('/calcs/calc1').getVal()[0]).toEqual('3');
+			$node.val('no').trigger('change');
+			expect(dataO.node('/calcs/calc1').getVal()[0]).toEqual('');
+		});
+	});
 });
 
 describe('Required field validation', function(){

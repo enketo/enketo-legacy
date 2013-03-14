@@ -11,7 +11,7 @@
 			( !empty($title_component) ? 'enketo - '.$title_component : 'enketo' ); 
 		?></title>
 		
-		<link rel="icon" type="image/png" href="/images/favicon.png">
+		<link rel="shortcut icon" type="image/png" href="/images/icon_Eblack_rowo_48x48x32.png">
 		
 		<meta charset="utf-8" />
 		<meta name="author" content="Martijn van de Rijdt (Aid Web Solutions)" />

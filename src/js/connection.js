@@ -109,7 +109,7 @@ Connection.prototype.getOnlineStatus = function(){
 	//return navigator.onLine;
 	return this.currentOnlineStatus;
 };
-	
+
 Connection.prototype.setOnlineStatus = function(newStatus){
 	//var oldStatus = onlineStatus;
 	//onlineStatus = online;
@@ -128,38 +128,29 @@ Connection.prototype.setOnlineStatus = function(newStatus){
  * @return {boolean}           [description]
  */
 Connection.prototype.uploadRecords = function(record, force, callbacks){
-	var namesInQueue;
+	var namesInQueue, sameItemsInQueue;
 	force = (typeof force !== 'undefined') ? force : false;
-	//records = (typeof records === 'object' && !$.isArray(records)) ? [records] : records;
 	callbacks = (typeof callbacks === 'undefined') ? null : callbacks;
 
-	/*if (records.length === 0){
-		if (force) console.error('Nothing to upload but was forced to do this.');
+	if (!record.name || !record.instanceID || !record.formData || !record.batches || typeof record.batchIndex == 'undefined'){
 		return false;
 	}
-
-	if (!this.uploadOngoing){
-		this.uploadResult = {win:[], fail:[]};
-		this.uploadQueue = records;
-		this.forced = force;
-		console.debug('upload queue length: '+this.uploadQueue.length);
-		this.uploadOne(callbacks);
-	}
-	return true;
-	*/
-	if (!record.name || !record.instanceID || !record.formData){
-		console.error('record missing required properties', record);
-		return false;
-	}
-
-	//if ($.inArray(record.name, namesInQueue) === -1){ //THIS CHECK DOESN"T WORK I THINK
-	if ($.grep(this.uploadQueue, function(item){return record.name === item.name; }).length === 0){
+	sameItemsInQueue = $.grep(this.uploadQueue, function(item){return record.name === item.name; });
+	if (sameItemsInQueue.length === 0){
+		record.force = force;
 		this.uploadQueue.push(record);
 		if (!this.uploadOngoing){
 			this.uploadResult = {win:[], fail:[]};
-			this.forced = force; //TODO ADD FORCE AND CALLBACKS TO EACH RECORD??
+			this.uploadBatchesResult = {};
+			this.forced = force; //TODO ADD CALLBACKS TO EACH RECORD??
 			this.uploadOne(callbacks);
 		}
+	}
+	//override force parameter
+	//this caters to a situation where the record is already in a queue through automatic uploads, 
+	//when the user orders a forced upload
+	else{
+		sameItemsInQueue[0] = force;
 	}
 	return true;
 };
@@ -175,7 +166,14 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 	callbacks = (typeof callbacks === 'undefined' || !callbacks) ? {
 		complete: function(jqXHR, response){
 			$(document).trigger('submissioncomplete');
-			that.processOpenRosaResponse(jqXHR.status, record.name, record.instanceID, last);
+			that.processOpenRosaResponse(jqXHR.status, 
+				props = {
+					name: record.name,
+					instanceID: record.instanceID,
+					batches: record.batches,
+					batchIndex: record.batchIndex,
+					forced: record.forced
+				});
 			/**
 			  * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
 			  * as it duplicates 1 entry and omits the other but returns 201 for both...
@@ -196,14 +194,15 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 
 	if (this.uploadQueue.length > 0){
 		record = this.uploadQueue.pop();
-		if (this.getOnlineStatus() === false){
-			this.processOpenRosaResponse(0, record.name, record.instanceID, true);
+		if (this.currentOnlineStatus === false){
+			this.processOpenRosaResponse(0, record);
 		}
 		else{
 			this.uploadOngoing = true;
 			content = record.formData;
 			content.append('Date', new Date().toUTCString());
-			last = (this.uploadQueue.length === 0) ? true : false;
+			console.debug('prepared to send: ', content);
+			//last = (this.uploadQueue.length === 0) ? true : false;
 			this.setOnlineStatus(null);
 			$(document).trigger('submissionstart');
 			//console.debug('calbacks: ', callbacks );
@@ -215,6 +214,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 				processData: false,
 				//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
 				timeout: 60*1000,
+				//beforeSend: function(){return false;},
 				complete: function(jqXHR, response){
 					that.uploadOngoing = false;
 					callbacks.complete(jqXHR, response);
@@ -227,8 +227,13 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 };
 
 //TODO: move this outside this class?
-Connection.prototype.processOpenRosaResponse = function(status, name, instanceID, last){
-	var i, waswere, namesStr,
+/**
+ * processes the OpenRosa response
+ * @param  {number} status [description]
+ * @param  {{name:string, instanceID:string, batches:number, batchIndex:number, forced:boolean}} props  record properties
+ */
+Connection.prototype.processOpenRosaResponse = function(status, props){
+	var i, waswere, namesStr, batchText, partial,
 		msg = '',
 		names=[],
 		contactSupport = 'Contact '+settings['supportEmail']+' please.',
@@ -240,7 +245,7 @@ Connection.prototype.processOpenRosaResponse = function(status, name, instanceID
 				"Uploading of data failed (maybe offline) and will be tried again later." },
 			200: {success:false, msg: "Data server did not accept data. "+contactSupport},
 			201: {success:true, msg: ""},
-			202: {success:true, msg: name+" may have had errors. "+contactAdmin},
+			202: {success:true, msg: ""},
 			'2xx': {success:false, msg: "Unknown error occurred when submitting data. "+contactSupport},
 			400: {success:false, msg: "Data server did not accept data. "+contactAdmin},
 			403: {success:false, msg: "You are not allowed to post data to this data server. "+contactAdmin},
@@ -252,41 +257,57 @@ Connection.prototype.processOpenRosaResponse = function(status, name, instanceID
 			'5xx':{success:false, msg: serverDown}
 		};
 
-	console.debug('submission results for: '+name+', instanceID: '+instanceID+' => status: '+status);
+	console.debug('submission results for: '+props.name+', instanceID: '+props.instanceID+' => status: '+status);
+
+	batchText = (props.batch > 1) ? ' (batch #'+props.batchIndex+' out of '+props.batches+')' : '';
 
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
-			$(document).trigger('submissionsuccess', [name, instanceID]);
-			this.uploadResult.win.push([name, statusMap[status].msg]);
+			if (props.batches > 1) {
+				if (typeof this.uploadBatchesResult[props.instanceID] == 'undefined'){
+					this.uploadBatchesResult[props.instanceID] = [];
+				}
+				this.uploadBatchesResult[props.instanceID].push(props.batchIndex);
+				for (i = 0 ; i < props.batches ; i++){
+					if ($.inArray(i, this.uploadBatchesResult[props.instanceID]) === -1){
+						partial = true;
+						console.log('record was partially submitted successfully');
+					}
+				}
+			}
+			if (!partial){
+				$(document).trigger('submissionsuccess', [props.name, props.instanceID]);
+			}
+			this.uploadResult.win.push([props.name+batchText, statusMap[status].msg]);
 		}
 		else if (statusMap[status].success === false){
-			this.uploadResult.fail.push([name, statusMap[status].msg]);
+			this.uploadResult.fail.push([props.name+batchText, statusMap[status].msg]);
 		}
 	}
 	//unforeseen statuscodes
 	else if (status > 500){
 		console.error ('Error during uploading, received unexpected statuscode: '+status);
-		this.uploadResult.fail.push([name, statusMap['5xx'].msg]);
+		this.uploadResult.fail.push([props.name+batchText, statusMap['5xx'].msg]);
 	}
 	else if (status > 400){
 		console.error ('Error during uploading, received unexpected statuscode: '+status);
-		this.uploadResult.fail.push([name, statusMap['4xx'].msg]);
+		this.uploadResult.fail.push([props.name+batchText, statusMap['4xx'].msg]);
 	}
 	else if (status > 200){
 		console.error ('Error during uploading, received unexpected statuscode: '+status);
-		this.uploadResult.fail.push([name, statusMap['2xx'].msg]);
+		this.uploadResult.fail.push([props.name+batchText, statusMap['2xx'].msg]);
 	}
 
-	if (last !== true){
+	if (this.uploadQueue.length > 0){
 		return;
 	}
 
-	console.debug('forced: '+this.forced+' online: '+this.currentOnlineStatus, this.uploadResult);
+	console.debug('online: '+this.currentOnlineStatus, this.uploadResult);
 
 	if (this.uploadResult.win.length > 0){
 		for (i = 0 ; i<this.uploadResult.win.length ; i++){
 			names.push(this.uploadResult.win[i][0]);
-			msg = (typeof this.uploadResult.win[i][2] !== 'undefined') ? msg + (this.uploadResult.win[i][1])+' ' : '';
+			msg = (typeof this.uploadResult.win[i][1] !== 'undefined') ? msg + (this.uploadResult.win[i][1])+' ' : '';
 		}
 		waswere = (i>1) ? ' were' : ' was';
 		namesStr = names.join(', ');

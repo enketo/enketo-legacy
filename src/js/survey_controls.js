@@ -331,7 +331,9 @@ function submitEditedForm() {
  * @param	{{success: Function, error: Function}} callbacks
  */
 function prepareFormDataArray(record, callbacks){
-	var i, j, k, formData, dataO, instanceID, $fileNodes, files, recordPrepped;
+	var i, j, k, l, formData, formDataArr, dataO, instanceID, $fileNodes, files, recordPrepped,
+		sizes = [],
+		batches = [];
 
 	dataO = form.Data(record.data);
 	instanceID = dataO.getInstanceID();
@@ -354,11 +356,20 @@ function prepareFormDataArray(record, callbacks){
 			{
 				success: function(files){
 					for (k = 0 ; k < files.length ; k++){
-						formData.append(files[k].nodeName, files[k].file);
+						sizes.push(files[k].file.size);
+						//formData.append(files[k].nodeName, files[k].file);
 					}
-					recordPrepped = { name: record.name, instanceID: instanceID, formData: formData };
-					console.log('returning record with formdata : ', recordPrepped);
-					callbacks.success(recordPrepped);
+					batches = divideIntoBatches(sizes);
+					console.debug('splitting record into '+batches.length+' batches to reduce submission size');
+					for (k = 0 ; k < batches.length ; k++){
+						recordPrepped = { name: record.name, instanceID: instanceID, formData: formData, batches: batches.length, batchIndex: k };
+						for (l = 0 ; l<batches[k].length ; l++){
+							fileIndex = batches[k][l];
+							recordPrepped.formData.append(files[fileIndex].nodeName, files[fileIndex].file);
+						}
+						console.log('returning record with formdata : ', recordPrepped);
+						callbacks.success(recordPrepped);
+					}
 				},
 				error: function(e){
 					console.error('Error occured when trying to retrieve files from local filesystem', e);

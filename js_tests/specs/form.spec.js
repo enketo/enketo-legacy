@@ -1,6 +1,13 @@
-loadForm = function(filename, editStr){
+var loadForm = function(filename, editStr){
 	var strings = mockForms1[filename];
 	return new Form(strings.html_form, strings.xml_model, editStr);
+};
+
+var getFormDataO = function(filename){
+	//$('body').append('<form></form>');
+	var form = new Form('<form></form>', mockForms1[filename].xml_model);
+	form.init();
+	return form.getDataO();
 };
 
 describe("Data node getter", function () {
@@ -14,8 +21,8 @@ describe("Data node getter", function () {
 			[null, null, {noTemplate:true}, 20],
 			[null, null, {noTemplate:false}, 22],
 			[null, null, {onlyTemplate:true}, 1],
-			[null, null, {noEmpty:true}, 9],
-			[null, null, {noEmpty:true, noTemplate:false}, 10],
+			[null, null, {noEmpty:true}, 10],
+			[null, null, {noEmpty:true, noTemplate:false}, 11],
 			["/thedata/nodeA", null, null, 1],
 			["/thedata/nodeA", 1   , null, 0],
 			["/thedata/nodeA", null, {noEmpty:true}, 0], //"int"
@@ -35,9 +42,8 @@ describe("Data node getter", function () {
 			["/thedata/repeatGroup/nodeC", null, {noTemplate:true}, 3],
 			["/thedata/repeatGroup/nodeC", null, {noTemplate:false}, 4]
 		],
-		form = new Form("", ""),
-		data = form.Data(dataStr1);
-	
+		data = getFormDataO('thedata.xml');//form.Data(dataStr1);
+
 	function test(node){
 		it("obtains nodes (selector: "+node.selector+", index: "+node.index+", filter: "+JSON.stringify(node.filter)+")", function() {
 			expect(data.node(node.selector, node.index, node.filter).get().length).toEqual(node.result);
@@ -49,8 +55,8 @@ describe("Data node getter", function () {
 });
 
 describe('Date node (&) value getter', function(){
-	var form = new Form('',''),
-		data = form.Data(dataStr1);
+	var //form = new Form('',''),
+		data = getFormDataO('thedata.xml');//dataStr1);
 
 	it('returns an array of one node value', function(){
 		expect(data.node("/thedata/nodeB").getVal()).toEqual(['b']);
@@ -71,7 +77,6 @@ describe('Date node (&) value getter', function(){
 
 describe('Data node XML data type conversion & validation', function(){
 	var i, data,
-		form = new Form("", ""),
 		t =	[
 				["/thedata/nodeA", null, null, 'val1', null, true],
 				["/thedata/nodeA", null, null, 'val3', 'somewrongtype', true], //default type is string
@@ -88,7 +93,7 @@ describe('Data node XML data type conversion & validation', function(){
 				["/thedata/nodeA", 0   , null, 'val12', 'string', true],
 				["/thedata/nodeA", 0   , null, '14', 'string', true],
 				["/thedata/nodeA", 0   , null, 1, 'string', true],
-				
+
 				["/thedata/nodeA", null, null, 'val11', 'decimal', false],
 
 				["/thedata/nodeA", null, null, 'val4', 'int', false],
@@ -99,7 +104,7 @@ describe('Data node XML data type conversion & validation', function(){
 				["/thedata/nodeA", null, null, '2012-01-01', 'date', true],
 				["/thedata/nodeA", null, null, '2012-12-32', 'date', false],
 				//["/thedata/nodeA", null, null, 324, 'date', true], //fails in phantomjs
-				
+
 				["/thedata/nodeA", null, null, 'val5565ghgyuyua', 'datetime', false], //Chrome turns val10 into a valid date..
 				["/thedata/nodeA", null, null, '2012-01-01T00:00:00-06', 'datetime', true],
 				["/thedata/nodeA", null, null, '2012-12-32T00:00:00-06', 'datetime', false],
@@ -108,7 +113,7 @@ describe('Data node XML data type conversion & validation', function(){
 				["/thedata/nodeA", null, null, '2012-12-31T23:59:59Z', 'datetime', true],
 				["/thedata/nodeA", null, null, '2012-01-01T30:00:00-06', 'datetime', false],
 				//["/thedata/nodeA", null, null, '2013-05-31T07:00-02', 'datetime', true],fails in phantomJSs
-				
+
 				["/thedata/nodeA", null, null, 'a', 'time', false],
 				["/thedata/nodeA", null, null, 'aa:bb', 'time', false],
 				["/thedata/nodeA", null, null, '0:0', 'time', true],
@@ -142,11 +147,10 @@ describe('Data node XML data type conversion & validation', function(){
 
 				//				//TO DO binary (?)
 			];
-		form.Form('<form></form>');
 
 	function test(n){
 		it("converts and validates xml-type "+n.type+" with value: "+n.value, function(){
-			data = form.Data(dataStr1);
+			data = getFormDataO('thedata.xml');//dataStr1);
 			expect(data.node(n.selector, n.index, n.filter).setVal(n.value, null, n.type)).toEqual(n.result);
 		});
 	}
@@ -157,7 +161,7 @@ describe('Data node XML data type conversion & validation', function(){
 
 	it('sets a non-empty value to empty', function(){
 		var node = data.node('/thedata/nodeA', null, null);
-		data = form.Data(dataStr1);
+		data = getFormDataO('thedata.xml');//dataStr1);
 		node.setVal('value', null, 'string');
 		expect(node.setVal('')).toBe(true);
 	});
@@ -181,11 +185,11 @@ describe('Data node XML data type conversion & validation', function(){
 
 describe("Data node cloner", function(){
 	it("has cloned a data node", function(){
-		var form = new Form('', ''),
-			data = form.Data(dataStr1),
+		var //form = new Form('', ''),
+			data = getFormDataO('thedata.xml'),//dataStr1),
 			node = data.node("/thedata/nodeA"),
 			$precedingTarget = data.node("/thedata/repeatGroup/nodeC", 0).get();
-		form.Form('form');
+		//form.Form('form');
 
 		expect(data.node('/thedata/repeatGroup/nodeA', 0).get().length).toEqual(0);
 		node.clone($precedingTarget);
@@ -195,10 +199,10 @@ describe("Data node cloner", function(){
 
 describe("Data node remover", function(){
 	it("has removed a data node", function(){
-		var form = new Form('', ''),
-			data = form.Data(dataStr1),
+		var //form = new Form('', ''),
+			data = getFormDataO('thedata.xml'),//dataStr1),
 			node = data.node("/thedata/nodeA");
-		form.Form('form');
+		//form.Form('form');
 
 		expect(node.get().length).toEqual(1);
 		data.node("/thedata/nodeA").remove();
@@ -220,7 +224,7 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 			['weighted-checklist(3, 3, /thedata/somenodes/A, /thedata/someweights/w2)', 'boolean', null, 0, true],
 			['weighted-checklist(9, 9, /thedata/somenodes/*, /thedata/someweights/*)', 'boolean', null, 0, true]
 		],
-		form = new Form(formStr1, dataStr1),
+		form = loadForm('thedata.xml'),//new Form(formStr1, dataStr1),
 		data;
 	form.init();
 	data = form.getDataO();
@@ -238,7 +242,7 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 	// this tests the makeBugCompliant() workaround that injects a position into an absolute path
 	// for the issue described here: https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations
 	it("evaluates a repaired absolute XPath inside a repeat (makeBugCompliant())", function(){
-		form = new Form(formStr1, dataStr1);
+		form = loadForm('thedata.xml');//new Form(formStr1, dataStr1);
 		form.init();
 		expect(form.getDataO().evaluate("/thedata/repeatGroup/nodeC", "string", "/thedata/repeatGroup/nodeC", 2)).toEqual("c3");
 	});
@@ -248,7 +252,7 @@ describe("XPath Evaluator (see github.com/MartijnR/xpathjs_javarosa for comprehe
 describe('functionality to obtain string of the XML instance (DataXML.getStr() for storage or uploads)', function(){
 	var str1, str2, str3, str4, str5, str6, str7, str8, str9, str10, str11, str12,
 		formA = loadForm('new_cascading_selections.xml'),
-		formB = new Form(formStr1, dataStr1);
+		formB = loadForm('thedata.xml');//new Form(formStr1, dataStr1);
 	formA.init();
 	formB.init();
 	str1 = formA.getDataO().getStr();
@@ -318,9 +322,9 @@ describe("Output functionality ", function(){
 	// since the issue was resolved by updating outputs with a one millisecond delay (!).
 	// Nevertheless, these tests can be useful.
 	var	form = new Form(formStr2, dataStr2);
-	
+
 	form.init();
-	
+
 	it("tested upon initialization: node random__", function(){
 		expect(form.getFormO().$.find('[data-value="/random/random__"]').text().length).toEqual(17);
 	});
@@ -422,13 +426,13 @@ describe("Preload and MetaData functionality", function(){
 		['/widgets/patient', 'this one'],
 		['/widgets/user', 'John Doe'],
 		['/widgets/uid', 'John Doe'],
-		['/widgets/browser_name', 'fake'],
-		['/widgets/browser_version', 'xx'],
-		['/widgets/os_name', 'fake'],
-		['/widgets/os_version', 'xx'],
+		//['/widgets/browser_name', 'fake'],
+		//['/widgets/browser_version', 'xx'],
+		//['/widgets/os_name', 'fake'],
+		//['/widgets/os_version', 'xx'],
 		['/widgets/meta/instanceID', 'uuid:56c19c6c-08e6-490f-a783-e7f3db788ba8']
 	];
-	
+
 	for (i = 0 ; i<t.length ; i++){
 		testPreloadExistingValue({selector: t[i][0], result:t[i][1]});
 		testPreloadNonExistingValue({selector: t[i][0]});
@@ -441,7 +445,7 @@ describe("Loading instance values into html input fields functionality", functio
 	var form;
 
 	it('correctly populates input fields of non-repeat node names in the instance', function(){
-		form = new Form(formStr1, dataStr1);
+		form = loadForm('thedata.xml');//new Form(formStr1, dataStr1);
 		form.init();
 		expect(form.getFormO().$.find('[name="/thedata/nodeB"]').val()).toEqual('b');
 		expect(form.getFormO().$.find('[name="/thedata/repeatGroup/nodeC"]').eq(2).val()).toEqual('c3');
@@ -458,9 +462,9 @@ describe("Loading instance values into html input fields functionality", functio
 
 describe("Loading instance-to-edit functionality", function(){
 	var form, loadErrors;
-	
+
 	describe('when a deprecatedID node is not present in the form format', function(){
-		form = new Form(formStr1, dataStr1, dataEditStr1);
+		form = loadForm('thedata.xml', dataEditStr1);//new Form(formStr1, dataStr1, dataEditStr1);
 		form.init();
 
 		it ("adds a deprecatedID node", function(){
@@ -487,9 +491,9 @@ describe("Loading instance-to-edit functionality", function(){
 		});
 
 	});
-	
+
 	describe('when instanceID and deprecatedID nodes are already present in the form format', function(){
-		form = new Form(formStr1, dataEditStr1, dataEditStr1);
+		form = loadForm('thedata.xml', dataEditStr1);//new Form(formStr1, dataEditStr1, dataEditStr1);
 		form.init();
 
 		it ("does not NOT add another instanceID node", function(){
@@ -518,7 +522,7 @@ describe("Loading instance-to-edit functionality", function(){
 	describe('returns load errors upon initialization', function(){
 		it('when the instance-to-edit contains nodes that are not present in the default instance', function(){
 			var dataEditStr1a = dataEditStr1.replace(/thedata/g,'thedata_updated');
-			form = new Form(formStr1, dataStr1, dataEditStr1a);
+			form = loadForm('thedata.xml', dataEditStr1a);//new Form(formStr1, dataStr1, dataEditStr1a);
 			loadErrors = form.init();
 			expect(loadErrors.length).toEqual(10);
 		});
@@ -526,11 +530,11 @@ describe("Loading instance-to-edit functionality", function(){
 		it('when an instance-to-edit is provided with double instanceID nodes', function(){
 			var dataEditStr1a = dataEditStr1.replace('</thedata>', '<meta><instanceID>uuid:3b35ac780c10468d8be7d8c44f3b17df</instanceID></meta></thedata>');
 			//first check it does not return erors when single instanceID node is present
-			form = new Form(formStr1, dataStr1, dataEditStr1);
+			form = loadForm('thedata.xml', dataEditStr1);//new Form(formStr1, dataStr1, dataEditStr1);
 			loadErrors = form.init();
 			expect(loadErrors.length).toEqual(0);
 			//then with the incorrect instance
-			form = new Form(formStr1, dataStr1, dataEditStr1a);
+			form = loadForm('thedata.xml', dataEditStr1a);//new Form(formStr1, dataStr1, dataEditStr1a);
 			loadErrors = form.init();
 			expect(loadErrors.length).toEqual(1);
 			expect(loadErrors[0]).toEqual("Found duplicate meta node (instanceID)!");
@@ -546,7 +550,7 @@ describe('repeat functionality', function(){
 
 	describe('cloning', function(){
 		beforeEach(function() {
-			form = new Form(formStr1, dataStr1);
+			form = loadForm('thedata.xml');//new Form(formStr1, dataStr1);
 			form.init();
 		});
 
@@ -670,7 +674,7 @@ describe('branching functionality', function(){
 		//form = new Form(formStr7, dataStr7);
 		form = loadForm('issue208.xml');
 		form.init();
-	
+
 		form.getFormO().$.find(repeatSelector).eq(0).find('button.repeat').click();
 		expect(form.getFormO().$.find(repeatSelector).length).toEqual(2);
 		//check if initial state of 2nd question in 2nd repeat is disabled
@@ -689,6 +693,30 @@ describe('branching functionality', function(){
 		expect(form.getFormO().$.find(repeatSelector).eq(1)
 			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().attr('disabled')).toEqual(undefined);
 
+	});
+
+	describe('when used with calculated items', function(){
+		form = loadForm('calcs.xml');
+		form.init();
+		var $node = form.getFormO().$.find('[name="/calcs/cond1"]');
+		var dataO = form.getDataO();
+
+		it ('evaluates a calculated item only when it becomes relevant', function(){
+			//node without relevant attribute:
+			expect(dataO.node('/calcs/calc2').getVal()[0]).toEqual('12');
+			//node that is irrelevant
+			expect(dataO.node('/calcs/calc1').getVal()[0]).toEqual('');
+			$node.val('yes').trigger('change');
+			//node that has become relevant
+			expect(dataO.node('/calcs/calc1').getVal()[0]).toEqual('3');
+		});
+
+		it ('empties an already calculated item once it becomes irrelevant', function(){
+			$node.val('yes').trigger('change');
+			expect(dataO.node('/calcs/calc1').getVal()[0]).toEqual('3');
+			$node.val('no').trigger('change');
+			expect(dataO.node('/calcs/calc1').getVal()[0]).toEqual('');
+		});
 	});
 });
 
@@ -729,7 +757,7 @@ describe('Required field validation', function(){
 	});
 
 	it ("invalidates an enabled and required textarea that contains only a newline character or other whitespace characters", function(){
-		form = new Form(formStr1, dataStr1);
+		form = loadForm('thedata.xml');//new Form(formStr1, dataStr1);
 		form.init();
 		var $textarea = form.getFormO().$.find('[name="/thedata/nodeF"]');
 		$textarea.val('\n').trigger('change').trigger('validate');
@@ -737,6 +765,14 @@ describe('Required field validation', function(){
 		expect($textarea.parent('label').hasClass('invalid-required')).toBe(true);
 		$textarea.val('  \n  \n\r \t ').trigger('change').trigger('validate');
 		expect($textarea.parent('label').hasClass('invalid-required')).toBe(true);
+	});
+});
+
+describe('Readonly items', function(){
+	it('preserve their default value', function(){
+		var form = loadForm('readonly.xml');
+		form.init();
+		expect(form.getFormO().$.find('[name="/readonly/a"] .note-value').text()).toEqual('martijn');
 	});
 });
 
@@ -761,7 +797,7 @@ describe('Itemset functionality', function(){
 			sel1Select = 'select[name="/new_cascading_selections/group2/country2"]',
 			sel2Select = 'select[name="/new_cascading_selections/group2/city2"]',
 			sel3Select = 'select[name="/new_cascading_selections/group2/neighborhood2"]';
-		
+
 		beforeEach(function() {
 			jQuery.fx.off = true;//turn jQuery animations off
 			form = loadForm('new_cascading_selections.xml');
@@ -769,7 +805,7 @@ describe('Itemset functionality', function(){
 
 			formHTMLO = form.getFormO();
 			spyOn(formHTMLO, 'itemsetUpdate').andCallThrough();
-			
+
 			$items1Radio = function(){return form.getFormO().$.find(sel1Radio);};
 			$items2Radio = function(){return form.getFormO().$.find(sel2Radio);};
 			$items3Radio = function(){return form.getFormO().$.find(sel3Radio);};
@@ -784,15 +820,15 @@ describe('Itemset functionality', function(){
 			expect($items2Radio().length).toEqual(0);
 			expect($items3Radio().length).toEqual(0);
 		});
-		
+
 		it('level 2: with <input type="radio"> elements has the expected amount of options', function(){
 			//select first option in cascade
 			runs(function(){
-				form.getFormO().$.find(sel1Radio+'[value="nl"]').attr('checked', true).trigger('change');
+				form.getFormO().$.find(sel1Radio+'[value="nl"]').prop('checked', true).trigger('change');
 			});
-			
+
 			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'country';}, 'itemsetUpdate not called!', 1000);
-			
+
 			runs(function(){
 				expect($items1Radio().length).toEqual(2);
 				expect($items2Radio().length).toEqual(3);
@@ -808,7 +844,7 @@ describe('Itemset functionality', function(){
 			});
 
 			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'country';}, 'itemsetUpdate not called!', 1000);
-			
+
 			//select second option
 			runs(function(){
 				form.getFormO().$.find(sel2Radio+'[value="ams"]').attr('checked', true).trigger('change');
@@ -851,9 +887,9 @@ describe('Itemset functionality', function(){
 			runs(function(){
 				form.getFormO().$.find(sel1Select).val("nl").trigger('change');
 			});
-			
+
 			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'country2';}, 'itemsetUpdate not called!', 1000);
-			
+
 			runs(function(){
 				expect($items1Select().length).toEqual(2);
 				expect($items2Select().length).toEqual(3);
@@ -868,9 +904,9 @@ describe('Itemset functionality', function(){
 			runs(function(){
 				form.getFormO().$.find(sel1Select).val("nl").trigger('change');
 			});
-			
+
 			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'country2';}, 'itemsetUpdate not called!', 1000);
-			
+
 			//select second option
 			runs(function(){
 				form.getFormO().$.find(sel2Select).val("ams").trigger('change');
@@ -908,7 +944,7 @@ describe('Itemset functionality', function(){
 			sel1Radio = ':not(.itemset-template) > input:radio[data-name="/form/state"]',
 			sel2Radio = ':not(.itemset-template) > input:radio[data-name="/form/county"]',
 			sel3Radio = ':not(.itemset-template) > input:radio[data-name="/form/city"]';
-		
+
 		beforeEach(function() {
 			jQuery.fx.off = true;//turn jQuery animations off
 			form = loadForm('cascading_mixture_itext_noitext.xml');
@@ -916,7 +952,6 @@ describe('Itemset functionality', function(){
 
 			formHTMLO = form.getFormO();
 			spyOn(formHTMLO, 'itemsetUpdate').andCallThrough();
-			
 
 			$items1Radio = function(){return form.getFormO().$.find(sel1Radio);};
 			$items2Radio = function(){return form.getFormO().$.find(sel2Radio);};

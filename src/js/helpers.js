@@ -32,16 +32,17 @@ function Profiler(taskName){
 
 /**
  * splits an array of file sizes into batches (for submission) based on a limit
- * @param  {Array.<number>}	sizes	array of file sizes
- * @param  {number=}		limit	limit in byte size of one chunk (can be exceeded for a single item)
- * @return {Array.<Array<number>>}	array of arrays with index, each secondary array of indices represents a batch
+ * @param  {Array.<number>}	fileSizes	array of file sizes
+ * @param  {number}		limit	limit in byte size of one chunk (can be exceeded for a single item)
+ * @return {Array.<Array.<number>>}	array of arrays with index, each secondary array of indices represents a batch
  */
-function divideIntoBatches(sizes, limit){
+function divideIntoBatches(fileSizes, limit){
 	var i, j, batch, batchSize,
+		sizes = [],
 		batches = [];
-	limit = limit || 5 * 1024 * 1024;
-	for (i=0; i<sizes.length ; i++){
-        sizes[i] = {'index': i, 'size': sizes[i]};
+	//limit = limit || 5 * 1024 * 1024;
+	for (i=0; i<fileSizes.length ; i++){
+        sizes.push({'index': i, 'size': fileSizes[i]});
     }
 	while( sizes.length > 0){
 		batch = [sizes[0].index];

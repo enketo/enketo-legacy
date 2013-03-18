@@ -37,7 +37,7 @@ function Connection(){
 	this.GETSURVEYURL_URL = '/launch/get_survey_url';
 	//this.SUBMISSION_TRIES = 2;
 	this.currentOnlineStatus = null;
-	this.uploadOngoing = false;
+	this.uploadOngoingID = null;
 	this.uploadQueue = [];
 	this.oRosaHelper = new this.ORosaHelper(this);
 
@@ -136,10 +136,10 @@ Connection.prototype.uploadRecords = function(record, force, callbacks){
 		return false;
 	}
 	sameItemsInQueue = $.grep(this.uploadQueue, function(item){return record.name === item.name; });
-	if (sameItemsInQueue.length === 0){
+	if (sameItemsInQueue.length === 0 && this.uploadOngoingID !== record.instanceID){
 		record.force = force;
 		this.uploadQueue.push(record);
-		if (!this.uploadOngoing){
+		if (!this.uploadOngoingID){
 			this.uploadResult = {win:[], fail:[]};
 			this.uploadBatchesResult = {};
 			this.forced = force; //TODO ADD CALLBACKS TO EACH RECORD??
@@ -160,7 +160,7 @@ Connection.prototype.uploadRecords = function(record, force, callbacks){
  * @param  {Object.<string, Function>=} callbacks [description]
  */
 Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
-	var record, content, last,
+	var record, content, last, props,
 		that = this;
 
 	callbacks = (typeof callbacks === 'undefined' || !callbacks) ? {
@@ -198,7 +198,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 			this.processOpenRosaResponse(0, record);
 		}
 		else{
-			this.uploadOngoing = true;
+			this.uploadOngoingID = record.instanceID;
 			content = record.formData;
 			content.append('Date', new Date().toUTCString());
 			console.debug('prepared to send: ', content);
@@ -216,7 +216,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 				timeout: 60*1000,
 				//beforeSend: function(){return false;},
 				complete: function(jqXHR, response){
-					that.uploadOngoing = false;
+					that.uploadOngoingID = null;
 					callbacks.complete(jqXHR, response);
 				},
 				error: callbacks.error,
@@ -259,7 +259,7 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
 
 	console.debug('submission results for: '+props.name+', instanceID: '+props.instanceID+' => status: '+status);
 
-	batchText = (props.batch > 1) ? ' (batch #'+props.batchIndex+' out of '+props.batches+')' : '';
+	batchText = (props.batches > 1) ? ' (batch #'+props.batchIndex+' out of '+props.batches+')' : '';
 
 	if (typeof statusMap[status] !== 'undefined'){
 		if ( statusMap[status].success === true){
@@ -281,7 +281,7 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
 			this.uploadResult.win.push([props.name+batchText, statusMap[status].msg]);
 		}
 		else if (statusMap[status].success === false){
-			this.uploadResult.fail.push([props.name+batchText, statusMap[status].msg]);
+			this.uploadResult.fail.push([props.name+batchText, statusMap[status].msg, props.forced]);
 		}
 	}
 	//unforeseen statuscodes
@@ -316,12 +316,16 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
 	}
 
 	if (this.uploadResult.fail.length > 0){
+		msg = '';
 		//console.debug('upload failed');
-		if (this.forced === true && this.currentOnlineStatus !== false){
+		if (this.currentOnlineStatus !== false){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
-				msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
+				//if the record upload was forced
+				if(this.uploadResult.fail[i][2]){
+					msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
+				}
 			}
-			gui.alert(msg, 'Failed data submission');
+			if (msg) gui.alert(msg, 'Failed data submission');
 		}
 		else{
 			// not sure if there should be a notification if forms fail automatic submission
@@ -329,7 +333,33 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
 		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
 		this.setOnlineStatus(false);
 	}
-	//this.uploadOngoing = false;
+};
+
+/**
+ * returns the value of the X-OpenRosa-Content-Length header return by the OpenRosa server for this form
+ * if request fails, returns a default value. Won't execute again if request was successful.
+ * 
+ * @return {number} [description]
+ */
+Connection.prototype.maxSubmissionSize = function(){
+	var maxSize,
+		that = this;
+	if (typeof this.maxSize == 'undefined' && !this.maxSize){
+		$.ajax('/data/max_size', {
+			type: 'GET',
+			async: false,
+			timeout: 5*1000,
+			success: function(response){
+				maxSize = parseInt(response, 10);
+				that.maxSize = maxSize;
+			},
+			error: function(){
+				maxSize = 4999;
+			}
+		});
+		return maxSize;
+	}
+	return this.maxSize;
 };
 
 Connection.prototype.isValidURL = function(url){
@@ -395,7 +425,7 @@ Connection.prototype.getTransForm = function(serverURL, formId, formFile, formUR
 	formId = formId || null;
 	formURL = formURL || null;
 	formFile = formFile || new Blob();
-	
+
 	if (formFile.size === 0 && (!serverURL || !formId) && !formURL ){
 		callbacks.error(null, 'validationerror', 'No form file or URLs provided');
 		return;

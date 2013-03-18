@@ -331,7 +331,7 @@ function submitEditedForm() {
  * @param	{{success: Function, error: Function}} callbacks
  */
 function prepareFormDataArray(record, callbacks){
-	var i, j, k, l, formData, formDataArr, dataO, instanceID, $fileNodes, files, recordPrepped,
+	var i, j, k, l, formData, formDataArr, dataO, instanceID, $fileNodes, files, fileIndex, recordPrepped,
 		sizes = [],
 		batches = [];
 
@@ -359,7 +359,7 @@ function prepareFormDataArray(record, callbacks){
 						sizes.push(files[k].file.size);
 						//formData.append(files[k].nodeName, files[k].file);
 					}
-					batches = divideIntoBatches(sizes);
+					batches = divideIntoBatches(sizes, connection.maxSubmissionSize());
 					console.debug('splitting record into '+batches.length+' batches to reduce submission size');
 					for (k = 0 ; k < batches.length ; k++){
 						recordPrepped = { name: record.name, instanceID: instanceID, formData: formData, batches: batches.length, batchIndex: k };

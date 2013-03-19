@@ -1310,8 +1310,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				type = this.getInputType($inputNodes.eq(0)); 
 				
 				if ( type === 'file'){
-					console.error('Cannot set value of file input field (value: '+value+'). If trying to load '+
-						'this record for editing this file input field will remain unchanged.');
+					$inputNodes.eq(0).attr('data-loaded-file-name', value);
+					//console.error('Cannot set value of file input field (value: '+value+'). If trying to load '+
+					//	'this record for editing this file input field will remain unchanged.');
 					return false;
 				}
 
@@ -2283,10 +2284,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 								fileManager.deleteFile(prevFileName);
 							}
 
-							$input.siblings('.file-feedback, .file-preview').remove();
+							$input.siblings('.file-feedback, .file-preview, .file-loaded').remove();
 
 							console.debug('file: ', file);
-							if (file && file.size > 0){
+							if (file && file.size > 0 && file.size <= connection.maxSubmissionSize()){
+								console.debug('going to save it in filesystem');
 								fileManager.saveFile(
 									file,
 									{
@@ -2297,7 +2299,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 										error: function(e){
 											console.error('error: ',e);
 											$input.val('');
-											$input.after('<span class="file-feedback text-error">'+
+											$input.after('<div class="file-feedback text-error">'+
 													'Failed to save file</span>');
 										}
 									}
@@ -2306,11 +2308,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 							}
 							//clear instance value by letting it bubble up to normal change handler
 							else{
+								if (file.size > connection.maxSubmissionSize()){
+									$input.after('<div class="file-feedback text-error">'+
+										'File too large (max '+
+										(Math.round((connection.maxSubmissionSize() * 100 )/ (1024 * 1024)) / 100 )+
+										' Mb)</div>');
+								}
 								return true;
 							}
 						}).removeClass('ignore')
 							.removeAttr('disabled')
 							.siblings('.file-feedback').remove();
+						$fileInputs.after('<div class="text-info">'+
+							'File inputs are experimental. Use only for testing.');
 					},
 					error: function(){
 						$fileInputs.siblings('.file-feedback').remove();
@@ -2322,8 +2332,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 				$fileInputs.each(function(){
 					var $input = $(this),
-						fileName = ($input[0].files.length > 0) ? $input[0].files[0].name : '';
-					$input.attr('data-previous-file-name', fileName);
+						existingFileName = $input.attr('data-loaded-file-name');
+					if (existingFileName){
+						$input.after('<div class="file-loaded text-warning">This form was loaded with "'+
+							existingFileName+'". To preserve this file, do not change this input.</div>');
+					}
+						//fileName = ($input[0].files.length > 0) ? $input[0].files[0].name : '';
+					//is this required at all?
+					//$input.attr('data-previous-file-name', fileName);
 				}).parent().addClass('with-media clearfix');
 
 				fileManager.init(data.getInstanceID(), callbacks);

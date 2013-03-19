@@ -38,6 +38,8 @@ function Connection(){
 	//this.SUBMISSION_TRIES = 2;
 	this.currentOnlineStatus = null;
 	this.uploadOngoingID = null;
+	this.uploadOngoingBatchIndex = null;
+	this.uploadResult = {win:[], fail:[]};
 	this.uploadQueue = [];
 	this.oRosaHelper = new this.ORosaHelper(this);
 
@@ -78,19 +80,21 @@ Connection.prototype.checkOnlineStatus = function(){
 	//navigator.onLine is totally unreliable (returns incorrect trues) on Firefox, Chrome, Safari (on OS X 10.8),
 	//but I assume falses are correct
 	if (navigator.onLine){
-		$.ajax({
-			type:'GET',
-			url: this.CONNECTION_URL,
-			cache: false,
-			dataType: 'json',
-			timeout: 3000,
-			complete: function(response){
-				//important to check for the content of the no-cache response as it will
-				//start receiving the fallback page specified in the manifest!
-				online = typeof response.responseText !== 'undefined' && response.responseText === 'connected';
-				that.setOnlineStatus(online);
-			}
-		});
+		if (!this.uploadOngoingID){
+			$.ajax({
+				type:'GET',
+				url: this.CONNECTION_URL,
+				cache: false,
+				dataType: 'json',
+				timeout: 3000,
+				complete: function(response){
+					//important to check for the content of the no-cache response as it will
+					//start receiving the fallback page specified in the manifest!
+					online = typeof response.responseText !== 'undefined' && response.responseText === 'connected';
+					that.setOnlineStatus(online);
+				}
+			});
+		}
 	}
 	else {
 		this.setOnlineStatus(false);
@@ -122,35 +126,41 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 
 /**
  * [uploadRecords description]
- * @param  {{name: string, instanceID: string, formData: FormData}} record   [description]
- * @param  {boolean=} force     [description]
- * @param  {Object.<string, Function>=} callbacks only used for testing
+ * @param  {{name: string, instanceID: string, formData: FormData}}	record   [description]
+ * @param  {boolean=}													force     [description]
+ * @param  {Object.<string, Function>=}								callbacks only used for testing
  * @return {boolean}           [description]
  */
 Connection.prototype.uploadRecords = function(record, force, callbacks){
-	var namesInQueue, sameItemsInQueue;
-	force = (typeof force !== 'undefined') ? force : false;
-	callbacks = (typeof callbacks === 'undefined') ? null : callbacks;
+	var sameItemInQueue, sameItemSubmitted, sameItemOngoing;
+	force = force || false;
+	callbacks = callbacks || null;
 
 	if (!record.name || !record.instanceID || !record.formData || !record.batches || typeof record.batchIndex == 'undefined'){
 		return false;
 	}
-	sameItemsInQueue = $.grep(this.uploadQueue, function(item){return record.name === item.name; });
-	if (sameItemsInQueue.length === 0 && this.uploadOngoingID !== record.instanceID){
-		record.force = force;
+	sameItemInQueue = $.grep(this.uploadQueue, function(item){
+		return (record.instanceID === item.instanceID && record.batchIndex === item.batchIndex);
+	});
+	sameItemSubmitted = $.grep(this.uploadResult.win, function(item){
+		return (record.instanceID === item.instanceID && record.batchIndex === item.batchIndex);
+	});
+	sameItemOngoing = (this.uploadOngoingID === record.instanceID && this.uploadOngoingBatchIndex === record.batchIndex);
+	if (sameItemInQueue.length === 0 && sameItemSubmitted.length === 0 && !sameItemOngoing){
+		record.forced = force;
+		//TODO ADD CALLBACKS TO EACH RECORD??
 		this.uploadQueue.push(record);
 		if (!this.uploadOngoingID){
 			this.uploadResult = {win:[], fail:[]};
 			this.uploadBatchesResult = {};
-			this.forced = force; //TODO ADD CALLBACKS TO EACH RECORD??
 			this.uploadOne(callbacks);
 		}
 	}
-	//override force parameter
+	//override force property
 	//this caters to a situation where the record is already in a queue through automatic uploads, 
-	//when the user orders a forced upload
+	//but the user orders a forced upload
 	else{
-		sameItemsInQueue[0] = force;
+		sameItemInQueue.forced = force;
 	}
 	return true;
 };
@@ -199,6 +209,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 		}
 		else{
 			this.uploadOngoingID = record.instanceID;
+			this.uploadOngoingBatchIndex = record.batchIndex;
 			content = record.formData;
 			content.append('Date', new Date().toUTCString());
 			console.debug('prepared to send: ', content);
@@ -213,10 +224,11 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
 				contentType: false,
 				processData: false,
 				//TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
-				timeout: 60*1000,
+				timeout: 300*1000,
 				//beforeSend: function(){return false;},
 				complete: function(jqXHR, response){
 					that.uploadOngoingID = null;
+					that.uploadOngoingBatchIndex = null;
 					callbacks.complete(jqXHR, response);
 				},
 				error: callbacks.error,
@@ -233,7 +245,7 @@ Connection.prototype.uploadOne = function(callbacks){//dataXMLStr, name, last){
  * @param  {{name:string, instanceID:string, batches:number, batchIndex:number, forced:boolean}} props  record properties
  */
 Connection.prototype.processOpenRosaResponse = function(status, props){
-	var i, waswere, namesStr, batchText, partial,
+	var i, waswere, name, namesStr, batchText, partial,
 		msg = '',
 		names=[],
 		contactSupport = 'Contact '+settings['supportEmail']+' please.',
@@ -251,17 +263,19 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
 			403: {success:false, msg: "You are not allowed to post data to this data server. "+contactAdmin},
 			404: {success:false, msg: "Submission service on data server not found or not properly configured."},
 			'4xx': {success:false, msg: "Unknown submission problem on data server."},
-			413: {success:false, msg: "Data is too large. Please export the data and contact "+settings['supportEmail']+"."},
+			413: {success:false, msg: "Data is too large. Please contact "+settings['supportEmail']+"."},
 			500: {success:false, msg: serverDown},
 			503: {success:false, msg: serverDown},
 			'5xx':{success:false, msg: serverDown}
 		};
 
-	console.debug('submission results for: '+props.name+', instanceID: '+props.instanceID+' => status: '+status);
+	console.debug('submission results with status: '+status+' for ', props);
 
-	batchText = (props.batches > 1) ? ' (batch #'+props.batchIndex+' out of '+props.batches+')' : '';
-
+	batchText = (props.batches > 1) ? ' (batch #'+(props.batchIndex + 1)+' out of '+props.batches+')' : '';
+	props.batchText = batchText;
+	
 	if (typeof statusMap[status] !== 'undefined'){
+		props.msg = statusMap[status].msg;
 		if ( statusMap[status].success === true){
 			if (props.batches > 1) {
 				if (typeof this.uploadBatchesResult[props.instanceID] == 'undefined'){
@@ -271,31 +285,36 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
 				for (i = 0 ; i < props.batches ; i++){
 					if ($.inArray(i, this.uploadBatchesResult[props.instanceID]) === -1){
 						partial = true;
-						console.log('record was partially submitted successfully');
 					}
 				}
 			}
 			if (!partial){
 				$(document).trigger('submissionsuccess', [props.name, props.instanceID]);
 			}
-			this.uploadResult.win.push([props.name+batchText, statusMap[status].msg]);
+			else{
+				console.debug('not all batches for instanceID have been submitted, current queue:', this.uploadQueue);
+			}
+			this.uploadResult.win.push(props);
 		}
 		else if (statusMap[status].success === false){
-			this.uploadResult.fail.push([props.name+batchText, statusMap[status].msg, props.forced]);
+			this.uploadResult.fail.push(props);
 		}
 	}
 	//unforeseen statuscodes
 	else if (status > 500){
 		console.error ('Error during uploading, received unexpected statuscode: '+status);
-		this.uploadResult.fail.push([props.name+batchText, statusMap['5xx'].msg]);
+		props.msg = statusMap['5xx'].msg;
+		this.uploadResult.fail.push(props);
 	}
 	else if (status > 400){
 		console.error ('Error during uploading, received unexpected statuscode: '+status);
-		this.uploadResult.fail.push([props.name+batchText, statusMap['4xx'].msg]);
+		props.msg = statusMap['4xx'].msg;
+		this.uploadResult.fail.push(props);
 	}
 	else if (status > 200){
 		console.error ('Error during uploading, received unexpected statuscode: '+status);
-		this.uploadResult.fail.push([props.name+batchText, statusMap['2xx'].msg]);
+		props.msg = statusMap['2xx'].msg;
+		this.uploadResult.fail.push(props);
 	}
 
 	if (this.uploadQueue.length > 0){
@@ -306,10 +325,13 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
 
 	if (this.uploadResult.win.length > 0){
 		for (i = 0 ; i<this.uploadResult.win.length ; i++){
-			names.push(this.uploadResult.win[i][0]);
-			msg = (typeof this.uploadResult.win[i][1] !== 'undefined') ? msg + (this.uploadResult.win[i][1])+' ' : '';
+			name = this.uploadResult.win[i].name;
+			if ($.inArray(name, names) === -1) {
+				names.push(name);
+				msg = (typeof this.uploadResult.win[i].msg !== 'undefined') ? msg + (this.uploadResult.win[i].msg)+' ' : '';
+			}
 		}
-		waswere = (i>1) ? ' were' : ' was';
+		waswere = (names.length > 1) ? ' were' : ' was';
 		namesStr = names.join(', ');
 		gui.feedback(namesStr.substring(0, namesStr.length) + waswere +' successfully uploaded. '+msg);
 		this.setOnlineStatus(true);
@@ -321,14 +343,14 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
 		if (this.currentOnlineStatus !== false){
 			for (i = 0 ; i<this.uploadResult.fail.length ; i++){
 				//if the record upload was forced
-				if(this.uploadResult.fail[i][2]){
-					msg += this.uploadResult.fail[i][0] + ': ' + this.uploadResult.fail[i][1] + '<br />';
+				if(this.uploadResult.fail[i].forced){
+					msg += this.uploadResult.fail[i].name +this.uploadResult.fail[i].batchText + ': ' + this.uploadResult.fail[i].msg + '<br />';
 				}
 			}
 			if (msg) gui.alert(msg, 'Failed data submission');
 		}
 		else{
-			// not sure if there should be a notification if forms fail automatic submission
+			// not sure if there should be any notification if forms fail automatic submission when offline
 		}
 		//this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
 		this.setOnlineStatus(false);
@@ -351,10 +373,12 @@ Connection.prototype.maxSubmissionSize = function(){
 			timeout: 5*1000,
 			success: function(response){
 				maxSize = parseInt(response, 10);
+				//setting an absolute max as defined in enketo .htaccess file
+				maxSize = (maxSize > 100 * 1024 * 1024) ? 100 * 1024 * 1024 : maxSize;
 				that.maxSize = maxSize;
 			},
 			error: function(){
-				maxSize = 4999;
+				maxSize = 5000;
 			}
 		});
 		return maxSize;

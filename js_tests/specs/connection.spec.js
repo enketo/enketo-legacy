@@ -1,6 +1,6 @@
 describe("The Connection Class ", function () {
 	var callbacks, connection;
-	
+
 	//TODO: implement async=true .... query string to run async tests
 	//connection.GETSURVEYURL_URL = "http://enketo-dev.formhub.org"+connection.GETSURVEYURL_URL;
 

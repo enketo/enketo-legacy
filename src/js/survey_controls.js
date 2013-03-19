@@ -331,17 +331,14 @@ function submitEditedForm() {
  * @param	{{success: Function, error: Function}} callbacks
  */
 function prepareFormDataArray(record, callbacks){
-	var i, j, k, l, formData, formDataArr, dataO, instanceID, $fileNodes, files, fileIndex, recordPrepped,
+	var i, j, k, l, xmlData, formData, formDataArr, dataO, instanceID, $fileNodes, files, fileIndex, recordPrepped,
 		sizes = [],
 		batches = [];
 
 	dataO = form.Data(record.data);
+	xmlData = dataO.getStr(true, true);
 	instanceID = dataO.getInstanceID();
 	$fileNodes = dataO.$.find('[type="file"]').removeAttr('type');
-
-	formData = new FormData();
-	formData.append('xml_submission_data', dataO.getStr(true, true));
-
 	files = [];
 
 	for (j = 0 ; j < $fileNodes.length ; j++){
@@ -360,11 +357,14 @@ function prepareFormDataArray(record, callbacks){
 						//formData.append(files[k].nodeName, files[k].file);
 					}
 					batches = divideIntoBatches(sizes, connection.maxSubmissionSize());
-					console.debug('splitting record into '+batches.length+' batches to reduce submission size');
+					console.debug('splitting record into '+batches.length+' batches to reduce submission size ', batches);
 					for (k = 0 ; k < batches.length ; k++){
+						formData = new FormData();
+						formData.append('xml_submission_data', xmlData);
 						recordPrepped = { name: record.name, instanceID: instanceID, formData: formData, batches: batches.length, batchIndex: k };
 						for (l = 0 ; l<batches[k].length ; l++){
 							fileIndex = batches[k][l];
+							console.log('adding file: '+files[fileIndex].nodeName);
 							recordPrepped.formData.append(files[fileIndex].nodeName, files[fileIndex].file);
 						}
 						console.log('returning record with formdata : ', recordPrepped);
@@ -379,7 +379,9 @@ function prepareFormDataArray(record, callbacks){
 		);
 	}
 	else{
-		recordPrepped = { name: record.name, instanceID: instanceID, formData: formData };
+		formData = new FormData();
+		formData.append('xml_submission_data', xmlData);
+		recordPrepped = { name: record.name, instanceID: instanceID, formData: formData, batches: 1, batchIndex: 0 };
 		callbacks.success(recordPrepped);
 	}
 }

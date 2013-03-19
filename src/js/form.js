@@ -2286,18 +2286,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 							$input.siblings('.file-feedback, .file-preview').remove();
 
 							console.debug('file: ', file);
-							if (file && file.size > 0){
+							if (file && file.size > 0 && file.size <= connection.maxSubmissionSize()){
 								fileManager.saveFile(
 									file,
 									{
 										success: function(fsURL){
 											$preview.attr('src', fsURL);
+											$input.siblings('.file-feedback').remove();
 											$input.trigger('change.passthrough').after($preview);
 										}, 
 										error: function(e){
 											console.error('error: ',e);
 											$input.val('');
-											$input.after('<span class="file-feedback text-error">'+
+											$input.after('<div class="file-feedback text-error">'+
 													'Failed to save file</span>');
 										}
 									}
@@ -2306,11 +2307,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 							}
 							//clear instance value by letting it bubble up to normal change handler
 							else{
+								if (file.size > connection.maxSubmissionSize()){
+									$input.after('<div class="file-feedback text-error">'+
+										'File too large (max '+
+										(Math.round((connection.maxSubmissionSize() * 100 )/ (1024 * 1024)) / 100 )+
+										' Mb)</div>');
+								}
 								return true;
 							}
 						}).removeClass('ignore')
 							.removeAttr('disabled')
 							.siblings('.file-feedback').remove();
+						$fileInputs.after('<div class="text-info">'+
+							'File inputs are experimental. Use only for testing.');
 					},
 					error: function(){
 						$fileInputs.siblings('.file-feedback').remove();

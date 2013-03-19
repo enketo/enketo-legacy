@@ -126,7 +126,7 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 
 /**
  * [uploadRecords description]
- * @param  {{name: string, instanceID: string, formData: FormData}}	record   [description]
+ * @param  {{name: string, instanceID: string, formData: FormData, batches: number, batchIndex: number}}	record   [description]
  * @param  {boolean=}													force     [description]
  * @param  {Object.<string, Function>=}								callbacks only used for testing
  * @return {boolean}           [description]
@@ -365,7 +365,7 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
  */
 Connection.prototype.maxSubmissionSize = function(){
 	var maxSize,
-		defaultMax = 5000000;
+		defaultMax = 5000000,
 		absoluteMax = 100 * 1024 * 1024,
 		that = this;
 	if (typeof this.maxSize == 'undefined' && !this.maxSize){

@@ -24,7 +24,6 @@ $(document).ready(function(){
 	connection = new Connection();
 	state = new State();
 	state.init();
-	fileManager = new FileManager();
 
 	_error = console.error;
 	console.error = function(){

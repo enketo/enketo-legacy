@@ -93,15 +93,28 @@ if ( ! function_exists('url_exists'))
 	}
 }
 
-//if ( ! function_exists('url_add_protocol'))
-//{
-//	function url_add_protocol($url)
-//	{
-//		$url = trim($url);
-//		$url = (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) ? $url : 'http://'.$url;
-//		return (url_valid($url)) ? $url : FALSE;
-//	}
-//}
+if (! function_exists('http_parse_headers'))
+{
+	function http_parse_headers( $header )
+    {
+        $retVal = array();
+        $fields = explode("\r\n", preg_replace('/\x0D\x0A[\x09\x20]+/', ' ', $header));
+        foreach( $fields as $field ) {
+            if( preg_match('/([^:]+): (.+)/m', $field, $match) ) {
+                $match[1] = preg_replace('/(?<=^|[\x09\x20\x2D])./e', 'strtoupper("\0")', strtolower(trim($match[1])));
+                if( isset($retVal[$match[1]]) ) {
+                    if (!is_array($retVal[$match[1]])) {
+                        $retVal[$match[1]] = array($retVal[$match[1]]);
+                    }
+                    $retVal[$match[1]][] = $match[2];
+                } else {
+                    $retVal[$match[1]] = trim($match[2]);
+                }
+            }
+        }
+        return $retVal;
+    }
+}
 
 if ( ! function_exists('url_valid'))
 {

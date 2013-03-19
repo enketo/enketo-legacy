@@ -112,7 +112,7 @@ function FileManager(){
 			callbacks.error
 		);
 	};
-	
+
 	/**
 	 * requests filesystem
 	 * @param  {number} bytes		when called by requestQuota for PERSISTENt storage this is the number of bytes granted

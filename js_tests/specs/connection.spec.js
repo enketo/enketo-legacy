@@ -1,6 +1,6 @@
 describe("The Connection Class ", function () {
 	var callbacks, connection;
-	
+
 	//TODO: implement async=true .... query string to run async tests
 	//connection.GETSURVEYURL_URL = "http://enketo-dev.formhub.org"+connection.GETSURVEYURL_URL;
 
@@ -52,15 +52,15 @@ describe("The Connection Class ", function () {
 			});
 
 			connection.getSurveyURL('http://formhub.org/formhub_u', 'widgets', callbacks);
-			
+
 			expect(callbacks.success).toHaveBeenCalled();
 			expect(callbacks.success).toHaveBeenCalledWith({url: "http://success.org"}, 'success');
 		});
 
 		it('returns a validation error if the URL is not well-formed', function(){
-			
+
 			connection.getSurveyURL('an/invalid/url', 'name', callbacks);
-			
+
 			waitsFor(function(){
 				return callbacks.error.callCount > 0;
 			}, 'ajax request never finished', 1000);
@@ -122,7 +122,7 @@ describe("The Connection Class ", function () {
 			it('and shows '+anno+' alert when failed upload was conducted with forced:'+forced+' and online: '+online, function(){
 				connection.forced = forced;
 				connection.currentOnlineStatus = online;
-				connection.processOpenRosaResponse(404, 'aname', 'MyInstanceID', true);
+				connection.processOpenRosaResponse(404, {name:'aname', instanceID: 'MyInstanceID', batches: 1, batchIndex: 0, forced: forced});
 				if (alert){
 					expect(gui.alert).toHaveBeenCalled();
 					expect(gui.alert.mostRecentCall.args[1]).toEqual(errorHeading);

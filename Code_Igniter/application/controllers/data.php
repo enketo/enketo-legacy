@@ -24,7 +24,7 @@ class Data extends CI_Controller {
 			parent::__construct();
 			$this->load->model('Survey_model', '', TRUE);
 			$this->load->model('Instance_model', '', TRUE);
-			$this->load->helper(array('subdomain','url', 'string'));
+			$this->load->helper(array('subdomain','url', 'string', 'http'));
 		
 	}
 
@@ -97,7 +97,10 @@ class Data extends CI_Controller {
 				if ($valid)
 				{
 					$fields[$nodeName] = '@'.$new_location.';type='.$file['type'];
+					log_message('debug', 'added file '.$new_location.' to submission');
 				}
+				//TODO: issue with file size > 30 mb (see .htaccess): this fails silently
+				//need to return feedback to user and/or check for this in client before sending?
 				//TODO: USER FEEDBACK IF NOT VALID?
 				//echo $fields[$nodeName];
 			}
@@ -135,21 +138,20 @@ class Data extends CI_Controller {
 		curl_close($ch);
 	}
 
-//	public function remove_instance()
-//	{
-//		log_message('debug', 'attempting to remove instance');
-//		extract($_POST);//
-
-//		if (empty($instance_id))
-//		{
-//			return $this->output->set_status_header(400, 'fail');
-//		}
-//		else
-//		{
-//			return $this->Instance_model->
-//		}//
-
-//	}
+	//performs HEAD request to get X-OpenRosa-Accept-Content-Length header
+	public function max_size()
+	{
+		$submission_url = $this->Survey_model->get_form_submission_url();
+		$curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $submission_url);
+        curl_setopt($curl, CURLOPT_NOBODY, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $header = curl_exec($curl);
+        curl_close($curl);
+        $header_arr = http_parse_headers($header);   
+        echo $header_arr['X-Openrosa-Accept-Content-Length'];
+	}
 
 	public function edit_url()
 	{

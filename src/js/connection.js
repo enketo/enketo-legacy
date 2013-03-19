@@ -365,6 +365,8 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
  */
 Connection.prototype.maxSubmissionSize = function(){
 	var maxSize,
+		defaultMax = 5000000;
+		absoluteMax = 100 * 1024 * 1024,
 		that = this;
 	if (typeof this.maxSize == 'undefined' && !this.maxSize){
 		$.ajax('/data/max_size', {
@@ -372,13 +374,13 @@ Connection.prototype.maxSubmissionSize = function(){
 			async: false,
 			timeout: 5*1000,
 			success: function(response){
-				maxSize = parseInt(response, 10);
+				maxSize = parseInt(response, 10) || defaultMax;
 				//setting an absolute max as defined in enketo .htaccess file
-				maxSize = (maxSize > 100 * 1024 * 1024) ? 100 * 1024 * 1024 : maxSize;
+				maxSize = (maxSize > absoluteMax) ? absoluteMax : maxSize;
 				that.maxSize = maxSize;
 			},
 			error: function(){
-				maxSize = 5000;
+				maxSize = defaultMax;
 			}
 		});
 		return maxSize;

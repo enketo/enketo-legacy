@@ -1310,8 +1310,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				type = this.getInputType($inputNodes.eq(0)); 
 				
 				if ( type === 'file'){
-					console.error('Cannot set value of file input field (value: '+value+'). If trying to load '+
-						'this record for editing this file input field will remain unchanged.');
+					$inputNodes.eq(0).attr('data-loaded-file-name', value);
+					//console.error('Cannot set value of file input field (value: '+value+'). If trying to load '+
+					//	'this record for editing this file input field will remain unchanged.');
 					return false;
 				}
 
@@ -2283,16 +2284,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 								fileManager.deleteFile(prevFileName);
 							}
 
-							$input.siblings('.file-feedback, .file-preview').remove();
+							$input.siblings('.file-feedback, .file-preview, .file-loaded').remove();
 
 							console.debug('file: ', file);
 							if (file && file.size > 0 && file.size <= connection.maxSubmissionSize()){
+								console.debug('going to save it in filesystem');
 								fileManager.saveFile(
 									file,
 									{
 										success: function(fsURL){
 											$preview.attr('src', fsURL);
-											$input.siblings('.file-feedback').remove();
 											$input.trigger('change.passthrough').after($preview);
 										}, 
 										error: function(e){
@@ -2331,8 +2332,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 				$fileInputs.each(function(){
 					var $input = $(this),
-						fileName = ($input[0].files.length > 0) ? $input[0].files[0].name : '';
-					$input.attr('data-previous-file-name', fileName);
+						existingFileName = $input.attr('data-loaded-file-name');
+					if (existingFileName){
+						$input.after('<div class="file-loaded text-warning">This form was loaded with "'+
+							existingFileName+'". To preserve this file, do not change this input.</div>');
+					}
+						//fileName = ($input[0].files.length > 0) ? $input[0].files[0].name : '';
+					//is this required at all?
+					//$input.attr('data-previous-file-name', fileName);
 				}).parent().addClass('with-media clearfix');
 
 				fileManager.init(data.getInstanceID(), callbacks);

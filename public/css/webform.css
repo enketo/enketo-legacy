@@ -6713,6 +6713,9 @@ html.touch .jr legend .jr-hint.active {
   display: inline-block;
   margin-right: 10px;
 }
+.jr .mobileselect {
+  margin-left: 10px;
+}
 .jr .geopoint {
   margin-top: 25px;
 }

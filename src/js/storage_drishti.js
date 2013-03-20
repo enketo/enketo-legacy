@@ -1,35 +1,30 @@
 /*global mockForms2, mockInstances*/
 
-/**
- * Storage Class
- * @constructor
- */
-function StorageLocal(){
-	this.init = function(){};
-
+var formDataController = {
 
 	/**
 	 * Gets instance as JSON from Dristhi DB - Should this be asynchronous?
 	 * @param  {string} instanceId [description]
 	 * @return {?*}       [description]
 	 */
-	this.getInstanceJ = function(instanceId){
+	get : function(){
 		// temporarily mocked
-		if (instanceId && typeof mockInstances[instanceId] !== 'undefined'){
-			return mockInstances[instanceId];
-		}
-		return null;
-	};
+		return mockInstances['a'];
+	},
 
 	/**
 	 * Passes instance as JSON to store in Dristhi DB - Should this be asynchronous?
 	 * @param  {*} dataJ	JSON object with data
 	 * @return {boolean}     
 	 */
-	this.saveInstanceJ = function(dataJ){
+	save : function(instanceId, data){
 		return true;
-	};
-}
+	},
+
+	remove : function(instanceId){
+
+	}
+};
 
 /**
  * Class dealing with JSON <-> XML transformation

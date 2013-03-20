@@ -26,8 +26,9 @@ $(document).ready(function() {
 	'use strict';
 	var loadErrors, formParts, existingInstanceJ, instanceToEdit;
 	connection = new Connection();
-	store = new StorageLocal();
+	//store = new StorageLocal();
 	transformer = new Transformer();
+	formDataController = new FormDataController();
 
 	/*
 	formParts = store.getForm(settings.formId);

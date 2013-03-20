@@ -1,4 +1,4 @@
-var jrDataStr, jrDataStrToEdit,
+var modelStr, jrDataStr, jrDataStrToEdit,
 	/*@type {{string:{html_form:string, xml_model:string}}}*/mockForms1,
 	/*@type {{string:{html_form:string, xml_model:string}}}*/mockForms2,
 	mockInstances;

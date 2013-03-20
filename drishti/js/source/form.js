@@ -1720,7 +1720,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//TODO: test with very large itemset
 		var that = this,
 			cleverSelector = [],
-			needToUpdateLangs = false;
+			needToUpdateLangs = false,
+			itemsCache = {};
 
 		if (typeof changedDataNodeNames == 'undefined'){
 			cleverSelector = ['.itemset-template'];
@@ -1734,7 +1735,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		cleverSelector = cleverSelector.join(',');
 		
 		$form.find(cleverSelector).each(function(){
-			var $htmlItem, $htmlItemLabels, value, 
+			var $htmlItem, $htmlItemLabels, value, $instanceItems,
 				$template = $(this),
 				newItems = {},
 				prevItems = $template.data(),
@@ -1743,8 +1744,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				itemsXpath = $template.attr('data-items-path'),
 				labelType = $labels.attr('data-label-type'),
 				labelRef = $labels.attr('data-label-ref'),
-				valueRef = $labels.attr('data-value-ref'),
+				valueRef = $labels.attr('data-value-ref');
+
+			if (typeof itemsCache[itemsXpath] !== 'undefined'){
+				console.debug('using cached itemset items result for '+itemsXpath);
+				$instanceItems = itemsCache[itemsXpath];
+			}
+			else{
 				$instanceItems = data.evaluate(itemsXpath, 'nodes');
+				itemsCache[itemsXpath] = $instanceItems;
+			}
 
 			// this property allows for more efficient 'itemschanged' detection
 			newItems.length = $instanceItems.length; 
@@ -2619,6 +2628,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return  {boolean}       [description]
 		 */
 		clone : function($node, animate){
+			//var p = new Profiler('repeat cloning');
 			var $master, $clone, $parent, index, radioNames, i, path, timestamp, duration,
 				that = this;
 			duration = (animate === false) ? 0 : 400;
@@ -2688,6 +2698,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 
 			$form.trigger('changerepeat'); 
+			//p.report();
 			return true;
 		},
 		remove : function(node){

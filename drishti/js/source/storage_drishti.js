@@ -7,19 +7,6 @@
 function StorageLocal(){
 	this.init = function(){};
 
-	/**
-	 * Gets both the HTML Form and the default XML Instance
-	 * @param  {string} formId					the unique form id used to query the Drishti DB to get the transformation results
-	 * @return {?{form:string, model:string}}	returns object with HTML form as form property and default XML instance as model property
-	 */
-	this.getForm = function(formId){
-		// temporarily mocked
-		if (typeof mockForms2 !== 'undefined' && mockForms2[formId] !== 'undefined'){
-			var formParts = mockForms2[formId];
-			return {form: formParts.html_form, model: formParts.xml_model};
-		}
-		return null;
-	};
 
 	/**
 	 * Gets instance as JSON from Dristhi DB - Should this be asynchronous?

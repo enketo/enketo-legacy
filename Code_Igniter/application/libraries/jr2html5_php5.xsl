@@ -588,8 +588,8 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
             </xsl:attribute>
             <xsl:apply-templates select="$binding/@jr:constraintMsg" />
             <xsl:apply-templates select="xf:label" />
-            <xsl:apply-templates select="xf:hint" />
             <xsl:apply-templates select="$binding/@required"/>
+            <xsl:apply-templates select="xf:hint" />
             <select>
                 <xsl:call-template name="binding-attributes">
                     <xsl:with-param name="nodeset" select="$nodeset" />
@@ -652,8 +652,8 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 <legend>
                     <xsl:apply-templates select="$binding/@jr:constraintMsg" />
                     <xsl:apply-templates select="xf:label" />
-                    <xsl:apply-templates select="xf:hint" />
                     <xsl:apply-templates select="$binding/@required"/>
+                    <xsl:apply-templates select="xf:hint" />
                     <xsl:text>
                     </xsl:text>
                 </legend>

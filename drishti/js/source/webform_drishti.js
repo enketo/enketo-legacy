@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global vkbeautify, gui, jrDataStr, StorageLocal, FileManager, Form*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global vkbeautify, gui, modelStr, StorageLocal, FileManager, Form*/
 
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
@@ -29,6 +29,7 @@ $(document).ready(function() {
 	store = new StorageLocal();
 	transformer = new Transformer();
 
+	/*
 	formParts = store.getForm(settings.formId);
 
 	if (!formParts){
@@ -50,8 +51,8 @@ $(document).ready(function() {
 	}
 
 	instanceToEdit = (existingInstanceJ) ? transformer.JSONToXML(existingInstanceJ) : null;
-
-	form = new Form('form.jr:eq(0)', formParts.model, instanceToEdit);
+	*/
+	form = new Form('form.jr:eq(0)', modelStr);//, instanceToEdit);
 
 	loadErrors = form.init();
 	if (loadErrors.length > 0){

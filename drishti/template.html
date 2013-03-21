@@ -7,9 +7,21 @@
 		<meta name="robots" content="noindex">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
+		
+<!-- 	Drishti app directory structure 
+		<link href="../../css/form/styles_drishti.css" media="all" rel="stylesheet" type="text/css">
+	    <script type="text/javascript" src="../../js/form/libraries-all-min.js"></script>
+	    <script type="text/javascript" src="../../js/form/webform-drishti-all-min.js"></script>
+	    <script type="text/javascript" src="../../js/form/form_data_controller.js"></script>
+	    <script type="text/javascript" src="../../js/form/form_model_mapper.js"></script>
+	    <script type="text/javascript" src="../../js/form/form_data_repository.js"></script>
+	    <script type="text/javascript" src="../../js/form/entity_relationship_loader.js"></script>
+	    <script type="text/javascript" src="../../js/form/form_definition_loader.js"></script>
+	    <script type="text/javascript" src="../../js/form/util.js"></script>
+-->
+<!--	For testing from modilabs/enketo drishti folder: -->
 		<link href="css/drishti.css" media="all" rel="stylesheet" type="text/css">
 		<script type="text/javascript" src="js/libraries-all-min.js"></script>
-		<!--<script type="text/javascript" src="js/webform-drishti-all-min.js"></script>-->
 		<script type="text/javascript" src="js/source/helpers.js"></script>
 		<script type="text/javascript" src="js/source/gui.js"></script>
 		<script type="text/javascript" src="js/source/storage_drishti.js"></script>
@@ -17,7 +29,9 @@
 		<script type="text/javascript" src="js/source/widgets.js"></script>
 		<script type="text/javascript" src="mocks/transforms.mock.js"></script>
 		<script type="text/javascript" src="mocks/instances.mock.js"></script>
+		<script type="text/javascript" src="mocks/androidcontext.mock.js"></script>
 		<script type="text/javascript" src="js/source/webform_drishti.js"></script>
+<!-- -->
 
 		<script type="text/javascript">
 			var settings = {};
@@ -26,8 +40,7 @@
 			settings['supportEmail'] = '';
 			settings['returnURL'] = '';
 
-			/*****  Paste the complete <model> node as the value for jrDataStr, remove linebreaks *****/
-			//var jrDataStr = '';
+			var modelStr = androidContext.getModel();
 		</script>
 	</head>
 	<body>
@@ -88,11 +101,9 @@
 			<article class="paper">
 				<div class="form-header clearfix"><span class="form-language-selector"><span>Choose Language</span></span></div>
 				
-				<!--*****  Paste the complete <form> node below *****-->
-
-				<form class="jr"></form>
-
-				<!--************************************************-->
+				<script>
+					document.write(androidContext.getForm());
+				</script>
 				
 				<button id="validate-form" class="btn btn-primary btn-large"> Validate</button>	
 				<div class="enketo-power">

@@ -1,53 +1,55 @@
 /*global mockForms2, mockInstances*/
 
-/**
- * Storage Class
- * @constructor
- */
-function StorageLocal(){
-	this.init = function(){};
-
+var formDataController = {
 
 	/**
 	 * Gets instance as JSON from Dristhi DB - Should this be asynchronous?
 	 * @param  {string} instanceId [description]
 	 * @return {?*}       [description]
 	 */
-	this.getInstanceJ = function(instanceId){
+	get : function(){
 		// temporarily mocked
-		if (instanceId && typeof mockInstances[instanceId] !== 'undefined'){
-			return mockInstances[instanceId];
-		}
-		return null;
-	};
+		return mockInstances.a;
+	},
 
 	/**
 	 * Passes instance as JSON to store in Dristhi DB - Should this be asynchronous?
 	 * @param  {*} dataJ	JSON object with data
 	 * @return {boolean}     
 	 */
-	this.saveInstanceJ = function(dataJ){
+	save : function(instanceId, data){
 		return true;
-	};
-}
+	},
+
+	remove : function(instanceId){
+
+	}
+};
 
 /**
- * Class dealing with JSON <-> XML transformation
- * 
+ * Class maintaining a Drishti JSON Data Definition and deal with JSON <-> XML transformation
+ * @param {*} data  Drishti Data Definition JSON
  * @constructor
  */
-function Transformer(){
+function JData(data){
+	data = data || {"form": {"bind_type":"?????", "default_bind_path":"????", "form_type":"????", "meta_fields":[], "fields":[], "sub_forms":[]}};
 	/**
 	 * Transforms JSON to an XML string
 	 * NOTE: alternatively, we could could overwrite Form.init() to use JSON data instead of XML for instantiation
 	 * @param  {(*|string)} jData	JSON object or JSON string
 	 * @return {?string}			XML string
 	 */
-	this.JSONToXML = function(jData){
+	/*this.toXML = function(){
 		var i, n, path, value, $formInstanceFirst,
 			$instance = $($.parseXML('<root />'));
-		for (i = 0; i<jData.values.length; i++){
-			n = jData.values[i];
+
+		if (typeof data !== 'object'){
+			var error = "error: no JSON object provided during instantiation";
+			console.error(error);
+		}
+
+		for (i = 0; i<data.form.fields.length; i++){
+			n = data.values[i];
 			path = n.bindPath;
 			value = n.fieldValue;
 			if (typeof path !== 'undefined' && path.length > 0 && typeof value !== undefined){
@@ -62,46 +64,84 @@ function Transformer(){
 		$formInstanceFirst = $instance.find('instance>*:first');
 		$formInstanceFirst.attr('id', jData.formId);
 		return (new XMLSerializer()).serializeToString($formInstanceFirst[0]);
-	};
+	};*/
 
 	/**
-	 * Transforms XML submission instance into JSON
+	 * gets current state of form instance in JSON format
 	 * NOTE: alternatively, we could turn this into a Form.getJSON() function
-	 * @param {string} xData string of xml data
 	 */
-	this.XMLToJSON = function(xData){
-		var $leaf,
-			jData = {},
-			values = [],
-			$data = $($.parseXML(xData)),
-			formId = $data.find('*:first').attr('id'),
-			$leaves = $data.find('*').filter(
-				function(){
-					return $(this).children().length === 0;
+	this.get = function(){
+		var i, $repeatLeaves,
+			subForms,
+			subFormTemplates = [],
+			//$data = $($.parseXML(xData)),
+			//formId = $data.find('*:first').attr('id'),
+			$mainLeaves = form.getDataO().node('*', null, {noTemplate: true, onlyLeaf: true}).get(),
+			totalLeaves = $mainLeaves.length,
+			/* 
+			 * issue: this relies on a template node to be present, which is not required for repeats in OpenRosa
+			 * but thankfully is guaranteed in formhub-hosted forms. It would be good to move this to the Form class as an
+			 * onlyRepeat: true filter for Nodeset()
+			 */
+			$repeats = form.getDataO().$.find('instance:first [template]').siblings().filter(function(){
+				var nodeName = $(this).prop('nodeName');
+				return $(this).siblings(nodeName+'[template]').length > 0;
+			});
+
+		$repeats.each(function(){
+			var bindType, subForm, newSubForm, subFormTemplate,
+				$repeat = $(this);
+			//bind_type = repeat node name???
+			bindType = $repeat.prop('nodeName');
+			if ($.grep(subFormTemplates, function(template){return (template.bind_type === bindType); }).length === 0){
+				subForm = $.grep(data.form.sub_forms, function(sub){return (sub.bind_type === bindType); })[0];
+				//now remove this subform
+				$.each(data.form.sub_forms, function(i){
+					if(data.form.sub_forms[i].bind_type === bindType) data.form.sub_forms.splice(i,1);
+				});
+				//or is this always defined??
+				if (typeof subForm === 'undefined'){
+					subForm = {"bind_type": bindType, "default_bind_path":"?????", "form_type": "?????", "meta_fields":[], "fields":[]};
 				}
-			);
-		/** 
-			WATCH OUT for repeats:
-			If child is a repeat but it is not repeated (yet) the bindPath is: /myform/child
-			If child is a repeat and it is repeated the first child gets: /myform/child[1]
-			These are the same node, but the path changes over time if the record is edited!
-			If this is a problem we could just never add index 1
-		 **/
-		$leaves.each(function(){
-			$leaf = $(this);
-			values.push(
-				{
-					"fieldName" : $leaf.prop('nodeName'),
-					"fieldValue" : $leaf.text(),
-					"bindPath" : '/instance' + $leaf.getXPath('model')
-				}
-			);
+				subForm.fields = [];
+				subFormTemplates.push(subForm);
+			}
+
+			$repeatLeaves = $repeat.find('*').filter(function(){
+				return $(this).children().length === 0;
+			});
+			$mainLeaves = $mainLeaves.takeOut($repeatLeaves);
+
+			subFormTemplate = $.grep(subFormTemplates,function(template){return (template.bind_type === bindType);})[0];
+			newSubForm = jQuery.extend({}, subFormTemplate);
+			data.form.sub_forms.push(newSubForm);
+			updateFields(newSubForm.fields, $repeatLeaves);
 		});
-		jData.formId = formId;
-		jData.instanceId = $data.find('meta>instanceID').text();
-		jData.values = values;
-		return jData;
+
+		updateFields(data.form.fields, $mainLeaves);
+		//jData.formId = formId;
+		//jData.instanceId = $data.find('meta>instanceID').text();
+		//jData.fields = fields;
+		return data;
 	};
+
+	function updateFields(fieldArr, $nodes){
+		var $leaf, field, name, source, value, bind;
+		$nodes.each(function(){
+			$leaf = $(this);
+			name = $leaf.prop('nodeName');
+			value = $leaf.text();
+			bind = $leaf.getXPath('model');
+			field = $.grep(fieldArr, function(field){return (field.name === name);})[0];
+			if (typeof field === 'undefined'){
+				field = {"name": name};
+				fieldArr.push(field);
+			}
+			field.value = value;
+			field.source = field.source || '????.'+name;
+			field.bind = bind; //the override doesn't yet make sense to me
+		});
+	}
 
 	/**
 	 * [addXMLNode description]
@@ -135,3 +175,17 @@ function Transformer(){
 		return $doc;
 	}
 }
+
+(function($){
+	$.fn.takeOut = function($nodes){
+		return this.filter(function(){
+			for (var i = 0 ; i<$nodes.length ; i++){
+				if ($(this).is($nodes.eq(i))){
+					console.log('took out node: ', $(this));
+					return false;
+				}
+			}
+			return true;
+		});
+	};
+})(jQuery);

@@ -20,14 +20,14 @@ var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
 var /**@type {StorageLocal}*/store;
 var /**@type {FileManager}*/fileManager;
-var /**@type {Transformer}*/transformer;
 
 $(document).ready(function() {
 	'use strict';
 	var loadErrors, formParts, existingInstanceJ, instanceToEdit;
 	connection = new Connection();
-	store = new StorageLocal();
-	transformer = new Transformer();
+	//store = new StorageLocal();
+	var jData = new JData();
+	//formDataController = new FormDataController();
 
 	/*
 	formParts = store.getForm(settings.formId);
@@ -68,7 +68,7 @@ $(document).ready(function() {
 				return;
 			}
 			else{
-				jDataStr = vkbeautify.json(JSON.stringify(transformer.XMLToJSON(form.getDataStr(true, true))));
+				jDataStr = vkbeautify.json(JSON.stringify(jData.get()));
 				console.log(jDataStr);
 				gui.alert(
 					'<p>The following JSON object has been prepared for submission:</p><br/>'+

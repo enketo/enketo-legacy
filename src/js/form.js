@@ -3131,18 +3131,19 @@ Date.prototype.toISOLocalString = function(){
 		var position,
 			$node = this.first(),
 			nodeName = $node.prop('nodeName'),
-			$sibSameNameAndSelf = $node.siblings(nodeName).addBack(),
-			steps = [], 
+			//$sibSameNameAndSelf = $node.siblings(nodeName).addBack(),
+			steps = [nodeName], 
 			$parent = $node.parent(),
 			parentName = $parent.prop('nodeName');
 
-		position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($node)+1)+']' : '';
-		steps.push(nodeName+position);
+		//position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($node)+1)+']' : '';
+		//steps.push(nodeName+position);
 
 		while ($parent.length == 1 && parentName !== rootNodeName && parentName !== '#document'){
-			$sibSameNameAndSelf = $parent.siblings(parentName).addBack();
-			position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($parent)+1)+']' : '';
-			steps.push(parentName+position);
+			//$sibSameNameAndSelf = $parent.siblings(parentName).addBack();
+			//position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($parent)+1)+']' : '';
+			//steps.push(parentName+position);
+			steps.push(parentName);
 			$parent = $parent.parent();
 			parentName = $parent.prop('nodeName');
 		}

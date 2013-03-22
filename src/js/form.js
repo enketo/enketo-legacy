@@ -2654,12 +2654,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				.parent('.jr-group').numberRepeats();
 
 			//if not done asynchronously, this code causes a style undefined exception in Jasmine unit tests with jQuery 1.9 and 2.0
-			setTimeout(function(){
+			//but this breaks loading of default values inside repeats
+			//setTimeout(function(){
 				$clone.hide().clearInputs('').show(duration, function(){
 					//re-initiate widgets in clone
 					that.formO.widgets.init($clone);
 				});
-			}, 0);
+			//}, 0);
 
 			//note: in http://formhub.org/formhub_u/forms/hh_polio_survey_cloned/form.xml a parent group of a repeat
 			//has the same ref attribute as the nodeset attribute of the repeat. This would cause a problem determining 

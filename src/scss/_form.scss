@@ -3,6 +3,10 @@ $input-height: 30px;
 $input-min-width: 0.2 * $content-width;
 $input-max-width: 80%;
 
+/** BOOTSTRAP PLUGINS **/
+@import "../../public/libraries/jdewit-bootstrap-timepicker/timepicker";
+@import "../../public/libraries/datepicker";
+
 .paper{
   position: relative;
   .load-error{
@@ -384,7 +388,7 @@ html.touch{
     > input[type="radio"], > input[type="checkbox"]{ 
       ~ span.active:not(.jr-hint):not(.jr-constraint-msg){
       display: block;
-      margin: -18px 0 0 40px;} } } 
+      margin: -2px 0 0 40px;} } } 
   .jr-appearance-compact, .jr-appearance-quickcompact{
     legend{
       border: none;

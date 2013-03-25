@@ -3,6 +3,10 @@ $input-height: 30px;
 $input-min-width: 0.2 * $content-width;
 $input-max-width: 80%;
 
+/** BOOTSTRAP PLUGINS **/
+@import "../../public/libraries/jdewit-bootstrap-timepicker/timepicker";
+@import "../../public/libraries/datepicker";
+
 .paper{
   position: relative;
   .load-error{

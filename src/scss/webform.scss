@@ -1,5 +1,14 @@
+$baseFontSize: 16px;
+$baseLineHeight: 20px;
 $iconSpritePath: '/images/glyphicons-halflings.png'; //patches bug in bootstrap-sass
 $iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
 
+//additional icons
+.icon-crosshairs{
+  background-image: url("../images/crosshairs.png");
+  background-position: -5px -5px;
+}
+
 @import "_main";
+@import "_responsive";
 @import "_form";

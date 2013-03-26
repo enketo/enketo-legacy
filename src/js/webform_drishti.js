@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global vkbeautify, gui, modelStr, StorageLocal, FileManager, Form*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global vkbeautify, gui, FormDataController, modelStr, StorageLocal, FileManager, Form*/
 
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
@@ -23,11 +23,10 @@ var /**@type {FileManager}*/fileManager;
 
 $(document).ready(function() {
 	'use strict';
-	var loadErrors, formParts, existingInstanceJ, instanceToEdit;
+	var formParts, existingInstanceJ, instanceToEdit, loadErrors, jsonErrors,
+		formDataController = new FormDataController({instanceId: settings.instanceId});
+
 	connection = new Connection();
-	//store = new StorageLocal();
-	var jData = new JData();
-	//formDataController = new FormDataController();
 
 	/*
 	formParts = store.getForm(settings.formId);
@@ -38,29 +37,38 @@ $(document).ready(function() {
 	}
 
 	$('.main form').replaceWith(formParts.form);
-
-	existingInstanceJ = store.getInstanceJ(settings.instanceId);
+	*/
+	existingInstanceJ = formDataController.get();//(settings.instanceId);
 
 	if (settings.instanceId && !existingInstanceJ){
 		gui.alert('Instance with id "'+settings.instanceId+'" could not be found. Loading empty form instead.');
 	}
-	if (existingInstanceJ && existingInstanceJ.formId !== settings.formId){
+
+	/*if (existingInstanceJ && existingInstanceJ.formId !== settings.formId){
 		gui.alert('<p>Could not load existing record because this record, with id: "'+settings.instanceId+
 			'", belongs to form "'+existingInstanceJ.formId+'".<p><p>Loaded empty form instead.</p>');
 		existingInstanceJ = null;
-	}
+	}*/
 
-	instanceToEdit = (existingInstanceJ) ? transformer.JSONToXML(existingInstanceJ) : null;
-	*/
-	form = new Form('form.jr:eq(0)', modelStr);//, instanceToEdit);
+	//instanceToEdit = (existingInstanceJ) ? transformer.JSONToXML(existingInstanceJ) : null;
+
+	var jDataO = new JData(existingInstanceJ);
+
+	console.log('XML to load: ', jDataO.toXML());
+
+	form = new Form('form.jr:eq(0)', modelStr, jDataO.toXML());//, instanceToEdit);
 
 	loadErrors = form.init();
+	//check if JSON format is complete and if not, prepend the errors
+	jsonErrors = jDataO.get().errors;
+	loadErrors = (jsonErrors) ? jsonErrors.concat(loadErrors) : loadErrors;
+
 	if (loadErrors.length > 0){
 		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
 	}
 
 	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
-		var jDataStr;
+		var jData, jDataStr, errorStr;
 		if (typeof form !== 'undefined'){
 			form.validateForm();
 			if (!form.isValid()){
@@ -68,9 +76,12 @@ $(document).ready(function() {
 				return;
 			}
 			else{
-				jDataStr = vkbeautify.json(JSON.stringify(jData.get()));
+				jData = jDataO.get();
+				jDataStr = vkbeautify.json(JSON.stringify(jData));
+				errorStr = (typeof jData.errors !== 'undefined' && jData.errors.length > 0) ? '<ul class="alert alert-error"><li>'+jData.errors.join('</li><li>')+'</li></ul>' : '';
 				console.log(jDataStr);
 				gui.alert(
+					errorStr+
 					'<p>The following JSON object has been prepared for submission:</p><br/>'+
 					'<pre style="font-size: 0.6em; width: 100%;">'+jDataStr+'</pre>',
 					'Record is ready to Submit!',
@@ -80,6 +91,8 @@ $(document).ready(function() {
 			}
 		}
 	});
+
+
 });
 
 /**

@@ -1,30 +1,36 @@
 /*global mockForms2, mockInstances*/
 
-var formDataController = {
-
+/**
+ * [FormDataController description]
+ * @param {{instanceId: string, entityId: string}} params [description]
+ * @constructor
+ */
+function FormDataController(params){
+	params = params || {};
+	var originalInstanceId = params.instanceId || null;
 	/**
 	 * Gets instance as JSON from Dristhi DB - Should this be asynchronous?
 	 * @param  {string} instanceId [description]
 	 * @return {?*}       [description]
 	 */
-	get : function(){
+	this.get = function(){
 		// temporarily mocked
-		return mockInstances.a;
-	},
+		return mockInstances[originalInstanceId] || null;
+	};
 
 	/**
 	 * Passes instance as JSON to store in Dristhi DB - Should this be asynchronous?
 	 * @param  {*} dataJ	JSON object with data
 	 * @return {boolean}     
 	 */
-	save : function(instanceId, data){
+	this.save = function(instanceId, data){
 		return true;
-	},
+	};
 
-	remove : function(instanceId){
+	this.remove = function(instanceId){
 
-	}
-};
+	};
+}
 
 /**
  * Class maintaining a Drishti JSON Data Definition and deal with JSON <-> XML transformation
@@ -33,14 +39,15 @@ var formDataController = {
  */
 function JData(data){
 	data = data || {"form": {"bind_type":"?????", "default_bind_path":"????", "form_type":"????", "meta_fields":[], "fields":[], "sub_forms":[]}};
+
 	/**
 	 * Transforms JSON to an XML string
 	 * NOTE: alternatively, we could could overwrite Form.init() to use JSON data instead of XML for instantiation
 	 * @param  {(*|string)} jData	JSON object or JSON string
 	 * @return {?string}			XML string
 	 */
-	/*this.toXML = function(){
-		var i, n, path, value, $formInstanceFirst,
+	this.toXML = function(){
+		var i, n, path, value, $formInstanceFirst, defaultPath,
 			$instance = $($.parseXML('<root />'));
 
 		if (typeof data !== 'object'){
@@ -48,27 +55,31 @@ function JData(data){
 			console.error(error);
 		}
 
+		defaultPath = data.form.default_bind_path;
+
 		for (i = 0; i<data.form.fields.length; i++){
-			n = data.values[i];
-			path = n.bindPath;
-			value = n.fieldValue;
-			if (typeof path !== 'undefined' && path.length > 0 && typeof value !== undefined){
+			n = data.form.fields[i];
+			//only have to concern ourselves with field that have a value (incl empty string)
+			if (typeof n.value !== 'undefined'){
+				path = (typeof n.bind == 'undefined') ? defaultPath + n.name : (n.bind.indexOf('/') === 0) ? n.bind : defaultPath + n.bind;
+				value = n.value;
+			//if (typeof path !== 'undefined' && path.length > 0 && typeof value !== undefined){
 				addXMLNodeAndValue($instance, path, value);
+				console.log('added path: '+path+' with value: "'+value+'"');
 			}
-			else{
-				console.error('Node information in JSON is incomplete. Expected fieldValue and non-empty bindPath attributes', n);
-				return null;
-			}
+			//else{
+			//	console.error('Node information in JSON is incomplete. Expected value and non-empty bindPath attributes', n);
+			//	return null;
+			//}
 		}
 		//TODO: add support for [repeats]?
 		$formInstanceFirst = $instance.find('instance>*:first');
-		$formInstanceFirst.attr('id', jData.formId);
+		//$formInstanceFirst.attr('id', jData.formId);
 		return (new XMLSerializer()).serializeToString($formInstanceFirst[0]);
-	};*/
+	};
 
 	/**
-	 * gets current state of form instance in JSON format
-	 * NOTE: alternatively, we could turn this into a Form.getJSON() function
+	 * Gets current state of form instance in JSON format. It may be better to pass form as a parameter and rename as update().
 	 */
 	this.get = function(){
 		var i, $repeatLeaves,
@@ -126,20 +137,36 @@ function JData(data){
 	};
 
 	function updateFields(fieldArr, $nodes){
-		var $leaf, field, name, source, value, bind;
+		var $leaf, fields, field, name, source, value, bind, error;
 		$nodes.each(function(){
 			$leaf = $(this);
 			name = $leaf.prop('nodeName');
 			value = $leaf.text();
 			bind = $leaf.getXPath('model');
-			field = $.grep(fieldArr, function(field){return (field.name === name);})[0];
-			if (typeof field === 'undefined'){
-				field = {"name": name};
-				fieldArr.push(field);
+			fields = $.grep(fieldArr, function(field){
+				return (typeof field.bind  == 'undefined' && field.name === name) ||
+					(typeof field.bind !== 'undefined' && (field.bind === name || field.bind.substring(field.bind.lastIndexOf('/')+1) === name)) ;
+			});
+			if (fields.length > 1){
+				error = 'Multiple fields found (multiple nodes with bind name: '+name+' found in JSON format.';
+				if (typeof data.errors == 'undefined') data.errors = [];
+				data.errors.push(error);
+				console.error(error);
 			}
-			field.value = value;
-			field.source = field.source || '????.'+name;
-			field.bind = bind; //the override doesn't yet make sense to me
+			else if (fields.length === 0){
+				error = 'Field not found (node with name: '+name+' was missing from JSON format).';
+				if (typeof data.errors == 'undefined') data.errors = [];
+				data.errors.push(error);
+				console.error(error);
+				//field = {"name": name};
+				//fieldArr.push(field);
+			}
+			else {
+				field = fields[0];
+				field.value = value;
+				//field.source = field.source || '????.'+name;
+				//field.bind = bind; 
+			}
 		});
 	}
 

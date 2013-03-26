@@ -204,6 +204,73 @@ var mockInstances =
                 }
             ]
         }
+    },
+
+   	'b': {
+        "form": {
+            "bind_type": "whatever",
+            "default_bind_path": "/model/instance/thedata/",
+            "fields": [
+                {
+                    "name": "nodeA"
+                },
+                {
+                	"name": "nodeB"
+                },
+                {
+               		"name": "nodeF"
+                },
+                {
+                    "name": "instanceID",
+                	"bind": "/model/instance/thedata/meta/instanceID",
+                	"value": "b"
+                },
+                {
+                	"name": "A",
+                	"bind": "/model/instance/thedata/somenodes/A",
+                },
+                {
+                	"name": "B",
+                	"bind": "/model/instance/thedata/somenodes/B",
+                },
+                {
+                	"name": "C",
+                	"bind": "/model/instance/thedata/somenodes/C",
+                },
+                {
+                	"name": "w1",
+                	"bind": "/model/instance/thedata/someweights/w1",
+                },
+                {
+                	"name": "w2",
+                	"bind": "/model/instance/thedata/someweights/w2",
+                },
+                {
+                	"name": "w.3",
+                	"bind": "/model/instance/thedata/someweights/w.3",
+                }
+            ],
+            "sub_forms" : [
+            	{
+            		"bind_type": "repeatGroup",
+            		"default_bind_path": "/model/instance/thedata/repeatGroup",
+            		"count_field_name": null,
+            		"meta_fields" : [],
+            		"fields":[
+            			{
+            				"name": "nodeC"
+            			}
+            		],
+     				"instances":[
+     					{
+     						"nodeC": "some value"
+     					}
+     				]
+            	}
+
+
+            ]
+        }
     }
 };
 //	'a':

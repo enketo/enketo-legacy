@@ -38,7 +38,7 @@ function FormDataController(params){
  * @constructor
  */
 function JData(data){
-	data = data || {"form": {"bind_type":"?????", "default_bind_path":"????", "form_type":"????", "meta_fields":[], "fields":[], "sub_forms":[]}};
+	//data = data || {"form": {"bind_type":"?????", "default_bind_path":"????", "form_type":"????", "meta_fields":[], "fields":[], "sub_forms":[]}};
 
 	/**
 	 * Transforms JSON to an XML string
@@ -72,7 +72,7 @@ function JData(data){
 			//	return null;
 			//}
 		}
-		//TODO: add support for [repeats]?
+		//TODO: add support for repeats?
 		$formInstanceFirst = $instance.find('instance>*:first');
 		//$formInstanceFirst.attr('id', jData.formId);
 		return (new XMLSerializer()).serializeToString($formInstanceFirst[0]);
@@ -83,8 +83,7 @@ function JData(data){
 	 */
 	this.get = function(){
 		var i, $repeatLeaves,
-			subForms,
-			subFormTemplates = [],
+			subFormsStarted = [],
 			//$data = $($.parseXML(xData)),
 			//formId = $data.find('*:first').attr('id'),
 			$mainLeaves = form.getDataO().node('*', null, {noTemplate: true, onlyLeaf: true}).get(),
@@ -93,6 +92,7 @@ function JData(data){
 			 * issue: this relies on a template node to be present, which is not required for repeats in OpenRosa
 			 * but thankfully is guaranteed in formhub-hosted forms. It would be good to move this to the Form class as an
 			 * onlyRepeat: true filter for Nodeset()
+			 * Nested repeats are not supported.
 			 */
 			$repeats = form.getDataO().$.find('instance:first [template]').siblings().filter(function(){
 				var nodeName = $(this).prop('nodeName');
@@ -100,74 +100,79 @@ function JData(data){
 			});
 
 		$repeats.each(function(){
-			var bindType, subForm, newSubForm, subFormTemplate,
+			var bindType, subForms, subForm,
+				instance = {},
 				$repeat = $(this);
-			//bind_type = repeat node name???
+			//bind_type in JSON subform = repeat nodeName???
 			bindType = $repeat.prop('nodeName');
-			if ($.grep(subFormTemplates, function(template){return (template.bind_type === bindType); }).length === 0){
-				subForm = $.grep(data.form.sub_forms, function(sub){return (sub.bind_type === bindType); })[0];
-				//now remove this subform from data
-				$.each(data.form.sub_forms, function(i){
-					if(data.form.sub_forms[i].bind_type === bindType) data.form.sub_forms.splice(i,1);
-				});
-				//or is this always defined??
-				if (typeof subForm === 'undefined'){
-					subForm = {"bind_type": bindType, "default_bind_path":"?????", "form_type": "?????", "meta_fields":[], "fields":[]};
-				}
-				subForm.fields = [];
-				subFormTemplates.push(subForm);
+			subForms = $.grep(data.form.sub_forms, function(subfrm){return (subfrm.bind_type === bindType); });
+			if (subForms.length === 0){
+				recordError('Repeat definition not found (no subform with bind type "'+bindType+'" in JSON format');
 			}
-
-			$repeatLeaves = $repeat.find('*').filter(function(){
-				return $(this).children().length === 0;
-			});
-			$mainLeaves = $mainLeaves.takeOut($repeatLeaves);
-
-			subFormTemplate = $.grep(subFormTemplates,function(template){return (template.bind_type === bindType);})[0];
-			newSubForm = jQuery.extend({}, subFormTemplate);
-			data.form.sub_forms.push(newSubForm);
-			updateFields(newSubForm.fields, $repeatLeaves);
+			else if (subForms.length > 1){
+				recordError('Multiple repeat definititions found (multiple subforms with bind type "'+bindType+'" in JSON format');
+			}
+			else{
+				subForm = subForms[0];
+				if ($.inArray(bindType, subFormsStarted) === -1){
+					subFormsStarted.push(bindType);
+					subForm.instances = [];
+				}
+				$repeatLeaves = $repeat.find('*').filter(function(){
+					return $(this).children().length === 0;
+				});
+				$mainLeaves = $mainLeaves.takeOut($repeatLeaves);
+				$repeatLeaves.each(function(){
+					var props = getNodeProps($(this)),
+						field = getField(props.nodeName, subForm.fields);
+					if (field){
+						instance[field.name] = props.value;
+					}
+				});
+				subForm.instances.push(instance);
+			}
 		});
 
-		updateFields(data.form.fields, $mainLeaves);
-		//jData.formId = formId;
-		//jData.instanceId = $data.find('meta>instanceID').text();
-		//jData.fields = fields;
+		$mainLeaves.each(function(){
+			var props = getNodeProps($(this)),
+				field = getField(props.nodeName, data.form.fields);
+			if (field){
+				field.value = props.value;
+			}
+		});
 		return data;
 	};
 
-	function updateFields(fieldArr, $nodes){
-		var $leaf, fields, field, name, source, value, bind, error;
-		$nodes.each(function(){
-			$leaf = $(this);
-			name = $leaf.prop('nodeName');
-			value = $leaf.text();
-			bind = $leaf.getXPath('model');
+	//given an XML nodeName, it obtains a field from a field array
+	function getField(nodeName, fieldArr){
+		var exceptions = ['deprecatedID'],
 			fields = $.grep(fieldArr, function(field){
-				return (typeof field.bind  == 'undefined' && field.name === name) ||
-					(typeof field.bind !== 'undefined' && (field.bind === name || field.bind.substring(field.bind.lastIndexOf('/')+1) === name)) ;
-			});
-			if (fields.length > 1){
-				error = 'Multiple fields found (multiple nodes with bind name: '+name+' found in JSON format.';
-				if (typeof data.errors == 'undefined') data.errors = [];
-				data.errors.push(error);
-				console.error(error);
-			}
-			else if (fields.length === 0){
-				error = 'Field not found (node with name: '+name+' was missing from JSON format).';
-				if (typeof data.errors == 'undefined') data.errors = [];
-				data.errors.push(error);
-				console.error(error);
-				//field = {"name": name};
-				//fieldArr.push(field);
-			}
-			else {
-				field = fields[0];
-				field.value = value;
-				//field.source = field.source || '????.'+name;
-				//field.bind = bind; 
-			}
+			return (typeof field.bind  == 'undefined' && field.name === nodeName) ||
+				(typeof field.bind !== 'undefined' && (field.bind === nodeName || field.bind.substring(field.bind.lastIndexOf('/')+1) === nodeName)) ;
 		});
+
+		if (fields.length > 1){
+			recordError('Multiple fields found (multiple nodes with bind name: '+nodeName+' found in JSON format.');
+			return null;
+		}
+		else if (fields.length === 0 && $.inArray(nodeName, exceptions) !== -1){
+			return null;
+		}
+		else if (fields.length === 0){
+			recordError('Field not found (node with name: '+nodeName+' was missing from JSON format).');
+			return null;
+		}
+		else {
+			return fields[0];
+		}
+	}
+
+	function getNodeProps($node){
+		return {
+			nodeName: $node.prop('nodeName'),
+			value: $node.text(),
+			path: $node.getXPath('model')
+		};
 	}
 
 	/**
@@ -200,6 +205,12 @@ function JData(data){
 			}
 		}
 		return $doc;
+	}
+
+	function recordError(errorMsg){
+		if (typeof data.errors == 'undefined') data.errors = [];
+		data.errors.push(errorMsg);
+		console.error(errorMsg);
 	}
 }
 

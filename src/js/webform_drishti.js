@@ -67,6 +67,7 @@ $(document).ready(function() {
 		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
 	}
 
+	//controller for submission of data to drishti
 	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
 		var jData, jDataStr, errorStr;
 		if (typeof form !== 'undefined'){

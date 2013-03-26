@@ -2655,11 +2655,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//if not done asynchronously, this code causes a style undefined exception in Jasmine unit tests with jQuery 1.9 and 2.0
 			//but this breaks loading of default values inside repeats
+			//this is caused by show() not being able to find the 'property "style" of undefined'
 			//setTimeout(function(){
-				$clone.hide().clearInputs('').show(duration, function(){
+				$clone.clearInputs('');//.show(duration, function(){
 					//re-initiate widgets in clone
 					that.formO.widgets.init($clone);
-				});
+				//});
 			//}, 0);
 
 			//note: in http://formhub.org/formhub_u/forms/hh_polio_survey_cloned/form.xml a parent group of a repeat

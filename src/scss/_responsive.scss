@@ -1,0 +1,43 @@
+@media screen and (max-width: 720px){
+  @include small-screen-paddings;
+  body{
+    background: none;    
+    .main{ 
+      margin: 0;}
+    .form-header{
+      top: 0;
+      border-bottom: 1px solid $groupline;
+      .form-language-selector > span{
+        display: none; } }
+    #page .close{
+      font-size: 2em; } } }
+
+@media screen and (max-width: 600px){
+  @include small-screen-paddings;
+  body{
+    background: none;
+    //@include font-sizes($baseFontSize, 1.05);
+    line-height: 1.05 * $baseLineHeight;
+    .main{ 
+      margin: 0;
+      article{
+        padding: 3em 2em 2em 2em; } }
+    #page .close{
+      font-size: 3em; } } }
+
+@media screen and (max-width: 400px){
+  @include small-screen-paddings;
+  body{
+    background: none;
+    //@include font-sizes($baseFontSize, 1.09);
+    line-height: 1.09 * $baseLineHeight;
+    .main{ 
+      margin: 0;
+      article{
+        padding: 3em 1em 1em 1em; } }
+    #page .close{
+      font-size: 4em; }
+    .form-header .form-language-selector{
+      border-right: none; }
+    button.print{
+      display: none; } } }

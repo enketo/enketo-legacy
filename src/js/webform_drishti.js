@@ -18,30 +18,19 @@
 
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
-var /**@type {StorageLocal}*/store;
-var /**@type {FileManager}*/fileManager;
+var /**@type {*}*/fileManager;
 
 $(document).ready(function() {
 	'use strict';
-	var formParts, existingInstanceJ, instanceToEdit, loadErrors, jsonErrors,
-		formDataController = new FormDataController({instanceId: settings.instanceId});
+	var formParts, existingInstanceJ, instanceToEdit, loadErrors, jsonErrors, jDataO,
+		formDataController = new FormDataController({'instanceId': settings.instanceId, 'entityId': settings.entityId});
 
 	connection = new Connection();
+	existingInstanceJ = formDataController.get();
 
-	/*
-	formParts = store.getForm(settings.formId);
-
-	if (!formParts){
-		$('.main form').append('<div class="alert alert-error">Form with id: '+settings.formId+' could not be found.</div>');
-		return;
-	}
-
-	$('.main form').replaceWith(formParts.form);
-	*/
-	existingInstanceJ = formDataController.get();//(settings.instanceId);
-
-	if (settings.instanceId && !existingInstanceJ){
-		gui.alert('Instance with id "'+settings.instanceId+'" could not be found. Loading empty form instead.');
+	if (!existingInstanceJ){
+		$('form.jr').remove();
+		return gui.alert('Instance with id "'+settings.instanceId+'" could not be found.');
 	}
 
 	/*if (existingInstanceJ && existingInstanceJ.formId !== settings.formId){
@@ -50,13 +39,10 @@ $(document).ready(function() {
 		existingInstanceJ = null;
 	}*/
 
-	//instanceToEdit = (existingInstanceJ) ? transformer.JSONToXML(existingInstanceJ) : null;
-
-	var jDataO = new JData(existingInstanceJ);
-
-	console.log('XML to load: ', jDataO.toXML());
-
-	form = new Form('form.jr:eq(0)', modelStr, jDataO.toXML());//, instanceToEdit);
+	jDataO = new JData(existingInstanceJ);
+	instanceToEdit = jDataO.toXML();
+	console.log('XML to load: ', instanceToEdit);
+	form = new Form('form.jr:eq(0)', modelStr, instanceToEdit);
 
 	loadErrors = form.init();
 	//check if JSON format is complete and if not, prepend the errors
@@ -69,7 +55,7 @@ $(document).ready(function() {
 
 	//controller for submission of data to drishti
 	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
-		var jData, jDataStr, errorStr;
+		var jData, jDataStr, errorStr, saveResult;
 		if (typeof form !== 'undefined'){
 			form.validateForm();
 			if (!form.isValid()){
@@ -80,20 +66,31 @@ $(document).ready(function() {
 				jData = jDataO.get();
 				jDataStr = vkbeautify.json(JSON.stringify(jData));
 				errorStr = (typeof jData.errors !== 'undefined' && jData.errors.length > 0) ? '<ul class="alert alert-error"><li>'+jData.errors.join('</li><li>')+'</li></ul>' : '';
-				console.log(jDataStr);
 				gui.alert(
 					errorStr+
-					'<p>The following JSON object has been prepared for submission:</p><br/>'+
+					'<p>The following JSON object with instanceID: '+form.getInstanceID()+' has been prepared for submission:</p><br/>'+
 					'<pre style="font-size: 0.6em; width: 100%;">'+jDataStr+'</pre>',
 					'Record is ready to Submit!',
 					'info'
 				);
 				$('#dialog-alert').css({'width' : '80%', 'margin-left': '-40%'});//temporary to show JSON
+
+				if (!jData.errors){
+					//add callbacks or deal with result synchronously?
+					saveResult = formDataController.save(form.getInstanceID(), jData);
+					if (saveResult){
+						//go back to dristhi?
+						//or reset, but with which JSON instance?
+						/*
+							form.resetHTML();
+							form = new Form('form.jr:eq(0)', jrDataStr);
+							form.init();
+						 */
+					}
+				}
 			}
 		}
 	});
-
-
 });
 
 /**

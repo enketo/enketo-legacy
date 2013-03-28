@@ -14,53 +14,48 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global vkbeautify, gui, modelStr, StorageLocal, FileManager, Form*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global vkbeautify, gui, FormDataController, modelStr, StorageLocal, FileManager, Form*/
 
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
-var /**@type {StorageLocal}*/store;
-var /**@type {FileManager}*/fileManager;
+var /**@type {*}*/fileManager;
 
 $(document).ready(function() {
 	'use strict';
-	var loadErrors, formParts, existingInstanceJ, instanceToEdit;
+	var formParts, existingInstanceJ, instanceToEdit, loadErrors, jsonErrors, jDataO,
+		formDataController = new FormDataController({'instanceId': settings.instanceId, 'entityId': settings.entityId});
+
 	connection = new Connection();
-	//store = new StorageLocal();
-	var jData = new JData();
-	//formDataController = new FormDataController();
+	existingInstanceJ = formDataController.get();
 
-	/*
-	formParts = store.getForm(settings.formId);
-
-	if (!formParts){
-		$('.main form').append('<div class="alert alert-error">Form with id: '+settings.formId+' could not be found.</div>');
-		return;
+	if (!existingInstanceJ){
+		$('form.jr').remove();
+		return gui.alert('Instance with id "'+settings.instanceId+'" could not be found.');
 	}
 
-	$('.main form').replaceWith(formParts.form);
-
-	existingInstanceJ = store.getInstanceJ(settings.instanceId);
-
-	if (settings.instanceId && !existingInstanceJ){
-		gui.alert('Instance with id "'+settings.instanceId+'" could not be found. Loading empty form instead.');
-	}
-	if (existingInstanceJ && existingInstanceJ.formId !== settings.formId){
+	/*if (existingInstanceJ && existingInstanceJ.formId !== settings.formId){
 		gui.alert('<p>Could not load existing record because this record, with id: "'+settings.instanceId+
 			'", belongs to form "'+existingInstanceJ.formId+'".<p><p>Loaded empty form instead.</p>');
 		existingInstanceJ = null;
-	}
+	}*/
 
-	instanceToEdit = (existingInstanceJ) ? transformer.JSONToXML(existingInstanceJ) : null;
-	*/
-	form = new Form('form.jr:eq(0)', modelStr);//, instanceToEdit);
+	jDataO = new JData(existingInstanceJ);
+	instanceToEdit = jDataO.toXML();
+	console.log('XML to load: ', instanceToEdit);
+	form = new Form('form.jr:eq(0)', modelStr, instanceToEdit);
 
 	loadErrors = form.init();
+	//check if JSON format is complete and if not, prepend the errors
+	jsonErrors = jDataO.get().errors;
+	loadErrors = (jsonErrors) ? jsonErrors.concat(loadErrors) : loadErrors;
+
 	if (loadErrors.length > 0){
 		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
 	}
 
+	//controller for submission of data to drishti
 	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
-		var jDataStr;
+		var jData, jDataStr, errorStr, saveResult;
 		if (typeof form !== 'undefined'){
 			form.validateForm();
 			if (!form.isValid()){
@@ -68,15 +63,31 @@ $(document).ready(function() {
 				return;
 			}
 			else{
-				jDataStr = vkbeautify.json(JSON.stringify(jData.get()));
-				console.log(jDataStr);
+				jData = jDataO.get();
+				jDataStr = vkbeautify.json(JSON.stringify(jData));
+				errorStr = (typeof jData.errors !== 'undefined' && jData.errors.length > 0) ? '<ul class="alert alert-error"><li>'+jData.errors.join('</li><li>')+'</li></ul>' : '';
 				gui.alert(
-					'<p>The following JSON object has been prepared for submission:</p><br/>'+
+					errorStr+
+					'<p>The following JSON object with instanceID: '+form.getInstanceID()+' has been prepared for submission:</p><br/>'+
 					'<pre style="font-size: 0.6em; width: 100%;">'+jDataStr+'</pre>',
 					'Record is ready to Submit!',
 					'info'
 				);
 				$('#dialog-alert').css({'width' : '80%', 'margin-left': '-40%'});//temporary to show JSON
+
+				if (!jData.errors){
+					//add callbacks or deal with result synchronously?
+					saveResult = formDataController.save(form.getInstanceID(), jData);
+					if (saveResult){
+						//go back to dristhi?
+						//or reset, but with which JSON instance?
+						/*
+							form.resetHTML();
+							form = new Form('form.jr:eq(0)', jrDataStr);
+							form.init();
+						 */
+					}
+				}
 			}
 		}
 	});

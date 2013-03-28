@@ -40,6 +40,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	this.Data = function(dataStr){return new DataXML(dataStr);};
 	this.getDataO = function(){return data;};
 	this.getDataEditO = function(){return dataToEdit.get();};
+	this.getInstanceID = function(){return data.getInstanceID();};
 	this.Form = function(selector){return new FormHTML(selector);};
 	this.getFormO = function(){return form;};
 	//this.getDataXML = function(){return data.getXML();};
@@ -789,7 +790,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	/**
 	 * Obtains a cleaned up string of the data instance(s)
 	 * @param  {boolean=} incTempl indicates whether repeat templates should be included in the return value (default: false)
-	 * @param  {boolean=} incNs    indicates whether namespaces should be included in return value (default: false)
+	 * @param  {boolean=} incNs    indicates whether namespaces should be included in return value (default: true)
 	 * @param  {boolean=} all	  indicates whether all instances should be included in the return value (default: false)
 	 * @return {string}           XML string
 	 */
@@ -802,7 +803,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$docRoot = (all) ? this.$.find(':first') : this.node('> :first').get();
 		
-		$dataClone = $('<root></root');
+		//this should be refactored. Using <root> is not necessary.
+		$dataClone = $('<root></root>');
 		
 		$docRoot.clone().appendTo($dataClone);
 
@@ -2655,11 +2657,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			//if not done asynchronously, this code causes a style undefined exception in Jasmine unit tests with jQuery 1.9 and 2.0
 			//but this breaks loading of default values inside repeats
+			//this is caused by show() not being able to find the 'property "style" of undefined'
 			//setTimeout(function(){
-				$clone.hide().clearInputs('').show(duration, function(){
+				$clone.clearInputs('');//.show(duration, function(){
 					//re-initiate widgets in clone
 					that.formO.widgets.init($clone);
-				});
+				//});
 			//}, 0);
 
 			//note: in http://formhub.org/formhub_u/forms/hh_polio_survey_cloned/form.xml a parent group of a repeat
@@ -3132,33 +3135,5 @@ Date.prototype.toISOLocalString = function(){
             return this.find(selector);
     };
 
-
-    /**
-     * Creates an XPath from a node (currently not used inside this Class (instead FormHTML.prototype.generateName is used) but will be in future);
-     * @param  {string=} rootNodeName	if absent the root is #document
-     * @return {string}                 XPath
-     */
-    $.fn.getXPath = function(rootNodeName){
-		//other nodes may have the same XPath but because this function is used to determine the corresponding input name of a data node, index is not included 
-		var position,
-			$node = this.first(),
-			nodeName = $node.prop('nodeName'),
-			$sibSameNameAndSelf = $node.siblings(nodeName).addBack(),
-			steps = [], 
-			$parent = $node.parent(),
-			parentName = $parent.prop('nodeName');
-
-		position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($node)+1)+']' : '';
-		steps.push(nodeName+position);
-
-		while ($parent.length == 1 && parentName !== rootNodeName && parentName !== '#document'){
-			$sibSameNameAndSelf = $parent.siblings(parentName).addBack();
-			position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($parent)+1)+']' : '';
-			steps.push(parentName+position);
-			$parent = $parent.parent();
-			parentName = $parent.prop('nodeName');
-		}
-		return '/'+steps.reverse().join('/');
-	};
 
 })(jQuery);

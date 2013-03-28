@@ -56,7 +56,8 @@ function setSettings(){
 			{q: 'form', s:'formURL'},
 			{q: 'id', s: 'formId'},
 			{q: 'formId', s: 'formId'},
-			{q: 'instanceId', s: 'instanceId'}
+			{q: 'instanceId', s: 'instanceId'},
+			{q: 'entityId', s: 'entityId'}
 		];
 	for (i=0 ; i< settingsMap.length ; i++){
 		queryVar = getQueryVar(settingsMap[i].q);

@@ -7243,6 +7243,93 @@ progress {
   right: 20px;
 }
 
+@media screen and (max-width: 720px) {
+  body {
+    padding: 0 !important;
+  }
+  body header {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  body #page .content {
+    margin: 1em;
+  }
+
+  body {
+    background: none;
+  }
+  body .main {
+    margin: 0;
+  }
+  body .form-header {
+    top: 0;
+    border-bottom: 1px solid #bbbbbb;
+  }
+  body .form-header .form-language-selector > span {
+    display: none;
+  }
+  body #page .close {
+    font-size: 2em;
+  }
+}
+@media screen and (max-width: 600px) {
+  body {
+    padding: 0 !important;
+  }
+  body header {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  body #page .content {
+    margin: 1em;
+  }
+
+  body {
+    background: none;
+    line-height: 21px;
+  }
+  body .main {
+    margin: 0;
+  }
+  body .main article {
+    padding: 3em 2em 2em 2em;
+  }
+  body #page .close {
+    font-size: 3em;
+  }
+}
+@media screen and (max-width: 400px) {
+  body {
+    padding: 0 !important;
+  }
+  body header {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  body #page .content {
+    margin: 1em;
+  }
+
+  body {
+    background: none;
+    line-height: 21.8px;
+  }
+  body .main {
+    margin: 0;
+  }
+  body .main article {
+    padding: 3em 1em 1em 1em;
+  }
+  body #page .close {
+    font-size: 4em;
+  }
+  body .form-header .form-language-selector {
+    border-right: none;
+  }
+  body button.print {
+    display: none;
+  }
+}
 .navbar.navbar-fixed-top {
   margin-bottom: 0;
 }

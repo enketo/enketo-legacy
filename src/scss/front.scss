@@ -4,6 +4,7 @@ $iconSpritePath: '/images/glyphicons-halflings.png'; //patches bug in bootstrap-
 $iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
 
 @import "_main";
+@import "_responsive";
 @import "_menu";
 
 .main{

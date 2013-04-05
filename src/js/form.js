@@ -1272,7 +1272,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return (this.getInputType($node) == 'checkbox' || $node.attr('multiple') !== undefined) ? true : false;
 		},
 		isEnabled: function($node){
-			return ($node.attr('disabled') !== 'undefined' || $node.parents('fieldset:disabled').length !== 0 ) ? false : true;
+			return !($node.attr('disabled') || $node.parents('fieldset:disabled').length > 0);
 		},
 		getVal : function($node){
 			var inputType, values=[], name;

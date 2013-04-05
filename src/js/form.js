@@ -1272,7 +1272,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return (this.getInputType($node) == 'checkbox' || $node.attr('multiple') !== undefined) ? true : false;
 		},
 		isEnabled: function($node){
-			return ($node.attr('disabled') !== undefined  || $node.parents('fieldset:disabled').length !== 0 ) ? false : true;
+			return !($node.prop('disabled') || $node.parents('fieldset:disabled').length > 0);
 		},
 		getVal : function($node){
 			var inputType, values=[], name;
@@ -1665,10 +1665,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				type = $branchNode.prop('nodeName').toLowerCase();
 
 				if (type == 'label') {
-					$branchNode.children('input, select, textarea').removeAttr('disabled');
+					$branchNode.children('input, select, textarea').prop('disabled', false);
 				}
 				else{
-					$branchNode.removeAttr('disabled');
+					$branchNode.prop('disabled', false);
 				}
 			}
 		};
@@ -1702,10 +1702,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 
 				if (type == 'label'){
-					$branchNode.children('input, select, textarea').attr('disabled', 'disabled');
+					$branchNode.children('input, select, textarea').prop('disabled', true);
 				}
 				else{
-					$branchNode.attr('disabled', 'disabled');
+					$branchNode.prop('disabled', true);
 				}
 			}
 		};
@@ -1840,7 +1840,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
 		}
 		
-		$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
+		$form.find(':not(:disabled) span.active').find(cleverSelector.join()).each(function(){
 			expr = $(this).attr('data-value');
 
 			if (typeof outputCache[expr] !== 'undefined'){
@@ -2280,7 +2280,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 
 				$fileInputs
-					.attr('disabled', 'disabled')
+					.prop('disabled', true)
 					.addClass('ignore')
 					.after('<div class="file-feedback text-'+feedbackClass+'">'+feedbackMsg+'</div>');
 
@@ -2347,7 +2347,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 								return true;
 							}
 						}).removeClass('ignore')
-							.removeAttr('disabled')
+							.prop('disabled', false)
 							.siblings('.file-feedback').remove();
 						$fileInputs.after('<div class="text-info">'+
 							'File inputs are experimental. Use only for testing.');
@@ -2579,7 +2579,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('fieldset.jr-repeat').prepend('<span class="repeat-number"></span>');
 			$form.find('fieldset.jr-repeat:not([data-repeat-fixed])')
 				.append('<button type="button" class="btn repeat"><i class="icon-plus"></i></button>'+
-					'<button type="button" disabled="disabled" class="btn remove"><i class="icon-minus"></i></button>');
+					'<button type="button" disabled class="btn remove"><i class="icon-minus"></i></button>');
 
 			//delegated handlers (strictly speaking not required, but checked for doubling of events -> OK)
 			$form.on('click', 'button.repeat:enabled', function(){
@@ -2728,11 +2728,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$node = (typeof $node == 'undefined' || $node.length === 0 || !$node) ?	$node = $form : $node;
 			
 			//first switch everything off and remove hover state
-			$node.find('button.repeat, button.remove').attr('disabled', 'disabled');//button('disable').removeClass('ui-state-hover');
+			$node.find('button.repeat, button.remove').prop('disabled', true);//button('disable').removeClass('ui-state-hover');
 		
 			//then enable the appropriate ones
-			$node.find('fieldset.jr-repeat:last-child > button.repeat').removeAttr('disabled');//.button('enable');
-			$node.find('button.remove:not(:eq(0))').removeAttr('disabled');
+			$node.find('fieldset.jr-repeat:last-child > button.repeat').prop('disabled', false);//.button('enable');
+			$node.find('button.remove:not(:eq(0))').prop('disabled', false);
 		}
 	};
 	
@@ -2775,12 +2775,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (validReq === false){
 				that.setValid($(this), 'constraint');
 				if (event.type === 'validate'){
+					//console.error('setting node '+n.path+' to invalid-required', n);
 					that.setInvalid($(this), 'required');
 				}
 			}
 			else{
 				that.setValid($(this), 'required');
 				if (typeof validCons !== 'undefined' && validCons === false){
+					//console.error('setting node '+n.path+' to invalid-constraint', n);
 					that.setInvalid($(this), 'constraint');
 				}
 				else if (validCons !== null) {
@@ -2910,8 +2912,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.find('fieldset:disabled input, fieldset:disabled select, fieldset:disabled textarea, input:disabled, select:disabled, textarea:disabled').each(function(){
 			that.setValid($(this));
 		});
-		//the above still leaves out elements that are not disabled directly but have disabled parents
-		//this is dealt with in the validate event handler
 		$form.find('input, select, textarea').not('.ignore').trigger('validate');
 		return this.isValid();
 	};

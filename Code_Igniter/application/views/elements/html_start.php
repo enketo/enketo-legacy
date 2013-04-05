@@ -38,7 +38,7 @@
 <? foreach ($scripts as $script): ?>
 		<script type="text/javascript" src="<?= $script; ?>"></script>
 <? endforeach; ?>
-<script src="http://debug.phonegap.com/target/target-script-min.js#martijnrenketo"></script>
+<script src="http://10.0.1.44:8080/target/target-script-min.js#anonymous"></script>
 
 <? $maps_dynamic_key = $this->config->item('google_maps_api_v3_key'); ?>
 <? $maps_static_key = $this->config->item('google_maps_static_api_key'); ?>

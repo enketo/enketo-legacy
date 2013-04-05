@@ -377,7 +377,7 @@
         enableSearch: function(){
             var geocoder = new google.maps.Geocoder(),
                 that = this;
-            this.$search.removeAttr('disabled');
+            this.$search.prop('disabled', false);
             this.$search.on('change', function(event){
                 event.stopImmediatePropagation();
                 //console.debug('search field click event');

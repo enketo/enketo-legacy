@@ -672,14 +672,14 @@ describe('branching functionality', function(){
 
 		expect(form.getFormO().$.find(repeatSelector).eq(1)
 			.find('[data-name="/issue208/rep/nodeB"]').closest('.restoring-sanity-to-legends')
-			.prop('disabled')).toBe(true);
+			.hasClass('disabled')).toBe(true);
 		//select 'yes' in first question of 2nd repeat
 		form.getDataO().node('/issue208/rep/nodeA', 1).setVal('yes', null, 'string');
 		//doublecheck if new value was set
 		expect(form.getDataO().node('/issue208/rep/nodeA', 1).getVal()[0]).toEqual('yes');
 		//check if 2nd question in 2nd repeat is now enabled
 		expect(form.getFormO().$.find(repeatSelector).eq(1)
-			.find('[data-name="/issue208/rep/nodeB"]').parent().parent().prop('disabled')).toBe(false);
+			.find('[data-name="/issue208/rep/nodeB"]').closest('.restoring-sanity-to-legends').hasClass('disabled')).toBe(false);
 
 	});
 

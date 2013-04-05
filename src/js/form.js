@@ -1702,10 +1702,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 
 				if (type == 'label'){
-					$branchNode.children('input, select, textarea').prop('disabled', 'disabled');
+					$branchNode.children('input, select, textarea').prop('disabled', true);
 				}
 				else{
-					$branchNode.prop('disabled', 'disabled');
+					$branchNode.prop('disabled', true);
 				}
 			}
 		};
@@ -2280,7 +2280,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 
 				$fileInputs
-					.prop('disabled', 'disabled')
+					.prop('disabled', true)
 					.addClass('ignore')
 					.after('<div class="file-feedback text-'+feedbackClass+'">'+feedbackMsg+'</div>');
 
@@ -2579,7 +2579,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('fieldset.jr-repeat').prepend('<span class="repeat-number"></span>');
 			$form.find('fieldset.jr-repeat:not([data-repeat-fixed])')
 				.append('<button type="button" class="btn repeat"><i class="icon-plus"></i></button>'+
-					'<button type="button" disabled="disabled" class="btn remove"><i class="icon-minus"></i></button>');
+					'<button type="button" disabled class="btn remove"><i class="icon-minus"></i></button>');
 
 			//delegated handlers (strictly speaking not required, but checked for doubling of events -> OK)
 			$form.on('click', 'button.repeat:enabled', function(){
@@ -2728,7 +2728,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$node = (typeof $node == 'undefined' || $node.length === 0 || !$node) ?	$node = $form : $node;
 			
 			//first switch everything off and remove hover state
-			$node.find('button.repeat, button.remove').prop('disabled', 'disabled');//button('disable').removeClass('ui-state-hover');
+			$node.find('button.repeat, button.remove').prop('disabled', true);//button('disable').removeClass('ui-state-hover');
 		
 			//then enable the appropriate ones
 			$node.find('fieldset.jr-repeat:last-child > button.repeat').prop('disabled', false);//.button('enable');

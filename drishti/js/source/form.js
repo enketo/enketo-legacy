@@ -2775,12 +2775,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (validReq === false){
 				that.setValid($(this), 'constraint');
 				if (event.type === 'validate'){
+					console.error('setting node '+n.path+' to invalid-required');
 					that.setInvalid($(this), 'required');
 				}
 			}
 			else{
 				that.setValid($(this), 'required');
 				if (typeof validCons !== 'undefined' && validCons === false){
+					console.error('setting node '+n.path+' to invalid-constraint');
 					that.setInvalid($(this), 'constraint');
 				}
 				else if (validCons !== null) {
@@ -2910,8 +2912,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.find('fieldset:disabled input, fieldset:disabled select, fieldset:disabled textarea, input:disabled, select:disabled, textarea:disabled').each(function(){
 			that.setValid($(this));
 		});
-		//the above still leaves out elements that are not disabled directly but have disabled parents
-		//this is dealt with in the validate event handler
 		$form.find('input, select, textarea').not('.ignore').trigger('validate');
 		return this.isValid();
 	};

@@ -2758,7 +2758,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			
 			if (event.type === 'validate'){
-				console.debug('validating: '+n.path);
 				//the enabled check serves a purpose only when an input field itself is marked as enabled but its parent fieldset is not
 				//if an element is disabled mark it as valid (to undo a previously shown branch with fields marked as invalid)
 				validCons = (n.enabled && n.inputType !== 'hidden') ? data.node(n.path, n.ind).validate(n.constraint, n.xmlType) : true;
@@ -2776,14 +2775,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (validReq === false){
 				that.setValid($(this), 'constraint');
 				if (event.type === 'validate'){
-					console.error('setting node '+n.path+' to invalid-required', n);
+					//console.error('setting node '+n.path+' to invalid-required', n);
 					that.setInvalid($(this), 'required');
 				}
 			}
 			else{
 				that.setValid($(this), 'required');
 				if (typeof validCons !== 'undefined' && validCons === false){
-					console.error('setting node '+n.path+' to invalid-constraint', n);
+					//console.error('setting node '+n.path+' to invalid-constraint', n);
 					that.setInvalid($(this), 'constraint');
 				}
 				else if (validCons !== null) {

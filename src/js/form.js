@@ -876,8 +876,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
 		
-		//var timeStart = new Date().getTime();
-		//xpathEvalNum++;
+		var timeStart = new Date().getTime();
+		xpathEvalNum++;
 
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
 			index+' and result type: '+resTypeStr);
@@ -962,7 +962,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum > 0 && resTypeNum < 4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
-						//xpathEvalTime += new Date().getTime() - timeStart;
+						xpathEvalTime += new Date().getTime() - timeStart;
 						return result;
 					}
 				}
@@ -977,11 +977,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
-				//xpathEvalTime += new Date().getTime() - timeStart;
+				xpathEvalTime += new Date().getTime() - timeStart;
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
-			//xpathEvalTime += new Date().getTime() - timeStart;
+			xpathEvalTime += new Date().getTime() - timeStart;
 			return result[resultTypes[resTypeNum][2]];
 		}
 		catch(e){
@@ -989,7 +989,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			console.error(error);
 			$(document).trigger('xpatherror', error);
 			loadErrors.push(error);
-			//xpathEvalTime += new Date().getTime() - timeStart;
+			xpathEvalTime += new Date().getTime() - timeStart;
 			return null;
 		}
 	};

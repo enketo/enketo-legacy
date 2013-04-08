@@ -1048,15 +1048,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$(this).attr('data-name', name);
 		});
 
+		//profiler = new Profiler('setLangs()');
+		this.setLangs();//test: before itemsetUpdate
+		//profiler.report();
+
 		//profiler = new Profiler('repeat.init()');
 		this.repeat.init(this); //after radio button data-name setting
 		//profiler.report();
 
 		//$form.find('h2').first().append('<span/>');//what's this for then?
 
-		//profiler = new Profiler('itemsetUpdate()');
+		var profiler = new Profiler('itemsets initialization');
 		this.itemsetUpdate();
-		//profiler.report();
+		profiler.report();
 		
 		this.setAllVals();
 		
@@ -1080,9 +1084,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.outputUpdate();
 		//profiler.report();
 
-		//profiler = new Profiler('setLangs()');
-		this.setLangs();
-		//profiler.report();
+		
 
 		//profiler = new Profiler('setHints()');
 		this.setHints();
@@ -1372,6 +1374,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			defaultLang = $('#form-languages option:eq(0)').attr('value');
 		}
 		console.debug('default language is: '+defaultLang);
+		$('#form-languages').val(defaultLang);
 
 		if ($('#form-languages option').length < 2 ){
 			$langSelector.hide();
@@ -1381,7 +1384,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$('#form-languages').change(function(event){
 			console.debug('form-language change event detected!');
 			event.preventDefault();
-			lang = $(this).val();//attr('lang');
+			lang = $(this).val();
 			$('#form-languages option').removeClass('active');
 			$(this).addClass('active');
 
@@ -1719,6 +1722,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} changedDataNodeNames node names that were recently changed, separated by commas
 	 */
 	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
+		console.log('updating itemsets');
 		//TODO: test with very large itemset
 		var that = this,
 			cleverSelector = [],
@@ -1753,6 +1757,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$instanceItems = itemsCache[itemsXpath];
 			}
 			else{
+				console.debug('no cache for '+itemsXpath+', need to evaluate XPath');
 				$instanceItems = data.evaluate(itemsXpath, 'nodes');
 				itemsCache[itemsXpath] = $instanceItems;
 			}
@@ -1812,6 +1817,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});			
 		});
+		console.debug('need to update langs: '+needToUpdateLangs);
 		if (needToUpdateLangs){
 			//that.setLangs();
 			$('#form-languages').trigger('change');

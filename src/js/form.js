@@ -871,7 +871,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
-		var profiler = new Profiler('preps and check whether instance() is part of expression');
+		var profiler = new Profiler('preps');
 		var timeStart = new Date().getTime();
 		xpathEvalNum++;
 
@@ -881,10 +881,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		index = index || 0;
 
 		expr = expr.trim();
-
+		profiler.report();
+		profiler = new Profiler('clone instance');
 		//SEEMS LIKE THE CONTEXT DOC (CLONE) CREATION COULD BE A PERFORMANCE HOG AS IT IS CALLED MANY TIMES, 
 		//IS THERE ANY BETTER WAY TO EXCLUDE TEMPLATE NODES AND THEIR CHILDREN?
 		contextDoc = new DataXML(this.getStr(false, false));
+		profiler.report();
+		profiler = new Profiler('check whether instance() syntax is used and clone instances');
 		/* 
 		   If the expression contains the instance('id') syntax, a different context instance is required.
 		   However, the same expression may also contain absolute reference to the main data instance, 
@@ -900,18 +903,18 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			for (i=0 ; i<instances.length ; i++){
 				id = instances[i].match(/[\'|\"]([^\'']+)[\'|\"]/)[1];
 				expr = expr.replace(instances[i], '/node()/instance[@id="'+id+'"]');
-				this.$.find('instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
+				this.$.find(':first>instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
 			}
 		}
 		profiler.report();
 
 		//console.debug('contextDoc:', contextDoc.$);
-		profiler = new Profiler('augment expression ');
+		profiler = new Profiler('augmenting expression ');
 		if (typeof selector !== 'undefined' && selector !== null) {
 			//console.debug('contextNode: ', contextDoc.$.xfind(selector).eq(index));
 			context = contextDoc.$.xfind(selector).eq(index)[0];
 			/**
-			 * If the expressions is bound to a node that is inside a repeat.... see makeBugCompliant()
+			 * If the expression is bound to a node that is inside a repeat.... see makeBugCompliant()
 			 */
 			if ($form.find('[name="'+selector+'"]').parents('.jr-repeat').length > 0 ){
 				expr = this.makeBugCompliant(expr, selector, index);
@@ -922,7 +925,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 		profiler.report();
 		//console.debug('context', context);
-		profiler = new Profiler('clean up expression, check expected result type');
+		profiler = new Profiler('cleaning up expression, check expected result type');
 		resultTypes = { //REMOVE VALUES? NOT USED
 			0 : ['any', 'ANY_TYPE'], 
 			1 : ['number', 'NUMBER_TYPE', 'numberValue'],

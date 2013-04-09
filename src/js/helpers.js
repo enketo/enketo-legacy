@@ -12,6 +12,7 @@ String.prototype.pad = function(digits){
 };
 
 var profilerRecords = [];
+var xpathEvalNum=0, xpathEvalTime=0;
 
 /**
  * Little profiler

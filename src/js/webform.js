@@ -25,9 +25,6 @@ var /**@type {FileManager}*/fileManager;
 //tight coupling with Form and Storage class, but loose coupling with GUI
 $(document).ready(function() {
 	'use strict';
-	var p = new Profiler('TOTAL (according to inaccurate javascript clock)');
-	var profiler = new Profiler('1. all the shit before initializing form in webform.js');
-
 	var message, choices, loadErrors, trySubmission;
 
 	form = new Form('form.jr:eq(0)', jrDataStr);
@@ -61,21 +58,15 @@ $(document).ready(function() {
 			gui.confirm({msg: message, heading:'Application cannot launch offline'}, choices);
 		}
 	}
-	profiler.report();
-	profiler = new Profiler('2. total form initialization in webform.js');
-	loadErrors = form.init();
-	profiler.report();
 
+	loadErrors = form.init();
 	if (loadErrors.length > 0){
 		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
 	}
-	profiler= new Profiler('3. connection initialization');
+
 	connection.init();
-	profiler.report();
-	profiler = new Profiler('4. gui setup');
 	gui.setup();
-	profiler.report();
-	profiler = new Profiler('5. rest');
+
 	//trigger fake save event to update formlist on data page
 	$('form.jr').trigger('save', JSON.stringify(store.getRecordList()));
 
@@ -103,8 +94,7 @@ $(document).ready(function() {
 			);
 		}
 	};
-	profiler.report();
-	p.report();
+
 	profilerRecords.push(xpathEvalNum+' XPath Evaluations during initialization took '+xpathEvalTime+' milliseconds');
 
 });

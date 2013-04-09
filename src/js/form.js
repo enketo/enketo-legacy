@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Profiler, Modernizr, google, settings, connection, fileManager, xPathEvalTime*/
 
 /**
@@ -43,9 +42,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	this.getInstanceID = function(){return data.getInstanceID();};
 	this.Form = function(selector){return new FormHTML(selector);};
 	this.getFormO = function(){return form;};
-	//this.getDataXML = function(){return data.getXML();};
-	//this.validateAll = function(){return form.validateAll();};
-	//this.outputUpdate = function(){return form.outputUpdate();};
 	//***************************************
 
 /**
@@ -61,9 +57,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		data = new DataXML(dataStr);
 		form = new FormHTML(formSelector);
 
-		var profiler = new Profiler('data.init()');
+		//var profiler = new Profiler('data.init()');
 		data.init();
-		profiler.report();
+		//profiler.report();
 
 		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit && dataStrToEdit.length > 0){
 			dataToEdit = new DataXML(dataStrToEdit);
@@ -71,9 +67,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			data.load(dataToEdit);
 		}
 
-		profiler = new Profiler('html form.init()');
+		//profiler = new Profiler('html form.init()');
 		form.init();
-		profiler.report();
+		//profiler.report();
 		
 		if (loadErrors.length > 0){
 			console.error('loadErrors: ',loadErrors);
@@ -1029,11 +1025,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 
-		var profiler = new Profiler('preloads.init()');
+		//var profiler = new Profiler('preloads.init()');
 		this.preloads.init(this); //before widgets.init (as instanceID used in offlineFileWidget)
-		profiler.report();
+		//profiler.report();
 		
-		profiler = new Profiler('adding hint icons');
+		//profiler = new Profiler('adding hint icons');
 		//add 'hint' icon, could be moved to XSLT, but is very fast even on super large forms - 31 msecs on bench6 form
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
@@ -1041,14 +1037,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('legend > .jr-hint').parent().find('span:last-child').after($hint);
 			$form.find('.trigger > .jr-hint').parent().find('span:last').after($hint);
 		}
-		profiler.report();
+		//profiler.report();
 
 		//TODO: don't add to preload and calculated items
 		//TODO: move to XSLT
-		profiler = new Profiler('brs');
+		//profiler = new Profiler('brs');
 		$form.find('select, input, textarea')
 			.not('[type="checkbox"], [type="radio"], [readonly], #form-languages').before($('<br/>'));
-		profiler.report();
+		//profiler.report();
 		
 		/*
 			Groups of radiobuttons need to have the same name. The name refers to the path of the instance node.
@@ -1062,51 +1058,51 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$(this).attr('data-name', name);
 		});
 
-		profiler = new Profiler('setLangs()');
+		//profiler = new Profiler('setLangs()');
 		this.setLangs();//test: before itemsetUpdate
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('repeat.init()');
+		//profiler = new Profiler('repeat.init()');
 		this.repeat.init(this); //after radio button data-name setting
-		profiler.report();
+		//profiler.report();
 
 		//$form.find('h2').first().append('<span/>');//what's this for then?
 
-		profiler = new Profiler('itemsets initialization');
+		//profiler = new Profiler('itemsets initialization');
 		this.itemsetUpdate();
-		profiler.report();
+		//profiler.report();
 		
-		profiler = new Profiler('setting default values in form inputs');
+		//profiler = new Profiler('setting default values in form inputs');
 		this.setAllVals();
-		profiler.report();
+		//profiler.report();
 		
-		profiler = new Profiler('widgets initialization');
+		//profiler = new Profiler('widgets initialization');
 		this.widgets.init(); //after setAllVals()
-		profiler.report();
+		//profiler.report();
 		
-		profiler = new Profiler('bootstrapify');
+		//profiler = new Profiler('bootstrapify');
 		this.bootstrapify(); 
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('branch.init()');
+		//profiler = new Profiler('branch.init()');
 		this.branch.init();
-		profiler.report();
+		//profiler.report();
 
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 
-		profiler = new Profiler('calcupdate');
+		//profiler = new Profiler('calcupdate');
 		this.calcUpdate();
-		profiler.report();
+		//profiler.report();
 
-		profiler = new Profiler('outputUpdate initial');
+		//profiler = new Profiler('outputUpdate initial');
 		this.outputUpdate();
-		profiler.report();
+		//profiler.report();
 
 		
 
-		profiler = new Profiler('setHints()');
+		//profiler = new Profiler('setHints()');
 		this.setHints();
-		profiler.report();
+		//profiler.report();
 
 		this.setEventHandlers();
 		this.editStatus.set(false);

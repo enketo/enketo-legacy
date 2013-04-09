@@ -953,6 +953,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
+		var timeLap = new Date().getTime();
+		var totTime;
+		var xTime;
 		//console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
@@ -962,7 +965,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum > 0 && resTypeNum < 4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
-						xpathEvalTime += new Date().getTime() - timeStart;
+						totTime = new Date().getTime() - timeStart;
+						xTime = new Date().getTime() - timeLap;
+						console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+						xpathEvalTime += totTime;
 						return result;
 					}
 				}
@@ -977,7 +983,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
-				xpathEvalTime += new Date().getTime() - timeStart;
+				totTime = new Date().getTime() - timeStart;
+				xTime = new Date().getTime() - timeLap;
+				console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+				xpathEvalTime += totTime;
+				//xpathEvalTime += new Date().getTime() - timeStart;
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);

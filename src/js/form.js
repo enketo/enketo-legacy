@@ -991,7 +991,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
-			xpathEvalTime += new Date().getTime() - timeStart;
+			totTime = new Date().getTime() - timeStart;
+			xTime = new Date().getTime() - timeLap;
+			console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+			xpathEvalTime += totTime;
+			//xpathEvalTime += new Date().getTime() - timeStart;
 			return result[resultTypes[resTypeNum][2]];
 		}
 		catch(e){

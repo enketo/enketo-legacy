@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Profiler, Modernizr, google, settings, connection, fileManager, xPathEvalTime*/
 
 /**
@@ -43,9 +42,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	this.getInstanceID = function(){return data.getInstanceID();};
 	this.Form = function(selector){return new FormHTML(selector);};
 	this.getFormO = function(){return form;};
-	//this.getDataXML = function(){return data.getXML();};
-	//this.validateAll = function(){return form.validateAll();};
-	//this.outputUpdate = function(){return form.outputUpdate();};
 	//***************************************
 
 /**
@@ -71,7 +67,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			data.load(dataToEdit);
 		}
 
-		//profiler = new Profiler('form.init()');
+		//profiler = new Profiler('html form.init()');
 		form.init();
 		//profiler.report();
 		
@@ -876,8 +872,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
 		
-		//var timeStart = new Date().getTime();
-		//xpathEvalNum++;
+		var timeStart = new Date().getTime();
+		xpathEvalNum++;
 
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
 			index+' and result type: '+resTypeStr);
@@ -953,6 +949,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
+		var timeLap = new Date().getTime();
+		var totTime;
+		var xTime;
 		//console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
@@ -962,7 +961,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum > 0 && resTypeNum < 4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
-						//xpathEvalTime += new Date().getTime() - timeStart;
+						totTime = new Date().getTime() - timeStart;
+						xTime = new Date().getTime() - timeLap;
+						console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+						xpathEvalTime += totTime;
 						return result;
 					}
 				}
@@ -977,10 +979,18 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
+				totTime = new Date().getTime() - timeStart;
+				xTime = new Date().getTime() - timeLap;
+				console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+				xpathEvalTime += totTime;
 				//xpathEvalTime += new Date().getTime() - timeStart;
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
+			totTime = new Date().getTime() - timeStart;
+			xTime = new Date().getTime() - timeLap;
+			console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+			xpathEvalTime += totTime;
 			//xpathEvalTime += new Date().getTime() - timeStart;
 			return result[resultTypes[resTypeNum][2]];
 		}
@@ -989,7 +999,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			console.error(error);
 			$(document).trigger('xpatherror', error);
 			loadErrors.push(error);
-			//xpathEvalTime += new Date().getTime() - timeStart;
+			xpathEvalTime += new Date().getTime() - timeStart;
 			return null;
 		}
 	};
@@ -1015,11 +1025,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 
-		//profiler = new Profiler('preloads.init()');
+		//var profiler = new Profiler('preloads.init()');
 		this.preloads.init(this); //before widgets.init (as instanceID used in offlineFileWidget)
 		//profiler.report();
 		
-		//var profiler = new Profiler('adding hint icons');
+		//profiler = new Profiler('adding hint icons');
 		//add 'hint' icon, could be moved to XSLT, but is very fast even on super large forms - 31 msecs on bench6 form
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
@@ -1048,19 +1058,27 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$(this).attr('data-name', name);
 		});
 
+		//profiler = new Profiler('setLangs()');
+		this.setLangs();//test: before itemsetUpdate
+		//profiler.report();
+
 		//profiler = new Profiler('repeat.init()');
 		this.repeat.init(this); //after radio button data-name setting
 		//profiler.report();
 
 		//$form.find('h2').first().append('<span/>');//what's this for then?
 
-		//profiler = new Profiler('itemsetUpdate()');
+		//profiler = new Profiler('itemsets initialization');
 		this.itemsetUpdate();
 		//profiler.report();
 		
+		//profiler = new Profiler('setting default values in form inputs');
 		this.setAllVals();
+		//profiler.report();
 		
+		//profiler = new Profiler('widgets initialization');
 		this.widgets.init(); //after setAllVals()
+		//profiler.report();
 		
 		//profiler = new Profiler('bootstrapify');
 		this.bootstrapify(); 
@@ -1080,9 +1098,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.outputUpdate();
 		//profiler.report();
 
-		//profiler = new Profiler('setLangs()');
-		this.setLangs();
-		//profiler.report();
+		
 
 		//profiler = new Profiler('setHints()');
 		this.setHints();
@@ -1372,6 +1388,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			defaultLang = $('#form-languages option:eq(0)').attr('value');
 		}
 		console.debug('default language is: '+defaultLang);
+		$('#form-languages').val(defaultLang);
 
 		if ($('#form-languages option').length < 2 ){
 			$langSelector.hide();
@@ -1381,7 +1398,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$('#form-languages').change(function(event){
 			console.debug('form-language change event detected!');
 			event.preventDefault();
-			lang = $(this).val();//attr('lang');
+			lang = $(this).val();
 			$('#form-languages option').removeClass('active');
 			$(this).addClass('active');
 
@@ -1719,6 +1736,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} changedDataNodeNames node names that were recently changed, separated by commas
 	 */
 	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
+		console.log('updating itemsets');
 		//TODO: test with very large itemset
 		var that = this,
 			cleverSelector = [],
@@ -1753,6 +1771,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$instanceItems = itemsCache[itemsXpath];
 			}
 			else{
+				console.debug('no cache for '+itemsXpath+', need to evaluate XPath');
 				$instanceItems = data.evaluate(itemsXpath, 'nodes');
 				itemsCache[itemsXpath] = $instanceItems;
 			}
@@ -1812,6 +1831,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});			
 		});
+		console.debug('need to update langs: '+needToUpdateLangs);
 		if (needToUpdateLangs){
 			//that.setLangs();
 			$('#form-languages').trigger('change');

@@ -871,7 +871,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
-		
+		var profiler = new Profiler('preps and check whether instance() is part of expression');
 		var timeStart = new Date().getTime();
 		xpathEvalNum++;
 
@@ -903,8 +903,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.$.find('instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
 			}
 		}
-		//console.debug('contextDoc:', contextDoc.$);
+		profiler.report();
 
+		//console.debug('contextDoc:', contextDoc.$);
+		profiler = new Profiler('augment expression ');
 		if (typeof selector !== 'undefined' && selector !== null) {
 			//console.debug('contextNode: ', contextDoc.$.xfind(selector).eq(index));
 			context = contextDoc.$.xfind(selector).eq(index)[0];
@@ -918,8 +920,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		else{
 			context = contextDoc.getXML();
 		}
+		profiler.report();
 		//console.debug('context', context);
-
+		profiler = new Profiler('clean up expression, check expected result type');
 		resultTypes = { //REMOVE VALUES? NOT USED
 			0 : ['any', 'ANY_TYPE'], 
 			1 : ['number', 'NUMBER_TYPE', 'numberValue'],
@@ -952,6 +955,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var timeLap = new Date().getTime();
 		var totTime;
 		var xTime;
+		profiler.report();
 		//console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);

@@ -793,31 +793,37 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	DataXML.prototype.getStr = function(incTempl, incNs, all){
 		var $docRoot, $dataClone, dataStr;
 
-		all =  all || false;
-		incTempl = incTempl || false;
-		incNs = incNs || true;
+//		all =  all || false;
+//		incTempl = incTempl || false;
+//		incNs = incNs || true;//
 
-		$docRoot = (all) ? this.$.find(':first') : this.node('> :first').get();
-		
-		//this should be refactored. Using <root> is not necessary.
-		$dataClone = $('<root></root>');
-		
-		$docRoot.clone().appendTo($dataClone);
+//		$docRoot = (all) ? this.$.find(':first') : this.node('> :first').get();
+//		
+//		//this should be refactored. Using <root> is not necessary.
+//		$dataClone = $('<root></root>');
+//		
+//		$docRoot.clone().appendTo($dataClone);//
 
-		if (incTempl === false){
-			$dataClone.find('[template]').remove();
-		}
-		//disabled 
-		//if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
-		//	$dataClone.find('instance').attr('xmlns', this.namespace);
-		//}
+//		if (incTempl === false){
+//			$dataClone.find('[template]').remove();
+//		}
+//		//disabled 
+//		//if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
+//		//	$dataClone.find('instance').attr('xmlns', this.namespace);
+//		//}
 
-		dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
+		//dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
 
+		dataStr = (new XMLSerializer()).serializeToString(this.getInstanceClone(incTempl, incNs, all)[0]);
 		//remove tabs
 		dataStr = dataStr.replace(/\t/g, '');
 
 		return dataStr;
+	};
+
+	DataXML.prototype.getInstanceClone = function(incTempl, incNs, all){
+		var $clone = (all) ? this.$.find(':first').clone() : this.$.find('instance:eq(0) > *:first').clone();
+		return (incTempl) ? $clone : $clone.find('[template]').remove().end();
 	};
 
 	/**
@@ -871,7 +877,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
-		var profiler = new Profiler('preps');
+		var profiler;
 		var timeStart = new Date().getTime();
 		xpathEvalNum++;
 
@@ -881,7 +887,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		index = index || 0;
 
 		expr = expr.trim();
-		profiler.report();
+		
 		profiler = new Profiler('clone instance');
 		//SEEMS LIKE THE CONTEXT DOC (CLONE) CREATION COULD BE A PERFORMANCE HOG AS IT IS CALLED MANY TIMES, 
 		//IS THERE ANY BETTER WAY TO EXCLUDE TEMPLATE NODES AND THEIR CHILDREN?
@@ -916,7 +922,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			/**
 			 * If the expression is bound to a node that is inside a repeat.... see makeBugCompliant()
 			 */
-			if ($form.find('[name="'+selector+'"]').parents('.jr-repeat').length > 0 ){
+			//Could consider passing a contextInsideRepeat variable to evaluate() instead
+			if ($form.find('[name="'+selector+'"]:eq(0)').closest('.jr-repeat').length > 0){
+			//if ($form.find('[name="'+selector+'"]').parents('.jr-repeat').length > 0 ){
 				expr = this.makeBugCompliant(expr, selector, index);
 			}
 		}
@@ -925,7 +933,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 		profiler.report();
 		//console.debug('context', context);
-		profiler = new Profiler('cleaning up expression, check expected result type');
+		
 		resultTypes = { //REMOVE VALUES? NOT USED
 			0 : ['any', 'ANY_TYPE'], 
 			1 : ['number', 'NUMBER_TYPE', 'numberValue'],
@@ -958,7 +966,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var timeLap = new Date().getTime();
 		var totTime;
 		var xTime;
-		profiler.report();
 		//console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);

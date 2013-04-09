@@ -61,9 +61,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		data = new DataXML(dataStr);
 		form = new FormHTML(formSelector);
 
-		//var profiler = new Profiler('data.init()');
+		var profiler = new Profiler('data.init()');
 		data.init();
-		//profiler.report();
+		profiler.report();
 
 		if (typeof dataStrToEdit !== 'undefined' && dataStrToEdit && dataStrToEdit.length > 0){
 			dataToEdit = new DataXML(dataStrToEdit);
@@ -71,9 +71,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			data.load(dataToEdit);
 		}
 
-		//profiler = new Profiler('form.init()');
+		profiler = new Profiler('html form.init()');
 		form.init();
-		//profiler.report();
+		profiler.report();
 		
 		if (loadErrors.length > 0){
 			console.error('loadErrors: ',loadErrors);

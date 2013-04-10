@@ -104,6 +104,8 @@ class Unit_test extends CI_Controller {
 			'issue208.xml', 
 			'cascading_mixture_itext_noitext.xml', 
 			'new_cascading_selections.xml',
+			'new_cascading_selections_inside_repeats.xml',
+			'outputs_in_repeats.xml',
 			'nested_repeats.xml',
 			'calcs.xml',
 			'readonly.xml'

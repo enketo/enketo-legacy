@@ -2229,7 +2229,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		mobileSelectWidget : function(){
 			var showSelectedValues = function($select){
-				var values = $select.val(),
+				var values = ($.isArray($select.val())) ? $select.val() : [$select.val()],
 					valueText = [];
 				console.log('mobileSelectWidget change event detected, values selected: ', values);
 				for (var i = 0; i < values.length ; i++){

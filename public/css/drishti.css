@@ -7834,15 +7834,43 @@ html.touch .jr legend .jr-hint.active {
 .jr input:not([type="radio"]):not([type="checkbox"]), .jr textarea {
   height: 30px;
 }
-.jr input[type="text"] {
+.jr [type="text"] {
   width: 80%;
 }
-.jr input[type=date], .jr input[type=number], .jr input[type=email], .jr input[type=password] {
+.jr [type=date], .jr [type=number], .jr [type=email], .jr [type=password] {
   width: 144px;
 }
-.jr input[type=radio], .jr input[type=checkbox] {
+.jr [type=radio], .jr [type=checkbox] {
+  background-image: url("/images/checkradio_orange.png");
+  -webkit-appearance: none;
   float: left;
+  width: 20px;
+  height: 20px;
   margin: 0 10px 1px 10px;
+}
+.jr [type=checkbox] {
+  background-position: 0 0;
+}
+.jr [type=checkbox]:checked {
+  background-position: -22px 0;
+}
+.jr :disabled [type=checkbox], .jr [type=checkbox]:disabled {
+  background-position: -44px 0;
+}
+.jr :disabled [type=checkbox]:checked, .jr [type=checkbox]:disabled:checked {
+  background-position: -66px 0;
+}
+.jr [type=radio] {
+  background-position: -88px 0;
+}
+.jr [type=radio]:checked {
+  background-position: -110px 0;
+}
+.jr :disabled [type=radio], .jr [type=radio]:disabled {
+  background-position: -132px 0;
+}
+.jr :disabled [type=radio]:checked, .jr [type=radio]:disabled:checked {
+  background-position: -154px 0;
 }
 .jr textarea {
   width: 80%;

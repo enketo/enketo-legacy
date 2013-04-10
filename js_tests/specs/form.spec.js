@@ -783,7 +783,7 @@ describe('Itemset functionality', function(){
 		//form = new Form('', )
 		//form.init();
 		var dataO = getFormDataO('new_cascading_selections.xml');
-		console.log('data:', dataO.$.find('instance'));
+		//console.log('data:', dataO.$.find('instance'));
 		expect(dataO.evaluate("instance('cities')/root/item/name", "string")).toEqual('ams');
 		expect(dataO.evaluate("instance('cities')/root/item[country=/new_cascading_selections/group4/country4]/name", "string")).toEqual('den');
 		expect(dataO.evaluate("instance('cities')/root/item[country=/new_cascading_selections/group4/country4 and 1<2]", "nodes").length).toEqual(3);

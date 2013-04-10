@@ -1878,12 +1878,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			outputCache = {},
 			val = '',
 			that = this;
-		/** 
-		 * issue #141 on modilabs/enketo was found to be a very mysterious one. In a very short form (random.xml)
-		 * it was found that the outputs were not updated because the cleverSelector did not find any nodes
-		 * It must have something to do with the DOM not having been built or something, because a 1 millisecond!!!
-		 * delay in executing the code below, the issue was resolved. To be properly fixed later...
-		 */	
+
 		namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 		cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
 		for (i=0 ; i<namesArr.length ; i++){
@@ -1903,7 +1898,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			else{
 				val = data.evaluate(expr, 'string', context, index);
-				//val = data.node(expr).getVal()[0];
 				if (!insideRepeat){
 					outputCache[expr] = val;
 				}

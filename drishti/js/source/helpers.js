@@ -12,9 +12,10 @@ String.prototype.pad = function(digits){
 };
 
 var profilerRecords = [];
+var xpathEvalNum=0, xpathEvalTime=0;
 
 /**
- * Little profiling object
+ * Little profiler
  * @param {string} taskName [description]
  * @constructor
  */
@@ -67,31 +68,33 @@ function divideIntoBatches(fileSizes, limit){
 	return batches;
 }
 
-
 window.onload = function(){
 	setTimeout(function(){
-		var loadLog,
-			t = window.performance.timing,
-			loadingTime = t.loadEventEnd - t.responseEnd,
-			exLog = /**@type {string} */window.localStorage.getItem('__loadLog');
-		if (typeof settings !== 'undefined' && settings.debug){
-			loadLog = (exLog) ? JSON.parse(exLog) : [];
-			loadLog.push(loadingTime);
-			if (loadLog.length > 10){
-				loadLog.shift();
+		var loadLog, t, loadingTime, exLog;
+		if (window.performance){
+			t = window.performance.timing;
+			loadingTime = t.loadEventEnd - t.responseEnd;
+			if (typeof settings !== 'undefined' && settings.debug){
+				exLog = /**@type {string} */window.localStorage.getItem('__loadLog');
+				loadLog = (exLog) ? JSON.parse(exLog) : [];
+				loadLog.push(loadingTime);
+				if (loadLog.length > 10){
+					loadLog.shift();
+				}
+				window.localStorage.setItem('__loadLog', JSON.stringify(loadLog));
 			}
-			window.localStorage.setItem('__loadLog', JSON.stringify(loadLog));
+			profilerRecords.push('total loading time: '+ loadingTime+' milliseconds');
+			//$('.enketo-power').append('<p style="font-size: 0.7em;">(total load: '+loadingTime+' msec, XPath: '+xpathEvalTime+' msec)</p>');
+			if (window.opener && window.performance && window.postMessage) window.opener.postMessage(JSON.stringify(window.performance), '*');
+			$(profilerRecords).each(function(i,v){console.log(v);});
 		}
-		profilerRecords.push('total loading time: '+ loadingTime);
-		if (window.opener) window.opener.postMessage(JSON.stringify(window.performance), '*');
-		$(profilerRecords).each(function(i,v){console.log(v);});
 	}, 0);
 };
 
 (function($){
 	"use strict";
 
-	 /**
+	/**
      * Creates an XPath from a node (currently not used inside this Class (instead FormHTML.prototype.generateName is used) but will be in future);
      * @param  {string=} rootNodeName	if absent the root is #document
      * @return {string}                 XPath
@@ -102,7 +105,7 @@ window.onload = function(){
 			$node = this.first(),
 			nodeName = $node.prop('nodeName'),
 			//$sibSameNameAndSelf = $node.siblings(nodeName).addBack(),
-			steps = [nodeName], 
+			steps = [nodeName],
 			$parent = $node.parent(),
 			parentName = $parent.prop('nodeName');
 

@@ -48,7 +48,6 @@ XPathJS.bindDomLevel3XPath = function(){};
 function saveAs(blob, filename){}
 
 
-
 /*jshint expr:true */
 /**
  * @type Object
@@ -244,7 +243,7 @@ JSON.stringify = function(jsonObj, opt_replacer, opt_space) {};
  */
 
 /**
- * @fileoverview Externs for jQuery 1.8.2
+ * @fileoverview Externs for jQuery 1.9.1
  *
  * Note that some functions use different return types depending on the number
  * of parameters passed in. In these cases, you may need to annotate the type
@@ -262,7 +261,7 @@ JSON.stringify = function(jsonObj, opt_replacer, opt_space) {};
  */
 var jQuerySelector;
 
-/** @typedef {function()|Array.<function()>} */
+/** @typedef {function(...)|Array.<function(...)>} */
 var jQueryCallback;
 
 /**
@@ -469,7 +468,6 @@ jQuery.prototype.ajaxSuccess = function(handler) {};
 
 /**
  * @return {!jQuery}
- * @nosideeffects
  */
 jQuery.prototype.addBack = function() {};
 
@@ -529,80 +527,6 @@ jQuery.boxModel;
 
 /** @type {boolean} */
 $.boxModel;
-
-/** @type {Object.<string,*>} */
-jQuery.browser;
-
-/** @type {Object.<string,*>} */
-$.browser;
-
-/**
- * @type {boolean}
- * @const
- */
-jQuery.browser.mozilla;
-
-/**
- * @type {boolean}
- * @const
- */
-$.browser.mozilla;
-
-/**
- * @type {boolean}
- * @const
- */
-jQuery.browser.msie;
-
-/**
- * @type {boolean}
- * @const
- */
-$.browser.msie;
-
-/**
- * @type {boolean}
- * @const
- */
-jQuery.browser.opera;
-
-/**
- * @type {boolean}
- * @const
- */
-$.browser.opera;
-
-/**
- * @deprecated
- * @type {boolean}
- * @const
- */
-jQuery.browser.safari;
-
-/**
- * @deprecated
- * @type {boolean}
- * @const
- */
-$.browser.safari;
-
-/** @type {string} */
-jQuery.browser.version;
-
-/** @type {string} */
-$.browser.version;
-
-/**
- * @type {boolean}
- * @const
- */
-jQuery.browser.webkit;
-
-/**
- * @type {boolean}
- * @const
- */
-$.browser.webkit;
 
 /**
  * @constructor
@@ -929,14 +853,6 @@ $.dequeue = function(elem, queueName) {};
  * @return {!jQuery}
  */
 jQuery.prototype.detach = function(selector) {};
-
-/**
- * @deprecated
- * @param {(string|Object.<string,*>)=} arg1
- * @param {string=} handler
- * @return {!jQuery}
- */
-jQuery.prototype.die = function(arg1, handler) {};
 
 /**
  * @param {Object} collection
@@ -1604,15 +1520,6 @@ jQuery.prototype.length;
 
 /**
  * @deprecated
- * @param {(string|Object)} arg1
- * @param {(function(!jQuery.event=)|Object)=} arg2
- * @param {function(!jQuery.event=)=} handler
- * @return {!jQuery}
- */
-jQuery.prototype.live = function(arg1, arg2, handler) {};
-
-/**
- * @deprecated
  * @param {(function(!jQuery.event=)|Object.<string, *>|string)} arg1
  * @param {(function(!jQuery.event=)|Object.<string,*>|string)=} arg2
  * @param {function(string,string,XMLHttpRequest)=} complete
@@ -1867,6 +1774,22 @@ jQuery.prototype.parents = function(selector) {};
  * @nosideeffects
  */
 jQuery.prototype.parentsUntil = function(arg1, filter) {};
+
+/**
+ * @param {string} data
+ * @param {Element=} context
+ * @param {boolean=} keepScripts
+ * @return {Array.<Element>}
+ */
+jQuery.parseHTML = function(data, context, keepScripts) {};
+
+/**
+ * @param {string} data
+ * @param {Element=} context
+ * @param {boolean=} keepScripts
+ * @return {Array.<Element>}
+ */
+$.parseHTML = function(data, context, keepScripts) {};
 
 /**
  * @param {string} json
@@ -2224,20 +2147,6 @@ jQuery.prototype.slideUp = function(duration, arg2, callback) {};
 jQuery.prototype.stop = function(arg1, arg2, jumpToEnd) {};
 
 /**
- * @deprecated
- * @return {!jQuery}
- * @nosideeffects
- */
-jQuery.sub = function() {};
-
-/**
- * @deprecated
- * @return {!jQuery}
- * @nosideeffects
- */
-$.sub = function() {};
-
-/**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
@@ -2341,10 +2250,11 @@ jQuery.prototype.text = function(arg1) {};
 jQuery.prototype.toArray = function() {};
 
 /**
- * @deprecated
- * @param {(function(!jQuery.event=)|string|number|function()|boolean)=} arg1
- * @param {(function(!jQuery.event=)|function()|string)=} arg2
- * @param {(function(!jQuery.event=)|function())=} arg3
+ * Refers to the method from the Effects category. There used to be a toggle
+ * method on the Events category which was removed starting version 1.9.
+ * @param {(number|string|Object.<string,*>|boolean)=} arg1
+ * @param {(function()|string)=} arg2
+ * @param {function()=} arg3
  * @return {!jQuery}
  */
 jQuery.prototype.toggle = function(arg1, arg2, arg3) {};

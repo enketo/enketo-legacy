@@ -320,7 +320,18 @@ describe("Output functionality ", function(){
 	it("tested upon initialization: node uuid__", function(){
 		expect(form.getFormO().$.find('[data-value="/random/uuid__"]').text().length).toEqual(36);
 	});
+});
 
+describe("Output functionality within repeats", function(){
+	var form = loadForm('outputs_in_repeats.xml');
+	form.init();
+	form.getFormO().$.find('button.repeat').click();
+	form.getFormO().$.find('[name="/outputs_in_repeats/rep/name"]').eq(0).val('Martijn').trigger('change');
+	form.getFormO().$.find('[name="/outputs_in_repeats/rep/name"]').eq(1).val('Beth').trigger('change');
+	it('shows correct value when referring to repeated node', function(){
+		expect(form.getFormO().$.find('.jr-output:eq(0)').text()).toEqual('Martijn');
+		expect(form.getFormO().$.find('.jr-output:eq(1)').text()).toEqual('Beth');
+	});
 });
 
 describe("Preload and MetaData functionality", function(){
@@ -768,13 +779,15 @@ describe('Itemset functionality', function(){
 	var form;
 
 	it('is able to address an instance by id with the instance(id)/path/to/node syntax', function(){
-		form = new Form('', dataStr8);
-		form.init();
-		console.debug('data:', form.getDataO().$);
-		expect(form.getDataO().evaluate("instance('cities')/root/item/name", "string")).toEqual('denver');
-		expect(form.getDataO().evaluate("instance('cities')/root/item[state=/new_cascading_select/state]/name", "string")).toEqual('denver');
-		expect(form.getDataO().evaluate("instance('cities')/root/item[state=/new_cascading_select/state and 1<2]", "nodes").length).toEqual(2);
-		expect(form.getDataO().evaluate("instance('cities')/root/item[state=/new_cascading_select/state and name=/new_cascading_select/city]", "nodes").length).toEqual(1);
+		//form = new Form('', dataStr8);
+		//form = new Form('', )
+		//form.init();
+		var dataO = getFormDataO('new_cascading_selections.xml');
+		//console.log('data:', dataO.$.find('instance'));
+		expect(dataO.evaluate("instance('cities')/root/item/name", "string")).toEqual('ams');
+		expect(dataO.evaluate("instance('cities')/root/item[country=/new_cascading_selections/group4/country4]/name", "string")).toEqual('den');
+		expect(dataO.evaluate("instance('cities')/root/item[country=/new_cascading_selections/group4/country4 and 1<2]", "nodes").length).toEqual(3);
+		expect(dataO.evaluate("instance('cities')/root/item[country=/new_cascading_selections/group4/country4 and name=/new_cascading_selections/group4/city4]", "nodes").length).toEqual(1);
 	});
 
 	describe('in a cascading select using itext for all labels', function(){
@@ -954,7 +967,7 @@ describe('Itemset functionality', function(){
 			});
 
 			waitsFor(function(){return formHTMLO.itemsetUpdate.mostRecentCall.args[0] === 'state';}, 'itemsetUpdate not called!', 1000);
-			
+
 			//select second option
 			runs(function(){
 				form.getFormO().$.find(sel2Radio+'[value="king"]')
@@ -969,6 +982,38 @@ describe('Itemset functionality', function(){
 				expect($items3Radio().length).toEqual(2);
 				expect($items3Radio().siblings().text()).toEqual('SeattleRedmond');
 			});
+		});
+	});
+
+	describe('in a clone repeat that includes a cascading select', function(){
+		var countrySelector = '[data-name="/new_cascading_selections_inside_repeats/group1/country"]',
+			citySelector = 'label:not(.itemset-template) [data-name="/new_cascading_selections_inside_repeats/group1/city"]',
+
+			form, $masterRepeat, $clonedRepeat;
+
+		beforeEach(function(){
+			form = loadForm('new_cascading_selections_inside_repeats.xml'),
+			form.init();
+			$masterRepeat = form.getFormO().$.find('.jr-repeat'),
+			//select usa in master repeat
+			$masterRepeat.find(countrySelector+'[value="usa"]').prop('checked', true).trigger('change');
+			//add repeat
+			$masterRepeat.find('button.repeat').click();
+			$clonedRepeat = form.getFormO().$.find('.jr-repeat.clone');
+		});
+
+		it('the itemset of the cloned repeat is correct (and not a cloned copy of the master repeat)', function(){
+			expect($masterRepeat.find(citySelector).length).toEqual(3);
+			expect($clonedRepeat.find(countrySelector+':selected').val()).toBeUndefined();
+			expect($clonedRepeat.find(citySelector).length).toEqual(0);
+		});
+
+		it('the itemset of the master repeat is not affected if the cloned is changed', function(){
+			$clonedRepeat.find(countrySelector+'[value="nl"]').prop('checked', true).trigger('change');
+			expect($masterRepeat.find(citySelector).length).toEqual(3);
+			expect($masterRepeat.find(citySelector).eq(0).attr('value')).toEqual('den');
+			expect($clonedRepeat.find(citySelector).length).toEqual(3);
+			expect($clonedRepeat.find(citySelector).eq(0).attr('value')).toEqual('ams');
 		});
 	});
 });

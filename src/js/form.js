@@ -1756,7 +1756,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
 		console.log('updating itemsets');
 		//TODO: test with very large itemset
-		var that = this,
+		var clonedRepeatsPresent, insideRepeat, insideRepeatClone,
+			that = this,
 			cleverSelector = [],
 			needToUpdateLangs = false,
 			itemsCache = {};
@@ -1771,18 +1772,32 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 
 		cleverSelector = cleverSelector.join(',');
+		clonedRepeatsPresent = ($form.find('.jr-repeat.clone').length > 0) ? true : false;
 		
 		$form.find(cleverSelector).each(function(){
-			var $htmlItem, $htmlItemLabels, value, $instanceItems,
+			var $htmlItem, $htmlItemLabels, value, $instanceItems, index, context,
 				$template = $(this),
 				newItems = {},
 				prevItems = $template.data(),
 				templateNodeName = $(this).prop('nodeName').toLowerCase(),
+				$input = (templateNodeName === 'label') ? $(this).children('input').eq(0) : $(this).parent('select'),
 				$labels = $template.closest('label, select').siblings('.itemset-labels'),
 				itemsXpath = $template.attr('data-items-path'),
 				labelType = $labels.attr('data-label-type'),
 				labelRef = $labels.attr('data-label-ref'),
 				valueRef = $labels.attr('data-value-ref');
+
+			context = that.input.getName($input);
+			/*
+				Determining the index is expensive, so we only do this when the itemset is inside a cloned repeat.
+				It can be safely set to 0 for other branches.
+			*/
+			insideRepeat = (clonedRepeatsPresent && $input.closest('.jr-repeat').length > 0) ? true : false;
+			insideRepeatClone = (clonedRepeatsPresent && $input.closest('.jr-repeat.clone').length > 0) ? true : false;
+				
+			if (insideRepeatClone){
+				index = (insideRepeatClone) ? that.input.getIndex($input) : 0;
+			}
 
 			if (typeof itemsCache[itemsXpath] !== 'undefined'){
 				console.debug('using cached itemset items result for '+itemsXpath);
@@ -1790,8 +1805,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			else{
 				console.debug('no cache for '+itemsXpath+', need to evaluate XPath');
-				$instanceItems = data.evaluate(itemsXpath, 'nodes');
-				itemsCache[itemsXpath] = $instanceItems;
+				$instanceItems = data.evaluate(itemsXpath, 'nodes', context, index);
+				if (!insideRepeat){
+					itemsCache[itemsXpath] = $instanceItems;
+				}
 			}
 
 			// this property allows for more efficient 'itemschanged' detection

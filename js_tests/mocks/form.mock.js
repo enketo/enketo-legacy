@@ -359,34 +359,6 @@ var formStr6 =
         '</label>'+
     '</form>';
 
-var dataStr8 =
-    '<model>'+
-        '<instance>'+
-            '<new_cascading_select id="cascading_select_test">'+
-              '<state>colorado</state>'+
-              '<county/>'+
-              '<city>denver</city>'+
-              '<meta>'+
-                '<instanceID/>'+
-              '</meta>'+
-            '</new_cascading_select>'+
-        '</instance>'+
-        '<instance id="cities">'+
-            '<root>'+
-              '<item>'+
-                '<itextId>static_instance-states-0</itextId>'+
-                '<name>denver</name>'+
-                '<state>colorado</state>'+
-              '</item>'+
-              '<item>'+
-                '<itextId>static_instance-states-1</itextId>'+
-                '<name>boulder</name>'+
-                '<state>colorado</state>'+
-              '</item>'+
-            '</root>'+
-        '</instance>'+
-    '</model>';
-
 var dataEditStr_nested_repeats =
     '<nested_repeats id="nested_repeats">'+
         '<formhub>'+

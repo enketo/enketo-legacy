@@ -31,7 +31,7 @@
  */
 function Form (formSelector, dataStr, dataStrToEdit){
 	"use strict";
-	var data, dataToEdit, form, $form, $formClone,
+	var data, dataToEdit, form, $form, $formClone, repeatsPresent,
 		loadErrors = [];
 	//*** FOR DEBUGGING and UNIT TESTS ONLY ***
 	this.ex = function(expr, type, selector, index){return data.evaluate(expr, type, selector, index);};
@@ -66,6 +66,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			dataToEdit.init();
 			data.load(dataToEdit);
 		}
+		repeatsPresent = ($(formSelector).find('.jr-repeat').length > 0);
 
 		//profiler = new Profiler('html form.init()');
 		form.init();
@@ -1556,7 +1557,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				cleverSelector.push('[data-relevant*="'+namesArr[i]+'"]');
 			}
 
-			clonedRepeatsPresent = ($form.find('.jr-repeat.clone').length > 0) ? true : false;
+			clonedRepeatsPresent = (repeatsPresent && $form.find('.jr-repeat.clone').length > 0) ? true : false;
 
 			$form.find(cleverSelector.join()).each(function(){
 				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
@@ -1567,11 +1568,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				
 				p.relevant = $(this).attr('data-relevant');
 				p.path = parent.input.getName($(this));
-				/*
-					Determining the index is expensive, so we only do this when the branch is inside a cloned repeat.
-					It can be safely set to 0 for other branches.
-				 */
-				p.ind = 0;
+				
 				//p = parent.input.getProps($(this));
 				//$branchNode = parent.input.getWrapNodes($(this));
 				$branchNode = $(this).closest('.jr-branch');
@@ -1582,7 +1579,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					}
 					return;
 				}
-
 				/* 
 					Determining ancestry is expensive. Using the knowledge most forms don't use repeats and 
 					if they usually don't have cloned repeats during initialization we perform first a check for .repeat.clone.
@@ -1591,11 +1587,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				*/
 				insideRepeat = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat').length > 0) ? true : false;
 				insideRepeatClone = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat.clone').length > 0) ? true : false;
-				
-				if (insideRepeatClone){
-					p.ind = parent.input.getIndex($(this));
-				}
-
+				/*
+					Determining the index is expensive, so we only do this when the branch is inside a cloned repeat.
+					It can be safely set to 0 for other branches.
+				 */
+				p.ind = (insideRepeatClone) ? parent.input.getIndex($(this)) : 0;
 				/*
 					Caching is only possible for expressions that do not contain relative paths to nodes.
 					So, first do a *very* aggresive check to see if the expression contains a relative path. 
@@ -1756,7 +1752,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
 		console.log('updating itemsets');
 		//TODO: test with very large itemset
-		var that = this,
+		var clonedRepeatsPresent, insideRepeat, insideRepeatClone,
+			that = this,
 			cleverSelector = [],
 			needToUpdateLangs = false,
 			itemsCache = {};
@@ -1771,18 +1768,30 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 
 		cleverSelector = cleverSelector.join(',');
+		clonedRepeatsPresent = (repeatsPresent && $form.find('.jr-repeat.clone').length > 0) ? true : false;
 		
 		$form.find(cleverSelector).each(function(){
-			var $htmlItem, $htmlItemLabels, value, $instanceItems,
+			var $htmlItem, $htmlItemLabels, value, $instanceItems, index, context,
 				$template = $(this),
 				newItems = {},
 				prevItems = $template.data(),
 				templateNodeName = $(this).prop('nodeName').toLowerCase(),
+				$input = (templateNodeName === 'label') ? $(this).children('input').eq(0) : $(this).parent('select'),
 				$labels = $template.closest('label, select').siblings('.itemset-labels'),
 				itemsXpath = $template.attr('data-items-path'),
 				labelType = $labels.attr('data-label-type'),
 				labelRef = $labels.attr('data-label-ref'),
 				valueRef = $labels.attr('data-value-ref');
+
+			context = that.input.getName($input);
+			/*
+				Determining the index is expensive, so we only do this when the itemset is inside a cloned repeat.
+				It can be safely set to 0 for other branches.
+			*/
+			insideRepeat = (clonedRepeatsPresent && $input.closest('.jr-repeat').length > 0) ? true : false;
+			insideRepeatClone = (clonedRepeatsPresent && $input.closest('.jr-repeat.clone').length > 0) ? true : false;
+				
+			index = (insideRepeatClone) ? that.input.getIndex($input) : 0;
 
 			if (typeof itemsCache[itemsXpath] !== 'undefined'){
 				console.debug('using cached itemset items result for '+itemsXpath);
@@ -1790,8 +1799,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 			else{
 				console.debug('no cache for '+itemsXpath+', need to evaluate XPath');
-				$instanceItems = data.evaluate(itemsXpath, 'nodes');
-				itemsCache[itemsXpath] = $instanceItems;
+				$instanceItems = data.evaluate(itemsXpath, 'nodes', context, index);
+				if (!insideRepeat){
+					itemsCache[itemsXpath] = $instanceItems;
+				}
 			}
 
 			// this property allows for more efficient 'itemschanged' detection
@@ -1862,32 +1873,34 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} changedNodeNames Comma-separated node names that may have changed
 	 */
 	FormHTML.prototype.outputUpdate = function(changedNodeNames){
-		var i, expr, namesArr, cleverSelector, 
+		var i, expr, namesArr, cleverSelector, clonedRepeatsPresent, insideRepeat, insideRepeatClone, context, index,
 			outputChanged = false,
 			outputCache = {},
-			val='';
-		/** 
-		 * issue #141 on modilabs/enketo was found to be a very mysterious one. In a very short form (random.xml)
-		 * it was found that the outputs were not updated because the cleverSelector did not find any nodes
-		 * It must have something to do with the DOM not having been built or something, because a 1 millisecond!!!
-		 * delay in executing the code below, the issue was resolved. To be properly fixed later...
-		 */	
+			val = '',
+			that = this;
+
 		namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 		cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
 		for (i=0 ; i<namesArr.length ; i++){
 			cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
 		}
-		
+		clonedRepeatsPresent = (repeatsPresent && $form.find('.jr-repeat.clone').length > 0) ? true : false;
+
 		$form.find(':not(:disabled) span.active').find(cleverSelector.join()).each(function(){
 			expr = $(this).attr('data-value');
+			context = that.input.getName($(this).closest('fieldset'));
+			insideRepeat = (clonedRepeatsPresent && $(this).closest('.jr-repeat').length > 0);
+			insideRepeatClone = (clonedRepeatsPresent && $(this).closest('.jr-repeat.clone').length > 0);
+			index = (insideRepeatClone) ? that.input.getIndex($(this).closest('fieldset')) : 0;
 
 			if (typeof outputCache[expr] !== 'undefined'){
 				val = outputCache[expr];
 			}
 			else{
-				//val = data.evaluate(expr, 'string');
-				val = data.node(expr).getVal()[0];
-				outputCache[expr] = val;
+				val = data.evaluate(expr, 'string', context, index);
+				if (!insideRepeat){
+					outputCache[expr] = val;
+				}
 			}
 			if ($(this).text !== val){
 				$(this).text(val);

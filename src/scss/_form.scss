@@ -172,14 +172,29 @@ html.touch{
   input:not([type="radio"]):not([type="checkbox"]), textarea{
     height: $input-height;
   }
-  input {
-    &[type="text"]{
+  
+  [type="text"]{
       width: $input-max-width }
-    &[type=date], &[type=number], &[type=email], &[type=password] {
+  [type=date], &[type=number], &[type=email], &[type=password] {
       width: $input-min-width;}
-    &[type=radio], &[type=checkbox] {
+  [type=radio], &[type=checkbox] {
       float: left;
-      margin: 0 10px 1px 10px;} }
+      margin: 0 10px 1px 10px;}
+
+  [type=checkbox]{
+	-webkit-appearance: none;
+	float: left;
+	width: 20px;
+	height: 20px;
+	background-image: url('/images/checkradio_orange.png');
+	background-position: 0 0;
+	&:checked{
+		background-position: -22px 0;} } 
+  :disabled [type=checkbox], [type=checkbox]:disabled{
+  	background-position: -44px 0;
+  	&:checked{
+  		background-position: -66px 0;} }
+
   textarea{
     width: $input-max-width;
     resize: vertical;

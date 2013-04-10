@@ -52,9 +52,6 @@ function setDebugEventHandlers(){
 	}
 }
 
-var xpathEvalTime = 0;
-var xpathEvalNum = 0;
-
 // helper function to set up and close test by removing and returning all survey data in localStorage
 
 /**

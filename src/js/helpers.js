@@ -68,7 +68,6 @@ function divideIntoBatches(fileSizes, limit){
 	return batches;
 }
 
-
 window.onload = function(){
 	setTimeout(function(){
 		var loadLog, t, loadingTime, exLog;
@@ -85,7 +84,7 @@ window.onload = function(){
 				window.localStorage.setItem('__loadLog', JSON.stringify(loadLog));
 			}
 			profilerRecords.push('total loading time: '+ loadingTime+' milliseconds');
-			$('.enketo-power').append('<p style="font-size: 0.7em;">(total load: '+loadingTime+' msec, XPath: '+xpathEvalTime+' msec)</p>');
+			//$('.enketo-power').append('<p style="font-size: 0.7em;">(total load: '+loadingTime+' msec, XPath: '+xpathEvalTime+' msec)</p>');
 			if (window.opener && window.performance && window.postMessage) window.opener.postMessage(JSON.stringify(window.performance), '*');
 			$(profilerRecords).each(function(i,v){console.log(v);});
 		}
@@ -95,7 +94,7 @@ window.onload = function(){
 (function($){
 	"use strict";
 
-	 /**
+	/**
      * Creates an XPath from a node (currently not used inside this Class (instead FormHTML.prototype.generateName is used) but will be in future);
      * @param  {string=} rootNodeName	if absent the root is #document
      * @return {string}                 XPath
@@ -106,7 +105,7 @@ window.onload = function(){
 			$node = this.first(),
 			nodeName = $node.prop('nodeName'),
 			//$sibSameNameAndSelf = $node.siblings(nodeName).addBack(),
-			steps = [nodeName], 
+			steps = [nodeName],
 			$parent = $node.parent(),
 			parentName = $parent.prop('nodeName');
 

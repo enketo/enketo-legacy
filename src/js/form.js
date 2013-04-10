@@ -877,9 +877,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
-		var profiler;
-		var timeStart = new Date().getTime();
-		xpathEvalNum++;
+		//var profiler;
+		//var timeStart = new Date().getTime();
+		//xpathEvalNum++;
 
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
 			index+' and result type: '+resTypeStr);
@@ -888,12 +888,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		expr = expr.trim();
 		
-		profiler = new Profiler('clone instance');
-		//SEEMS LIKE THE CONTEXT DOC (CLONE) CREATION COULD BE A PERFORMANCE HOG AS IT IS CALLED MANY TIMES, 
-		//IS THERE ANY BETTER WAY TO EXCLUDE TEMPLATE NODES AND THEIR CHILDREN?
+		//profiler = new Profiler('cloning instance');
+		/* 
+			creating a context doc is necessary for 3 reasons:
+			- the primary instance needs to be the root (and it isn't)
+			- the templates need to be removed (though this could be worked around by adding the templates as data)
+			- the hack described below with multiple instances.
+		*/
 		contextDoc = new DataXML(this.getStr(false, false));
-		profiler.report();
-		profiler = new Profiler('check whether instance() syntax is used and clone instances');
+		//profiler.report();
+		//profiler = new Profiler('check whether instance() syntax is used and clone instances');
 		/* 
 		   If the expression contains the instance('id') syntax, a different context instance is required.
 		   However, the same expression may also contain absolute reference to the main data instance, 
@@ -912,10 +916,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.$.find(':first>instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
 			}
 		}
-		profiler.report();
+		//profiler.report();
 
 		//console.debug('contextDoc:', contextDoc.$);
-		profiler = new Profiler('augmenting expression ');
+		//profiler = new Profiler('augmenting expression ');
 		if (typeof selector !== 'undefined' && selector !== null) {
 			//console.debug('contextNode: ', contextDoc.$.xfind(selector).eq(index));
 			context = contextDoc.$.xfind(selector).eq(index)[0];
@@ -931,7 +935,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		else{
 			context = contextDoc.getXML();
 		}
-		profiler.report();
+		//profiler.report();
 		//console.debug('context', context);
 		
 		resultTypes = { //REMOVE VALUES? NOT USED
@@ -963,9 +967,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
-		var timeLap = new Date().getTime();
-		var totTime;
-		var xTime;
+		//var timeLap = new Date().getTime();
+		//var totTime;
+		//var xTime;
 		//console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
@@ -975,10 +979,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum > 0 && resTypeNum < 4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
-						totTime = new Date().getTime() - timeStart;
-						xTime = new Date().getTime() - timeLap;
-						console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
-						xpathEvalTime += totTime;
+						//totTime = new Date().getTime() - timeStart;
+						//xTime = new Date().getTime() - timeLap;
+						//console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+						//xpathEvalTime += totTime;
 						return result;
 					}
 				}
@@ -993,18 +997,18 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
-				totTime = new Date().getTime() - timeStart;
-				xTime = new Date().getTime() - timeLap;
-				console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
-				xpathEvalTime += totTime;
+				//totTime = new Date().getTime() - timeStart;
+				//xTime = new Date().getTime() - timeLap;
+				//console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+				//xpathEvalTime += totTime;
 				//xpathEvalTime += new Date().getTime() - timeStart;
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
-			totTime = new Date().getTime() - timeStart;
-			xTime = new Date().getTime() - timeLap;
-			console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
-			xpathEvalTime += totTime;
+			//totTime = new Date().getTime() - timeStart;
+			//xTime = new Date().getTime() - timeLap;
+			//console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+			//xpathEvalTime += totTime;
 			//xpathEvalTime += new Date().getTime() - timeStart;
 			return result[resultTypes[resTypeNum][2]];
 		}
@@ -1013,7 +1017,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			console.error(error);
 			$(document).trigger('xpatherror', error);
 			loadErrors.push(error);
-			xpathEvalTime += new Date().getTime() - timeStart;
+			//xpathEvalTime += new Date().getTime() - timeStart;
 			return null;
 		}
 	};

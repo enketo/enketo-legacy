@@ -320,7 +320,18 @@ describe("Output functionality ", function(){
 	it("tested upon initialization: node uuid__", function(){
 		expect(form.getFormO().$.find('[data-value="/random/uuid__"]').text().length).toEqual(36);
 	});
+});
 
+describe("Output functionality within repeats", function(){
+	var form = loadForm('outputs_in_repeats.xml');
+	form.init();
+	form.getFormO().$.find('button.repeat').click();
+	form.getFormO().$.find('[name="/outputs_in_repeats/rep/name"]').eq(0).val('Martijn').trigger('change');
+	form.getFormO().$.find('[name="/outputs_in_repeats/rep/name"]').eq(1).val('Beth').trigger('change');
+	it('shows correct value when referring to repeated node', function(){
+		expect(form.getFormO().$.find('.jr-output:eq(0)').text()).toEqual('Martijn');
+		expect(form.getFormO().$.find('.jr-output:eq(1)').text()).toEqual('Beth');
+	});
 });
 
 describe("Preload and MetaData functionality", function(){

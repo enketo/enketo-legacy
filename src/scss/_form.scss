@@ -175,18 +175,17 @@ html.touch{
   
   [type="text"]{
       width: $input-max-width }
-  [type=date], &[type=number], &[type=email], &[type=password] {
+  [type=date], [type=number], [type=email], [type=password] {
       width: $input-min-width;}
-  [type=radio], &[type=checkbox] {
+  [type=radio], [type=checkbox] {
+  	  background-image: url('/images/checkradio_orange.png');
+      -webkit-appearance: none;
       float: left;
+      width: 20px;
+	  height: 20px;
       margin: 0 10px 1px 10px;}
 
   [type=checkbox]{
-	-webkit-appearance: none;
-	float: left;
-	width: 20px;
-	height: 20px;
-	background-image: url('/images/checkradio_orange.png');
 	background-position: 0 0;
 	&:checked{
 		background-position: -22px 0;} } 
@@ -194,6 +193,15 @@ html.touch{
   	background-position: -44px 0;
   	&:checked{
   		background-position: -66px 0;} }
+
+  [type=radio]{
+	background-position: -88px 0;
+	&:checked{
+		background-position: -110px 0;} } 
+  :disabled [type=radio], [type=radio]:disabled{
+  	background-position: -132px 0;
+  	&:checked{
+  		background-position: -154px 0;} }
 
   textarea{
     width: $input-max-width;

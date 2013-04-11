@@ -1,8 +1,3 @@
-.icon-crosshairs {
-  background-image: url("../images/crosshairs.png");
-  background-position: -5px -5px;
-}
-
 /*
  * Bootstrap v2.3.0
  *
@@ -7638,6 +7633,11 @@ progress {
   cursor: pointer;
   width: 16px;
   height: 16px;
+}
+
+.icon-crosshairs {
+  background-image: url("../images/crosshairs.png");
+  background-position: -5px -5px;
 }
 
 .paper {

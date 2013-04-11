@@ -7846,10 +7846,12 @@ html.touch .jr legend .jr-hint.active {
   width: 144px;
 }
 .jr [type=radio], .jr [type=checkbox] {
-  background-image: url("/images/checkradio_orange.png");
+  background: url("/images/checkradio_orange.png") no-repeat;
+  cursor: pointer;
   -webkit-appearance: none;
   -moz-background-position: -9999px -9999px !important;
-  -ms-background-position: -9999px -9999px !important;
+  -ms-background-position-x: -9999px !important;
+  -ms-background-position-y: -9999px !important;
   float: left;
   border: none;
   width: 22px;
@@ -7857,28 +7859,30 @@ html.touch .jr legend .jr-hint.active {
   margin: 0 10px 1px 10px;
 }
 .jr [type=checkbox] {
-  -webkit-background-position: 0 0;
+  background-position: 0 0;
 }
 .jr [type=checkbox]:checked {
-  -webkit-background-position: -22px 0;
+  background-position: -22px 0;
 }
 .jr :disabled [type=checkbox], .jr [type=checkbox]:disabled {
-  -webkit-background-position: -44px 0;
+  cursor: default;
+  background-position: -44px 0;
 }
 .jr :disabled [type=checkbox]:checked, .jr [type=checkbox]:disabled:checked {
-  -webkit-background-position: -66px 0;
+  background-position: -66px 0;
 }
 .jr [type=radio] {
-  -webkit-background-position: -88px 0;
+  background-position: -88px 0;
 }
 .jr [type=radio]:checked {
-  -webkit-background-position: -110px 0;
+  background-position: -110px 0;
 }
 .jr :disabled [type=radio], .jr [type=radio]:disabled {
-  -webkit-background-position: -132px 0;
+  cursor: default;
+  background-position: -132px 0;
 }
 .jr :disabled [type=radio]:checked, .jr [type=radio]:disabled:checked {
-  -webkit-background-position: -154px 0;
+  background-position: -154px 0;
 }
 .jr textarea {
   width: 80%;

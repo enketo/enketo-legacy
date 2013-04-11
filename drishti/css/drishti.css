@@ -7846,11 +7846,17 @@ html.touch .jr legend .jr-hint.active {
   width: 144px;
 }
 .jr [type=radio], .jr [type=checkbox] {
-  background-image: url("/images/checkradio_orange.png");
+  background: url("/images/checkradio_orange.png") no-repeat;
+  cursor: pointer;
   -webkit-appearance: none;
+  -moz-background-position-x: -9999px -9999px !important;
+  -moz-background-position-y: -9999px -9999px !important;
+  -ms-background-position-x: -9999px !important;
+  -ms-background-position-y: -9999px !important;
   float: left;
-  width: 20px;
-  height: 20px;
+  border: none;
+  width: 22px;
+  height: 22px;
   margin: 0 10px 1px 10px;
 }
 .jr [type=checkbox] {
@@ -7860,6 +7866,7 @@ html.touch .jr legend .jr-hint.active {
   background-position: -22px 0;
 }
 .jr :disabled [type=checkbox], .jr [type=checkbox]:disabled {
+  cursor: default;
   background-position: -44px 0;
 }
 .jr :disabled [type=checkbox]:checked, .jr [type=checkbox]:disabled:checked {
@@ -7872,6 +7879,7 @@ html.touch .jr legend .jr-hint.active {
   background-position: -110px 0;
 }
 .jr :disabled [type=radio], .jr [type=radio]:disabled {
+  cursor: default;
   background-position: -132px 0;
 }
 .jr :disabled [type=radio]:checked, .jr [type=radio]:disabled:checked {

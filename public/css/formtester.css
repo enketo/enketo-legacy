@@ -7934,7 +7934,8 @@ html.touch .jr legend .jr-hint.active {
   background: url("/images/checkradio_orange.png") no-repeat;
   cursor: pointer;
   -webkit-appearance: none;
-  -moz-background-position: -9999px -9999px !important;
+  -moz-background-position-x: -9999px -9999px !important;
+  -moz-background-position-y: -9999px -9999px !important;
   -ms-background-position-x: -9999px !important;
   -ms-background-position-y: -9999px !important;
   float: left;

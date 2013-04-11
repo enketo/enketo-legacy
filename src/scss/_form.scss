@@ -186,10 +186,14 @@ html.touch{
   [type=radio], [type=checkbox] {
   	  background-image: url('/images/checkradio_orange.png');
       -webkit-appearance: none;
+      //-ms-appearance: none;
       //-moz-appearance: none;
       //because of the -moz-appearance: none; bug (https://bugzilla.mozilla.org/show_bug.cgi?id=605985), 
       //hide the background-image to avoid showing native + alternative checkbox/radiobutton
+      //and use -webkit-prefix for all background-positioning
       -moz-background-position: -9999px -9999px !important;
+      -ms-background-position: -9999px -9999px !important;
+
       //appearance: none;
       float: left;
       border: none;
@@ -198,22 +202,22 @@ html.touch{
       margin: 0 10px 1px 10px;}
 
   [type=checkbox]{
-	background-position: 0 0;
+	-webkit-background-position: 0 0;
 	&:checked{
-		background-position: -22px 0;} } 
+		-webkit-background-position: -22px 0;} } 
   :disabled [type=checkbox], [type=checkbox]:disabled{
-  	background-position: -44px 0;
+  	-webkit-background-position: -44px 0;
   	&:checked{
-  		background-position: -66px 0;} }
+  		-webkit-background-position: -66px 0;} }
 
   [type=radio]{
-	background-position: -88px 0;
+	-webkit-background-position: -88px 0;
 	&:checked{
-		background-position: -110px 0;} } 
+		-webkit-background-position: -110px 0;} } 
   :disabled [type=radio], [type=radio]:disabled{
-  	background-position: -132px 0;
+  	-webkit-background-position: -132px 0;
   	&:checked{
-  		background-position: -154px 0;} }
+  		-webkit-background-position: -154px 0;} }
 
   textarea{
     width: $input-max-width;

@@ -186,9 +186,15 @@ html.touch{
   [type=radio], [type=checkbox] {
   	  background-image: url('/images/checkradio_orange.png');
       -webkit-appearance: none;
+      //-moz-appearance: none;
+      //because of the -moz-appearance: none; bug (https://bugzilla.mozilla.org/show_bug.cgi?id=605985), 
+      //hide the background-image to avoid showing native + alternative checkbox/radiobutton
+      -moz-background-position: -9999px -9999px !important;
+      //appearance: none;
       float: left;
-      width: 20px;
-	  height: 20px;
+      border: none;
+      width: 22px;
+	  height: 22px;
       margin: 0 10px 1px 10px;}
 
   [type=checkbox]{

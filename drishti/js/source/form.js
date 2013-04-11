@@ -823,7 +823,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	};
 
 	DataXML.prototype.getInstanceClone = function(incTempl, incNs, all){
-		var $clone = (all) ? this.$.find(':first').clone() : this.$.find('instance:eq(0) > *:first').clone();
+		var $clone = (all) ? this.$.find(':first').clone() : this.node('> *:first').get().clone();
 		return (incTempl) ? $clone : $clone.find('[template]').remove().end();
 	};
 

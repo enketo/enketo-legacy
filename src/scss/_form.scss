@@ -191,8 +191,9 @@ html.touch{
       //-moz-appearance: none;
       //because of the -moz-appearance: none; bug (https://bugzilla.mozilla.org/show_bug.cgi?id=605985), 
       //hide the background-image to avoid showing native + alternative checkbox/radiobutton
-      //and use -webkit-prefix for all background-positioning
-      -moz-background-position: -9999px -9999px !important;
+     // -moz-background-position: -9999px -9999px !important;
+      -moz-background-position-x: -9999px -9999px !important;
+      -moz-background-position-y: -9999px -9999px !important;
       -ms-background-position-x: -9999px !important;
       -ms-background-position-y: -9999px !important;
 

@@ -7931,7 +7931,7 @@ html.touch .jr legend .jr-hint.active {
   width: 144px;
 }
 .jr [type=radio], .jr [type=checkbox] {
-  background: url("/images/checkradio_orange.png") no-repeat;
+  background: url("../images/checkradio_orange.png") no-repeat;
   cursor: pointer;
   -webkit-appearance: none;
   -moz-background-position-x: -9999px -9999px !important;

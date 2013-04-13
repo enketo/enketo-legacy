@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /*jslint browser:true, devel:true, jquery:true, smarttabs:true, trailing:false*//*global XPathJS, XMLSerializer:true, Profiler, Modernizr, google, settings, connection, fileManager, xPathEvalTime*/
 
 /**
@@ -32,7 +31,7 @@
  */
 function Form (formSelector, dataStr, dataStrToEdit){
 	"use strict";
-	var data, dataToEdit, form, $form, $formClone,
+	var data, dataToEdit, form, $form, $formClone, repeatsPresent,
 		loadErrors = [];
 	//*** FOR DEBUGGING and UNIT TESTS ONLY ***
 	this.ex = function(expr, type, selector, index){return data.evaluate(expr, type, selector, index);};
@@ -43,9 +42,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	this.getInstanceID = function(){return data.getInstanceID();};
 	this.Form = function(selector){return new FormHTML(selector);};
 	this.getFormO = function(){return form;};
-	//this.getDataXML = function(){return data.getXML();};
-	//this.validateAll = function(){return form.validateAll();};
-	//this.outputUpdate = function(){return form.outputUpdate();};
 	//***************************************
 
 /**
@@ -70,8 +66,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			dataToEdit.init();
 			data.load(dataToEdit);
 		}
+		repeatsPresent = ($(formSelector).find('.jr-repeat').length > 0);
 
-		//profiler = new Profiler('form.init()');
+		//profiler = new Profiler('html form.init()');
 		form.init();
 		//profiler.report();
 		
@@ -797,31 +794,37 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	DataXML.prototype.getStr = function(incTempl, incNs, all){
 		var $docRoot, $dataClone, dataStr;
 
-		all =  all || false;
-		incTempl = incTempl || false;
-		incNs = incNs || true;
+//		all =  all || false;
+//		incTempl = incTempl || false;
+//		incNs = incNs || true;//
 
-		$docRoot = (all) ? this.$.find(':first') : this.node('> :first').get();
-		
-		//this should be refactored. Using <root> is not necessary.
-		$dataClone = $('<root></root>');
-		
-		$docRoot.clone().appendTo($dataClone);
+//		$docRoot = (all) ? this.$.find(':first') : this.node('> :first').get();
+//		
+//		//this should be refactored. Using <root> is not necessary.
+//		$dataClone = $('<root></root>');
+//		
+//		$docRoot.clone().appendTo($dataClone);//
 
-		if (incTempl === false){
-			$dataClone.find('[template]').remove();
-		}
-		//disabled 
-		//if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
-		//	$dataClone.find('instance').attr('xmlns', this.namespace);
-		//}
+//		if (incTempl === false){
+//			$dataClone.find('[template]').remove();
+//		}
+//		//disabled 
+//		//if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
+//		//	$dataClone.find('instance').attr('xmlns', this.namespace);
+//		//}
 
-		dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
+		//dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
 
+		dataStr = (new XMLSerializer()).serializeToString(this.getInstanceClone(incTempl, incNs, all)[0]);
 		//remove tabs
 		dataStr = dataStr.replace(/\t/g, '');
 
 		return dataStr;
+	};
+
+	DataXML.prototype.getInstanceClone = function(incTempl, incNs, all){
+		var $clone = (all) ? this.$.find(':first').clone() : this.node('> *:first').get().clone();
+		return (incTempl) ? $clone : $clone.find('[template]').remove().end();
 	};
 
 	/**
@@ -875,7 +878,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
-		
+		//var profiler;
 		//var timeStart = new Date().getTime();
 		//xpathEvalNum++;
 
@@ -885,10 +888,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		index = index || 0;
 
 		expr = expr.trim();
-
-		//SEEMS LIKE THE CONTEXT DOC (CLONE) CREATION COULD BE A PERFORMANCE HOG AS IT IS CALLED MANY TIMES, 
-		//IS THERE ANY BETTER WAY TO EXCLUDE TEMPLATE NODES AND THEIR CHILDREN?
+		
+		//profiler = new Profiler('cloning instance');
+		/* 
+			creating a context doc is necessary for 3 reasons:
+			- the primary instance needs to be the root (and it isn't)
+			- the templates need to be removed (though this could be worked around by adding the templates as data)
+			- the hack described below with multiple instances.
+		*/
 		contextDoc = new DataXML(this.getStr(false, false));
+		//profiler.report();
+		//profiler = new Profiler('check whether instance() syntax is used and clone instances');
 		/* 
 		   If the expression contains the instance('id') syntax, a different context instance is required.
 		   However, the same expression may also contain absolute reference to the main data instance, 
@@ -904,26 +914,31 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			for (i=0 ; i<instances.length ; i++){
 				id = instances[i].match(/[\'|\"]([^\'']+)[\'|\"]/)[1];
 				expr = expr.replace(instances[i], '/node()/instance[@id="'+id+'"]');
-				this.$.find('instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
+				this.$.find(':first>instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
 			}
 		}
-		//console.debug('contextDoc:', contextDoc.$);
+		//profiler.report();
 
+		//console.debug('contextDoc:', contextDoc.$);
+		//profiler = new Profiler('augmenting expression ');
 		if (typeof selector !== 'undefined' && selector !== null) {
 			//console.debug('contextNode: ', contextDoc.$.xfind(selector).eq(index));
 			context = contextDoc.$.xfind(selector).eq(index)[0];
 			/**
-			 * If the expressions is bound to a node that is inside a repeat.... see makeBugCompliant()
+			 * If the expression is bound to a node that is inside a repeat.... see makeBugCompliant()
 			 */
-			if ($form.find('[name="'+selector+'"]').parents('.jr-repeat').length > 0 ){
+			//Could consider passing a contextInsideRepeat variable to evaluate() instead
+			if ($form.find('[name="'+selector+'"]:eq(0)').closest('.jr-repeat').length > 0){
+			//if ($form.find('[name="'+selector+'"]').parents('.jr-repeat').length > 0 ){
 				expr = this.makeBugCompliant(expr, selector, index);
 			}
 		}
 		else{
 			context = contextDoc.getXML();
 		}
+		//profiler.report();
 		//console.debug('context', context);
-
+		
 		resultTypes = { //REMOVE VALUES? NOT USED
 			0 : ['any', 'ANY_TYPE'], 
 			1 : ['number', 'NUMBER_TYPE', 'numberValue'],
@@ -953,6 +968,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&gt;/g, '>'); 
 		expr = expr.replace( /&quot;/g, '"');
 
+		//var timeLap = new Date().getTime();
+		//var totTime;
+		//var xTime;
 		//console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
@@ -962,7 +980,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					if (resTypeNum == Number(result.resultType)){
 						result = (resTypeNum > 0 && resTypeNum < 4) ? result[resultTypes[resTypeNum][2]] : result;
 						console.debug('evaluated '+expr+' to: ', result);
-						//xpathEvalTime += new Date().getTime() - timeStart;
+						//totTime = new Date().getTime() - timeStart;
+						//xTime = new Date().getTime() - timeLap;
+						//console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+						//xpathEvalTime += totTime;
 						return result;
 					}
 				}
@@ -977,10 +998,18 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$result = $result.add(result.snapshotItem(j));
 				}
 				//console.debug('evaluation returned nodes: ', $result);
+				//totTime = new Date().getTime() - timeStart;
+				//xTime = new Date().getTime() - timeLap;
+				//console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+				//xpathEvalTime += totTime;
 				//xpathEvalTime += new Date().getTime() - timeStart;
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
+			//totTime = new Date().getTime() - timeStart;
+			//xTime = new Date().getTime() - timeLap;
+			//console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
+			//xpathEvalTime += totTime;
 			//xpathEvalTime += new Date().getTime() - timeStart;
 			return result[resultTypes[resTypeNum][2]];
 		}
@@ -1015,11 +1044,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return console.error('variable data needs to be defined as instance of DataXML');
 		}
 
-		//profiler = new Profiler('preloads.init()');
+		//var profiler = new Profiler('preloads.init()');
 		this.preloads.init(this); //before widgets.init (as instanceID used in offlineFileWidget)
 		//profiler.report();
 		
-		//var profiler = new Profiler('adding hint icons');
+		//profiler = new Profiler('adding hint icons');
 		//add 'hint' icon, could be moved to XSLT, but is very fast even on super large forms - 31 msecs on bench6 form
 		if (!Modernizr.touch){
 			$hint = '<span class="hint" ><i class="icon-question-sign"></i></span>';
@@ -1048,19 +1077,27 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$(this).attr('data-name', name);
 		});
 
+		//profiler = new Profiler('setLangs()');
+		this.setLangs();//test: before itemsetUpdate
+		//profiler.report();
+
 		//profiler = new Profiler('repeat.init()');
 		this.repeat.init(this); //after radio button data-name setting
 		//profiler.report();
 
 		//$form.find('h2').first().append('<span/>');//what's this for then?
 
-		//profiler = new Profiler('itemsetUpdate()');
+		//profiler = new Profiler('itemsets initialization');
 		this.itemsetUpdate();
 		//profiler.report();
 		
+		//profiler = new Profiler('setting default values in form inputs');
 		this.setAllVals();
+		//profiler.report();
 		
+		//profiler = new Profiler('widgets initialization');
 		this.widgets.init(); //after setAllVals()
+		//profiler.report();
 		
 		//profiler = new Profiler('bootstrapify');
 		this.bootstrapify(); 
@@ -1080,9 +1117,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.outputUpdate();
 		//profiler.report();
 
-		//profiler = new Profiler('setLangs()');
-		this.setLangs();
-		//profiler.report();
+		
 
 		//profiler = new Profiler('setHints()');
 		this.setHints();
@@ -1272,7 +1307,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			return (this.getInputType($node) == 'checkbox' || $node.attr('multiple') !== undefined) ? true : false;
 		},
 		isEnabled: function($node){
-			return ($node.attr('disabled') !== undefined  || $node.parents('fieldset:disabled').length !== 0 ) ? false : true;
+			return !($node.prop('disabled') || $node.parents('fieldset:disabled').length > 0);
 		},
 		getVal : function($node){
 			var inputType, values=[], name;
@@ -1372,6 +1407,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			defaultLang = $('#form-languages option:eq(0)').attr('value');
 		}
 		console.debug('default language is: '+defaultLang);
+		$('#form-languages').val(defaultLang);
 
 		if ($('#form-languages option').length < 2 ){
 			$langSelector.hide();
@@ -1381,7 +1417,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$('#form-languages').change(function(event){
 			console.debug('form-language change event detected!');
 			event.preventDefault();
-			lang = $(this).val();//attr('lang');
+			lang = $(this).val();
 			$('#form-languages option').removeClass('active');
 			$(this).addClass('active');
 
@@ -1521,7 +1557,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				cleverSelector.push('[data-relevant*="'+namesArr[i]+'"]');
 			}
 
-			clonedRepeatsPresent = ($form.find('.jr-repeat.clone').length > 0) ? true : false;
+			clonedRepeatsPresent = (repeatsPresent && $form.find('.jr-repeat.clone').length > 0) ? true : false;
 
 			$form.find(cleverSelector.join()).each(function(){
 				//note that $(this).attr('name') is not the same as p.path for repeated radiobuttons!
@@ -1532,11 +1568,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				
 				p.relevant = $(this).attr('data-relevant');
 				p.path = parent.input.getName($(this));
-				/*
-					Determining the index is expensive, so we only do this when the branch is inside a cloned repeat.
-					It can be safely set to 0 for other branches.
-				 */
-				p.ind = 0;
+				
 				//p = parent.input.getProps($(this));
 				//$branchNode = parent.input.getWrapNodes($(this));
 				$branchNode = $(this).closest('.jr-branch');
@@ -1547,7 +1579,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					}
 					return;
 				}
-
 				/* 
 					Determining ancestry is expensive. Using the knowledge most forms don't use repeats and 
 					if they usually don't have cloned repeats during initialization we perform first a check for .repeat.clone.
@@ -1556,11 +1587,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				*/
 				insideRepeat = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat').length > 0) ? true : false;
 				insideRepeatClone = (clonedRepeatsPresent && $branchNode.closest('.jr-repeat.clone').length > 0) ? true : false;
-				
-				if (insideRepeatClone){
-					p.ind = parent.input.getIndex($(this));
-				}
-
+				/*
+					Determining the index is expensive, so we only do this when the branch is inside a cloned repeat.
+					It can be safely set to 0 for other branches.
+				 */
+				p.ind = (insideRepeatClone) ? parent.input.getIndex($(this)) : 0;
 				/*
 					Caching is only possible for expressions that do not contain relative paths to nodes.
 					So, first do a *very* aggresive check to see if the expression contains a relative path. 
@@ -1665,10 +1696,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				type = $branchNode.prop('nodeName').toLowerCase();
 
 				if (type == 'label') {
-					$branchNode.children('input, select, textarea').removeAttr('disabled');
+					$branchNode.children('input, select, textarea').prop('disabled', false);
 				}
 				else{
-					$branchNode.removeAttr('disabled');
+					$branchNode.prop('disabled', false);
 				}
 			}
 		};
@@ -1702,10 +1733,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 
 				if (type == 'label'){
-					$branchNode.children('input, select, textarea').attr('disabled', 'disabled');
+					$branchNode.children('input, select, textarea').prop('disabled', true);
 				}
 				else{
-					$branchNode.attr('disabled', 'disabled');
+					$branchNode.prop('disabled', true);
 				}
 			}
 		};
@@ -1719,8 +1750,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} changedDataNodeNames node names that were recently changed, separated by commas
 	 */
 	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
+		console.log('updating itemsets');
 		//TODO: test with very large itemset
-		var that = this,
+		var clonedRepeatsPresent, insideRepeat, insideRepeatClone,
+			that = this,
 			cleverSelector = [],
 			needToUpdateLangs = false,
 			itemsCache = {};
@@ -1735,26 +1768,41 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		}
 
 		cleverSelector = cleverSelector.join(',');
+		clonedRepeatsPresent = (repeatsPresent && $form.find('.jr-repeat.clone').length > 0) ? true : false;
 		
 		$form.find(cleverSelector).each(function(){
-			var $htmlItem, $htmlItemLabels, value, $instanceItems,
+			var $htmlItem, $htmlItemLabels, value, $instanceItems, index, context,
 				$template = $(this),
 				newItems = {},
 				prevItems = $template.data(),
 				templateNodeName = $(this).prop('nodeName').toLowerCase(),
+				$input = (templateNodeName === 'label') ? $(this).children('input').eq(0) : $(this).parent('select'),
 				$labels = $template.closest('label, select').siblings('.itemset-labels'),
 				itemsXpath = $template.attr('data-items-path'),
 				labelType = $labels.attr('data-label-type'),
 				labelRef = $labels.attr('data-label-ref'),
 				valueRef = $labels.attr('data-value-ref');
 
+			context = that.input.getName($input);
+			/*
+				Determining the index is expensive, so we only do this when the itemset is inside a cloned repeat.
+				It can be safely set to 0 for other branches.
+			*/
+			insideRepeat = (clonedRepeatsPresent && $input.closest('.jr-repeat').length > 0) ? true : false;
+			insideRepeatClone = (clonedRepeatsPresent && $input.closest('.jr-repeat.clone').length > 0) ? true : false;
+				
+			index = (insideRepeatClone) ? that.input.getIndex($input) : 0;
+
 			if (typeof itemsCache[itemsXpath] !== 'undefined'){
 				console.debug('using cached itemset items result for '+itemsXpath);
 				$instanceItems = itemsCache[itemsXpath];
 			}
 			else{
-				$instanceItems = data.evaluate(itemsXpath, 'nodes');
-				itemsCache[itemsXpath] = $instanceItems;
+				console.debug('no cache for '+itemsXpath+', need to evaluate XPath');
+				$instanceItems = data.evaluate(itemsXpath, 'nodes', context, index);
+				if (!insideRepeat){
+					itemsCache[itemsXpath] = $instanceItems;
+				}
 			}
 
 			// this property allows for more efficient 'itemschanged' detection
@@ -1812,6 +1860,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});			
 		});
+		console.debug('need to update langs: '+needToUpdateLangs);
 		if (needToUpdateLangs){
 			//that.setLangs();
 			$('#form-languages').trigger('change');
@@ -1824,32 +1873,34 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} changedNodeNames Comma-separated node names that may have changed
 	 */
 	FormHTML.prototype.outputUpdate = function(changedNodeNames){
-		var i, expr, namesArr, cleverSelector, 
+		var i, expr, namesArr, cleverSelector, clonedRepeatsPresent, insideRepeat, insideRepeatClone, context, index,
 			outputChanged = false,
 			outputCache = {},
-			val='';
-		/** 
-		 * issue #141 on modilabs/enketo was found to be a very mysterious one. In a very short form (random.xml)
-		 * it was found that the outputs were not updated because the cleverSelector did not find any nodes
-		 * It must have something to do with the DOM not having been built or something, because a 1 millisecond!!!
-		 * delay in executing the code below, the issue was resolved. To be properly fixed later...
-		 */	
+			val = '',
+			that = this;
+
 		namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 		cleverSelector = (namesArr.length > 0) ? [] : ['.jr-output[data-value]'];
 		for (i=0 ; i<namesArr.length ; i++){
 			cleverSelector.push('.jr-output[data-value*="'+namesArr[i]+'"]');
 		}
-		
-		$form.find(':not([disabled]) span.active').find(cleverSelector.join()).each(function(){
+		clonedRepeatsPresent = (repeatsPresent && $form.find('.jr-repeat.clone').length > 0) ? true : false;
+
+		$form.find(':not(:disabled) span.active').find(cleverSelector.join()).each(function(){
 			expr = $(this).attr('data-value');
+			context = that.input.getName($(this).closest('fieldset'));
+			insideRepeat = (clonedRepeatsPresent && $(this).closest('.jr-repeat').length > 0);
+			insideRepeatClone = (clonedRepeatsPresent && $(this).closest('.jr-repeat.clone').length > 0);
+			index = (insideRepeatClone) ? that.input.getIndex($(this).closest('fieldset')) : 0;
 
 			if (typeof outputCache[expr] !== 'undefined'){
 				val = outputCache[expr];
 			}
 			else{
-				//val = data.evaluate(expr, 'string');
-				val = data.node(expr).getVal()[0];
-				outputCache[expr] = val;
+				val = data.evaluate(expr, 'string', context, index);
+				if (!insideRepeat){
+					outputCache[expr] = val;
+				}
 			}
 			if ($(this).text !== val){
 				$(this).text(val);
@@ -2178,7 +2229,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		mobileSelectWidget : function(){
 			var showSelectedValues = function($select){
-				var values = $select.val(),
+				var values = ($.isArray($select.val())) ? $select.val() : [$select.val()],
 					valueText = [];
 				console.log('mobileSelectWidget change event detected, values selected: ', values);
 				for (var i = 0; i < values.length ; i++){
@@ -2280,7 +2331,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 
 				$fileInputs
-					.attr('disabled', 'disabled')
+					.prop('disabled', true)
 					.addClass('ignore')
 					.after('<div class="file-feedback text-'+feedbackClass+'">'+feedbackMsg+'</div>');
 
@@ -2347,7 +2398,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 								return true;
 							}
 						}).removeClass('ignore')
-							.removeAttr('disabled')
+							.prop('disabled', false)
 							.siblings('.file-feedback').remove();
 						$fileInputs.after('<div class="text-info">'+
 							'File inputs are experimental. Use only for testing.');
@@ -2579,7 +2630,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$form.find('fieldset.jr-repeat').prepend('<span class="repeat-number"></span>');
 			$form.find('fieldset.jr-repeat:not([data-repeat-fixed])')
 				.append('<button type="button" class="btn repeat"><i class="icon-plus"></i></button>'+
-					'<button type="button" disabled="disabled" class="btn remove"><i class="icon-minus"></i></button>');
+					'<button type="button" disabled class="btn remove"><i class="icon-minus"></i></button>');
 
 			//delegated handlers (strictly speaking not required, but checked for doubling of events -> OK)
 			$form.on('click', 'button.repeat:enabled', function(){
@@ -2728,11 +2779,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$node = (typeof $node == 'undefined' || $node.length === 0 || !$node) ?	$node = $form : $node;
 			
 			//first switch everything off and remove hover state
-			$node.find('button.repeat, button.remove').attr('disabled', 'disabled');//button('disable').removeClass('ui-state-hover');
+			$node.find('button.repeat, button.remove').prop('disabled', true);//button('disable').removeClass('ui-state-hover');
 		
 			//then enable the appropriate ones
-			$node.find('fieldset.jr-repeat:last-child > button.repeat').removeAttr('disabled');//.button('enable');
-			$node.find('button.remove:not(:eq(0))').removeAttr('disabled');
+			$node.find('fieldset.jr-repeat:last-child > button.repeat').prop('disabled', false);//.button('enable');
+			$node.find('button.remove:not(:eq(0))').prop('disabled', false);
 		}
 	};
 	
@@ -2775,12 +2826,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (validReq === false){
 				that.setValid($(this), 'constraint');
 				if (event.type === 'validate'){
+					//console.error('setting node '+n.path+' to invalid-required', n);
 					that.setInvalid($(this), 'required');
 				}
 			}
 			else{
 				that.setValid($(this), 'required');
 				if (typeof validCons !== 'undefined' && validCons === false){
+					//console.error('setting node '+n.path+' to invalid-constraint', n);
 					that.setInvalid($(this), 'constraint');
 				}
 				else if (validCons !== null) {
@@ -2910,8 +2963,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.find('fieldset:disabled input, fieldset:disabled select, fieldset:disabled textarea, input:disabled, select:disabled, textarea:disabled').each(function(){
 			that.setValid($(this));
 		});
-		//the above still leaves out elements that are not disabled directly but have disabled parents
-		//this is dealt with in the validate event handler
 		$form.find('input, select, textarea').not('.ignore').trigger('validate');
 		return this.isValid();
 	};

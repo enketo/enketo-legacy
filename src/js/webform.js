@@ -94,4 +94,7 @@ $(document).ready(function() {
 			);
 		}
 	};
+
+	profilerRecords.push(xpathEvalNum+' XPath Evaluations during initialization took '+xpathEvalTime+' milliseconds');
+
 });

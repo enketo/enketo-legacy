@@ -39,7 +39,6 @@
 		<script type="text/javascript" src="<?= $script; ?>"></script>
 <? endforeach; ?>
 
-
 <? $maps_dynamic_key = $this->config->item('google_maps_api_v3_key'); ?>
 <? $maps_static_key = $this->config->item('google_maps_static_api_key'); ?>
 <? $support_email = $this->config->item("support_email") ; ?>

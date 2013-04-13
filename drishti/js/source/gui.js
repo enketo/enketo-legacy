@@ -55,7 +55,7 @@ function setSettings(){
 			{q: 'server', s: 'serverURL'},
 			{q: 'form', s:'formURL'},
 			{q: 'id', s: 'formId'},
-			{q: 'formId', s: 'formId'},
+			{q: 'formName', s: 'formId'},
 			{q: 'instanceId', s: 'instanceId'},
 			{q: 'entityId', s: 'entityId'}
 		];

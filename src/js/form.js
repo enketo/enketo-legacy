@@ -2090,15 +2090,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		mobileDateSamsungBugWidget : function(){
 			/*
 				Samsung mobile browser (called "Internet") has a weird bug that appears sometimes (?) when an input field
-				already has a value and is edited. The new value YYYY-MM-DD replaces the year of the old value and first hyphen. E.g.
-				existing: 2010-01-01, new value entered: 2012-12-12 => input field shows: 2012-12-1201-01 
+				already has a value and is edited. The new value YYYY-MM-DD prepends old or replaces the year of the old value and first hyphen. E.g.
+				existing: 2010-01-01, new value entered: 2012-12-12 => input field shows: 2012-12-1201-01 or
 				*to be confirmed that this pattern is always the one found when the bug occurs*
 			*/
 			if (!this.repeat){
 				$form.on('change', 'input[type="date"]', function(event){
 					var correctedVal,
 						val = $(this).val();
-					if (/^[0-9]{4}-[0-9]{2}-[0-9]{4}-[0-9]{2}$/.test(val)){
+					if (val && val.length > 10){
 						correctedVal = val.substring(0,10);
 						$(this).val(correctedVal); //need to fire new event?
 						console.error('Samsung bug detected with date input. Changed value from '+val+' to '+correctedVal);

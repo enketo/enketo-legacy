@@ -2095,7 +2095,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				*to be confirmed that this pattern is always the one found when the bug occurs*
 			*/
 			if (!this.repeat){
-				$form.on('change', 'input:date', function(event){
+				$form.on('change', 'input[type="date"]', function(event){
 					var correctedVal,
 						val = $(this).val();
 					if (/^[0-9]{4}-[0-9]{2}-[0-9]{4}-[0-9]{2}$/.test(val)){

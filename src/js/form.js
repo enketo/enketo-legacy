@@ -1103,21 +1103,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.bootstrapify(); 
 		//profiler.report();
 
-		//profiler = new Profiler('branch.init()');
-		this.branch.init();
-		//profiler.report();
-
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 
 		//profiler = new Profiler('calcupdate');
-		this.calcUpdate();
+		this.calcUpdate(); //why is this not evaluated before branch.init? the eventhandlers are not yet present so a calcupdate
+		//does not lead to a branch update().
+		//profiler.report();
+	
+		//profiler = new Profiler('branch.init()');
+		this.branch.init();
 		//profiler.report();
 
 		//profiler = new Profiler('outputUpdate initial');
 		this.outputUpdate();
 		//profiler.report();
-
-		
 
 		//profiler = new Profiler('setHints()');
 		this.setHints();
@@ -2052,6 +2051,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			else{
 				this.mobileSelectWidget();
 				this.touchRadioCheckWidget();
+				this.mobileDateSamsungBugWidget();
 			}
 			this.geopointWidget();
 			this.tableWidget();
@@ -2085,6 +2085,27 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					.children('input[type="radio"], input[type="checkbox"]')
 					.parent('label')
 					.addClass('btn');
+			}
+		},
+		mobileDateSamsungBugWidget : function(){
+			/*
+				Samsung mobile browser (called "Internet") has a weird bug that appears sometimes (?) when an input field
+				already has a value and is edited. The new value YYYY-MM-DD replaces the year of the old value and first hyphen. E.g.
+				existing: 2010-01-01, new value entered: 2012-12-12 => input field shows: 2012-12-1201-01 
+				*to be confirmed that this pattern is always the one found when the bug occurs*
+			*/
+			if (!this.repeat){
+				$form.on('change', 'input:date', function(event){
+					var correctedVal,
+						val = $(this).val();
+					if (/^[0-9]{4}-[0-9]{2}-[0-9]{4}-[0-9]{2}$/.test(val)){
+						correctedVal = val.substring(0,10);
+						$(this).val(correctedVal); //need to fire new event?
+						console.error('Samsung bug detected with date input. Changed value from '+val+' to '+correctedVal);
+						alert('Samsung bug occurred! Tried to work around it. new value: '+$(this).val());
+					}
+				});
+				return true;
 			}
 		},
 		dateWidget : function(){

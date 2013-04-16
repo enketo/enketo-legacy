@@ -2865,7 +2865,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 		});	
 		
-		$form.on('focus blur', '[required]', function(event){
+		/*$form.on('focus blur', '[required]', function(event){
 			var props = that.input.getProps($(this)),
 				loudErrorShown = ($(this).parents('.invalid-required, .invalid-constraint').length > 0),
 				$reqSubtle = $(this).next('.required-subtle'),
@@ -2894,7 +2894,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					}
 				}
 			}
-		});
+		});*/
 
 		//nodeNames is comma-separated list as a string
 		$form.on('dataupdate', function(event, nodeNames){			

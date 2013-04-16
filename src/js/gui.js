@@ -90,7 +90,7 @@ GUI.prototype.init = function(){
 		this.setCustomEventHandlers();
 	}
 
-	$('.dialog [title]').tooltip({});
+	//$('.dialog [title]').tooltip({});
 
 	// checking for support for specific fancy css3 visual stuff
 	//if (Modernizr.borderradius && Modernizr.boxshadow && Modernizr.csstransitions && Modernizr.opacity){

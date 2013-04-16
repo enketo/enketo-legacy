@@ -30,7 +30,7 @@ class Webform extends CI_Controller {
 		$this->default_library_scripts = array
 		(
 			'/libraries/jquery.min.js',
-			//'/libraries/bootstrap/js/bootstrap.min.js',	
+			'/libraries/bootstrap/js/bootstrap.min.js',	
 			'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
 			'/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
 			'/libraries/modernizr.min.js',

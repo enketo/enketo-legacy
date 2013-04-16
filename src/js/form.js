@@ -2813,6 +2813,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	FormHTML.prototype.setEventHandlers = function(){
 		var that = this;
 
+		console.debug('setting event handlers, $form = ', $form);
+
 		//first prevent default submission, e.g. when text field is filled in and Enter key is pressed
 		$('form.jr').attr('onsubmit', 'return false;');
 
@@ -2822,8 +2824,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			event.stopImmediatePropagation();
 
-			//console.debug('event: '+event.type);
-			//console.log('node props: ', n);
+			console.debug('event: '+event.type);
+			console.log('node props: ', n);
 
 			//set file input values to the actual name of file (without c://fakepath or anything like that)
 			if (n.val.length > 0 && n.inputType === 'file' && $(this)[0].files[0] && $(this)[0].files[0].size > 0){
@@ -2909,7 +2911,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//edit is fired when the form changes due to user input or repeats added/removed
 		//branch update doesn't require detection as it always happens as a result of an event that triggers change or changerepeat.
 		$form.on('change changerepeat', function(event){
-			//console.debug('detected event to trigger editstatus: ');
+			console.debug('detected event to trigger editstatus: ');
 			//console.debug(event);
 			that.editStatus.set(true);
 		});
@@ -2927,14 +2929,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 //			that.validateAll();
 //		});
 
-		//hacks for legends
-		//it would be much better to replace these two handlers with a handler that detects the resize event of the form
-		//but for some reason that doesn't work
-		//$(window).resize(function(){
-			//$form.fixLegends();
-		//});
-
 		$form.on('changelanguage', function(){
+			console.debug('language change handler started');
 			that.outputUpdate();
 		});
 	};

@@ -2053,7 +2053,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			else{
 				this.mobileSelectWidget();
 				this.touchRadioCheckWidget();
-				//this.mobileDateSamsungBugWidget();
+				this.samsungTab2DateBugWidget();
 			}
 			this.geopointWidget();
 			this.tableWidget();
@@ -2089,27 +2089,28 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					.addClass('btn');
 			}
 		},
-		/*mobileDateSamsungBugWidget : function(){
-			
+		samsungTab2DateBugWidget : function(){
+			/*
 				Samsung mobile browser (called "Internet") has a weird bug that appears sometimes (?) when an input field
 				already has a value and is edited. The new value YYYY-MM-DD prepends old or replaces the year of the old value and first hyphen. E.g.
-				existing: 2010-01-01, new value entered: 2012-12-12 => input field shows: 2012-12-1201-01 or
-				*to be confirmed that this pattern is always the one found when the bug occurs*
-	
-			if (!this.repeat){
-				$form.on('change', 'input[type="date"]', function(event){
-					var correctedVal,
-						val = $(this).val();
-					if (val && val.length > 10){
-						correctedVal = val.substring(0,10);
-						$(this).val(correctedVal); //need to fire new event?
-						console.error('Samsung bug detected with date input. Changed value from '+val+' to '+correctedVal);
-						alert('Samsung bug occurred! Tried to work around it. new value: '+$(this).val());
-					}
+				existing: 2010-01-01, new value entered: 2012-12-12 => input field shows: 2012-12-1201-01.
+				This doesn't seem to effect the actual value of the input, just the way it is displayed. But if the incorrectly displayed date is then 
+				attempted to be edited again, it does get the incorrect value and it's impossible to clear this and create a valid date.
+			*/
+			var culprit = "Mozilla/5.0 (Linux; U; Android 4.1.1; en-us; GT-P3113 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30";
+			if (!this.repeat && navigator.userAgent === culprit){
+				//in the browser the focus event is fired when a user clicks the field and after the native picker closes.
+				//the value at the second focus event is the new value
+				$form.on('focus', 'input[type="date"]', function(event){
+					var val = $(this).val();
+					//make sure the displayed value is the actual input value;
+					$(this).val(val);
+					//the change event won't fire until the field loses focus and that's when the instance gets updated.
+					return true;
 				});
-				return true;
+				console.debug('Samsung Tab 2 Native Browser Date Bug workaround initialized');
 			}
-		},*/
+		},
 		dateWidget : function(){
 			this.$group.find('input[type="date"]').each(function(){
 				var $dateI = $(this),
@@ -2813,8 +2814,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	FormHTML.prototype.setEventHandlers = function(){
 		var that = this;
 
-		console.debug('setting event handlers, $form = ', $form);
-
 		//first prevent default submission, e.g. when text field is filled in and Enter key is pressed
 		$('form.jr').attr('onsubmit', 'return false;');
 
@@ -2824,8 +2823,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			event.stopImmediatePropagation();
 
-			console.debug('event: '+event.type);
-			console.log('node props: ', n);
+			//console.debug('event: '+event.type);
+			//console.log('node props: ', n);
 
 			//set file input values to the actual name of file (without c://fakepath or anything like that)
 			if (n.val.length > 0 && n.inputType === 'file' && $(this)[0].files[0] && $(this)[0].files[0].size > 0){
@@ -2845,8 +2844,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//validate 'required'
 			validReq = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : true;
 			
-			console.debug('validation for '+n.path+' required: '+validReq);
-			console.debug('validation for '+n.path+' constraint + datatype: '+validCons);
+			//console.debug('validation for '+n.path+' required: '+validReq);
+			//console.debug('validation for '+n.path+' constraint + datatype: '+validCons);
 
 			if (validReq === false){
 				that.setValid($(this), 'constraint');
@@ -2867,7 +2866,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 		});	
 		
-		/*$form.on('focus blur', '[required]', function(event){
+		$form.on('focus blur', '[required]', function(event){
 			var props = that.input.getProps($(this)),
 				loudErrorShown = ($(this).parents('.invalid-required, .invalid-constraint').length > 0),
 				$reqSubtle = $(this).next('.required-subtle'),
@@ -2896,7 +2895,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					}
 				}
 			}
-		});*/
+		});
 
 		//nodeNames is comma-separated list as a string
 		$form.on('dataupdate', function(event, nodeNames){			
@@ -2911,7 +2910,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		//edit is fired when the form changes due to user input or repeats added/removed
 		//branch update doesn't require detection as it always happens as a result of an event that triggers change or changerepeat.
 		$form.on('change changerepeat', function(event){
-			console.debug('detected event to trigger editstatus: ');
+			//console.debug('detected event to trigger editstatus: ');
 			//console.debug(event);
 			that.editStatus.set(true);
 		});
@@ -2930,7 +2929,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 //		});
 
 		$form.on('changelanguage', function(){
-			console.debug('language change handler started');
+			//console.debug('language change handler started');
 			that.outputUpdate();
 		});
 	};

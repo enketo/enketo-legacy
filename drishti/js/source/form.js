@@ -1103,21 +1103,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.bootstrapify(); 
 		//profiler.report();
 
-		//profiler = new Profiler('branch.init()');
-		this.branch.init();
-		//profiler.report();
-
 		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
 
 		//profiler = new Profiler('calcupdate');
-		this.calcUpdate();
+		this.calcUpdate(); //why is this not evaluated before branch.init? the eventhandlers are not yet present so a calcupdate
+		//does not lead to a branch update().
+		//profiler.report();
+	
+		//profiler = new Profiler('branch.init()');
+		this.branch.init();
 		//profiler.report();
 
 		//profiler = new Profiler('outputUpdate initial');
 		this.outputUpdate();
 		//profiler.report();
-
-		
 
 		//profiler = new Profiler('setHints()');
 		this.setHints();
@@ -2000,7 +1999,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$msg.after('<span class="jr-required-msg active" lang="">This field is required</span>');
 		});
 
-		$('.form-header [title]').tooltip({placement: 'bottom'});
+		if (!Modernizr.touch){
+			$('.form-header [title]').tooltip({placement: 'bottom'});
+		}
 	};
 
 	/**
@@ -2052,6 +2053,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			else{
 				this.mobileSelectWidget();
 				this.touchRadioCheckWidget();
+				this.samsungTab2DateBugWidget();
 			}
 			this.geopointWidget();
 			this.tableWidget();
@@ -2085,6 +2087,31 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					.children('input[type="radio"], input[type="checkbox"]')
 					.parent('label')
 					.addClass('btn');
+			}
+		},
+		samsungTab2DateBugWidget : function(){
+			/*
+				Samsung mobile browser (called "Internet") has a weird bug that appears sometimes (?) when an input field
+				already has a value and is edited. The new value YYYY-MM-DD prepends old or replaces the year of the old value and first hyphen. E.g.
+				existing: 2010-01-01, new value entered: 2012-12-12 => input field shows: 2012-12-1201-01.
+				This doesn't seem to effect the actual value of the input, just the way it is displayed. But if the incorrectly displayed date is then 
+				attempted to be edited again, it does get the incorrect value and it's impossible to clear this and create a valid date.
+			*/
+			var culprit = "Mozilla/5.0 (Linux; U; Android 4.1.1; en-us; GT-P3113 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30";
+			if (!this.repeat && navigator.userAgent === culprit){
+				//in the browser the focus event is fired when a user clicks the field and after the native picker closes.
+				//the value at the second focus event is the new value
+				$form.on('focus', 'input[type="date"]', function(event){
+					var val = $(this).val();
+					//if the bug occurs, the value length will be larger than 10
+					//our best guess for the correct value is the first 10 characters
+					val = (val.length > 10) ? val.substring(0,10) : val;
+					//change the value (or make sure it is correctly displayed)
+					$(this).val(val);
+					//the change event won't fire until the field loses focus and that's when the instance gets updated.
+					return true;
+				});
+				console.debug('Samsung Tab 2 Native Browser Date Bug workaround initialized');
 			}
 		},
 		dateWidget : function(){
@@ -2820,8 +2847,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//validate 'required'
 			validReq = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : true;
 			
-			//console.debug('validation for required: '+validReq);
-			//console.debug('validation for constraint + datatype: '+validCons);
+			//console.debug('validation for '+n.path+' required: '+validReq);
+			//console.debug('validation for '+n.path+' constraint + datatype: '+validCons);
 
 			if (validReq === false){
 				that.setValid($(this), 'constraint');
@@ -2904,14 +2931,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 //			that.validateAll();
 //		});
 
-		//hacks for legends
-		//it would be much better to replace these two handlers with a handler that detects the resize event of the form
-		//but for some reason that doesn't work
-		//$(window).resize(function(){
-			//$form.fixLegends();
-		//});
-
 		$form.on('changelanguage', function(){
+			//console.debug('language change handler started');
 			that.outputUpdate();
 		});
 	};

@@ -2103,7 +2103,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//the value at the second focus event is the new value
 				$form.on('focus', 'input[type="date"]', function(event){
 					var val = $(this).val();
-					//make sure the displayed value is the actual input value;
+					//if the bug occurs, the value length will be larger than 10
+					//our best guess for the correct value is the first 10 characters
+					val = (val.length > 10) ? val.substring(0,10) : val;
+					//change the value (or make sure it is correctly displayed)
 					$(this).val(val);
 					//the change event won't fire until the field loses focus and that's when the instance gets updated.
 					return true;

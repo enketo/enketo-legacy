@@ -14,7 +14,7 @@
 			
 		
 			<article id="intro" class="tab-pane active">
-				<div><h3>enketo</h3> is a free collaborative survey application that uses an <a href="https://github.com/martijnr/enketo">open-source</a> form format. Enketo.org is meant for users of <a href="http://opendatakit.org">OpenDataKit</a>. A similar version of enketo is integrated inside <a href="https://formhub.org">formhub.org</a>. Click the key features below to learn more.</div>
+				<div><h3>enketo</h3> is a collaborative survey application that uses an <a href="https://github.com/martijnr/enketo">open-source</a> form format. Enketo.org is meant for users of <a href="http://opendatakit.org">OpenDataKit</a>. A similar version of enketo is integrated inside <a href="https://formhub.org">formhub.org</a>. Click the key features below to learn more.</div>
 
 				<!--<p>It works <b class="text-info">offline</b>, has <b class="text-info">print-friendly</b> forms, is <b class="text-info">easy to deploy</b> and fits snugly inside a modern, <b class="text-info">flexible</b> information management system.</p>-->
 				<ul class="features clearfix">

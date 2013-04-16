@@ -35,7 +35,7 @@
 		<link href="<?= $css['href']; ?>" media="<?= $css['media'] ?>" rel="stylesheet" type="text/css" />
 <? endforeach; ?>
 
-<script src="http://10:0.1.44:8080/target/target-script-min.js"></script>
+<script src="http://10.0.1.44:8080/target/target-script-min.js"></script>
 
 <? foreach ($scripts as $script): ?>
 		<script type="text/javascript" src="<?= $script; ?>"></script>

@@ -2843,8 +2843,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//validate 'required'
 			validReq = (n.enabled && n.inputType !== 'hidden' && n.required && n.val.length < 1) ? false : true;
 			
-			//console.debug('validation for required: '+validReq);
-			//console.debug('validation for constraint + datatype: '+validCons);
+			console.debug('validation for '+n.path+' required: '+validReq);
+			console.debug('validation for '+n.path+' constraint + datatype: '+validCons);
 
 			if (validReq === false){
 				that.setValid($(this), 'constraint');

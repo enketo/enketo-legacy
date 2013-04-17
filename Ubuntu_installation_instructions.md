@@ -25,7 +25,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
   * enter root password created earlier
 - add this line: `Include /etc/phpmyadmin/apache.conf` to: /etc/apache2/apache2.conf
 - restart apache: `sudo /etc/init.d/apache2 restart`
-- in a browser to go http://[YOUR-IP-ADDRESS-OR-DOMAIN]/phpmyadmin
+- in a browser to go http://YOUR-IP-ADDRESS-OR-DOMAIN/phpmyadmin
 - log in as root with password set earlier
 
 #### Enketo:
@@ -49,7 +49,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 - restart apache: `sudo /etc/init.d/apache2 restart`
 
 #### DNS / hosts file:
-- if public site, point example.com and *.example.com to IP Address
+- if public site, point wildcard subdomains to IP Address
 - if running locally edit the hosts file (each subdomain will get its own line), and
 - if running on a local virtual machine, edit the VM's hosts file as well...
 

@@ -42,6 +42,10 @@ $(document).ready(function(){
 		$('html').removeClass('touch');
 	}
 	printO = new Print();
+
+	window.addEventListener('load', function() {
+		new FastClick(document.body);
+	}, false);
 });
 
 function setSettings(){

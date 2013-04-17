@@ -142,8 +142,10 @@ label, fieldset {
 legend {
 	position: relative;
 	line-height: $baseLineHeight;
-	margin-bottom: 0.9em;
 	border: none;
+	margin-bottom: 0.9em; //works in Chrome
+	span {
+		vertical-align: 20px; } //works in safari, some other webkit browsers 
 	~ label {
 		margin: 0;
 		padding: 5px 0 3px 0;

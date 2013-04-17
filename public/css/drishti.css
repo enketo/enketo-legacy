@@ -7832,8 +7832,11 @@ label, fieldset {
 legend {
   position: relative;
   line-height: 22px;
-  margin-bottom: 0.9em;
   border: none;
+  margin-bottom: 0.9em;
+}
+legend span {
+  vertical-align: 20px;
 }
 legend ~ label {
   margin: 0;
@@ -8154,7 +8157,7 @@ fieldset .remove {
   margin: 5px 0 0 0;
 }
 .geopoint label.geo:nth-of-type(3), .geopoint label.geo:nth-of-type(4) {
-  line-height: 45px;
+  line-height: 50px;
   font-size: 16.5px;
 }
 .geopoint input[name="lat"], .geopoint input[name="long"] {

@@ -7813,8 +7813,11 @@ label, fieldset {
 legend {
   position: relative;
   line-height: 20px;
-  margin-bottom: 0.9em;
   border: none;
+  margin-bottom: 0.9em;
+}
+legend span {
+  vertical-align: 20px;
 }
 legend ~ label {
   margin: 0;

@@ -15,6 +15,8 @@ h3 {
   font-size: 30px; }
 h2,h3,h4,legend{
 	color: $mainColor;}
+.btn-info{
+	@include btn-info-extension-flat;}
 
 .paper{
 	border: none; }
@@ -28,8 +30,6 @@ h2,h3,h4,legend{
   		display: none;} }
 .btn-radiocheck{
 	&:hover, &:focus, &:active{
-		background-color: #389cca; } }
+		background-color: #e4f4ff; } }
 legend {
 	line-height: 24px;}
-.enketo-power{
-	font-size: 0.8em;}

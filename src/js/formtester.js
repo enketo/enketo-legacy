@@ -219,13 +219,13 @@ function State(){
 
 State.prototype.init = function (){
 	var that,
-		serverGetVar = decodeURIComponent(decodeURI(getQueryVar('server')));
+		serverGetVar = decodeURIComponent(decodeURI(helper.getQueryParam('server')));
 
 	this.initialURL = location.href,
 	this.server = ( serverGetVar && connection.isValidURL(serverGetVar) ) ? serverGetVar : null;
-	this.id = getQueryVar('id') || null; //CHECK THIS FOR 'VALIDITY'
-	this.source = getQueryVar('source') || false;
-	this.debug = getQueryVar('debug') || false;
+	this.id = helper.getQueryParam('id') || null; //CHECK THIS FOR 'VALIDITY'
+	this.source = helper.getQueryParam('source') || false;
+	this.debug = helper.getQueryParam('debug') || false;
 	this.everPushedState = false;
 	that = this;
 

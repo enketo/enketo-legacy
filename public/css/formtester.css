@@ -2151,7 +2151,7 @@ label, fieldset { margin: 0 0 0.7em 0; padding-top: 0.9em; font-weight: bold; }
 
 .restoring-sanity-to-legends fieldset { padding: 0; margin: 0; }
 
-legend { position: relative; line-height: 20px; border: none; margin-bottom: 0.9em; }
+legend { position: relative; line-height: 12px; border: none; margin-bottom: 0.6em; }
 legend span { vertical-align: 20px; }
 legend ~ label { margin: 0; padding: 5px 0 3px 0; font-weight: normal; }
 legend ~ label:not(.btn-radiocheck):hover { background-color: #fddecd; }

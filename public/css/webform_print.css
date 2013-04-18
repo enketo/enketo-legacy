@@ -1,173 +1,40 @@
 /*light gray*/
 /** copy of bootstrap style for alert-error */
-body {
-  font-family: courier, times, serif;
-  background: none;
-}
-body .main {
-  margin: 0;
-}
-body .main article {
-  padding: 3px;
-}
-body .paper {
-  border: none;
-  margin: 0;
-}
+body { font-family: courier, times, serif; background: none; }
+body .main { margin: 0; }
+body .main article { padding: 3px; }
+body .paper { border: none; margin: 0; }
 
-.drawer,
-#feedback-bar,
-#dialog-alert,
-#dialog-confirm,
-#dialog-save,
-#form-languages,
-.form-header,
-.enketo-power,
-button,
-.paper #submit-form {
-  display: none !important;
-}
+.drawer, #feedback-bar, #dialog-alert, #dialog-confirm, #dialog-save, #form-languages, .form-header, .enketo-power, button, .paper #submit-form { display: none !important; }
 
-.jr .jr-hint.active {
-  color: #888888;
-  display: block;
-  line-height: 1.5em;
-  font-weight: normal;
-  font-size: .7em;
-  font-style: italic;
-}
-.jr .jr-hint.active ~ br {
-  display: none;
-}
-.jr label .jr-hint.active {
-  padding-top: .5em;
-}
-.jr legend .jr-hint.active {
-  padding-bottom: .6em;
-}
+.jr .jr-hint.active { color: #888888; display: block; line-height: 1.5em; font-weight: normal; font-size: .7em; font-style: italic; }
+.jr .jr-hint.active ~ br { display: none; }
+.jr label .jr-hint.active { padding-top: .5em; }
+.jr legend .jr-hint.active { padding-bottom: .6em; }
 
-.jr {
-  /*input[type="checkbox"]{
-    display: none !important;
-    ~ .active{
-      -webkit-print-color-adjust:exact;
-      margin-left: 15px;
-      padding-left: 35px;
-      background: url('/images/checkbox.png') left center no-repeat;
-    } }
-  input[type="radio"]{
-    display: none !important;
-    ~ .active{
-      -webkit-print-color-adjust:exact;
-      margin-left: 15px;
-      padding-left: 35px;
-      background: url('/images/radio.png') left center no-repeat;
-    } }*/
-}
-.jr .hint,
-.jr .map-canvas-wrapper,
-.jr .geopoint .search-bar,
-.jr .jr-constraint-msg,
-.jr .required-subtle,
-.jr .add-on,
-.jr button,
-.jr .invalid .jr-constraint-msg.active.alert-error {
-  display: none !important;
-}
-.jr h2, .jr h3, .jr h4, .jr .required {
-  color: black;
-}
-.jr legend span {
-  display: block;
-}
-.jr .trigger {
-  font-weight: normal;
-  border: 1px solid black;
-  background: none;
-  color: black;
-}
-.jr label > span.jr-hint.active {
-  color: black;
-  display: block;
-}
-.jr .required {
-  float: right;
-}
-.jr .jr-repeat {
-  background: none;
-}
-.jr .jr-branch.disabled {
-  /*.jr-branch+label.disabled{*/
-  opacity: 1;
-  display: block !important;
-}
-.jr input:not([type="radio"]):not([type="checkbox"]), .jr select, .jr textarea {
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  border-radius: 0px;
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  border: none;
-  background: none;
-  border-bottom: 1px solid black;
-}
-.jr input[type="file"] {
-  display: none !important;
-}
-.jr input[type="radio"] {
-  -webkit-appearance: radio;
-}
-.jr input[type="checkbox"] {
-  -webkit-appearance: checkbox;
-}
-.jr textarea {
-  -webkit-print-color-adjust: exact;
-  background-image: url("/images/line.png");
-  background-repeat: repeat;
-}
-.jr .bootstrap-select .dropdown-toggle, .jr .bootstrap-multiselect .dropdown-toggle {
-  display: none;
-}
-.jr .bootstrap-select ul, .jr .bootstrap-multiselect ul {
-  position: static;
-  display: block;
-  border: none;
-  box-shadow: none;
-  list-style-type: circle;
-}
-.jr .bootstrap-select ul li, .jr .bootstrap-select ul li.active, .jr .bootstrap-multiselect ul li, .jr .bootstrap-multiselect ul li.active {
-  display: inline-block;
-  border: 1px solid #666666;
-  margin-right: 20px;
-}
-.jr .bootstrap-select ul a, .jr .bootstrap-multiselect ul a {
-  background: none;
-  color: black;
-}
-.jr .bootstrap-select ul input, .jr .bootstrap-multiselect ul input {
-  display: none;
-}
-.jr .geopoint {
-  height: 280px;
-}
-.jr .geopoint .map-canvas {
-  bottom: 0;
-  width: 450px;
-}
-.jr .geopoint label.geo:nth-of-type(3) {
-  border-top: none;
-}
-.jr .jr-appearance-maps .map-canvas-wrapper {
-  display: block;
-}
+.jr { /*input[type="checkbox"]{ display: none !important; ~ .active{ -webkit-print-color-adjust:exact; margin-left: 15px; padding-left: 35px; background: url('/images/checkbox.png') left center no-repeat; } }
+input[type="radio"]{ display: none !important; ~ .active{ -webkit-print-color-adjust:exact; margin-left: 15px; padding-left: 35px; background: url('/images/radio.png') left center no-repeat; } }*/ }
+.jr .hint, .jr .map-canvas-wrapper, .jr .geopoint .search-bar, .jr .jr-constraint-msg, .jr .required-subtle, .jr .add-on, .jr button, .jr .invalid .jr-constraint-msg.active.alert-error { display: none !important; }
+.jr h2, .jr h3, .jr h4, .jr .required { color: black; }
+.jr legend span { display: block; }
+.jr .trigger { font-weight: normal; border: 1px solid black; background: none; color: black; }
+.jr label > span.jr-hint.active { color: black; display: block; }
+.jr .required { float: right; }
+.jr .jr-repeat { background: none; }
+.jr .jr-branch.disabled { /*.jr-branch+label.disabled{*/ opacity: 1; display: block !important; }
+.jr input:not([type="radio"]):not([type="checkbox"]), .jr select, .jr textarea { -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; -moz-appearance: none; -webkit-appearance: none; appearance: none; border: none; background: none; border-bottom: 1px solid black; }
+.jr input[type="file"] { display: none !important; }
+.jr input[type="radio"] { -webkit-appearance: radio; }
+.jr input[type="checkbox"] { -webkit-appearance: checkbox; }
+.jr textarea { -webkit-print-color-adjust: exact; background-image: url("/images/line.png"); background-repeat: repeat; }
+.jr .bootstrap-select .dropdown-toggle, .jr .bootstrap-multiselect .dropdown-toggle { display: none; }
+.jr .bootstrap-select ul, .jr .bootstrap-multiselect ul { position: static; display: block; border: none; box-shadow: none; list-style-type: circle; }
+.jr .bootstrap-select ul li, .jr .bootstrap-select ul li.active, .jr .bootstrap-multiselect ul li, .jr .bootstrap-multiselect ul li.active { display: inline-block; border: 1px solid #666666; margin-right: 20px; }
+.jr .bootstrap-select ul a, .jr .bootstrap-multiselect ul a { background: none; color: black; }
+.jr .bootstrap-select ul input, .jr .bootstrap-multiselect ul input { display: none; }
+.jr .geopoint { height: 280px; }
+.jr .geopoint .map-canvas { bottom: 0; width: 450px; }
+.jr .geopoint label.geo:nth-of-type(3) { border-top: none; }
+.jr .jr-appearance-maps .map-canvas-wrapper { display: block; }
 
-.page-break {
-  display: block;
-  color: transparent;
-  border-bottom: none;
-  page-break-before: always !important;
-}
+.page-break { display: block; color: transparent; border-bottom: none; page-break-before: always !important; }

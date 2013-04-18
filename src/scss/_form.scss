@@ -15,14 +15,6 @@ $input-max-width: 80%;
 
 .paper{
 	position: relative;
-	.load-error{
-		margin: 100px 0 60px 0;}
-	.form-header{
-		left: 0;
-		width: 100%;
-		margin: 1em 0;
-		//border: 1px solid green;*(&%**)
-		padding: 0 0 0.6em 0;
 	.branding{
 		//border: 1px solid red;
 		display: inline-block;
@@ -32,62 +24,71 @@ $input-max-width: 80%;
 		font-size: 1.4em;
 		&:hover{
 			text-decoration: none;
-			opacity: 0.8;} }
-	.records{
-		$size: 20px;
-		display: none;
-		position: relative;
-		bottom: 4px;
-		margin-left: -10px;
-		background-color: #c9c9c9;
-		border: 1px solid $groupline;
-		height: $size;
-		min-width: $size;
-		border-radius: $size/2; }
-	.queue-length{
-		color: #ffffff;
-		text-align: center;
-		padding: 0 7px;
-		&.submitting{
-			color: #ce4f07; }
-		&:hover{
-			color: green; } }
-	.print{
-		//border: 1px solid black;
-		background: none;
-		border-radius: 0;
-		border: none;
-		width: 60px;
-		padding: 0.3em $baseFontSize;
-		float: right;
-		&:hover{
-		opacity: 0.7; } } }
-	.form-language-selector{
-		//border: 1px solid blue;
-		float: right;
-		padding: 0.2em $baseFontSize;
-		font-size: 0.8em;
-		border-right: 1px solid #999999;
-		select{
-			width: auto;
-			background: none;
-			min-width: 11em;
-			margin: 0 0 0 1em;
-			font-size: 0.9em; } }
-		//margin: 0 0 40px 0;
-	#submit-form, #submit-edited-data, #validate-form, #launch-form{
-		position: relative;
-		width: 150px;
-		left: 50%;
-		margin: 45px 10px 5px -75px; }
-	.enketo-power{
-		position: relative;
-		left: 50%;
-		margin: 30px 0 0 -100px;
-		width: 200px;
-		text-align: center;
-		a{
-			font-style: italic;} } }
+			opacity: 0.8;} } }
+
+.form-header{
+	left: 0;
+	width: 100%;
+	margin: 1em 0;
+	//border: 1px solid green;*(&%**)
+	padding: 0 0 0.6em 0; } 
+.load-error{
+	margin: 100px 0 60px 0;}
+.records{
+	$size: 20px;
+	display: none;
+	position: relative;
+	bottom: 4px;
+	margin-left: -10px;
+	background-color: #c9c9c9;
+	border: 1px solid $groupline;
+	height: $size;
+	min-width: $size;
+	border-radius: $size/2; }
+.queue-length{
+	color: #ffffff;
+	text-align: center;
+	padding: 0 7px;
+	&.submitting{
+		color: #ce4f07; }
+	&:hover{
+		color: green; } }
+.print{
+	//border: 1px solid black;
+	background: none;
+	border-radius: 0;
+	border: none;
+	width: 60px;
+	padding: 0.3em $baseFontSize;
+	float: right;
+	&:hover{
+	opacity: 0.7; } }
+.form-language-selector{
+	//border: 1px solid blue;
+	float: right;
+	padding: 0.2em $baseFontSize;
+	font-size: 0.8em;
+	border-right: 1px solid #999999;}
+#form-languages{
+	width: auto;
+	height: 30px;
+	background: none;
+	min-width: 11em;
+	margin: 0 0 0 1em;
+	font-size: 0.9em; } 
+#submit-form, #submit-edited-data, #validate-form, #launch-form{
+	position: relative;
+	width: 150px;
+	left: 50%;
+	margin: 45px 10px 5px -75px; }
+.enketo-power{
+	position: relative;
+	left: 50%;
+	margin: 30px 0 0 -100px;
+	width: 200px;
+	text-align: center;
+	a{
+		font-style: italic;} }
 
 .jr [lang]:not(.active), .jr-hint, .jr-option-translations, .jr-appearance-page-break, .jr-constraint-msg, .jr-required-msg {
 	display: none; }
@@ -170,10 +171,12 @@ input:not([type="radio"]):not([type="checkbox"]), textarea, select{
 		@include border-radius(2px);
 		margin: 10px 0 10px 0; 
 		color: #104b66;
-		border: 0px solid #ddd8ce;
 		background-color: #f5f2ed;
 		&:not([multiple]){
-			height: 34px;} } }
+			height: 34px;} }
+	input:not([type="radio"]):not([type="checkbox"]), textarea{
+		border: 0px solid #ddd8ce;
+	}}
 
 input:not([type="radio"]):not([type="checkbox"]), textarea{
 	height: $input-height; }

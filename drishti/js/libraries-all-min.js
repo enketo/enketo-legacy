@@ -460,7 +460,7 @@ typeof h?JSON.stringify(JSON.parse(h),null,a):"object"===typeof h?JSON.stringify
 a){return(a?b:b.replace(/\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\//g,"")).replace(/\s{1,}/g," ").replace(/\{\s{1,}/g,"{").replace(/\}\s{1,}/g,"}").replace(/\;\s{1,}/g,";").replace(/\/\*\s{1,}/g,"/*").replace(/\*\/\s{1,}/g,"*/")};j.prototype.sqlmin=function(b){return b.replace(/\s{1,}/g," ").replace(/\s{1,}\(/,"(").replace(/\s{1,}\)/,")")};window.vkbeautify=new j})();/*
  FastClick: polyfill to remove click delays on browsers with touch UIs.
 
- @version 0.6.3
+ @version 0.6.4
  @codingstandard ftlabs-jsv2
  @copyright The Financial Times Limited [All Rights Reserved]
  @license MIT License (see LICENSE.txt)

@@ -7262,12 +7262,20 @@ progress {
   body .main {
     margin: 0;
   }
+  body .paper {
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+  }
   body .form-header {
     top: 0;
     border-bottom: 1px solid #bbbbbb;
   }
   body .form-header .form-language-selector > span {
     display: none;
+  }
+  body h3 {
+    padding-top: 25px;
   }
   body #page .close {
     font-size: 2em;

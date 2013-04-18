@@ -2062,7 +2062,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.barcodeWidget();
 			this.offlineFileWidget();
 			this.mediaLabelWidget();
-			this.radioWidget();
+			//this.radioWidget();
 		},
 		radioWidget : function(){
 			if (!this.repeat){
@@ -2086,7 +2086,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					.children('label')
 					.children('input[type="radio"], input[type="checkbox"]')
 					.parent('label')
-					.addClass('btn');
+					.addClass('btn-radiocheck');
 			}
 		},
 		samsungTab2DateBugWidget : function(){

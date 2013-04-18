@@ -22,8 +22,7 @@
 		<link rel="apple-touch-icon-precomposed" href="/images/icon_57x57.png">
 
 		<meta charset="utf-8" />
-		<meta name="author" content="Martijn van de Rijdt (Aid Web Solutions)" />
-		<meta name="copyright" content="2012 (c) Martijn van de Rijdt"/>
+		<meta name="author" content="Martijn van de Rijdt (Enketo LLC)" />
 <? $robots = ( !isset($robots) && !empty($_GET['robots']) && $_GET['robots'] == 'true' ) ? 'index, follow' : 'noindex' ?>
 		<meta name="robots" content="<?= $robots ?>"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />

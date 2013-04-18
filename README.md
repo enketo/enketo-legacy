@@ -37,11 +37,13 @@ Development
 * [Documentation] still to be generated
 
 Tools required:
-- SASS/SCSS compiler to compile css (e.g. Compass)
-- Apache ANT to compile javascript 
+
+* SASS/SCSS compiler to compile css (e.g. Compass)
+* Apache ANT to compile javascript 
 
 Instructions for developers:
-- create a symlink at public/js-source to src/js (when environment is set to 'development' in index.php, it will automatically load the uncompiled javascript files)
+
+* create a symlink at public/js-source to src/js (when environment is set to 'development' in index.php, it will automatically load the uncompiled javascript files)
 
 Code contributions are very welcome!
 
@@ -57,6 +59,7 @@ Related Projects
 Acknowledgements
 ----------------
 I would like to acknowledge and thank the indirect contribution by the creators of the following excellent works that were used in the project:
+
 * [Code Igniter by EllisLab](http://codeigniter.com)
 * [XPathJS by Andrej Pavlovic](https://github.com/andrejpavlovic/xpathjs)
 * [JQuery](http://jquery.com)

@@ -464,7 +464,7 @@ GUI.prototype.setCustomEventHandlers = function(){
 			deleteForm(false);
 		});
 	*/
-	$('button#submit-form').button()
+	$('button#submit-form')
 		.click(function(){
 			form.validateForm();
 			submitForm();

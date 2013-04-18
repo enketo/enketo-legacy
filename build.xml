@@ -180,6 +180,7 @@
         <file name="modernizr.min.js"/>
         <file name="xpathjs_javarosa/build/xpathjs_javarosa.min.js"/>
         <file name="vkbeautify.js"/>
+        <file name="fastclick/lib/fastclick.js"/>
         <file name="FileSaver.min.js"/>
         <file name="BlobBuilder.min.js"/>
       </sources>
@@ -197,6 +198,7 @@
         <file name="modernizr.min.js"/>
         <file name="xpathjs_javarosa/build/xpathjs_javarosa.min.js"/>
         <file name="vkbeautify.js"/>
+        <file name="fastclick/lib/fastclick.js"/>
         <file name="FileSaver.min.js"/>
         <file name="BlobBuilder.min.js"/>
       </sources>

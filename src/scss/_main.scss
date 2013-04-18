@@ -132,7 +132,7 @@ progress{
 #feedback-bar {
   @include transition-slow;
   @include border-box;
-  @include radius-zero;
+  @include border-radius(0px);
   position: fixed;
   z-index: 13;
   top: -100px;

@@ -2,6 +2,11 @@ var modelStr, jrDataStr, jrDataStrToEdit,
 	/*@type {{string:{html_form:string, xml_model:string}}}*/mockForms1,
 	/*@type {{string:{html_form:string, xml_model:string}}}*/mockForms2,
 	mockInstances;
+/**
+ * @constructor
+ * @param {Element} layer The layer to listen on
+ */
+function FastClick(layer){}
 
 /** @type {{returnURL: string, serverURL: string, formId: string, instanceId: string, entityId: string, formURL: string, mapsStaticAPIKey:string, mapsDynamicAPIKey:string,
 	 defaultServerURLHelper:string, supportEmail:string, modernBrowsersURL:string, showBranch:boolean}}

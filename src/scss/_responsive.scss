@@ -4,11 +4,15 @@
     background: none;    
     .main{ 
       margin: 0;}
+    .paper{
+    	@include border-radius(0px);}
     .form-header{
       top: 0;
       border-bottom: 1px solid $groupline;
       .form-language-selector > span{
         display: none; } }
+    h3{
+    	padding-top: 25px;}
     #page .close{
       font-size: 2em; } } }
 

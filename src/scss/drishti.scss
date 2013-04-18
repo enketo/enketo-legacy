@@ -1,11 +1,35 @@
-$baseFontSize: 16px;
-$baseLineHeight: 20px;
+$baseFontSize: 22px;
+$baseLineHeight: 22px;
 $iconSpritePath: '../images/glyphicons-halflings.png'; //patches bug in bootstrap-sass
 $iconWhiteSpritePath: '../images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
+$mainColor: #0d0d0d;
 
 @import "_main";
 @import "_responsive";
-@import "_form";
+/* overriding main rules */
+body{
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	background: #f0f0f0 no-repeat;
+	color: $mainColor}
+h3 {
+  font-size: 30px; }
+h2,h3,h4,legend{
+	color: $mainColor;}
 
-.paper .form-language-selector {
-  border-right: none;}
+.paper{
+	border: none; }
+
+@import "_form";
+/* overriding _form rules */
+.paper {
+	.form-language-selector {
+  		border-right: none;}
+  	.form-header {
+  		display: none;} }
+.btn-radiocheck{
+	&:hover, &:focus, &:active{
+		background-color: #389cca; } }
+legend {
+	line-height: 24px;}
+.enketo-power{
+	font-size: 0.8em;}

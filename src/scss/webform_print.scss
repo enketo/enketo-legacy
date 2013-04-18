@@ -63,20 +63,23 @@ button,
     float: right;}
   .jr-repeat{
     background: none; }
-  .jr-branch.disabled{
-  /*.jr-branch+label.disabled{*/
-    opacity: 1;
-    display: block !important; }
-  input:not([type="radio"]):not([type="checkbox"]), select, textarea{
-    @include radius-zero;
-    @include box-shadow-none;
-    @include appearance-none;
-    border: none;
-    background: none;
-    border-bottom: 1px solid black;}
-  input[type="file"]{
-    display: none !important;
-  }
+	.jr-branch.disabled{
+  	/*.jr-branch+label.disabled{*/
+   		opacity: 1;
+		display: block !important; }
+	input:not([type="radio"]):not([type="checkbox"]), select, textarea{
+    	@include border-radius(0px);
+    	@include box-shadow-none;
+    	@include appearance-none;
+    	border: none;
+    	background: none;
+    	border-bottom: 1px solid black;}
+	input[type="file"]{
+    	display: none !important;}
+	input[type="radio"]{
+		-webkit-appearance: radio}
+	input[type="checkbox"]{
+		-webkit-appearance: checkbox;}
   /*input[type="checkbox"]{
     display: none !important;
     ~ .active{

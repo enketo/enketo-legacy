@@ -1018,3 +1018,20 @@ describe('Itemset functionality', function(){
 	});
 });
 
+describe('output data functionality', function(){
+	var dataO,
+		form = new Form('', '');
+
+	it('outputs a clone of the primary instance first child as a jQuery object if the object is wrapped inside <instance> and <model>', function(){
+		dataO = form.Data('<model><instance><node/></instance><instance id="secondary"><secondary/></instance></model>');
+		expect(dataO.getInstanceClone().length).toEqual(1);
+		expect(dataO.getInstanceClone().prop('nodeName')).toEqual('node');
+	});
+
+	it('outputs a clone of the first node as a jQuery object if the object is NOT wrapped inside <instance> and <model>', function(){
+		dataO = form.Data('<node/>');
+		expect(dataO.getInstanceClone().length).toEqual(1);
+		expect(dataO.getInstanceClone().prop('nodeName')).toEqual('node');
+	});
+
+});

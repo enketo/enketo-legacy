@@ -337,6 +337,9 @@ XSLT Stylesheet that transforms OpenRosa style (X)Forms into valid HTMl5 forms
                 <xsl:if test="(local-name() = 'input' or local-name() = 'upload') and $binding/@relevant">
                     <xsl:value-of select="'jr-branch pre-init '"/>
                 </xsl:if>
+                <xsl:if test="local-name() = 'item'">
+                	<xsl:value-of select="'clearfix '"/>
+                </xsl:if>
                 <xsl:call-template name="appearance" />
             </xsl:attribute>
 

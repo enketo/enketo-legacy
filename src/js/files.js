@@ -93,7 +93,7 @@ function FileManager(){
 		window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 		window.resolveLocalFileSystemURL = window.resolveLocalFileSystemURL || window.webkitResolveLocalFileSystemURL;
 		window.storageInfo = window.storageInfo || window.webkitStorageInfo;
-		return (typeof window.requestFileSystem !== 'undefined' && typeof window.resolveLocalFileSystemURL !== 'undefined' && window.storageInfo !== 'undefined');
+		return (typeof window.requestFileSystem !== 'undefined' && typeof window.resolveLocalFileSystemURL !== 'undefined' && typeof window.storageInfo !== 'undefined');
 	};
 
 	/**

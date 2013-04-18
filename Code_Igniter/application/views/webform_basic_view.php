@@ -11,8 +11,6 @@
 	
 	</head>
 	<body>
-		
-		<header class="navbar navbar-inverse navbar-fixed-top" style="height: 0; display: none;"></header>
 			
 	<? require 'elements/dialogs.php'; ?>
 

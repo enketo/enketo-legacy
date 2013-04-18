@@ -21,10 +21,15 @@ h2,h3,h4,legend{
 
 @import "_form";
 /* overriding _form rules */
-.paper .form-language-selector {
-  border-right: none;}
+.paper {
+	.form-language-selector {
+  		border-right: none;}
+  	.form-header {
+  		display: none;} }
 .btn-radiocheck{
 	&:hover, &:focus, &:active{
 		background-color: #389cca; } }
 legend {
 	line-height: 24px;}
+.enketo-power{
+	font-size: 0.8em;}

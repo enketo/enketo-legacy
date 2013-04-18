@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global vkbeautify, gui, FormDataController, modelStr, StorageLocal, FileManager, Form*/
+/*jslint browser:true, devel:true, jquery:true, smarttabs:true, sub:true *//*global vkbeautify, gui, FormDataController, modelStr, StorageLocal, FileManager, Form*/
 
 var /**@type {Form}*/form;
 var /**@type {Connection}*/connection;
@@ -23,7 +23,8 @@ var /**@type {*}*/fileManager;
 $(document).ready(function() {
 	'use strict';
 	var formParts, existingInstanceJ, instanceToEdit, loadErrors, jsonErrors, jDataO,
-		formDataController = new FormDataController({'instanceId': settings.instanceId, 'entityId': settings.entityId});
+		queryParams = helper.getAllQueryParams(),
+		formDataController = new FormDataController(queryParams);
 
 	connection = new Connection();
 	existingInstanceJ = formDataController.get();
@@ -50,7 +51,7 @@ $(document).ready(function() {
 	loadErrors = (jsonErrors) ? jsonErrors.concat(loadErrors) : loadErrors;
 
 	if (loadErrors.length > 0){
-		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
+		//gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
 	}
 
 	//controller for submission of data to drishti
@@ -80,12 +81,16 @@ $(document).ready(function() {
 					saveResult = formDataController.save(form.getInstanceID(), jData);
 					if (saveResult){
 						//go back to dristhi?
+						//what to do with old instanceId record?
 						//or reset, but with which JSON instance?
 						/*
 							form.resetHTML();
 							form = new Form('form.jr:eq(0)', jrDataStr);
 							form.init();
-						 */
+						*/
+					}
+					else{
+						gui.alert('Saving of record failed.', 'Error');
 					}
 				}
 			}

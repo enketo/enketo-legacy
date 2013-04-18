@@ -2062,11 +2062,30 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.barcodeWidget();
 			this.offlineFileWidget();
 			this.mediaLabelWidget();
-			//this.radioWidget();
+			this.radioCheckWidget();
+			this.radioUnselectWidget();
 		},
-		radioWidget : function(){
+		radioCheckWidget : function(){
 			if (!this.repeat){
-				$form.on('click', 'label[data-checked="true"]', function(event){
+				var $label;
+				$form.on('click', 'label[data-checked]', function(event){
+					$(this).removeAttr('data-checked');
+				});
+				$form.on('click', 'input[type="radio"]:checked', function(event){
+					$(this).parent('label').siblings().removeAttr('data-checked').end().attr('data-checked', 'true');
+				});
+				$form.on('click', 'input[type="checkbox"]', function(event){
+					$label = $(this).parent('label');
+					if ($(this).is(':checked')) $label.attr('data-checked', 'true');
+					else $label.removeAttr('data-checked');
+				});
+				//defaults
+				$form.find('input[type="radio"]:checked, input[type="checkbox"]:checked').parent('label').attr('data-checked', 'true');
+			}
+		},
+		radioUnselectWidget : function(){
+			if (!this.repeat){
+				/*$form.on('click', 'label[data-checked]', function(event){
 					$(this).removeAttr('data-checked');
 					$(this).parent().find('input').prop('checked', false).trigger('change');
 					if (event.target.nodeName.toLowerCase() !== 'input'){
@@ -2074,10 +2093,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					}
 				});
 				$form.on('click', 'input[type="radio"]:checked', function(event){
-					$(this).parent('label').attr('data-checked', 'true');
+					$(this).parent('label').siblings().removeAttr('data-checked').end().attr('data-checked', 'true');
 				});
 				//defaults
-				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');
+				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');*/
 			}
 		},
 		touchRadioCheckWidget : function(){

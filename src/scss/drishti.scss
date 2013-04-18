@@ -29,5 +29,5 @@ h2,h3,h4,legend{
   	.form-header {
   		display: none;} }
 .btn-radiocheck{
-	&:hover, &:focus, &:active{
+	&:hover, &:focus, &:active, &[data-checked]{
 		background-color: #e4f4ff; } }

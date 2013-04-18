@@ -239,7 +239,7 @@ input[type=radio]{
 	text-align: left;
 	margin-bottom: .4em;
 	background-color: #f0f0f0;
-	&:focus, &:hover, &:active{
+	&:focus, &:hover, &:active, &[data-checked]{
 		@include transition-background-color;
 		background-color: lighten($title, 50%);
 		//text-shadow: 0 1px 1px rgba(45, 45, 45, 0.75);

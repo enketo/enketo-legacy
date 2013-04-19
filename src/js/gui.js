@@ -43,9 +43,9 @@ $(document).ready(function(){
 	}
 	printO = new Print();
 
-	window.addEventListener('load', function() {
-		new FastClick(document.body);
-	}, false);
+	//window.addEventListener('load', function() {
+		//new FastClick(document.body);
+	//}, false);
 });
 
 /**

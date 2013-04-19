@@ -7,6 +7,3 @@
 [submodule "public/libraries/bootstrap-datepicker"]
 	path = public/libraries/bootstrap-datepicker
 	url = https://github.com/eternicode/bootstrap-datepicker.git
-[submodule "public/libraries/fastclick"]
-	path = public/libraries/fastclick
-	url = https://github.com/ftlabs/fastclick.git

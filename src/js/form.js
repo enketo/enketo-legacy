@@ -2062,9 +2062,20 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.barcodeWidget();
 			this.offlineFileWidget();
 			this.mediaLabelWidget();
+			this.radioEventsWidget();
 			this.radioCheckWidget();
-			//this.radioUnselectWidget();
+			this.radioUnselectWidget();
 		},
+		//for debugging
+		radioEventsWidget : function(){
+			$form.on('click', 'label', function(){console.log('click label');});
+			$form.on('focus', 'label', function(){console.log('focus label');});
+			$form.on('click', 'input[type="radio"], input[type="checkbox"]', function(){console.log('click input, checked:'+ $(this).is(':checked'));});
+			$form.on('focus', 'input[type="radio"], input[type="checkbox"]', function(){console.log('focus input, checked:'+ $(this).is(':checked'));});
+			$form.on('change', 'input[type="radio"], input[type="checkbox"]', function(){console.log('change input, checked:'+ $(this).is(':checked'));});
+		},
+		//applies a data-checked attribute to the parent label of a checked checkbox and radio button
+		//used in radioUnselect widget and touch screen styling
 		radioCheckWidget : function(){
 			if (!this.repeat){
 				var $label;
@@ -2078,6 +2089,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				});
 				//defaults
 				$form.find('input[type="radio"]:checked, input[type="checkbox"]:checked').parent('label').attr('data-checked', 'true');
+			
 			}
 		},
 		radioUnselectWidget : function(){

@@ -2096,6 +2096,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');*/
 			}
 		},
+		//TODO: check performance difference if this is done in pure CSS only.
 		touchRadioCheckWidget : function(){
 			if (!this.repeat){
 				$form.find('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact, .jr-appearance-label, .jr-appearance-list-nolabel )')

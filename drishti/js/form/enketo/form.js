@@ -2068,9 +2068,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		radioCheckWidget : function(){
 			if (!this.repeat){
 				var $label;
-				$form.on('click', 'label[data-checked]', function(event){
-					$(this).removeAttr('data-checked');
-				});
 				$form.on('click', 'input[type="radio"]:checked', function(event){
 					$(this).parent('label').siblings().removeAttr('data-checked').end().attr('data-checked', 'true');
 				});
@@ -2099,6 +2096,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');*/
 			}
 		},
+		//TODO: check performance difference if this is done in pure CSS only.
 		touchRadioCheckWidget : function(){
 			if (!this.repeat){
 				$form.find('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact, .jr-appearance-label, .jr-appearance-list-nolabel )')

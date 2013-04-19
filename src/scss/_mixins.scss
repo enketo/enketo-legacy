@@ -2,15 +2,19 @@
   -webkit-transition: all 1s ease-out;
   -moz-transition: all 1s ease-out;
   -o-transition: all 1s ease-out;
-  transition: all 1s ease-out; 
-}
+  transition: all 1s ease-out; }
 
 @mixin transition-fast{
   -webkit-transition: all 0.6s ease-out;
   -moz-transition: all 0.6s ease-out;
   -o-transition: all 0.6s ease-out;
-  transition: all 0.6s ease-out; 
-}
+  transition: all 0.6s ease-out; }
+
+@mixin transition-background-color{
+	-webkit-transition: background-color 0.4s linear;
+	-moz-transition: background-color 0.4s linear;
+	-o-transition: background-color 0.4s linear;
+	transition: background-color 0.4s linear;}
 
 @mixin hints-visible{
   .jr{
@@ -86,3 +90,11 @@
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none; }
+
+@mixin btn-info-extension-flat{
+	background-image: -moz-linear-gradient(top, #5bc0de, #2f96b4);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#5bc0de), to(#2f96b4));
+	background-image: -webkit-linear-gradient(top, #5bc0de, #2f96b4);
+	background-image: -o-linear-gradient(top, #5bc0de, #2f96b4);
+	background-image: linear-gradient(to bottom, #3ca5d6, #3696c2);
+	border: 1px solid #3186ad;}

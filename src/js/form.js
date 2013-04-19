@@ -2082,21 +2082,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		radioUnselectWidget : function(){
 			if (!this.repeat){
-				/*$form.on('click', 'label[data-checked]', function(event){
-					$(this).removeAttr('data-checked');
-					$(this).parent().find('input').prop('checked', false).trigger('change');
-					if (event.target.nodeName.toLowerCase() !== 'input'){
-						return false;
-					}
+				console.debug('initializing radio unselect widget');
+				$form.on('click', '[data-checked]>input[type="radio"]', function(event){
+					console.debug('registered click event on label with data-checked attribute');
+					$(this).prop('checked', false).trigger('change').parent().removeAttr('data-checked');
 				});
-				$form.on('click', 'input[type="radio"]:checked', function(event){
-					$(this).parent('label').siblings().removeAttr('data-checked').end().attr('data-checked', 'true');
-				});
-				//defaults
-				$form.find('input[type="radio"]:checked').parent('label').attr('data-checked', 'true');*/
 			}
 		},
-		//TODO: check performance difference if this is done in pure CSS only.
+		//TODO: check performance difference if this is done in pure CSS instead of with the help of javascript.
 		touchRadioCheckWidget : function(){
 			if (!this.repeat){
 				$form.find('fieldset:not(.jr-appearance-compact, .jr-appearance-quickcompact, .jr-appearance-label, .jr-appearance-list-nolabel )')

@@ -2063,7 +2063,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.offlineFileWidget();
 			this.mediaLabelWidget();
 			this.radioCheckWidget();
-			this.radioUnselectWidget();
+			//this.radioUnselectWidget();
 		},
 		radioCheckWidget : function(){
 			if (!this.repeat){

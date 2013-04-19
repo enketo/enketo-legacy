@@ -36,7 +36,7 @@ class Webform extends CI_Controller {
 			'/libraries/modernizr.min.js',
 			'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 			'/libraries/vkbeautify.js',
-			'/libraries/fastclick/lib/fastclick.js',
+			//'/libraries/fastclick/lib/fastclick.js',
 			'/libraries/FileSaver.min.js',
 			'/libraries/BlobBuilder.min.js'//,
 			//"http://code.jquery.com/jquery-migrate-1.0.0.js"

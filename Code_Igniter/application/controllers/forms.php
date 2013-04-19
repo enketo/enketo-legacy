@@ -36,8 +36,8 @@ class Forms extends CI_Controller {
 		(
 			'/libraries/jquery.min.js',
 			'/libraries/bootstrap/js/bootstrap.min.js',
-			'/libraries/modernizr.min.js',
-			'/libraries/fastclick/lib/fastclick.js'
+			'/libraries/modernizr.min.js'//,
+			//'/libraries/fastclick/lib/fastclick.js'
 		);
 
 		$default_stylesheets = array

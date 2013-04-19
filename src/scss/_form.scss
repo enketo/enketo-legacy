@@ -86,9 +86,15 @@ $input-max-width: 80%;
 	left: 50%;
 	margin: 30px 0 0 -100px;
 	width: 200px;
+	font-size: 16px;
+	line-height: 23px;
 	text-align: center;
 	a{
-		font-style: italic;} }
+		font-style: italic;}
+	img{
+		float: none;
+		vertical-align: top;
+		width: 48px; } }
 
 .jr [lang]:not(.active), .jr-hint, .jr-option-translations, .jr-appearance-page-break, .jr-constraint-msg, .jr-required-msg {
 	display: none; }
@@ -142,11 +148,11 @@ label, fieldset {
 	margin:0; } }
 legend {
 	position: relative;
-	line-height: $baseLineHeight;
+	line-height: 12px; //$baseLineHeight;
 	border: none;
-	margin-bottom: 0.9em; //works in Chrome
+	margin-bottom: 0.6em; //works in Chrome
 	span {
-		vertical-align: 20px; } //works in safari, some other webkit browsers 
+		vertical-align: 12px; } //works in safari, some other webkit browsers 
 	~ label {
 		margin: 0;
 		padding: 5px 0 3px 0;
@@ -226,16 +232,18 @@ input[type=radio]{
 .btn-radiocheck{
 	@include box-shadow-touch;
 	@include border-radius(2px);
+	@include transition-background-color;
 	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 	width: 100%;
 	line-height: 40px;
 	text-align: left;
 	margin-bottom: .4em;
 	background-color: #f0f0f0;
-	&:focus, &:hover, &:active{
-		background-color: lighten($title, 20%);
-		text-shadow: 0 1px 1px rgba(45, 45, 45, 0.75);
-		color: #FFFFFF;}
+	&:focus, &:hover, &:active, &[data-checked]{
+		@include transition-background-color;
+		background-color: lighten($title, 50%);
+		//text-shadow: 0 1px 1px rgba(45, 45, 45, 0.75);
+		/*color: #FFFFFF;*/}
 	input{ //to center new radio/checkbox images
 		&[type=radio], &[type=checkbox] {
 			margin-top: 9px;} } }

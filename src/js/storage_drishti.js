@@ -8,13 +8,20 @@
 function FormDataController(params){
 	params = params || {};
 	var originalInstanceId = params.instanceId || null;
-	/**
+	var formDataRepository = new enketo.FormDataRepository();
+    var controller = new enketo.FormDataController(
+        new enketo.EntityRelationshipLoader(),
+        new enketo.FormDefinitionLoader(),
+        new enketo.FormModelMapper(formDataRepository, new enketo.SQLQueryBuilder(formDataRepository), new enketo.IdFactory(new enketo.IdFactoryBridge())),
+        formDataRepository);
+
+    /**
 	 * Gets instance as JSON from Dristhi DB - Should this be asynchronous?
 	 * @return {?*} Form Data JSON object
 	 */
-	this.get = function(){
+    this.get = function(){
 		// temporarily mocked
-		return mockInstances[originalInstanceId] || null;
+		return controller.get(params) || null;
 	};
 
 	/**
@@ -24,7 +31,8 @@ function FormDataController(params){
 	 * @return {boolean}     
 	 */
 	this.save = function(instanceId, data){
-		return true;
+		controller.save(params, data);
+        return false;
 	};
 
 	this.remove = function(instanceId){
@@ -40,7 +48,7 @@ function FormDataController(params){
 function JData(data){
 
 	if (!data){
-		recordError('No instance querystring provided!')
+		recordError('No instance query parameter provided!');
 	}
 	/**
 	 * Transforms JSON to an XML string

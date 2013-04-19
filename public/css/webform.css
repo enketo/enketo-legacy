@@ -2098,8 +2098,9 @@ progress { display: block; margin: 10px auto; }
 
 #submit-form, #submit-edited-data, #validate-form, #launch-form { position: relative; width: 150px; left: 50%; margin: 45px 10px 5px -75px; }
 
-.enketo-power { position: relative; left: 50%; margin: 30px 0 0 -100px; width: 200px; text-align: center; }
+.enketo-power { position: relative; left: 50%; margin: 30px 0 0 -100px; width: 200px; font-size: 16px; line-height: 23px; text-align: center; }
 .enketo-power a { font-style: italic; }
+.enketo-power img { float: none; vertical-align: top; width: 48px; }
 
 .jr [lang]:not(.active), .jr-hint, .jr-option-translations, .jr-appearance-page-break, .jr-constraint-msg, .jr-required-msg { display: none; }
 
@@ -2129,8 +2130,8 @@ label, fieldset { margin: 0 0 0.7em 0; padding-top: 0.9em; font-weight: bold; }
 
 .restoring-sanity-to-legends fieldset { padding: 0; margin: 0; }
 
-legend { position: relative; line-height: 20px; border: none; margin-bottom: 0.9em; }
-legend span { vertical-align: 20px; }
+legend { position: relative; line-height: 12px; border: none; margin-bottom: 0.6em; }
+legend span { vertical-align: 12px; }
 legend ~ label { margin: 0; padding: 5px 0 3px 0; font-weight: normal; }
 legend ~ label:not(.btn-radiocheck):hover { background-color: #fddecd; }
 legend ~ label .active { display: block; margin-left: 2.2em; }
@@ -2165,8 +2166,8 @@ input[type=radio]:checked { background-position: -110px 0; }
 :disabled input[type=radio], input[type=radio]:disabled { cursor: default; background-position: -132px 0; }
 :disabled input[type=radio]:checked, input[type=radio]:disabled:checked { background-position: -154px 0; }
 
-.btn-radiocheck { -webkit-box-shadow: inset 0 -1px 0 rgba(90, 90, 90, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05); -moz-box-shadow: inset 0 -1px 0 rgba(90, 90, 90, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05); box-shadow: inset 0 -1px 0 rgba(90, 90, 90, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05); -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px; border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25); width: 100%; line-height: 40px; text-align: left; margin-bottom: .4em; background-color: #f0f0f0; }
-.btn-radiocheck:focus, .btn-radiocheck:hover, .btn-radiocheck:active { background-color: #f98442; text-shadow: 0 1px 1px rgba(45, 45, 45, 0.75); color: #FFFFFF; }
+.btn-radiocheck { -webkit-box-shadow: inset 0 -1px 0 rgba(90, 90, 90, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05); -moz-box-shadow: inset 0 -1px 0 rgba(90, 90, 90, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05); box-shadow: inset 0 -1px 0 rgba(90, 90, 90, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05); -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px; -webkit-transition: background-color 0.4s linear; -moz-transition: background-color 0.4s linear; -o-transition: background-color 0.4s linear; transition: background-color 0.4s linear; border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25); width: 100%; line-height: 40px; text-align: left; margin-bottom: .4em; background-color: #f0f0f0; }
+.btn-radiocheck:focus, .btn-radiocheck:hover, .btn-radiocheck:active, .btn-radiocheck[data-checked] { -webkit-transition: background-color 0.4s linear; -moz-transition: background-color 0.4s linear; -o-transition: background-color 0.4s linear; transition: background-color 0.4s linear; background-color: #fee5d6; /*color: #FFFFFF;*/ }
 .btn-radiocheck input[type=radio], .btn-radiocheck input[type=checkbox] { margin-top: 9px; }
 
 textarea { width: 80%; resize: vertical; min-height: 9em; }

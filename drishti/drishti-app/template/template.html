@@ -1,39 +1,46 @@
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 	<head>
-		<title>drishti forms</title>
+		<title>Drishti</title>
 		<meta charset="utf-8">
 		<meta name="author" content="Martijn van de Rijdt (Aid Web Solutions) &amp; Modi Research Group">
 		<meta name="robots" content="noindex">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
-		
-<!-- 	Drishti app directory structure 
-		<link href="../../css/form/styles_drishti.css" media="all" rel="stylesheet" type="text/css">
-	    <script type="text/javascript" src="../../js/form/libraries-all-min.js"></script>
-	    <script type="text/javascript" src="../../js/form/webform-drishti-all-min.js"></script>
-	    <script type="text/javascript" src="../../js/form/form_data_controller.js"></script>
-	    <script type="text/javascript" src="../../js/form/form_model_mapper.js"></script>
-	    <script type="text/javascript" src="../../js/form/form_data_repository.js"></script>
-	    <script type="text/javascript" src="../../js/form/entity_relationship_loader.js"></script>
-	    <script type="text/javascript" src="../../js/form/form_definition_loader.js"></script>
-	    <script type="text/javascript" src="../../js/form/util.js"></script>
--->
-<!--	For testing from modilabs/enketo drishti folder: -->
-		<link href="css/drishti.css" media="all" rel="stylesheet" type="text/css">
-		<script type="text/javascript" src="js/libraries-all-min.js"></script>
-		<script type="text/javascript" src="js/source/helpers.js"></script>
-		<script type="text/javascript" src="js/source/gui.js"></script>
-		<script type="text/javascript" src="js/source/storage_drishti.js"></script>
-		<script type="text/javascript" src="js/source/form.js"></script>
-		<script type="text/javascript" src="js/source/widgets.js"></script>
-		<script type="text/javascript" src="mocks/transforms.mock.js"></script>
-		<script type="text/javascript" src="mocks/instances.mock.js"></script>
-		<script type="text/javascript" src="mocks/androidcontext.mock.js"></script>
-		<script type="text/javascript" src="js/source/webform_drishti.js"></script>
-<!-- -->
 
+		<link href="../../css/form/drishti.css" media="all" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="../../js/form/enketo/libraries-all-min.js"></script>
+		<script type="text/javascript" src="../../js/form/enketo/helpers.js"></script>
+		<script type="text/javascript" src="../../js/form/enketo/gui.js"></script>
+		<script type="text/javascript" src="../../js/form/enketo/storage_drishti.js"></script>
+		<script type="text/javascript" src="../../js/form/enketo/form.js"></script>
+		<script type="text/javascript" src="../../js/form/enketo/widgets.js"></script>
+<!--	*** mocks to run statically in browser *** -->
+		<script type="text/javascript" src="../../mocks/transforms.mock.js"></script>
+		<script type="text/javascript" src="../../mocks/instances.mock.js"></script>
+		<script type="text/javascript" src="../../mocks/androidcontext.mock.js"></script>
+<!--	*** end of mocks *** -->
+		<script type="text/javascript" src="../../js/form/enketo/webform_drishti.js"></script>
+<!--	
+		<script type="text/javascript" src="../../js/form/util.js"></script>
+		<script type="text/javascript" src="../../js/form/id_factory.js"></script>
+		<script type="text/javascript" src="../../js/form/form_model_mapper.js"></script>
+		<script type="text/javascript" src="../../js/form/entity_relationship_loader.js"></script>
+		<script type="text/javascript" src="../../js/form/entity.js"></script>
+		<script type="text/javascript" src="../../js/form/relation_kind.js"></script>
+		<script type="text/javascript" src="../../js/form/entity_relationships.js"></script>
+		<script type="text/javascript" src="../../js/form/form_definition_loader.js"></script>
+		<script type="text/javascript" src="../../js/form/sql_query_builder.js"></script>
+		<script type="text/javascript" src="../../js/form/form_data_repository.js"></script>
+		<script type="text/javascript" src="../../js/form/form_data_controller.js"></script>
+-->
 		<script type="text/javascript">
+			logContext.logError("Initialising enketo template.");
+			window.onerror = function (m, u, l) {
+				logContext.logError("Javascript Error: , msg: {0}, url: {1}, line: {2}".format(m, u, l));
+				return true;
+			};
+
 			var settings = {};
 			settings['mapsDynamicAPIKey'] = 'AIzaSyDF5xYZfxN7r5SsNPGstjAeTzwa6dVU4Ik';
 			settings['mapsStaticAPIKey'] = 'AIzaSyDF5xYZfxN7r5SsNPGstjAeTzwa6dVU4Ik';
@@ -41,6 +48,7 @@
 			settings['returnURL'] = '';
 
 			var modelStr = androidContext.getModel();
+			logContext.logError("Got Model.");
 		</script>
 	</head>
 	<body>
@@ -76,7 +84,7 @@
 			<div class="modal-footer">
 				<span class="self-destruct-timer"></span>
 				<button class="negative btn">Close</button>
-				<button class="positive btn btn-primary">Confirm</button>
+				<button class="positive btn btn-info">Confirm</button>
 				</div>
 		</div>
 
@@ -105,10 +113,8 @@
 					document.write(androidContext.getForm());
 				</script>
 				
-				<button id="validate-form" class="btn btn-primary btn-large"> Validate</button>	
-				<div class="enketo-power">
-					Powered by enketo</a>
-				</div>
+				<button id="validate-form" class="btn btn-info btn-large"> Validate</button>	
+				<div class="enketo-power">Powered by <img src="../../css/images/enketo_bare_100x37.png" alt="enketo logo" /></div>
 			</article>
 		</div>
 	</body>

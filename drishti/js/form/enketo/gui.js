@@ -21,7 +21,7 @@ var /** @type {Print} */ printO;
 
 $(document).ready(function(){
 	"use strict";
-	setSettings();
+	helper.setSettings();
 	gui = new GUI();
 	gui.init();
 	// avoid windows console errors
@@ -43,33 +43,10 @@ $(document).ready(function(){
 	}
 	printO = new Print();
 
-	window.addEventListener('load', function() {
-		new FastClick(document.body);
-	}, false);
+	//window.addEventListener('load', function() {
+		//new FastClick(document.body);
+	//}, false);
 });
-
-function setSettings(){
-	var i, queryVar,
-		settingsMap =
-		[
-			{q: 'return', s: 'returnURL'},
-			{q: 'showbranch', s: 'showBranch'},
-			{q: 'debug', s: 'debug'},
-			{q: 'touch', s: 'touch'},
-			{q: 'server', s: 'serverURL'},
-			{q: 'form', s:'formURL'},
-			{q: 'id', s: 'formId'},
-			{q: 'formName', s: 'formId'},
-			{q: 'instanceId', s: 'instanceId'},
-			{q: 'entityId', s: 'entityId'}
-		];
-	for (i=0 ; i< settingsMap.length ; i++){
-		queryVar = getQueryVar(settingsMap[i].q);
-		//a query variable has preference
-		settings[settingsMap[i].s] = (queryVar !== null) ?
-			queryVar : (typeof settings[settingsMap[i].s] !== 'undefined') ? settings[settingsMap[i].s] : null;
-	}
-}
 
 /**
  * Class GUI deals with the main GUI elements (but not the survey form)
@@ -688,20 +665,6 @@ GUI.prototype.parseFormlist = function(list, $target, reset){
 	$target.find('ul').empty().append(listHTML);
 };
 
-function getQueryVar(variableName) {
-	"use strict";
-	var queryVarVal,
-		query = window.location.search.substring(1),
-		vars = query.split("&");
-	for (var i = 0; i < vars.length; i++) {
-		var pair = vars[i].split("=");
-		if (pair[0].toLowerCase() === variableName.toLowerCase()) {
-			queryVarVal = encodeURI(pair[1]);
-			return (queryVarVal === 'true') ? true : (queryVarVal === 'false') ? false : queryVarVal;
-		}
-	}
-	return null;
-}
 /**
  * Class dealing with printing
  * @constructor

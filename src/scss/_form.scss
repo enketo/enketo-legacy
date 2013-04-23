@@ -1,5 +1,5 @@
 $line: 3px solid $groupline;
-$input-height: 30px;
+$input-height: 34px;
 $input-min-width: 0.2 * $content-width;
 $input-max-width: 80%;
 
@@ -178,10 +178,12 @@ input:not([type="radio"]):not([type="checkbox"]), textarea, select{
 		margin: 10px 0 10px 0; 
 		color: #104b66;
 		background-color: #f5f2ed;
-		&:not([multiple]){
-			height: 34px;} }
+		/*&:not([multiple]){
+			height: 34px;} */}
+ 	.input-append .add-on{
+ 		margin-top:10px;}
 	input:not([type="radio"]):not([type="checkbox"]), textarea{
-		border: 0px solid #ddd8ce;
+		border: 1px solid #ddd8ce;
 	}}
 
 input:not([type="radio"]):not([type="checkbox"]), textarea{
@@ -232,7 +234,7 @@ input[type=radio]{
 .btn-radiocheck{
 	@include box-shadow-touch;
 	@include border-radius(2px);
-	@include transition-background-color;
+	//@include transition-background-color;
 	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 	width: 100%;
 	line-height: 40px;
@@ -240,7 +242,7 @@ input[type=radio]{
 	margin-bottom: .4em;
 	background-color: #f0f0f0;
 	&:focus, &:hover, &:active, &[data-checked]{
-		@include transition-background-color;
+		//@include transition-background-color;
 		background-color: lighten($title, 50%);
 		//text-shadow: 0 1px 1px rgba(45, 45, 45, 0.75);
 		/*color: #FFFFFF;*/}
@@ -261,7 +263,7 @@ fieldset {
 .itemset-template, .itemset-labels{
 	display: none;}
 .input-append .add-on{
-	padding: 9px 5px;
+	padding: ($input-height - 12)/2 5px;
 	margin-top: 8px;
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;}

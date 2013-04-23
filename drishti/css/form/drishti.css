@@ -2276,3 +2276,5 @@ fieldset .remove { float: right; margin-right: 0; }
 .paper .form-header { display: none; }
 
 .btn-radiocheck:hover, .btn-radiocheck:focus, .btn-radiocheck:active, .btn-radiocheck[data-checked] { background-color: #e4f4ff; }
+
+.input-append .add-on { padding: 13px 5px 7px 5px; }

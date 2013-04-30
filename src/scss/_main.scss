@@ -34,14 +34,22 @@ h2, h3, h4 {
   color: $title;
   text-align: center;}
 
-.preview{
-  color: #aaaaaa;
-  margin: 1.5em 0 -1em 0;
-}
+.preview-header{
+	position: absolute;
+	top: -90px;
+	width:100%;
+	z-index:1000;
+  color: #333333;
+  opacity: 0.5;
+  margin: 0;}
 
 progress{
   display: block;
   margin: 10px auto;}
+
+.preview progress{
+	margin: 80px auto;
+}
 
 .alert{
   .error-list{

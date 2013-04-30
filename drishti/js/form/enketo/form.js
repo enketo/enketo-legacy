@@ -1048,6 +1048,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.preloads.init(this); //before widgets.init (as instanceID used in offlineFileWidget)
 		//profiler.report();
 		
+		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
+
+		//profiler = new Profiler('calcupdate');
+		this.calcUpdate(); //before repeat.init as repeat count may use a calculated item
+		//profiler.report();
+
 		//profiler = new Profiler('adding hint icons');
 		//add 'hint' icon, could be moved to XSLT, but is very fast even on super large forms - 31 msecs on bench6 form
 		if (!Modernizr.touch){
@@ -1101,13 +1107,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		
 		//profiler = new Profiler('bootstrapify');
 		this.bootstrapify(); 
-		//profiler.report();
-
-		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
-
-		//profiler = new Profiler('calcupdate');
-		this.calcUpdate(); //why is this not evaluated before branch.init? the eventhandlers are not yet present so a calcupdate
-		//does not lead to a branch update().
 		//profiler.report();
 	
 		//profiler = new Profiler('branch.init()');

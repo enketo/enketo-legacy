@@ -18,7 +18,8 @@
 
 body{
   font-family: 'OpenSansRegular', Helvetica, Arial, sans-serif;
-  background: $bg url(../images/tex2res2.png) repeat;
+  background: #f0f0f0 no-repeat;
+  //background: $bg url(../images/tex2res2.png) repeat;
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
   overflow-x: hidden;

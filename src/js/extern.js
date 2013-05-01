@@ -2415,10 +2415,6 @@ jQuery.prototype.timepicker = function (options){};
 /** @type {Object.<string, (string|boolean)>} */
 jQuery.prototype.datetimepicker = {};
 /** 
- * @param {Object.<string, (string|boolean)>} options
- */
-jQuery.prototype.selectpicker = function(options){};
-/** 
  *  @param {Object} obj
  * */
 jQuery.prototype.multiselect = function(obj){};

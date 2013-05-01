@@ -2134,7 +2134,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//in the browser the focus event is fired when a user clicks the field and after the native picker closes.
 				//the value at the second focus event is the new value
 				$form.on('focus', 'input[type="date"]', function(event){
-					var val = $(this).val();
+					var val = /**@type {string}*/$(this).val();
 					//if the bug occurs, the value length will be larger than 10
 					//our best guess for the correct value is the first 10 characters
 					val = (val.length > 10) ? val.substring(0,10) : val;

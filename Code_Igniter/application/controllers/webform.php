@@ -64,10 +64,12 @@ class Webform extends CI_Controller {
 		if (!empty($this->subdomain))
 		{
 			$form_props = $this->Survey_model->get_form_props();
+			//log_message('debug', 'form props: '.json_encode($form_props));
 			$this->server_url= (isset($form_props['server_url'])) ? $form_props['server_url'] : NULL; //$this->Survey_model->get_server_url();
 			$this->form_id = (isset($form_props['form_id'])) ? $form_props['form_id'] : NULL; //$logthis->Survey_model->get_form_id();
-			$this->form_hash = (isset($form_props['hash'])) ? $form_props['hash'] : NULL; //$this->Survey_model->get_form_
-			$this->xsl_version_last = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; //$this->Survey_model->get_form_
+			$this->form_hash_prev = (isset($form_props['hash'])) ? $form_props['hash'] : NULL; //$this->Survey_model->get_form_
+			$this->xsl_version_prev = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; //$this->Survey_model->get_form_
+			//$this->$credentials = $this->Survey_model->get_credentials($uuid);
 		}
 	}
 
@@ -80,7 +82,9 @@ class Webform extends CI_Controller {
 			if (!$this->Survey_model->is_launched_survey())
 			{
 				return show_error('Survey does not exist, is not yet published or was taken down.', 404);
-			}	
+			}
+
+			$uuid = "abc";
 
 			$offline = $this->Survey_model->has_offline_launch_enabled();
 			$form = $this->_get_form();
@@ -354,48 +358,35 @@ class Webform extends CI_Controller {
 			log_message('error', 'no form_id and/or server_url');
 			return FALSE;
 		}
+		
 		$this->load->model('Form_model', '', TRUE);
-		$stylesheets_new_version = $this->Form_model->stylesheets_changed($this->xsl_version_last);
+		$this->Form_model->setup($this->server_url, $this->form_id, NULL, $this->form_hash_prev, $this->xsl_version_prev);
+		
+		log_message('info', 'authenticated: '.$this->Form_model->authenticated());
+		if(!$this->Form_model->authenticated())
+		{
+			echo "AUTHENTICATION REQUIRED";
+		}
 
-		if ($this->Form_model->content_unchanged($this->server_url, $this->form_id, $this->form_hash) 
-			&&  !$stylesheets_new_version)
+		if($this->Form_model->can_be_loaded_from_cache())
 		{
 			log_message('debug', 'unchanged form and stylesheets, loading transformation result from database');
-			$form = $this->Survey_model->get_transform_result();
+			$form = $this->Survey_model->get_cached_transform_result();
 
 			if (empty($form->title) || empty($form->html) || empty($form->default_instance))
 			{
 				log_message('error', 'failed to obtain transformation result from database for '.$this->subdomain);
 			}
-			//log_message('debug', 'loaded result: '. $form);
 		}
 		else
 		{
 			log_message('debug', 'form changed, stylesheet changed or form never transformed before, going to perform transformation');
-			$transf_result = $this->Form_model->transform($this->server_url, $this->form_id, FALSE);
-			
-			$title = $transf_result->form->xpath('//h3[@id="form-title"]');
-
-			$hash = $transf_result->hash;
-			$form = new stdClass();
-			$form->title = (!empty($title[0])) ? $title[0] : '';
-
-			$form->html = $transf_result->form->asXML();
-			
-			$form->default_instance = $transf_result->model->asXML();
-			//a later version of PHP seems to output jr:template= instead of template=
-			//$form->default_instance = str_replace(' jr:template=', ' template=', $form->default_instance);
-			//$form->default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form->default_instance);
-			//$form->default_instance = preg_replace('/\/\>\s+\</', '/><', $form->default_instance);
-			//the preg replacement below is very aggressive!... maybe too aggressive
-			$form->default_instance = preg_replace('/\>\s+\</', '><', $form->default_instance);
-			$form->default_instance = json_encode($form->default_instance);
+			$form = $this->Form_model->get_transform_result_obj();
 			if (!empty($form->html) && !empty($form->default_instance))
 			{
-				$this->Survey_model->update_transform_result($form, $hash, $stylesheets_new_version);
+				$this->Survey_model->update_transform_result($form);
 				//log_message('debug', 'hash in transformation result: '. $hash);
 			}
-			//$this->Survey_model->update_hash($hash);
 		}
 		
 		if (!empty($form->html) && !empty($form->default_instance))

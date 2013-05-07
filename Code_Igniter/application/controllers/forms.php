@@ -79,6 +79,7 @@ class Forms extends CI_Controller {
 		extract($_GET);
 		if (isset($server_url) && strlen($server_url) > 0)
 		{
+			$this->Form_model->setup($server_url, NULL);
 			$result = $this->Form_model->get_formlist_JSON($server_url);
 			$this->output
 				->set_content_type('application/json')

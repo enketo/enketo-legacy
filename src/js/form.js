@@ -2339,11 +2339,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 		},
 		tableWidget :function($group){
-			//if (!this.repeat){
-				//when loading a form dynamically the DOM elements don't have a width yet (width = 0), so we call
-				//this with a bit of a delay..
 			var $g = $group || $form;
-
+			//when loading a form dynamically the DOM elements don't have a width yet (width = 0), so we call
+			//this with a bit of a delay..
 			setTimeout(function(){
 				console.debug('setting table column widths');
 				$g.parent().find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
@@ -2353,8 +2351,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						$(this).find('legend').css('width', 'auto').toLargestWidth(35);
 				});
 			}, 50);
-			//}
-			//$form.find('.jr-appearance-compact label img').selectable();
 		},
 		spinnerWidget :function(){
 			//$form.find('input[type="number"]').spinner();

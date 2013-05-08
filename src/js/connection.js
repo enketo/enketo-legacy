@@ -464,10 +464,11 @@ Connection.prototype.getTransForm = function(serverURL, formId, formFile, formUR
 		callbacks.error(null, 'validationerror', 'No form id provided');
 		return;
 	}
-	formData.append('server_url', serverURL);
-	formData.append('form_id', formId);
-	formData.append('form_url', formURL);
-	formData.append('xml_file', formFile);
+	//don't append if null, as FF turns null into 'null'
+	if (serverURL) formData.append('server_url', serverURL);
+	if (formId) formData.append('form_id', formId);
+	if (formURL) formData.append('form_url', formURL);
+	if (formFile) formData.append('xml_file', formFile);
 
 	console.debug('form file: ', formFile);
 

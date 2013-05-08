@@ -139,7 +139,7 @@ function FileManager(){
 
 	/**
 	 * generic error handler
-	 * @param  {(Error|string)=} e [description]
+	 * @param  {(Error|FileError|string)=} e [description]
 	 */
 	errorHandler = function(e){
 		var msg = '';
@@ -322,7 +322,7 @@ function FileManager(){
 	/**
 	 * Retrieves a file from a fileEntry (asynchronously)
 	 * @param  {FileEntry} fileEntry [description]
-	 * @param  {{success:function(File), error: function(FileError)}} callbacks [description]
+	 * @param  {{success:function(File), error: ?function(FileError)}} callbacks [description]
 	 */
 	retrieveFile = function(fileEntry, callbacks){
 		fileEntry.file(

@@ -9,7 +9,6 @@ $mainColor: #0d0d0d;
 /* overriding main rules */
 body{
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	background: #f0f0f0 no-repeat;
 	color: $mainColor}
 h3 {
   font-size: 30px; }
@@ -31,3 +30,6 @@ h2,h3,h4,legend{
 .btn-radiocheck{
 	&:hover, &:focus, &:active, &[data-checked]{
 		background-color: #e4f4ff; } }
+.input-append .add-on{
+	padding: 13px 5px 7px 5px;
+}

@@ -14,7 +14,7 @@ Installation on bare Ubuntu 12.04 server (AWS)
 - `sudo a2enmod expires rewrite`
 
 #### PHP, APC & git:
-- `sudo apt-get install php5 libapache2-mod-php5 php5-xsl php5-curl git php-apc`
+- `sudo apt-get install php5 libapache2-mod-php5 php5-xsl php5-curl git php-apc php5-mcrypt`
 
 #### MySQL:
 - `sudo apt-get install mysql-server`

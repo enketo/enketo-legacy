@@ -509,6 +509,10 @@ GUI.prototype.confirm = function(texts, choices, duration){
 	 */
 };
 
+GUI.prototype.login = function(){
+	
+};
+
 /**
  * Shows modal with load errors
  * @param  {Array.<string>} loadErrors	load error messagesg

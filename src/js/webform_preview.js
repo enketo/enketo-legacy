@@ -34,12 +34,12 @@ $(document).ready(function() {
 	connection = new Connection();
 	connection.getTransForm(settings.serverURL, settings.formId, null, settings.formURL, {
 		success: function(response){
-			var loadErrors,
-				$response = $(response),
-				formStr = new XMLSerializer().serializeToString($response.find(':first>form')[0]),
-				modelStr = new XMLSerializer().serializeToString($response.find(':first>model')[0]);
+			var loadErrors, formStr, modelStr,
+				$response = $(response);
 
-			if (formStr.length > 0 && modelStr.length > 0){
+			if ($response.find(':first>form').length > 0 && $response.find(':first>model').length > 0){
+				formStr = new XMLSerializer().serializeToString($response.find(':first>form')[0]);
+				modelStr = new XMLSerializer().serializeToString($response.find(':first>model')[0]);
 				$validateButton.before(formStr);
 				form = new Form('form.jr:eq(0)', modelStr);
 				loadErrors = form.init();

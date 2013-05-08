@@ -10,8 +10,8 @@
 	<body>
 			
 	<? require 'elements/dialogs.php'; ?>
-		<h3 class="preview">Form Preview</h3>
-		<div class="main">
+		<div class="main preview">
+			<h3 class="preview-header">Preview</h3>
 			<article class="paper" >
 				<? include_once 'elements/form-header.php'; ?>
 				<progress></progress>

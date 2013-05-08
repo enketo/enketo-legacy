@@ -1048,6 +1048,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.preloads.init(this); //before widgets.init (as instanceID used in offlineFileWidget)
 		//profiler.report();
 		
+		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
+
+		//profiler = new Profiler('calcupdate');
+		this.calcUpdate(); //before repeat.init as repeat count may use a calculated item
+		//profiler.report();
+
 		//profiler = new Profiler('adding hint icons');
 		//add 'hint' icon, could be moved to XSLT, but is very fast even on super large forms - 31 msecs on bench6 form
 		if (!Modernizr.touch){
@@ -1078,7 +1084,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		});
 
 		//profiler = new Profiler('setLangs()');
-		this.setLangs();//test: before itemsetUpdate
+		this.langs.init();//test: before itemsetUpdate
 		//profiler.report();
 
 		//profiler = new Profiler('repeat.init()');
@@ -1101,13 +1107,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		
 		//profiler = new Profiler('bootstrapify');
 		this.bootstrapify(); 
-		//profiler.report();
-
-		this.grosslyViolateStandardComplianceByIgnoringCertainCalcs(); //before calcUpdate!
-
-		//profiler = new Profiler('calcupdate');
-		this.calcUpdate(); //why is this not evaluated before branch.init? the eventhandlers are not yet present so a calcupdate
-		//does not lead to a branch update().
 		//profiler.report();
 	
 		//profiler = new Profiler('branch.init()');
@@ -1394,47 +1393,43 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		return;
 	};
 
-	FormHTML.prototype.setLangs = function(){
-		var lang, value, /** @type {string} */curLabel, /** @type {string} */ newLabel,
-			that = this,
-			defaultLang = $form.find('#form-languages').attr('data-default-lang'),
-			$langSelector = $('.form-language-selector');
-		
-		$('#form-languages').detach().appendTo($langSelector);//insertBefore($('form.jr').parent());
-		
-		if (!defaultLang || defaultLang === '') {
-			defaultLang = $('#form-languages option:eq(0)').attr('value');
-		}
-		console.debug('default language is: '+defaultLang);
-		$('#form-languages').val(defaultLang);
+	FormHTML.prototype.langs = {
+		init: function(){
+			var lang,
+				that = this,
+				setOptionLangs,
+				defaultLang = $form.find('#form-languages').attr('data-default-lang'),
+				$langSelector = $('.form-language-selector');
+			
+			$('#form-languages').detach().appendTo($langSelector);//insertBefore($('form.jr').parent());
+			
+			if (!defaultLang || defaultLang === '') {
+				defaultLang = $('#form-languages option:eq(0)').attr('value');
+			}
+			console.debug('default language is: '+defaultLang);
+			$('#form-languages').val(defaultLang);
 
-		if ($('#form-languages option').length < 2 ){
-			$langSelector.hide();
-			return;
-		}
-
-		$('#form-languages').change(function(event){
-			console.debug('form-language change event detected!');
-			event.preventDefault();
-			lang = $(this).val();
+			if ($('#form-languages option').length < 2 ){
+				$langSelector.hide();
+				return;
+			}
+			$('#form-languages').change(function(event){
+				lang = $(this).val();
+				console.debug('form-language change event detected!');
+				event.preventDefault();
+				that.setAll(lang);
+			});
+		},
+		setAll: function(lang){
+			var that = this;
 			$('#form-languages option').removeClass('active');
 			$(this).addClass('active');
 
 			$form.find('[lang]').removeClass('active').filter('[lang="'+lang+'"], [lang=""]').addClass('active');
 
-			//swap language of <select> <option>s
-			$form.find('select > option').not('[value=""]').each(function(){
-				curLabel = /** @type {string} */ $(this).text();
-				value = $(this).attr('value');
-				
-				newLabel = $(this).parent('select').siblings('.jr-option-translations')
-					.children('.active[data-option-value="'+value+'"]').text().trim();
-				
-				newLabel = (typeof newLabel !== 'undefined' && newLabel.length > 0) ? newLabel : curLabel;
-				
-				$(this).text(newLabel);
+			$form.find('select').each(function(){
+				that.setSelect($(this));
 			});
-
 			//quickfix for labels and legends that do not contain a span.active without other class
 			$form.find('legend span.active:not(.jr-hint, .jr-constraint-msg), label span.active:not(.jr-hint, .jr-constraint-msg)').each(function(){
 				if ( $(this).text().trim().length === 0 ){
@@ -1442,9 +1437,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				}
 			});
 
-			that.setHints();
 			$form.trigger('changelanguage');
-		});
+		},
+		//swap language of <select> <option>s
+		setSelect: function($select){
+			var value, /** @type {string} */curLabel, /** @type {string} */ newLabel;
+			console.debug('setting select labels');
+			$select.children('option').not('[value=""]').each(function(){
+				curLabel = /** @type {string} */ $(this).text();
+				value = $(this).attr('value');
+				newLabel = $(this).parent('select').siblings('.jr-option-translations')
+					.children('.active[data-option-value="'+value+'"]').text().trim();
+				newLabel = (typeof newLabel !== 'undefined' && newLabel.length > 0) ? newLabel : curLabel;
+				$(this).text(newLabel);
+			});
+		}
 	};
 		
 	/**
@@ -1749,7 +1756,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} changedDataNodeNames node names that were recently changed, separated by commas
 	 */
 	FormHTML.prototype.itemsetUpdate = function(changedDataNodeNames){
-		console.log('updating itemsets');
+		console.log('checking if itemsets need updating because values of following nodes changed: '+changedDataNodeNames);
 		//TODO: test with very large itemset
 		var clonedRepeatsPresent, insideRepeat, insideRepeatClone,
 			that = this,
@@ -1793,8 +1800,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			index = (insideRepeatClone) ? that.input.getIndex($input) : 0;
 
 			if (typeof itemsCache[itemsXpath] !== 'undefined'){
-				console.debug('using cached itemset items result for '+itemsXpath);
 				$instanceItems = itemsCache[itemsXpath];
+				console.debug('using cached itemset items result for '+itemsXpath);//, $instanceItems);
 			}
 			else{
 				console.debug('no cache for '+itemsXpath+', need to evaluate XPath');
@@ -1847,7 +1854,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					$labels.before($htmlItem.find(':first'));
 				}
 				else if (templateNodeName === 'option') { 
-					needToUpdateLangs = true;
 					if ($htmlItemLabels.length === 1){
 						$htmlItem.find('option').text($htmlItemLabels.text());
 					}
@@ -1857,13 +1863,15 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						.appendTo($labels.siblings('.jr-option-translations'));
 					$template.siblings().addBack().last().after($htmlItem.find(':first'));
 				}
-			});			
+			});
+			if ($input.prop('nodeName').toLowerCase() === 'select') {
+				//populate labels (with current language)
+				that.langs.setSelect($input);
+				//update widget
+				$input.trigger('changeoption');
+			}
 		});
-		console.debug('need to update langs: '+needToUpdateLangs);
-		if (needToUpdateLangs){
-			//that.setLangs();
-			$('#form-languages').trigger('change');
-		}	
+		console.log('itemset update finished');
 	};
 
 	/**
@@ -2126,7 +2134,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//in the browser the focus event is fired when a user clicks the field and after the native picker closes.
 				//the value at the second focus event is the new value
 				$form.on('focus', 'input[type="date"]', function(event){
-					var val = $(this).val();
+					var val = /**@type {string}*/$(this).val();
 					//if the bug occurs, the value length will be larger than 10
 					//our best guess for the correct value is the first 10 characters
 					val = (val.length > 10) ? val.substring(0,10) : val;
@@ -2274,7 +2282,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.$group.find('select').not('#form-languages').selectpicker();
 			if (!this.repeat){
 				$form.on('changelanguage', function(){
+					//update all pickers in form
 					$form.find('select').selectpicker('update');
+				});
+				$form.on('changeoption', 'select', function(){
+					//onsole.debug('option change detected, going to update select widget', $(this));
+					//update (itemselect) picker on which event was triggered because the options changed
+					$(this).selectpicker('update');
 				});
 			}
 		},
@@ -2325,11 +2339,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			}
 		},
 		tableWidget :function($group){
-			//if (!this.repeat){
-				//when loading a form dynamically the DOM elements don't have a width yet (width = 0), so we call
-				//this with a bit of a delay..
 			var $g = $group || $form;
-
+			//when loading a form dynamically the DOM elements don't have a width yet (width = 0), so we call
+			//this with a bit of a delay..
 			setTimeout(function(){
 				console.debug('setting table column widths');
 				$g.parent().find('.jr-appearance-field-list .jr-appearance-list-nolabel, .jr-appearance-field-list .jr-appearance-label')
@@ -2339,8 +2351,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						$(this).find('legend').css('width', 'auto').toLargestWidth(35);
 				});
 			}, 50);
-			//}
-			//$form.find('.jr-appearance-compact label img').selectable();
 		},
 		spinnerWidget :function(){
 			//$form.find('input[type="number"]').spinner();
@@ -2958,6 +2968,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.on('changelanguage', function(){
 			//console.debug('language change handler started');
 			that.outputUpdate();
+			that.setHints();
 		});
 	};
 

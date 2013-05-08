@@ -4,6 +4,8 @@
     background: none;    
     .main{ 
       margin: 0;}
+    .preview-header{
+		top: -5px;}
     .paper{
     	@include border-radius(0px);}
     .form-header{

@@ -3,18 +3,20 @@
   <h:head>
     <h:title>outputs_in_repeats</h:title>
     <model>
-      <instance><outputs_in_repeats id="outputs_in_repeats"><rep jr:template="">
-            <name/>
-            <note/>
+      <instance>
+        <outputs_in_repeats id="outputs_in_repeats">
+          <rep jr:template="">
+            <name />
+            <note />
           </rep>
           <meta>
-            <instanceID/>
+            <instanceID />
           </meta>
         </outputs_in_repeats>
       </instance>
-      <bind nodeset="/outputs_in_repeats/rep/name" type="string"/>
-      <bind nodeset="/outputs_in_repeats/rep/note" readonly="true()" type="string"/>
-      <bind calculate="concat('uuid:', uuid())" nodeset="/outputs_in_repeats/meta/instanceID" readonly="true()" type="string"/>
+      <bind nodeset="/outputs_in_repeats/rep/name" type="string" />
+      <bind nodeset="/outputs_in_repeats/rep/note" readonly="true()" type="string" />
+      <bind calculate="concat('uuid:', uuid())" nodeset="/outputs_in_repeats/meta/instanceID" readonly="true()" type="string" />
     </model>
   </h:head>
   <h:body>
@@ -25,7 +27,9 @@
           <label>enter name</label>
         </input>
         <input ref="/outputs_in_repeats/rep/note">
-          <label>your name is: <output value=" /outputs_in_repeats/rep/name "/></label></input>
+          <label>your name is: 
+          <output value=" /outputs_in_repeats/rep/name " /></label>
+        </input>
       </repeat>
     </group>
   </h:body>

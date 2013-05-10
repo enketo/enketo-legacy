@@ -879,7 +879,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$contextWrapNodes, $repParents;
 		//var profiler;
-		//var timeStart = new Date().getTime();
+		//var totTime, xTime, timeStart = new Date().getTime();
 		//xpathEvalNum++;
 
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
@@ -969,8 +969,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		expr = expr.replace( /&quot;/g, '"');
 
 		//var timeLap = new Date().getTime();
-		//var totTime;
-		//var xTime;
 		//console.log('expr to test: '+expr+' with result type number: '+resTypeNum);
 		try{
 			result = document.evaluate(expr, context, null, resTypeNum, null);
@@ -984,6 +982,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						//xTime = new Date().getTime() - timeLap;
 						//console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
 						//xpathEvalTime += totTime;
+						//xpathEvalTimePure += xTime;
 						return result;
 					}
 				}
@@ -1002,7 +1001,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				//xTime = new Date().getTime() - timeLap;
 				//console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
 				//xpathEvalTime += totTime;
-				//xpathEvalTime += new Date().getTime() - timeStart;
+				//xpathEvalTimePure += xTime;
 				return $result;
 			}
 			console.debug('evaluated '+expr+' to: '+result[resultTypes[resTypeNum][2]]);
@@ -1010,7 +1009,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			//xTime = new Date().getTime() - timeLap;
 			//console.debug('took '+totTime+' millseconds (XPath lib only: '+ Math.round((xTime / totTime) * 100 )+'%)');
 			//xpathEvalTime += totTime;
-			//xpathEvalTime += new Date().getTime() - timeStart;
+			//xpathEvalTimePure += xTime;
 			return result[resultTypes[resTypeNum][2]];
 		}
 		catch(e){
@@ -1019,6 +1018,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$(document).trigger('xpatherror', error);
 			loadErrors.push(error);
 			//xpathEvalTime += new Date().getTime() - timeStart;
+			//xpathEvalTimePure += new Date().getTime() - timeLap;s
 			return null;
 		}
 	};
@@ -1632,9 +1632,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 				that.process($branchNode, result);
 			});
-			
 			//console.debug('already covered: ', alreadyCovered);
 			//console.debug('relevant expression results cached:', relevantCache);
+			//profiler.report();
 			return true;
 		},
 		/**
@@ -1880,7 +1880,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param  {string=} changedNodeNames Comma-separated node names that may have changed
 	 */
 	FormHTML.prototype.outputUpdate = function(changedNodeNames){
-		var i, expr, namesArr, cleverSelector, clonedRepeatsPresent, insideRepeat, insideRepeatClone, context, index,
+		var i, expr, namesArr, cleverSelector, clonedRepeatsPresent, insideRepeat, insideRepeatClone, $context, context, index,
 			outputChanged = false,
 			outputCache = {},
 			val = '',
@@ -1895,10 +1895,16 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		$form.find(':not(:disabled) span.active').find(cleverSelector.join()).each(function(){
 			expr = $(this).attr('data-value');
-			context = that.input.getName($(this).closest('fieldset'));
+			//context = that.input.getName($(this).closest('fieldset'));
+			//context is either the sibling input (if output is inside input label),
+			//or the parent with a name attribute
+			//or the whole doc
+			$context = ($(this).siblings('[name], [data-name]').eq(0).length === 1) ? $(this).siblings('[name]:eq(0)') : $(this).closest('[name]');
+			context = that.input.getName($context);
 			insideRepeat = (clonedRepeatsPresent && $(this).closest('.jr-repeat').length > 0);
 			insideRepeatClone = (clonedRepeatsPresent && $(this).closest('.jr-repeat.clone').length > 0);
-			index = (insideRepeatClone) ? that.input.getIndex($(this).closest('fieldset')) : 0;
+			//index = (insideRepeatClone) ? that.input.getIndex($(this).closest('fieldset')) : 0;
+			index = (insideRepeatClone) ? that.input.getIndex($context) : 0;
 
 			if (typeof outputCache[expr] !== 'undefined'){
 				val = outputCache[expr];
@@ -2853,6 +2859,18 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		//first prevent default submission, e.g. when text field is filled in and Enter key is pressed
 		$('form.jr').attr('onsubmit', 'return false;');
+
+		/* 
+			workaround for Chrome to clear invalid values right away 
+			issue: https://code.google.com/p/chromium/issues/detail?can=2&start=0&num=100&q=&colspec=ID%20Pri%20M%20Iteration%20ReleaseBlock%20Cr%20Status%20Owner%20Summary%20OS%20Modified&groupby=&sort=&id=178437)
+			a workaround was chosen instead of replacing the change event listener to a blur event listener
+			because I'm guessing that Google will bring back the old behaviour.
+		*/
+		$form.on('blur', 'input:not([type="text"], [type="radio"], [type="checkbox"])', function(event){
+			if (typeof $(this).prop('validity').badInput !== 'undefined' && $(this).prop('validity').badInput){
+				$(this).val('');
+			}
+		});
 
 		$form.on('change.file validate', 'input:not(.ignore), select:not(.ignore), textarea:not(.ignore)', function(event){
 			var validCons, validReq, 

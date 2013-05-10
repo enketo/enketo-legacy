@@ -42,8 +42,8 @@ class Transform extends CI_Controller {
 
 		if ($_FILES['xml_file']['size'] > 0)
 		{
-			log_message('debug', 'file path: '.$_FILES['xml_file']['tmp_name']);
-			//$file_path_to_XML_form = $_FILES['xml_file']['tmp_name'];
+			//log_message('debug', 'file path: '.$_FILES['xml_file']['tmp_name']);
+			$file_path_to_XML_form = $_FILES['xml_file']['tmp_name'];
 			$result = $this->Form_model->transform(NULL, NULL, $file_path_to_XML_form, TRUE);
 		}
 		else if (isset($form_id) && strlen($form_id)>0 && isset($server_url) && strlen($server_url) > 0 )

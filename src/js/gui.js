@@ -255,7 +255,8 @@ GUI.prototype.pages = {
 
 		$('#page .content').prepend($page.show()).trigger('change');
 		$('#page').show();
-		$('.overlay').show();
+		//$('.overlay').show();
+		$('.main').css('opacity', '0.3');
 
 		$(window).on('resize.pageEvents', function(){
 			$('#page').trigger('change');
@@ -283,7 +284,8 @@ GUI.prototype.pages = {
 			//$('#overlay').hide();
 			$(window).off('.pageEvents');
 		}
-		$('.overlay').hide();
+		//$('.overlay').hide();
+		$('.main').css('opacity', '1');
 	}
 };
 
@@ -338,7 +340,8 @@ GUI.prototype.feedbackBar = {
  */
 GUI.prototype.feedback = function(message, duration, heading, choices){
 	heading = heading || 'Information';
-	if ($('header').css('position') === 'fixed'){
+	//if ($('header').css('position') === 'fixed'){
+	if(!Modernizr.touch){
 		this.feedbackBar.show(message, duration);
 	}
 	//a more obtrusive message is shown
@@ -587,7 +590,7 @@ GUI.prototype.positionPageAndBar = function(){
 	console.log('positionPageAndBar called');
 	var fTop, pTop,
 		$header = $('header'),
-		hHeight = $header.outerHeight(),
+		hHeight = $header.outerHeight() || 0,
 		$feedback = $('#feedback-bar'),
 		fShowing = ( $feedback.find('p').length > 0 ) ? true : false,
 		fHeight = $feedback.outerHeight(),
@@ -598,7 +601,7 @@ GUI.prototype.positionPageAndBar = function(){
 	//to go with the responsive flow, copy the css position type of the header
 	$page.css({'position': $header.css('position')});//, 'margin': $header.css('margin'), 'width': $header.css('width')});
 
-	if ($header.css('position') !== 'fixed'){
+	if ($header.length > 0 && $header.css('position') !== 'fixed'){
 		if (!fShowing) {
 			$feedback.hide();
 		}

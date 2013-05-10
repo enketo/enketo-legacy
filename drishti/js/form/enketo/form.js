@@ -1121,7 +1121,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.setHints();
 		//profiler.report();
 
-		this.setEventHandlers();
+		this.setEventHandlers(); //after widgets init to make sure widget handlers are called before
 		this.editStatus.set(false);
 		//profiler.report('time taken across all functions to evaluate '+xpathEvalNum+' XPath expressions: '+xpathEvalTime);
 	};
@@ -2376,10 +2376,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		offlineFileWidget : function(){
 			if (!this.repeat){
-				var feedbackMsg = 'Awaiting user permission to store local data (files)',
+				var fileInputHandler, 
+					feedbackMsg = 'Awaiting user permission to store local data (files)',
 					feedbackClass = 'info',
 					allClear = false,
-					$fileInputs = this.$group.find('input[type="file"]');
+					permissionGranted = false,
+					$fileInputs = $form.find('input[type="file"]');
 				
 				if ($fileInputs.length === 0){
 					return;
@@ -2407,68 +2409,82 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return;
 				}
 
+				
+				/*
+					This delegated eventhander should actually be added asynchronously (or not at all if no FS support/permission). However, it
+					needs to fired *before* the regular input change event handler for 2 reasons:
+					1. If saving the file in the browser's file system fails, the instance should not be updated
+					2. The regular eventhandler has event.stopImmediatePropagation which would mean this handler is never called.
+					The easiest way to achieve this is to always add it but only let it do something if permission is granted to use FS.
+				 */
+				$form.on('change.passthrough', 'input[type="file"]', function(event){
+					if(permissionGranted){
+						var prevFileName, file, mediaType, $preview, 
+						$input = $(this);
+						console.debug('namespace: '+event.namespace);
+						if (event.namespace === 'passthrough'){
+							//console.debug('returning true');
+							$input.trigger('change.file');
+							return false;
+						}
+						prevFileName = $input.attr('data-previous-file-name');
+						file = $input[0].files[0];
+						mediaType = $input.attr('accept');
+						$preview = (mediaType && mediaType === 'image/*') ? $('<img />')
+							: (mediaType === 'audio/*') ? $('<audio controls="controls"/>')
+							: (mediaType === 'video/*') ? $('<video controls="controls"/>')
+							: $('<span>No preview (unknown mediatype)</span>');
+						$preview.addClass('file-preview');
+
+						if (prevFileName && (!file || prevFileName !== file.name)){
+							fileManager.deleteFile(prevFileName);
+						}
+
+						$input.siblings('.file-feedback, .file-preview, .file-loaded').remove();
+
+						console.debug('file: ', file);
+						if (file && file.size > 0 && file.size <= connection.maxSubmissionSize()){
+							console.debug('going to save it in filesystem');
+							fileManager.saveFile(
+								file,
+								{
+									success: function(fsURL){
+										$preview.attr('src', fsURL);
+										$input.trigger('change.passthrough').after($preview);
+									}, 
+									error: function(e){
+										console.error('error: ',e);
+										$input.val('');
+										$input.after('<div class="file-feedback text-error">'+
+												'Failed to save file</span>');
+									}
+								}
+							);
+							return false;
+						}
+						//clear instance value by letting it bubble up to normal change handler
+						else{
+							if (file.size > connection.maxSubmissionSize()){
+								$input.after('<div class="file-feedback text-error">'+
+									'File too large (max '+
+									(Math.round((connection.maxSubmissionSize() * 100 )/ (1024 * 1024)) / 100 )+
+									' Mb)</div>');
+							}
+							return true;
+						}
+					}
+				});
+
 				var callbacks = {
 					success: function(){
 						console.log('Whoheee, we have permission to use the file system');
-						$fileInputs.on('change.passthrough', function(event){
-							var prevFileName, file, mediaType, $preview, 
-								$input = $(this);
-							console.debug('namespace: '+event.namespace);
-							if (event.namespace === 'passthrough'){
-								//console.debug('returning true');
-								$input.trigger('change.file');
-								return false;
-							}
-							prevFileName = $input.attr('data-previous-file-name');
-							file = $input[0].files[0];
-							mediaType = $input.attr('accept');
-							$preview = (mediaType && mediaType === 'image/*') ? $('<img />')
-								: (mediaType === 'audio/*') ? $('<audio controls="controls"/>')
-								: (mediaType === 'video/*') ? $('<video controls="controls"/>')
-								: $('<span>No preview (unknown mediatype)</span>');
-							$preview.addClass('file-preview');
-
-							if (prevFileName && (!file || prevFileName !== file.name)){
-								fileManager.deleteFile(prevFileName);
-							}
-
-							$input.siblings('.file-feedback, .file-preview, .file-loaded').remove();
-
-							console.debug('file: ', file);
-							if (file && file.size > 0 && file.size <= connection.maxSubmissionSize()){
-								console.debug('going to save it in filesystem');
-								fileManager.saveFile(
-									file,
-									{
-										success: function(fsURL){
-											$preview.attr('src', fsURL);
-											$input.trigger('change.passthrough').after($preview);
-										}, 
-										error: function(e){
-											console.error('error: ',e);
-											$input.val('');
-											$input.after('<div class="file-feedback text-error">'+
-													'Failed to save file</span>');
-										}
-									}
-								);
-								return false;
-							}
-							//clear instance value by letting it bubble up to normal change handler
-							else{
-								if (file.size > connection.maxSubmissionSize()){
-									$input.after('<div class="file-feedback text-error">'+
-										'File too large (max '+
-										(Math.round((connection.maxSubmissionSize() * 100 )/ (1024 * 1024)) / 100 )+
-										' Mb)</div>');
-								}
-								return true;
-							}
-						}).removeClass('ignore')
+						permissionGranted = true;
+						$fileInputs.removeClass('ignore')
 							.prop('disabled', false)
-							.siblings('.file-feedback').remove();
-						$fileInputs.after('<div class="text-info">'+
-							'File inputs are experimental. Use only for testing.');
+							.siblings('.file-feedback').remove()
+							.end()
+							.after('<div class="text-info">'+
+								'File inputs are experimental. Use only for testing.');
 					},
 					error: function(){
 						$fileInputs.siblings('.file-feedback').remove();
@@ -3135,6 +3151,9 @@ Date.prototype.toISOLocalString = function(){
 	$.fn.clearInputs = function(ev) {
 		ev = ev || 'edit';
 		return this.each(function(){
+			//remove media previews
+			$(this).find('.file-preview').remove();
+			//remove input values
 			$(this).find('input, select, textarea').each(function(){
 				var type = $(this).attr('type');
 				if ($(this).prop('nodeName').toUpperCase() === 'SELECT'){
@@ -3157,6 +3176,7 @@ Date.prototype.toISOLocalString = function(){
 					case 'password':
 					case 'text':
 					case 'file':
+						$(this).removeAttr('data-previous-file-name data-loaded-file-name');
 					case 'hidden':
 					case 'textarea':
 						if ($(this).val() !== ''){

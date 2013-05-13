@@ -27,7 +27,9 @@ var enketo = {
 		this.get = function(params){
 			return mockInstances[params.instanceId] || null;
 		};
-		this.save = function(instanceId, data){};
+		this.save = function(instanceId, data){
+			console.log('saving...');
+		};
 	},
 	EntityRelationshipLoader : function(){},
 	FormDefinitionLoader : function(){},

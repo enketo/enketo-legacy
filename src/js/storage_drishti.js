@@ -32,7 +32,7 @@ function FormDataController(params){
 	 */
 	this.save = function(instanceId, data){
 		controller.save(params, data);
-        return false;
+        //return false;
 	};
 
 	this.remove = function(instanceId){

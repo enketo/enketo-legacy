@@ -151,7 +151,7 @@ legend {
 	line-height: 12px; //$baseLineHeight;
 	border: none;
 	margin-bottom: 0.6em; //works in Chrome
-	span {
+	> span {
 		vertical-align: 12px; } //works in safari, some other webkit browsers 
 	~ label {
 		margin: 0;

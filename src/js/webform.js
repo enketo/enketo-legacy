@@ -95,6 +95,6 @@ $(document).ready(function() {
 		}
 	};
 
-	profilerRecords.push(xpathEvalNum+' XPath Evaluations during initialization took '+xpathEvalTime+' milliseconds');
+	profilerRecords.push(xpathEvalNum+' XPath Evaluations during initialization took '+xpathEvalTime+' milliseconds of which '+xpathEvalTimePure+' for pure XPath evaluation.');
 
 });

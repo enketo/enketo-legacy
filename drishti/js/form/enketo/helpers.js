@@ -12,7 +12,7 @@ String.prototype.pad = function(digits){
 };
 
 var profilerRecords = [];
-var xpathEvalNum=0, xpathEvalTime=0;
+var xpathEvalNum=0, xpathEvalTime=0, xpathEvalTimePure=0;
 
 /**
  * Little profiler
@@ -124,7 +124,7 @@ function Helper(){
 
 window.onload = function(){
 	setTimeout(function(){
-		var loadLog, t, loadingTime, exLog;
+		var loadLog, t, loadingTime, exLog, timingO = {};
 		if (window.performance){
 			t = window.performance.timing;
 			loadingTime = t.loadEventEnd - t.responseEnd;
@@ -139,7 +139,9 @@ window.onload = function(){
 			}
 			profilerRecords.push('total loading time: '+ loadingTime+' milliseconds');
 			//$('.enketo-power').append('<p style="font-size: 0.7em;">(total load: '+loadingTime+' msec, XPath: '+xpathEvalTime+' msec)</p>');
-			if (window.opener && window.performance && window.postMessage) window.opener.postMessage(JSON.stringify(window.performance), '*');
+			//FF doesn't allow stringifying native window objects so we create a copy first
+			for (var prop in window.performance.timing) { timingO[prop] = window.performance.timing[prop]; }
+			if (window.opener && window.performance && window.postMessage) window.opener.postMessage(JSON.stringify(timingO), '*');
 			$(profilerRecords).each(function(i,v){console.log(v);});
 		}
 	}, 0);

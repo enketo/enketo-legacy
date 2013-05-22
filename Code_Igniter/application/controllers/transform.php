@@ -36,12 +36,13 @@ class Transform extends CI_Controller {
 
 	public function get_html_form()
 	{			
+		log_message('debug', 'controller to serve html form started with POST vars: '.json_encode($_POST));
 		$result;
 		extract($_POST);
-	
+
 		if ($_FILES['xml_file']['size'] > 0)
 		{
-			log_message('debug', 'file path: '.$_FILES['xml_file']['tmp_name']);
+			//log_message('debug', 'file path: '.$_FILES['xml_file']['tmp_name']);
 			$file_path_to_XML_form = $_FILES['xml_file']['tmp_name'];
 			$result = $this->Form_model->get_transform_result_sxe($file_path_to_XML_form);
 		}
@@ -52,7 +53,8 @@ class Transform extends CI_Controller {
 			$this->Form_model->setup($server_url, $form_id);
 			$result = $this->Form_model->get_transform_result_sxe();
 		}
-		else if (!empty($form_url)){
+		else if (!empty($form_url))
+		{
 			log_message('debug', 'form url received: '.$form_url);
 			$result = $this->Form_model->get_transform_result_sxe($form_url);
 		}

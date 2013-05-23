@@ -188,11 +188,12 @@ input:not([type="radio"]):not([type="checkbox"]), textarea, select{
 
 input:not([type="radio"]):not([type="checkbox"]), textarea{
 	height: $input-height; }
-input[type="text"]{
-	width: $input-max-width }
 input{
-	&[type=date], &[type=number], &[type=email], &[type=password] {
-	width: $input-min-width;}}
+	&[type="text"],&[type="password"], &[type="url"], &[type="email"]{
+	width: $input-max-width } }
+input{
+	&[type=date], &[type=number]{
+	width: $input-min-width;} }
 input{
 	&[type=radio], &[type=checkbox] {
 		background: url('../images/checkradio.png') no-repeat;

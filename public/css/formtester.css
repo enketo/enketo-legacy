@@ -2174,9 +2174,9 @@ input:not([type="radio"]):not([type="checkbox"]), textarea, select { display: in
 
 input:not([type="radio"]):not([type="checkbox"]), textarea { height: 34px; }
 
-input[type="text"] { width: 80%; }
+input[type="text"], input[type="password"], input[type="url"], input[type="email"] { width: 80%; }
 
-input[type=date], input[type=number], input[type=email], input[type=password] { width: 144px; }
+input[type=date], input[type=number] { width: 144px; }
 
 input[type=radio], input[type=checkbox] { background: url("../images/checkradio.png") no-repeat; cursor: pointer; -webkit-appearance: none; -moz-background-position-x: -9999px -9999px !important; -moz-background-position-y: -9999px -9999px !important; -ms-background-position-x: -9999px !important; -ms-background-position-y: -9999px !important; float: left; border: none; width: 22px; height: 22px; margin: 0 10px 1px 10px; }
 

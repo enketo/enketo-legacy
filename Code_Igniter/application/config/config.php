@@ -26,7 +26,7 @@ else{
 }
 //$config['base_url'] = 'http'.$ssl_set.'://enketo.formhub.org/';
 //$config['base_url'] = substr($_SERVER['HTTP_HOST'], strpos($_SERVER['HTTP_HOST'], 'enketo'));
-$config['base_url'] = substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], 'enketo'));
+$config['base_url'] = 'http'.$ssl_set.'://'.substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], 'enketo'));
 if($_SERVER['SERVER_PORT'] != $default_port) $config['base_url'] .=  ':' . $_SERVER['SERVER_PORT'];
 
 /*

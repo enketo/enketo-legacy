@@ -512,6 +512,29 @@ GUI.prototype.confirm = function(texts, choices, duration){
 	 */
 };
 
+GUI.prototype.confirmLogin = function(msg, serverURL){
+	var msg = msg || '<p>In order to submit your queued data, you need to login. If you want to do this now, you will be redirected,'+
+			' and loose unsaved information.</p><p>Would you like to login now or later?</p>',
+		serverURL = serverURL || settings.serverURL;
+
+	gui.confirm({
+		msg: msg,
+		heading: 'Login Required'
+	},{
+		posButton: 'Log in now',
+		negButton: 'Later',
+		posAction: function(){
+			var search = '?server='+encodeURIComponent(serverURL)+'&return='+encodeURIComponent(location.href);
+			search += (settings.formId) ? '&id='+settings.formId : ''; 
+			search += (settings.touch) ? '&touch='+settings.touch : '';
+			search += (settings.debug) ? '&debug='+settings.debug : '';
+			location.href = location.protocol+'//'+location.host+'/authenticate'+search;
+		},
+		negAction: function(){console.log('login cancelled');},
+		beforeAction: function(){}
+	});
+};
+
 /**
  * Shows modal with load errors
  * @param  {Array.<string>} loadErrors	load error messagesg
@@ -652,6 +675,7 @@ GUI.prototype.setSettings = function(settings){
  */
 GUI.prototype.parseFormlist = function(list, $target, reset){
 	var i, listHTML='';
+	console.log('list: ', list);
 	if(!$.isEmptyObject(list)){
 		for (i in list){
 			listHTML += '<li><a class="btn btn-block btn-info" id="'+i+'" title="'+list[i].title+'" '+

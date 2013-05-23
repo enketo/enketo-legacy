@@ -46,7 +46,7 @@ class Forms extends CI_Controller {
 		);
 
 		$data = array(
-			'manifest'=> '/manifest/html/forms', 
+			//'manifest'=> '/manifest/html/forms', //issue with authentication when making this offline-enabled
 			'title_component'=>'forms', 
 			'stylesheets' => $default_stylesheets
 		);
@@ -75,14 +75,31 @@ class Forms extends CI_Controller {
 
 	public function get_list()
 	{
-		$this->load->model('Form_model', '');
-		extract($_GET);
-		if (isset($server_url) && strlen($server_url) > 0)
+		//extract($_GET);
+		$server_url = $this->input->get('server_url', TRUE);
+
+		if ($server_url && strlen($server_url) > 0)
 		{
-			$result = $this->Form_model->get_formlist_JSON($server_url);
-			$this->output
-				->set_content_type('application/json')
-				->set_output(json_encode($result)); 
+			$this->load->model('Form_model', '');
+			$this->load->model('User_model');
+			$credentials = $this->User_model->get_credentials();
+			$this->Form_model->setup($server_url, NULL, $credentials);
+
+			if($this->Form_model->requires_auth())
+			{
+				log_message('debug', 'AUTHENTICATION REQUIRED');
+				$this->output
+					->set_status_header('401', 'Unauthorized');
+					//->set_output('authenticate');
+			}
+			else
+			{
+				log_message('debug', 'auth not required');
+				$result = $this->Form_model->get_formlist_JSON($server_url);
+				$this->output
+					->set_content_type('application/json')
+					->set_output(json_encode($result));
+			}
 		}
 		else 
 		{

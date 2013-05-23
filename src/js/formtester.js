@@ -53,10 +53,13 @@ $(document).ready(function(){
 			$file = $(this).find('[name="xml_file"]'),
 			file = ($file.val()) ? $file[0].files[0] : null,
 			error = function(jqXHR, status, errorThrown){
-				if (status !== 'validationerror'){
+				if (jqXHR.status === 401){
+					gui.confirmLogin('<p>This server requires you to login to view forms.</p><p>Would you like to login now?</p>', serverURL);
+				}
+				else if (status !== 'validationerror'){
 					gui.feedback('Sorry, an error occured while communicating with the Enketo server. ('+errorThrown+')');
 				}
-				else {
+				else{
 					gui.alert(errorThrown);
 					//resetAll();
 				}
@@ -128,9 +131,9 @@ $(document).ready(function(){
 		var cls, $form = $(this);
 		var html = '<!DOCTYPE html><html><head><meta charset="utf-8" /><title></title></head><body>'+
 			$form.find('textarea[name="content"]').val()+'</body></html>';
-		
+
 		$('#html5validationmessages div').html('<form style="text-align:center;"><progress></progress></form>');
-		
+
 		connection.validateHTML(html, {
 			success: function(response){
 				//strip <script> elements
@@ -151,7 +154,7 @@ $(document).ready(function(){
 		});
 		return false;
 	});
-	
+
 	$('#upload-form #input-switcher a#server_url').click();
 
 	/*$('#launch form').submit(function(){
@@ -380,7 +383,7 @@ function parseMsgList(msgObj, targetEl){
 		level = $(this).attr('level') ? $(this).attr('level') : $(this).attr('class');
 		cls = (classes[level]) ? "text-"+classes[level] : "muted";
 		liStr = '<li class="'+cls+'">'+message+'</li>';
-				
+	
 		//avoid duplicate messages
 		if (messageList.find('li').filter(function(){return $(this).text() == message;}).length === 0) {
 			messageList.append(liStr);

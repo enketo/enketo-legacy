@@ -44,18 +44,28 @@ class Transform extends CI_Controller {
 		{
 			//log_message('debug', 'file path: '.$_FILES['xml_file']['tmp_name']);
 			$file_path_to_XML_form = $_FILES['xml_file']['tmp_name'];
-			$result = $this->Form_model->transform(NULL, NULL, $file_path_to_XML_form, TRUE);
+			$result = $this->Form_model->get_transform_result_sxe($file_path_to_XML_form);
 		}
 		else if (isset($form_id) && strlen($form_id)>0 && isset($server_url) && strlen($server_url) > 0 )
 		{
 			// ADD CHECK HERE FOR VALIDITY OF URLS
 			log_message('debug', 'server url received: '.$server_url.', id: '+$form_id);
-			$result = $this->Form_model->transform($server_url, $form_id, NULL,  TRUE);
+			$this->load->model('User_model');
+			$credentials = $this->User_model->get_credentials();
+			$this->Form_model->setup($server_url, $form_id, $credentials);
+			if($this->Form_model->requires_auth())
+			{
+				log_message('debug', "AUTHENTICATION REQUIRED");
+				$this->output
+					->set_status_header('401', 'Unauthorized')
+					->set_output('authenticate');
+			}
+			$result = $this->Form_model->get_transform_result_sxe();
 		}
 		else if (!empty($form_url))
 		{
 			log_message('debug', 'form url received: '.$form_url);
-			$result = $this->Form_model->transform(NULL, NULL, $form_url, TRUE);
+			$result = $this->Form_model->get_transform_result_sxe($form_url);
 		}
 		else
 		{

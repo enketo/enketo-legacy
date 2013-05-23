@@ -15,13 +15,13 @@
  * The second is for the Google Maps Static API (simple read-only maps)
  * Request your own here: https://developers.google.com/maps/signup
  */
-$config['google_maps_api_v3_key'] = "AIzaSyDF5xYZfxN7r5SsNPGstjAeTzwa6dVU4Ik";
-$config['google_maps_static_api_key'] = "AIzaSyDF5xYZfxN7r5SsNPGstjAeTzwa6dVU4Ik";
+$config['google_maps_api_v3_key'] = "";
+$config['google_maps_static_api_key'] = "";
 
 /**
  * Leave empty if not using Google Analytics
  */
-$config['google_analytics_key'] = "UA-6765789-11";
+$config['google_analytics_key'] = "";
 
 /**
  * Used for various purposes, including links back to ...., leave empty if enketo is used as a standalone app
@@ -34,7 +34,7 @@ $config['integration_with_url'] = "http://formhub.org";
 $config['support_email'] = "support@formhub.org";
 
 /**
- * In the formlist view this defines which server URL helper to set as default
+ * In the forms (form browser) view this defines which server URL helper to set as default
  * options: 'http', 'https', 'formhub', 'formhub_u', 'appspot' 
  */
 $config['default_server_url_helper'] = "formhub";
@@ -43,6 +43,11 @@ $config['default_server_url_helper'] = "formhub";
  * In the webform view this is the brand name shown (empty = enketo)
  */
 $config['brand'] = "formhub";
+
+/**
+ * Can't touch this. Bom bam bom bam.
+ */
+$config['paywall'] = FALSE;
 
 /**
  * 

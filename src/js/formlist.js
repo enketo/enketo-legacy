@@ -96,6 +96,13 @@ $(document).ready(function(){
 				connection.getFormlist(props.server, {
 					success: function(resp, msg){
 						processFormlistResponse(resp, msg, props);
+					},
+					error: function(jqXHR, status, errorThrown){
+						processFormlistResponse([], '', props, true);
+						if (jqXHR.status === 401){
+							gui.confirmLogin('<p>This server requires you to login to view forms.</p><p>Would you like to login now?</p>', props.server);
+							store.setRecord('__current_server', {'url': props.server, 'helper': props.helper, 'inputValue': props.inputValue, 'refresh':true}, false, true);
+						}
 					}
 				});
 			}
@@ -155,6 +162,12 @@ function loadPreviousState(){
 		$settings.find('input#server').val(server.inputValue);
 		list = store.getFormList(server.url);
 		gui.parseFormlist(list, $('#form-list'));
+		console.log('server state: ', server);
+		if (typeof server.refresh !== 'undefined' && server.refresh === true){
+			$('#refresh-list').click();
+			server.refresh = false;
+			store.setRecord('__current_server', server);
+		}
 	}
 }
 function showVirginHint(){

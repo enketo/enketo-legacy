@@ -34,9 +34,11 @@
 		<link href="<?= $css['href']; ?>" media="<?= $css['media'] ?>" rel="stylesheet" type="text/css" />
 <? endforeach; ?>
 
+<? if(isset($scripts)): ?>
 <? foreach ($scripts as $script): ?>
 		<script type="text/javascript" src="<?= $script; ?>"></script>
 <? endforeach; ?>
+<? endif; ?>
 
 <? $maps_dynamic_key = $this->config->item('google_maps_api_v3_key'); ?>
 <? $maps_static_key = $this->config->item('google_maps_static_api_key'); ?>

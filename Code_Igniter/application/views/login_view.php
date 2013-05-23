@@ -1,0 +1,1 @@
+<? show_error('You are trying to access a resource that requires authentication. Authentication is not implemented on this server. Instead, use https://enketo.org or https://formhub.org where it is implemented, or add the functionality yourself.', 501); ?>

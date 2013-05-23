@@ -2,11 +2,24 @@ var modelStr, jrDataStr, jrDataStrToEdit,
 	/*@type {{string:{html_form:string, xml_model:string}}}*/mockForms1,
 	/*@type {{string:{html_form:string, xml_model:string}}}*/mockForms2,
 	mockInstances;
-/**
- * @constructor
- * @param {Element} layer The layer to listen on
- */
-function FastClick(layer){}
+
+var enketo = {
+	FormDataRepository : function(){},
+	FormDataController : function(entityRelO, formDefO, formModelMapperO){
+		this.get = function(params){
+			return mockInstances[params.instanceId] || null;
+		};
+		this.save = function(instanceId, data){
+			console.log('saving...');
+		};
+	},
+	EntityRelationshipLoader : function(){},
+	FormDefinitionLoader : function(){},
+	FormModelMapper : function(dataRepo, sqlBuilder, idFactory){},
+	SQLQueryBuilder : function(dataRepo){},
+	IdFactory : function(bridge){},
+	IdFactoryBridge : function(){}
+};
 
 /** @type {{returnURL: string, serverURL: string, formId: string, instanceId: string, entityId: string, formURL: string, mapsStaticAPIKey:string, mapsDynamicAPIKey:string,
 	 defaultServerURLHelper:string, supportEmail:string, modernBrowsersURL:string, showBranch:boolean}}

@@ -2156,7 +2156,7 @@ label, fieldset { margin: 0 0 0.7em 0; padding-top: 0.9em; font-weight: bold; }
 .restoring-sanity-to-legends fieldset { padding: 0; margin: 0; }
 
 legend { position: relative; line-height: 12px; border: none; margin-bottom: 0.6em; }
-legend span { vertical-align: 12px; }
+legend > span { vertical-align: 12px; }
 legend ~ label { margin: 0; padding: 5px 0 3px 0; font-weight: normal; }
 legend ~ label:not(.btn-radiocheck):hover { background-color: #fddecd; }
 legend ~ label .active { display: block; margin-left: 2.2em; }
@@ -2174,9 +2174,9 @@ input:not([type="radio"]):not([type="checkbox"]), textarea, select { display: in
 
 input:not([type="radio"]):not([type="checkbox"]), textarea { height: 34px; }
 
-input[type="text"] { width: 80%; }
+input[type="text"], input[type="password"], input[type="url"], input[type="email"] { width: 80%; }
 
-input[type=date], input[type=number], input[type=email], input[type=password] { width: 144px; }
+input[type=date], input[type=number] { width: 144px; }
 
 input[type=radio], input[type=checkbox] { background: url("../images/checkradio.png") no-repeat; cursor: pointer; -webkit-appearance: none; -moz-background-position-x: -9999px -9999px !important; -moz-background-position-y: -9999px -9999px !important; -ms-background-position-x: -9999px !important; -ms-background-position-y: -9999px !important; float: left; border: none; width: 22px; height: 22px; margin: 0 10px 1px 10px; }
 
@@ -2298,7 +2298,7 @@ label#data-template-show { float: right; }
 #upload form fieldset label input, #upload form fieldset label .fakefileinput { position: absolute; box-sizing: border-box; top: 0; left: 0px; display: block; width: 100%; margin: 10px 0 10px 0; height: 100%; text-align: center; }
 #upload form fieldset label input span, #upload form fieldset label .fakefileinput span { line-height: 60px; }
 #upload form fieldset label input[type=file] { z-index: 5; opacity: 0; }
-#upload form fieldset .hurry { font-size: .8em; margin: 5em 0 3em 0; }
+#upload form .hurry { font-size: .8em; margin: 5em 0 3em 0; }
 #upload form #form-list { margin-top: 4em; }
 #upload form #form-list ul { width: 100%; list-style-type: none; }
 

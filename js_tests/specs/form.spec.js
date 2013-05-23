@@ -323,14 +323,28 @@ describe("Output functionality ", function(){
 });
 
 describe("Output functionality within repeats", function(){
-	var form = loadForm('outputs_in_repeats.xml');
+	var $o = [],
+		form = loadForm('outputs_in_repeats.xml');
 	form.init();
 	form.getFormO().$.find('button.repeat').click();
+
+	for (var i=0 ; i<8 ; i++){
+		$o.push(form.getFormO().$.find('.jr-output').eq(i));
+	}
+
 	form.getFormO().$.find('[name="/outputs_in_repeats/rep/name"]').eq(0).val('Martijn').trigger('change');
 	form.getFormO().$.find('[name="/outputs_in_repeats/rep/name"]').eq(1).val('Beth').trigger('change');
+	form.getFormO().$.find('[data-name="/outputs_in_repeats/rep/animal"][value="elephant"]').eq(0).prop('checked', true).trigger('change');
+	form.getFormO().$.find('[data-name="/outputs_in_repeats/rep/animal"][value="rabbit"]').eq(1).prop('checked', true).trigger('change');
 	it('shows correct value when referring to repeated node', function(){
-		expect(form.getFormO().$.find('.jr-output:eq(0)').text()).toEqual('Martijn');
-		expect(form.getFormO().$.find('.jr-output:eq(1)').text()).toEqual('Beth');
+		expect($o[0].text()).toEqual('Martijn');
+		expect($o[1].text()).toEqual('Martijn');
+		expect($o[2].text()).toEqual('elephant');
+		expect($o[3].text()).toEqual('Martijn');
+		expect($o[4].text()).toEqual('Beth');
+		expect($o[5].text()).toEqual('Beth');
+		expect($o[6].text()).toEqual('rabbit');
+		expect($o[7].text()).toEqual('Beth');
 	});
 });
 
@@ -985,7 +999,7 @@ describe('Itemset functionality', function(){
 		});
 	});
 
-	describe('in a clone repeat that includes a cascading select', function(){
+	describe('in a cloned repeat that includes a cascading select', function(){
 		var countrySelector = '[data-name="/new_cascading_selections_inside_repeats/group1/country"]',
 			citySelector = 'label:not(.itemset-template) [data-name="/new_cascading_selections_inside_repeats/group1/city"]',
 

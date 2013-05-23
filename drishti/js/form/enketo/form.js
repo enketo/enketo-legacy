@@ -831,11 +831,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * There is a bug in JavaRosa that has resulted in the usage of incorrect formulae on nodes inside repeat nodes. 
 	 * Those formulae use absolute paths when relative paths should have been used. See more here:
 	 * https://bitbucket.org/javarosa/javarosa/wiki/XFormDeviations (point 3). 
-	 * Tools such as pyxform (and xls form?) also build forms in this incorrect manner. It will take time to 
-	 * correct this way of making forms so makeBugCompliant() aims to mimic the incorrect 
-	 * behaviour by injection the [position] of repeats into the XPath expressions. The resulting expression
+	 * Tools such as pyxform also build forms in this incorrect manner. See https://github.com/modilabs/pyxform/issues/91
+	 * It will take time to correct this so makeBugCompliant() aims to mimic the incorrect 
+	 * behaviour by injecting the 1-based [position] of repeats into the XPath expressions. The resulting expression
 	 * will then be evaluated in a way users expect (as if the paths were relative) without having to mess up
-	 * the XPath Evaluator. E.g. '/data/rep_a/node_a' could become '/data/rep_a[2]/node_a' if the context is inside 
+	 * the XPath Evaluator. 
+	 * E.g. '/data/rep_a/node_a' could become '/data/rep_a[2]/node_a' if the context is inside 
 	 * the second rep_a repeat.
 	 * 
 	 * This function should be removed as soon as JavaRosa (or maybe just pyxform) fixes the way those formulae
@@ -847,14 +848,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {string} modified expression with injected positions (1-based) 
 	 */
 	DataXML.prototype.makeBugCompliant = function(expr, selector, index){
-		var i, repSelector, repIndex, $repParents,
+		var i, repSelector, repIndex, $collection, $wrap, $repParents,
 			attr = ($form.find('[name="'+selector+'"][type="radio"]').length > 0 && index > 0) ? 'data-name' : 'name';
 
-		$repParents = form.input.getWrapNodes($form.find('['+attr+'="'+selector+'"]')).eq(index).parents('.jr-repeat');
-		//console.debug('makeBugCompliant() received expression: '+expr+' inside repeat: '+repSelector);
+		$collection = $form.find('['+attr+'="'+selector+'"]').filter( function(){
+			//exclude fieldset.jr-group that has child fieldset.jr-repeat with same name
+			return $(this).children('['+attr+'="'+selector+'"]').length === 0;
+		});
+		$wrap = form.input.getWrapNodes($form.find('['+attr+'="'+selector+'"]')).eq(index);
+		$repParents = $wrap.closest('.jr-repeat').add($wrap.parents('.jr-repeat'));
+		console.debug('makeBugCompliant() received expression: '+expr+' inside repeat: '+selector);
 		for (i=0 ; i<$repParents.length ; i++){
 			repSelector = /** @type {string} */$repParents.eq(i).attr('name');
-			//console.log(repSelector);
+			//console.log('repeat Selector: '+repSelector);
 			repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').addBack().index($repParents.eq(i)); 
 			console.log('calculated repeat 0-based index: '+repIndex);
 			expr = expr.replace(repSelector, repSelector+'['+(repIndex+1)+']');
@@ -877,7 +883,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 */
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
-			$contextWrapNodes, $repParents;
+			$collection, $contextWrapNodes, $repParents;
 		//var profiler;
 		//var totTime, xTime, timeStart = new Date().getTime();
 		//xpathEvalNum++;
@@ -928,8 +934,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			 * If the expression is bound to a node that is inside a repeat.... see makeBugCompliant()
 			 */
 			//Could consider passing a contextInsideRepeat variable to evaluate() instead
-			if ($form.find('[name="'+selector+'"]:eq(0)').closest('.jr-repeat').length > 0){
-			//if ($form.find('[name="'+selector+'"]').parents('.jr-repeat').length > 0 ){
+			//if ($form.find('[name="'+selector+'"]:eq(0)').closest('.jr-repeat').length > 0){
+			$collection = $form.find('[name="'+selector+'"]');
+			if ($collection.hasClass('jr-repeat') || $collection.eq(0).closest('.jr-repeat').length > 0){
+				console.log('going to inject position into: '+expr+' for context: '+selector+' and index: '+index);
 				expr = this.makeBugCompliant(expr, selector, index);
 			}
 		}
@@ -1121,7 +1129,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		this.setHints();
 		//profiler.report();
 
-		this.setEventHandlers();
+		this.setEventHandlers(); //after widgets init to make sure widget handlers are called before
 		this.editStatus.set(false);
 		//profiler.report('time taken across all functions to evaluate '+xpathEvalNum+' XPath expressions: '+xpathEvalTime);
 	};
@@ -1294,6 +1302,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 			if (inputType === 'radio' && name !== $node.attr('name')){
 				$wrapNodesSameName = this.getWrapNodes($form.find('[data-name="'+name+'"]'));
+			}
+			//fieldset.jr-group wraps fieldset.jr-repeat and can have same name attribute!)
+			else if (inputType === 'fieldset' && $node.hasClass('jr-repeat')){
+				$wrapNodesSameName = this.getWrapNodes($form.find('.jr-repeat[name="'+name+'"]'));
 			}
 			else {
 				$wrapNodesSameName = this.getWrapNodes($form.find('[name="'+name+'"]'));
@@ -1896,14 +1908,21 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		$form.find(':not(:disabled) span.active').find(cleverSelector.join()).each(function(){
 			expr = $(this).attr('data-value');
 			//context = that.input.getName($(this).closest('fieldset'));
-			//context is either the sibling input (if output is inside input label),
-			//or the parent with a name attribute
-			//or the whole doc
-			$context = ($(this).siblings('[name], [data-name]').eq(0).length === 1) ? $(this).siblings('[name]:eq(0)') : $(this).closest('[name]');
+			
+			/*
+				Note that in XForms input is the parent of label and in HTML the other way around so an output inside a label
+				should look at the HTML input to determine the context. 
+				So, context is either the input name attribute (if output is inside input label),
+				or the parent with a name attribute
+				or the whole doc
+			*/
+			$context = ($(this).parent('span').parent('label').find('[name]').eq(0).length === 1) ? 
+				$(this).parent().parent().find('[name]:eq(0)') : 
+				$(this).parent('span').parent('legend').parent('fieldset').find('[name]').eq(0).length === 1 ?
+				$(this).parent().parent().parent().find('[name]:eq(0)') : $(this).closest('[name]');
 			context = that.input.getName($context);
 			insideRepeat = (clonedRepeatsPresent && $(this).closest('.jr-repeat').length > 0);
 			insideRepeatClone = (clonedRepeatsPresent && $(this).closest('.jr-repeat.clone').length > 0);
-			//index = (insideRepeatClone) ? that.input.getIndex($(this).closest('fieldset')) : 0;
 			index = (insideRepeatClone) ? that.input.getIndex($context) : 0;
 
 			if (typeof outputCache[expr] !== 'undefined'){
@@ -2376,10 +2395,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		},
 		offlineFileWidget : function(){
 			if (!this.repeat){
-				var feedbackMsg = 'Awaiting user permission to store local data (files)',
+				var fileInputHandler, 
+					feedbackMsg = 'Awaiting user permission to store local data (files)',
 					feedbackClass = 'info',
 					allClear = false,
-					$fileInputs = this.$group.find('input[type="file"]');
+					permissionGranted = false,
+					$fileInputs = $form.find('input[type="file"]');
 				
 				if ($fileInputs.length === 0){
 					return;
@@ -2407,68 +2428,82 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return;
 				}
 
+				
+				/*
+					This delegated eventhander should actually be added asynchronously (or not at all if no FS support/permission). However, it
+					needs to fired *before* the regular input change event handler for 2 reasons:
+					1. If saving the file in the browser's file system fails, the instance should not be updated
+					2. The regular eventhandler has event.stopImmediatePropagation which would mean this handler is never called.
+					The easiest way to achieve this is to always add it but only let it do something if permission is granted to use FS.
+				 */
+				$form.on('change.passthrough', 'input[type="file"]', function(event){
+					if(permissionGranted){
+						var prevFileName, file, mediaType, $preview, 
+						$input = $(this);
+						console.debug('namespace: '+event.namespace);
+						if (event.namespace === 'passthrough'){
+							//console.debug('returning true');
+							$input.trigger('change.file');
+							return false;
+						}
+						prevFileName = $input.attr('data-previous-file-name');
+						file = $input[0].files[0];
+						mediaType = $input.attr('accept');
+						$preview = (mediaType && mediaType === 'image/*') ? $('<img />')
+							: (mediaType === 'audio/*') ? $('<audio controls="controls"/>')
+							: (mediaType === 'video/*') ? $('<video controls="controls"/>')
+							: $('<span>No preview (unknown mediatype)</span>');
+						$preview.addClass('file-preview');
+
+						if (prevFileName && (!file || prevFileName !== file.name)){
+							fileManager.deleteFile(prevFileName);
+						}
+
+						$input.siblings('.file-feedback, .file-preview, .file-loaded').remove();
+
+						console.debug('file: ', file);
+						if (file && file.size > 0 && file.size <= connection.maxSubmissionSize()){
+							console.debug('going to save it in filesystem');
+							fileManager.saveFile(
+								file,
+								{
+									success: function(fsURL){
+										$preview.attr('src', fsURL);
+										$input.trigger('change.passthrough').after($preview);
+									}, 
+									error: function(e){
+										console.error('error: ',e);
+										$input.val('');
+										$input.after('<div class="file-feedback text-error">'+
+												'Failed to save file</span>');
+									}
+								}
+							);
+							return false;
+						}
+						//clear instance value by letting it bubble up to normal change handler
+						else{
+							if (file.size > connection.maxSubmissionSize()){
+								$input.after('<div class="file-feedback text-error">'+
+									'File too large (max '+
+									(Math.round((connection.maxSubmissionSize() * 100 )/ (1024 * 1024)) / 100 )+
+									' Mb)</div>');
+							}
+							return true;
+						}
+					}
+				});
+
 				var callbacks = {
 					success: function(){
 						console.log('Whoheee, we have permission to use the file system');
-						$fileInputs.on('change.passthrough', function(event){
-							var prevFileName, file, mediaType, $preview, 
-								$input = $(this);
-							console.debug('namespace: '+event.namespace);
-							if (event.namespace === 'passthrough'){
-								//console.debug('returning true');
-								$input.trigger('change.file');
-								return false;
-							}
-							prevFileName = $input.attr('data-previous-file-name');
-							file = $input[0].files[0];
-							mediaType = $input.attr('accept');
-							$preview = (mediaType && mediaType === 'image/*') ? $('<img />')
-								: (mediaType === 'audio/*') ? $('<audio controls="controls"/>')
-								: (mediaType === 'video/*') ? $('<video controls="controls"/>')
-								: $('<span>No preview (unknown mediatype)</span>');
-							$preview.addClass('file-preview');
-
-							if (prevFileName && (!file || prevFileName !== file.name)){
-								fileManager.deleteFile(prevFileName);
-							}
-
-							$input.siblings('.file-feedback, .file-preview, .file-loaded').remove();
-
-							console.debug('file: ', file);
-							if (file && file.size > 0 && file.size <= connection.maxSubmissionSize()){
-								console.debug('going to save it in filesystem');
-								fileManager.saveFile(
-									file,
-									{
-										success: function(fsURL){
-											$preview.attr('src', fsURL);
-											$input.trigger('change.passthrough').after($preview);
-										}, 
-										error: function(e){
-											console.error('error: ',e);
-											$input.val('');
-											$input.after('<div class="file-feedback text-error">'+
-													'Failed to save file</span>');
-										}
-									}
-								);
-								return false;
-							}
-							//clear instance value by letting it bubble up to normal change handler
-							else{
-								if (file.size > connection.maxSubmissionSize()){
-									$input.after('<div class="file-feedback text-error">'+
-										'File too large (max '+
-										(Math.round((connection.maxSubmissionSize() * 100 )/ (1024 * 1024)) / 100 )+
-										' Mb)</div>');
-								}
-								return true;
-							}
-						}).removeClass('ignore')
+						permissionGranted = true;
+						$fileInputs.removeClass('ignore')
 							.prop('disabled', false)
-							.siblings('.file-feedback').remove();
-						$fileInputs.after('<div class="text-info">'+
-							'File inputs are experimental. Use only for testing.');
+							.siblings('.file-feedback').remove()
+							.end()
+							.after('<div class="text-info">'+
+								'File inputs are experimental. Use only for testing.');
 					},
 					error: function(){
 						$fileInputs.siblings('.file-feedback').remove();
@@ -3135,6 +3170,9 @@ Date.prototype.toISOLocalString = function(){
 	$.fn.clearInputs = function(ev) {
 		ev = ev || 'edit';
 		return this.each(function(){
+			//remove media previews
+			$(this).find('.file-preview').remove();
+			//remove input values
 			$(this).find('input, select, textarea').each(function(){
 				var type = $(this).attr('type');
 				if ($(this).prop('nodeName').toUpperCase() === 'SELECT'){
@@ -3157,6 +3195,7 @@ Date.prototype.toISOLocalString = function(){
 					case 'password':
 					case 'text':
 					case 'file':
+						$(this).removeAttr('data-previous-file-name data-loaded-file-name');
 					case 'hidden':
 					case 'textarea':
 						if ($(this).val() !== ''){

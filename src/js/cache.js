@@ -107,7 +107,7 @@ Cache.prototype.onObsolete = function(){
  * Handler for newly-cached event
  */
 Cache.prototype.onCached = function(){
-	this.showBookmarkMsg('This form works offline! <br />', true);
+	this.showBookmarkMsg('This form works offline!    ', true);
 	gui.updateStatus.offlineLaunch(true);
 };
 

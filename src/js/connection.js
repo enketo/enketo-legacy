@@ -124,6 +124,13 @@ Connection.prototype.setOnlineStatus = function(newStatus){
 	this.currentOnlineStatus = newStatus;
 };
 
+Connection.prototype.cancelSubmissionProcess = function(){
+	this.uploadOngoingID = null;
+	this.uploadOngoingBatchIndex = null;
+	this.uploadResult = {win:[], fail:[]};
+	this.uploadQueue = [];
+};
+
 /**
  * [uploadRecords description]
  * @param  {{name: string, instanceID: string, formData: FormData, batches: number, batchIndex: number}}	record   [description]
@@ -300,6 +307,10 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
 			this.uploadResult.fail.push(props);
 		}
 	}
+	else if (status == 401){
+		this.cancelSubmissionProcess();
+		gui.confirmLogin();
+	}
 	//unforeseen statuscodes
 	else if (status > 500){
 		console.error ('Error during uploading, received unexpected statuscode: '+status);
@@ -315,7 +326,7 @@ Connection.prototype.processOpenRosaResponse = function(status, props){
 		console.error ('Error during uploading, received unexpected statuscode: '+status);
 		props.msg = statusMap['2xx'].msg;
 		this.uploadResult.fail.push(props);
-	}
+	}	
 
 	if (this.uploadQueue.length > 0){
 		return;
@@ -487,7 +498,7 @@ Connection.prototype.getTransForm = function(serverURL, formId, formFile, formUR
 
 Connection.prototype.validateHTML = function(htmlStr, callbacks){
 	var content = new FormData();
-	
+
 	callbacks = this.getCallbacks(callbacks);
 
 	content.append('level', 'error');

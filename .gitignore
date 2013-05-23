@@ -1,4 +1,3 @@
-*/config/development
 */logs/log-*.php
 */logs/!index.html
 */cache/*
@@ -8,6 +7,19 @@
 */libraries/xpathjs_javarosa.min.js
 sftp-config.json
 .sass-cache
-*/public/js-source
+public/js-source
 */config/database.php
 */config/config.php
+Code_Igniter/application/cache/*
+Code_Igniter/application/logs/*
+_site/*
+._.DS_Store
+._css
+._img
+._js
+._*.png
+._bootstrap
+.fuse_*
+.~lock*
+._*.sql
+._*.xml

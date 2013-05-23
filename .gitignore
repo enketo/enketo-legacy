@@ -23,4 +23,3 @@ _site/*
 .~lock*
 ._*.sql
 ._*.xml
-public/index.php

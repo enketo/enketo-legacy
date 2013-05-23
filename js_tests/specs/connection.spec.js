@@ -75,7 +75,7 @@ describe("The Connection Class ", function () {
 
 	describe("handles submission reponses", function(){
 		var i, errorHeading = 'Failed data submission',
-			failCode = [0, 200, 203, 204, 300, 400, 401, 402, 403, 404, 405, 413, 500, 503, 510],
+			failCode = [0, 200, 203, 204, 300, 400, 402, 403, 404, 405, 413, 500, 503, 510],
 			winCode = [201, 202],
 			t = [ //forced //online //alert
 					[true,	true,	true],
@@ -91,6 +91,7 @@ describe("The Connection Class ", function () {
 			connection.uploadResult = {win:[], fail:[]};
 			spyOn(gui, 'alert');
 			spyOn(gui, 'feedback');
+			spyOn(gui, 'confirmLogin');
 		});
 
 		function testFail(statusCode){
@@ -150,6 +151,13 @@ describe("The Connection Class ", function () {
 		for (i = 0 ; i<t.length ; i++){
 			testWinFeedback(t[i][0], t[i][1]);
 		}
+
+		it('cancels uploads if an authentication error (401) occurs and shows a login screen', function(){
+			connection.processOpenRosaResponse(401, 'aname', 'MyInstanceID', true);
+			expect(gui.confirmLogin).toHaveBeenCalled();
+			expect(connection.uploadResult.win.length).toBe(0);
+			expect(connection.uploadResult.fail.length).toBe(0);
+		});
 
 	});
 	

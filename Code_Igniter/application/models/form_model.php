@@ -16,20 +16,16 @@
  * limitations under the License.
  */
 
-
-//THIS WHOLE CLASS HAS TO BE RE-WRITTEN USING OOP. Maintaining a Form object (.xml, .html, .manifest_url, .xml_url, .server_url)
-//a Formlist object and an Error object and merging these before returning seems a better way.
-//
-
 class Form_model extends CI_Model {
 	
 	private $file_path_to_jr2HTML5_XSL;
 	private $file_path_to_jr2Data_XSL;
+	private $formlist_sxe = NULL;
 	private $server_url = NULL;
 	private $form_id = NULL;
 	private $info = array();
 	private $credentials = NULL;
-	private $authenticated = NULL;
+	private $requires_auth = NULL;
 	private $form_hash_prev = NULL;
 	private $xsl_ver_prev = NULL;
 	private $xsl_version;
@@ -41,7 +37,7 @@ class Form_model extends CI_Model {
         $this->load->library('openrosa'); 
         $this->file_path_to_jr2HTML5_XSL = APPPATH.'libraries/jr2html5_php5.xsl'; 
         $this->file_path_to_jr2Data_XSL = APPPATH.'libraries/jr2xmldata.xsl';
-        //log_message('debug', 'Form Model loaded');
+        log_message('debug', 'Form Model Initialized');
     }
 
     function setup($server_url, $form_id=NULL, $credentials=NULL, $form_hash_prev=NULL, $xsl_ver_prev=NULL)
@@ -51,11 +47,16 @@ class Form_model extends CI_Model {
     	$this->form_hash_prev = $form_hash_prev;
     	$this->xsl_ver_prev = $xsl_ver_prev;
     	log_message('debug', 'setting up form object with xls_ver: '.$xsl_ver_prev.' and hash: '.$form_hash_prev);
-    	//$this->credentials = $credentials;
-    	if (!empty($form_id) && !empty($server_url))
+    	$this->credentials = $credentials;
+    	if (!empty($server_url))
     	{
-    		$this->info = $this->_get_form_info();
+    		$this->formlist_sxe = $this->_get_formlist();
+    		if (!empty($form_id))
+    		{
+    			$this->info = $this->_get_form_info();
+    		}
     	}
+    	log_message('debug', 'form model setup done: '.json_encode($this->info));
     }
 
     function get_info()
@@ -63,9 +64,9 @@ class Form_model extends CI_Model {
     	return $this->info;
     }
 
-    function authenticated()
+    function requires_auth()
     {
-    	return ($this->authenticated !== FALSE);
+    	return ($this->requires_auth === TRUE);
     }
 
     function can_be_loaded_from_cache()
@@ -159,7 +160,7 @@ class Form_model extends CI_Model {
     function get_formlist_JSON()
     {
         $result = array();
-        $xforms_sxe = $this->_get_formlist();
+        $xforms_sxe = $this->formlist_sxe;//_get_formlist();
 
         if($xforms_sxe)
         {   
@@ -195,12 +196,12 @@ class Form_model extends CI_Model {
     private function _get_form_info()
     {
     	$info = array();
-        $formlist_sxe = $this->_get_formlist();
+        //$this->formlist_sxe = $this->_get_formlist();
 
-        if ($formlist_sxe)
+        if ($this->formlist_sxe && $this->form_id)
         {
             //rather inefficient but am trying to avoid using xpath() because of default namespace in xformslist
-            foreach ($formlist_sxe->xform as $form)
+            foreach ($this->formlist_sxe->xform as $form)
             {
                 if ($form->formID == $this->form_id)
                 {
@@ -210,19 +211,15 @@ class Form_model extends CI_Model {
             		return $info;
                 }
             }
+            if (empty($info['xml'])) log_message('error', 'Form with id: '.$this->form_id.' could not be found in formlist for '.$this->server_url);
         }
-        log_message('error', 'Form with id: '.$this->form_id.' could not be found in formlist for '.$this->server_url);
         return NULL;
     }
 
     private function _get_formlist_url($server_url)
     {
         $server_url = ( strrpos($server_url, '/') == strlen($server_url)-1 ) ? $server_url : $server_url.'/';
-        // the line below breaks when hosting formhub on a dev server 
-        //$list_url = ( strpos($server_url, 'formhub.org/') === false ) ? $server_url.'xformsList' : $server_url.'formList';
-        // ...... so let's break non-appspot-hosted ODK Aggregate compatibility for now
-        $list_url = ( strpos($server_url, 'appspot.com/') === false ) ? $server_url.'formList' : $server_url.'xformsList';
-        //$list_url = $server_url.'formList';
+        $list_url = $server_url.'formList';
         return $list_url;
     }
 
@@ -257,10 +254,11 @@ class Form_model extends CI_Model {
     		}
     		else
     		{
-    			$response = $this->openrosa->request_resource($resource);
+    			$response = $this->openrosa->request_resource($resource, $this->credentials);
     			$success = $doc->loadXML($response['xml']);
-    			log_message('debug', 'response: '.json_encode($response));
-    			$this->authenticated = ($response['status_code'] === 401) ? FALSE : $this->authenticated;
+    			log_message('debug', 'response statuscode: '.$response['status_code']);
+    			$this->requires_auth = ($response['status_code'] == 401) ? TRUE : $this->requires_auth;
+    			log_message('debug', 'requires auth: '.$this->requires_auth);
     		}
     		$errors = libxml_get_errors();
     		//empty errors

@@ -40,6 +40,8 @@ class Data extends CI_Controller {
 		$submission_url = $this->Survey_model->get_form_submission_url();
 
 		extract($_POST);
+		//$xml_submission_data = $this->input->post('xml_submission_data', FALSE);
+
 		if (!$submission_url){
 			return $this->output->set_status_header(500, 'OpenRosa server submission url not set');
 		}
@@ -54,10 +56,15 @@ class Data extends CI_Controller {
 		{
 			return $this->output->set_status_header(500, "Issue creating file from uploaded XML data (Enketo server)");
 		}
+
+		log_message('debug', 'xml submission data: '.$xml_submission_data);
 		fwrite($xml_submission_file, $xml_submission_data);
 		fclose($xml_submission_file);
 		
-		$response = $this->openrosa->submit_data($submission_url, $xml_submission_filepath, $_FILES);
+		$this->load->model('User_model', '', TRUE);
+		$credentials = $this->User_model->get_credentials();
+
+		$response = $this->openrosa->submit_data($submission_url, $xml_submission_filepath, $_FILES, $credentials);
 
 		//log_message('debug', 'result of submission: '.json_encode($response));
 		log_message('debug', 'data submission took '.(time()-$time_start).' seconds.');

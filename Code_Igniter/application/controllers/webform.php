@@ -22,9 +22,7 @@ class Webform extends CI_Controller {
 	{
 		parent::__construct();
 
-		log_message('debug', 'Webform Controller started');
-
-		$this->load->helper(array('subdomain','url'));
+		$this->load->helper(array('subdomain','url', 'form'));
 		$this->load->model('Survey_model','',TRUE);
 
 		$this->default_library_scripts = array
@@ -71,6 +69,7 @@ class Webform extends CI_Controller {
 			$this->xsl_version_prev = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; //$this->Survey_model->get_form_
 			//$this->$credentials = $this->Survey_model->get_credentials($uuid);
 		}
+		log_message('debug', 'Webform Controller Initialized');
 	}
 
 	public function index()
@@ -87,15 +86,17 @@ class Webform extends CI_Controller {
 			$uuid = "abc";
 
 			$offline = $this->Survey_model->has_offline_launch_enabled();
+
 			$form = $this->_get_form();
 
-			if ($form === FALSE)
+			if (isset($form->authenticate) && $form->authenticate)
 			{
-				return show_error('Survey not properly launched, missing info in database', 404);	
+				return $this->_login();
 			}
+
 			if ($form ===  NULL)
 			{
-				return show_error('Form not reachable on the formhub server (or an error occurred). It is also possible that "require phone authentication" is switched on (in formub this setting is located under account settings) which is not supported in enketo yet.', 404);
+				return show_error('Form not reachable (or an error occurred during transformation).', 404);
 			}
 			
 			$data = array(
@@ -134,11 +135,12 @@ class Webform extends CI_Controller {
 					)
 				);
 			}
-			//$this->output->enable_profiler(FALSE);
+			
 			$this->load->view('webform_view', $data);
 		}
 		else 
 		{
+			//log_message('debug', 'required subdomain but found none, base url = '.base_url());
 			redirect('../../');
 		}
 	}
@@ -171,12 +173,6 @@ class Webform extends CI_Controller {
 		if (empty($instance_id)) // empty($return_url)
 		{
 			return show_error('No instance provided to edit and/or no return url provided to return to.', 404);
-			//$instance = '<data><somedata>somedata</somedata><somedata>someotherdata</somedata></data>';
-			// test instance for household survey with missing nodes and multiple repeats
-			//$edit_obj->instance_xml = '<household_survey id="household_survey"><formhub><uuid/></formhub>          <start/>          <end/>          <today/>          <deviceid/>          <subscriberid/>          <simserial/>          <phonenumber/>          <sectionA>            <note_consent/>            <interviewer>Martijn</interviewer>            <hh_id/>            <hh_location>10 10</hh_location>            <respondent_questions>             <respondent_name/>              <respondent_dob/>              <respondent_age/>              <respondent_gender>female</respondent_gender>            </respondent_questions><household_member><hh_member_age>001</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>002</hh_member_age><hh_member_gender/></household_member><household_member><hh_member_age>003</hh_member_age><hh_member_gender/></household_member>            <hh_ownership/></sectionA><meta><instanceID>uuid:ef0f40d039a24103beecc13ae526b98a</instanceID></meta></household_survey>';
-			//test instance for data_types.xml
-			//$edit_obj->instance_xml = '<instance xmlns="http://www.w3.org/2002/xforms">        <Data_Types id="data_types"><formhub><uuid/></formhub>          <text/>          <textarea/><pagebreak/><integ>5</integ><decim>5.55</decim><onecolor/><multicolor/><geop/>          <barc/>          <day>2012-10-01</day><now>2012-06-05T14:53:00.000-06</now><aud/>          <img/>          <vid/>        </Data_Types>      </instance>';
-			//$edit_obj->return_url = "nothing";
 		}
 	    
 	    $edit_obj = $this->_get_edit_obj($instance_id);
@@ -189,16 +185,16 @@ class Webform extends CI_Controller {
 
 		$form = $this->_get_form();
 
-		if ($form === FALSE)
+		if (isset($form->authenticate) && $form->authenticate)
 		{
-			return show_error('Could not find server url and/or form ID in enketo database.', 404);	
+			return $this->_login('/edit?instance_id'.$instance_id);
 		}
 		
 		if ($form === NULL)
 		{
-			return show_error('An error occurred during transformation or processing instances. ', 404);
+			return show_error('Form not reachable (or an error occured during transformation or processing instances). ', 404);
 		}
-	
+
 		$data = array
 		(
 			'title_component'=>'webform edit', 
@@ -260,14 +256,14 @@ class Webform extends CI_Controller {
 	    
 		$form = $this->_get_form();
 
-		if ($form === FALSE)
+		if (isset($form->authenticate) && $form->authenticate)
 		{
-			return show_error('Could not find server url and/or form ID in enketo database.', 404);	
+			return $this->_login('/iframe');
 		}
 		
 		if ($form === NULL)
 		{
-			return show_error('An error occurred during transformation or processing instances. ', 404);
+			return show_error('Form not reachable (or an error occurred during transformation). ', 404);
 		}
 	
 		$data = array
@@ -351,6 +347,18 @@ class Webform extends CI_Controller {
 		$this->load->view('webform_preview_view', $data);
 	}
 
+	private function _login($append='')
+	{
+		$this->load->view('login_view', array
+			(
+				'form_id' => $this->form_id, 
+				'return' => full_base_url().'webform'.$append,
+				'stylesheets' => $this->default_stylesheets,
+				'server_url' => $this->server_url
+			)
+		);
+	}
+
 	private function _get_form()
 	{
 		if (!isset($this->form_id) || !isset($this->server_url))
@@ -360,12 +368,20 @@ class Webform extends CI_Controller {
 		}
 		
 		$this->load->model('Form_model', '', TRUE);
-		$this->Form_model->setup($this->server_url, $this->form_id, NULL, $this->form_hash_prev, $this->xsl_version_prev);
+		$this->load->model('User_model', '', TRUE);
+		$credentials = $this->User_model->get_credentials();
+
+		//$this->output->enable_profiler(FALSE);
+
+		$this->Form_model->setup($this->server_url, $this->form_id, $credentials, $this->form_hash_prev, $this->xsl_version_prev);
 		
-		log_message('info', 'authenticated: '.$this->Form_model->authenticated());
-		if(!$this->Form_model->authenticated())
+		//log_message('debug', 'requires authentication: '.$this->Form_model->requires_auth());
+		if($this->Form_model->requires_auth())
 		{
-			echo "AUTHENTICATION REQUIRED";
+			log_message('debug', "AUTHENTICATION REQUIRED");
+			$form = new stdClass();
+			$form->authenticate = TRUE;
+			return $form;
 		}
 
 		if($this->Form_model->can_be_loaded_from_cache())

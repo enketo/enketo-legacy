@@ -50,7 +50,16 @@ class Transform extends CI_Controller {
 		{
 			// ADD CHECK HERE FOR VALIDITY OF URLS
 			log_message('debug', 'server url received: '.$server_url.', id: '+$form_id);
-			$this->Form_model->setup($server_url, $form_id);
+			$this->load->model('User_model');
+			$credentials = $this->User_model->get_credentials();
+			$this->Form_model->setup($server_url, $form_id, $credentials);
+			if($this->Form_model->requires_auth())
+			{
+				log_message('debug', "AUTHENTICATION REQUIRED");
+				$this->output
+					->set_status_header('401', 'Unauthorized')
+					->set_output('authenticate');
+			}
 			$result = $this->Form_model->get_transform_result_sxe();
 		}
 		else if (!empty($form_url))

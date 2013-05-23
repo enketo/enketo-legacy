@@ -26,6 +26,7 @@ class Openrosa {
     		log_message('error', 'called _load_xml_from_url without a url parameter');
     		return NULL;
     	}
+    	log_message('debug', 'first header request result: '.json_encode($this->_request_headers_and_info($url)));
     	return $this->_request($url, NULL, $credentials);
     }
 
@@ -61,44 +62,48 @@ class Openrosa {
         return $header_arr['X-Openrosa-Accept-Content-Length'];
 	}
 
-	//conducts HEAD request
-	private function _request_headers($url)
+	//performs HEAD request
+	private function _request_headers_and_info($url, $credentials=NULL)
 	{
-		$curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_NOBODY, true);
-        curl_setopt($curl, CURLOPT_HEADER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $headers = curl_exec($curl);
-        curl_close($curl);
-        return $this->_http_parse_headers($headers);
+		$ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_NOBODY, true);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
+		ob_start();
+        $headers = curl_exec($ch);
+		ob_end_clean();
+
+		$info = curl_getinfo($ch);
+		$headers_and_info = array_merge($this->_http_parse_headers($headers), $info);
+
+        curl_close($ch);
+        unset($ch);
+
+        return $headers_and_info;
 	}
 
     private function _request($url, $data=NULL, $credentials=NULL)
     {
     	$http_code = 0;
-
+    	//log_message('debug', 'going to send request to '.$url.' with credentials: '.json_encode($credentials));
     	$ch = curl_init();
-		//curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_path);//write cookie
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		//curl_setopt($ch, CURLOPT_HEADER, TRUE);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
 		if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		//curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		//curl_setopt($ch, CURLOPT_USERPWD, "martijnr:______");
 		ob_start();
 		$result = curl_exec($ch);
 		ob_end_clean();
 
 		$info = curl_getinfo($ch);
 		$http_code = $info['http_code'];
-		log_message('debug', 'attempt to load '.$url.' responded with status code: '.$http_code);
-		log_message('debug', json_encode($info));
+		log_message('debug', 'request to '.$url.' responded with status code: '.$http_code);
+		//log_message('debug', json_encode($info));
 		//log_message('debug', 'result: '.$result);
 		$http_code = $info['http_code'];
-		
+
 		curl_close($ch);
 		unset($ch);
 		return array(
@@ -107,7 +112,7 @@ class Openrosa {
 		);
     }
 
-    private function _http_parse_headers($header)ah
+    private function _http_parse_headers($header)
     {
         $retVal = array();
         $fields = explode("\r\n", preg_replace('/\x0D\x0A[\x09\x20]+/', ' ', $header));
@@ -128,4 +133,4 @@ class Openrosa {
     }
 }
 
-/* End of file Someclass.php */
+/* End of file Openrosa.php */

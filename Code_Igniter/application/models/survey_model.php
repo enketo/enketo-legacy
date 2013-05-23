@@ -88,16 +88,6 @@ class Survey_model extends CI_Model {
         return $this->has_offline_launch_enabled() && $this->is_live_survey() && $this->is_launched_survey();
     }
 
-    public function get_credentials($uuid)
-    {
-    	return NULL;
-    }
-
-    public function set_credentials($uuid)
-    {
-    	return TRUE;
-    }
-
     public function get_cached_transform_result()
     {
         $items = $this->_get_items(array('transform_result_title', 'transform_result_model', 'transform_result_form'));
@@ -127,7 +117,7 @@ class Survey_model extends CI_Model {
 //        log_message('debug', 'active: '.$active);
 //        return ($current == $active) ? TRUE : $this->_update_item('offline', $active);
 //    }
-    
+
     public function launch_survey($server_url, $form_id, $submission_url, $data_url=NULL, $email=NULL)
     {  
         //log_message('debug', 'launch_survey function started');

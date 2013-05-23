@@ -53,7 +53,12 @@ $(document).ready(function() {
 			}
 		},
 		error: function(jqXHR, status, errorThrown){
-			showError('An error occurred trying to obtain or transform the form ('+errorThrown+')');
+			if(jqXHR.status === 401){
+				gui.confirmLogin('<p>Form is protected and requires authentication.</p><p>Would you like to log in now?</p>');
+			}
+			else{ 
+				showError('An error occurred trying to obtain or transform the form ('+errorThrown+')');
+			}
 			$loading.remove();
 		},
 		complete: function(){

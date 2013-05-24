@@ -2351,7 +2351,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (!this.repeat){
 				$form.find('input[readonly]:not([data-type-xml="geopoint"])').parent('label').each(function(){
 					//var $spans = $(this).find('span').not('.question-icons span').detach(); 
-					var html = $(this).html(),
+					var html = $(this).markdownToHtml(),
 						relevant = $(this).find('input').attr('data-relevant'),
 						branch = (relevant) ? ' jr-branch pre-init' : '',
 						name = 'name="'+$(this).find('input').attr('name')+'"',
@@ -3152,6 +3152,8 @@ Date.prototype.toISOLocalString = function(){
 		});
 	};
 
+
+
 /**
  * Function: clearInputs
  * 
@@ -3299,5 +3301,15 @@ Date.prototype.toISOLocalString = function(){
             return this.find(selector);
     };
 
+
+	$.fn.markdownToHtml = function() {
+		var html = this.html();
+		html = html.replace(/__([^\s].*[^\s])__/gm, "<strong>$1</strong>");
+		html = html.replace(/\*\*([^\s].*[^\s])\*\*/gm, "<strong>$1</strong>");
+		html = html.replace(/_([^\s].*[^\s])_/gm, '<em>$1</em>');
+		html = html.replace(/\*([^\s].*[^\s])\*/gm, '<em>$1</em>');
+		html = html.replace(/\[(.*)\]\(((https?:\/\/)(([\da-z\.\-]+)\.([a-z\.]{2,6})|(([0-9]{1,3}\.){3}[0-9]{1,3}))([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*)\)/gm, '<a href="$2">$1</a>');
+		return html;
+	};
 
 })(jQuery);

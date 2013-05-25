@@ -60,7 +60,15 @@ progress{
   strong{
   text-decoration: underline;} }
 
-
+.alert{
+	em{
+		color: #666;}
+	strong{
+		color: black;
+		font-size: 110%;
+		text-decoration: none;}
+	a{
+		text-decoration: underline;} }
 
 .overlay{
   position:absolute;

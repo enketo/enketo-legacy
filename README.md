@@ -5,15 +5,15 @@ nav: readme
 ---
 
 
-Enketo
+[Enketo](http://enketo.org)
 ======
 
-Enketo is a lightweight web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). More info: [blog](http://blog.aidwebsolutions.com)
+Enketo is a lightweight web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). Enketo is integrated inside [formhub.org](http://formhub.org) and available as a standalone application on [enketo.org](http://enketo.org). More info: [blog](http://blog.enketo.org)
 
 Browser support
 ---------------
-- IE is not supported (does not support the required technologies). Support for the app without offline-launch cability may follow in the future or when IE catches up.
-- Chrome, Firefox, Safari for both desktop and mobile devices are largely supported but Chrome is recommended.
+- IE is only supported from version 10 onwards (older versions do not support the required technologies). 
+- Chrome, Firefox, Safari for both desktop and mobile devices are. Chrome is recommended.
 
 Prerequisites
 -----------
@@ -27,7 +27,7 @@ See [Ubuntu_installation_instructions.md](https://github.com/modilabs/enketo/blo
 Frequently Asked Questions
 ---------------------------
 ##### Why are file-upload inputs greyed out and not usable?
-File uploads are not supported in enketo at the moment. Support may be added in the future but it is not a high priority for 2012. If file uploads (images/sound/video) are important, ODK Collect may be a better option.
+File uploads are only experimentially supported on Chrome at the moment until other browser catch up with support form the FileSytem API. If file uploads (images/sound/video) are important, ODK Collect may be a better option.
 
 
 Development

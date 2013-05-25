@@ -2351,12 +2351,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if (!this.repeat){
 				$form.find('input[readonly]:not([data-type-xml="geopoint"])').parent('label').each(function(){
 					//var $spans = $(this).find('span').not('.question-icons span').detach(); 
-					var html = $(this).html(),
-						relevant = $(this).find('input').attr('data-relevant'),
+					var	relevant = $(this).find('input').attr('data-relevant'),
 						branch = (relevant) ? ' jr-branch pre-init' : '',
 						name = 'name="'+$(this).find('input').attr('name')+'"',
 						attributes = (typeof relevant !== 'undefined') ? 'data-relevant="'+relevant+'" '+name : name,
-						value = $(this).find('input, select, textarea').val();
+						value = $(this).find('input, select, textarea').val(),
+						 html = $(this).markdownToHtml().html();
 					$('<fieldset class="trigger'+branch+'" '+attributes+'></fieldset>')
 						.insertBefore($(this)).append(html).append('<div class="note-value">'+value+'</div>').find('input').remove(); 
 					$(this).remove();
@@ -3152,6 +3152,8 @@ Date.prototype.toISOLocalString = function(){
 		});
 	};
 
+
+
 /**
  * Function: clearInputs
  * 
@@ -3299,5 +3301,29 @@ Date.prototype.toISOLocalString = function(){
             return this.find(selector);
     };
 
+	$.fn.markdownToHtml = function () {
+		return this.each(function () {
+			var html,
+				$childStore = $('<div/>');
+			$(this).children().each(function (index) {
+				var name = '$$$' + index;
+				$(this).clone().markdownToHtml().appendTo($childStore);
+				$(this).replaceWith(name);
+			});
+			html = $(this).html();
+			html = html.replace(/__([^\s].*[^\s])__/gm, "<strong>$1</strong>");
+			html = html.replace(/\*\*([^\s].*[^\s])\*\*/gm, "<strong>$1</strong>");
+			html = html.replace(/_([^\s].*[^\s])_/gm, '<em>$1</em>');
+			html = html.replace(/\*([^\s].*[^\s])\*/gm, '<em>$1</em>');
+			//only replaces if url is valid (worthwhile feature?)
+			html = html.replace(/\[(.*)\]\(((https?:\/\/)(([\da-z\.\-]+)\.([a-z\.]{2,6})|(([0-9]{1,3}\.){3}[0-9]{1,3}))([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*)\)/gm, '<a href="$2">$1</a>');
+			html = html.replace(/\n/gm, '<br />');
+			$childStore.children().each(function(i){
+				var regex = new RegExp('\\$\\$\\$' + i);
+				html = html.replace(regex, $(this)[0].outerHTML);
+			});
+			$(this).text('').append(html);
+		});
+	};
 
 })(jQuery);

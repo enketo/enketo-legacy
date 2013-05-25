@@ -1946,6 +1946,10 @@ progress { display: block; margin: 10px auto; }
 .alert .error-list li { line-height: 1.4em; }
 .alert strong { text-decoration: underline; }
 
+.alert em { color: #666; }
+.alert strong { color: black; font-size: 110%; text-decoration: none; }
+.alert a { text-decoration: underline; }
+
 .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background: black; opacity: 0.8; display: none; }
 
 .paper { background-color: #fff; border-radius: 7px; border: 7px solid #e7e7e7; }

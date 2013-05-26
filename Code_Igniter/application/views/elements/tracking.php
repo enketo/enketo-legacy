@@ -3,7 +3,7 @@
 
 			var _gaq = _gaq || [];
 			_gaq.push(['_setAccount', '<?= $this->config->item("google_analytics_key") ?>']);
-			_gaq.push(['_setDomainName', '<?= substr(base_url(), strpos(base_url(), "://"), -1) ?>']);
+			_gaq.push(['_setDomainName', '<?= substr(base_url(), strpos(base_url(), "://")+3, -1) ?>']);
 			_gaq.push(['_trackPageview']);
 
 			(function() {

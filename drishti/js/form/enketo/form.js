@@ -3311,10 +3311,10 @@ Date.prototype.toISOLocalString = function(){
 				$(this).replaceWith(name);
 			});
 			html = $(this).html();
-			html = html.replace(/__([^\s].*[^\s])__/gm, "<strong>$1</strong>");
-			html = html.replace(/\*\*([^\s].*[^\s])\*\*/gm, "<strong>$1</strong>");
-			html = html.replace(/_([^\s].*[^\s])_/gm, '<em>$1</em>');
-			html = html.replace(/\*([^\s].*[^\s])\*/gm, '<em>$1</em>');
+			html = html.replace(/__([^\s][^_]*[^\s])__/gm, "<strong>$1</strong>");
+			html = html.replace(/\*\*([^\s][^\*]*[^\s])\*\*/gm, "<strong>$1</strong>");
+			html = html.replace(/_([^\s][^_]*[^\s])_/gm, '<em>$1</em>');
+			html = html.replace(/\*([^\s][^\*]*[^\s])\*/gm, '<em>$1</em>');
 			//only replaces if url is valid (worthwhile feature?)
 			html = html.replace(/\[(.*)\]\(((https?:\/\/)(([\da-z\.\-]+)\.([a-z\.]{2,6})|(([0-9]{1,3}\.){3}[0-9]{1,3}))([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*)\)/gm, '<a href="$2">$1</a>');
 			html = html.replace(/\n/gm, '<br />');

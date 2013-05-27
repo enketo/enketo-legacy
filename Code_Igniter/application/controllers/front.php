@@ -55,6 +55,7 @@ class Front extends CI_Controller {
 		$data = array(
 			'offline'=>FALSE, 
 			'title_component'=>'', 
+			'robots'=>TRUE,
 			'stylesheets' => $default_stylesheets//,
 			//'num_surveys' => $this->Survey_model->number_surveys()
 		);

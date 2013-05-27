@@ -48,6 +48,7 @@ class Forms extends CI_Controller {
 		$data = array(
 			//'manifest'=> '/manifest/html/forms', //issue with authentication when making this offline-enabled
 			'title_component'=>'forms', 
+			'robots'=>TRUE,
 			'stylesheets' => $default_stylesheets
 		);
 

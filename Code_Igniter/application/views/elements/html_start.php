@@ -23,7 +23,7 @@
 
 		<meta charset="utf-8" />
 		<meta name="author" content="Martijn van de Rijdt (Enketo LLC)" />
-<? $robots = ( !isset($robots) && !empty($_GET['robots']) && $_GET['robots'] == 'true' ) ? 'index, follow' : 'noindex' ?>
+<? $robots = ( isset($robots) && $robots ) ? 'index, follow' : 'noindex' ?>
 		<meta name="robots" content="<?= $robots ?>"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />

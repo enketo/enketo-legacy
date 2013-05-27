@@ -24,7 +24,6 @@ class Webform extends CI_Controller {
 
 		$this->load->helper(array('subdomain','url', 'form'));
 		$this->load->model('Survey_model','',TRUE);
-
 		$this->default_library_scripts = array
 		(
 			'/libraries/jquery.min.js',
@@ -69,8 +68,11 @@ class Webform extends CI_Controller {
 			$this->xsl_version_prev = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; //$this->Survey_model->get_form_
 			//$this->$credentials = $this->Survey_model->get_credentials($uuid);
 		}
+		
 		log_message('debug', 'Webform Controller Initialized');
 	}
+
+
 
 	public function index()
 	{
@@ -82,11 +84,9 @@ class Webform extends CI_Controller {
 			{
 				return show_error('Survey does not exist, is not yet published or was taken down.', 404);
 			}
-
-			$uuid = "abc";
+			$this->_paywall_route();
 
 			$offline = $this->Survey_model->has_offline_launch_enabled();
-
 			$form = $this->_get_form();
 
 			if (isset($form->authenticate) && $form->authenticate)
@@ -166,6 +166,8 @@ class Webform extends CI_Controller {
 			show_error('This survey has not been launched in enketo', 404);
 			return;
 		}
+		$this->_paywall_route();
+
 		if ($this->Survey_model->has_offline_launch_enabled())
 		{
 			return show_error('The edit view can only be launched in offline mode', 404);
@@ -249,6 +251,7 @@ class Webform extends CI_Controller {
 			show_error('This survey has not been launched in enketo', 404);
 			return;
 		}
+		$this->_paywall_route();
 		if ($this->Survey_model->has_offline_launch_enabled())
 		{
 			return show_error('The iframe view can only be launched in offline mode', 404);
@@ -422,20 +425,16 @@ class Webform extends CI_Controller {
 		return (!empty($edit_o->instance_xml) && !empty($edit_o->return_url)) ? $edit_o : NULL;
 	}
 
-	//public function update_list()
-	//{
-	//	$this->load->model('Survey_model', '', TRUE);
-	//	$success = $this->Survey_model->update_formlist();
-	//	if ($success === TRUE)
-	//	{
-	//		echo 'form list has been updated';
-	//	}
-	//	else 
-	//	{
-	//		echo 'error updating form list';
-	//	}
-	//}
+	private function _paywall_route()
+	{
+		if ($this->config->item('paywall') === TRUE)
+		{
+			$this->load->library('paywall');
+			if (!$this->paywall->serve_allowed($this->server_url))
+			{
+				$this->load->view('unpaid_view', $this->paywall->get_issues());
+			}
+		}
+	}
 }
-
-
 ?>

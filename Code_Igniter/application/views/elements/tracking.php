@@ -1,9 +1,14 @@
-<? $this->load->helper('url') ?>
+<? 
+	$this->load->helper('url');
+	$url = substr(base_url(), strpos(base_url(), "://")+3, -1); 
+	$url_parts = preg_split("/\./", $url);
+	$tracking_url = $url_parts[count($url_parts)-2].'.'.$url_parts[count($url_parts)-1];
+?>
 		<script type="text/javascript">
 
 			var _gaq = _gaq || [];
 			_gaq.push(['_setAccount', '<?= $this->config->item("google_analytics_key") ?>']);
-			_gaq.push(['_setDomainName', '<?= substr(base_url(), strpos(base_url(), "://")+3, -1) ?>']);
+			_gaq.push(['_setDomainName', '<?= $tracking_url ?>']);
 			_gaq.push(['_trackPageview']);
 
 			(function() {

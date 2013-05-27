@@ -7,3 +7,6 @@
 [submodule "public/libraries/bootstrap-datepicker"]
 	path = public/libraries/bootstrap-datepicker
 	url = https://github.com/eternicode/bootstrap-datepicker.git
+[submodule "Code_Igniter/system"]
+	path = Code_Igniter/system
+	url = https://github.com/MartijnR/CodeIgniter_system.git

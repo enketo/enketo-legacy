@@ -9,8 +9,8 @@ IndexIgnore *
 
 RewriteEngine on
 
-#RewriteCond %{HTTPS} off
-#RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
 
 RewriteCond $1 !^(index\.php|info\.php|sitemap\.xml|css|images|js-source|js-min|libraries|robots\.txt|favicon\.ico|checkforconnection\.txt|checkforconnection\.php)
 RewriteRule ^(.*)$ /index.php/$1 [L]

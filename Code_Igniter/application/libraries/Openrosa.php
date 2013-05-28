@@ -33,23 +33,26 @@ class Openrosa {
     public function submit_data($url, $xml_path, $files=array(), $credentials=NULL)
     {
     	$fields = array('xml_submission_file'=>'@'.$xml_path.';type=text/xml');  
-
+    	log_message('debug', 'files to be submitted: '.json_encode($files));
 		if (!empty($files))
 		{
 			//print_r($_FILES);
-			foreach($files as $nodeName => $file)
+			foreach($files as $nodeName => $files_obj)
 			{
-				$new_location =  '/tmp/'.$file['name'];
-				$valid = move_uploaded_file($file['tmp_name'], $new_location);
-				if ($valid)
+				for ($i=0; $i<count($files_obj['name']); $i++)
 				{
-					$fields[$nodeName] = '@'.$new_location.';type='.$file['type'];
-					log_message('debug', 'added file '.$new_location.' to submission');
+					$new_location =  '/tmp/'.$files_obj['name'][$i];
+					$valid = move_uploaded_file($files_obj['tmp_name'][$i], $new_location);
+					if ($valid)
+					{
+						$fields[$nodeName.'_'.$i] = '@'.$new_location.';type='.$files_obj['type'][$i];
+						log_message('debug', 'added file '.$new_location.' to submission');
+					}
+					//TODO: issue with file size > 30 mb (see .htaccess): this fails silently
+					//need to return feedback to user and/or check for this in client before sending?
+					//TODO: USER FEEDBACK IF NOT VALID?
+					//echo $fields[$nodeName];
 				}
-				//TODO: issue with file size > 30 mb (see .htaccess): this fails silently
-				//need to return feedback to user and/or check for this in client before sending?
-				//TODO: USER FEEDBACK IF NOT VALID?
-				//echo $fields[$nodeName];
 			}
 		}
 		return $this->_request($url, $fields, $credentials);
@@ -57,8 +60,7 @@ class Openrosa {
 
     public function request_max_size($submission_url)
     {
-    	$header_arr = $this->_request_headers($submission_url);
-    	log_message('debug', 'headers received: '.json_encode($header_arr));
+    	$header_arr = $this->_request_headers_and_info($submission_url);
         return $header_arr['X-Openrosa-Accept-Content-Length'];
 	}
 

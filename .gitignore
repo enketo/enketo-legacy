@@ -8,8 +8,7 @@
 sftp-config.json
 .sass-cache
 public/js-source
-*/config/database.php
-*/config/config.php
+Code_Igniter/application/config/database.php
 Code_Igniter/application/cache/*
 Code_Igniter/application/logs/*
 _site/*

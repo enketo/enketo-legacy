@@ -63,7 +63,7 @@ class Data extends CI_Controller {
 		
 		$this->load->model('User_model', '', TRUE);
 		$credentials = $this->User_model->get_credentials();
-
+		log_message('debug', 'amount of files allowed in php.ini: '.ini_get('max_file_uploads'));
 		$response = $this->openrosa->submit_data($submission_url, $xml_submission_filepath, $_FILES, $credentials);
 
 		//log_message('debug', 'result of submission: '.json_encode($response));

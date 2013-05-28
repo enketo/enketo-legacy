@@ -251,7 +251,7 @@ function FileManager(){
 	 * @param {{success:Function, error:Function}}				callbacks		callback functions (error, and success)
 	 */
 	this.retrieveFiles = function(directoryName, files, callbacks){
-		var i,
+		var i, retrievedFiles = [], failedFiles = [],
 			pathPrefix = (directoryName) ? '/'+directoryName+'/' : dirPrefix,
 			callbacksForFileEntry = {
 				success: function(fileEntry){
@@ -261,20 +261,31 @@ function FileManager(){
 							success: function(file){
 								console.debug('retrieved file! ', file);
 								var index;
-								//TODO:  THIS IS FLAWED, WILL FAIL WHEN FILENAME OCCURS TWICE
-								$.each(files, function(i, item){
-									if (item.fileName === file.name){ index = i; }
+								//TODO:  THIS WILL FAIL WHEN FILENAME OCCURS TWICE, problem?
+								$.each(files, function(j, item){
+									if (item.fileName === file.name){ 
+										retrievedFiles.push({
+											nodeName: files[j].nodeName,
+											fileName: files[j].fileName,
+											file: file
+										});
+									}
 								});
-								console.debug('index:'+index);
-								files[index].file = file;
-								if (file.name === files[files.length - 1].fileName){
-									//TODO: FLAWED. IF LAST FILE FAILS THE SUCCESSHANDLER WILL NEVER EXECUTE
-									//I.E. DATA WILL NOT SUBMIT
-									console.log('files to return with success handler: ', files);
-									callbacks.success(files);
+								console.log('value of requested files index i in successhandler: '+i);
+								//if (file.name === files[files.length - 1].fileName){
+								if (retrievedFiles.length + failedFiles.length === files.length){
+									console.log('files to return with success handler: ', retrievedFiles);
+									callbacks.success(retrievedFiles);
 								}
 							},
-							error: callbacks.error
+							error: function(e, fullPath){
+								failedFiles.push[fullPath];
+								if (retrievedFiles.length + failedFiles.length === files.length){
+									console.log('though error occurred with at least one file, files to return with success handler: ', retrievedFiles);
+									callbacks.success(retrievedFiles);
+								}
+								callbacks.error();
+							}
 						}
 					);
 				},
@@ -312,8 +323,8 @@ function FileManager(){
 				console.log('persistent URL: ',fileEntry.toURL());
 				callbacks.success(fileEntry);
 			},
-			function(e){
-				console.error('file not found', e),
+			function(e, fullPath){
+				console.error('file with path: '+fullPath+' not found', e),
 				callbacks.error(e);
 			}
 		);

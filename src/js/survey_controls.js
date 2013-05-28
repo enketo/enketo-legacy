@@ -351,9 +351,9 @@ function prepareFormDataArray(record, callbacks){
 			instanceID,
 			files,
 			{
-				success: function(files){
-					for (k = 0 ; k < files.length ; k++){
-						sizes.push(files[k].file.size);
+				success: function(retFiles){
+					for (k = 0 ; k < retFiles.length ; k++){
+						sizes.push(retFiles[k].file.size);
 						//formData.append(files[k].nodeName, files[k].file);
 					}
 					batches = divideIntoBatches(sizes, connection.maxSubmissionSize());
@@ -364,8 +364,8 @@ function prepareFormDataArray(record, callbacks){
 						recordPrepped = { name: record.name, instanceID: instanceID, formData: formData, batches: batches.length, batchIndex: k };
 						for (l = 0 ; l<batches[k].length ; l++){
 							fileIndex = batches[k][l];
-							console.log('adding file: '+files[fileIndex].nodeName);
-							recordPrepped.formData.append(files[fileIndex].nodeName, files[fileIndex].file);
+							console.log('adding file: ', retFiles[fileIndex]);
+							recordPrepped.formData.append(retFiles[fileIndex].nodeName+'[]', retFiles[fileIndex].file);
 						}
 						console.log('returning record with formdata : ', recordPrepped);
 						callbacks.success(recordPrepped);

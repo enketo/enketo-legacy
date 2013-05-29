@@ -108,10 +108,10 @@ class Form_model extends CI_Model {
         
         $xml = $this->_load_xml($local_path);
         //$hash = (!empty($this->info['hash'])) ? $this->info['hash'] : '';
-            
-        if (isset($info['manifest']))
+       
+        if (isset($this->info['manifest']))
         {
-            $manifest = $this->_load_xml($info['manifest']);
+            $manifest = $this->_load_xml($this->info['manifest']);
             $manifest_sxe = ($manifest['doc']) ? simplexml_import_dom($manifest['doc']) : NULL;
         }
 
@@ -483,7 +483,6 @@ class Form_model extends CI_Model {
 
     //function to replace media (img, video audio) urls with urls from the manifest
     private function _fix_media_urls($manifest, &$result){
-        //log_message('debug', 'going to fix media urls');
         if (isset($manifest) && $manifest !== FALSE)
         {
             foreach ($result->xpath('/root/form/descendant::*[@src]') as $el)

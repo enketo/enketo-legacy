@@ -20,7 +20,6 @@ function FormDataController(params){
 	 * @return {?*} Form Data JSON object
 	 */
     this.get = function(){
-		// temporarily mocked
 		return controller.get(params) || null;
 	};
 
@@ -32,7 +31,6 @@ function FormDataController(params){
 	 */
 	this.save = function(instanceId, data){
 		controller.save(params, data);
-        //return false;
 	};
 
 	this.remove = function(instanceId){
@@ -111,7 +109,7 @@ function JData(data){
 	 * Gets current state of form instance in JSON format.
 	 */
 	this.get = function(){
-		var $repeatLeaves,
+		var $repeatLeaves, origInstances,
 			subFormsStarted = [],
 			$mainLeaves = this.getInstanceXML(false).find('*').filter(function(){
 				return $(this).children().length === 0;
@@ -127,26 +125,32 @@ function JData(data){
 				return $(this).siblings(nodeName+'[template]').length > 0;
 			});
 
+		//this code has to be refactored, as the unboundSubformInstanceProps stuff was bolted on when the JSON spec changed.
 		$repeats.each(function(){
-			var bindType, subForm,
+			var i, prop, bindPath, subForm, instanceIndex,
+				unboundSubformInstanceProps = ['id'],
 				subForms = [],
 				instance = {},
 				$repeat = $(this);
-			//bind_type in JSON subform = repeat nodeName???
-			bindType = $repeat.prop('nodeName');
+			//identifier for subform in JSON format is default_bind_path
+			bindPath = '/model/instance'+$repeat.getXPath();
 			if (data.form.sub_forms) {
-				subForms = $.grep(data.form.sub_forms, function(subfrm){return (subfrm.bind_type === bindType); });
+				subForms = $.grep(data.form.sub_forms, function(subfrm){
+					//be flexible with trailing slash
+					return (subfrm.default_bind_path === bindPath || subfrm.default_bind_path === bindPath+'/');
+				});
 			}
 			if (subForms.length === 0){
-				recordError('Repeat definition not found (no subform with bind type "'+bindType+'" in JSON format');
+				recordError('Repeat definition not found (no subform with default_bind_path: "'+bindPath+'" in JSON format)');
 			}
 			else if (subForms.length > 1){
-				recordError('Multiple repeat definititions found (multiple subforms with bind type "'+bindType+'" in JSON format');
+				recordError('Multiple repeat definititions found (multiple subforms with default_bind_path: "'+bindPath+'" in JSON format)');
 			}
 			else{
 				subForm = subForms[0];
-				if ($.inArray(bindType, subFormsStarted) === -1){
-					subFormsStarted.push(bindType);
+				if ($.inArray(bindPath, subFormsStarted) === -1){
+					subFormsStarted.push(bindPath);
+					origInstances = jQuery.extend(true, {}, subForm.instances);
 					subForm.instances = [];
 				}
 				$repeatLeaves = $repeat.find('*').filter(function(){
@@ -162,6 +166,15 @@ function JData(data){
 					}
 				});
 				subForm.instances.push(instance);
+				//add subform instance properties that have no equivalent in XML - a quick and dirty addition
+				instanceIndex = subForm.instances.indexOf(instance);
+				for (i=0; i<unboundSubformInstanceProps.length; i++){
+					prop = unboundSubformInstanceProps[i];
+					if (origInstances[instanceIndex] && typeof origInstances[instanceIndex][prop] !== 'undefined'){
+						//console.log('adding unbound property '+prop+'to repeat instance with index '+instanceIndex);
+						instance[prop] = origInstances[instanceIndex][prop];
+					}
+				}
 			}
 		});
 

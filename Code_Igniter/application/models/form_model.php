@@ -113,6 +113,7 @@ class Form_model extends CI_Model {
         {
             $manifest = $this->_load_xml($this->info['manifest']);
             $manifest_sxe = ($manifest['doc']) ? simplexml_import_dom($manifest['doc']) : NULL;
+            //log_message('debug', 'manifest: '.$manifest_sxe->asXML());
         }
 
 		$result = new SimpleXMLElement('<root></root>');
@@ -493,6 +494,7 @@ class Form_model extends CI_Model {
                 {
                     if ($src == $m->filename)
                     {
+                    	//log_message('debug', 'adding media url to html: '.$m->downloadUrl);
                         $el['src'] = $m->downloadUrl;
                         break;
                     }
@@ -503,6 +505,7 @@ class Form_model extends CI_Model {
                 if ($m->filename == 'form_logo.png')
                 {
                     $logo = $result->form->section[0]->addChild('img');
+                    //log_message('debug', 'adding media url to html: '.$m->downloadUrl);
                     $logo->addAttribute('src', $m->downloadUrl);
                     $logo->addAttribute('alt', 'form logo');
                     break;

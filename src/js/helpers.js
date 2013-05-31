@@ -158,13 +158,13 @@ window.onload = function(){
     $.fn.getXPath = function(rootNodeName){
 		//other nodes may have the same XPath but because this function is used to determine the corresponding input name of a data node, index is not included 
 		var position,
-			rootNodeName = rootNodeName || '#document',
 			$node = this.first(),
 			nodeName = $node.prop('nodeName'),
 			//$sibSameNameAndSelf = $node.siblings(nodeName).addBack(),
 			steps = [nodeName],
 			$parent = $node.parent(),
 			parentName = $parent.prop('nodeName');
+		rootNodeName = rootNodeName || '#document';
 
 		//position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($node)+1)+']' : '';
 		//steps.push(nodeName+position);

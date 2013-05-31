@@ -144,7 +144,7 @@ function JData(data){
 				recordError('Repeat definition not found (no subform with default_bind_path: "'+bindPath+'" in JSON format)');
 			}
 			else if (subForms.length > 1){
-				recordError('Multiple repeat definititions found (multiple subforms with bind type: "'+bindType+'" in JSON format)');
+				recordError('Multiple repeat definititions found (multiple subforms with default_bind_path: "'+bindPath+'" in JSON format)');
 			}
 			else{
 				subForm = subForms[0];

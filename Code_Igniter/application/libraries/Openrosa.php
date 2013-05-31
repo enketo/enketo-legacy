@@ -26,7 +26,7 @@ class Openrosa {
     		log_message('error', 'called _load_xml_from_url without a url parameter');
     		return NULL;
     	}
-    	log_message('debug', 'first header request result: '.json_encode($this->_request_headers_and_info($url)));
+    	//log_message('debug', 'first header request result: '.json_encode($this->_request_headers_and_info($url)));
     	return $this->_request($url, NULL, $credentials);
     }
 

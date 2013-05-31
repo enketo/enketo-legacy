@@ -495,7 +495,7 @@ class Form_model extends CI_Model {
                     if ($src == $m->filename)
                     {
                     	//log_message('debug', 'adding media url to html: '.$m->downloadUrl);
-                        $el['src'] = $m->downloadUrl;
+                        $el['src'] = $this->_to_local_media_url($m->downloadUrl);
                         break;
                     }
                 }    
@@ -506,12 +506,19 @@ class Form_model extends CI_Model {
                 {
                     $logo = $result->form->section[0]->addChild('img');
                     //log_message('debug', 'adding media url to html: '.$m->downloadUrl);
-                    $logo->addAttribute('src', $m->downloadUrl);
+                    $logo->addAttribute('src', $this->_to_local_media_url($m->downloadUrl));
                     $logo->addAttribute('alt', 'form logo');
                     break;
                 }
             }
         }
+    }
+
+    private function _to_local_media_url($url)
+    {
+    	$local_url = '/media/get/'.preg_replace('/:\/\//', '/', $url);
+    	log_message('debug', 'turned '.$url.' into '.$local_url);
+    	return $local_url;
     }
 
     //very basic function to create valid html5 lang attributes (and to add language names)

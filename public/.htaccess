@@ -20,7 +20,7 @@ RewriteRule ^(.*)$ /index.php/$1 [L]
 
 #make sure certain files are served with the right Content-type
 AddType font/ttf .ttf
-AddType application/x-font-woff .woff
+AddType application/font-woff .woff
 #AddType text/cache-manifest .appcache
 
 #Avoid caching of manifest files

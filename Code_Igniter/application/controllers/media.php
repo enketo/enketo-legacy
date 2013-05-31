@@ -21,8 +21,9 @@
 class Media extends CI_Controller {
 
 	function __construct() {
-			parent::__construct();
-			$this->load->library(array('curl', 'openrosa'));
+		parent::__construct();
+		$this->load->library(array('curl', 'openrosa'));
+		//$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
 	}
 
 	public function index()
@@ -32,25 +33,38 @@ class Media extends CI_Controller {
 
 	public function get()
 	{
-		//$segments = func_get_args();
-		$origin = 'https://formhub.org/martijnr/forms/test_https/formid-media/70978';
-		$segments = explode('/', preg_replace('/:\/\//', '/', $origin));
+		$segments = func_get_args();
+		//$origin = 'https://formhub.org/martijnr/forms/test_https/formid-media/70978';
+		//$segments = explode('/', preg_replace('/:\/\//', '/', $origin));
 
 		$segments_joined = implode('/', $segments);
 		$url = preg_replace('/\//', '://', $segments_joined, 1);
 		
 		$headers = $this->openrosa->get_headers($url);
-		header('Content-Type: '.$headers['Content-Type']);
-		$this->_print_media($url);
+		$content_type = $this->_correct_mime($headers['Content-Type']);
+		header('Content-Type:'.$content_type);
+		//$bytes = $this->_get_media($url);
+		echo $this->_get_media($url);
+		//$this->output->cache(10);
+		//$this->load->view('media_view.php', array('content_type' => $content_type, 'bytes' => $bytes));
 	}
 
-	private function _print_media($url)
+	private function _get_media($url)
 	{
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+			//curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
 			curl_exec($ch);
+	}
+
+	private function _correct_mime($mimetype)
+	{
+		if ($mimetype === 'application/image/png') return 'image/png';
+		if ($mimetype === 'application/image/jpeg') return 'image/jpeg';
+
+		return $mimetype;
 	}
 }
 //no spaces behind this or everything will fail miserably!

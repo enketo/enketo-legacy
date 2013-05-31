@@ -42,6 +42,7 @@ describe("Conversion from Drishti-style JSON repeat form elements to an XML inst
 		var subForm = data.form.sub_forms[i];
 		for (var j=0; j<subForm.instances.length; j++){
 			for (var name in subForm.instances[j]){
+				if (['id'].indexOf(name) !== -1 ) return; //skip non-bound properties (just 'id' for now)
 				var field = $.grep(subForm.fields, function(item){return item.name === name;});
 				var bind = field.bind || subForm.default_bind_path + name;
 				testRepeatDataValue(bind, subForm.instances[j][name], j);
@@ -119,6 +120,7 @@ describe("Updating JSON value properties for repeat form elements", function(){
 		jData = new JData(origData);
 		jData.getInstanceXML = getFakeInstanceXML;
 		setFakeInstance('thedata.xml');
+		console.debug('fake instance: ', $fakeInstance[0]);
 		$c1 = $fakeInstance.find('nodeC').eq(1);//template = 0
 		$c3 = $fakeInstance.find('nodeC').eq(3);
 	});
@@ -137,6 +139,10 @@ describe("Updating JSON value properties for repeat form elements", function(){
 		$c3.text('new third value');
 		expect(jData.get().form.sub_forms[0].instances[0].nodeC).toEqual('new first value');
 		expect(jData.get().form.sub_forms[0].instances[2].nodeC).toEqual('new third value');
+	});
+
+	it('preserves unbound JSON subform instance properties ("id")', function(){
+		expect(jData.get().form.sub_forms[0].instances[2].id).toEqual("c397fdcd-f8dd-4d32-89a9-37030c01b40b");
 	});
 });
 

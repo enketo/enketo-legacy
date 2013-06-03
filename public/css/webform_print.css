@@ -12,8 +12,8 @@ body .paper { border: none; margin: 0; }
 .jr label .jr-hint.active { padding-top: .5em; }
 .jr legend .jr-hint.active { padding-bottom: .6em; }
 
-.jr { /*input[type="checkbox"]{ display: none !important; ~ .active{ -webkit-print-color-adjust:exact; margin-left: 15px; padding-left: 35px; background: url('/images/checkbox.png') left center no-repeat; } }
-input[type="radio"]{ display: none !important; ~ .active{ -webkit-print-color-adjust:exact; margin-left: 15px; padding-left: 35px; background: url('/images/radio.png') left center no-repeat; } }*/ }
+.jr {   /*input[type="checkbox"]{ display: none !important; ~ .active{ -webkit-print-color-adjust:exact; margin-left: 15px; padding-left: 35px;
+	  background: ; } } input[type="radio"]{ display: none !important; ~ .active{ -webkit-print-color-adjust:exact; margin-left: 15px; padding-left: 35px; background:  } }*/ }
 .jr .hint, .jr .map-canvas-wrapper, .jr .geopoint .search-bar, .jr .jr-constraint-msg, .jr .required-subtle, .jr .add-on, .jr button, .jr .invalid .jr-constraint-msg.active.alert-error { display: none !important; }
 .jr h2, .jr h3, .jr h4, .jr .required { color: black; }
 .jr legend span { display: block; }

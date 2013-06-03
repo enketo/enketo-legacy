@@ -26,7 +26,7 @@ class Openrosa {
     		log_message('error', 'called _load_xml_from_url without a url parameter');
     		return NULL;
     	}
-    	log_message('debug', 'first header request result: '.json_encode($this->_request_headers_and_info($url)));
+    	//log_message('debug', 'first header request result: '.json_encode($this->_request_headers_and_info($url)));
     	return $this->_request($url, NULL, $credentials);
     }
 
@@ -64,6 +64,11 @@ class Openrosa {
         return $header_arr['X-Openrosa-Accept-Content-Length'];
 	}
 
+	public function get_headers($url)
+	{
+		return $this->_request_headers_and_info($url);
+	}
+
 	//performs HEAD request
 	private function _request_headers_and_info($url, $credentials=NULL)
 	{
@@ -93,6 +98,7 @@ class Openrosa {
     	$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
 		if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		ob_start();

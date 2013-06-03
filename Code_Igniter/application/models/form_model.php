@@ -113,6 +113,7 @@ class Form_model extends CI_Model {
         {
             $manifest = $this->_load_xml($this->info['manifest']);
             $manifest_sxe = ($manifest['doc']) ? simplexml_import_dom($manifest['doc']) : NULL;
+            //log_message('debug', 'manifest: '.$manifest_sxe->asXML());
         }
 
 		$result = new SimpleXMLElement('<root></root>');
@@ -493,7 +494,8 @@ class Form_model extends CI_Model {
                 {
                     if ($src == $m->filename)
                     {
-                        $el['src'] = $m->downloadUrl;
+                    	//log_message('debug', 'adding media url to html: '.$m->downloadUrl);
+                        $el['src'] = $this->_to_local_media_url($m->downloadUrl);
                         break;
                     }
                 }    
@@ -503,12 +505,20 @@ class Form_model extends CI_Model {
                 if ($m->filename == 'form_logo.png')
                 {
                     $logo = $result->form->section[0]->addChild('img');
-                    $logo->addAttribute('src', $m->downloadUrl);
+                    //log_message('debug', 'adding media url to html: '.$m->downloadUrl);
+                    $logo->addAttribute('src', $this->_to_local_media_url($m->downloadUrl));
                     $logo->addAttribute('alt', 'form logo');
                     break;
                 }
             }
         }
+    }
+
+    private function _to_local_media_url($url)
+    {
+    	$local_url = '/media/get/'.preg_replace('/:\/\//', '/', $url);
+    	log_message('debug', 'turned '.$url.' into '.$local_url);
+    	return $local_url;
     }
 
     //very basic function to create valid html5 lang attributes (and to add language names)

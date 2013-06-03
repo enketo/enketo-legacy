@@ -164,12 +164,11 @@ window.onload = function(){
 			steps = [nodeName],
 			$parent = $node.parent(),
 			parentName = $parent.prop('nodeName');
-		rootNodeName = rootNodeName || '#document';
 
 		//position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($node)+1)+']' : '';
 		//steps.push(nodeName+position);
 
-		while ($parent.length == 1 && parentName !== rootNodeName){
+		while ($parent.length == 1 && parentName !== rootNodeName && parentName !== '#document'){
 			//$sibSameNameAndSelf = $parent.siblings(parentName).addBack();
 			//position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($parent)+1)+']' : '';
 			//steps.push(parentName+position);

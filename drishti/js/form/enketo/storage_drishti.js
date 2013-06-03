@@ -51,7 +51,6 @@ function JData(data){
 	/**
 	 * Transforms JSON to an XML string
 	 * NOTE: alternatively, we could could overwrite Form.init() to use JSON data instead of XML for instantiation
-	 * @param  {(*|string)} jData	JSON object or JSON string
 	 * @return {?string}			XML string
 	 */
 	this.toXML = function(){

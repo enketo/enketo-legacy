@@ -110,6 +110,11 @@ describe("Updating JSON value properties for non-repeat form elements", function
 		var second = jData.get();
 		expect(first).toEqual(second);
 	});
+
+	it('does not include #document when determining the path of an XML Node', function(){
+		expect($village.getXPath()).toEqual('/model/instance/EC_Registration_EngKan_Final/ec_village');
+		expect($village.getXPath('somethingthatisntthere')).toEqual('/model/instance/EC_Registration_EngKan_Final/ec_village');
+	});
 });
 
 describe("Updating JSON value properties for repeat form elements", function(){

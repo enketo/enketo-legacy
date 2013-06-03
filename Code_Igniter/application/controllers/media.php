@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-//This controller for AJAX POSTS simply directs to a model and returns a response
-
 class Media extends CI_Controller {
 
 	function __construct() {
@@ -31,22 +29,38 @@ class Media extends CI_Controller {
 		show_404();
 	}
 
+	//outputs media (streams cURL response)
 	public function get()
 	{
-		$segments = func_get_args();
-		//$origin = 'https://formhub.org/martijnr/forms/test_https/formid-media/70978';
-		//$segments = explode('/', preg_replace('/:\/\//', '/', $origin));
-
-		$segments_joined = implode('/', $segments);
-		$url = preg_replace('/\//', '://', $segments_joined, 1);
-		
+		$url = $this->_extract_url(func_get_args());
 		$headers = $this->openrosa->get_headers($url);
+		//log_message('debug', json_encode($headers));
 		$content_type = $this->_correct_mime($headers['Content-Type']);
+		$content_disposition = $headers['Content-Disposition'];
 		header('Content-Type:'.$content_type);
-		//$bytes = $this->_get_media($url);
+		header('Content-Disposition:'.$content_disposition);
 		echo $this->_get_media($url);
-		//$this->output->cache(10);
-		//$this->load->view('media_view.php', array('content_type' => $content_type, 'bytes' => $bytes));
+	}
+
+	//check whether media url seems valid (returns a header reponse with a download-content-length) 
+	public function check()
+	{
+		$url = $this->_extract_url(func_get_args());
+		$headers = $this->openrosa->get_headers($url);
+		if (isset($headers['download_content_length']))
+		{
+			$this->output->set_output($headers['download_content_length']);
+		}
+		else
+		{
+			show_404();
+		}
+	}
+
+	private function _extract_url($segments)
+	{
+		$segments_joined = implode('/', $segments);
+		return preg_replace('/\//', '://', $segments_joined, 1);
 	}
 
 	private function _get_media($url)
@@ -54,7 +68,6 @@ class Media extends CI_Controller {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
-			//curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
 			curl_exec($ch);
 	}
@@ -63,7 +76,6 @@ class Media extends CI_Controller {
 	{
 		if ($mimetype === 'application/image/png') return 'image/png';
 		if ($mimetype === 'application/image/jpeg') return 'image/jpeg';
-
 		return $mimetype;
 	}
 }

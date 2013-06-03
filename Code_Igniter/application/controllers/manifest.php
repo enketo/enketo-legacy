@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0027'; //time();
+		private $hash_manual_override = '0026'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -120,7 +120,6 @@ class Manifest extends CI_Controller {
 			
 			if (count($data['cache']) > 0 )
 			{
-				$this->output->cache(2);
 				$this->load->view('html5_manifest_view.php', $data);
 				return;
 			}
@@ -260,6 +259,7 @@ class Manifest extends CI_Controller {
 				if (!in_array($resource, $cache_resources))
 				{
 					$content = $this->_get_content($resource);
+					if (strpos($resource, '/media/get/') === 0) log_message('debug', 'content retrieved: '.$content);
 					if (!empty($content))
 					{
 						$cache_resources[] = $resource;
@@ -290,8 +290,10 @@ class Manifest extends CI_Controller {
 		log_message('debug', 'getting content of '.$url_or_path);
 		//remove hashes
 		if (strpos($url_or_path, '#')) $url_or_path = substr($url_or_path, 0, strpos($url_or_path, '#'));
-		//add base_url for external (spoofed) media resources 
-		if (strpos($url_or_path, '/media/get/') === 0) $url_or_path = $this->_full_url($url_or_path);
+		//add base_url for external (spoofed) media resources and prevent actually downloading by using /media/check
+		//knowing that (in formhub) when the media file changes it will get a new url, so the manifest will already be updated
+		//also note the content returned in /media/check contains the content-length of the media file
+		if (strpos($url_or_path, '/media/get/') === 0) $url_or_path = $this->_full_url(preg_replace('/\/media\/get\//', '/media/check/', $url_or_path));
 
 		if (strpos($url_or_path, 'http://') !== 0 && strpos($url_or_path, 'https://') !== 0)
 		{	

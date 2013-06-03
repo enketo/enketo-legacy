@@ -25,6 +25,7 @@ class Survey_model extends CI_Model {
         parent::__construct();
         log_message('debug', 'Survey Model loaded');
         $this->load->helper(array('subdomain', 'url', 'string', 'http'));
+        $this->load->library('paywall'); 
     	$this->subdomain = get_subdomain();
         $this->ONLINE_SUBDOMAIN_SUFFIX = '-0';
         $this->db_subdomain = ( $this->_has_subdomain_suffix() ) ? substr($this->subdomain, 0, strlen($this->subdomain)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) : $this->subdomain;
@@ -134,6 +135,11 @@ class Survey_model extends CI_Model {
                 $success = FALSE;
                 $reason = 'existing';
             } 
+            else if (!$this->paywall->launch_allowed($server_url))
+            {
+            	$success = FALSE;
+            	$reason = $this->paywall->get_reason();
+            }
             else
             {
                 $subdomain = $this->_generate_subdomain();
@@ -210,9 +216,9 @@ class Survey_model extends CI_Model {
         return $this->_remove_item('server_url', 'http://testserver/bob');
     }
 
-    public function number_surveys(){
+    public function number_surveys($server_url=NULL){
         $this->remove_test_entries();
-        return $this->_get_record_number();
+        return $this->_get_record_number($server_url);
     }
 
 	private function _get_base_url($subdomain = false, $suffix = false) {
@@ -346,9 +352,9 @@ class Survey_model extends CI_Model {
         }
     }
 
-    private function _get_record_number()
+    private function _get_record_number($server_url)
     {
-        $query = $this->db->get('surveys'); 
+        $query = (!$server_url) ? $this->db->get('surveys') : $this->db->get_where('surveys', array('server_url' => $server_url));
         return $query->num_rows(); 
     }
 

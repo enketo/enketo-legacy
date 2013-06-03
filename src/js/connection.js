@@ -590,7 +590,7 @@ Connection.prototype.loadGoogleMaps = function(callback){
 		script = document.createElement("script");
 	window.googleMapsInit = callback;
 	script.type = "text/javascript";
-	script.src = "http://maps.googleapis.com/maps/api/js?v=3.exp&key="+APIKey+"&sensor=false&libraries=places&callback=googleMapsInit";
+	script.src = "https://maps.googleapis.com/maps/api/js?v=3.exp&key="+APIKey+"&sensor=false&libraries=places&callback=googleMapsInit";
 	document.body.appendChild(script);
 };
 

@@ -2230,7 +2230,7 @@ fieldset .remove { float: right; margin-right: 0; }
 @media screen and (max-width: 700px) { .geopoint .map-canvas-wrapper, .geopoint .search-bar { width: 100%; float: none; padding-left: 0; border-left: none; } }
 .geopoint .map-canvas-wrapper img, .geopoint .search-bar img { width: 100%; height: 100%; }
 .geopoint .search-bar .input-append { width: 85%; }
-.geopoint button, .geopoint .input-append .add-on { height: 40px; }
+.geopoint button, .geopoint .input-append .add-on { height: 44px; }
 .geopoint button[name="geodetect"], .geopoint .input-append .add-on[name="geodetect"] { display: inline-block; float: right; margin: 8px 0 0 4%; width: 40px; }
 .geopoint .no-search-input.no-map { border-left: none; }
 .geopoint .no-search-input button[name="geodetect"] { float: none; display: block; margin: 15px auto 15px auto; width: 50%; }

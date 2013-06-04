@@ -512,10 +512,15 @@ GUI.prototype.confirm = function(texts, choices, duration){
 	 */
 };
 
+/**
+ * Shows modal asking for confirmation to redirect to login screen
+ * @param  {string=} msg       message to show
+ * @param  {string=} serverURL serverURL for which authentication is required
+ */
 GUI.prototype.confirmLogin = function(msg, serverURL){
-	var msg = msg || '<p>In order to submit your queued data, you need to login. If you want to do this now, you will be redirected,'+
-			' and loose unsaved information.</p><p>Would you like to login now or later?</p>',
-		serverURL = serverURL || settings.serverURL;
+	msg = msg || '<p>In order to submit your queued data, you need to login. If you want to do this now, you will be redirected,'+
+			' and loose unsaved information.</p><p>Would you like to login now or later?</p>';
+	serverURL = serverURL || settings.serverURL;
 
 	gui.confirm({
 		msg: msg,

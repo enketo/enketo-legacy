@@ -301,7 +301,6 @@ var mockInstances =
             	{
             		"bind_type": "repeatGroup",
             		"default_bind_path": "/model/instance/thedata/repeatGroup/",
-            		"count_field_name": null,
             		"meta_fields" : [],
             		"fields":[
             			{
@@ -316,6 +315,7 @@ var mockInstances =
      						"nodeC": "second value"
      					},
      					{
+     						"id": "c397fdcd-f8dd-4d32-89a9-37030c01b40b", //Not bound to any field in form
      						"nodeC": "third value"
      					},
      					{

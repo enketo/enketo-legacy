@@ -228,6 +228,7 @@ function processSurveyURLResponse(resp, msg){
 	var record,
 		url = resp.url || null,
 		server = resp.serverURL || null,
+		reason = resp.reason || '',
 		id = resp.formId || null;
 	console.debug(resp);
 	console.debug('processing link to:  '+url);
@@ -240,6 +241,7 @@ function processSurveyURLResponse(resp, msg){
 	}
 	else{
 		//TODO: add error handling
+		gui.alert('Form launch failed. '+reason, 'Form could not be launched.');
 	}
 }
 

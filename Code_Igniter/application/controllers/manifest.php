@@ -69,10 +69,7 @@ class Manifest extends CI_Controller {
 	| pages to always retrieve from the server (html5 manifest 'network' section)
 	|--------------------------------------------------------------------------
 	*/
-		private $network = array
-		(
-			'*'//'http://maps.googleapis.com/*', 'http://maps.gstatic.com/*', 'http://www.google-analytics.com/ga.js'
-		);
+		private $network = array('*');
 	/*
 	|---------------------------------------------------------------------------
 	*/

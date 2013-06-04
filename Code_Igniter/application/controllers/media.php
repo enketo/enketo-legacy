@@ -49,7 +49,7 @@ class Media extends CI_Controller {
 		$headers = $this->openrosa->get_headers($url);
 		if (isset($headers['Content-Length']))
 		{
-			//$this->output->set_output($headers['Content-Length']);
+			$this->output->set_output($headers['Content-Length']);
 		}
 		else
 		{

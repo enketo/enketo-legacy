@@ -26,7 +26,7 @@ $config['google_analytics_key'] = "";
 /**
  * Used for various purposes, including links back to ...., leave empty if enketo is used as a standalone app
  */
-$config['integration_with_url'] = "http://formhub.org";
+$config['integration_with_url'] = "https://formhub.org";
 
 /**
  * Will be used to direct users throughout application
@@ -45,9 +45,9 @@ $config['default_server_url_helper'] = "formhub";
 $config['brand'] = "formhub";
 
 /**
- * Can't touch this. Bom bam bom bam.
+ * OpenRosa servers that are allowed to connect
  */
-$config['paywall'] = FALSE;
+$config['openrosa_domains_allowed'] = array("formhub.org");
 
 /**
  * 

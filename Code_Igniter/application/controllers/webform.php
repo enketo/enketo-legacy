@@ -427,13 +427,10 @@ class Webform extends CI_Controller {
 
 	private function _paywall_route()
 	{
-		if ($this->config->item('paywall') === TRUE)
+		$this->load->model('Account_model');
+		if (!$this->Account_model->serve_allowed($this->server_url))
 		{
-			$this->load->library('paywall');
-			if (!$this->paywall->serve_allowed($this->server_url))
-			{
-				$this->load->view('unpaid_view', $this->paywall->get_issues());
-			}
+			$this->load->view('unpaid_view', $this->Account_model->get_reason());
 		}
 	}
 }

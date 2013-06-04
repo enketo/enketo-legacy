@@ -25,7 +25,7 @@ class Survey_model extends CI_Model {
         parent::__construct();
         log_message('debug', 'Survey Model loaded');
         $this->load->helper(array('subdomain', 'url', 'string', 'http'));
-        $this->load->library('paywall'); 
+        $this->load->model('Account_model');
     	$this->subdomain = get_subdomain();
         $this->ONLINE_SUBDOMAIN_SUFFIX = '-0';
         $this->db_subdomain = ( $this->_has_subdomain_suffix() ) ? substr($this->subdomain, 0, strlen($this->subdomain)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) : $this->subdomain;
@@ -124,6 +124,7 @@ class Survey_model extends CI_Model {
         //log_message('debug', 'launch_survey function started');
         if (url_valid($server_url) && url_valid($submission_url) && (url_valid($data_url) || $data_url===NULL))
         {
+        	//TODO: add a Account_model->serve_allowed($server_url) check
             //TODO: CHECK URLS FOR LIVENESS?
             $alt_server_url = $this->_switch_protocol($server_url);
             $this->db->where("server_url = '".$server_url."' AND BINARY form_id = '".$form_id."'");
@@ -135,10 +136,10 @@ class Survey_model extends CI_Model {
                 $success = FALSE;
                 $reason = 'existing';
             } 
-            else if (!$this->paywall->launch_allowed($server_url))
+            else if (!$this->Account_model->launch_allowed($server_url))
             {
             	$success = FALSE;
-            	$reason = $this->paywall->get_reason();
+            	$reason = $this->Account_model->get_reason();
             }
             else
             {

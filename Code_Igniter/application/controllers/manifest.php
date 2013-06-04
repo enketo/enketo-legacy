@@ -259,7 +259,7 @@ class Manifest extends CI_Controller {
 				if (!in_array($resource, $cache_resources))
 				{
 					$content = $this->_get_content($resource);
-					if (strpos($resource, '/media/get/') === 0) log_message('debug', 'content retrieved: '.$content);
+					//if (strpos($resource, '/media/get/') === 0) log_message('debug', 'content retrieved: '.$content);
 					if (!empty($content))
 					{
 						$cache_resources[] = $resource;

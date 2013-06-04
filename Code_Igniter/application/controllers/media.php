@@ -47,9 +47,9 @@ class Media extends CI_Controller {
 	{
 		$url = $this->_extract_url(func_get_args());
 		$headers = $this->openrosa->get_headers($url);
-		if (isset($headers['download_content_length']))
+		if (isset($headers['Content-Length']))
 		{
-			$this->output->set_output($headers['download_content_length']);
+			$this->output->set_output($headers['Content-Length']);
 		}
 		else
 		{

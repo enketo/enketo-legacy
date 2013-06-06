@@ -21,7 +21,6 @@ class Webform extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
-
 		$this->load->helper(array('subdomain','url', 'form'));
 		$this->load->model('Survey_model','',TRUE);
 		$this->default_library_scripts = array
@@ -32,8 +31,6 @@ class Webform extends CI_Controller {
 			'/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
 			'/libraries/modernizr.min.js',
 			'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
-			'/libraries/vkbeautify.js',
-			//'/libraries/fastclick/lib/fastclick.js',
 			'/libraries/FileSaver.min.js',
 			'/libraries/BlobBuilder.min.js'//,
 			//"http://code.jquery.com/jquery-migrate-1.0.0.js"
@@ -61,30 +58,27 @@ class Webform extends CI_Controller {
 		if (!empty($this->subdomain))
 		{
 			$form_props = $this->Survey_model->get_form_props();
-			//log_message('debug', 'form props: '.json_encode($form_props));
-			$this->server_url= (isset($form_props['server_url'])) ? $form_props['server_url'] : NULL; //$this->Survey_model->get_server_url();
-			$this->form_id = (isset($form_props['form_id'])) ? $form_props['form_id'] : NULL; //$logthis->Survey_model->get_form_id();
-			$this->form_hash_prev = (isset($form_props['hash'])) ? $form_props['hash'] : NULL; //$this->Survey_model->get_form_
-			$this->xsl_version_prev = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; //$this->Survey_model->get_form_
-			//$this->$credentials = $this->Survey_model->get_credentials($uuid);
+			$this->server_url= (isset($form_props['server_url'])) ? $form_props['server_url'] : NULL;
+			$this->form_id = (isset($form_props['form_id'])) ? $form_props['form_id'] : NULL; 
+			$this->form_hash_prev = (isset($form_props['hash'])) ? $form_props['hash'] : NULL; 
+			$this->xsl_version_prev = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; 
 		}
 		
+		if ($this->config->item('auth_support'))
+		{
+			$this->load->add_package_path(APPPATH.'third_party/form_auth');
+		}
+		$this->load->library('form_auth');
+
 		log_message('debug', 'Webform Controller Initialized');
 	}
 
-
-
 	public function index()
-	{
-		
+	{	
 		if (isset($this->subdomain))
 		{
-			//if ($this->Survey_model->is_live_survey($subdomain))
-			if (!$this->Survey_model->is_launched_survey())
-			{
-				return show_error('Survey does not exist, is not yet published or was taken down.', 404);
-			}
-			$this->_paywall_route();
+			$this->_launched_check_route();
+			$this->_paywall_check_route();
 
 			$offline = $this->Survey_model->has_offline_launch_enabled();
 			$form = $this->_get_form();
@@ -140,7 +134,6 @@ class Webform extends CI_Controller {
 		}
 		else 
 		{
-			//log_message('debug', 'required subdomain but found none, base url = '.base_url());
 			redirect('../../');
 		}
 	}
@@ -156,23 +149,12 @@ class Webform extends CI_Controller {
 		log_message('debug', 'webform edit view controller started');
 		extract($_GET);
 		
-		if (!isset($this->subdomain))
-		{
-			show_error('Edit view should be launched from survey subdomain', 404);
-			return;
-		}
-		if (!$this->Survey_model->is_launched_survey())
-		{
-			show_error('This survey has not been launched in enketo', 404);
-			return;
-		}
-		$this->_paywall_route();
+		$this->_subdomain_check_route();
+		$this->_launched_check_route();
+		$this->_paywall_check_route();
+		$this->_online_only_check_route();
 
-		if ($this->Survey_model->has_offline_launch_enabled())
-		{
-			return show_error('The edit view can only be launched in offline mode', 404);
-		}
-		if (empty($instance_id)) // empty($return_url)
+		if (empty($instance_id))
 		{
 			return show_error('No instance provided to edit and/or no return url provided to return to.', 404);
 		}
@@ -208,7 +190,6 @@ class Webform extends CI_Controller {
 			'stylesheets'=> $this->default_stylesheets
 		);
 
-		//log_message('debug', 'form string: '.$form->asXML());
 		if (ENVIRONMENT === 'production')
 		{
 			//$this->output->cache(60);
@@ -229,34 +210,23 @@ class Webform extends CI_Controller {
 				)
 			);
 		}
-
 		$this->load->view('webform_basic_view',$data);
 	}
 
 	/**
-	 * function that opens an iframeable-view of the form which is a simplified webform view without any offline capabilities 
+	 * function that opens an iframeable-view of the form which is a simplified webform view 
+	 * without any offline capabilities 
 	 * (no applicationCache, no localStorage)
 	 **/
 	public function iframe()
 	{
 		log_message('debug', 'iframe view controller started');
 		
-		if (!isset($this->subdomain))
-		{
-			show_error('Iframe view should be launched from a survey subdomain', 404);
-			return;
-		}
-		if (!$this->Survey_model->is_launched_survey())
-		{
-			show_error('This survey has not been launched in enketo', 404);
-			return;
-		}
-		$this->_paywall_route();
-		if ($this->Survey_model->has_offline_launch_enabled())
-		{
-			return show_error('The iframe view can only be launched in offline mode', 404);
-		}
-	    
+		$this->_subdomain_check_route();
+		$this->_launched_check_route();
+		$this->_paywall_check_route();
+		$this->_online_only_check_route();
+
 		$form = $this->_get_form();
 
 		if (isset($form->authenticate) && $form->authenticate)
@@ -325,7 +295,6 @@ class Webform extends CI_Controller {
 			'return_url' => '',
 			'stylesheets'=> $this->default_stylesheets
 		);
-
 		if (ENVIRONMENT === 'production')
 		{
 			$data['scripts'] = array
@@ -352,14 +321,7 @@ class Webform extends CI_Controller {
 
 	private function _login($append='')
 	{
-		$this->load->view('login_view', array
-			(
-				'form_id' => $this->form_id, 
-				'return' => full_base_url().'webform'.$append,
-				'stylesheets' => $this->default_stylesheets,
-				'server_url' => $this->server_url
-			)
-		);
+		$this->form_auth->login($this->form_id, full_base_url().'webform'.$append, $this->server_url);
 	}
 
 	private function _get_form()
@@ -371,14 +333,10 @@ class Webform extends CI_Controller {
 		}
 		
 		$this->load->model('Form_model', '', TRUE);
-		$this->load->model('User_model', '', TRUE);
-		$credentials = $this->User_model->get_credentials();
-
-		//$this->output->enable_profiler(FALSE);
+		$credentials = $this->form_auth->get_credentials();
 
 		$this->Form_model->setup($this->server_url, $this->form_id, $credentials, $this->form_hash_prev, $this->xsl_version_prev);
 		
-		//log_message('debug', 'requires authentication: '.$this->Form_model->requires_auth());
 		if($this->Form_model->requires_auth())
 		{
 			log_message('debug', "AUTHENTICATION REQUIRED");
@@ -404,7 +362,6 @@ class Webform extends CI_Controller {
 			if (!empty($form->html) && !empty($form->default_instance))
 			{
 				$this->Survey_model->update_transform_result($form);
-				//log_message('debug', 'hash in transformation result: '. $hash);
 			}
 		}
 		
@@ -425,7 +382,33 @@ class Webform extends CI_Controller {
 		return (!empty($edit_o->instance_xml) && !empty($edit_o->return_url)) ? $edit_o : NULL;
 	}
 
-	private function _paywall_route()
+	private function _subdomain_check_route()
+	{
+		if (!isset($this->subdomain))
+		{
+			show_error('View should be launched from survey subdomain', 404);
+			return;
+		}
+	}
+
+	private function _launched_check_route()
+	{
+		if (!$this->Survey_model->is_launched_survey())
+		{
+			show_error('This survey has not been launched in enketo.', 404);
+			return;
+		}
+	}
+
+	private function _online_only_check_route()
+	{
+		if ($this->Survey_model->has_offline_launch_enabled())
+		{
+			return show_error('The iframe view can only be launched in online mode', 404);
+		}
+	}
+
+	private function _paywall_check_route()
 	{
 		$this->load->model('Account_model');
 		if (!$this->Account_model->serve_allowed($this->server_url))

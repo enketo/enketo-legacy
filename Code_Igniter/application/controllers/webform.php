@@ -337,7 +337,6 @@ class Webform extends CI_Controller {
 	public function thanks()
 	{
 		$this->load->view('thanks_view', array(
-			'msg' => $this->input->post('msg'), 
 			'scripts' => array(),
 			'stylesheets' => $this->default_stylesheets
 		));

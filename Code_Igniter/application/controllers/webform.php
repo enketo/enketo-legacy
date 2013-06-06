@@ -79,22 +79,12 @@ class Webform extends CI_Controller {
 		{
 			$this->_launched_check_route();
 			$this->_paywall_check_route();
-
-			$offline = $this->Survey_model->has_offline_launch_enabled();
 			$form = $this->_get_form();
-
-			if (isset($form->authenticate) && $form->authenticate)
-			{
-				return $this->_login();
-			}
-
-			if ($form ===  NULL)
-			{
-				return show_error('Form not reachable (or an error occurred during transformation).', 404);
-			}
+			$this->_authentication_route($form);
+			$this->_form_null_check_route($form);
 			
 			$data = array(
-				'manifest'=> ($offline) ? '/manifest/html/webform' : NULL, 
+				'manifest'=> ($this->Survey_model->has_offline_launch_enabled()) ? '/manifest/html/webform' : NULL, 
 				'title_component' => 'webform', 
 				'html_title' => $form->title,
 				'form'=> $form->html,
@@ -153,12 +143,10 @@ class Webform extends CI_Controller {
 		$this->_launched_check_route();
 		$this->_paywall_check_route();
 		$this->_online_only_check_route();
-
 		if (empty($instance_id))
 		{
 			return show_error('No instance provided to edit and/or no return url provided to return to.', 404);
 		}
-	    
 	    $edit_obj = $this->_get_edit_obj($instance_id);
 
 	    if(!$edit_obj)
@@ -168,16 +156,8 @@ class Webform extends CI_Controller {
 	    }
 
 		$form = $this->_get_form();
-
-		if (isset($form->authenticate) && $form->authenticate)
-		{
-			return $this->_login('/edit?instance_id'.$instance_id);
-		}
-		
-		if ($form === NULL)
-		{
-			return show_error('Form not reachable (or an error occured during transformation or processing instances). ', 404);
-		}
+		$this->_authentication_route($form, '/edit?instance_id'.$instance_id );
+		$this->_form_null_check_route($form);
 
 		$data = array
 		(
@@ -192,7 +172,6 @@ class Webform extends CI_Controller {
 
 		if (ENVIRONMENT === 'production')
 		{
-			//$this->output->cache(60);
 			$data['scripts'] = array
 			(
 				'/libraries/libraries-all-min.js',
@@ -220,24 +199,13 @@ class Webform extends CI_Controller {
 	 **/
 	public function iframe()
 	{
-		log_message('debug', 'iframe view controller started');
-		
 		$this->_subdomain_check_route();
 		$this->_launched_check_route();
 		$this->_paywall_check_route();
 		$this->_online_only_check_route();
-
 		$form = $this->_get_form();
-
-		if (isset($form->authenticate) && $form->authenticate)
-		{
-			return $this->_login('/iframe');
-		}
-		
-		if ($form === NULL)
-		{
-			return show_error('Form not reachable (or an error occurred during transformation). ', 404);
-		}
+		$this->_authentication_route($form, '/iframe');
+		$this->_form_null_check_route($form);
 	
 		$data = array
 		(
@@ -267,6 +235,53 @@ class Webform extends CI_Controller {
 				array
 				(
 					'/js-source/webform_iframe.js'
+				)
+			);
+		}
+		$this->load->view('webform_basic_view',$data);
+	}
+
+	/**
+	 * single submit view (SurveyMonkey watch out. Enketo is coming to get you!)
+	 */
+	public function single()
+	{
+		$this->_subdomain_check_route();
+		$this->_launched_check_route();
+		$this->_paywall_check_route();
+		$this->_online_only_check_route();
+		$form = $this->_get_form();
+		$this->_authentication_route($form, '/iframe');
+		$this->_form_null_check_route($form);
+	
+		$data = array
+		(
+			'title_component'=>'webform single-submit', 
+			'html_title'=> $form->title,
+			'form'=> $form->html,
+			'form_data'=> $form->default_instance,
+			'form_data_to_edit' => NULL,
+			'return_url' => NULL,
+			'stylesheets'=> $this->default_stylesheets
+		);
+
+		if (ENVIRONMENT === 'production')
+		{
+			$data['scripts'] = array
+			(
+				'/libraries/libraries-all-min.js',
+				'/js-min/webform-single-all-min.js'
+			);
+		}
+		else
+		{		
+			$data['scripts'] = array_merge
+			(
+				$this->default_library_scripts,
+				$this->default_main_scripts,
+				array
+				(
+					'/js-source/webform_single.js'
 				)
 			);
 		}
@@ -317,6 +332,15 @@ class Webform extends CI_Controller {
 		}
 
 		$this->load->view('webform_preview_view', $data);
+	}
+
+	public function thanks()
+	{
+		$this->load->view('thanks_view', array(
+			'msg' => $this->input->post('msg'), 
+			'scripts' => array(),
+			'stylesheets' => $this->default_stylesheets
+		));
 	}
 
 	private function _login($append='')
@@ -408,12 +432,28 @@ class Webform extends CI_Controller {
 		}
 	}
 
+	private function _authentication_route($form, $append='')
+	{
+		if (isset($form->authenticate) && $form->authenticate)
+		{
+			return $this->_login($append);
+		}
+	}
+
 	private function _paywall_check_route()
 	{
 		$this->load->model('Account_model');
 		if (!$this->Account_model->serve_allowed($this->server_url))
 		{
 			$this->load->view('unpaid_view', $this->Account_model->get_reason());
+		}
+	}
+
+	private function _form_null_check_route($form)
+	{
+		if ($form === NULL)
+		{
+			return show_error('Form not reachable (or an error occurred during transformation). ', 404);
 		}
 	}
 }

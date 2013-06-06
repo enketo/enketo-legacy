@@ -64,9 +64,9 @@ class Openrosa {
         return $header_arr['X-Openrosa-Accept-Content-Length'];
 	}
 
-	public function get_headers($url)
+	public function get_headers($url, $credentials=NULL)
 	{
-		return $this->_request_headers_and_info($url);
+		return $this->_request_headers_and_info($url, $credentials);
 	}
 
 	//performs HEAD request
@@ -78,6 +78,13 @@ class Openrosa {
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
+
+        if (!empty($credentials))
+		{
+			//log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST | CURLAUTH_BASIC);
+			curl_setopt($ch, CURLOPT_USERPWD, $credentials['username'].':'.$credentials['password']);
+		}
 		ob_start();
         $headers = curl_exec($ch);
 		ob_end_clean();
@@ -101,6 +108,12 @@ class Openrosa {
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
 		if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		if (!empty($credentials))
+		{
+			log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST | CURLAUTH_BASIC);
+			curl_setopt($ch, CURLOPT_USERPWD, $credentials['username'].':'.$credentials['password']);
+		} 
 		ob_start();
 		$result = curl_exec($ch);
 		ob_end_clean();

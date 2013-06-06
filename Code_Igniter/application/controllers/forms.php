@@ -77,7 +77,7 @@ class Forms extends CI_Controller {
 	public function get_list()
 	{
 		//extract($_GET);
-		$server_url = $this->input->get('server_url', TRUE);
+		$server_url = $this->input->get('server_url');
 
 		if ($server_url && strlen($server_url) > 0)
 		{

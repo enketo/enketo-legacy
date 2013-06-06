@@ -50,7 +50,9 @@ $config['brand'] = "formhub";
 $config['openrosa_domains_allowed'] = array("formhub.org");
 
 /**
- * 
- * It is not recommended to change this
+ * **********************************************************
+ * It is not recommended to change anything below this line *
+ * **********************************************************
  */
 $config['integrated'] = strlen($config['integration_with_url']) > 0;
+$config['auth_support'] = is_dir(APPPATH.'third_party/form_auth');

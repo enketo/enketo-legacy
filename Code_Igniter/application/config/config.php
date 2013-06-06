@@ -14,7 +14,6 @@
 | path to your installation.
 |
 */
-//$config['base_url']	= '';
 // dynamic base url to allow subdomains (also incorporates https:// if used)
 if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on"){
 	$ssl_set = "s";
@@ -24,8 +23,6 @@ else{
 	$ssl_set = "";
 	$default_port = 80;
 }
-//$config['base_url'] = 'http'.$ssl_set.'://enketo.formhub.org/';
-//$config['base_url'] = substr($_SERVER['HTTP_HOST'], strpos($_SERVER['HTTP_HOST'], 'enketo'));
 $config['base_url'] = 'http'.$ssl_set.'://'.substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], 'enketo'));
 if($_SERVER['SERVER_PORT'] != $default_port) $config['base_url'] .=  ':' . $_SERVER['SERVER_PORT'];
 
@@ -39,7 +36,7 @@ if($_SERVER['SERVER_PORT'] != $default_port) $config['base_url'] .=  ':' . $_SER
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -257,12 +254,12 @@ $config['encryption_key'] = '';
 | 'sess_time_to_update'		= how many seconds between CI refreshing Session Information
 |
 */
-$config['sess_cookie_name']		= 'ci_session';
-$config['sess_expiration']		= 7200;
+$config['sess_cookie_name']		= '__enketo';
+$config['sess_expiration']		= 7 * 24 * 60 *60;
 $config['sess_expire_on_close']	= FALSE;
-$config['sess_encrypt_cookie']	= FALSE;
-$config['sess_use_database']	= FALSE;
-$config['sess_table_name']		= 'ci_sessions';
+$config['sess_encrypt_cookie']	= TRUE;
+$config['sess_use_database']	= TRUE;
+$config['sess_table_name']		= 'sessions';
 $config['sess_match_ip']		= FALSE;
 $config['sess_match_useragent']	= TRUE;
 $config['sess_time_to_update']	= 300;
@@ -281,7 +278,7 @@ $config['sess_time_to_update']	= 300;
 $config['cookie_prefix']	= "";
 $config['cookie_domain']	= "";
 $config['cookie_path']		= "/";
-$config['cookie_secure']	= FALSE;
+$config['cookie_secure']	= TRUE;
 
 /*
 |--------------------------------------------------------------------------

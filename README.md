@@ -5,10 +5,10 @@ nav: readme
 ---
 
 
-[Enketo](http://enketo.org)
+[Enketo Smart Paper](http://enketo.org)
 ======
 
-Enketo is a lightweight web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). Enketo is integrated inside [formhub.org](http://formhub.org) and available as a standalone application on [enketo.org](http://enketo.org). More info: [blog](http://blog.enketo.org)
+Enketo is a lightweight web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). Enketo is integrated inside [formhub.org](http://formhub.org) and available as a standalone application on [enketo.org](http://enketo.org). More info on [blog](http://blog.enketo.org) and [@enketo](https://twitter.com/enketo).
 
 Browser support
 ---------------
@@ -17,8 +17,7 @@ Browser support
 
 Prerequisites
 -----------
-- LAMP stack (apache:mode_rewrite, apache: mod_expires, php:php5-xsl, php:curl, php:allow_url_fopen)
-- XPathJS_javarosa (build/xpathjs_javarosa.min.js is the only file that is required)
+- LAMP stack
 
 Installation
 -----------
@@ -27,23 +26,19 @@ See [Ubuntu_installation_instructions.md](https://github.com/modilabs/enketo/blo
 Frequently Asked Questions
 ---------------------------
 ##### Why are file-upload inputs greyed out and not usable?
-File uploads are only experimentially supported on Chrome at the moment until other browser catch up with support form the FileSytem API. If file uploads (images/sound/video) are important, ODK Collect may be a better option.
+File uploads are only experimentially supported on Chrome at the moment until other browser catch up with support for the FileSytem API. If file uploads (images/sound/video) are important, ODK Collect may be a better option.
 
 
 Development
 -----------
 * [Source Code](https://github.com/MartijnR/enketo)
-* [Issue Tracker](https://github.com/MartijnR/enketo/issues)
+* [Issue Tracker on /mobilabs](https://github.com/modilabs/enketo/issues) and on [/martijnr](https://github.com/MartijnR/enketo/issues)
 * [Documentation] still to be generated
 
 Tools required:
 
 * SASS/SCSS compiler to compile css (e.g. Compass)
 * Apache ANT to compile javascript 
-
-Instructions for developers:
-
-* create a symlink at public/js-source to src/js (when environment is set to 'development' in index.php, it will automatically load the uncompiled javascript files)
 
 Code contributions are very welcome!
 

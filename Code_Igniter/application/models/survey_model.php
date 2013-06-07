@@ -107,14 +107,6 @@ class Survey_model extends CI_Model {
         $this->_update_items($values);
     }
 
-//    public function switch_offline_launch($active)
-//    {
-//        $current = $this->_get_item('offline');
-//        log_message('debug', 'current: '.$current);
-//        log_message('debug', 'active: '.$active);
-//        return ($current == $active) ? TRUE : $this->_update_item('offline', $active);
-//    }
-
     public function launch_survey($server_url, $form_id, $submission_url, $data_url=NULL, $email=NULL)
     {  
         //log_message('debug', 'launch_survey function started');

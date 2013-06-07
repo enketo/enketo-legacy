@@ -41,12 +41,12 @@ class Account_model extends CI_Model {
 
     	foreach ($domains_allowed as $domain_allowed)
     	{
-    		if (preg_match('/^https?:\/\/'.strtolower(trim($domain_allowed)).'\/.*/' , strtolower(trim($server_url))))
+    		if (preg_match('/^https?:\/\/'.strtolower(trim($domain_allowed)).'.*/' , strtolower(trim($server_url))))
     		{
     			return TRUE;
     		}
     	}
-    	log_message('warning', 'attempt was made to launch enketo form for dissallowed OpenRosa server URL: '.$server_url);
+    	log_message('debug', 'attempt was made to launch enketo form for dissallowed OpenRosa server URL: '.$server_url);
     	return FALSE;
     }
 }

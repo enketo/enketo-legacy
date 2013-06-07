@@ -76,14 +76,17 @@ class Forms extends CI_Controller {
 
 	public function get_list()
 	{
-		//extract($_GET);
-		$server_url = $this->input->get('server_url');
+		if ($this->config->item('auth_support'))
+		{
+			$this->load->add_package_path(APPPATH.'third_party/form_auth');
+		}
+		$this->load->library('form_auth');
+		$server_url = $this->input->get('server_url', TRUE);
 
 		if ($server_url && strlen($server_url) > 0)
 		{
 			$this->load->model('Form_model', '');
-			$this->load->model('User_model');
-			$credentials = $this->User_model->get_credentials();
+			$credentials = $this->form_auth->get_credentials();
 			$this->Form_model->setup($server_url, NULL, $credentials);
 
 			if($this->Form_model->requires_auth())

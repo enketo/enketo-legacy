@@ -103,11 +103,7 @@ class Form_model extends CI_Model {
         $manifest_sxe = NULL;
     	$xsl_form = $this->_load_xml($this->file_path_to_jr2HTML5_XSL);
     	$xsl_data = $this->_load_xml($this->file_path_to_jr2Data_XSL);
-
-        //$info = ($file_path) ? array('xml'=> $file_path) : $this->_get_form_info($server_url, $form_id);
-        
         $xml = $this->_load_xml($local_path);
-        //$hash = (!empty($this->info['hash'])) ? $this->info['hash'] : '';
        
         if (isset($this->info['manifest']))
         {
@@ -127,12 +123,10 @@ class Form_model extends CI_Model {
 				$result = $this->_xslt_transform($xml['doc'], $xsl_form['doc'], 'form');
 				//perform transformation to get instance
 				$data = $this->_xslt_transform($xml['doc'], $xsl_data['doc'], 'data');
-                
                 //perform fixes
                 $this->_fix_meta($data);
 				$this->_fix_lang($result);
                 $this->_fix_media_urls($manifest_sxe, $result);
-                
 				//easiest way to merge
                 $model_str = $data->model->asXML();
                 //remove jr: namespace (seems to cause issue with latest PHP libs)
@@ -161,12 +155,12 @@ class Form_model extends CI_Model {
     function get_formlist_JSON()
     {
         $result = array();
-        $xforms_sxe = $this->formlist_sxe;//_get_formlist();
+        $xforms_sxe = $this->formlist_sxe;
 
         if($xforms_sxe)
         {   
             $this->load->model('Survey_model', '', TRUE);
-            foreach ($xforms_sxe->xform as $form)   //xpath('/forms/form') as $form)
+            foreach ($xforms_sxe->xform as $form)//xpath('/forms/form') as $form)
             {
                 $id = (string) $form->formID;
                 $url = $this->Survey_model->get_survey_url_if_launched($id, $this->server_url);
@@ -197,8 +191,6 @@ class Form_model extends CI_Model {
     private function _get_form_info()
     {
     	$info = array();
-        //$this->formlist_sxe = $this->_get_formlist();
-
         if ($this->formlist_sxe && $this->form_id)
         {
             //rather inefficient but am trying to avoid using xpath() because of default namespace in xformslist
@@ -270,7 +262,6 @@ class Form_model extends CI_Model {
    			if(!$success)//empty($errors))
     		{
     			log_message('error', 'XML/XSL doc load errors: '.json_encode($errors));
-
     			//see if fatal errors occurred. Return FALSE for doc if one occurred
     			//foreach ($errors as $error)// (array_search(LIBXML_ERR_FATAL, (array) $errors) === 'level')
     			//{
@@ -278,8 +269,7 @@ class Form_model extends CI_Model {
     			//{	
     			return array('doc' => FALSE, 'errors' => $errors);
     		}		
-
-    		log_message('debug', 'loading xml from '.$type.' ('.$resource.') took '.(time()-$time_start).' seconds.');
+    		//log_message('debug', 'loading xml from '.$type.' ('.$resource.') took '.(time()-$time_start).' seconds.');
             return array('doc' => $doc, 'errors' => $errors, 'type' => $type);     			
     	}
     	else 
@@ -293,7 +283,7 @@ class Form_model extends CI_Model {
 	private function _xslt_transform($xml, $xsl, $name = '')
 	{
 		//log_message('debug', 'starting transformation');
-		$result = new SimpleXMLElement('<root></root>'); //default
+		$result = new SimpleXMLElement('<root></root>');
 		
 		$proc = new XSLTProcessor;
 		if (!$proc->hasExsltSupport())
@@ -330,8 +320,6 @@ class Form_model extends CI_Model {
 			$errors = $this->_error_msg_process($errors);
 			$result = $this->_add_errors($errors, 'xsltmessages', $result);			
 		}		
-		//log_message('debug', 'result:'.$result->asXML());		
-		//log_message('debug', 'return a result and ending _xslt_transform');
 		return $result;						
 	}	    
     
@@ -353,13 +341,7 @@ class Form_model extends CI_Model {
 			    if (isset($error -> code))
 			    {
 			    	$message->addAttribute('code', $error -> code);
-			    }
-			    //if (isset($error->type))
-			    //{	
-			    //	$message->addAttribute('type', $error -> type);
-			   	//}
-			    //$message->addAttribute('file', $msg->file);
-			    //$message->addAtrribute('line', $msg->line);						
+			    }					
 			}
 		}
     	return $sxo;
@@ -380,15 +362,13 @@ class Form_model extends CI_Model {
     			//if indicator string is found somewhere in the beginning
     			if ($pos !== FALSE && $pos < 10) 
     			{
-    				//$type = strtolower($ind);
     				//all xslt messages are reported as level 2, so need to be adjusted
     				($key === 10) ? $key = 1 : $key = $key ;
     				$level = $key;
     				$error_obj->message = trim(substr($error_obj->message, $pos+strlen($ind)+1));
     				break 1;
     			}
-    		}  	
-    		//$error_obj -> type = $type;     		
+    		}  	    		
     		if (isset($level))
     		{
     			$error_obj -> level = $level;
@@ -429,7 +409,6 @@ class Form_model extends CI_Model {
     
     private function _fix_lang(&$result)
     {
-    	//IF PERFORMANCE IS AN ISSUE IT WOULD BE BETTER TO PERFORM THIS WHOLE FUNCTION ON THE ORIGINAL XML DOC
     	$langs = array();
     	
     	if ($result->xpath('/root/form/select[@id="form-languages"]/option'))
@@ -438,16 +417,10 @@ class Form_model extends CI_Model {
     		{
 	    		//attribute not a string so needs casting
 	    		$lang = (string) $a['value'];
-	    		//log_message('debug', 'found a element inside div#form-languages with lang='.$lang);
 	    		
 	    		if (isset($lang) && strlen($lang)>1)
 	    		{
 	    			$lang_mod = $this->_html5_lang($lang);
-	    			//change language name/description in <a> element
-	    			//log_message('debug', 'changing name in language selector from '.(string) $a.' to '.$lang_mod['lang_name']);
-	    			//$a->addChild('span', $lang_mod['lang_name']);
-	    			//$a = $lang_mod['lang_name'];
-                    //if lang attribute has been modified add to $langs array
 	    			if ($lang !== $lang_mod['lang'])
 	    			{
                         $a['value'] = $lang_mod['lang']; 
@@ -476,13 +449,11 @@ class Form_model extends CI_Model {
     		{   			
     			//the data-default-lang attribute only occurs once 
     			$form_languages[0]['data-default-lang'] = $lang_map['new_lang'];
-    			//log_message ('debug', 'recognized default lang found: '.$default_lang.' and changed to: '.$lang_map['new_lang']);
     		}    			
     	}
-    	//return $result;
     }
 
-    //function to replace media (img, video audio) urls with urls from the manifest
+    //function to replace media (img, video audio) urls with urls from the Xformsmanifest
     private function _fix_media_urls($manifest, &$result){
         if (isset($manifest) && $manifest !== FALSE)
         {
@@ -521,7 +492,7 @@ class Form_model extends CI_Model {
     	return $local_url;
     }
 
-    //very basic function to create valid html5 lang attributes (and to add language names)
+    //create valid html5 lang attributes (and add language names) by performing a very basic search
     private function _html5_lang($lang)
     {
     	$lang_name = $lang;
@@ -539,7 +510,6 @@ class Form_model extends CI_Model {
 			{
 				$row = $query->row();    					
    				$lang_name = $this->_first_name($row->name_en);
-   				//log_message('debug', 'found language name: '.$lang_name.' belonging to attribute lang with 2 chars: '.$lang);
 			}
 		}    	
 		else if (strlen($lang) === 3)
@@ -573,9 +543,7 @@ class Form_model extends CI_Model {
 			{
 				$row = $query->row();   				
 				//probably best to keep lang_name as it is (=$lang)
-				//log_message('debug', 'going to transform lang  with more than 3 chars"'.$lang.'"..');
-				$lang = $row->alpha2;
-				//log_message('debug', '.. into lang "'.$lang.'" with unchanged name "'.$lang_name.'"');    				
+				$lang = $row->alpha2;  				
 			}   		  	
     	}
     	$last_query = $this->db->last_query();
@@ -597,7 +565,6 @@ class Form_model extends CI_Model {
         if ($query->num_rows() === 1) 
         {
             $row = $query->row_array();
-            //log_message('debug', 'db query returning row: '.json_encode($row));
             return $row;
         }
         else 
@@ -636,10 +603,9 @@ class Form_model extends CI_Model {
         //$start_time = microtime(true);
         $last = $this->_get_properties(array('xsl_version', 'form_xsl_hash', 'model_xsl_hash'));
         $xsl_version = $last['xsl_version'];
-
         $form_xsl_hash_new = md5_file($this->file_path_to_jr2HTML5_XSL);
         $model_xsl_hash_new = md5_file($this->file_path_to_jr2Data_XSL);
-       // log_message('debug', 'xslt hash check took '. (microtime(true) - $start_time) . 'seconds');
+       	//log_message('debug', 'xslt hash check took '. (microtime(true) - $start_time) . 'seconds');
         if($last['form_xsl_hash'] !== $form_xsl_hash_new || $last['model_xsl_hash'] !== $model_xsl_hash_new)
         {
             $xsl_version++;

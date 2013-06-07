@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-//This controller for AJAX POSTS simply directs to a model and returns a response
-
 class Data extends CI_Controller {
 
 	function __construct() {
@@ -35,12 +33,15 @@ class Data extends CI_Controller {
 
 	public function submission()
 	{
-		$this->load->library('openrosa');
+		if ($this->config->item('auth_support'))
+		{
+			$this->load->add_package_path(APPPATH.'third_party/form_auth');
+		}
+		$this->load->library(array('form_auth', 'openrosa'));
 		$time_start = time();
 		$submission_url = $this->Survey_model->get_form_submission_url();
 
 		extract($_POST);
-		//$xml_submission_data = $this->input->post('xml_submission_data', FALSE);
 
 		if (!$submission_url){
 			return $this->output->set_status_header(500, 'OpenRosa server submission url not set');
@@ -61,13 +62,12 @@ class Data extends CI_Controller {
 		fwrite($xml_submission_file, $xml_submission_data);
 		fclose($xml_submission_file);
 		
-		$this->load->model('User_model', '', TRUE);
-		$credentials = $this->User_model->get_credentials();
-		log_message('debug', 'amount of files allowed in php.ini: '.ini_get('max_file_uploads'));
+		$credentials = $this->form_auth->get_credentials();
+		//log_message('debug', 'amount of files allowed in php.ini: '.ini_get('max_file_uploads'));
 		$response = $this->openrosa->submit_data($submission_url, $xml_submission_filepath, $_FILES, $credentials);
 
 		//log_message('debug', 'result of submission: '.json_encode($response));
-		log_message('debug', 'data submission took '.(time()-$time_start).' seconds.');
+		//log_message('debug', 'data submission took '.(time()-$time_start).' seconds.');
 		$this->output->set_status_header($response['status_code']);//, (string) $response['xml']);
 		$this->output->set_output($response['xml']);
 	}

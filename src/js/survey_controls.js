@@ -293,16 +293,18 @@ function submitEditedForm() {
 
 	callbacks = {
 		error: function(){
-			gui.alert('Please try submitting again.', 'Submission failed');
+			gui.alert('Please try submitting again.', 'Submission Failed');
 		},
 		success: function(){
 			if (redirect){
-				gui.alert('You will now be redirected back to formhub.', 'Submission successful!');
-				location.href = settings['returnURL'];
+				gui.alert('You will now be redirected.', 'Submission Successful!', 'success');
+				setTimeout(function(){
+					location.href = settings.returnURL;
+				}, 1500);
 			}
 			//also use for iframed forms
 			else{
-				gui.alert('Done!', 'Submission successful!');
+				gui.alert('Your data was submitted!', 'Submission Successful!', 'success');
 				resetForm(true);
 			}
 		},

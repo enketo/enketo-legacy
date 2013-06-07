@@ -87,4 +87,19 @@ Connection.prototype.getTransForm=function(a,b,c,d,e){var f=new FormData,e=this.
 d),c&&f.append("xml_file",c),console.debug("form file: ",c),$.ajax("/transform/get_html_form",{type:"POST",cache:!1,contentType:!1,processData:!1,dataType:"xml",data:f,success:e.success,error:e.error,complete:e.complete}))};Connection.prototype.validateHTML=function(a,b){var c=new FormData,b=this.getCallbacks(b);c.append("level","error");c.append("content",a);$.ajax("/html5validate/",{type:"POST",data:c,contentType:!1,processData:!1,success:b.success,error:b.error,complete:b.complete})};
 Connection.prototype.ORosaHelper=function(a){this.fragToServerURL=function(b,c){var d;d="";if(!c)return console.log("nothing to do"),null;console.debug("frag: "+c);if(a.isValidURL(c))return c;switch(b){case "http":case "https":d=/^http(|s):\/\//.test(c)?"":b+"://";d+=c;break;case "formhub_uni":case "formhub":d="https://formhub.org/"+c;break;case "appspot":d="https://"+c+".appspot.com"}if(!a.isValidURL(d))return console.error("not a valid url: "+d),null;console.log("server_url: "+d);return d}};
 Connection.prototype.getNumberFormsLaunched=function(a){a=this.getCallbacks(a);$.ajax({url:"/front/get_number_launched_everywhere",dataType:"json",success:a.success,error:a.error,complete:a.complete})};Connection.prototype.loadGoogleMaps=function(a){var b=settings.mapsDynamicAPIKey||"",c=document.createElement("script");window.googleMapsInit=a;c.type="text/javascript";c.src="https://maps.googleapis.com/maps/api/js?v=3.exp&key="+b+"&sensor=false&libraries=places&callback=googleMapsInit";document.body.appendChild(c)};
-Connection.prototype.getCallbacks=function(a){a=a||{};a.error=a.error||function(a,c,d){console.error(c+" : "+d)};a.complete=a.complete||function(){};a.success=a.success||function(){console.log("success!")};return a};
+Connection.prototype.getCallbacks=function(a){a=a||{};a.error=a.error||function(a,c,d){console.error(c+" : "+d)};a.complete=a.complete||function(){};a.success=a.success||function(){console.log("success!")};return a};/*
+ Copyright 2012 Martijn van de Rijdt
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+$(document).ready(function(){var a=new Connection;$(".update-forms-total").click(function(b){b.preventDefault();console.log("updating number of launched forms");a.getNumberFormsLaunched({success:function(a){"object"===typeof a&&(a.total&&0<a.total)&&$(".counter").text(a.total)}})}).click();$(document).on("click",'a[href^="#"]:not([href="#"])',function(){window.location.hash=$(this).attr("href")})});

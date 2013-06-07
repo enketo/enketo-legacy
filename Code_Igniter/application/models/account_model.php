@@ -50,5 +50,4 @@ class Account_model extends CI_Model {
     	return FALSE;
     }
 }
-
 /* End of file Account_model.php */

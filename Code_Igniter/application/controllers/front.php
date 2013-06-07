@@ -37,8 +37,7 @@ class Front extends CI_Controller {
 		(
 			'/libraries/jquery.min.js',
 			'/libraries/bootstrap/js/bootstrap.min.js',
-			'/libraries/modernizr.min.js'//,
-			//'/libraries/fastclick/lib/fastclick.js'
+			'/libraries/modernizr.min.js'
 		);
 		$default_main_scripts = array
 		(
@@ -47,17 +46,11 @@ class Front extends CI_Controller {
 			'/js-source/connection.js',
 			'/js-source/front.js'
 		);
-
-		$default_stylesheets = array
-		(
-			array( 'href' => '/css/front.css', 'media' => 'screen')
-		);
 		$data = array(
 			'offline'=>FALSE, 
 			'title_component'=>'', 
-			'robots'=>TRUE,
-			'stylesheets' => $default_stylesheets//,
-			//'num_surveys' => $this->Survey_model->number_surveys()
+			'robots'=>TRUE
+			//,'num_surveys' => $this->Survey_model->get_previous_number_surveys()
 		);
 
 		if (ENVIRONMENT === 'production')
@@ -74,17 +67,20 @@ class Front extends CI_Controller {
 				$default_main_scripts
 			);
 		}
-
-		$integrated = $this->config->item('integrated');
-		echo $integrated;
 		
-		if (strlen($integrated)>0)
+		if (strlen($this->config->item('integrated')) > 0)
 		{
+			$data['stylesheets'] = array(
+				array( 'href' => '/css/front.css', 'media' => 'screen')
+			);
 			$this->load->view('front_view_bare', $data);
 		}
 		else
 		{
-			$this->load->view('front_view', $data);
+			$data['stylesheets'] = array(
+				array( 'href' => '/css/private/front.css', 'media' => 'screen')
+			);
+			$this->load->view('private_views/front_view', $data);
 		}	
 	}
 
@@ -121,20 +117,5 @@ class Front extends CI_Controller {
 		}
 		echo json_encode($result);
 	}
-
-	//public function update_list()
-	//{
-	//	$success = $this->Survey_model->update_formlist();
-	//	if ($success === TRUE)
-	//	{
-	//		echo 'form list has been updated';
-	//	}
-	//	else 
-	//	{
-	//		echo 'error updating form list';
-	//	}
-	//}
 }
-
-
 ?>

@@ -29,17 +29,13 @@ class Survey_model extends CI_Model {
     	$this->subdomain = get_subdomain();
         $this->ONLINE_SUBDOMAIN_SUFFIX = '-0';
         $this->db_subdomain = ( $this->_has_subdomain_suffix() ) ? substr($this->subdomain, 0, strlen($this->subdomain)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) : $this->subdomain;
-        //date_default_timezone_set('UTC');
     }
     
     // returns true if a requested survey form is live / published, used for manifest
     public function is_live_survey($survey_subdomain = NULL)
     {
-    	//$query = $this->db->get_where('surveys',array('subdomain'=>$survey_subdomain, 'survey_live'=>TRUE), 1);
-    	//return ($query->num_rows() === 1) ? TRUE : FALSE;
-        //since management of surveys is done at the OpenRosa-compliant server, all we could do here is see
-        //if the url contains an xml file. However, this is very inefficient and needs to be done only once (not also in the form model before transformation). ALSO THE FORM URL REMAINS ACCESSIBLE WHEN DISABLED IN AGGREGATE SO ONE WOULD HAVE TO CHECK THE FORMLIST  
-        //
+        //since management of surveys is done at the OpenRosa-compliant server, best we could do here is see if the form_id is present
+        //in the current /formList
         return TRUE;      
     }
     
@@ -318,32 +314,16 @@ class Survey_model extends CI_Model {
             return $item_arr[$field];
         }
         return NULL;
-        /*
-        $subd = $this->subdomain;
-        $db_subd = ( $this->_has_subdomain_suffix() ) ? substr($subd, 0, strlen($subd)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) : $subd;
-        $this->db->select($field);
-        $this->db->where('subdomain', $db_subd); //$this->subdomain);
-        $query = $this->db->get('surveys', 1); 
-        if ($query->num_rows() === 1) 
-        {
-            $row = $query->row_array();
-            return $row[$field];
-        }
-        else 
-        {
-            return NULL;   
-        }*/
     }
 
     private function _get_items($items)
     {  
         $this->db->select($items);
-        $this->db->where('subdomain', $this->db_subdomain); //$this->subdomain);
+        $this->db->where('subdomain', $this->db_subdomain);
         $query = $this->db->get('surveys', 1); 
         if ($query->num_rows() === 1) 
         {
             $row = $query->row_array();
-            //log_message('debug', 'db query returning row: '.json_encode($row));
             return $row;
         }
         else 
@@ -368,7 +348,6 @@ class Survey_model extends CI_Model {
 
     private function _update_items($data)
     {
-        //$data = array($field => $value);
         $this->db->where('subdomain', $this->db_subdomain);
         $this->db->limit(1);
         $query = $this->db->update('surveys', $data); 
@@ -393,8 +372,6 @@ class Survey_model extends CI_Model {
     {
         $s = $this->subdomain;
         return ( substr($s, strlen($s)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) === $this->ONLINE_SUBDOMAIN_SUFFIX ) ? TRUE : FALSE; 
-    }
-    
+    }   
 }
-
 ?>

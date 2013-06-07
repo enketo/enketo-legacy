@@ -54,8 +54,7 @@ class Transform extends CI_Controller {
 		else if (isset($form_id) && strlen($form_id)>0 && isset($server_url) && strlen($server_url) > 0 )
 		{
 			//TODO: add url validity check
-			log_message('debug', 'server url received: '.$server_url.', id: '+$form_id);
-			$this->load->model('User_model');
+			//log_message('debug', 'server url received: '.$server_url.', id: '+$form_id);
 			$credentials = $this->form_auth->get_credentials();
 			$this->Form_model->setup($server_url, $form_id, $credentials);
 			if($this->Form_model->requires_auth())

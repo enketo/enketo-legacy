@@ -38,7 +38,7 @@
         <file name="helpers.js"/>
         <file name="gui.js"/>
         <file name="connection.js"/>
-        <!--<file name="front.js"/>-->
+        <file name="front.js"/>
       </sources>
 
     </jscomp>

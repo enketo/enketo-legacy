@@ -23,16 +23,6 @@ class Form_auth {
     	$this->CI->load->view('auth_error_view');
     }
 
-    public function login()
-    {
-    	$this->CI->load->view('auth_error_view');
-    }
-
-    public function logout()
-    {
-    	
-    }
-
     public function get_credentials()
     {
     	return NULL;

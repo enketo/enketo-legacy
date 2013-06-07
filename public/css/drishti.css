@@ -1925,7 +1925,7 @@ a.label:hover, a.label:focus, a.badge:hover, a.badge:focus { color: white; text-
 @media (min-width: 980px) { .nav-collapse.collapse { height: auto !important; overflow: visible !important; } }
 /*light gray*/
 /** copy of bootstrap style for alert-error */
-@font-face { font-family: 'OpenSansRegular'; src: url("fonts/OpenSans-Regular-webfont.woff") format("woff"), url("fonts/OpenSans-Regular-webfont.ttf") format("truetype"), url("fonts/OpenSans-Regular-webfont.svg#OpenSansRegular") format("svg"); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'OpenSansRegular'; src: url("/css/fonts/OpenSans-Regular-webfont.woff") format("woff"), url("/css/fonts/OpenSans-Regular-webfont.ttf") format("truetype"), url("/css/fonts/OpenSans-Regular-webfont.svg#OpenSansRegular") format("svg"); font-weight: normal; font-style: normal; }
 
 body { font-family: 'OpenSansRegular', Helvetica, Arial, sans-serif; background: #f0f0f0 no-repeat; font-size: 22px; line-height: 22px; overflow-x: hidden; }
 body .main article { padding: 3em; }

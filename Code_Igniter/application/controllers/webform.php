@@ -344,7 +344,11 @@ class Webform extends CI_Controller {
 
 	private function _login($append='')
 	{
-		$this->form_auth->login($this->form_id, full_base_url().'webform'.$append, $this->server_url);
+		$this->load->library('session');
+		$this->session->set_flashdata(
+			array('server_url' => $this->server_url, 'form_id' => $this->form_id, 'return_url' =>full_base_url().'webform'.$append)
+		);
+		redirect('/authenticate/login', 'refresh');
 	}
 
 	private function _get_form()

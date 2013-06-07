@@ -36,9 +36,14 @@ class Transform extends CI_Controller {
 
 	public function get_html_form()
 	{			
-		log_message('debug', 'controller to serve html form started with POST vars: '.json_encode($_POST));
+		//log_message('debug', 'controller to serve html form started with POST vars: '.json_encode($_POST));
 		$result;
 		extract($_POST);
+		if ($this->config->item('auth_support'))
+		{
+			$this->load->add_package_path(APPPATH.'third_party/form_auth');
+		}
+		$this->load->library('form_auth');
 
 		if ($_FILES['xml_file']['size'] > 0)
 		{
@@ -48,10 +53,9 @@ class Transform extends CI_Controller {
 		}
 		else if (isset($form_id) && strlen($form_id)>0 && isset($server_url) && strlen($server_url) > 0 )
 		{
-			// ADD CHECK HERE FOR VALIDITY OF URLS
-			log_message('debug', 'server url received: '.$server_url.', id: '+$form_id);
-			$this->load->model('User_model');
-			$credentials = $this->User_model->get_credentials();
+			//TODO: add url validity check
+			//log_message('debug', 'server url received: '.$server_url.', id: '+$form_id);
+			$credentials = $this->form_auth->get_credentials();
 			$this->Form_model->setup($server_url, $form_id, $credentials);
 			if($this->Form_model->requires_auth())
 			{

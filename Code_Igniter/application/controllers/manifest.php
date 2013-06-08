@@ -81,8 +81,13 @@ class Manifest extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->helper(array('url', 'json', 'subdomain', 'http'));
+		$this->load->library('curl');
 		$this->load->model('Survey_model','',TRUE);
 		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
+		log_message('debug', 'uri string: '.$this->uri->uri_string());
+		log_message('debug', 'current url '.json_encode(current_url()));
+		log_message('debug', 'request uri: '.$_SERVER['REQUEST_URI']);
+
 		$this->manifest_url = $this->_full_url(uri_string());
 		log_message('debug', 'Manifest Controller started for url: '. $this->manifest_url);
 	}
@@ -121,17 +126,19 @@ class Manifest extends CI_Controller {
 				return;
 			}
 		}
+		log_message('debug', 'no pages');
 		show_404();
 	}
 
 	/**
-	 * An uncached copy of the manifest (not referred to anywhere as a manifest and therefor not cached)
+	 * An uncached copy of the manifest (not referred to anywhere as a manifest and therefore not cached)
 	 * meant for trouble-shooting. Simply replace "html" with "test" in the manifest URL. 
 	 * Eg. "http://abcd.enketo.org/manifest/html/webform" becomes "http://abcd.enketo.org/manifest/test/webform"
 	 */
 	public function test()
 	{
 		$args = func_get_args();
+		log_message('debug', 'args supplied to test function: '.json_encode($args));
 		call_user_func_array(array($this, 'html'), $args);
 	}
 
@@ -303,6 +310,12 @@ class Manifest extends CI_Controller {
 		{
 			//print ('checking url: '.$url_or_path."\n");	
 			$content = file_get_contents($url_or_path);
+			/*$ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url_or_path);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+            $content = curl_exec($ch);
+            curl_close($ch);*/
+            
 		}
 		if (empty($content))
 		{

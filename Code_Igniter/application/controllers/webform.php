@@ -344,11 +344,10 @@ class Webform extends CI_Controller {
 
 	private function _login($append='')
 	{
-		$this->load->library('session');
 		$this->session->set_flashdata(
 			array('server_url' => $this->server_url, 'form_id' => $this->form_id, 'return_url' =>full_base_url().'webform'.$append)
 		);
-		redirect('/authenticate/login', 'refresh');
+		redirect('/authenticate/login');
 	}
 
 	private function _get_form()
@@ -361,7 +360,7 @@ class Webform extends CI_Controller {
 		
 		$this->load->model('Form_model', '', TRUE);
 		$credentials = $this->form_auth->get_credentials();
-
+		log_message('debug', 'credentials retrieved for session id: '.$this->session->userdata('session_id').json_encode($credentials));
 		$this->Form_model->setup($this->server_url, $this->form_id, $credentials, $this->form_hash_prev, $this->xsl_version_prev);
 		
 		if($this->Form_model->requires_auth())

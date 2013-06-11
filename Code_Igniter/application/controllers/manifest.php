@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
 	| force cache update 
 	|--------------------------------------------------------------------------
 	*/
-		private $hash_manual_override = '0026'; //time();
+		private $hash_manual_override = '0030'; //time();
 	/*
 	|--------------------------------------------------------------------------	
 	| pages to be cached (urls relative to sub.example.com/)
@@ -84,7 +84,8 @@ class Manifest extends CI_Controller {
 		$this->load->model('Survey_model','',TRUE);
 		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
 		$this->manifest_url = $this->_full_url(uri_string());
-		log_message('debug', 'Manifest Controller started for url: '. $this->manifest_url);
+		$this->_set_context();
+		log_message('debug', 'Manifest Controller initialized for url: '. $this->manifest_url);
 	}
 
 	public function html()
@@ -121,11 +122,13 @@ class Manifest extends CI_Controller {
 				return;
 			}
 		}
+		// else return an empty manifest that can be used to remotely clear the client's applicationCache
+		log_message('debug', 'no pages or master page is null/not authorized');
 		show_404();
 	}
 
 	/**
-	 * An uncached copy of the manifest (not referred to anywhere as a manifest and therefor not cached)
+	 * An uncached copy of the manifest (not referred to anywhere as a manifest and therefore not cached in browser)
 	 * meant for trouble-shooting. Simply replace "html" with "test" in the manifest URL. 
 	 * Eg. "http://abcd.enketo.org/manifest/html/webform" becomes "http://abcd.enketo.org/manifest/test/webform"
 	 */
@@ -148,10 +151,15 @@ class Manifest extends CI_Controller {
 			foreach ($this->pages as $page)
 			{
 				log_message('debug', 'checking resources on page: '.$this->_full_url($page));
-				$page_full_url = $this->_full_url($page);
+				$page_full_url = $this->_full_url($page.'?manifest=true');
 				$result = $this->_add_resources_to_cache($page_full_url);
 				if (!$result)
 				{
+					//if the master page is null, cancel everything and return a 404
+					if ($page === $this->pages[0]){
+						$this->data['cache'] = array();
+						return;
+					}
 					//remove non-existing page from manifest
 					$key = array_search($page, $this->data['cache']);
 					unset($this->data['cache'][$key]);
@@ -164,11 +172,6 @@ class Manifest extends CI_Controller {
 			$this->data['hashes'] = md5($this->data['hashes']).'_'.$this->hash_manual_override; //hash of hashes		
 			$this->data['network'] = $this->network;
 			$this->data['fallback']= $this->offline;	
-		}
-		// else return an empty manifest that can be used to remotely clear the client's applicationCache
-		else
-		{
-			show_404();
 		}
 	}
 	
@@ -185,7 +188,7 @@ class Manifest extends CI_Controller {
 		foreach ($resources as $resource)
 		{
 			//log_message('debug', 'checking resource')
-			if (!in_array($resource, $this->data['cache']))//&& url_exists($resource))
+			if (!in_array($resource, $this->data['cache']))
 			{
 				//log_message('debug', 'adding resource to cache: '.$resource);
 			    $this->data['cache'][] = $resource;	
@@ -296,13 +299,12 @@ class Manifest extends CI_Controller {
 		{	
 			$rel_path = (strpos($url_or_path, '/') === 0) ? substr($url_or_path, 1) : $url_or_path;
 			$abs_path = constant('FCPATH'). $rel_path; 
-			//print('checking absolute path: '.$abs_path.'<br/>');
 			$content = (is_file($abs_path)) ? file_get_contents($abs_path) : NULL;
 		}
 		else
 		{
-			//print ('checking url: '.$url_or_path."\n");	
-			$content = file_get_contents($url_or_path);
+			$context = stream_context_create( $this->context_arr );
+			$content = file_get_contents($url_or_path, FALSE, $context);
 		}
 		if (empty($content))
 		{
@@ -311,8 +313,10 @@ class Manifest extends CI_Controller {
 		return $content;
 	}
 	
-	//returns a full url if relative url was provided
-	//if the relative url is not relative to the webroot, an alternative base can be provided
+	/**
+	 * returns a full url if relative url was provided
+	 * if the relative url is not relative to the webroot, an alternative base can be provided
+	 */
 	private function _full_url($url, $base=NULL)
 	{
 		if(!isset($base))
@@ -326,6 +330,34 @@ class Manifest extends CI_Controller {
 		}
 		//log_message('debug', '_full_url() returns:'.$url);
 		return $url;
+	}
+
+	/**
+	 * sets context (cookie with session identifier) for file_get_contents so credentials for form can be retrieved
+	 * from browser session (and not from a NEW session that file_get_contents would otherwise create.
+	 */
+	private function _set_context()
+	{
+		$opts['http']['method'] = 'GET';
+ 		$opts['http']['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+
+ 		if( count( $_COOKIE ) > 0 )
+ 		{
+  			$cookie_string = 'Cookie: ';
+  			$i = 1;
+			foreach( $_COOKIE as $k => $v )
+			{
+				if( $i !== 1 )
+				{
+					$cookie_string .= '; ';
+				}
+				$cookie_string .= $k . '=' . urlencode( $v );
+				$i++;
+			}
+			$opts['http']['header'][] = $cookie_string;
+		}
+ 		$this->context_arr = $opts;
+ 		log_message('debug', 'context for file_get_contents created from browser cookie');
 	}
 }
 ?>

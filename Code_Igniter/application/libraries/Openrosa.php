@@ -15,7 +15,7 @@ class Openrosa {
 	public function __construct()
     {
         $this->CI =& get_instance();
-        $this->CI->load->library('curl'); 
+        //$this->CI->load->library('curl'); 
         log_message('debug', 'Openrosa library initialized');
     }
 

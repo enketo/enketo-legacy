@@ -32,8 +32,7 @@ class Webform extends CI_Controller {
 			'/libraries/modernizr.min.js',
 			'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
 			'/libraries/FileSaver.min.js',
-			'/libraries/BlobBuilder.min.js'//,
-			//"http://code.jquery.com/jquery-migrate-1.0.0.js"
+			'/libraries/BlobBuilder.min.js'
 		);
 		$this->default_main_scripts = array
 		(
@@ -77,11 +76,11 @@ class Webform extends CI_Controller {
 	{	
 		if (isset($this->subdomain))
 		{
-			$this->_launched_check_route();
-			$this->_paywall_check_route();
+			if ($this->_launched_check_route()) return;
+			if ($this->_paywall_check_route()) return;
 			$form = $this->_get_form();
-			$this->_authentication_route($form);
-			$this->_form_null_check_route($form);
+			if ($this->_authentication_route($form)) return;
+			if ($this->_form_null_check_route($form)) return;
 			
 			$data = array(
 				'manifest'=> ($this->Survey_model->has_offline_launch_enabled()) ? '/manifest/html/webform' : NULL, 
@@ -136,13 +135,12 @@ class Webform extends CI_Controller {
 	public function edit()
 	{
 		$this->load->model('Instance_model','',TRUE);
-		log_message('debug', 'webform edit view controller started');
 		extract($_GET);
 		
-		$this->_subdomain_check_route();
-		$this->_launched_check_route();
-		$this->_paywall_check_route();
-		$this->_online_only_check_route();
+		if ($this->_subdomain_check_route()) return;
+		if ($this->_launched_check_route()) return;
+		if ($this->_paywall_check_route()) return;
+		if ($this->_online_only_check_route()) return;
 		if (empty($instance_id))
 		{
 			return show_error('No instance provided to edit and/or no return url provided to return to.', 404);
@@ -156,8 +154,8 @@ class Webform extends CI_Controller {
 	    }
 
 		$form = $this->_get_form();
-		$this->_authentication_route($form, '/edit?instance_id'.$instance_id );
-		$this->_form_null_check_route($form);
+		if ($this->_authentication_route($form, '/edit?instance_id'.$instance_id )) return;
+		if ($this->_form_null_check_route($form)) return;
 
 		$data = array
 		(
@@ -199,13 +197,13 @@ class Webform extends CI_Controller {
 	 **/
 	public function iframe()
 	{
-		$this->_subdomain_check_route();
-		$this->_launched_check_route();
-		$this->_paywall_check_route();
-		$this->_online_only_check_route();
+		if ($this->_subdomain_check_route()) return;
+		if ($this->_launched_check_route()) return;
+		if ($this->_paywall_check_route()) return;
+		if ($this->_online_only_check_route()) return;
 		$form = $this->_get_form();
-		$this->_authentication_route($form, '/iframe');
-		$this->_form_null_check_route($form);
+		if ($this->_authentication_route($form, '/iframe')) return;
+		if ($this->_form_null_check_route($form)) return;
 	
 		$data = array
 		(
@@ -246,13 +244,13 @@ class Webform extends CI_Controller {
 	 */
 	public function single()
 	{
-		$this->_subdomain_check_route();
-		$this->_launched_check_route();
-		$this->_paywall_check_route();
-		$this->_online_only_check_route();
+		if ($this->_subdomain_check_route()) return;
+		if ($this->_launched_check_route()) return;
+		if ($this->_paywall_check_route()) return;
+		if ($this->_online_only_check_route()) return;
 		$form = $this->_get_form();
-		$this->_authentication_route($form, '/iframe');
-		$this->_form_null_check_route($form);
+		if ($this->_authentication_route($form, '/iframe')) return;
+		if ($this->_form_null_check_route($form)) return;
 	
 		$data = array
 		(
@@ -344,11 +342,10 @@ class Webform extends CI_Controller {
 
 	private function _login($append='')
 	{
-		$this->load->library('session');
 		$this->session->set_flashdata(
 			array('server_url' => $this->server_url, 'form_id' => $this->form_id, 'return_url' =>full_base_url().'webform'.$append)
 		);
-		redirect('/authenticate/login', 'refresh');
+		redirect('/authenticate/login');
 	}
 
 	private function _get_form()
@@ -361,7 +358,6 @@ class Webform extends CI_Controller {
 		
 		$this->load->model('Form_model', '', TRUE);
 		$credentials = $this->form_auth->get_credentials();
-
 		$this->Form_model->setup($this->server_url, $this->form_id, $credentials, $this->form_hash_prev, $this->xsl_version_prev);
 		
 		if($this->Form_model->requires_auth())
@@ -374,7 +370,7 @@ class Webform extends CI_Controller {
 
 		if($this->Form_model->can_be_loaded_from_cache())
 		{
-			log_message('debug', 'unchanged form and stylesheets, loading transformation result from database');
+			//log_message('debug', 'unchanged form and stylesheets, loading transformation result from database');
 			$form = $this->Survey_model->get_cached_transform_result();
 
 			if (empty($form->title) || empty($form->html) || empty($form->default_instance))
@@ -384,7 +380,7 @@ class Webform extends CI_Controller {
 		}
 		else
 		{
-			log_message('debug', 'form changed, stylesheet changed or form never transformed before, going to perform transformation');
+			//log_message('debug', 'form changed, stylesheet changed or form never transformed before, going to perform transformation');
 			$form = $this->Form_model->get_transform_result_obj();
 			if (!empty($form->html) && !empty($form->default_instance))
 			{
@@ -414,8 +410,9 @@ class Webform extends CI_Controller {
 		if (!isset($this->subdomain))
 		{
 			show_error('View should be launched from survey subdomain', 404);
-			return;
+			return TRUE;
 		}
+		return FALSE;
 	}
 
 	private function _launched_check_route()
@@ -423,24 +420,36 @@ class Webform extends CI_Controller {
 		if (!$this->Survey_model->is_launched_survey())
 		{
 			show_error('This survey has not been launched in enketo.', 404);
-			return;
+			return TRUE;
 		}
+		return FALSE;
 	}
 
 	private function _online_only_check_route()
 	{
 		if ($this->Survey_model->has_offline_launch_enabled())
 		{
-			return show_error('The iframe view can only be launched in online mode', 404);
+			show_error('The iframe view can only be launched in online mode', 404);
+			return TRUE;
 		}
+		return FALSE;
 	}
 
 	private function _authentication_route($form, $append='')
 	{
 		if (isset($form->authenticate) && $form->authenticate)
 		{
-			return $this->_login($append);
+			if ($this->input->get('manifest') == 'true')
+			{
+				$this->output->set_output('');
+			} 
+			else
+			{
+				$this->_login($append);
+			}
+			return TRUE;
 		}
+		return FALSE;
 	}
 
 	private function _paywall_check_route()
@@ -449,15 +458,20 @@ class Webform extends CI_Controller {
 		if (!$this->Account_model->serve_allowed($this->server_url))
 		{
 			$this->load->view('unpaid_view', $this->Account_model->get_reason());
+			return TRUE;
 		}
+		return FALSE;
 	}
 
 	private function _form_null_check_route($form)
 	{
 		if ($form === NULL)
 		{
-			return show_error('Form not reachable (or an error occurred during transformation). ', 404);
+			log_message('error', 'Form could not be found or transformed');
+			show_error('Form not reachable (or an error occurred during transformation). ', 404);
+			return TRUE;
 		}
+		return FALSE;
 	}
 }
 ?>

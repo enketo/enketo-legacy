@@ -47,7 +47,6 @@ class Authenticate extends CI_Controller {
 	{
 		if (!$this->auth_support) $this->load->view('auth_error_view');
 		else {
-			$this->load->library('session');
 			log_message('debug', 'FLASHDATA:'.$this->session->flashdata('server_url'));
 			$this->form_auth->login($this->session->flashdata('server_url'), $this->session->flashdata('form_id'), $this->session->flashdata('return_url'));
 		}

@@ -26,26 +26,32 @@ describe("Conversion from Drishti-style JSON non-repeat form elements to an XML 
 	}
 });
 
-describe("Conversion from Drishti-style JSON repeat form elements to an XML instance", function(){
-	var data = mockInstances.b,
-		jData = new JData(data),
-		instanceXML = '<model><instance>'+jData.toXML()+'</instance></model>',
-		$instance = $($.parseXML(instanceXML));
+describe("Converting Drishti-style JSON repeat form elements to an XML instance", function(){
+	var instances = [mockInstances.b, mockInstances.c];
 
-	function testRepeatDataValue(path, value, index){
+	function testRepeatDataValue($instance, path, value, index){
 		it('correctly adds a repeat XML node with path '+path+', index '+index+' and value "'+value+'"', function(){
+			console.log('instance', $instance[0]);
 			expect($instance.find(path.substring(1).replace(/\//g, '>')).eq(index).text()).toEqual(value);
 		});
 	}
 
-	for (var i=0; i<data.form.sub_forms.length; i++){
-		var subForm = data.form.sub_forms[i];
-		for (var j=0; j<subForm.instances.length; j++){
-			for (var name in subForm.instances[j]){
-				if (['id'].indexOf(name) !== -1 ) return; //skip non-bound properties (just 'id' for now)
-				var field = $.grep(subForm.fields, function(item){return item.name === name;});
-				var bind = field.bind || subForm.default_bind_path + name;
-				testRepeatDataValue(bind, subForm.instances[j][name], j);
+	for (var g=0; g<instances.length ;g++){
+		var data = instances[g],
+			jData = new JData(data),
+			instanceXML = '<model><instance>'+jData.toXML()+'</instance></model>',
+			$instance = $($.parseXML(instanceXML));
+
+		for (var i=0; i<data.form.sub_forms.length; i++){
+			var subForm = data.form.sub_forms[i];
+			for (var j=0; j<subForm.instances.length; j++){
+				for (var name in subForm.instances[j]){
+					if (['id'].indexOf(name) == -1 ){ //skip non-bound properties (just 'id' for now)
+						var field = $.grep(subForm.fields, function(item){return item.name === name;})[0];
+						var bind = (field.bind) ? field.bind : subForm.default_bind_path + name;
+						testRepeatDataValue($instance, bind, subForm.instances[j][name], j);
+					}
+				}
 			}
 		}
 	}

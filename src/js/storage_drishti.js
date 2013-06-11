@@ -48,13 +48,16 @@ function JData(data){
 	if (!data){
 		recordError('No instance query parameter provided!');
 	}
+
+	var unboundSubformInstanceProps = ['id'];
+
 	/**
 	 * Transforms JSON to an XML string
 	 * NOTE: alternatively, we could could overwrite Form.init() to use JSON data instead of XML for instantiation
 	 * @return {?string}			XML string
 	 */
 	this.toXML = function(){
-		var i, j, k, field, path, value, subForm, repeatInstance, defaultPath,
+		var i, j, k, field, path, value, subForm, repeatInstance, defaultPath, repeatNodeName,
 			$instance = $($.parseXML('<root />'));
 
 		if (typeof data !== 'object'){
@@ -75,32 +78,34 @@ function JData(data){
 		//repeats:
 		if (data.form.sub_forms){
 			for (i = 0; i<data.form.sub_forms.length; i++){
+				console.log('found '+data.form.sub_forms.length+' subforms');
 				subForm = data.form.sub_forms[i];
-				console.log('subform: ', subForm);
+				repeatNodeName = subForm.default_bind_path.match(/.*\/([^\/]*)\/$/)[1];
 				if (!subForm.bind_type){
 					recordError('Repeat (subform) is missing bind_type.');
 				}
-				else {
+				else{
+					console.log('subform bindType: ', subForm.bind_type);
 					defaultPath = subForm.default_bind_path;
 					console.log('default subform path: '+defaultPath);
+					console.debug('found '+subForm.instances.length+' instances of subform');
 					for (j = 0; j < subForm.instances.length; j++){
 						repeatInstance = subForm.instances[j];
 						console.debug('repeat Instance', repeatInstance);
 						for (k = 0; k < subForm.fields.length; k++){
 							field = subForm.fields[k];
-							if (typeof repeatInstance[field.name] !== 'undefined'){
+							if (typeof repeatInstance[field.name] !== 'undefined' && unboundSubformInstanceProps.indexOf(field.name) == -1){
 								path = (typeof field.bind === 'undefined') ? defaultPath + field.name : field.bind;
 								value = repeatInstance[field.name];
-								//note: also if the value is empty it is added!
-								addXMLNodeAndValue($instance, path, value, {name: subForm.bind_type, index: j});
-								//console.log('added path: '+path+' with value: "'+value+'" and repeat index: '+j);
+								//note: also if the value is empty it is added!	
+								addXMLNodeAndValue($instance, path, value, {name: repeatNodeName, index: j});
+								console.log('added path: '+path+' with value: "'+value+'", repeat NodeName: '+repeatNodeName+' and repeat index: '+j);
 							}
 						}
 					}
 				}
 			}
 		}
-
 		return (new XMLSerializer()).serializeToString($instance.find('instance>*:first')[0]);
 	};
 
@@ -127,7 +132,6 @@ function JData(data){
 		//this code has to be refactored, as the unboundSubformInstanceProps stuff was bolted on when the JSON spec changed.
 		$repeats.each(function(){
 			var i, prop, bindPath, subForm, instanceIndex,
-				unboundSubformInstanceProps = ['id'],
 				subForms = [],
 				instance = {},
 				$repeat = $(this);
@@ -259,7 +263,7 @@ function JData(data){
 				$current = $node;
 			}
 			else{
-				$current = $current.children(nodeNames[j]);
+				$current = ( r.index && nodeNames[j] === r.name ) ? $current.children(nodeNames[j]).eq(r.index) : $current.children(nodeNames[j]);
 			}
 
 			if (j === (nodeNames.length - 1)){

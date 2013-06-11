@@ -54,7 +54,7 @@ if ( ! function_exists('get_subdomain'))
 			$end = strpos($full_url, '.'.$base_name);
 			if($start < $end) $subdomain_name = substr($full_url, $start , $end - $start);
 			else $subdomain_name = '';
-			log_message('debug', 'subdomain extracted: '.$subdomain_name);
+			//log_message('debug', 'subdomain extracted: '.$subdomain_name);
 		}
 	 
 		if ( !isset($subdomain_name) || $subdomain_name === 'www' || $subdomain_name === '')

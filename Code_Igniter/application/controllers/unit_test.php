@@ -39,8 +39,10 @@ class Unit_test extends CI_Controller {
 	{
 		$this->load->model('Survey_model', '', TRUE);
 
-		$http = $this->Survey_model->launch_survey('http://testserver/bob', 'unit', 'http://testserver/bob/submission');
-		$https = $this->Survey_model->launch_survey('https://testserver/bob', 'unit', 'https://testserver/bob/submission');
+		$http = $this->Survey_model->launch_survey('http://testserver.com/bob', 'unit', 'http://testserver.com/bob/submission');
+		$https = $this->Survey_model->launch_survey('https://testserver.com/bob', 'unit', 'https://testserver.com/bob/submission');
+		$httpwww = $this->Survey_model->launch_survey('http://www.testserver.com/bob', 'unit', 'http://www.testserver.com/bob/submission');
+		$httpswww = $this->Survey_model->launch_survey('https://www.testserver.com/bob', 'unit', 'https://www.testserver.com/bob/submission');
 
 		$props = array('subdomain', 'url', 'edit_url', 'iframe_url');
 		foreach ($props as $prop)
@@ -48,6 +50,13 @@ class Unit_test extends CI_Controller {
 			$test = ( strlen($http[$prop]) > 0 && ( $http[$prop] === $https[$prop] ) );
 			$this->unit->run($test, TRUE, 'http and https server url return same '.$prop, 
 				'http: '.$http[$prop].', https:'.$https[$prop]);
+		}
+
+		foreach ($props as $prop)
+		{
+			$test = ( strlen($httpwww[$prop]) > 0 && ( $httpwww[$prop] === $http[$prop] ) );
+			$this->unit->run($test, TRUE, 'http://www.testserver.com and https://testserver.com server url return same '.$prop, 
+				'httpwww: '.$httpwww[$prop].', http:'.$http[$prop]);
 		}
 
 		$props = array('edit_url'=>TRUE, 'iframe_url'=>TRUE, 'url'=>FALSE);

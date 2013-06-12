@@ -114,9 +114,11 @@ class Survey_model extends CI_Model {
         {
         	//TODO: add a Account_model->serve_allowed($server_url) check
             //TODO: CHECK URLS FOR LIVENESS?
-            $alt_server_url = $this->_switch_protocol($server_url);
+            $alt_server_url_1 = $this->_switch_protocol($server_url);
+            $alt_server_url_2 = $this->_switch_www($server_url);
             $this->db->where("server_url = '".$server_url."' AND BINARY form_id = '".$form_id."'");
-            $this->db->or_where("server_url = '".$alt_server_url."' AND BINARY form_id = '".$form_id."'");
+            $this->db->or_where("server_url = '".$alt_server_url_1."' AND BINARY form_id = '".$form_id."'");
+            $this->db->or_where("server_url = '".$alt_server_url_2."' AND BINARY form_id = '".$form_id."'");
             $existing = $this->db->get('surveys', 1); 
             if ( $existing->num_rows() > 0 )
             {
@@ -279,6 +281,15 @@ class Survey_model extends CI_Model {
             log_message('error', 'Failed to switch protocol of '.$url);
         }
         return $alt_url;
+    }
+
+    private function _switch_www($url)
+    {
+    	list($protocol, $url_no_protocol) = explode('://', $url);
+		$pos_dot = strpos($url_no_protocol, '.');
+		$first = substr($url_no_protocol, 0, $pos_dot );
+		$rest = substr($url_no_protocol, $pos_dot+1);
+    	return ($first === 'www') ? $protocol.'://'.$rest : $protocol.'://www.'.$first.'.'.$rest;
     }
 
     private function _generate_subdomain()

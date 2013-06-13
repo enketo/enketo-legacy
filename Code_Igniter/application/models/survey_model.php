@@ -116,9 +116,11 @@ class Survey_model extends CI_Model {
             //TODO: CHECK URLS FOR LIVENESS?
             $alt_server_url_1 = $this->_switch_protocol($server_url);
             $alt_server_url_2 = $this->_switch_www($server_url);
+            $alt_server_url_3 = $this->_switch_www($alt_server_url_1);
             $this->db->where("server_url = '".$server_url."' AND BINARY form_id = '".$form_id."'");
             $this->db->or_where("server_url = '".$alt_server_url_1."' AND BINARY form_id = '".$form_id."'");
             $this->db->or_where("server_url = '".$alt_server_url_2."' AND BINARY form_id = '".$form_id."'");
+            $this->db->or_where("server_url = '".$alt_server_url_3."' AND BINARY form_id = '".$form_id."'");
             $existing = $this->db->get('surveys', 1); 
             if ( $existing->num_rows() > 0 )
             {

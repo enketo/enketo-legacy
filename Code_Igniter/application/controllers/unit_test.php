@@ -39,8 +39,10 @@ class Unit_test extends CI_Controller {
 	{
 		$this->load->model('Survey_model', '', TRUE);
 
-		$http = $this->Survey_model->launch_survey('http://testserver/bob', 'unit', 'http://testserver/bob/submission');
-		$https = $this->Survey_model->launch_survey('https://testserver/bob', 'unit', 'https://testserver/bob/submission');
+		$http = $this->Survey_model->launch_survey('http://testserver.com/bob', 'unit', 'http://testserver.com/bob/submission');
+		$https = $this->Survey_model->launch_survey('https://testserver.com/bob', 'unit', 'https://testserver.com/bob/submission');
+		$httpwww = $this->Survey_model->launch_survey('http://www.testserver.com/bob', 'unit', 'http://www.testserver.com/bob/submission');
+		$httpswww = $this->Survey_model->launch_survey('https://www.testserver.com/bob', 'unit', 'https://www.testserver.com/bob/submission');
 
 		$props = array('subdomain', 'url', 'edit_url', 'iframe_url');
 		foreach ($props as $prop)
@@ -48,6 +50,13 @@ class Unit_test extends CI_Controller {
 			$test = ( strlen($http[$prop]) > 0 && ( $http[$prop] === $https[$prop] ) );
 			$this->unit->run($test, TRUE, 'http and https server url return same '.$prop, 
 				'http: '.$http[$prop].', https:'.$https[$prop]);
+		}
+
+		foreach ($props as $prop)
+		{
+			$test = ( strlen($httpwww[$prop]) > 0 && ( $httpwww[$prop] === $http[$prop] ) );
+			$this->unit->run($test, TRUE, 'http://www.testserver.com and https://testserver.com server url return same '.$prop, 
+				'httpwww: '.$httpwww[$prop].', http:'.$http[$prop]);
 		}
 
 		$props = array('edit_url'=>TRUE, 'iframe_url'=>TRUE, 'url'=>FALSE);
@@ -108,7 +117,8 @@ class Unit_test extends CI_Controller {
 			'outputs_in_repeats.xml',
 			'nested_repeats.xml',
 			'calcs.xml',
-			'readonly.xml'
+			'readonly.xml',
+			'calcs_in_repeats.xml'
 		);
 		$xml_forms_path = '../devinfo/Forms/';
 		$save_result_path = '../js_tests/mocks/transforms.mock.js';
@@ -121,8 +131,8 @@ class Unit_test extends CI_Controller {
 
 		foreach ($xml_forms as $xml_form)
 		{
-			$full_path = $xml_forms_path.$xml_form;		
-			$result = $this->Form_model->transform(null, null, $full_path);
+			$full_path = $xml_forms_path.$xml_form;
+			$result = $this->Form_model->get_transform_result_sxe($full_path);
 			$mocks_js .=  "\t'".$xml_form."':\n\t{\n".
 				"\t\t'html_form' : '".preg_replace(array('/\>\s+\</',"/\'/"),array('><','&quot;'),$result->form->asXML())."',\n".
 				"\t\t'xml_model': '".preg_replace(array('/\>\s+\</',"/\'/"),array('><','&quot;'),$result->model->asXML())."'\n\t},\n";
@@ -147,7 +157,8 @@ class Unit_test extends CI_Controller {
 
 		foreach ($list as $form_id => $stuff)
 		{
-			$result = $this->Form_model->transform($server_url, $form_id);
+			$this->Form_model->setup($server_url, $form_id);
+			$result = $this->Form_model->get_transform_result_sxe;
 			$mocks_js .=  "\t'".$form_id."':\n\t{\n".
 				"\t\t'html_form' : '".preg_replace(array('/\>\s+\</',"/\'/"),array('><','&quot;'),$result->form->asXML())."',\n".
 				"\t\t'xml_model': '".preg_replace(array('/\>\s+\</',"/\'/"),array('><','&quot;'),$result->model->asXML())."'\n\t},\n";

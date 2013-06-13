@@ -66,7 +66,6 @@ function JData(data){
 		//main form:
 		for (i = 0; i<data.form.fields.length; i++){
 			defaultPath = defaultPathFixed(data.form.default_bind_path);
-			if (defaultPath.lastIndexOf('/') !== defaultPath.length -1) defaultPath += '/';
 			field = data.form.fields[i];
 			//we only have to concern ourselves with fields that have a value (incl empty string)
 			if (typeof field.value !== 'undefined'){

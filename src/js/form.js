@@ -848,35 +848,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {string} modified expression with injected positions (1-based) 
 	 */
 	DataXML.prototype.makeBugCompliant = function(expr, selector, index){
-		var i, parentSelector, parentIndex, $target, $parents;//, $repParents;//,
-			//attr = ($form.find('[name="'+selector+'"][type="radio"]').length > 0 && index > 0) ? 'data-name' : 'name';
-
-		//$collection = this.node(selector).get();//$form.find('['+attr+'="'+selector+'"]').filter( function(){
-			//exclude fieldset.jr-group that has child fieldset.jr-repeat with same name
-			//return $(this).children('['+attr+'="'+selector+'"]').length === 0;
-		//});
-		//$wrap = form.input.getWrapNodes($form.find('['+attr+'="'+selector+'"]')).eq(index);
-		//$repParents = $wrap.closest('.jr-repeat').add($wrap.parents('.jr-repeat'));
-		//if (index === 0) return expr;
+		var i, parentSelector, parentIndex, $target, $node, nodeName, $siblings, $parents;
 		$target = this.node(selector, index).get();
 		console.debug('selector: '+selector+', target: ', $target);
-		$parents = $target.parents();
+		//add() sorts the resulting collection in document order
+		$parents = $target.parents().add($target);
 		console.debug('makeBugCompliant() received expression: '+expr+' inside repeat: '+selector+' context parents are: ', $parents);
-		for (i=0 ; i<$parents.length ; i++){
-			//repSelector = /** @type {string} */$repParents.eq(i).attr('name');
-			//console.log('repeat Selector: '+repSelector);
-			//repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').addBack().index($repParents.eq(i));
-			//
-			//THIS WON"T WORK FOR NESTED REPEATS
-			parentSelector = form.generateName($parents.eq(i));
-			parentIndex = this.node(parentSelector).get().index($parents.eq(i));
-			//if (parentIndex > 0){
+		//traverse collection in reverse document order
+		for (i = $parents.length -1 ; i>=0 ; i--){
+			$node = $parents.eq(i);
+			nodeName = $node.prop('nodeName');
+			$siblings = $node.siblings(nodeName+':not([template])');
+			//if the node is a repeat node that has been cloned at least once (i.e. if it has siblings with the same nodeName)
+			if(nodeName.toLowerCase() !== 'instance' && nodeName.toLowerCase() !== 'model' && $siblings.length > 0){
+				parentSelector = form.generateName($node);
+				parentIndex = $siblings.add($node).index($node);
 				console.log('calculated repeat 0-based index: '+parentIndex+' for repeat node with path: '+parentSelector);
 				expr = expr.replace(new RegExp(parentSelector, 'g'), parentSelector+'['+(parentIndex+1)+']');
 				console.log('new expression: '+expr);
-				//break out of loop if any index has been injected!!
-				return expr;
-			//}
+			}
 		}
 		return expr;
 	};

@@ -117,7 +117,8 @@ class Unit_test extends CI_Controller {
 			'outputs_in_repeats.xml',
 			'nested_repeats.xml',
 			'calcs.xml',
-			'readonly.xml'
+			'readonly.xml',
+			'calcs_in_repeats.xml'
 		);
 		$xml_forms_path = '../devinfo/Forms/';
 		$save_result_path = '../js_tests/mocks/transforms.mock.js';
@@ -130,8 +131,8 @@ class Unit_test extends CI_Controller {
 
 		foreach ($xml_forms as $xml_form)
 		{
-			$full_path = $xml_forms_path.$xml_form;		
-			$result = $this->Form_model->transform(null, null, $full_path);
+			$full_path = $xml_forms_path.$xml_form;
+			$result = $this->Form_model->get_transform_result_sxe($full_path);
 			$mocks_js .=  "\t'".$xml_form."':\n\t{\n".
 				"\t\t'html_form' : '".preg_replace(array('/\>\s+\</',"/\'/"),array('><','&quot;'),$result->form->asXML())."',\n".
 				"\t\t'xml_model': '".preg_replace(array('/\>\s+\</',"/\'/"),array('><','&quot;'),$result->model->asXML())."'\n\t},\n";
@@ -156,7 +157,8 @@ class Unit_test extends CI_Controller {
 
 		foreach ($list as $form_id => $stuff)
 		{
-			$result = $this->Form_model->transform($server_url, $form_id);
+			$this->Form_model->setup($server_url, $form_id);
+			$result = $this->Form_model->get_transform_result_sxe;
 			$mocks_js .=  "\t'".$form_id."':\n\t{\n".
 				"\t\t'html_form' : '".preg_replace(array('/\>\s+\</',"/\'/"),array('><','&quot;'),$result->form->asXML())."',\n".
 				"\t\t'xml_model': '".preg_replace(array('/\>\s+\</',"/\'/"),array('><','&quot;'),$result->model->asXML())."'\n\t},\n";

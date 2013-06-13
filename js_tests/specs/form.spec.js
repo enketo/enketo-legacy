@@ -639,6 +639,21 @@ describe('repeat functionality', function(){
 	});
 });
 
+describe('calculations', function(){
+	var formH, dataO, input1, input2,
+		form = loadForm('calcs_in_repeats.xml');
+	form.init();
+	formH = form.getFormO();
+	dataO = form.getDataO();
+	it('also work inside repeats', function(){
+		formH.$.find('button.repeat').click();
+		formH.$.find('[name="/calcs_in_repeats/rep1/num1"]:eq(0)').val('10').trigger('change');
+		formH.$.find('[name="/calcs_in_repeats/rep1/num1"]:eq(1)').val('20').trigger('change');
+		expect(dataO.node('/calcs_in_repeats/rep1/calc3', 0).getVal()[0]).toEqual('200');
+		expect(dataO.node('/calcs_in_repeats/rep1/calc3', 1).getVal()[0]).toEqual('400');
+	});
+});
+
 
 describe('branching functionality', function(){
 	var form;
@@ -1022,7 +1037,7 @@ describe('Itemset functionality', function(){
 			expect($clonedRepeat.find(citySelector).length).toEqual(0);
 		});
 
-		it('the itemset of the master repeat is not affected if the cloned is changed', function(){
+		it('the itemset of the master repeat is not affected if the cloned repeat is changed', function(){
 			$clonedRepeat.find(countrySelector+'[value="nl"]').prop('checked', true).trigger('change');
 			expect($masterRepeat.find(citySelector).length).toEqual(3);
 			expect($masterRepeat.find(citySelector).eq(0).attr('value')).toEqual('den');

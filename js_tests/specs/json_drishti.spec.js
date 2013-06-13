@@ -27,7 +27,10 @@ describe("Conversion from Drishti-style JSON non-repeat form elements to an XML 
 });
 
 describe("Converting Drishti-style JSON repeat form elements to an XML instance", function(){
-	var instances = [mockInstances.b, mockInstances.c];
+	var no_trailing_slash_in_default_bind_path = jQuery.extend({}, mockInstances.c),
+		bp = no_trailing_slash_in_default_bind_path.form.sub_forms[0].default_bind_path,
+		instances = [mockInstances.b, mockInstances.c, no_trailing_slash_in_default_bind_path];
+	no_trailing_slash_in_default_bind_path.form.sub_forms[0].default_bind_path = bp.substr(0, bp.length-1);
 
 	function testRepeatDataValue($instance, path, value, index){
 		it('correctly adds a repeat XML node with path '+path+', index '+index+' and value "'+value+'"', function(){

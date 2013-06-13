@@ -65,7 +65,7 @@ function JData(data){
 		}
 		//main form:
 		for (i = 0; i<data.form.fields.length; i++){
-			defaultPath = data.form.default_bind_path;
+			defaultPath = defaultPathFixed(data.form.default_bind_path);
 			field = data.form.fields[i];
 			//we only have to concern ourselves with fields that have a value (incl empty string)
 			if (typeof field.value !== 'undefined'){
@@ -78,20 +78,15 @@ function JData(data){
 		//repeats:
 		if (data.form.sub_forms){
 			for (i = 0; i<data.form.sub_forms.length; i++){
-				console.log('found '+data.form.sub_forms.length+' subforms');
 				subForm = data.form.sub_forms[i];
-				repeatNodeName = subForm.default_bind_path.match(/.*\/([^\/]*)\/$/)[1];
+				defaultPath = defaultPathFixed(subForm.default_bind_path);
+				repeatNodeName = defaultPath.match(/.*\/([^\/]*)\/$/)[1];
 				if (!subForm.bind_type){
 					recordError('Repeat (subform) is missing bind_type.');
 				}
 				else{
-					console.log('subform bindType: ', subForm.bind_type);
-					defaultPath = subForm.default_bind_path;
-					console.log('default subform path: '+defaultPath);
-					console.debug('found '+subForm.instances.length+' instances of subform');
 					for (j = 0; j < subForm.instances.length; j++){
 						repeatInstance = subForm.instances[j];
-						console.debug('repeat Instance', repeatInstance);
 						for (k = 0; k < subForm.fields.length; k++){
 							field = subForm.fields[k];
 							if (typeof repeatInstance[field.name] !== 'undefined' && unboundSubformInstanceProps.indexOf(field.name) == -1){
@@ -271,6 +266,11 @@ function JData(data){
 			}
 		}
 		return $doc;
+	}
+
+	//if the default path does not have a trailing slash, add one
+	function defaultPathFixed (path){
+		return (path.lastIndexOf('/') !== path.length -1) ? path + '/' : path;
 	}
 
 	function recordError(errorMsg){

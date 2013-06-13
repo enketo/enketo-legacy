@@ -848,22 +848,35 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {string} modified expression with injected positions (1-based) 
 	 */
 	DataXML.prototype.makeBugCompliant = function(expr, selector, index){
-		var i, repSelector, repIndex, $collection, $wrap, $repParents,
-			attr = ($form.find('[name="'+selector+'"][type="radio"]').length > 0 && index > 0) ? 'data-name' : 'name';
+		var i, parentSelector, parentIndex, $target, $parents;//, $repParents;//,
+			//attr = ($form.find('[name="'+selector+'"][type="radio"]').length > 0 && index > 0) ? 'data-name' : 'name';
 
-		$collection = $form.find('['+attr+'="'+selector+'"]').filter( function(){
+		//$collection = this.node(selector).get();//$form.find('['+attr+'="'+selector+'"]').filter( function(){
 			//exclude fieldset.jr-group that has child fieldset.jr-repeat with same name
-			return $(this).children('['+attr+'="'+selector+'"]').length === 0;
-		});
-		$wrap = form.input.getWrapNodes($form.find('['+attr+'="'+selector+'"]')).eq(index);
-		$repParents = $wrap.closest('.jr-repeat').add($wrap.parents('.jr-repeat'));
-		console.debug('makeBugCompliant() received expression: '+expr+' inside repeat: '+selector);
-		for (i=0 ; i<$repParents.length ; i++){
-			repSelector = /** @type {string} */$repParents.eq(i).attr('name');
+			//return $(this).children('['+attr+'="'+selector+'"]').length === 0;
+		//});
+		//$wrap = form.input.getWrapNodes($form.find('['+attr+'="'+selector+'"]')).eq(index);
+		//$repParents = $wrap.closest('.jr-repeat').add($wrap.parents('.jr-repeat'));
+		//if (index === 0) return expr;
+		$target = this.node(selector, index).get();
+		console.debug('selector: '+selector+', target: ', $target);
+		$parents = $target.parents();
+		console.debug('makeBugCompliant() received expression: '+expr+' inside repeat: '+selector+' context parents are: ', $parents);
+		for (i=0 ; i<$parents.length ; i++){
+			//repSelector = /** @type {string} */$repParents.eq(i).attr('name');
 			//console.log('repeat Selector: '+repSelector);
-			repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').addBack().index($repParents.eq(i)); 
-			console.log('calculated repeat 0-based index: '+repIndex);
-			expr = expr.replace(repSelector, repSelector+'['+(repIndex+1)+']');
+			//repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').addBack().index($repParents.eq(i));
+			//
+			//THIS WON"T WORK FOR NESTED REPEATS
+			parentSelector = form.generateName($parents.eq(i));
+			parentIndex = this.node(parentSelector).get().index($parents.eq(i));
+			//if (parentIndex > 0){
+				console.log('calculated repeat 0-based index: '+parentIndex+' for repeat node with path: '+parentSelector);
+				expr = expr.replace(new RegExp(parentSelector, 'g'), parentSelector+'['+(parentIndex+1)+']');
+				console.log('new expression: '+expr);
+				//break out of loop if any index has been injected!!
+				return expr;
+			//}
 		}
 		return expr;
 	};
@@ -935,8 +948,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			 */
 			//Could consider passing a contextInsideRepeat variable to evaluate() instead
 			//if ($form.find('[name="'+selector+'"]:eq(0)').closest('.jr-repeat').length > 0){
-			$collection = $form.find('[name="'+selector+'"]');
-			if ($collection.hasClass('jr-repeat') || $collection.eq(0).closest('.jr-repeat').length > 0){
+			$collection = this.node(selector).get();//$form.find('[name="'+selector+'"]');
+			if ($collection.length > 0){
 				console.log('going to inject position into: '+expr+' for context: '+selector+' and index: '+index);
 				expr = this.makeBugCompliant(expr, selector, index);
 			}

@@ -793,32 +793,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 */
 	DataXML.prototype.getStr = function(incTempl, incNs, all){
 		var $docRoot, $dataClone, dataStr;
-
-//		all =  all || false;
-//		incTempl = incTempl || false;
-//		incNs = incNs || true;//
-
-//		$docRoot = (all) ? this.$.find(':first') : this.node('> :first').get();
-//		
-//		//this should be refactored. Using <root> is not necessary.
-//		$dataClone = $('<root></root>');
-//		
-//		$docRoot.clone().appendTo($dataClone);//
-
-//		if (incTempl === false){
-//			$dataClone.find('[template]').remove();
-//		}
-//		//disabled 
-//		//if (incNs === true && typeof this.namespace !== 'undefined' && this.namespace.length > 0) {
-//		//	$dataClone.find('instance').attr('xmlns', this.namespace);
-//		//}
-
-		//dataStr = (new XMLSerializer()).serializeToString($dataClone.children().eq(0)[0]);
-
 		dataStr = (new XMLSerializer()).serializeToString(this.getInstanceClone(incTempl, incNs, all)[0]);
 		//remove tabs
 		dataStr = dataStr.replace(/\t/g, '');
-
 		return dataStr;
 	};
 
@@ -848,22 +825,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @return {string} modified expression with injected positions (1-based) 
 	 */
 	DataXML.prototype.makeBugCompliant = function(expr, selector, index){
-		var i, repSelector, repIndex, $collection, $wrap, $repParents,
-			attr = ($form.find('[name="'+selector+'"][type="radio"]').length > 0 && index > 0) ? 'data-name' : 'name';
-
-		$collection = $form.find('['+attr+'="'+selector+'"]').filter( function(){
-			//exclude fieldset.jr-group that has child fieldset.jr-repeat with same name
-			return $(this).children('['+attr+'="'+selector+'"]').length === 0;
-		});
-		$wrap = form.input.getWrapNodes($form.find('['+attr+'="'+selector+'"]')).eq(index);
-		$repParents = $wrap.closest('.jr-repeat').add($wrap.parents('.jr-repeat'));
-		console.debug('makeBugCompliant() received expression: '+expr+' inside repeat: '+selector);
-		for (i=0 ; i<$repParents.length ; i++){
-			repSelector = /** @type {string} */$repParents.eq(i).attr('name');
-			//console.log('repeat Selector: '+repSelector);
-			repIndex = $repParents.eq(i).siblings('[name="'+repSelector+'"]').addBack().index($repParents.eq(i)); 
-			console.log('calculated repeat 0-based index: '+repIndex);
-			expr = expr.replace(repSelector, repSelector+'['+(repIndex+1)+']');
+		var i, parentSelector, parentIndex, $target, $node, nodeName, $siblings, $parents;
+		$target = this.node(selector, index).get();
+		//console.debug('selector: '+selector+', target: ', $target);
+		//add() sorts the resulting collection in document order
+		$parents = $target.parents().add($target);
+		//console.debug('makeBugCompliant() received expression: '+expr+' inside repeat: '+selector+' context parents are: ', $parents);
+		//traverse collection in reverse document order
+		for (i = $parents.length -1 ; i>=0 ; i--){
+			$node = $parents.eq(i);
+			nodeName = $node.prop('nodeName');
+			$siblings = $node.siblings(nodeName+':not([template])');
+			//if the node is a repeat node that has been cloned at least once (i.e. if it has siblings with the same nodeName)
+			if(nodeName.toLowerCase() !== 'instance' && nodeName.toLowerCase() !== 'model' && $siblings.length > 0){
+				parentSelector = form.generateName($node);
+				parentIndex = $siblings.add($node).index($node);
+				//console.log('calculated repeat 0-based index: '+parentIndex+' for repeat node with path: '+parentSelector);
+				expr = expr.replace(new RegExp(parentSelector, 'g'), parentSelector+'['+(parentIndex+1)+']');
+				//console.log('new expression: '+expr);
+			}
 		}
 		return expr;
 	};
@@ -884,9 +864,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	DataXML.prototype.evaluate = function(expr, resTypeStr, selector, index){
 		var i, j, error, context, contextDoc, instances, id, resTypeNum, resultTypes, result, $result, attr, 
 			$collection, $contextWrapNodes, $repParents;
-		//var profiler;
-		//var totTime, xTime, timeStart = new Date().getTime();
-		//xpathEvalNum++;
 
 		console.debug('evaluating expr: '+expr+' with context selector: '+selector+', 0-based index: '+
 			index+' and result type: '+resTypeStr);
@@ -895,16 +872,13 @@ function Form (formSelector, dataStr, dataStrToEdit){
 
 		expr = expr.trim();
 		
-		//profiler = new Profiler('cloning instance');
 		/* 
 			creating a context doc is necessary for 3 reasons:
-			- the primary instance needs to be the root (and it isn't)
+			- the primary instance needs to be the root (and it isn't as the root is <model> and there can be multiple <instance>s)
 			- the templates need to be removed (though this could be worked around by adding the templates as data)
 			- the hack described below with multiple instances.
 		*/
 		contextDoc = new DataXML(this.getStr(false, false));
-		//profiler.report();
-		//profiler = new Profiler('check whether instance() syntax is used and clone instances');
 		/* 
 		   If the expression contains the instance('id') syntax, a different context instance is required.
 		   However, the same expression may also contain absolute reference to the main data instance, 
@@ -923,38 +897,28 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				this.$.find(':first>instance#'+id).clone().appendTo(contextDoc.$.find(':first'));
 			}
 		}
-		//profiler.report();
 
-		//console.debug('contextDoc:', contextDoc.$);
-		//profiler = new Profiler('augmenting expression ');
 		if (typeof selector !== 'undefined' && selector !== null) {
-			//console.debug('contextNode: ', contextDoc.$.xfind(selector).eq(index));
 			context = contextDoc.$.xfind(selector).eq(index)[0];
 			/**
-			 * If the expression is bound to a node that is inside a repeat.... see makeBugCompliant()
+			 * If the context for the expression is a node that is inside a repeat.... see makeBugCompliant()
 			 */
-			//Could consider passing a contextInsideRepeat variable to evaluate() instead
-			//if ($form.find('[name="'+selector+'"]:eq(0)').closest('.jr-repeat').length > 0){
-			$collection = $form.find('[name="'+selector+'"]');
-			if ($collection.hasClass('jr-repeat') || $collection.eq(0).closest('.jr-repeat').length > 0){
-				console.log('going to inject position into: '+expr+' for context: '+selector+' and index: '+index);
+			$collection = this.node(selector).get();
+			if ($collection.length > 1){
+				//console.log('going to inject position into: '+expr+' for context: '+selector+' and index: '+index);
 				expr = this.makeBugCompliant(expr, selector, index);
 			}
 		}
 		else{
 			context = contextDoc.getXML();
 		}
-		//profiler.report();
-		//console.debug('context', context);
 		
-		resultTypes = { //REMOVE VALUES? NOT USED
+		resultTypes = {
 			0 : ['any', 'ANY_TYPE'], 
 			1 : ['number', 'NUMBER_TYPE', 'numberValue'],
 			2 : ['string', 'STRING_TYPE', 'stringValue'], 
 			3 : ['boolean', 'BOOLEAN_TYPE', 'booleanValue'], 
-			//NOTE: nodes are actually never requested in this function as DataXML.node().get() is used to return nodes	
-			//5 : ['nodes' , 'ORDERED_NODE_ITERATOR_TYPE'],
-			7 : ['nodes', 'ORDERED_NODE_SNAPSHOT_TYPE'], //works with iterateNext().textContent
+			7 : ['nodes', 'ORDERED_NODE_SNAPSHOT_TYPE'], 
 			9 : ['node', 'FIRST_ORDERED_NODE_TYPE']
 			//'node': ['FIRST_ORDERED_NODE_TYPE','singleNodeValue'], // does NOT work, just take first result of previous
 		};
@@ -1970,7 +1934,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * @param {string=} changedNodeNames - [type/description]
 	 */
 	FormHTML.prototype.calcUpdate = function(changedNodeNames){
-		var i, name, expr, dataType, relevant, relevantExpr, result, constraint, namesArr, valid, cleverSelector;
+		var i, index, name, expr, dataType, relevant, relevantExpr, result, constraint, namesArr, valid, cleverSelector, $dataNodes;
 		
 		//console.log('updating calculated items with expressions that contain: '+changedNodeNames);
 		namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
@@ -1986,16 +1950,17 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			constraint = $(this).attr('data-constraint'); //obsolete?
 			relevantExpr = $(this).attr('data-relevant');
 			relevant = (relevantExpr) ? data.evaluate(relevantExpr, 'boolean', name) : true;
-			
-			//not sure if using 'string' is always correct
-			result = (relevant) ? data.evaluate(expr, 'string', name, null) : ''; 
-			
-			//console.debug('evaluated calculation: '+expr+' with result: '+result);
-			valid = data.node(name, null).setVal(result, constraint, dataType);
-			//if(valid !== 'undefined' && valid === false){
-				//console.log('Calculated item with name: '+name+' value was set but does not have a valid value!');
-			//}
-			//items++;
+			$dataNodes = data.node(name).get();
+			$dataNodes.each(function(index){
+				//not sure if using 'string' is always correct
+				result = (relevant) ? data.evaluate(expr, 'string', name, index) : ''; 
+				//console.debug('evaluated calculation: '+expr+' with result: '+result);
+				valid = data.node(name, index).setVal(result, constraint, dataType);
+				//if(valid !== 'undefined' && valid === false){
+					//console.log('Calculated item with name: '+name+' value was set but is not valid!');
+				//}
+			});
+
 		});
 	};
 

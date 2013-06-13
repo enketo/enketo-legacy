@@ -36,6 +36,7 @@ $(document).ready(function() {
 
 	jDataO = new JData(existingInstanceJ);
 	instanceToEdit = jDataO.toXML();
+	console.debug('instance to edit: ', instanceToEdit);
 	form = new Form('form.jr:eq(0)', modelStr, instanceToEdit);
 
 	loadErrors = form.init();

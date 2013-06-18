@@ -217,7 +217,7 @@ class Form_model extends CI_Model {
     }
 
     //loads xml resource into DOMDocument object (default = $this->info['xml'])
-    private function _load_xml($resource)
+    private function _load_xml($resource=NULL)
     {
         $success = NULL;
         $time_start = time();

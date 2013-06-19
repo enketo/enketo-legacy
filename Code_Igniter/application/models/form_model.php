@@ -42,7 +42,7 @@ class Form_model extends CI_Model {
 		log_message('debug', 'Form Model Initialized');
 	}
 
-	function setup($server_url, $form_id=NULL, $credentials=NULL, $form_xml_hash_prev=NULL, $xsl_ver_prev=NULL, $form_media_hash_prev)
+	function setup($server_url, $form_id=NULL, $credentials=NULL, $form_xml_hash_prev=NULL, $xsl_ver_prev=NULL, $form_media_hash_prev=NULL)
 	{
 		$this->server_url = $server_url;
 		$this->form_id = $form_id;

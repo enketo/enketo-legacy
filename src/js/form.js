@@ -1522,8 +1522,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 		 * @return {?boolean}                  [description]
 		 */
 		this.update = function(changedNodeNames){
-			var i, p, $branchNode, result, namesArr, cleverSelector, insideRepeat, insideRepeatClone,
-				cacheIndex = null,
+			var i, p, $branchNode, result, namesArr, cleverSelector, insideRepeat, insideRepeatClone, cacheIndex,
 				relevantCache = {},
 				alreadyCovered = [],
 				that = this,
@@ -1547,6 +1546,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 					return;
 				}
 				p = {};
+				cacheIndex = null;
 				
 				p.relevant = $(this).attr('data-relevant');
 				p.path = parent.input.getName($(this));
@@ -1592,7 +1592,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 						//cacheIndex = p.relevant+'__'+p.path+'__'+p.ind;
 					}
 				}
-
 				if (cacheIndex && typeof relevantCache[cacheIndex] !== 'undefined'){
 					result = relevantCache[cacheIndex];
 				}
@@ -2773,7 +2772,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			$clone.insertAfter($node)
 				.parent('.jr-group').numberRepeats();
 
-			//if not done asynchronously, this code causes a style undefined exception in Jasmine unit tests with jQuery 1.9 and 2.0
+			//if not done asynchronously, this code causes a "style undefined" exception in Jasmine unit tests with jQuery 1.9 and 2.0
 			//but this breaks loading of default values inside repeats
 			//this is caused by show() not being able to find the 'property "style" of undefined'
 			//setTimeout(function(){

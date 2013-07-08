@@ -60,6 +60,7 @@ class Webform extends CI_Controller {
 			$this->server_url= (isset($form_props['server_url'])) ? $form_props['server_url'] : NULL;
 			$this->form_id = (isset($form_props['form_id'])) ? $form_props['form_id'] : NULL; 
 			$this->form_hash_prev = (isset($form_props['hash'])) ? $form_props['hash'] : NULL; 
+			$this->media_hash_prev = (isset($form_props['media_hash'])) ? $form_props['media_hash'] : NULL;
 			$this->xsl_version_prev = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; 
 		}
 		
@@ -68,7 +69,7 @@ class Webform extends CI_Controller {
 			$this->load->add_package_path(APPPATH.'third_party/form_auth');
 		}
 		$this->load->library('form_auth');
-
+		$this->credentials = NULL;
 		log_message('debug', 'Webform Controller Initialized');
 	}
 
@@ -90,7 +91,8 @@ class Webform extends CI_Controller {
 				'form_data'=> $form->default_instance,
 				'stylesheets'=> $this->default_stylesheets,
 				'server_url' => $this->server_url,
-				'form_id' => $this->form_id
+				'form_id' => $this->form_id,
+				'logout' => $this->credentials !== NULL
 			);
 
 			if (ENVIRONMENT === 'production')
@@ -213,7 +215,8 @@ class Webform extends CI_Controller {
 			'form_data'=> $form->default_instance,
 			'form_data_to_edit' => NULL,
 			'return_url' => NULL,
-			'stylesheets'=> $this->default_stylesheets
+			'stylesheets'=> $this->default_stylesheets,
+			'logout' => $this->credentials !== NULL
 		);
 
 		if (ENVIRONMENT === 'production')
@@ -260,7 +263,8 @@ class Webform extends CI_Controller {
 			'form_data'=> $form->default_instance,
 			'form_data_to_edit' => NULL,
 			'return_url' => NULL,
-			'stylesheets'=> $this->default_stylesheets
+			'stylesheets'=> $this->default_stylesheets,
+			'logout' => $this->credentials !== NULL
 		);
 
 		if (ENVIRONMENT === 'production')
@@ -306,7 +310,8 @@ class Webform extends CI_Controller {
 			'html_title'=> 'enketo webform preview',
 			'form'=> '',
 			'return_url' => '',
-			'stylesheets'=> $this->default_stylesheets
+			'stylesheets'=> $this->default_stylesheets,
+			'logout' => $this->credentials !== NULL
 		);
 		if (ENVIRONMENT === 'production')
 		{
@@ -357,8 +362,8 @@ class Webform extends CI_Controller {
 		}
 		
 		$this->load->model('Form_model', '', TRUE);
-		$credentials = $this->form_auth->get_credentials();
-		$this->Form_model->setup($this->server_url, $this->form_id, $credentials, $this->form_hash_prev, $this->xsl_version_prev);
+		$this->credentials = $this->form_auth->get_credentials();
+		$this->Form_model->setup($this->server_url, $this->form_id, $this->credentials, $this->form_hash_prev, $this->xsl_version_prev, $this->media_hash_prev);
 		
 		if($this->Form_model->requires_auth())
 		{
@@ -380,7 +385,7 @@ class Webform extends CI_Controller {
 		}
 		else
 		{
-			//log_message('debug', 'form changed, stylesheet changed or form never transformed before, going to perform transformation');
+			//log_message('debug', 'form changed, form media changed, xslt stylesheets changed or form never transformed before, going to perform transformation');
 			$form = $this->Form_model->get_transform_result_obj();
 			if (!empty($form->html) && !empty($form->default_instance))
 			{

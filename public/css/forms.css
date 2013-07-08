@@ -1965,6 +1965,8 @@ progress { display: block; margin: 10px auto; }
 
 .hint { display: inline-block; margin-left: 5px; }
 
+.logout { display: block; margin-top: 10px; text-align: center; }
+
 .self-destruct-timer { float: left; margin-top: 5px; color: #cccccc; }
 
 .tooltip { opacity: 1 !important; /* fix for tooltips when places inside a label/legend element (All)*/ font-weight: normal !important; /* fix for tooltips when placed inside a legend element (Safari)*/ line-height: 18px !important; }

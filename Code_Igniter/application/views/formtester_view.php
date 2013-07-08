@@ -23,7 +23,7 @@
 		<div class="tab-content">
 			
 			<article id="upload" class="tab-pane paper">
-				<h3 class="ui-widget-header ui-corner-all">JavaRosa XML Form to Load</h3>
+				<h3 class="ui-widget-header ui-corner-all">OpenRosa XForm to Load</h3>
 				<form id="upload-form" enctype="multipart/form-data" accept-charset="utf-8">
 					<div id="input-switcher" class="btn-group" data-toggle="buttons-radio">
 						<a type="button" href="#" id="xml_file" class="btn btn-mini">file</a> 

@@ -13,13 +13,13 @@
 	<body>
 			
 	<? require 'elements/dialogs.php'; ?>
-
 		<div class="main">
 			<article class="paper" >
 				<? include_once 'elements/form-header.php'; ?>
 				<?= $form ?>
 				<button id="submit-edited-data" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
 				<? include_once 'elements/enketo-power.php'; ?>
+				<? include 'elements/logout.php'; ?>
 			</article>
 		</div>
 

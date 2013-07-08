@@ -47,7 +47,7 @@ class Survey_model extends CI_Model {
     
     public function get_form_props()
     {
-        return $this->_get_items(array('server_url', 'form_id', 'hash', 'xsl_version'));
+        return $this->_get_items(array('server_url', 'form_id', 'hash', 'media_hash', 'xsl_version'));
     }
 
     public function get_server_url()
@@ -102,6 +102,7 @@ class Survey_model extends CI_Model {
             'transform_result_model' 	=> (string) $form->default_instance,
             'transform_result_form' 	=> (string) $form->html,
             'hash' 						=> (string) $form->hash,
+            'media_hash'				=> (string) $form->media_hash,
             'xsl_version' 				=> (string) $form->xsl_version
         );
         $this->_update_items($values);

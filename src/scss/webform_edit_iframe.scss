@@ -8,9 +8,8 @@ $iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in
 @import "_form";
 @import "_iframe";
 
-.paper{
-	.branding{
-		display: none;} }
+.paper .branding{
+		display: none;}
 
 @media screen and (max-width: 720px){
 	body .form-header{

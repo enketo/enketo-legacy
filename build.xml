@@ -107,27 +107,6 @@
       </sources>
 
     </jscomp>
-    
-    <jscomp compilationLevel="simple" warning="verbose" 
-            debug="false" output="public/js-min/webform-iframe-all-min.js">
-
-      <externs dir="${basedir}/src/js">
-        <file name="extern.js"/>
-      </externs>
-
-      <sources dir="${basedir}/src/js">
-        <file name="helpers.js"/>
-        <file name="gui.js"/>
-        <file name="form.js"/>
-        <file name="widgets.js"/>
-        <file name="files.js"/>
-        <file name="storage.js"/>
-        <file name="connection.js"/>
-        <file name="survey_controls.js"/>
-        <file name="webform_iframe.js"/>
-      </sources>
-
-    </jscomp>
 
     <jscomp compilationLevel="simple" warning="verbose" 
             debug="false" output="public/js-min/webform-single-all-min.js">

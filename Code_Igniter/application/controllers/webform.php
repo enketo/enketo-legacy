@@ -18,23 +18,18 @@
 
 class Webform extends CI_Controller {
 
-	function __construct()
-	{
-		parent::__construct();
-		$this->load->helper(array('subdomain','url', 'form'));
-		$this->load->model('Survey_model','',TRUE);
-		$this->default_library_scripts = array
-		(
-			'/libraries/jquery.min.js',
-			'/libraries/bootstrap/js/bootstrap.min.js',	
-			'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
-			'/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
-			'/libraries/modernizr.min.js',
-			'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
-			'/libraries/FileSaver.min.js',
-			'/libraries/BlobBuilder.min.js'
-		);
-		$this->default_main_scripts = array
+	private $default_library_scripts = array
+	(
+		'/libraries/jquery.min.js',
+		'/libraries/bootstrap/js/bootstrap.min.js',	
+		'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
+		'/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
+		'/libraries/modernizr.min.js',
+		'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
+		'/libraries/FileSaver.min.js',
+		'/libraries/BlobBuilder.min.js'
+	);
+	private $default_main_scripts = array
 		(
 			'/js-source/helpers.js',
 			'/js-source/gui.js',
@@ -45,12 +40,24 @@ class Webform extends CI_Controller {
 			'/js-source/connection.js',
 			'/js-source/survey_controls.js',
 			'/js-source/debug.js'
-		);
-		$this->default_stylesheets = array
-		(
-			array( 'href' => '/css/webform.css', 'media' => 'all'),
-			array( 'href' => '/css/webform_print.css', 'media' => 'print')
-		);
+		); 
+	private $default_stylesheets = array
+	(
+		array( 'href' => '/css/webform.css', 'media' => 'all'),
+		array( 'href' => '/css/webform_print.css', 'media' => 'print')
+	);
+	private $default_iframe_stylesheets = array
+	(
+		array( 'href' => '/css/webform_iframe.css', 'media' => 'all'),
+		array( 'href' => '/css/webform_print.css', 'media' => 'print')
+	);
+	private $credentials = NULL;
+
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->helper(array('subdomain','url', 'form'));
+		$this->load->model('Survey_model','',TRUE);
 		$sub = get_subdomain();
 		$suf = $this->Survey_model->ONLINE_SUBDOMAIN_SUFFIX;
 		$this->subdomain = ($this->Survey_model->has_offline_launch_enabled()) ? $sub : substr($sub, 0, strlen($sub) - strlen($suf));
@@ -63,70 +70,61 @@ class Webform extends CI_Controller {
 			$this->media_hash_prev = (isset($form_props['media_hash'])) ? $form_props['media_hash'] : NULL;
 			$this->xsl_version_prev = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; 
 		}
-		
+		$this->iframe = ( $this->input->get('iframe', TRUE) == 'true' );
 		if ($this->config->item('auth_support'))
 		{
 			$this->load->add_package_path(APPPATH.'third_party/form_auth');
 		}
 		$this->load->library('form_auth');
-		$this->credentials = NULL;
 		log_message('debug', 'Webform Controller Initialized');
 	}
 
 	public function index()
 	{	
-		if (isset($this->subdomain))
-		{
-			if ($this->_launched_check_route()) return;
-			if ($this->_paywall_check_route()) return;
-			$form = $this->_get_form();
-			if ($this->_authentication_route($form)) return;
-			if ($this->_form_null_check_route($form)) return;
-			
-			$data = array(
-				'manifest'=> ($this->Survey_model->has_offline_launch_enabled()) ? '/manifest/html/webform' : NULL, 
-				'title_component' => 'webform', 
-				'html_title' => $form->title,
-				'form'=> $form->html,
-				'form_data'=> $form->default_instance,
-				'stylesheets'=> $this->default_stylesheets,
-				'server_url' => $this->server_url,
-				'form_id' => $this->form_id,
-				'logout' => $this->credentials !== NULL
-			);
+		if ($this->_subdomain_check_route()) return;
+		if ($this->_launched_check_route()) return;
+		if ($this->_paywall_check_route()) return;
+		$form = $this->_get_form();
+		if ($this->_authentication_route($form)) return;
+		if ($this->_form_null_check_route($form)) return;
+		
+		$data = array(
+			'manifest'=> ($this->Survey_model->has_offline_launch_enabled()) ? '/manifest/html/webform' : NULL, 
+			'title_component' => 'webform', 
+			'html_title' => $form->title,
+			'form'=> $form->html,
+			'form_data'=> $form->default_instance,
+			'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
+			'server_url' => $this->server_url,
+			'form_id' => $this->form_id,
+			'logout' => $this->credentials !== NULL
+		);
 
-			if (ENVIRONMENT === 'production')
-			{
-				//$this->output->cache(3);
-				$data['scripts'] = array
-				(
-					'/libraries/libraries-all-min.js',
-					'/js-min/webform-all-min.js'
-				);
-			}
-			else
-			{		
-				$data['scripts'] = array_merge
-				(
-					$this->default_library_scripts, 
-					array
-					(
-						'/js-source/cache.js'
-					),
-					$this->default_main_scripts,
-					array
-					(
-						'/js-source/webform.js'
-					)
-				);
-			}
-			
-			$this->load->view('webform_view', $data);
-		}
-		else 
+		if (ENVIRONMENT === 'production')
 		{
-			redirect('../../');
+			$data['scripts'] = array
+			(
+				'/libraries/libraries-all-min.js',
+				'/js-min/webform-all-min.js'
+			);
 		}
+		else
+		{		
+			$data['scripts'] = array_merge
+			(
+				$this->default_library_scripts, 
+				array
+				(
+					'/js-source/cache.js'
+				),
+				$this->default_main_scripts,
+				array
+				(
+					'/js-source/webform.js'
+				)
+			);
+		}
+		$this->load->view('webform_view', $data);
 	}
 
 	/**
@@ -136,9 +134,7 @@ class Webform extends CI_Controller {
 	 **/
 	public function edit()
 	{
-		$this->load->model('Instance_model','',TRUE);
-		extract($_GET);
-		
+		$instance_id = $this->input->get('instance_id', TRUE);
 		if ($this->_subdomain_check_route()) return;
 		if ($this->_launched_check_route()) return;
 		if ($this->_paywall_check_route()) return;
@@ -167,7 +163,10 @@ class Webform extends CI_Controller {
 			'form_data'=> $form->default_instance,
 			'form_data_to_edit' => $edit_obj->instance_xml,
 			'return_url' => $edit_obj->return_url,
-			'stylesheets'=> $this->default_stylesheets
+			'stylesheets'=> $this->iframe ? array(
+				array( 'href' => '/css/webform_edit_iframe.css', 'media' => 'all'),
+				array( 'href' => '/css/webform_print.css', 'media' => 'print')
+			) : $this->default_stylesheets
 		);
 
 		if (ENVIRONMENT === 'production')
@@ -189,57 +188,19 @@ class Webform extends CI_Controller {
 				)
 			);
 		}
-		$this->load->view('webform_basic_view',$data);
+		$this->load->view('webform_view', $data);
 	}
 
 	/**
 	 * function that opens an iframeable-view of the form which is a simplified webform view 
 	 * without any offline capabilities 
 	 * (no applicationCache, no localStorage)
+	 * @deprecated
 	 **/
 	public function iframe()
 	{
-		if ($this->_subdomain_check_route()) return;
-		if ($this->_launched_check_route()) return;
-		if ($this->_paywall_check_route()) return;
-		if ($this->_online_only_check_route()) return;
-		$form = $this->_get_form();
-		if ($this->_authentication_route($form, '/iframe')) return;
-		if ($this->_form_null_check_route($form)) return;
-	
-		$data = array
-		(
-			'title_component'=>'webform iframe', 
-			'html_title'=> $form->title,
-			'form'=> $form->html,
-			'form_data'=> $form->default_instance,
-			'form_data_to_edit' => NULL,
-			'return_url' => NULL,
-			'stylesheets'=> $this->default_stylesheets,
-			'logout' => $this->credentials !== NULL
-		);
-
-		if (ENVIRONMENT === 'production')
-		{
-			$data['scripts'] = array
-			(
-				'/libraries/libraries-all-min.js',
-				'/js-min/webform-iframe-all-min.js'
-			);
-		}
-		else
-		{		
-			$data['scripts'] = array_merge
-			(
-				$this->default_library_scripts,
-				$this->default_main_scripts,
-				array
-				(
-					'/js-source/webform_iframe.js'
-				)
-			);
-		}
-		$this->load->view('webform_basic_view',$data);
+		$this->default_stylesheets = $this->default_iframe_stylesheets;
+		return $this->single();
 	}
 
 	/**
@@ -252,7 +213,7 @@ class Webform extends CI_Controller {
 		if ($this->_paywall_check_route()) return;
 		if ($this->_online_only_check_route()) return;
 		$form = $this->_get_form();
-		if ($this->_authentication_route($form, '/iframe')) return;
+		if ($this->_authentication_route($form, '/single')) return;
 		if ($this->_form_null_check_route($form)) return;
 	
 		$data = array
@@ -262,8 +223,8 @@ class Webform extends CI_Controller {
 			'form'=> $form->html,
 			'form_data'=> $form->default_instance,
 			'form_data_to_edit' => NULL,
-			'return_url' => NULL,
-			'stylesheets'=> $this->default_stylesheets,
+			'return_url' => '/webform/thanks',
+			'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
 			'logout' => $this->credentials !== NULL
 		);
 
@@ -287,14 +248,14 @@ class Webform extends CI_Controller {
 				)
 			);
 		}
-		$this->load->view('webform_basic_view',$data);
+		$this->load->view('webform_view',$data);
 	}
 
 	public function preview()
 	{
-		extract($_GET);
+		$params = $this->input->get(NULL, TRUE);
 
-		if ((empty($server) || empty($id)) && empty($form))
+		if (!$params || ( empty($params['form']) && (empty($params['server']) || empty($params['id']))) )
 		{
 			show_error('Preview requires server url and form id variables or a form url variable.', 404);
 			return;
@@ -309,8 +270,8 @@ class Webform extends CI_Controller {
 			'title_component' => 'webform preview', 
 			'html_title'=> 'enketo webform preview',
 			'form'=> '',
-			'return_url' => '',
-			'stylesheets'=> $this->default_stylesheets,
+			'return_url' => NULL,
+			'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
 			'logout' => $this->credentials !== NULL
 		);
 		if (ENVIRONMENT === 'production')
@@ -333,7 +294,6 @@ class Webform extends CI_Controller {
 				)
 			);
 		}
-
 		$this->load->view('webform_preview_view', $data);
 	}
 

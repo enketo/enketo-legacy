@@ -305,4 +305,4 @@ $(".queue-length").text("0").parent().hide();c.find("#records-draft-qty").text(g
  See the License for the specific language governing permissions and
  limitations under the License.
 */
-var form,connection,currentOnlineStatus=!1,fileManager;$(document).ready(function(){var a;settings.returnURL="/webform/thanks";form=new Form("form.jr:eq(0)",jrDataStr);connection=new Connection;a=form.init();0<a.length&&gui.showLoadErrors(a,"It is recommended not to use this form for data entry until this is resolved.");connection.init();gui.setup()});
+var form,connection,currentOnlineStatus=!1,fileManager;$(document).ready(function(){var a;form=new Form("form.jr:eq(0)",jrDataStr);connection=new Connection;a=form.init();0<a.length&&gui.showLoadErrors(a,"It is recommended not to use this form for data entry until this is resolved.");connection.init();gui.setup()});

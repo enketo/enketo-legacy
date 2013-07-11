@@ -819,10 +819,10 @@ function Form (formSelector, dataStr, dataStrToEdit){
 	 * This function should be removed as soon as JavaRosa (or maybe just pyxform) fixes the way those formulae
 	 * are created (or evaluated).
 	 * 
-	 * @param  {string} expr  the XPath expression
-	 * @param  {string} selector of the (context) node on which expression is evaluated
-	 * @param  {number} index of the node with the previous selector in the instance
-	 * @return {string} modified expression with injected positions (1-based) 
+	 * @param  {string} expr  		the XPath expression
+	 * @param  {string} selector 	of the (context) node on which expression is evaluated
+	 * @param  {number} index 		of the instance node with that selector 
+	 * @return {string} modified 	expression with injected positions (1-based!) 
 	 */
 	DataXML.prototype.makeBugCompliant = function(expr, selector, index){
 		var i, parentSelector, parentIndex, $target, $node, nodeName, $siblings, $parents;
@@ -1259,9 +1259,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			if ($node.length !== 1){
 				return console.error('getIndex(): no input node provided or multiple');
 			}
+			
 			inputType = this.getInputType($node);
 			name = this.getName($node);
-
 			$wrapNode = this.getWrapNodes($node);
 
 			if (inputType === 'radio' && name !== $node.attr('name')){
@@ -1271,9 +1271,12 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			else if (inputType === 'fieldset' && $node.hasClass('jr-repeat')){
 				$wrapNodesSameName = this.getWrapNodes($form.find('.jr-repeat[name="'+name+'"]'));
 			}
+			else if (inputType === 'fieldset' && $node.hasClass('jr-group')){
+				$wrapNodesSameName = this.getWrapNodes($form.find('.jr-group[name="'+name+'"]'));
+			}
 			else {
 				$wrapNodesSameName = this.getWrapNodes($form.find('[name="'+name+'"]'));
-			}	
+			}
 
 			return $wrapNodesSameName.index($wrapNode);
 		},
@@ -1530,7 +1533,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
 				clonedRepeatsPresent;
 
 			//var profiler = new Profiler('branch update');
-
 			namesArr = (typeof changedNodeNames !== 'undefined') ? changedNodeNames.split(',') : [];
 			cleverSelector = (namesArr.length > 0) ? [] : ['[data-relevant]'];
 			

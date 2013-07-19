@@ -91,7 +91,7 @@ class Api_v1 extends CI_Controller {
         $submission_url = NULL;
         $quota = $status['quota'];
 
-        if ($quota === FALSE) {
+        if ($quota === FALSE || $quota === 0) {
             $this->output->set_status_header('403');
             $result['message'] = 'account requires payment or an upgrade';
         } else if ($quota === NULL) {

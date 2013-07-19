@@ -72,6 +72,8 @@ class Survey_model extends CI_Model {
 
     public function get_webform_url_if_launched($server_url, $form_id, $quota, $options = array('type' => NULL))
     {
+        //TODO: ADD QUOTA CHECK HERE TOO
+
         $subdomain = $this->_get_subdomain($server_url, $form_id);
 
         if (!$subdomain) {
@@ -106,7 +108,7 @@ class Survey_model extends CI_Model {
         
         if ( $quota_used == $quota ){
             $url = $this->get_webform_url_if_launched($server_url, $form_id, $options);
-            return ($url) ? array('url' => $url) : $quota_exceeded_response;
+            return ($url) ? $url : $quota_exceeded_response;
         } else if ($quota_used > $quota) {
             return $quota_exceeded_response;
         }

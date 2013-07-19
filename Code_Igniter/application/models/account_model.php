@@ -17,36 +17,55 @@ class Account_model extends CI_Model {
         log_message('debug', 'Account Model initialized');
     }
 
-    public function serve_allowed($server_url)
+    private $mocks = array(
+        'https://active.api.high.testserver'   => array('api_access' => TRUE,  'quota' => 1000000 ),
+        'https://active.api.low.testserver'    => array('api_access' => TRUE,  'quota' => 0),
+        'https://active.noapi.high.testserver' => array('api_access' => FALSE, 'quota' => 1000000 ),
+        'https://active.noapi.low.testserver'  => array('api_access' => FALSE, 'quota' => 0 ),
+        'https://inactive.testserver'          => array('quota' => FALSE ),
+        'https://noexist.testserver'           => array('quota' => NULL )     
+    );
+
+    private function _mock($server_url, $api_token)
     {
-    	return TRUE;
+        return ($api_token === 'avalidtoken') 
+            ? array_merge($this->mocks['$server_url'], array('token_approved' => TRUE))
+            : array ('token_approved' => FALSE);
     }
-    public function launch_allowed($server_url)
+
+    public function get_status($server_url, $api_token)
     {
-    	return $this->_domain_allowed($server_url);
+        if (isset($this->mocks[$server_url])) {
+            return $this->_mock($this->mocks[$server_url], $api_token);
+        } else {
+            return $this->_domain_allowed($server_url, $api_token) 
+            ? array('token_approved' => TRUE, 'api_access' => TRUE, 'quota' => 10000000)
+            : array('token_approved' => FALSE);
+        }
     }
-    public function get_reason()
+
+    public function logo_url($server_url)
     {
-    	return 'This enketo installation is for use by formhub.org users only.<br/><br/> Please visit enketo.org or '.
-    		'contact info@enketo.org if you would like to discuss possibilities for using enketo as a hosted service '.
-    		'for your own OpenRosa server.';
+        return NULL;
     }
+
     /* 
-     * for installations that do not have a paywall, serverURLs can be restricted
+     * serverURLs can be restricted
      */
-    private function _domain_allowed($server_url)
+    private function _domain_allowed($server_url, $api_token)
     {
     	$domains_allowed = $this->config->item('openrosa_domains_allowed');
-    	if (empty($domains_allowed)) return TRUE;
+    	if (empty($domains_allowed)) {
+            return TRUE;
+        }
 
-    	foreach ($domains_allowed as $domain_allowed)
-    	{
-    		if (preg_match('/^https?:\/\/'.strtolower(trim($domain_allowed)).'.*/' , strtolower(trim($server_url))))
-    		{
+    	foreach ($domains_allowed as $domain_allowed){
+    		if (preg_match('/^https?:\/\/'.strtolower(trim($domain_allowed['url'])).'.*/' , strtolower(trim($server_url)))
+                && $api_token === $domain_allowed['api_token']) {
     			return TRUE;
     		}
     	}
-    	log_message('debug', 'attempt was made to launch enketo form for dissallowed OpenRosa server URL: '.$server_url);
+    	log_message('error', 'attempt was made to launch enketo form for dissallowed OpenRosa server URL or with invalid API token: '.$server_url.' : '.$api_token);
     	return FALSE;
     }
 }

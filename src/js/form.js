@@ -3077,7 +3077,7 @@ Date.prototype.toISOLocalString = function(){
 	offset.minstotal = this.getTimezoneOffset();
 	offset.direction = (offset.minstotal < 0) ? '+' : '-';
 	offset.hrspart = pad2(Math.abs(Math.floor(offset.minstotal / 60 )));
-	offset.minspart = pad2(offset.minstotal % 60);
+	offset.minspart = pad2(Math.abs(Math.floor(offset.minstotal % 60)));
 
 	return new Date(this.getTime() - (offset.minstotal * 60 * 1000)).toISOString()
 		.replace('Z', offset.direction+offset.hrspart+':'+offset.minspart);

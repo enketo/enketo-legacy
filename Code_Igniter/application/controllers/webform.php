@@ -428,7 +428,7 @@ class Webform extends CI_Controller {
     {
         $this->load->model('Account_model');
         if (!$this->Account_model->serve_allowed($this->server_url)) {
-            $this->load->view('unpaid_view', $this->Account_model->get_reason());
+            $this->load->view('unpaid_view');
             return TRUE;
         }
         return FALSE;

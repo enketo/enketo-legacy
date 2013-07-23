@@ -79,6 +79,10 @@ class Data extends CI_Controller {
 		echo $this->openrosa->request_max_size($submission_url);
 	}
 
+	/**
+	 * @deprecated
+	 */
+	/*
 	public function edit_url()
 	{
 		log_message('debug', 'edit url function started');
@@ -128,6 +132,7 @@ class Data extends CI_Controller {
 
 		}
 	}
+	*/
 }
 ?>
 

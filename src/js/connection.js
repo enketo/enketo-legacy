@@ -410,7 +410,7 @@ Connection.prototype.getFormlist = function(serverURL, callbacks){
 		callbacks.error(null, 'validationerror', 'not a valid URL');
 		return;
 	}
-	$.ajax('/forms/get_list', {
+	$.ajax('/api_v1/surveys/list', {
 		type: 'GET',
 		data: {server_url: serverURL},
 		cache: false,

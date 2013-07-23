@@ -74,6 +74,10 @@ class Forms extends CI_Controller {
         $this->load->view('formlist_view', $data);
     }
 
+    /**
+     * @deprecated
+     **/
+    /*
     public function get_list()
     {
         if ($this->config->item('auth_support')) {
@@ -98,15 +102,16 @@ class Forms extends CI_Controller {
                 log_message('debug', 'auth not required');
                 
                 $result = $this->Form_model->get_formlist_JSON($server_url);
-                echo 'hi martijn';/*
+               
                 $this->output
                     ->set_content_type('application/json')
-                    ->set_output(json_encode($result));*/
+                    ->set_output(json_encode($result));
             }
         } else {
             echo 'no server url received!';
         }
     }
+    */
 
 }
 

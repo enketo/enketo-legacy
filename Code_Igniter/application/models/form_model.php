@@ -152,23 +152,23 @@ class Form_model extends CI_Model {
 		return ($xml['doc']) ? $xml['doc'] : NULL;
 	}
 
-	function get_formlist_JSON($quota)
+	function get_formlist_JSON()
 	{
 		$result = array();
 		$xforms_sxe = $this->formlist_sxe;
-
+		//log_message('debug', 'formlist: '.json_encode($xforms_sxe));
 		if($xforms_sxe)
 		{   
 			$this->load->model('Survey_model', '', TRUE);
 			foreach ($xforms_sxe->xform as $form)//xpath('/forms/form') as $form)
 			{
 				$id = (string) $form->formID;
-				$url = $this->Survey_model->get_webform_url_if_launched($this->server_url, $id, $quota, array('type' => NULL));
+				$url_obj = $this->Survey_model->get_webform_url_if_launched($this->server_url, $id, array('type' => NULL));
 				$result[$id] = array(
-					'name' => (string) $form->name, 
+					'name' 	=> (string) $form->name, 
 					'title' => (string) $form->descriptionText,
-					'url' => (!empty($url)) ? $url : '',
-					'server'=>$this->server_url
+					'url' 	=> (!empty($url_obj['url'])) ? $url_obj['url'] : '',
+					'server'=> $this->server_url
 				);
 			}   
 		}

@@ -70,9 +70,11 @@ class Survey_model extends CI_Model {
         return strtolower($this->_get_item('submission_url'));
     }
 
-    public function get_webform_url_if_launched($server_url, $form_id, $quota, $options = array('type' => NULL))
+    public function get_webform_url_if_launched($server_url, $form_id, $options = array('type' => NULL))
     {
-        //TODO: ADD QUOTA CHECK HERE TOO
+        //No need to check quota for simple get, I think
+        //If deciding to do this, be aware that the GET/POST /surveys/list will also stop working and is required
+        //and is required by enketo_account_manager
 
         $subdomain = $this->_get_subdomain($server_url, $form_id);
 
@@ -123,10 +125,12 @@ class Survey_model extends CI_Model {
         }
 
         $result = $this->_get_webform_urls($subdomain, $server_url, $form_id, $options);
-        
-        if (!$result) {
-           
-        } 
+
+        //if (!$result) {} 
+
+        if ($options['type'] == 'edit') {
+            $result['subdomain'] = $subdomain;
+        }
 
         if ($result && $existing_subdomain) {
             $result['existing'] = TRUE;
@@ -254,6 +258,7 @@ class Survey_model extends CI_Model {
     /**
      * @deprecated
      **/
+    /*
     public function launch_survey($server_url, $form_id, $submission_url, $data_url=NULL, $email=NULL)
     {  
         if (url_valid($server_url) && url_valid($submission_url) && (url_valid($data_url) || $data_url === NULL)) {
@@ -263,10 +268,10 @@ class Survey_model extends CI_Model {
                 $subdomain = $existing_subdomain;
                 $success = FALSE;
                 $reason = 'existing';
-            } /*else if (!$this->Account_model->launch_allowed($server_url)) {
-                $success = FALSE;
-                $reason = $this->Account_model->get_reason();
-            } */ else {
+            } //else if (!$this->Account_model->launch_allowed($server_url)) {
+              //  $success = FALSE;
+              //  $reason = $this->Account_model->get_reason();
+            } // else {
                 $subdomain = $this->_generate_subdomain();     
                 $data = array(
                     'subdomain'         => $subdomain,
@@ -314,6 +319,7 @@ class Survey_model extends CI_Model {
         log_message('error', 'unknown error occurred when trying to launch survey');
         return array('success'=>FALSE, 'reason'=>'unknown');
     }
+    */
 
     private function _get_webform_urls($subdomain, $server_url, $form_id, $options)
     {
@@ -329,6 +335,9 @@ class Survey_model extends CI_Model {
             case 'preview':
                 return ($subdomain) ? array('preview_url' => $this->_get_preview_url($server_url, $form_id, $options)) : NULL;
                 break;
+
+            case 'edit':
+                return ($subdomain) ? array('edit_url' => $this->_get_full_survey_edit_url($subdomain, $options)) : NULL;
 
             case 'all':
                 return ($subdomain) 
@@ -404,11 +413,13 @@ class Survey_model extends CI_Model {
      * @param $subdomain subdomain
      * @deprecated
      */
+    /*
     private function _get_full_survey_iframe_url($subdomain)
     {
         return $this->_get_base_url($subdomain, true).'/webform/iframe';
     }
-
+    */
+   
     /**
      * @method _get_full_survey_single_url turns a subdomain into the full url where an iframeable webform is available
      * 
@@ -437,7 +448,12 @@ class Survey_model extends CI_Model {
 
     private function _get_query_string($options = NULL)
     {
-        return ($options && $options['iframe']) ? '?iframe=true' : '';
+        $query_str = ($options && !empty($options['iframe'])) ? '?iframe=true' : '';
+        $query_op = (strlen($query_str) > 0) ? '&' : '?';
+        $query_str .= ($options && !empty($options['instance_id'])) 
+            ? $query_op.'instance_id='.$options['instance_id'] 
+            : '';
+        return $query_str;
     }
 
     private function _get_query_params_str($options = NULL)

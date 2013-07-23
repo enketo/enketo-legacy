@@ -18,30 +18,25 @@ class Account_model extends CI_Model {
     }
 
     private $mocks = array(
-        'https://active.api.high.testserver'   => array('api_access' => TRUE,  'quota' => 1000000 ),
-        'https://active.api.low.testserver'    => array('api_access' => TRUE,  'quota' => -1 ),
-        'https://active.noapi.high.testserver' => array('api_access' => FALSE, 'quota' => 1000000 ),
-        'https://active.noapi.low.testserver'  => array('api_access' => FALSE, 'quota' => -1 ),
-        'https://inactive.testserver'          => array('quota' => FALSE ),
-        'https://noexist.testserver'           => array('quota' => NULL )     
+        'https://active.api.high.testserver'   => array('api_token' => 'a', 'api_access' => TRUE,  'quota' => 1000000 ),
+        'https://active.api.low.testserver'    => array('api_token' => 'b', 'api_access' => TRUE,  'quota' => -1 ),
+        'https://active.noapi.high.testserver' => array('api_token' => 'c', 'api_access' => FALSE, 'quota' => 1000000 ),
+        'https://active.noapi.low.testserver'  => array('api_token' => 'd', 'api_access' => FALSE, 'quota' => -1 ),
+        'https://inactive.testserver'          => array('api_token' => 'e', 'quota' => FALSE ),
+        'https://noexist.testserver'           => array('api_token' => NULL, 'quota' => NULL )     
     );
 
-    private function _mock($server_url, $api_token)
+    public function get_status($server_url)
     {
-        return ($api_token === 'avalidtoken') 
-            ? array_merge($this->mocks[$server_url], array('token_approved' => TRUE))
-            : array ('token_approved' => FALSE);
-    }
-
-    public function get_status($server_url, $api_token)
-    {
-        log_message('debug', 'getting status of '.$server_url.' with api token: '.$api_token);
+        log_message('debug', 'getting status of '.$server_url);
         if (isset($this->mocks[$server_url])) {
-            return $this->_mock($server_url, $api_token);
+            return $this->mocks[$server_url];
         } else {
-            return $this->_domain_allowed($server_url, $api_token) 
-            ? array('token_approved' => TRUE, 'api_access' => TRUE, 'quota' => 10000000)
-            : array('token_approved' => FALSE);
+            $api_token = $this->_get_api_token($server_url);
+            log_message('debug', 'api token returned: '.$api_token);
+            return ($api_token) 
+            ? array('api_token' => $api_token,  'api_access' => TRUE,   'quota' => 10000000)
+            : array('api_token' => NULL,        'api_access' => FALSE,  'quota' => NULL);
         }
     }
 
@@ -50,24 +45,30 @@ class Account_model extends CI_Model {
         return NULL;
     }
 
+    public function serve_allowed($server_url)
+    {
+        $account_status = $this->get_status($server_url);
+        return ($account_status['quota'] && $account_status['quota'] > 0);
+    }
+
     /* 
      * serverURLs can be restricted
      */
-    private function _domain_allowed($server_url, $api_token)
+    private function _get_api_token($server_url)
     {
     	$domains_allowed = $this->config->item('openrosa_domains_allowed');
     	if (empty($domains_allowed)) {
-            return TRUE;
+            return NULL;
         }
 
     	foreach ($domains_allowed as $domain_allowed){
-    		if (preg_match('/^https?:\/\/'.strtolower(trim($domain_allowed['url'])).'.*/' , strtolower(trim($server_url)))
-                && $api_token === $domain_allowed['api_token']) {
-    			return TRUE;
+    		if (preg_match('/^https?:\/\/'.strtolower(trim($domain_allowed['url'])).'.*/' , strtolower(trim($server_url)))) {
+    			return $domain_allowed['api_token'];
     		}
     	}
-    	log_message('error', 'attempt was made to launch enketo form for dissallowed OpenRosa server URL or with invalid API token: '.$server_url.' : '.$api_token);
-    	return FALSE;
+    	//log_message('error', 'attempt was made to launch enketo form for dissallowed OpenRosa server URL or with invalid API token: '.$server_url.' : '.$api_token);
+        log_message('debug', 'returning null token');
+    	return NULL;
     }
 }
 /* End of file Account_model.php */

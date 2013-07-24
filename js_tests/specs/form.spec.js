@@ -746,6 +746,20 @@ describe('branching functionality', function(){
 			expect(dataO.node('/calcs/calc1').getVal()[0]).toEqual('');
 		});
 	});
+
+	//for some reason form.init() causes a declaration exception "Cannot read property 'style' of undefined"
+	//this may be a phantomjs issue, so I gave up trying to fix it.
+	xdescribe('inside repeats when multiple repeats are present upon loading (issue #507)', function(){
+		form = loadForm('multiple_repeats_relevant.xml');
+		form.init();
+		var $relNodes = form.getFormO().$.find('[name="/multiple_repeats_relevant/rep/skipq"]').parent('.jr-branch');
+		it ('correctly evaluates the relevant logic of each question inside all repeats', function(){
+			expect($relNodes.length).toEqual(2);
+			//check if both questions with 'relevant' attributes in the 2 repeats are disabled
+			expect($relNodes.eq(0).hasClass('disabled')).toBe(true);
+			expect($relNodes.eq(1).hasClass('disabled')).toBe(true);
+		});
+	});
 });
 
 describe('Required field validation', function(){

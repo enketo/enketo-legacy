@@ -117,8 +117,12 @@ progress{
 
 .hint{
   display: inline-block;
-  margin-left: 5px;
-}
+  margin-left: 5px;}
+
+.logout{
+	display: block;
+	margin-top: 10px;
+	text-align: center;}
 
 .self-destruct-timer{
   float: left;

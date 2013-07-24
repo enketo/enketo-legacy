@@ -396,7 +396,7 @@ class Webform extends CI_Controller {
     private function _launched_check_route()
     {
         if (!$this->Survey_model->is_launched_survey()) {
-            show_error('This survey has not been launched in enketo.', 404);
+            show_error('This survey has not been launched in enketo or is no longer active.', 404);
             return TRUE;
         }
         return FALSE;

@@ -198,231 +198,203 @@ class Unit_test extends CI_Controller {
     public function api_ver1()
     {
         $i = 0;
-        $valid_server_urls = array(
-            array('url'=>'https://testserver/bob',  'token' => 'a')
-        );
 
-        $invalid_combos = array(
-            array('token' => NULL,  'api'=>TRUE,  'quota' => 1000000, 'status' => 401),
-            array('token' => FALSE, 'api'=>TRUE,  'quota' => 1000000, 'status' => 401),
-            array('token' => TRUE,  'api'=>TRUE,  'quota' => -1,      'status' => 403),
-            array('token' => FALSE, 'api'=>TRUE,  'quota' => -1,      'status' => 401),
-            array('token' => TRUE,  'api'=>FALSE, 'quota' => 1000000, 'status' => 405),
-            array('token' => FALSE, 'api'=>FALSE, 'quota' => 1000000, 'status' => 401),
-            array('token' => TRUE,  'api'=>FALSE, 'quota' => -1,      'status' => 405),
-            array('token' => FALSE, 'api'=>FALSE, 'quota' => -1,      'status' => 401),
-            array('token' => TRUE,  'api'=>FALSE, 'quota' => NULL,    'status' => 404, 'url' => NULL),
-            array('token' => NULL,  'api'=>FALSE, 'quota' => NULL,    'status' => 404, 'url' => NULL)
-
-            //TODO ADD MORE TESTS AND INCLUDE 'trusted' => FALSE/TRUE
+        $survey_combos = array(
+            //valid token
+            array('m' => 'GET',   'token' => TRUE,  'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 404),
+            array('m' => 'POST',  'token' => TRUE,  'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 201),
+            array('m' => 'GET',   'token' => TRUE,  'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 200),
+            array('m' => 'PUT',   'token' => TRUE,  'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 405),
+            array('m' => 'OTHER', 'token' => TRUE,  'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 405),
+            array('m' => 'DELETE','token' => TRUE,  'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 204),
+            //invalid token
+            array('m' => 'GET',   'token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'POST',  'token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'GET',   'token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'PUT',   'token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'OTHER', 'token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'DELETE','token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            //missing token
+            array('m' => 'GET',   'token' => NULL, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'POST',  'token' => NULL, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'GET',   'token' => NULL, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'PUT',   'token' => NULL, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'OTHER', 'token' => NULL, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'DELETE','token' => NULL, 'api'=>TRUE,  'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            //invalid token, but from trusted source
+            array('m' => 'GET',   'token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => TRUE,  'status' => 404),
+            array('m' => 'POST',  'token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => TRUE,  'status' => 201),
+            array('m' => 'GET',   'token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => TRUE,  'status' => 200),
+            array('m' => 'PUT',   'token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => TRUE,  'status' => 405),
+            array('m' => 'OTHER', 'token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => TRUE,  'status' => 405),
+            array('m' => 'DELETE','token' => FALSE, 'api'=>TRUE,  'quota' => 100000,  'trusted' => TRUE,  'status' => 204),
+            //no api access but from trusted source
+            array('m' => 'GET',   'token' => FALSE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => TRUE,  'status' => 404),
+            array('m' => 'POST',  'token' => FALSE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => TRUE,  'status' => 201),
+            array('m' => 'GET',   'token' => FALSE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => TRUE,  'status' => 200),
+            array('m' => 'PUT',   'token' => FALSE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => TRUE,  'status' => 405),
+            array('m' => 'OTHER', 'token' => FALSE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => TRUE,  'status' => 405),
+            array('m' => 'DELETE','token' => FALSE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => TRUE,  'status' => 204),
+            //valid token, but no api access
+            array('m' => 'GET',   'token' => TRUE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => FALSE,  'status' => 405),
+            array('m' => 'POST',  'token' => TRUE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => FALSE,  'status' => 405),
+            array('m' => 'GET',   'token' => TRUE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => FALSE,  'status' => 405),
+            array('m' => 'PUT',   'token' => TRUE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => FALSE,  'status' => 405),
+            array('m' => 'OTHER', 'token' => TRUE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => FALSE,  'status' => 405),
+            array('m' => 'DELETE','token' => TRUE, 'api'=>FALSE, 'quota' => 100000,  'trusted' => FALSE,  'status' => 405),
+            //valid token, but no quota left
+            array('m' => 'GET',   'token' => TRUE, 'api'=>TRUE,  'quota' => -1,  'trusted' => FALSE,  'status' => 404),
+            array('m' => 'POST',  'token' => TRUE, 'api'=>TRUE,  'quota' => -1,  'trusted' => FALSE,  'status' => 403),
+            array('m' => 'GET',   'token' => TRUE, 'api'=>TRUE,  'quota' => -1,  'trusted' => FALSE,  'status' => 404),
+            array('m' => 'PUT',   'token' => TRUE, 'api'=>TRUE,  'quota' => -1,  'trusted' => FALSE,  'status' => 405),
+            array('m' => 'OTHER', 'token' => TRUE, 'api'=>TRUE,  'quota' => -1,  'trusted' => FALSE,  'status' => 405),
+            array('m' => 'DELETE','token' => TRUE, 'api'=>TRUE,  'quota' => -1,  'trusted' => FALSE,  'status' => 404),//no exist
+            //quota is NULL (account does not exist)
+            array('m' => 'GET',   'token' => TRUE, 'api'=>TRUE,  'quota' => NULL,  'trusted' => FALSE,  'status' => 404),
+            array('m' => 'POST',  'token' => TRUE, 'api'=>TRUE,  'quota' => NULL,  'trusted' => FALSE,  'status' => 404),
+            array('m' => 'GET',   'token' => TRUE, 'api'=>TRUE,  'quota' => NULL,  'trusted' => FALSE,  'status' => 404),
+            array('m' => 'PUT',   'token' => TRUE, 'api'=>TRUE,  'quota' => NULL,  'trusted' => FALSE,  'status' => 404),
+            array('m' => 'OTHER', 'token' => TRUE, 'api'=>TRUE,  'quota' => NULL,  'trusted' => FALSE,  'status' => 404),
+            array('m' => 'DELETE','token' => TRUE, 'api'=>TRUE,  'quota' => NULL,  'trusted' => FALSE,  'status' => 404),
+            //server_url not provided in request
+            array('m' => 'GET',   'token' => TRUE,'api'=>TRUE,'quota' => 100000,'trusted' => FALSE,'status' => 400,'url'=>''),
+            array('m' => 'POST',  'token' => TRUE,'api'=>TRUE,'quota' => 100000,'trusted' => FALSE,'status' => 400,'url'=>''),
+            array('m' => 'GET',   'token' => TRUE,'api'=>TRUE,'quota' => 100000,'trusted' => FALSE,'status' => 400,'url'=>''),
+            array('m' => 'PUT',   'token' => TRUE,'api'=>TRUE,'quota' => 100000,'trusted' => FALSE,'status' => 400,'url'=>''),
+            array('m' => 'OTHER', 'token' => TRUE,'api'=>TRUE,'quota' => 100000,'trusted' => FALSE,'status' => 400,'url'=>''),
+            array('m' => 'DELETE','token' => TRUE,'api'=>TRUE,'quota' => 100000,'trusted' => FALSE,'status' => 400,'url'=>''),
         );
         
-        // POST/GET /survey/..  200
-        foreach ($valid_server_urls as $combo) {
-            $token = $combo['token'];
-            $server_url = $combo['url'];
-            $survey_types = array(NULL, 'single', 'preview', 'all');
-            foreach ($survey_types as $type) {
-                $method_results = array(
-                    'POST'      => '200',
-                    'GET'       => '200',
-                    'PUT'       => '405',
-                    'OTHER'     => '405'
-                );
-                $options = array('type' => $type);
-                foreach ($method_results as $method => $expected) {
-                    $i_str = (string) $i;
-                    $params = array(
-                        'props'             => array('server_url' => $server_url, 'form_id' => 'something'),
-                        'account_status'    => array('quota' => 100000, 'api_token' => $token, 'api_access' => TRUE),
-                        'request_token'     => $token,
-                        'http_method'       => $method,
-                        'trusted'           => FALSE
-                    );
-                    $this->load->library('api_ver1', $params, $i_str);
-                    $i++;
-                    $response = $this->{$i_str}->survey_response($options);
-                    $this->unit->run(
-                        $response['code'], $expected, $method.' /api_v1/survey/'.$type.' => '.$response['code'].' (expected: '.$expected.')'
-                    );
-                }
-            }
-        }
-        // GET/POST/DELETE /survey  201, 404, 204
-        $method_results = array(
-            'GET'       => '404',
-            'POST'      => '201',
-            'DELETE'    => '204'
-        );
-        foreach ($method_results as $method => $expected) {
-            $options = array('type' => NULL);
-            $form_id = 'nonexistingid';
-            $i_str = (string) $i;
-            $params = array(
-                'props'             => array('server_url' => $valid_server_urls[0]['url'], 'form_id' => $form_id),
-                'account_status'    => array('quota' => 100000, 'api_token' => $valid_server_urls[0]['token'], 'api_access' => TRUE),
-                'request_token'     => $valid_server_urls[0]['token'],
-                'http_method'       => $method,
-                'trusted'           => FALSE
-            );
-            $this->load->library('api_ver1', $params, $i_str);
-            $i++;
-            $response = $this->{$i_str}->survey_response($options);
-            $this->unit->run(
-                $response['code'], $expected, $method.' /api_v1/survey => '.$response['code'].' (expected: '.$expected.')'
-            );
-        }
-        // DELETE /survey 405
-        $options = array('type' => NULL);
-        $server_url = 'https://formhub.org/formhub_u';
-        $form_id = 'hh_polio_survey_cloned';
-        $token = 'sometoken';
-        $i_str = (string) $i;
-        $params = array(
-            'props'             => array('server_url' => $server_url, 'form_id' => $form_id),
-            'account_status'    => array('quota' => 100000, 'api_token' => $token, 'api_access' => TRUE),
-            'request_token'     => $token,
-            'http_method'       => $method,
-            'trusted'           => FALSE
-        );
-        $this->load->library('api_ver1', $params, $i_str);
-        $i++;
-        $response = $this->{$i_str}->survey_response($options);
-        log_message('debug', 'response: '.json_encode($response));
-        $this->unit->run(
-            $response['code'], '405', $params['http_method'].' /api_v1/survey => '.$response['code'].' (expected: 405)'
-        );
-        // GET/POST /survey errors
-        foreach ($invalid_combos as $combo) {
-            $token_acc = 'someacounttoken';
-            $token_req = ($combo['token'] === TRUE) 
+        //  /survey/..
+        $endpoints = array(NULL, 'single', 'preview', 'all');
+        foreach ($endpoints as $endpoint) {
+            $options = array('type' => $endpoint);
+            foreach ($survey_combos as $combo) {
+                $token_acc = 'someacounttoken';
+                $token_req = ($combo['token'] === TRUE) 
                 ? $token_acc 
                 : (($combo['token'] === FALSE) ? 'somefalsetoken' : NULL);
-            $server_url = (isset($combo['url'])) ? $combo['url'] : 'https://testserver.com/bob';
-            $survey_types = array(NULL, 'single', 'preview', 'all');
-            foreach ($survey_types as $type) {
-                $methods = array('POST', 'GET');
-                $options = array('type' => $type);
-                foreach ($methods as $method) {
-                    $i_str = (string) $i;
-                    $params = array(
-                        'props'             => array('server_url' => $server_url, 'form_id' => 'something'),
-                        'account_status'    => array(
-                            'quota'      => $combo['quota'], 
-                            'api_token'  => $token_acc, 
-                            'api_access' => $combo['api']
-                        ),
-                        'request_token'     => $token_req,
-                        'http_method'       => $method,
-                        'trusted'           => FALSE
-                    );
-                    $this->load->library('api_ver1', $params, $i_str);
-                    $i++;
-                    $response = $this->{$i_str}->survey_response($options);
-                    $token_str = ( $combo['token'] === NULL ) ? 'null' : (($combo['token'] === FALSE) ? 'false' : 'true');
-                    $api_str = ( $combo['api'] === TRUE ) ? 'true' : 'false';
-                    $expected = $combo['status'];
-                    //if everything else is good for a GET request, the API returns a result even if the quota is NULL/FALSE
-                    if ($method === 'GET' && $combo['token'] === TRUE && $combo['api'] === TRUE){
-                        $expected = '200';
-                    }
-                    $this->unit->run(
-                        $response['code'], $expected, $method.' /api_v1/survey/'.$type.' '.
-                            'with server_url='.$server_url.' , $token: '.$token_str.
-                            ' and api access: '.$api_str.
-                            ' => '.$response['code'].' (expected: '.$expected.')'
-                    );
-                }
-            }
-        }
-
-        /***************************************/
-
-        $invalid_surveys_combos = array(
-            array('token' => NULL,  'api'=>TRUE,   'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
-            array('token' => FALSE, 'api'=>TRUE,   'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
-            array('token' => TRUE,  'api'=>TRUE,   'quota' => -1,      'trusted' => FALSE, 'status' => 200), //quota has no effect
-            
-            array('token' => NULL,  'api'=>FALSE,  'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
-            array('token' => FALSE, 'api'=>FALSE,  'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
-            array('token' => TRUE,  'api'=>FALSE,  'quota' => -1,      'trusted' => FALSE, 'status' => 403),
-
-            array('token' => NULL,  'api'=>FALSE,  'quota' => 1000000, 'trusted' => TRUE, 'status' => 200),
-            array('token' => FALSE, 'api'=>FALSE,  'quota' => 1000000, 'trusted' => TRUE, 'status' => 200),
-
-            array('token' => TRUE,  'api'=>TRUE,   'quota' => -1,      'trusted' => FALSE, 'status' => 400, 'url' => NULL),
-            array('token' => NULL,  'api'=>FALSE,  'quota' => 1000000, 'trusted' => TRUE,  'status' => 400, 'url' => NULL),
-            array('token' => FALSE, 'api'=>FALSE,  'quota' => 1000000, 'trusted' => TRUE,  'status' => 400, 'url' => NULL),
-            array('token' => TRUE,  'api'=>FALSE,  'quota' => -1,      'trusted' => TRUE,  'status' => 400, 'url' => NULL)
-        );
-
-        // GET/POST /surveys/.. 200/405 (checking methods)
-        $server_url = 'https://formhub.org/formhub_u';
-        $token = 'something';
-        
-        $types = array('number_launched', 'list');
-        foreach ($types as $type) {
-            $method_results = array(
-                'POST'      => '200',
-                'GET'       => '200',
-                'PUT'       => '405',
-                'DELETE'    => '405',
-                'OTHER'     => '405'
-            );
-            foreach ($method_results as $method => $expected) {
+                $server_url = (isset($combo['url'])) ? $combo['url'] : 'https://testserver.com/bob';
                 $i_str = (string) $i;
                 $params = array(
-                    'props'             => array('server_url' => $server_url, 'type' => $type),
-                    'account_status'    => array('quota' => 100000, 'api_token' => $token, 'api_access' => TRUE),
-                    'request_token'     => $token,
-                    'http_method'       => $method,
-                    'trusted'           => FALSE
+                    'props'             => array('server_url' => $server_url, 'form_id' => 'something'),
+                    'account_status'    => array(
+                        'quota'      => $combo['quota'], 
+                        'api_token'  => $token_acc, 
+                        'api_access' => $combo['api']
+                    ),
+                    'request_token'     => $token_req,
+                    'http_method'       => $combo['m'],
+                    'trusted'           => $combo['trusted']
                 );
                 $this->load->library('api_ver1', $params, $i_str);
                 $i++;
-                $response = $this->{$i_str}->surveys_response($type);
+                $response = $this->{$i_str}->survey_response($options);
+                $token_str = ( $combo['token'] === NULL ) ? 'null' : (($combo['token'] === FALSE) ? 'false' : 'true');
+                $api_str = ( $combo['api'] === TRUE ) ? 'true' : 'false';
+                $trusted_str = ( $combo['trusted'] === TRUE ) ? 'true' : 'false';
+                $expected = $combo['status'];
                 $this->unit->run(
-                    $response['code'], $expected, $method.' /api_v1/surveys/'.$type.' => '.$response['code'].' (expected: '.$expected.')'
+                    $response['code'], $expected, $combo['m'].'  /api_v1/survey/'.$endpoint.' '.
+                        'with server_url='.$server_url.' , token: '.$token_str.
+                        ', quota: '.$combo['quota'].
+                        ', trusted: '.$trusted_str.', and api access: '.$api_str.
+                        ' => '.$response['code'].' (expected: '.$expected.')'
                 );
+                
             }
         }
-        // GET/POST /surveys errors
-        foreach ($invalid_surveys_combos as $combo) {
-            $token_acc = 'someacounttoken';
-            $token_req = ($combo['token'] === TRUE) 
-                ? $token_acc 
-                : (($combo['token'] === FALSE) ? 'somefalsetoken' : NULL);
-            $server_url = (isset($combo['url'])) ? $combo['url'] : 'https://testserver.com/bob';
-            $survey_types = array('number_launched', 'list');
-            foreach ($survey_types as $type) {
-                $methods = array('POST', 'GET');
-                foreach ($methods as $method) {
-                    $i_str = (string) $i;
-                    $params = array(
-                        'props'             => array('server_url' => $server_url),
-                        'account_status'    => array(
-                            'quota'      => $combo['quota'], 
-                            'api_token'  => $token_acc, 
-                            'api_access' => $combo['api']
-                        ),
-                        'request_token'     => $token_req,
-                        'http_method'       => $method,
-                        'trusted'           => FALSE
-                    );
-                    $this->load->library('api_ver1', $params, $i_str);
-                    $i++;
-                    $response = $this->{$i_str}->surveys_response($type);
-                    $token_str = ( $combo['token'] === NULL ) ? 'null' : (($combo['token'] === FALSE) ? 'false' : 'true');
-                    $api_str = ( $combo['api'] === TRUE ) ? 'true' : 'false';
-                    $trusted_str = ( $combo['trusted'] == TRUE) ? 'true' : 'false';
-                    $expected = $combo['status'];
-                    $this->unit->run(
-                        $response['code'], $expected, $method.' /api_v1/surveys/'.$type.' '.
-                            'with server_url='.$server_url.' , $token: '.$token_str.
-                            ' trusted: '.$trusted_str.' and api access: '.$api_str.
-                            ' => '.$response['code'].' (expected: '.$expected.')'
-                    );
-                }
+
+
+        $surveys_combos = array(
+            //valid token
+            array('m' => 'GET',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 200),
+            array('m' => 'POST',  'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 200),
+            array('m' => 'PUT',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 405),
+            array('m' => 'OTHER', 'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 405),
+            array('m' => 'DELETE','token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 405),
+            //not trusted, no token
+            array('m' => 'GET',   'token' => NULL,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('m' => 'POST',  'token' => NULL,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('m' => 'PUT',   'token' => NULL,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('m' => 'OTHER', 'token' => NULL,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('m' => 'DELETE','token' => NULL,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            //not trusted, invalid token
+            array('m' => 'GET',   'token' => FALSE, 'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('m' => 'POST',  'token' => FALSE, 'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('m' => 'PUT',   'token' => FALSE, 'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('m' => 'OTHER', 'token' => FALSE, 'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('m' => 'DELETE','token' => FALSE, 'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            //quota has not effect
+            array('m' => 'GET',   'token' => TRUE,  'api'=>TRUE, 'quota' => -1,      'trusted' => FALSE, 'status' => 200),
+            array('m' => 'POST',  'token' => TRUE,  'api'=>TRUE, 'quota' => -1,      'trusted' => FALSE, 'status' => 200),
+            array('m' => 'PUT',   'token' => TRUE,  'api'=>TRUE, 'quota' => -1,      'trusted' => FALSE, 'status' => 405),
+            array('m' => 'OTHER', 'token' => TRUE,  'api'=>TRUE, 'quota' => -1,      'trusted' => FALSE, 'status' => 405),
+            array('m' => 'DELETE','token' => TRUE,  'api'=>TRUE, 'quota' => -1,      'trusted' => FALSE, 'status' => 405),
+            //no api access, valid token
+            array('m' => 'GET',   'token' => TRUE,  'api'=>FALSE,'quota' => 100000,  'trusted' => FALSE, 'status' => 405),
+            array('m' => 'POST',  'token' => TRUE,  'api'=>FALSE,'quota' => 100000,  'trusted' => FALSE, 'status' => 405),
+            array('m' => 'PUT',   'token' => TRUE,  'api'=>FALSE,'quota' => 100000,  'trusted' => FALSE, 'status' => 405),
+            array('m' => 'OTHER', 'token' => TRUE,  'api'=>FALSE,'quota' => 100000,  'trusted' => FALSE, 'status' => 405),
+            array('m' => 'DELETE','token' => TRUE,  'api'=>FALSE,'quota' => 100000,  'trusted' => FALSE, 'status' => 405),
+            //no api access, trusted
+            array('m' => 'GET',   'token' => TRUE,  'api'=>FALSE,'quota' => 100000,  'trusted' => TRUE, 'status' => 200),
+            array('m' => 'POST',  'token' => TRUE,  'api'=>FALSE,'quota' => 100000,  'trusted' => TRUE, 'status' => 200),
+            array('m' => 'PUT',   'token' => TRUE,  'api'=>FALSE,'quota' => 100000,  'trusted' => TRUE, 'status' => 405),
+            array('m' => 'OTHER', 'token' => TRUE,  'api'=>FALSE,'quota' => 100000,  'trusted' => TRUE, 'status' => 405),
+            array('m' => 'DELETE','token' => TRUE,  'api'=>FALSE,'quota' => 100000,  'trusted' => TRUE, 'status' => 405),
+            //no api access, invalid or missing token
+            array('m' => 'GET',   'token' => FALSE, 'api'=>FALSE,'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'POST',  'token' => FALSE, 'api'=>FALSE,'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'GET',   'token' => NULL,  'api'=>FALSE,'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            array('m' => 'POST',  'token' => NULL,  'api'=>FALSE,'quota' => 100000,  'trusted' => FALSE, 'status' => 401),
+            //no api access, invalid or missing token BUT trusted
+            array('m' => 'GET',   'token' => FALSE, 'api'=>FALSE,'quota' => 100000,  'trusted' => TRUE, 'status' => 200),
+            array('m' => 'POST',  'token' => FALSE, 'api'=>FALSE,'quota' => 100000,  'trusted' => TRUE, 'status' => 200),
+            array('m' => 'GET',   'token' => NULL,  'api'=>FALSE,'quota' => 100000,  'trusted' => TRUE, 'status' => 200),
+            array('m' => 'POST',  'token' => NULL,  'api'=>FALSE,'quota' => 100000,  'trusted' => TRUE, 'status' => 200),
+            //various combos without valid server url
+            array('m'=>'GET','token' => TRUE,  'api'=>TRUE,   'quota' => -1,      'trusted' => FALSE, 'status' => 400, 'url' => ''),
+            array('m'=>'GET','token' => NULL,  'api'=>FALSE,  'quota' => 1000000, 'trusted' => TRUE,  'status' => 400, 'url' => ''),
+            array('m'=>'GET','token' => FALSE, 'api'=>FALSE,  'quota' => 1000000, 'trusted' => TRUE,  'status' => 400, 'url' => ''),
+            array('m'=>'GET','token' => TRUE,  'api'=>FALSE,  'quota' => -1,      'trusted' => TRUE,  'status' => 400, 'url' => '')
+        );
+
+        // /surveys/..  
+        $endpoints = array('number_launched', 'list');
+        foreach ($endpoints as $endpoint) {
+            foreach ($surveys_combos as $combo) {
+                $token_acc = 'someacounttoken';
+                $token_req = ($combo['token'] === TRUE) 
+                    ? $token_acc 
+                    : (($combo['token'] === FALSE) ? 'somefalsetoken' : NULL);
+                $server_url = (isset($combo['url'])) ? $combo['url'] : 'https://testserver.com/bob';
+                $i_str = (string) $i;
+                $params = array(
+                    'props'             => array('server_url' => $server_url),
+                    'account_status'    => array(
+                        'quota'      => $combo['quota'], 
+                        'api_token'  => $token_acc, 
+                        'api_access' => $combo['api']
+                    ),
+                    'request_token'     => $token_req,
+                    'http_method'       => $combo['m'],
+                    'trusted'           => $combo['trusted']
+                );
+                $this->load->library('api_ver1', $params, $i_str);
+                $i++;
+                $response = $this->{$i_str}->surveys_response($endpoint);
+                $token_str = ( $combo['token'] === NULL ) ? 'null' : (($combo['token'] === FALSE) ? 'false' : 'true');
+                $api_str = ( $combo['api'] === TRUE ) ? 'true' : 'false';
+                $trusted_str = ( $combo['trusted'] == TRUE) ? 'true' : 'false';
+                $expected = $combo['status'];
+                $this->unit->run(
+                    $response['code'], $expected, $combo['m'].' /api_v1/surveys/'.$endpoint.' '.
+                        'with server_url='.$server_url.' , $token: '.$token_str.
+                        ', quota: '.$combo['quota'].
+                        ', trusted: '.$trusted_str.', and api access: '.$api_str.
+                        ' => '.$response['code'].' (expected: '.$expected.')'
+                );
             }
         }
 

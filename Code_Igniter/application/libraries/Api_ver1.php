@@ -29,7 +29,7 @@ class Api_ver1 {
         if (empty($params['http_method'])) {
             log_message('error', 'Api_v1 library did not receive the HTTP method');
         }
-        $this->params    = $params['props'];
+        $this->params   = $params['props'];
         $this->status   = $params['account_status'];
         $this->token    = $params['request_token'];
         $this->method   = $params['http_method'];
@@ -41,7 +41,7 @@ class Api_ver1 {
     public function survey_response($options)
     {
         $response = array();
-        if (!isset($this->params['server_url']) || !isset($this->params['form_id'])) {
+        if (empty($this->params['server_url']) || empty($this->params['form_id'])) {
             $response['message']    = 'bad request';
             $response['code']       = '400';
         } else if ($this->status['quota'] === NULL) {
@@ -74,10 +74,7 @@ class Api_ver1 {
     {
         $response = array();
        
-        if (empty($type) || ($this->method !== 'GET' && $this->method !== 'POST')) {
-            $response['code'] = '405';
-            $response['message'] = 'method not allowed';
-        } else if (empty($this->params['server_url'])) {
+        if (empty($this->params['server_url'])) {
             $response['code'] = '400';
             $response['message'] = 'bad request';
         } else if ($this->status['quota'] === NULL) {
@@ -85,8 +82,11 @@ class Api_ver1 {
             $response['message'] = 'no account exists for this OpenRosa server';
         } else if (!$this->_authenticated()) {
             $response['code'] = '401';
+        } else if (empty($type) || ($this->method !== 'GET' && $this->method !== 'POST')){
+            $response['code'] = '405';
+            $response['message'] = 'method not allowed';
         } else if (!$this->trusted && !$this->_has_api_access()){
-            $response['code'] = '403';
+            $response['code'] = '405';
             $response['message'] = 'api access is not allowed on your account';
         } else {
             switch($type){

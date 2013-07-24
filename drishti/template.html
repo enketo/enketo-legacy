@@ -8,37 +8,25 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 
-		<link href="../../css/form/drishti.css" media="all" rel="stylesheet" type="text/css">
-		<script type="text/javascript" src="../../js/form/enketo/libraries-all-min.js"></script>
-		<script type="text/javascript" src="../../js/form/enketo/webform-drishti-all-min.js"></script>
-<!--*	<script type="text/javascript" src="../../js/form/enketo/helpers.js"></script>
-	*	<script type="text/javascript" src="../../js/form/enketo/gui.js"></script>
-	*	<script type="text/javascript" src="../../js/form/enketo/storage_drishti.js"></script>
-	*	<script type="text/javascript" src="../../js/form/enketo/form.js"></script>
-	*	<script type="text/javascript" src="../../js/form/enketo/widgets.js"></script>-->
+		<link href="css/drishti.css" media="all" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="js/libraries-all-min.js"></script>
+		<script type="text/javascript" src="js/webform-drishti-all-min.js"></script>
+<!--*	<script type="text/javascript" src="js/helpers.js"></script>
+	*	<script type="text/javascript" src="js/gui.js"></script>
+	*	<script type="text/javascript" src="js/storage_drishti.js"></script>
+	*	<script type="text/javascript" src="js/form.js"></script>
+	*	<script type="text/javascript" src="js/widgets.js"></script>
+		<script type="text/javascript" src="js/webform_drishti.js"></script>-->
 <!--	*** mocks to run statically in browser *** -->
-		<script type="text/javascript" src="../../mocks/transforms.mock.js"></script>
-		<script type="text/javascript" src="../../mocks/instances.mock.js"></script>
-		<script type="text/javascript" src="../../mocks/androidcontext.mock.js"></script>
+<!--
+		<script type="text/javascript" src="mocks/transforms.mock.js"></script>
+		<script type="text/javascript" src="mocks/instances.mock.js"></script>
+		<script type="text/javascript" src="mocks/androidcontext.mock.js"></script>-->
 <!--	*** end of mocks *** -->
-<!--*	<script type="text/javascript" src="../../js/form/enketo/webform_drishti.js"></script>-->
-<!--	
-		<script type="text/javascript" src="../../js/form/util.js"></script>
-		<script type="text/javascript" src="../../js/form/id_factory.js"></script>
-		<script type="text/javascript" src="../../js/form/form_model_mapper.js"></script>
-		<script type="text/javascript" src="../../js/form/entity_relationship_loader.js"></script>
-		<script type="text/javascript" src="../../js/form/entity.js"></script>
-		<script type="text/javascript" src="../../js/form/relation_kind.js"></script>
-		<script type="text/javascript" src="../../js/form/entity_relationships.js"></script>
-		<script type="text/javascript" src="../../js/form/form_definition_loader.js"></script>
-		<script type="text/javascript" src="../../js/form/sql_query_builder.js"></script>
-		<script type="text/javascript" src="../../js/form/form_data_repository.js"></script>
-		<script type="text/javascript" src="../../js/form/form_data_controller.js"></script>
--->
+		<script type="text/javascript" src="../ziggy/ziggy.min.js"></script>
 		<script type="text/javascript">
-			logContext.logError("Initialising enketo template.");
 			window.onerror = function (m, u, l) {
-				logContext.logError("Javascript Error: , msg: {0}, url: {1}, line: {2}".format(m, u, l));
+        	    console.error("Javascript Error: , msg: {0}, url: {1}, line: {2}".format(m, u, l));
 				return true;
 			};
 
@@ -49,7 +37,6 @@
 			settings['returnURL'] = '';
 
 			var modelStr = androidContext.getModel();
-			logContext.logError("Got Model.");
 		</script>
 	</head>
 	<body>
@@ -115,7 +102,7 @@
 				</script>
 				
 				<button id="submit-form" class="btn btn-info btn-large">Submit</button>	
-				<div class="enketo-power">Powered by <img src="../../css/images/enketo_bare_100x37.png" alt="enketo logo" /></div>
+				<div class="enketo-power">Powered by <img src="images/enketo_bare_100x37.png" alt="enketo logo" /></div>
 			</article>
 		</div>
 	</body>

@@ -118,7 +118,8 @@ class Unit_test extends CI_Controller {
 			'nested_repeats.xml',
 			'calcs.xml',
 			'readonly.xml',
-			'calcs_in_repeats.xml'
+			'calcs_in_repeats.xml',
+			'multiple_repeats_relevant.xml'
 		);
 		$xml_forms_path = '../devinfo/Forms/';
 		$save_result_path = '../js_tests/mocks/transforms.mock.js';

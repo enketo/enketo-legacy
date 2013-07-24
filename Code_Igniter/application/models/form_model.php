@@ -57,8 +57,10 @@ class Form_model extends CI_Model {
 			{
 				$this->info = $this->_get_form_info();
 			}
-			$this->manifest_sxe = $this->_get_manifest_sxe();
-			$this->info['media_hash'] = (!empty($this->manifest_sxe)) ? $this->_get_media_hash($this->manifest_sxe) : NULL;
+			if (!empty($this->info)) {
+				$this->manifest_sxe = $this->_get_manifest_sxe();
+				$this->info['media_hash'] = (!empty($this->manifest_sxe)) ? $this->_get_media_hash($this->manifest_sxe) : NULL;
+			}
 		}
 		log_message('debug', 'form model setup done: '.json_encode($this->info));
 	}
@@ -81,6 +83,11 @@ class Form_model extends CI_Model {
 			$this->_stylesheets_unchanged($this->xsl_ver_prev) &&
 			$this->_media_unchanged($this->form_media_hash_prev)
 		);
+	}
+
+	function is_listed(){
+		log_message('debug', 'info: '.json_encode($this->info));
+		return (!empty($this->info));
 	}
 
 	function get_transform_result_obj()

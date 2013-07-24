@@ -27,7 +27,7 @@ class Unit_test extends CI_Controller {
 
     public function index()
     {
-        $groups = array('survey', 'form', 'instance', 'subdomain'/*,'api_v1'*/);
+        $groups = array('survey', 'instance', 'api_ver1');
         foreach ($groups as $group)
         {
             $this->{$group}();
@@ -38,13 +38,13 @@ class Unit_test extends CI_Controller {
     public function survey()
     {
         $this->load->model('Survey_model', '', TRUE);
+        $options = array('type' => 'all');
+        $http = $this->Survey_model->get_webform_url('http://testserver.com/bob', 'unit', 1000, NULL, $options);
+        $https = $this->Survey_model->get_webform_url('https://testserver.com/bob', 'unit', 1000, NULL, $options);
+        $httpwww = $this->Survey_model->get_webform_url('http://www.testserver.com/bob', 'unit', 1000, NULL, $options);
+        $httpswww = $this->Survey_model->get_webform_url('https://www.testserver.com/bob', 'unit', 1000, NULL, $options);
 
-        $http = $this->Survey_model->launch_survey('http://testserver.com/bob', 'unit', 'http://testserver.com/bob/submission');
-        $https = $this->Survey_model->launch_survey('https://testserver.com/bob', 'unit', 'https://testserver.com/bob/submission');
-        $httpwww = $this->Survey_model->launch_survey('http://www.testserver.com/bob', 'unit', 'http://www.testserver.com/bob/submission');
-        $httpswww = $this->Survey_model->launch_survey('https://www.testserver.com/bob', 'unit', 'https://www.testserver.com/bob/submission');
-
-        $props = array('subdomain', 'url', 'edit_url', 'iframe_url');
+        $props = array('url', 'single_url', 'iframe_url');
         foreach ($props as $prop)
         {
             $test = ( strlen($http[$prop]) > 0 && ( $http[$prop] === $https[$prop] ) );
@@ -59,14 +59,14 @@ class Unit_test extends CI_Controller {
                 'httpwww: '.$httpwww[$prop].', http:'.$http[$prop]);
         }
 
-        $props = array('edit_url'=>TRUE, 'iframe_url'=>TRUE, 'url'=>FALSE);
+        $props = array('single_url'=>TRUE, 'iframe_url'=>TRUE, 'url'=>FALSE);
         $online_suffix = $this->Survey_model->ONLINE_SUBDOMAIN_SUFFIX;
         foreach ($props as $prop => $not_offline)
         {
             $results = array($http, $https);
             foreach ($results as $result)
             {
-                $exp = $not_offline ? "true":"false";
+                $exp = $not_offline ? "true" : "false";
                 $test = (strpos($result[$prop], $result['subdomain'].$online_suffix) > 0 );
                 $this->unit->run($test, $not_offline, 'applicationCache disabled by subdomain suffix for '.
                     $prop.': '.$exp, 'url: '.$result[$prop]);
@@ -194,51 +194,239 @@ class Unit_test extends CI_Controller {
 
         echo $this->unit->report();
     }
-
-    //tests subdomain helper
-    public function subdomain()
+    
+    public function api_ver1()
     {
-
-    }
-    /*
-    public function api_v1()
-    {
-        $data = array(
-            array('url'=>'https://active.api.high.testserver',  'token' => NULL,          'status' => 401),
-            array('url'=>'https://active.api.high.testserver',  'token' => 'avalidtoken', 'status' => 200),
-            array('url'=>'https://active.api.high.testserver',  'token' => '#$@#$#',      'status' => 401),
-            array('url'=>'https://active.api.low.testserver',   'token' => 'avalidtoken', 'status' => 403),
-            array('url'=>'https://active.api.low.testserver',   'token' => '#$@#$#',      'status' => 401),
-            array('url'=>'https://active.noapi.high.testserver','token' => 'avalidtoken', 'status' => 405),
-            array('url'=>'https://active.noapi.high.testserver','token' => '#$@#$#',      'status' => 401),
-            array('url'=>'https://active.noapi.low.testserver', 'token' => 'avalidtoken', 'status' => 403),
-            array('url'=>'https://active.noapi.low.testserver', 'token' => '#$@#$#',      'status' => 401),
-            array('url'=>'https://inactive.testserver',         'token' => 'avalidtoken', 'status' => 403),
-            array('url'=>'https://inactive.testserver',         'token' => '#$@#$#',      'status' => 401),
-            array('url'=>'https://noexist.testserver',          'token' => 'avalidtoken', 'status' => 404),
-            array('url'=>'https://noexist.testserver',          'token' => '#$@#$#',      'status' => 404),
-            array('url'=> NULL,                                 'token' => 'avalidtoken', 'status' => 400),
-            array('url'=> NULL,                                 'token' => '#$@#$#',      'status' => 400)
+        $i = 0;
+        $valid_server_urls = array(
+            array('url'=>'https://testserver/bob',  'token' => 'a')
         );
 
-        foreach ($data as $test_data) {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, '/api_v1/survey');
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-            //curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, array('server_url' => $test_data['url'], 'form_id' => 'anid'));
-            if (!empty($token)){
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-                curl_setopt($ch, CURLOPT_USERPWD, $test_data['token']);
-            } 
-            $result = curl_exec($ch);
-            $info = curl_getinfo($ch);
-            $http_code = $info['http_code'];
-            log_message('debug', 'api_v1 test for call to : '.json_encode($result));
-            $this->unit->run($http_code, $test_data['status'], 'status code correct, expected: '.$test_data['status'].' got: '.$http_code);
+        $invalid_combos = array(
+            array('token' => NULL,  'api'=>TRUE,  'quota' => 1000000, 'status' => 401),
+            array('token' => FALSE, 'api'=>TRUE,  'quota' => 1000000, 'status' => 401),
+            array('token' => TRUE,  'api'=>TRUE,  'quota' => -1,      'status' => 403),
+            array('token' => FALSE, 'api'=>TRUE,  'quota' => -1,      'status' => 401),
+            array('token' => TRUE,  'api'=>FALSE, 'quota' => 1000000, 'status' => 405),
+            array('token' => FALSE, 'api'=>FALSE, 'quota' => 1000000, 'status' => 401),
+            array('token' => TRUE,  'api'=>FALSE, 'quota' => -1,      'status' => 405),
+            array('token' => FALSE, 'api'=>FALSE, 'quota' => -1,      'status' => 401),
+            array('token' => TRUE,  'api'=>FALSE, 'quota' => NULL,    'status' => 404, 'url' => NULL),
+            array('token' => NULL,  'api'=>FALSE, 'quota' => NULL,    'status' => 404, 'url' => NULL)
+
+            //TODO ADD MORE TESTS AND INCLUDE 'trusted' => FALSE/TRUE
+        );
+        
+        // POST/GET /survey/..  200
+        foreach ($valid_server_urls as $combo) {
+            $token = $combo['token'];
+            $server_url = $combo['url'];
+            $survey_types = array(NULL, 'single', 'preview', 'all');
+            foreach ($survey_types as $type) {
+                $method_results = array(
+                    'POST'      => '200',
+                    'GET'       => '200',
+                    'PUT'       => '405',
+                    'OTHER'     => '405'
+                );
+                $options = array('type' => $type);
+                foreach ($method_results as $method => $expected) {
+                    $i_str = (string) $i;
+                    $params = array(
+                        'props'             => array('server_url' => $server_url, 'form_id' => 'something'),
+                        'account_status'    => array('quota' => 100000, 'api_token' => $token, 'api_access' => TRUE),
+                        'request_token'     => $token,
+                        'http_method'       => $method,
+                        'trusted'           => FALSE
+                    );
+                    $this->load->library('api_ver1', $params, $i_str);
+                    $i++;
+                    $response = $this->{$i_str}->survey_response($options);
+                    $this->unit->run(
+                        $response['code'], $expected, $method.' /api_v1/survey/'.$type.' => '.$response['code'].' (expected: '.$expected.')'
+                    );
+                }
+            }
         }
+        // GET/POST/DELETE /survey  201, 404, 204
+        $method_results = array(
+            'GET'       => '404',
+            'POST'      => '201',
+            'DELETE'    => '204'
+        );
+        foreach ($method_results as $method => $expected) {
+            $options = array('type' => NULL);
+            $form_id = 'nonexistingid';
+            $i_str = (string) $i;
+            $params = array(
+                'props'             => array('server_url' => $valid_server_urls[0]['url'], 'form_id' => $form_id),
+                'account_status'    => array('quota' => 100000, 'api_token' => $valid_server_urls[0]['token'], 'api_access' => TRUE),
+                'request_token'     => $valid_server_urls[0]['token'],
+                'http_method'       => $method,
+                'trusted'           => FALSE
+            );
+            $this->load->library('api_ver1', $params, $i_str);
+            $i++;
+            $response = $this->{$i_str}->survey_response($options);
+            $this->unit->run(
+                $response['code'], $expected, $method.' /api_v1/survey => '.$response['code'].' (expected: '.$expected.')'
+            );
+        }
+        // DELETE /survey 405
+        $options = array('type' => NULL);
+        $server_url = 'https://formhub.org/formhub_u';
+        $form_id = 'hh_polio_survey_cloned';
+        $token = 'sometoken';
+        $i_str = (string) $i;
+        $params = array(
+            'props'             => array('server_url' => $server_url, 'form_id' => $form_id),
+            'account_status'    => array('quota' => 100000, 'api_token' => $token, 'api_access' => TRUE),
+            'request_token'     => $token,
+            'http_method'       => $method,
+            'trusted'           => FALSE
+        );
+        $this->load->library('api_ver1', $params, $i_str);
+        $i++;
+        $response = $this->{$i_str}->survey_response($options);
+        log_message('debug', 'response: '.json_encode($response));
+        $this->unit->run(
+            $response['code'], '405', $params['http_method'].' /api_v1/survey => '.$response['code'].' (expected: 405)'
+        );
+        // GET/POST /survey errors
+        foreach ($invalid_combos as $combo) {
+            $token_acc = 'someacounttoken';
+            $token_req = ($combo['token'] === TRUE) 
+                ? $token_acc 
+                : (($combo['token'] === FALSE) ? 'somefalsetoken' : NULL);
+            $server_url = (isset($combo['url'])) ? $combo['url'] : 'https://testserver.com/bob';
+            $survey_types = array(NULL, 'single', 'preview', 'all');
+            foreach ($survey_types as $type) {
+                $methods = array('POST', 'GET');
+                $options = array('type' => $type);
+                foreach ($methods as $method) {
+                    $i_str = (string) $i;
+                    $params = array(
+                        'props'             => array('server_url' => $server_url, 'form_id' => 'something'),
+                        'account_status'    => array(
+                            'quota'      => $combo['quota'], 
+                            'api_token'  => $token_acc, 
+                            'api_access' => $combo['api']
+                        ),
+                        'request_token'     => $token_req,
+                        'http_method'       => $method,
+                        'trusted'           => FALSE
+                    );
+                    $this->load->library('api_ver1', $params, $i_str);
+                    $i++;
+                    $response = $this->{$i_str}->survey_response($options);
+                    $token_str = ( $combo['token'] === NULL ) ? 'null' : (($combo['token'] === FALSE) ? 'false' : 'true');
+                    $api_str = ( $combo['api'] === TRUE ) ? 'true' : 'false';
+                    $expected = $combo['status'];
+                    //if everything else is good for a GET request, the API returns a result even if the quota is NULL/FALSE
+                    if ($method === 'GET' && $combo['token'] === TRUE && $combo['api'] === TRUE){
+                        $expected = '200';
+                    }
+                    $this->unit->run(
+                        $response['code'], $expected, $method.' /api_v1/survey/'.$type.' '.
+                            'with server_url='.$server_url.' , $token: '.$token_str.
+                            ' and api access: '.$api_str.
+                            ' => '.$response['code'].' (expected: '.$expected.')'
+                    );
+                }
+            }
+        }
+
+        /***************************************/
+
+        $invalid_surveys_combos = array(
+            array('token' => NULL,  'api'=>TRUE,   'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('token' => FALSE, 'api'=>TRUE,   'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('token' => TRUE,  'api'=>TRUE,   'quota' => -1,      'trusted' => FALSE, 'status' => 200), //quota has no effect
+            
+            array('token' => NULL,  'api'=>FALSE,  'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('token' => FALSE, 'api'=>FALSE,  'quota' => 1000000, 'trusted' => FALSE, 'status' => 401),
+            array('token' => TRUE,  'api'=>FALSE,  'quota' => -1,      'trusted' => FALSE, 'status' => 403),
+
+            array('token' => NULL,  'api'=>FALSE,  'quota' => 1000000, 'trusted' => TRUE, 'status' => 200),
+            array('token' => FALSE, 'api'=>FALSE,  'quota' => 1000000, 'trusted' => TRUE, 'status' => 200),
+
+            array('token' => TRUE,  'api'=>TRUE,   'quota' => -1,      'trusted' => FALSE, 'status' => 400, 'url' => NULL),
+            array('token' => NULL,  'api'=>FALSE,  'quota' => 1000000, 'trusted' => TRUE,  'status' => 400, 'url' => NULL),
+            array('token' => FALSE, 'api'=>FALSE,  'quota' => 1000000, 'trusted' => TRUE,  'status' => 400, 'url' => NULL),
+            array('token' => TRUE,  'api'=>FALSE,  'quota' => -1,      'trusted' => TRUE,  'status' => 400, 'url' => NULL)
+        );
+
+        // GET/POST /surveys/.. 200/405 (checking methods)
+        $server_url = 'https://formhub.org/formhub_u';
+        $token = 'something';
+        
+        $types = array('number_launched', 'list');
+        foreach ($types as $type) {
+            $method_results = array(
+                'POST'      => '200',
+                'GET'       => '200',
+                'PUT'       => '405',
+                'DELETE'    => '405',
+                'OTHER'     => '405'
+            );
+            foreach ($method_results as $method => $expected) {
+                $i_str = (string) $i;
+                $params = array(
+                    'props'             => array('server_url' => $server_url, 'type' => $type),
+                    'account_status'    => array('quota' => 100000, 'api_token' => $token, 'api_access' => TRUE),
+                    'request_token'     => $token,
+                    'http_method'       => $method,
+                    'trusted'           => FALSE
+                );
+                $this->load->library('api_ver1', $params, $i_str);
+                $i++;
+                $response = $this->{$i_str}->surveys_response($type);
+                $this->unit->run(
+                    $response['code'], $expected, $method.' /api_v1/surveys/'.$type.' => '.$response['code'].' (expected: '.$expected.')'
+                );
+            }
+        }
+        // GET/POST /surveys errors
+        foreach ($invalid_surveys_combos as $combo) {
+            $token_acc = 'someacounttoken';
+            $token_req = ($combo['token'] === TRUE) 
+                ? $token_acc 
+                : (($combo['token'] === FALSE) ? 'somefalsetoken' : NULL);
+            $server_url = (isset($combo['url'])) ? $combo['url'] : 'https://testserver.com/bob';
+            $survey_types = array('number_launched', 'list');
+            foreach ($survey_types as $type) {
+                $methods = array('POST', 'GET');
+                foreach ($methods as $method) {
+                    $i_str = (string) $i;
+                    $params = array(
+                        'props'             => array('server_url' => $server_url),
+                        'account_status'    => array(
+                            'quota'      => $combo['quota'], 
+                            'api_token'  => $token_acc, 
+                            'api_access' => $combo['api']
+                        ),
+                        'request_token'     => $token_req,
+                        'http_method'       => $method,
+                        'trusted'           => FALSE
+                    );
+                    $this->load->library('api_ver1', $params, $i_str);
+                    $i++;
+                    $response = $this->{$i_str}->surveys_response($type);
+                    $token_str = ( $combo['token'] === NULL ) ? 'null' : (($combo['token'] === FALSE) ? 'false' : 'true');
+                    $api_str = ( $combo['api'] === TRUE ) ? 'true' : 'false';
+                    $trusted_str = ( $combo['trusted'] == TRUE) ? 'true' : 'false';
+                    $expected = $combo['status'];
+                    $this->unit->run(
+                        $response['code'], $expected, $method.' /api_v1/surveys/'.$type.' '.
+                            'with server_url='.$server_url.' , $token: '.$token_str.
+                            ' trusted: '.$trusted_str.' and api access: '.$api_str.
+                            ' => '.$response['code'].' (expected: '.$expected.')'
+                    );
+                }
+            }
+        }
+
         echo $this->unit->report();
     }
-    */
 }
 ?>

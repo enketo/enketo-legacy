@@ -18,7 +18,8 @@
 
 class Survey_model extends CI_Model {
 
-    //private $subdomain;
+    private $db_subdomain;
+    private $subdomain;
 
     function __construct()
     {
@@ -29,6 +30,7 @@ class Survey_model extends CI_Model {
         $this->subdomain = get_subdomain();
         $this->ONLINE_SUBDOMAIN_SUFFIX = '-0';
         $this->db_subdomain = ( $this->_has_subdomain_suffix() ) ? substr($this->subdomain, 0, strlen($this->subdomain)-strlen($this->ONLINE_SUBDOMAIN_SUFFIX)) : $this->subdomain;
+        log_message('debug', 'Survey model initalized');
     }
     
     // returns true if a requested survey form is live / published, used for manifest
@@ -39,15 +41,16 @@ class Survey_model extends CI_Model {
         return TRUE;      
     }
     
-    //returns true if a requested survey or template exists
+    //returns true if a requested survey or template exists and is active
     public function is_launched_survey()
-    {       
-        return ($this->_get_item('subdomain')) ? TRUE : FALSE;
+    {     
+        log_message('debug', 'checikign if subdomain exists in db and is active') ;
+        return ($this->_get_item('subdomain', TRUE)) ? TRUE : FALSE;
     }
     
     public function get_form_props()
     {
-        return $this->_get_items(array('server_url', 'form_id', 'hash', 'media_hash', 'xsl_version'));
+        return $this->_get_items(array('server_url', 'form_id', 'hash', 'media_hash', 'xsl_version'), TRUE);
     }
 
     public function get_server_url()
@@ -76,7 +79,7 @@ class Survey_model extends CI_Model {
         //If deciding to do this, be aware that the GET/POST /surveys/list will also stop working and is required
         //and is required by enketo_account_manager
 
-        $subdomain = $this->_get_subdomain($server_url, $form_id);
+        $subdomain = $this->_get_subdomain($server_url, $form_id, TRUE);
 
         if (!$subdomain) {
             return array(
@@ -114,7 +117,7 @@ class Survey_model extends CI_Model {
         } else if ($quota_used > $quota) {
             return $quota_exceeded_response;
         }
-        $existing_subdomain = $this->_get_subdomain($server_url, $form_id); //duplicates check in _launch;
+        $existing_active_subdomain = $this->_get_subdomain($server_url, $form_id, TRUE); //duplicates check in _launch;
         $subdomain = $this->_launch($server_url, $form_id, $submission_url);
 
         if (!$subdomain) {
@@ -128,15 +131,24 @@ class Survey_model extends CI_Model {
 
         //if (!$result) {} 
 
-        if ($options['type'] == 'edit') {
+        if ($options['type'] == 'edit' || $options['type'] == 'all') {
             $result['subdomain'] = $subdomain;
         }
 
-        if ($result && $existing_subdomain) {
+        if ($result && $existing_active_subdomain) {
             $result['existing'] = TRUE;
         } 
 
         return $result;
+    }
+
+    public function deactivate_webform_url($server_url, $form_id)
+    {
+        $this->db_subdomain = $this->_get_subdomain($server_url, $form_id);
+        if (!$this->db_subdomain) {
+            return FALSE;
+        }
+        return $this->_update_item('active' , FALSE);
     }
 
     /*public function get_webform_single_url_if_launched($server_url, $form_id, $options=NULL)
@@ -230,8 +242,12 @@ class Survey_model extends CI_Model {
     {
         if ($server_url && url_valid($server_url) && !empty($form_id)) {
             //TODO: CHECK URLS FOR LIVENESS?
-            $existing_subdomain = $this->_get_subdomain($server_url, $form_id);
+            $existing_subdomain = $this->_get_subdomain($server_url, $form_id, NULL);
             if ( $existing_subdomain ) {
+                $this->db_subdomain = $existing_subdomain;
+                if (!$this->_is_active()) {
+                    $this->_update_item('active' , TRUE);
+                }
                 return $existing_subdomain;
             }
             $subdomain = $this->_generate_subdomain();
@@ -343,11 +359,11 @@ class Survey_model extends CI_Model {
                 return ($subdomain) 
                     ? array(
                         'url'               => $this->_get_full_survey_url($subdomain),
-                        'iframe_url'        => $this->_get_full_survey_url($survey_url, array('iframe' => true)),
+                        'iframe_url'        => $this->_get_full_survey_url($subdomain, array('iframe' => true)),
                         'single_url'        => $this->_get_full_survey_single_url($subdomain),
                         'single_iframe_url' => $this->_get_full_survey_single_url($subdomain, array('iframe' => true)),
-                        'preview_url'       => $this->_get_submission_url($server_url, $form_id),
-                        'preview_iframe_url'=> $this->_get_submission_url($server_url, $form_id, $options)
+                        'preview_url'       => $this->_get_preview_url($server_url, $form_id),
+                        'preview_iframe_url'=> $this->_get_preview_url($server_url, $form_id, $options)
                     ) 
                     : NULL;
                 break;
@@ -388,7 +404,8 @@ class Survey_model extends CI_Model {
     {
         if (!empty($subdomain)) {
             $query_str = $this->_get_query_string($options);
-            return $this->_get_base_url($subdomain).'/webform'.$query_str;
+            $offline_only = (!empty($options['iframe'])) ? TRUE : FALSE;
+            return $this->_get_base_url($subdomain, $offline_only).'/webform'.$query_str;
         }
         return NULL;
     }
@@ -441,7 +458,7 @@ class Survey_model extends CI_Model {
     {
         if (!empty($server_url) && !empty($form_id)) {
             $query_params = $this->_get_query_params_str($options);
-            return $this->_get_base_url().'/webform/preview?server='.urlencode($server_url).'&id='.urlencode($form_id).$query_params;
+            return base_url().'webform/preview?server='.urlencode($server_url).'&id='.urlencode($form_id).$query_params;
         }
         return NULL;
     }
@@ -458,7 +475,7 @@ class Survey_model extends CI_Model {
 
     private function _get_query_params_str($options = NULL)
     {
-        return ($options && $options['iframe']) ? '&iframe=true' : '';
+        return ($options && !empty($options['iframe'])) ? '&iframe=true' : '';
     }
 
     private function _get_submission_url($server_url)
@@ -508,13 +525,14 @@ class Survey_model extends CI_Model {
         return $subdomain;
     }
     
-    private function _get_subdomain($server_url, $form_id)
+    private function _get_subdomain($server_url, $form_id, $active = TRUE)
     {
+        $active_str = ($active == TRUE) ? ' AND active = 1' : '';
         $alt_server_url_1 = $this->_switch_protocol($server_url);
         $alt_server_url_2 = $this->_switch_www($server_url);
         $alt_server_url_3 = $this->_switch_www($alt_server_url_1);
         $this->db->select('subdomain');
-        $this->db->where("server_url = '".$server_url."' AND BINARY form_id = '".$form_id."'");
+        $this->db->where("server_url = '".$server_url."' AND BINARY form_id = '".$form_id."'".$active_str);
         $this->db->or_where("server_url = '".$alt_server_url_1."' AND BINARY form_id = '".$form_id."'");
         $this->db->or_where("server_url = '".$alt_server_url_2."' AND BINARY form_id = '".$form_id."'");
         $this->db->or_where("server_url = '".$alt_server_url_3."' AND BINARY form_id = '".$form_id."'");
@@ -529,9 +547,15 @@ class Survey_model extends CI_Model {
         }
     }
 
-    private function _get_item($field)
+    private function _is_active()
     {
-        $item_arr = $this->_get_items($field);
+        $active = $this->_get_item('active');
+        return !empty($active);
+    }
+
+    private function _get_item($field, $active = TRUE)
+    {
+        $item_arr = $this->_get_items($field, $active);
         if (!empty($item_arr[$field]))
         {
             return $item_arr[$field];
@@ -539,20 +563,18 @@ class Survey_model extends CI_Model {
         return NULL;
     }
 
-    private function _get_items($items)
+    private function _get_items($items, $active = TRUE)
     {  
+        $active_str = ($active == TRUE) ? ' AND active = 1' : '';
         $this->db->select($items);
-        $this->db->where('subdomain', $this->db_subdomain);
+        $this->db->where("subdomain = '".$this->db_subdomain."'".$active_str);
         $query = $this->db->get('surveys', 1); 
-        if ($query->num_rows() === 1) 
-        {
+        if ($query->num_rows() === 1) {
             $row = $query->row_array();
             return $row;
-        }
-        else 
-        {
-            log_message('error', 'db query for '.implode(', ', $items)).' returned '.$query->num_rows().' results.';
-            return NULL;   
+        } else {
+            log_message('error', 'db query for '.json_encode($items).' returned '.$query->num_rows().' results.');
+            return NULL;
         }
     }
 
@@ -565,22 +587,21 @@ class Survey_model extends CI_Model {
     private function _update_item($field, $value)
     {
         $data = array($field => $value);
-        $result = $this->_update_items($data);
-        return $result;
+        return $this->_update_items($data);
     }
 
     private function _update_items($data)
     {
         $this->db->where('subdomain', $this->db_subdomain);
         $this->db->limit(1);
-        $query = $this->db->update('surveys', $data); 
+        $query = $this->db->update('surveys', $data);
         if ($this->db->affected_rows() > 0) 
         {
             return TRUE;
         }
         else 
         {
-            log_message('error', 'database update on record with subdomain '.$this->db_subdomain);
+            log_message('debug', 'failed database update '.$this->db->last_query());
             return FALSE;   
         }
     }

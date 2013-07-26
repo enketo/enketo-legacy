@@ -128,7 +128,8 @@ class Api_v1 extends CI_Controller {
         if ($response['code'] == '401'){
             header('WWW-Authenticate: Basic realm="Valid Enketo API Token Required"');
             header('HTTP/1.0 401 Unauthorized');
-            echo("Please enter a valid API Token (username) for your server.");
+            //echo("Please enter a valid API Token (username) for your server.");
+            echo (json_format(json_encode($response)));
             exit();
         } else {
             $this->output

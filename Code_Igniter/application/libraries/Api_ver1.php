@@ -50,6 +50,7 @@ class Api_ver1 {
         } else {
             if (!$this->_authenticated()) {
                 $response['code']       = '401';
+                $response['message']    = 'Access denied: invalid authentication token.';
             } else if ($this->status['quota'] === FALSE || $this->status['quota'] === 0) {
                 $response['message']    = 'account requires payment or an upgrade';
                 $response['code']       = '403';
@@ -75,22 +76,23 @@ class Api_ver1 {
         $response = array();
        
         if (empty($this->params['server_url'])) {
-            $response['code'] = '400';
+            $response['code']    = '400';
             $response['message'] = 'bad request';
         } else if ($this->status['quota'] === NULL) {
-            $response['code'] = '404';
+            $response['code']    = '404';
             $response['message'] = 'no account exists for this OpenRosa server';
         } else if (!$this->_authenticated()) {
-            $response['code'] = '401';
+            $response['code']    = '401';
+            $response['message'] = 'Access denied: invalid authentication token.';
         } else if (empty($type) || ($this->method !== 'GET' && $this->method !== 'POST')){
-            $response['code'] = '405';
+            $response['code']    = '405';
             $response['message'] = 'method not allowed';
         } else if (!$this->trusted && !$this->_has_api_access()){
-            $response['code'] = '405';
+            $response['code']    = '405';
             $response['message'] = 'api access is not allowed on your account';
         } else {
             switch($type){
-                case 'number_launched':
+                case 'number':
                     $response = $this->_surveys_number();
                     break;
 
@@ -113,7 +115,7 @@ class Api_ver1 {
         $iframe = ($type === 'iframe');
 
         if ($this->method !== 'POST' || ($type !== NULL && $type !== 'iframe')) {
-            $response['code'] = '405';
+            $response['code']    = '405';
             $response['message'] = 'method not allowed';
         } if (empty($this->params['server_url']) 
                 || empty($this->params['form_id']) 
@@ -130,12 +132,13 @@ class Api_ver1 {
                 (empty($this->params['return_url']) ? 'return_url, ' : ''), 0, -2).')';
         } else {
             if (!$this->_authenticated()) {
-                $response['code'] = '401';
+                $response['code']    = '401';
+                $response['message'] = 'Access denied: invalid authentication token.';
             } else if ($this->status['quota'] === FALSE || $this->status['quota'] === 0) {
-                $response['code'] = '403';
+                $response['code']    = '403';
                 $response['message'] = 'account requires payment or an upgrade';
             } else if (!$this->_has_api_access()) {
-                $response['code'] = '405';
+                $response['code']    = '405';
                 $response['message'] = 'api access is not allowed on your account';
             } else {
                 $response = $this->_post_instance($iframe);
@@ -158,7 +161,7 @@ class Api_ver1 {
     {
         $response = array();
         $response['number'] = $this->CI->Survey_model->number_surveys($this->params['server_url']);
-        $response['code'] = '200';
+        $response['code']   = '200';
         return $response;
     }
 
@@ -174,15 +177,34 @@ class Api_ver1 {
 
         if($this->CI->Form_model->requires_auth()) {
             //log_message('debug', 'AUTHENTICATION REQUIRED');
-            $response['code'] = '403';
+            $response['code']    = '403';
             $response['message'] = 'Form Server requires authorization. Please login <a href="'.
                 base_url().'authenticate/login">here</a> first.';
         } else {
             //log_message('debug', 'auth not required to obtain formlist');
-            $response = $this->CI->Form_model->get_formlist_JSON();
-            $response['code'] = '200'; //also for empty responses
+            //$response['forms'] = $this->CI->Form_model->get_formlist_JSON(FALSE);
+            $forms_launched = $this->CI->Survey_model->get_webform_list($this->params['server_url']);
+            $forms_listed   = $this->CI->Form_model->get_formlist_JSON(FALSE);
+            
+            foreach ($forms_launched as $i => $form_launched) {
+                $forms_launched[$i]['delete_allowed'] = !$this->_in_list($forms_listed, 'form_id', $form_launched['form_id']);
+            }
+
+            $response['forms']  = $forms_launched;
+            $response['code']   = '200'; //also for empty responses
         }
         return $response;
+    }
+
+
+    private function _in_list($array, $key, $value)
+    {
+        foreach ($array as $subarray) {
+            if (isset($subarray[$key]) && $subarray[$key] == $value) {
+                return TRUE;
+            }
+        }
+        return FALSE;
     }
 
     private function _post_instance($iframe)
@@ -191,7 +213,7 @@ class Api_ver1 {
         $response = $this->_post_survey($options);
         //log_message('debug', 'response so far: '.json_encode($response));
         if (empty($response)) {
-            $response['code'] = '404';
+            $response['code']   = '404';
             $resonse['message'] = 'unknown error occurred';
         } else if(empty($response['subdomain'])) {
             if (isset($response['error'])) {
@@ -202,7 +224,7 @@ class Api_ver1 {
                 }
                 unset($response['error']);
             } else {
-                $response['code'] = '404';
+                $response['code']    = '404';
                 $response['message'] = 'unknown error occurred (no subdomain returned)';
             }
         } else {
@@ -212,7 +234,7 @@ class Api_ver1 {
                 $this->params['return_url']);
             if ($rs == NULL) {
                 unset($response['edit_url']);
-                $response['code'] = '405';
+                $response['code']    = '405';
                 $response['message'] = 'somebody else is editing this instance';
             } else if(!empty($response['existing'])) {
                 unset($response['existing']);
@@ -238,11 +260,11 @@ class Api_ver1 {
         $this->CI->Form_model->setup($this->params['server_url'], $this->params['form_id'], $credentials);
         if($this->CI->Form_model->requires_auth()) {
             //log_message('debug', 'AUTHENTICATION REQUIRED');
-            $response['code'] = '403';
+            $response['code']    = '403';
             $response['message'] = 'Form Server requires authorization. Please login <a href="'.
                 base_url().'authenticate/login">here</a> first.';
         } else if ($this->CI->Form_model->is_listed($this->params['server_url'], $this->params['form_id'])){
-            $response['code'] = '405';
+            $response['code']    = '405';
             $response['message'] = 'form still hosted on form server, see '.$this->params['server_url'].'/formList';
         } else {
             $result = $this->CI->Survey_model->deactivate_webform_url($this->params['server_url'], $this->params['form_id']);

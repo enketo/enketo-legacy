@@ -44,7 +44,6 @@ class Survey_model extends CI_Model {
     //returns true if a requested survey or template exists and is active
     public function is_launched_survey()
     {     
-        log_message('debug', 'checikign if subdomain exists in db and is active') ;
         return ($this->_get_item('subdomain', TRUE)) ? TRUE : FALSE;
     }
     
@@ -84,7 +83,7 @@ class Survey_model extends CI_Model {
         if (!$subdomain) {
             return array(
                 'error'     => 'subdomain',
-                'message'   => 'error while creating subdomain'
+                'message'   => 'could not find form in database'
             );
         }
 
@@ -98,6 +97,16 @@ class Survey_model extends CI_Model {
         }
 
         return $result;
+    }
+
+    public function get_webform_list($server_url = NULL)
+    {
+        $surveys = $this->_get_records($server_url);
+        foreach ($surveys as $i => $survey) {
+            $surveys[$i]['url'] = $this->_get_full_survey_url($survey['subdomain']);
+            unset($surveys[$i]['subdomain']);
+        }
+        return $surveys;
     }
 
     /**
@@ -337,7 +346,7 @@ class Survey_model extends CI_Model {
     }
     */
 
-    private function _get_webform_urls($subdomain, $server_url, $form_id, $options)
+    private function _get_webform_urls($subdomain, $server_url, $form_id, $options = array('type' => NULL))
     {
         switch($options['type']) {
             case NULL:
@@ -578,10 +587,21 @@ class Survey_model extends CI_Model {
         }
     }
 
-    private function _get_record_number($server_url)
+    private function _get_record_number($server_url = NULL)
     {
-        $query = (!$server_url) ? $this->db->get('surveys') : $this->db->get_where('surveys', array('server_url' => $server_url));
+        $query = (!$server_url) 
+            ? $this->db->get('surveys', array('active' => TRUE))
+            : $this->db->get_where('surveys', array('server_url' => $server_url, 'active' => TRUE));
         return $query->num_rows(); 
+    }
+
+    private function _get_records($server_url = NULL)
+    {
+        $this->db->select(array('subdomain', 'form_id', 'transform_result_title'));
+        $query = (!$server_url) 
+            ? $this->db->get_where('surveys', array('active' => TRUE)) 
+            : $this->db->get_where('surveys', array('server_url' => $server_url, 'active' => TRUE));
+        return $query->result_array();
     }
 
     private function _update_item($field, $value)

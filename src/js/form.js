@@ -2037,9 +2037,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
 			this.$group = $group || $form;
 			this.readonlyWidget(); //call before other widgets
 			this.pageBreakWidget();
-			if (!Modernizr.touch || !Modernizr.inputtypes.date){
+			//if (!Modernizr.touch || !Modernizr.inputtypes.date){
 				this.dateWidget();
-			}
+			//}
 			if (!Modernizr.touch || !Modernizr.inputtypes.time){
 				this.timeWidget();
 			}

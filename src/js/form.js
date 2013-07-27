@@ -2063,7 +2063,6 @@ function Form (formSelector, dataStr, dataStrToEdit){
             else{
                 this.mobileSelectWidget();
                 this.touchRadioCheckWidget();
-                //this.samsungTab2DateBugWidget();
             }
             this.geopointWidget();
             this.tableWidget();

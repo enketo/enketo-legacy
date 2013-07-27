@@ -2097,7 +2097,7 @@ h2, h3, h4, legend { color: #0d0d0d; }
 .datepicker-months td, .datepicker-months th, .datepicker-years td, .datepicker-years th { width: 65px; }
 
 /** BOOTSTRAP DATEPICKER Tweaks for Mobile **/
-.touch .datepicker td, .touch .datepicker th { font-size: 25px; width: 35px; height: 35px; }
+.touch .datepicker .datepicker-days td, .touch .datepicker .datepicker-days th { font-size: 25px; width: 35px; height: 35px; }
 
 .icon-crosshairs { background-image: url("../images/crosshairs.png"); background-position: -5px -5px; }
 
@@ -2293,3 +2293,6 @@ fieldset .remove { float: right; margin-right: 0; }
 .btn-radiocheck:hover, .btn-radiocheck:focus, .btn-radiocheck:active, .btn-radiocheck[data-checked] { background-color: #e4f4ff; }
 
 .input-append .add-on { padding: 13px 5px 7px 5px; }
+
+.touch .datepicker .datepicker-days td, .touch .datepicker .datepicker-days th { font-size: 30px; width: 55px; height: 55px; }
+.touch .datepicker .datepicker-days .datepicker-months td, .touch .datepicker .datepicker-days .datepicker-months th, .touch .datepicker .datepicker-days .datepicker-years td, .touch .datepicker .datepicker-days .datepicker-years th { width: 90px; }

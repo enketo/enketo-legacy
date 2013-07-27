@@ -13,11 +13,15 @@ $input-max-width: 80%;
 		width: 65px;} }
 
 /** BOOTSTRAP DATEPICKER Tweaks for Mobile **/
-.touch .datepicker {
+.touch .datepicker .datepicker-days{
 	td, th {
 		font-size: 25px;
   		width: 35px;
-  		height: 35px; } }
+  		height: 35px; }
+  	.datepicker-months, .datepicker-years {
+		td, th { 
+			} } }
+
 
 //additional icons
 .icon-crosshairs{

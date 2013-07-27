@@ -33,11 +33,13 @@ h2,h3,h4,legend{
 .input-append .add-on{
     padding: 13px 5px 7px 5px;
 }
-.touch .datepicker .datepicker-days{
-    td, th {
-        font-size: 30px;
-        width: 55px;
-        height: 55px; }
+.datepicker {
+    .datepicker-days {
+        td, th {
+            font-size: 30px;
+            width: 55px;
+            height: 55px; } }
     .datepicker-months, .datepicker-years {
         td, th { 
-            width: 90px; } } }
+            width: 140px;
+            height: 100px; } } }

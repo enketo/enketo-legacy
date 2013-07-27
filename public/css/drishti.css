@@ -2294,5 +2294,5 @@ fieldset .remove { float: right; margin-right: 0; }
 
 .input-append .add-on { padding: 13px 5px 7px 5px; }
 
-.datepicker .datepicker-days td, .datepicker .datepicker-days th { font-size: 30px; width: 55px; height: 55px; }
+.datepicker .datepicker-days td, .datepicker .datepicker-days th { font-size: 30px; width: 75px; height: 55px; }
 .datepicker .datepicker-months td, .datepicker .datepicker-months th, .datepicker .datepicker-years td, .datepicker .datepicker-years th { width: 140px; height: 100px; }

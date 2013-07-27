@@ -23,8 +23,7 @@ class Webform extends CI_Controller {
 		parent::__construct();
 		$this->load->helper(array('subdomain','url', 'form'));
 		$this->load->model('Survey_model','',TRUE);
-		$this->default_library_scripts = array
-		(
+		$this->default_library_scripts = array(
 			'/libraries/jquery.min.js',
 			'/libraries/bootstrap/js/bootstrap.min.js',	
 			'/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
@@ -34,8 +33,7 @@ class Webform extends CI_Controller {
 			'/libraries/FileSaver.min.js',
 			'/libraries/BlobBuilder.min.js'
 		);
-		$this->default_main_scripts = array
-		(
+		$this->default_main_scripts = array(
 			'/js-source/helpers.js',
 			'/js-source/gui.js',
 			'/js-source/form.js',
@@ -46,11 +44,13 @@ class Webform extends CI_Controller {
 			'/js-source/survey_controls.js',
 			'/js-source/debug.js'
 		);
-		$this->default_stylesheets = array
-		(
+		$this->default_stylesheets = array(
 			array( 'href' => '/css/webform.css', 'media' => 'all'),
 			array( 'href' => '/css/webform_print.css', 'media' => 'print')
 		);
+        $this->dristhi_stylesheets = array (
+            array( 'href' => '/css/drishti.css', 'media' => 'all')
+        );
 		$sub = get_subdomain();
 		$suf = $this->Survey_model->ONLINE_SUBDOMAIN_SUFFIX;
 		$this->subdomain = ($this->Survey_model->has_offline_launch_enabled()) ? $sub : substr($sub, 0, strlen($sub) - strlen($suf));
@@ -89,7 +89,7 @@ class Webform extends CI_Controller {
 				'html_title' => $form->title,
 				'form'=> $form->html,
 				'form_data'=> $form->default_instance,
-				'stylesheets'=> $this->default_stylesheets,
+				'stylesheets'=> ($this->input->get('dristhi') == 'true') ? $this->dristhi_stylesheets : $this->default_stylesheets,
 				'server_url' => $this->server_url,
 				'form_id' => $this->form_id,
 				'logout' => $this->credentials !== NULL

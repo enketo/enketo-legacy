@@ -2082,6 +2082,12 @@ progress { display: block; margin: 10px auto; }
 
 .input-append.date .add-on i, .input-prepend.date .add-on i { display: block; cursor: pointer; width: 16px; height: 16px; }
 
+/** BOOTSTRAP DATEPICKER Fix for month/year views **/
+.datepicker-months td, .datepicker-months th, .datepicker-years td, .datepicker-years th { width: 65px; }
+
+/** BOOTSTRAP DATEPICKER Tweaks for Mobile **/
+.touch .datepicker td, .touch .datepicker th { font-size: 25px; width: 35px; height: 35px; }
+
 .icon-crosshairs { background-image: url("../images/crosshairs.png"); background-position: -5px -5px; }
 
 .paper { position: relative; }

@@ -2107,7 +2107,8 @@ progress { display: block; margin: 10px auto; }
 .datepicker-months td, .datepicker-months th, .datepicker-years td, .datepicker-years th { width: 65px; }
 
 /** BOOTSTRAP DATEPICKER Tweaks for Mobile **/
-.touch .datepicker .datepicker-days td, .touch .datepicker .datepicker-days th { font-size: 25px; width: 35px; height: 35px; }
+.touch .datepicker .datepicker-days td, .touch .datepicker .datepicker-days th { font-size: 25px; width: 40px; height: 40px; }
+.touch .datepicker .datepicker-months td, .touch .datepicker .datepicker-months th, .touch .datepicker .datepicker-years td, .touch .datepicker .datepicker-years th { width: 100px; }
 
 .icon-crosshairs { background-image: url("../images/crosshairs.png"); background-position: -5px -5px; }
 

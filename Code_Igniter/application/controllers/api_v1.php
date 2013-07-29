@@ -57,8 +57,10 @@ class Api_v1 extends CI_Controller {
 
     public function index()
     {
-        $data = array('stylesheets' => array(), 'scripts' => array(), 'title_component' => 'API V1 Documentation');
-        $this->load->view('api_documentation_view', $data);
+        //$data = array('stylesheets' => array(), 'scripts' => array(), 'title_component' => 'API V1 Documentation');
+        //$this->load->view('api_documentation_view', $data);
+        $this->load->helper('url');
+        redirect('http://apidocs.enketo.org', 'refresh');
     }
 
     public function survey($view_type = NULL, $view_subtype = NULL)

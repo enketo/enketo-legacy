@@ -35,7 +35,7 @@ class Api_ver1 {
         $this->method   = $params['http_method'];
         $this->trusted  = $params['trusted'];
         $this->CI->load->model('Survey_model', '', TRUE);
-        log_message('debug', 'Api_v1 library initialized with '.json_encode($params));
+        //log_message('debug', 'Api_v1 library initialized with '.json_encode($params));
     }
 
     public function survey_response($options)
@@ -113,15 +113,14 @@ class Api_ver1 {
     {
         $response = array();
         $iframe = ($type === 'iframe');
-
-        if ($this->method !== 'POST' || ($type !== NULL && $type !== 'iframe')) {
+        if (($this->method !== 'POST' && $this->method !== 'DELETE') || (!empty($type) && $type !== 'iframe')) {
             $response['code']    = '405';
             $response['message'] = 'method not allowed';
-        } if (empty($this->params['server_url']) 
+        } else if (empty($this->params['server_url']) 
                 || empty($this->params['form_id']) 
-                || empty($this->params['instance']) 
+                || ( empty($this->params['instance']) && $this->method == 'POST') 
                 || empty($this->params['instance_id']) 
-                || empty($this->params['return_url'])
+                || ( empty($this->params['return_url']) && $this->method == 'POST')
         ) {
             $response['code'] = '400';
             $response['message'] = substr('bad request (requires '. 
@@ -137,10 +136,15 @@ class Api_ver1 {
             } else if ($this->status['quota'] === FALSE || $this->status['quota'] === 0) {
                 $response['code']    = '403';
                 $response['message'] = 'account requires payment or an upgrade';
+            } else if ($this->status['quota'] === NULL) {
+                $response['code']    = '404';
+                $response['message'] = 'no account exists for this OpenRosa server';
             } else if (!$this->_has_api_access()) {
                 $response['code']    = '405';
                 $response['message'] = 'api access is not allowed on your account';
-            } else {
+            } else if ($this->method === 'DELETE') {
+                $response = $this->_del_instance();
+            } else if ($this->method === 'POST') {
                 $response = $this->_post_instance($iframe);
             }
         }
@@ -176,13 +180,10 @@ class Api_ver1 {
         $this->CI->Form_model->setup($this->params['server_url'], NULL, $credentials);
 
         if($this->CI->Form_model->requires_auth()) {
-            //log_message('debug', 'AUTHENTICATION REQUIRED');
             $response['code']    = '403';
             $response['message'] = 'Form Server requires authorization. Please login <a href="'.
                 base_url().'authenticate/login">here</a> first.';
         } else {
-            //log_message('debug', 'auth not required to obtain formlist');
-            //$response['forms'] = $this->CI->Form_model->get_formlist_JSON(FALSE);
             $forms_launched = $this->CI->Survey_model->get_webform_list($this->params['server_url']);
             $forms_listed   = $this->CI->Form_model->get_formlist_JSON(FALSE);
             
@@ -211,23 +212,8 @@ class Api_ver1 {
     {
         $options = array('type' => 'edit', 'iframe' => $iframe, 'instance_id' => $this->params['instance_id']);
         $response = $this->_post_survey($options);
-        //log_message('debug', 'response so far: '.json_encode($response));
-        if (empty($response)) {
-            $response['code']   = '404';
-            $resonse['message'] = 'unknown error occurred';
-        } else if(empty($response['subdomain'])) {
-            if (isset($response['error'])) {
-                if ($response['error'] == 'full') {
-                    $response['code'] = '403';
-                } else {
-                    $response['code'] = '404';
-                }
-                unset($response['error']);
-            } else {
-                $response['code']    = '404';
-                $response['message'] = 'unknown error occurred (no subdomain returned)';
-            }
-        } else {
+
+        if (!empty($response) && !empty($response['edit_url'])) {
             $this->CI->load->model('Instance_model', '', TRUE);
             $rs = $this->CI->Instance_model->insert_instance(
                 $response['subdomain'], $this->params['instance_id'], $this->params['instance'], 
@@ -236,11 +222,31 @@ class Api_ver1 {
                 unset($response['edit_url']);
                 $response['code']    = '405';
                 $response['message'] = 'somebody else is editing this instance';
-            } else if(!empty($response['existing'])) {
-                unset($response['existing']);
-                $response['code'] = '200';
             } else {
-                $response['code'] = '201';
+                //adjust the response code, 201 is successful INSTANCE db entry
+                //200 is never returned as protection agains simultanous editing of same record
+                $response['code']   = '201';
+            } 
+            unset($response['subdomain']);
+        }
+        return $response;
+    }
+
+    private function _del_instance()
+    {
+        $options = array('type' => 'edit', 'instance_id' => $this->params['instance_id']);
+        $response = $this->_post_survey($options);
+        
+        if (!empty($response) && !empty($response['subdomain'])) {
+            $this->CI->load->model('Instance_model', '', TRUE);
+            $result = $this->CI->Instance_model->remove_instance(
+                $response['subdomain'], $this->params['instance_id']);
+            if (!$result) {
+                unset($response['edit_url']);
+                $response['code']    = '404';
+                $response['message'] = 'instance could not be deleted (probably was deleted already)';
+            } else {
+                $response['code']    = '204';
             }
             unset($response['subdomain']);
         }
@@ -259,7 +265,6 @@ class Api_ver1 {
         $credentials = $this->CI->form_auth->get_credentials();
         $this->CI->Form_model->setup($this->params['server_url'], $this->params['form_id'], $credentials);
         if($this->CI->Form_model->requires_auth()) {
-            //log_message('debug', 'AUTHENTICATION REQUIRED');
             $response['code']    = '403';
             $response['message'] = 'Form Server requires authorization. Please login <a href="'.
                 base_url().'authenticate/login">here</a> first.';

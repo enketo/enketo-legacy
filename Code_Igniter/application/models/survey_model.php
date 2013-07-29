@@ -24,7 +24,6 @@ class Survey_model extends CI_Model {
     function __construct()
     {
         parent::__construct();
-        log_message('debug', 'Survey Model loaded');
         $this->load->helper(array('subdomain', 'url', 'string', 'http'));
         //$this->load->model('Account_model');
         $this->subdomain = get_subdomain();
@@ -121,8 +120,8 @@ class Survey_model extends CI_Model {
         );
         
         if ( $quota_used == $quota ){
-            $url = $this->get_webform_url_if_launched($server_url, $form_id, $options);
-            return ($url) ? $url : $quota_exceeded_response;
+            $url_obj = $this->get_webform_url_if_launched($server_url, $form_id, $options);
+            return ($url_obj) ? $url_obj : $quota_exceeded_response;
         } else if ($quota_used > $quota) {
             return $quota_exceeded_response;
         }
@@ -160,46 +159,7 @@ class Survey_model extends CI_Model {
         return $this->_update_item('active' , FALSE);
     }
 
-    /*public function get_webform_single_url_if_launched($server_url, $form_id, $options=NULL)
-    {
-        $subdomain = $this->_get_subdomain($server_url, $form_id);        
-        return ($subdomain) ? $this->_get_full_survey_single_url($subdomain) : NULL;
-    }
 
-    public function get_webform_edit_url_if_launched($server_url, $form_id, $options=NULL)
-    {
-        $subdomain = $this->_get_subdomain($server_url, $form_id);       
-        return ($subdomain) ? $this->_get_full_survey_edit_url($subdomain) : NULL;
-    }
-
-    @deprecated
-    public function get_webform_url_old($server_url, $form_id, $quota, $options=NULL)
-    {
-        $quota_used = $this->_get_record_number($server_url);
-        $quota_exceeded_response = array('message' => 'the quota for this account has been used up, consider upgrading');
-        
-        if ( $quota_used == $quota ){
-            $url = $this->get_webform_url_if_launched($server_url, $form_id, $options);
-            return ($url) ? array('url' => $url) : $quota_exceeded_response;
-        } else if ($quota_used > $quota) {
-            return $quota_exceeded_response;
-        }
-        
-        $subdomain = $this->_launch($server_url, $form_id);
-        
-        return ($subdomain) ? array('url' => $this->_get_full_survey_url($subdomain, $options)) : NULL;
-    }
-
-    public function get_webform_single_url($server_url, $form_id, $quota, $options=NULL)
-    {
-
-    }
-
-    public function get_webform_preview_url($server_url, $form_id, $options=NULL)
-    {
-        return $this->_get_full_survey_preview_url($server_url, $form_id);
-    }
-    */
     public function has_offline_launch_enabled()
     {
         return !$this->_has_subdomain_suffix();
@@ -279,72 +239,6 @@ class Survey_model extends CI_Model {
         }
         return NULL;
     }
-
-    /**
-     * @deprecated
-     **/
-    /*
-    public function launch_survey($server_url, $form_id, $submission_url, $data_url=NULL, $email=NULL)
-    {  
-        if (url_valid($server_url) && url_valid($submission_url) && (url_valid($data_url) || $data_url === NULL)) {
-            //TODO: CHECK URLS FOR LIVENESS?
-            $existing_subdomain = $this->_get_subdomain($server_url, $form_id);
-            if ( $existing_subdomain ) {
-                $subdomain = $existing_subdomain;
-                $success = FALSE;
-                $reason = 'existing';
-            } //else if (!$this->Account_model->launch_allowed($server_url)) {
-              //  $success = FALSE;
-              //  $reason = $this->Account_model->get_reason();
-            } // else {
-                $subdomain = $this->_generate_subdomain();     
-                $data = array(
-                    'subdomain'         => $subdomain,
-                    'server_url'        => strtolower($server_url),
-                    'form_id'           => $form_id,
-                    'submission_url'    => strtolower($submission_url),
-                    'data_url'          => strtolower($data_url),
-                    'email'             => $email,
-                    'launch_date'       => date( 'Y-m-d H:i:s', time())
-                );
-
-                $result = $this->db->insert('surveys', $data);
-                
-                if (!$result) {
-                    $success = FALSE;
-                    $reason = 'database';
-                    unset($subdomain);
-                } else {
-                    $success = TRUE;
-                    $reason = 'new';
-                }
-            }
-
-            $survey_url = (isset($subdomain)) ? $this->_get_full_survey_url($subdomain) : '';
-            $edit_url = (isset($subdomain)) ? $this->_get_full_survey_edit_url($subdomain) : '';
-            $iframe_url = (isset($subdomain)) ? $this->_get_full_survey_iframe_url($subdomain) : '';
-
-            return (isset($subdomain)) ? 
-                array
-                (
-                    'success' => $success, 
-                    'url'=> $survey_url, 
-                    'edit_url' => $edit_url, 
-                    'iframe_url' => $iframe_url, 
-                    'subdomain' => $subdomain,
-                    'reason' => $reason
-                ) 
-                : 
-                array
-                (
-                    'success' => $success, 
-                    'reason' => $reason
-                );
-        }
-        log_message('error', 'unknown error occurred when trying to launch survey');
-        return array('success'=>FALSE, 'reason'=>'unknown');
-    }
-    */
 
     private function _get_webform_urls($subdomain, $server_url, $form_id, $options = array('type' => NULL))
     {
@@ -432,19 +326,6 @@ class Survey_model extends CI_Model {
         }
         return NULL;
     }
-
-    /**
-     * @method _get_full_iframe_url turns a subdomain into the full url where an iframeable webform is available
-     * 
-     * @param $subdomain subdomain
-     * @deprecated
-     */
-    /*
-    private function _get_full_survey_iframe_url($subdomain)
-    {
-        return $this->_get_base_url($subdomain, true).'/webform/iframe';
-    }
-    */
    
     /**
      * @method _get_full_survey_single_url turns a subdomain into the full url where an iframeable webform is available
@@ -501,8 +382,7 @@ class Survey_model extends CI_Model {
         list($protocol, $rest) = explode('://', $url);
         $alt_url = ($protocol === 'https') ? 'http://'.$rest : 'https://'.$rest;
 
-        if (empty($alt_url))
-        {
+        if (empty($alt_url)) {
             log_message('error', 'Failed to switch protocol of '.$url);
         }
         return $alt_url;
@@ -523,8 +403,7 @@ class Survey_model extends CI_Model {
         $counter = 0;
         $subdomain = NULL;
         //this could be an infinite loop without a counter
-        while (!$subdomain && $counter < 1000)
-        {
+        while (!$subdomain && $counter < 1000) {
             $subdomain = strtolower(random_string('alnum', 5));
             $query = $this->db->get_where('surveys', array('subdomain' => $subdomain));
             $result_num = $query->num_rows();
@@ -565,8 +444,7 @@ class Survey_model extends CI_Model {
     private function _get_item($field, $active = TRUE)
     {
         $item_arr = $this->_get_items($field, $active);
-        if (!empty($item_arr[$field]))
-        {
+        if (!empty($item_arr[$field])) {
             return $item_arr[$field];
         }
         return NULL;
@@ -615,12 +493,9 @@ class Survey_model extends CI_Model {
         $this->db->where('subdomain', $this->db_subdomain);
         $this->db->limit(1);
         $query = $this->db->update('surveys', $data);
-        if ($this->db->affected_rows() > 0) 
-        {
+        if ($this->db->affected_rows() > 0) {
             return TRUE;
-        }
-        else 
-        {
+        } else {
             log_message('debug', 'failed database update '.$this->db->last_query());
             return FALSE;   
         }

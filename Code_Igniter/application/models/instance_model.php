@@ -49,10 +49,10 @@ class Instance_model extends CI_Model {
         return;
     }
 
-//  function remove_instance($subdomain, $instance_id)
-//  {
-//      $query = $this->db->delete('instances', array('instanceid' => $instance_id,
-//        'subdomain' => $subdomain));
-//      return ($this->db->affected_rows() > 0) ? TRUE : FALSE;
-//  }
+    function remove_instance($subdomain, $instance_id)
+    {
+        $query = $this->db->delete('instances', array('instanceid' => $instance_id,
+          'subdomain' => $subdomain));
+        return ($this->db->affected_rows() > 0) ? TRUE : FALSE;
+    }
 }

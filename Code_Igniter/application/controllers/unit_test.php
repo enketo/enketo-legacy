@@ -361,7 +361,7 @@ class Unit_test extends CI_Controller {
         );
 
         // /surveys/..  
-        $endpoints = array('number_launched', 'list');
+        $endpoints = array('number', 'list');
         foreach ($endpoints as $endpoint) {
             foreach ($surveys_combos as $combo) {
                 $token_acc = 'someacounttoken';
@@ -390,13 +390,99 @@ class Unit_test extends CI_Controller {
                 $expected = $combo['status'];
                 $this->unit->run(
                     $response['code'], $expected, $combo['m'].' /api_v1/surveys/'.$endpoint.' '.
-                        'with server_url='.$server_url.' , $token: '.$token_str.
+                        'with server_url='.$server_url.' , token: '.$token_str.
                         ', quota: '.$combo['quota'].
                         ', trusted: '.$trusted_str.', and api access: '.$api_str.
                         ' => '.$response['code'].' (expected: '.$expected.')'
                 );
             }
         }
+
+         $instance_combos = array(
+            //valid token, missing params
+            array('m' => 'POST',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status'   => 201),
+            //already being edited
+            array('m' => 'POST',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status'   => 405),
+            array('m' => 'POST',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'form_id' => '', 'status' => 400),
+            array('m' => 'POST',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'instance' => '', 'status' => 400),
+            array('m' => 'POST',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'instance_id' => '', 'status' => 400),
+            array('m' => 'POST',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'return_url' => '', 'status' => 400),
+            array('m' => 'POST',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'url' => '', 'status' => 400),
+
+            //different methods, valid token
+            array('m' => 'GET',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status'   => 405),
+            //removes instance from db
+            array('m' => 'DELETE','token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status'   => 204),
+            array('m' => 'PUT',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status'   => 405),
+            array('m' => 'OTHER', 'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status'   => 405),
+
+            //invalid token && not trusted, trusted, 
+            array('m' => 'POST',  'token' => FALSE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status'   => 401),
+            array('m' => 'POST',  'token' => FALSE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => TRUE,  'status'   => 201),
+             //cleanup
+            array('m' => 'DELETE','token' => TRUE,   'api'=>TRUE, 'quota' => 1000000,'trusted' => FALSE, 'status' => 204),
+
+            //no API access
+            array('m' => 'POST',  'token' => TRUE,   'api'=>FALSE,'quota' => 1000000, 'trusted' => FALSE,  'status'  => 405),
+            array('m' => 'POST',  'token' => FALSE,  'api'=>FALSE,'quota' => 1000000, 'trusted' => TRUE,   'status'  => 201),
+            //cleanup
+            array('m' => 'DELETE',   'token' => TRUE,  'api'=>TRUE, 'quota' => 1000000, 'trusted' => FALSE, 'status'   => 204),
+           
+            //quota full/not paid or account missing
+            array('m' => 'POST',  'token' => TRUE,   'api'=>TRUE, 'quota' => -1,   'trusted' => FALSE, 'status' => 403),
+            array('m' => 'POST',  'token' => TRUE,   'api'=>TRUE, 'quota' => NULL, 'trusted' => FALSE, 'status' => 404),
+
+        );
+
+        // /instance/..  
+        $endpoints = array(NULL, 'iframe');
+        foreach ($endpoints as $endpoint) {
+            foreach ($instance_combos as $combo) {
+                $token_acc = 'someacounttoken';
+                $token_req = ($combo['token'] === TRUE) 
+                    ? $token_acc 
+                    : (($combo['token'] === FALSE) ? 'somefalsetoken' : NULL);
+                $server_url = (isset($combo['url'])) ? $combo['url'] : 'https://testserver.com/bob';
+                $form_id = (isset($combo['form_id'])) ? $combo['form_id'] : 'someformid';
+                $instance = (isset($combo['instance'])) ? $combo['instance'] : '<data><node>23</node></data>';
+                $instance_id = (isset($combo['instance_id'])) ? $combo['instance_id'] : 'someid';
+                $return_url = (isset($combo['return_url'])) ? $combo['return_url'] : $server_url;
+                $i_str = (string) $i;
+                $params = array(
+                    'props'          => array(
+                        'server_url'    => $server_url, 
+                        'instance'      => $instance , 
+                        'instance_id'   => $instance_id, 
+                        'return_url'    => $return_url,
+                        'form_id'       => $form_id
+                    ),
+                    'account_status' => array(
+                        'quota'         => $combo['quota'], 
+                        'api_token'     => $token_acc, 
+                        'api_access'    => $combo['api']
+                    ),
+                    'request_token'     => $token_req,
+                    'http_method'       => $combo['m'],
+                    'trusted'           => $combo['trusted']
+                );
+                $this->load->library('api_ver1', $params, $i_str);
+                $i++;
+                $response = $this->{$i_str}->instance_response($endpoint);
+                $token_str = ( $combo['token'] === NULL ) ? 'null' : (($combo['token'] === FALSE) ? 'false' : 'true');
+                $api_str = ( $combo['api'] === TRUE ) ? 'true' : 'false';
+                $trusted_str = ( $combo['trusted'] == TRUE) ? 'true' : 'false';
+                $expected = $combo['status'];
+                $this->unit->run(
+                    $response['code'], $expected, $combo['m'].' /api_v1/instance/'.$endpoint.' '.
+                        'with server_url='.$server_url.' , instance='.$instance.
+                        ', instance_id='.$instance_id.', return_url='.$return_url.', token: '.$token_str.
+                        ', quota: '.$combo['quota'].
+                        ', trusted: '.$trusted_str.', and api access: '.$api_str.
+                        ' => '.$response['code'].' (expected: '.$expected.')'
+                );
+            }
+        }
+
 
         echo $this->unit->report();
     }

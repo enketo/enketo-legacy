@@ -36,5 +36,6 @@ var enketo = {
 	FormModelMapper : function(dataRepo, sqlBuilder, idFactory){},
 	SQLQueryBuilder : function(dataRepo){},
 	IdFactory : function(bridge){},
-	IdFactoryBridge : function(){}
+	IdFactoryBridge : function(){},
+	FormSubmissionRouter : function(){}
 };

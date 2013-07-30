@@ -13,8 +13,7 @@ function FormDataController(params){
         new enketo.EntityRelationshipLoader(),
         new enketo.FormDefinitionLoader(),
         new enketo.FormModelMapper(formDataRepository, new enketo.SQLQueryBuilder(formDataRepository), new enketo.IdFactory(new enketo.IdFactoryBridge())),
-        formDataRepository,
-		new enketo.FormSubmissionRouter());
+        formDataRepository, new enketo.FormSubmissionRouter());
 
     /**
 	 * Gets instance as JSON from Dristhi DB - Should this be asynchronous?

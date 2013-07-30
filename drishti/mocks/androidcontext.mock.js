@@ -12,7 +12,9 @@ var androidContext = {
 
 	getModel : function(){
 		return mockForms2[this.formName].xml_model;
-	}
+	},
+
+	goBack : function(){}
 };
 
 var logContext = {

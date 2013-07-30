@@ -4,15 +4,15 @@
  *
  * Deals with communication according to the OpenRosa APIs
  *
- * @author        	Martijn van de Rijdt
+ * @author          Martijn van de Rijdt
  * @license         see link
- * @link			https://github.com/MartijnR/enketo
+ * @link            https://github.com/MartijnR/enketo
  */
 class Openrosa {
 
-	private $CI;
+    private $CI;
 
-	public function __construct()
+    public function __construct()
     {
         $this->CI =& get_instance();
         //$this->CI->load->library('curl'); 
@@ -21,116 +21,122 @@ class Openrosa {
 
     public function request_resource($url, $credentials=NULL)
     {
-    	if (empty($url))
-    	{
-    		log_message('error', 'called _load_xml_from_url without a url parameter');
-    		return NULL;
-    	}
-    	//log_message('debug', 'first header request result: '.json_encode($this->_request_headers_and_info($url)));
-    	return $this->_request($url, NULL, $credentials);
+        if (empty($url)) {
+            log_message('error', 'called _load_xml_from_url without a url parameter');
+            return NULL;
+        }
+        //log_message('debug', 'first header request result: '.json_encode($this->_request_headers_and_info($url)));
+        return $this->_request($url, NULL, $credentials);
     }
 
     public function submit_data($url, $xml_path, $files=array(), $credentials=NULL)
     {
-    	$fields = array('xml_submission_file'=>'@'.$xml_path.';type=text/xml');  
-    	log_message('debug', 'files to be submitted: '.json_encode($files));
-		if (!empty($files))
-		{
-			//print_r($_FILES);
-			foreach($files as $nodeName => $files_obj)
-			{
-				for ($i=0; $i<count($files_obj['name']); $i++)
-				{
-					$new_location =  '/tmp/'.$files_obj['name'][$i];
-					$valid = move_uploaded_file($files_obj['tmp_name'][$i], $new_location);
-					if ($valid)
-					{
-						$fields[$nodeName.'_'.$i] = '@'.$new_location.';type='.$files_obj['type'][$i];
-						log_message('debug', 'added file '.$new_location.' to submission');
-					}
-					//TODO: issue with file size > 30 mb (see .htaccess): this fails silently
-					//need to return feedback to user and/or check for this in client before sending?
-					//TODO: USER FEEDBACK IF NOT VALID?
-					//echo $fields[$nodeName];
-				}
-			}
-		}
-		return $this->_request($url, $fields, $credentials);
+        $fields = array('xml_submission_file'=>'@'.$xml_path.';type=text/xml');  
+        log_message('debug', 'files to be submitted: '.json_encode($files));
+        if (!empty($files)) {
+            foreach($files as $nodeName => $files_obj) {
+                for ($i=0; $i<count($files_obj['name']); $i++) {
+                    $new_location =  '/tmp/'.$files_obj['name'][$i];
+                    $valid = move_uploaded_file($files_obj['tmp_name'][$i], $new_location);
+                    if ($valid) {
+                        $fields[$nodeName.'_'.$i] = '@'.$new_location.';type='.$files_obj['type'][$i];
+                        log_message('debug', 'added file '.$new_location.' to submission');
+                    }
+                    //TODO: issue with file size > 30 mb (see .htaccess): this fails silently
+                    //need to return feedback to user and/or check for this in client before sending?
+                    //TODO: USER FEEDBACK IF NOT VALID?
+                    //echo $fields[$nodeName];
+                }
+            }
+        }
+        $response = $this->_request($url, $fields, $credentials);
+        $this->_delete_media_files($files);
+        return $response;
     }
 
     public function request_max_size($submission_url)
     {
-    	$header_arr = $this->_request_headers_and_info($submission_url);
+        $header_arr = $this->_request_headers_and_info($submission_url);
         return $header_arr['X-Openrosa-Accept-Content-Length'];
-	}
+    }
 
-	public function get_headers($url, $credentials=NULL)
-	{
-		return $this->_request_headers_and_info($url, $credentials);
-	}
+    public function get_headers($url, $credentials=NULL)
+    {
+        return $this->_request_headers_and_info($url, $credentials);
+    }
 
-	//performs HEAD request
-	private function _request_headers_and_info($url, $credentials=NULL)
-	{
-		$ch = curl_init();
+    private function _delete_media_files($files)
+    {   
+        foreach($files as $nodeName => $files_obj) {
+            for ($i=0; $i<count($files_obj['name']); $i++) {
+                $location = '/tmp/'.$files_obj['name'][$i];
+                if (!unlink($location)) {
+                    log_message('error', 'error trying to remove '.$location);
+                }
+            }
+        }
+    }
+
+    //performs HEAD request
+    private function _request_headers_and_info($url, $credentials=NULL)
+    {
+        $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_NOBODY, true);
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
 
-        if (!empty($credentials))
-		{
-			//log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
-			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST | CURLAUTH_BASIC);
-			curl_setopt($ch, CURLOPT_USERPWD, $credentials['username'].':'.$credentials['password']);
-		}
-		ob_start();
+        if (!empty($credentials)) {
+            //log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST | CURLAUTH_BASIC);
+            curl_setopt($ch, CURLOPT_USERPWD, $credentials['username'].':'.$credentials['password']);
+        }
+        ob_start();
         $headers = curl_exec($ch);
-		ob_end_clean();
+        ob_end_clean();
 
-		$info = curl_getinfo($ch);
-		$headers_and_info = array_merge($this->_http_parse_headers($headers), $info);
+        $info = curl_getinfo($ch);
+        $headers_and_info = array_merge($this->_http_parse_headers($headers), $info);
 
         curl_close($ch);
         unset($ch);
 
         return $headers_and_info;
-	}
+    }
 
     private function _request($url, $data=NULL, $credentials=NULL)
     {
-    	$http_code = 0;
-    	//log_message('debug', 'going to send request to '.$url.' with credentials: '.json_encode($credentials));
-    	$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
-		if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		if (!empty($credentials))
-		{
-			log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
-			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST | CURLAUTH_BASIC);
-			curl_setopt($ch, CURLOPT_USERPWD, $credentials['username'].':'.$credentials['password']);
-		} 
-		ob_start();
-		$result = curl_exec($ch);
-		ob_end_clean();
+        $http_code = 0;
+        //log_message('debug', 'going to send request to '.$url.' with credentials: '.json_encode($credentials));
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
+        if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        if (!empty($credentials)) {
+            log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST | CURLAUTH_BASIC);
+            curl_setopt($ch, CURLOPT_USERPWD, $credentials['username'].':'.$credentials['password']);
+        } 
+        ob_start();
+        $result = curl_exec($ch);
+        ob_end_clean();
 
-		$info = curl_getinfo($ch);
-		$http_code = $info['http_code'];
-		log_message('debug', 'request to '.$url.' responded with status code: '.$http_code);
-		//log_message('debug', json_encode($info));
-		//log_message('debug', 'result: '.$result);
-		$http_code = $info['http_code'];
+        $info = curl_getinfo($ch);
+        $http_code = $info['http_code'];
+        log_message('debug', 'request to '.$url.' responded with status code: '.$http_code);
+        //log_message('debug', json_encode($info));
+        //log_message('debug', 'result: '.$result);
+        $http_code = $info['http_code'];
 
-		curl_close($ch);
-		unset($ch);
-		return array(
-			'status_code' => $http_code,
-			'xml' => $result
-		);
+        curl_close($ch);
+        unset($ch);
+        return array(
+            'status_code' => $http_code,
+            'xml' => $result
+        );
     }
 
     private function _http_parse_headers($header)

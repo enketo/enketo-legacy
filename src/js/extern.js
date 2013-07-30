@@ -3,6 +3,13 @@ var modelStr, jrDataStr, jrDataStrToEdit,
 	/*@type {{string:{html_form:string, xml_model:string}}}*/mockForms2,
 	mockInstances;
 
+var androidContext = {
+	formName: helper.getQueryParam('formName'),
+	getForm : function(){},
+	getModel : function(){},
+	goBack : function(){}
+};
+
 var enketo = {
 	FormDataRepository : function(){},
 	FormDataController : function(entityRelO, formDefO, formModelMapperO){
@@ -18,7 +25,8 @@ var enketo = {
 	FormModelMapper : function(dataRepo, sqlBuilder, idFactory){},
 	SQLQueryBuilder : function(dataRepo){},
 	IdFactory : function(bridge){},
-	IdFactoryBridge : function(){}
+	IdFactoryBridge : function(){},
+	FormSubmissionRouter : function(){}
 };
 
 /** @type {{returnURL: string, serverURL: string, formId: string, instanceId: string, entityId: string, formURL: string, mapsStaticAPIKey:string, mapsDynamicAPIKey:string,

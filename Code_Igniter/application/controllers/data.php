@@ -58,17 +58,16 @@ class Data extends CI_Controller {
 			return $this->output->set_status_header(500, "Issue creating file from uploaded XML data (Enketo server)");
 		}
 
-		log_message('debug', 'xml submission data: '.$xml_submission_data);
 		fwrite($xml_submission_file, $xml_submission_data);
 		fclose($xml_submission_file);
 		
 		$credentials = $this->form_auth->get_credentials();
 		//log_message('debug', 'amount of files allowed in php.ini: '.ini_get('max_file_uploads'));
 		$response = $this->openrosa->submit_data($submission_url, $xml_submission_filepath, $_FILES, $credentials);
-
+		unlink ($xml_submission_filepath);
 		//log_message('debug', 'result of submission: '.json_encode($response));
 		//log_message('debug', 'data submission took '.(time()-$time_start).' seconds.');
-		$this->output->set_status_header($response['status_code']);//, (string) $response['xml']);
+		$this->output->set_status_header($response['status_code']);
 		$this->output->set_output($response['xml']);
 	}
 

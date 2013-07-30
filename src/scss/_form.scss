@@ -7,6 +7,22 @@ $input-max-width: 80%;
 @import "../../public/libraries/jdewit-bootstrap-timepicker/timepicker";
 @import "../../public/libraries/datepicker";
 
+/** BOOTSTRAP DATEPICKER Fix for month/year views **/
+.datepicker-months, .datepicker-years {
+	td, th {
+		width: 65px;} }
+
+/** BOOTSTRAP DATEPICKER Tweaks for Mobile **/
+.touch .datepicker {
+	.datepicker-days{
+		td, th {
+			font-size: 25px;
+	  		width: 35px;
+	  		height: 35px; } }
+  	.datepicker-months, .datepicker-years {
+		td, th { 
+			 width: 100px;} } }
+
 //additional icons
 .icon-crosshairs{
   background-image: url("../images/crosshairs.png");

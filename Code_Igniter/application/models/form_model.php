@@ -60,7 +60,7 @@ class Form_model extends CI_Model {
 			$this->manifest_sxe = $this->_get_manifest_sxe();
 			$this->info['media_hash'] = (!empty($this->manifest_sxe)) ? $this->_get_media_hash($this->manifest_sxe) : NULL;
 		}
-		log_message('debug', 'form model setup done: '.json_encode($this->info));
+		//log_message('debug', 'form model setup done: '.json_encode($this->info));
 	}
 
 	function get_info()
@@ -264,7 +264,7 @@ class Form_model extends CI_Model {
 			{
 				$response = $this->openrosa->request_resource($resource, $this->credentials);
 				$success = $doc->loadXML($response['xml']);
-				log_message('debug', 'response statuscode: '.$response['status_code']);
+				//log_message('debug', 'response statuscode: '.$response['status_code']);
 				$this->requires_auth = ($response['status_code'] == 401) ? TRUE : $this->requires_auth;
 				log_message('debug', 'requires auth: '.$this->requires_auth);
 			}

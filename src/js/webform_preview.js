@@ -70,7 +70,7 @@ $(document).ready(function() {
 		$ads.hide();
 		setInterval( function() {
 			$ads.hide();
-			$ads.eq( i % 3).removeAttr('style');
+			$ads.eq( i % 4).removeAttr('style');
 			i++;
 		}, 15000 );
 	}

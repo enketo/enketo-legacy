@@ -21,3 +21,15 @@
 	<p>Want to integrate enketo with your own server?<p> 
 	<p>Check out the awesome new <a href="http://apidocs.enketo.org">API documentation</a><p>
 </aside>
+<aside class="ad">
+	<p>The key features of Enketo Smart Paper:<p> 
+	<ul>
+		<li>works offline!</li>
+		<li>works on any device with a modern browser</li>
+		<li>works with ODK Aggregate and Formhub</li>
+		<li>print-friendly forms in Chrome/Safari (use print button)</li>
+		<li>supports direct data entry and collection by pen and paper</li>
+		<li>complements ODK Collect</li>
+		<li>handles complex form logic</li>
+	</ul>
+</aside>

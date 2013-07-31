@@ -120,9 +120,8 @@ class Api_v1 extends CI_Controller {
 
     private function _is_trusted_request()
     {
-        //needs to be checked for disallowing different origin requests
-        //needs to add allowing 127.0.0.1 requests
-        return $this->input->is_ajax_request();
+        //TODO needs to be checked for disallowing different origin ajax requests
+        return $this->input->is_ajax_request() || $_SERVER['REMOTE_ADDR'] == '127.0.0.1';
     }
 
     private function _print_output($response)

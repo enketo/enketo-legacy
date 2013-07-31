@@ -195,12 +195,14 @@ class Survey_model extends CI_Model {
 
     public function remove_test_entries()
     {
-        return $this->_remove_item('server_url', 'http://testserver/bob');
+        return $this->_remove_item('server_url', 'http://testserver/bob') 
+            && $this->_remove_item('server_url', 'http://testserver.com/bob')
+            && $this->_remove_item('server_url', 'https://testserver.com/bob');
     }
 
-    public function number_surveys($server_url=NULL){
+    public function number_surveys($server_url = NULL, $active_only = TRUE){
         $this->remove_test_entries();
-        return $this->_get_record_number($server_url);
+        return $this->_get_record_number($server_url, $active_only);
     }
 
     /**
@@ -421,9 +423,9 @@ class Survey_model extends CI_Model {
         $alt_server_url_3 = $this->_switch_www($alt_server_url_1);
         $this->db->select('subdomain');
         $this->db->where("server_url = '".$server_url."' AND BINARY form_id = '".$form_id."'".$active_str);
-        $this->db->or_where("server_url = '".$alt_server_url_1."' AND BINARY form_id = '".$form_id."'");
-        $this->db->or_where("server_url = '".$alt_server_url_2."' AND BINARY form_id = '".$form_id."'");
-        $this->db->or_where("server_url = '".$alt_server_url_3."' AND BINARY form_id = '".$form_id."'");
+        $this->db->or_where("server_url = '".$alt_server_url_1."' AND BINARY form_id = '".$form_id."'".$active_str);
+        $this->db->or_where("server_url = '".$alt_server_url_2."' AND BINARY form_id = '".$form_id."'".$active_str);
+        $this->db->or_where("server_url = '".$alt_server_url_3."' AND BINARY form_id = '".$form_id."'".$active_str);
         $query = $this->db->get('surveys', 1); 
         //log_message('debug', $this->db->last_query());
         if ($query->num_rows() === 1) {
@@ -465,17 +467,27 @@ class Survey_model extends CI_Model {
         }
     }
 
-    private function _get_record_number($server_url = NULL)
+    private function _get_record_number($server_url = NULL, $active_only = TRUE)
     {
-        $query = (!$server_url) 
-            ? $this->db->get('surveys', array('active' => TRUE))
-            : $this->db->get_where('surveys', array('server_url' => $server_url, 'active' => TRUE));
+        if ($server_url) {
+            $active_str = ($active_only == TRUE) ? ' AND active = 1' : '';
+            $alt_server_url_1 = $this->_switch_protocol($server_url);
+            $alt_server_url_2 = $this->_switch_www($server_url);
+            $alt_server_url_3 = $this->_switch_www($alt_server_url_1);
+            $this->db->where("server_url = '".$server_url."'".$active_str);
+            $this->db->or_where("server_url = '".$alt_server_url_1."'".$active_str);
+            $this->db->or_where("server_url = '".$alt_server_url_2."'".$active_str);
+            $this->db->or_where("server_url = '".$alt_server_url_3."'".$active_str);
+        } else if ($active_only == TRUE) {
+            $this->db->where('active = 1');
+        }
+        $query = $this->db->get('surveys'); 
         return $query->num_rows(); 
     }
 
     private function _get_records($server_url = NULL)
     {
-        $this->db->select(array('subdomain', 'form_id', 'transform_result_title'));
+        $this->db->select(array('subdomain', 'server_url', 'form_id', 'transform_result_title'));
         $query = (!$server_url) 
             ? $this->db->get_where('surveys', array('active' => TRUE)) 
             : $this->db->get_where('surveys', array('server_url' => $server_url, 'active' => TRUE));

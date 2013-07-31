@@ -27,8 +27,7 @@ class Forms extends CI_Controller {
     {
         $this->load->helper(array('url', 'subdomain'));
 
-        if (get_subdomain())
-        {
+        if (get_subdomain()) {
             show_404();
         }
 
@@ -52,14 +51,11 @@ class Forms extends CI_Controller {
             'stylesheets' => $default_stylesheets
         );
 
-        if (ENVIRONMENT === 'production')
-        {
+        if (ENVIRONMENT === 'production') {
             $data['scripts'] = array_merge($default_scripts, array(
                 '/js-min/formlist-all-min.js'
             ));
-        }
-        else
-        {
+        } else {
             $data['scripts'] = array_merge($default_scripts, array(
                 '/js-source/helpers.js',
                 '/js-source/debug.js',
@@ -74,10 +70,6 @@ class Forms extends CI_Controller {
         $this->load->view('formlist_view', $data);
     }
 
-    /**
-     * @deprecated
-     **/
-    /*
     public function get_list()
     {
         if ($this->config->item('auth_support')) {
@@ -88,30 +80,22 @@ class Forms extends CI_Controller {
         
         if ($server_url && strlen($server_url) > 0) {
             $this->load->model('Form_model', '');
-           
-            
             $credentials = $this->form_auth->get_credentials();
             $this->Form_model->setup($server_url, NULL, $credentials);
 
             if($this->Form_model->requires_auth()) {
-                log_message('debug', 'AUTHENTICATION REQUIRED');
                 $this->output
                     ->set_status_header('401', 'Unauthorized');
-                    //->set_output('authenticate');
             } else {
-                log_message('debug', 'auth not required');
-                
-                $result = $this->Form_model->get_formlist_JSON($server_url);
-               
+                $result = $this->Form_model->get_formlist_JSON(TRUE);
                 $this->output
                     ->set_content_type('application/json')
                     ->set_output(json_encode($result));
             }
         } else {
-            echo 'no server url received!';
+            $this->output->set_status_header('400', 'no server url received!');
         }
     }
-    */
 
 }
 

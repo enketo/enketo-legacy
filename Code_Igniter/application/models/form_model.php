@@ -169,9 +169,9 @@ class Form_model extends CI_Model {
                 $result[] = array(
                     'form_id'   => $id,
                     'name'  => (string) $form->name, 
-                    'description' => (string) $form->descriptionText,
+                    'title' => (string) $form->descriptionText,
                     'url'   => ($url_obj && !empty($url_obj['url'])) ? $url_obj['url'] : '',
-                    'server'=> $this->server_url
+                    'server_url'=> $this->server_url
                 );
             }   
         }

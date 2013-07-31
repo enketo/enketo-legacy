@@ -111,7 +111,7 @@ class Webform extends CI_Controller {
             'logout' => $this->credentials !== NULL
         );
 
-        if (ENVIRONMENT === 'production'){
+        if (ENVIRONMENT === 'production') {
             $data['scripts'] = array
             (
                 '/libraries/libraries-all-min.js',

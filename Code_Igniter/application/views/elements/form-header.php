@@ -6,7 +6,13 @@
 		$link = (!$integrated) ? str_replace($subdot, '', full_base_url()) : 
 			((empty($return_url)) ? $this->config->item('integration_with_url') : $return_url );
 	?>
-	<a class="branding" href="<?= $link ?>" title="Go Back"><?= $brand ?></a>
+	<a class="branding" href="<?= $link ?>" title="Go Back">
+	<? if ($brand === 'enketo'): ?>
+		<img src="/private_media/images/enketo_bare_150x56.png" alt="logo" />
+	<? else: ?>
+		<span><?= $brand ?></span>
+	<? endif; ?>
+	</a>
 	<span class="records" title="Records Queued - Click to Backup to File"><span class="queue-length"></span></span>
 	<button onclick="return false;" class="print"><img src="/images/print.png" alt="print button" title="Print Form"/></button>
 	<span class="form-language-selector"><span>Choose Language</span></span>

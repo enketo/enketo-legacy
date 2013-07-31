@@ -1984,6 +1984,9 @@ progress { display: block; margin: 10px auto; }
 #feedback-bar i { left: 20px; }
 #feedback-bar .close { right: 20px; }
 
+.ad { position: absolute; left: 30px; top: 100px; width: 250px; padding: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px; border-radius: 7px; color: #777; font-size: 14px; border: 7px solid #e7e7e7; background-color: #fcf8e3; }
+
+@media screen and (max-width: 1366px) { .ad { display: none; } }
 @media screen and (max-width: 720px) { body { padding: 0 !important; }
   body header { padding-left: 20px; padding-right: 20px; }
   body #page .content { margin: 1em; }

@@ -30,24 +30,32 @@ $input-max-width: 80%;
 }
 
 .paper{
-	position: relative;
-	.branding{
-		//border: 1px solid red;
-		display: inline-block;
-		color: #444444;
-		font-weight: bold;
-		padding: 0.32em $baseFontSize;
-		font-size: 1.4em;
-		&:hover{
-			text-decoration: none;
-			opacity: 0.8;} } }
+	position: relative;}
 
 .form-header{
 	left: 0;
 	width: 100%;
 	margin: 1em 0;
 	//border: 1px solid green;*(&%**)
-	padding: 0 0 0.6em 0; } 
+	padding: 0 0 0.6em 0;
+	.branding{
+		//border: 1px solid red;
+		display: inline-block;
+		img{
+			max-height: 30px;
+			max-width: 150px;
+			margin-left: 16px;
+			&:hover{
+				opacity: 0.8;} }
+		span{
+			display: inline-block;
+			color: #444444;
+			font-weight: bold;
+			padding: 7px 16px 0 16px;
+			font-size: 1.4em;
+			&:hover{
+				text-decoration: none;
+				opacity: 0.8;} } } }
 .load-error{
 	margin: 100px 0 60px 0;}
 .records{
@@ -122,7 +130,7 @@ html.touch{
 	@include hints-visible;
 } 
 
-.form-logo img {
+.jr .form-logo img {
 	position: relative;
 	float: none;
 	left: 50%;
@@ -180,10 +188,11 @@ legend {
 			margin-left: 2.2em; } } }
 label, legend, .trigger {
 	font-size: 1em; }
-img, audio, video{
+.jr {
+	img, audio, video{
 	float: right;
 	max-height: 300px;
-	max-width: 70%;}
+	max-width: 70%;} }
 
 input:not([type="radio"]):not([type="checkbox"]), textarea, select{
 	display: inline-block;

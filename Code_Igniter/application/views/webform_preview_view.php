@@ -21,6 +21,8 @@
 				<? include 'elements/logout.php'; ?>
 			</article>
 		</div>
+	<? if (!$integrated) { require 'elements/ads.php'; } ?>
+
 
 		
 

@@ -22,11 +22,13 @@ var /**@type {FileManager}*/fileManager;
 
 $(document).ready(function() {
 	'use strict';
-	var response,
+	var response, bgColor,
+		i = 0,
+		$ads = $('.ad'),
 		$validateButton = $('#validate-form'),
 		$loading = $('progress');
 
-	if ((!settings.serverURL || !settings.formId ) && !settings.formURL){
+	if ((!settings.serverURL || !settings.formId ) && !settings.formURL) {
 		showError('No server url and/or id provided or no form url provided.');
 		return;
 	}
@@ -37,7 +39,7 @@ $(document).ready(function() {
 			var loadErrors, formStr, modelStr,
 				$response = $(response);
 
-			if ($response.find(':first>form').length > 0 && $response.find(':first>model').length > 0){
+			if ($response.find(':first>form').length > 0 && $response.find(':first>model').length > 0) {
 				formStr = new XMLSerializer().serializeToString($response.find(':first>form')[0]);
 				modelStr = new XMLSerializer().serializeToString($response.find(':first>model')[0]);
 				$validateButton.before(formStr);
@@ -47,30 +49,38 @@ $(document).ready(function() {
 					gui.showLoadErrors(loadErrors);
 				}
 				$validateButton.removeAttr('disabled');
-			}
-			else{
+			} else {
 				showError('An error occurred trying to obtain or transform the form.');
 			}
 		},
 		error: function(jqXHR, status, errorThrown){
-			if(jqXHR.status === 401){
+			if(jqXHR && jqXHR.status === 401){
 				gui.confirmLogin('<p>Form is protected and requires authentication.</p><p>Would you like to log in now?</p>');
-			}
-			else{ 
+			} else { 
 				showError('An error occurred trying to obtain or transform the form ('+errorThrown+')');
 			}
 			$loading.remove();
 		},
-		complete: function(){
+		complete: function() {
 			$loading.remove();
 		}
 	});
+	
+	if ( $ads.length > 0 ) {
+		$ads.hide();
+		setInterval( function() {
+			$ads.hide();
+			$ads.eq( i % 4).removeAttr('style');
+			i++;
+		}, 15000 );
+	}
+	
 
 	//connection.init();
 	gui.setup();
 });
 
-function showError(msg){
+function showError(msg) {
 	$('#validate-form').prev('.alert').remove();
 	$('#validate-form').before('<p class="load-error alert alert-error alert-block">'+msg+'</p>');
 }

@@ -33,9 +33,7 @@ class Openrosa {
     {
         $fields = array('xml_submission_file'=>'@'.$xml_path.';type=text/xml');  
         log_message('debug', 'files to be submitted: '.json_encode($files));
-        if (!empty($files))
-        {
-            //print_r($_FILES);
+        if (!empty($files)) {
             foreach($files as $nodeName => $files_obj) {
                 for ($i=0; $i<count($files_obj['name']); $i++) {
                     $new_location =  '/tmp/'.$files_obj['name'][$i];
@@ -51,7 +49,9 @@ class Openrosa {
                 }
             }
         }
-        return $this->_request($url, $fields, $credentials);
+        $response = $this->_request($url, $fields, $credentials);
+        $this->_delete_media_files($files);
+        return $response;
     }
 
     public function request_max_size($submission_url)
@@ -63,6 +63,18 @@ class Openrosa {
     public function get_headers($url, $credentials=NULL)
     {
         return $this->_request_headers_and_info($url, $credentials);
+    }
+
+    private function _delete_media_files($files)
+    {   
+        foreach($files as $nodeName => $files_obj) {
+            for ($i=0; $i<count($files_obj['name']); $i++) {
+                $location = '/tmp/'.$files_obj['name'][$i];
+                if (!unlink($location)) {
+                    log_message('error', 'error trying to remove '.$location);
+                }
+            }
+        }
     }
 
     //performs HEAD request
@@ -102,11 +114,12 @@ class Openrosa {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
+
         if (!empty($data)) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         }
-        if (!empty($credentials)){
-            log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
+        if (!empty($credentials)) {
+            ///log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST | CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $credentials['username'].':'.$credentials['password']);
         } 
@@ -119,6 +132,7 @@ class Openrosa {
         log_message('debug', 'request to '.$url.' responded with status code: '.$http_code);
         //log_message('debug', json_encode($info));
         //log_message('debug', 'result: '.$result);
+        $http_code = $info['http_code'];
 
         curl_close($ch);
         unset($ch);

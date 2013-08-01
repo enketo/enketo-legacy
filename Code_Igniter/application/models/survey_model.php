@@ -206,6 +206,11 @@ class Survey_model extends CI_Model {
         }
     }
 
+    public function increase_submission_count()
+    {
+        return $this->_update_item('submissions', 'submissions + 1', FALSE);
+    }
+
     public function remove_test_entries(){
         return $this->_remove_item('server_url', 'http://testserver/bob');
     }
@@ -345,11 +350,17 @@ class Survey_model extends CI_Model {
         return $query->num_rows(); 
     }
 
-    private function _update_item($field, $value)
+    private function _update_item($field, $value, $escape = TRUE)
     {
-        $data = array($field => $value);
-        $result = $this->_update_items($data);
-        return $result;
+        $this->db->where('subdomain', $this->db_subdomain);
+        $this->db->set($field, $value, $escape);
+        $this->db->update('surveys');
+        log_message('debug', 'last query: '.$this->db->last_query());
+        if ($this->db->affected_rows() > 0) {
+            return TRUE;
+        }
+        log_message('error', 'database update on record with subdomain '.$this->db_subdomain);
+        return FALSE;   
     }
 
     private function _update_items($data)
@@ -357,6 +368,7 @@ class Survey_model extends CI_Model {
         $this->db->where('subdomain', $this->db_subdomain);
         $this->db->limit(1);
         $query = $this->db->update('surveys', $data); 
+
         if ($this->db->affected_rows() > 0) 
         {
             return TRUE;

@@ -66,10 +66,7 @@ class Data extends CI_Controller {
 		$response = $this->openrosa->submit_data($submission_url, $xml_submission_filepath, $_FILES, $credentials);
 		unlink ($xml_submission_filepath);
 
-		if (!empty($response) 
-			&& !empty($response['status_code']) 
-			&& ($response['status_code'] == '200' || $response['status_code'] == '201')
-		) {
+		if (!empty($response) && !empty($response['status_code']) && ($response['status_code'] == '200')) {
 			log_message('debug', 'increasing submission count');
 			$this->Survey_model->increase_submission_count();
 		}

@@ -13,7 +13,7 @@
 		<span><?= $brand ?></span>
 	<? endif; ?>
 	</a>
-	<span class="records" title="Records Queued - Click to Backup to File"><span class="queue-length"></span></span>
+	<span class="records" title="Records Queued - Click to Backup to File" style="display:none;"><span class="queue-length"></span></span>
 	<button onclick="return false;" class="print"><img src="/images/print.png" alt="print button" title="Print Form"/></button>
 	<span class="form-language-selector"><span>Choose Language</span></span>
 </div>

@@ -36,11 +36,10 @@ $input-max-width: 80%;
 	left: 0;
 	width: 100%;
 	margin: 1em 0;
-	//border: 1px solid green;*(&%**)
 	padding: 0 0 0.6em 0;
 	.branding{
-		//border: 1px solid red;
 		display: inline-block;
+		margin: 0 10px 0 16px;
 		img{
 			max-height: 30px;
 			max-width: 150px;
@@ -51,7 +50,6 @@ $input-max-width: 80%;
 			display: inline-block;
 			color: #444444;
 			font-weight: bold;
-			padding: 7px 16px 0 16px;
 			font-size: 1.4em;
 			&:hover{
 				text-decoration: none;
@@ -60,10 +58,8 @@ $input-max-width: 80%;
 	margin: 100px 0 60px 0;}
 .records{
 	$size: 20px;
-	display: none;
-	position: relative;
-	bottom: 4px;
-	margin-left: -10px;
+	display: inline-block;
+	vertical-align: bottom;
 	background-color: #c9c9c9;
 	border: 1px solid $groupline;
 	height: $size;
@@ -78,7 +74,6 @@ $input-max-width: 80%;
 	&:hover{
 		color: green; } }
 .print{
-	//border: 1px solid black;
 	background: none;
 	border-radius: 0;
 	border: none;

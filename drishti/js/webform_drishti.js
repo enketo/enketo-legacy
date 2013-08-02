@@ -42,20 +42,27 @@ $(document).ready(function() {
 	loadErrors = form.init();
 
 	//controller for submission of data to drishti
-	$(document).on('click', 'button#submit-form:not(.disabled)', function(){
-		var jData, saveResult;
-		if (typeof form !== 'undefined'){
-			form.validateForm();
-			if (!form.isValid()){
-				gui.alert('Form contains errors <br/>(please see fields marked in red)');
-				return;
-			}
-			else{
-				jData = jDataO.get();
-				delete jData.errors;
-				saveResult = formDataController.save(form.getInstanceID(), jData);
-			}
-		}
+	$(document).on('click', 'button#submit-form:not(:disabled)', function(event){
+		var jData, saveResult, 
+			$button = $(this);
+		$(this).btnBusyState(true);
+		//without this weird timeout trick the button won't change until form.validateForm() is complete
+		//something odd that seems to happen when adding things to DOM.
+		setTimeout(function(){
+			if (typeof form !== 'undefined') {
+				form.validateForm();
+				if (!form.isValid()){
+					gui.alert('Form contains errors <br/>(please see fields marked in red)');
+					$button.btnBusyState(false);
+					return;
+				} else {
+					jData = jDataO.get();
+					delete jData.errors;
+					saveResult = formDataController.save(form.getInstanceID(), jData);
+					$button.btnBusyState(false);
+				}
+			}		
+		}, 100);
 	});
 });
 

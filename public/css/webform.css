@@ -2097,15 +2097,15 @@ progress { display: block; margin: 10px auto; }
 .paper { position: relative; }
 
 .form-header { left: 0; width: 100%; margin: 1em 0; padding: 0 0 0.6em 0; }
-.form-header .branding { display: inline-block; }
+.form-header .branding { display: inline-block; margin: 0 10px 0 16px; }
 .form-header .branding img { max-height: 30px; max-width: 150px; margin-left: 16px; }
 .form-header .branding img:hover { opacity: 0.8; }
-.form-header .branding span { display: inline-block; color: #444444; font-weight: bold; padding: 7px 16px 0 16px; font-size: 1.4em; }
+.form-header .branding span { display: inline-block; color: #444444; font-weight: bold; font-size: 1.4em; }
 .form-header .branding span:hover { text-decoration: none; opacity: 0.8; }
 
 .load-error { margin: 100px 0 60px 0; }
 
-.records { display: none; position: relative; bottom: 4px; margin-left: -10px; background-color: #c9c9c9; border: 1px solid #bbbbbb; height: 20px; min-width: 20px; border-radius: 10px; }
+.records { display: inline-block; vertical-align: bottom; background-color: #c9c9c9; border: 1px solid #bbbbbb; height: 20px; min-width: 20px; border-radius: 10px; }
 
 .queue-length { color: #ffffff; text-align: center; padding: 0 7px; }
 .queue-length.submitting { color: #ce4f07; }

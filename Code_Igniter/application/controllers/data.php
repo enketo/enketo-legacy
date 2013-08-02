@@ -65,6 +65,11 @@ class Data extends CI_Controller {
 		//log_message('debug', 'amount of files allowed in php.ini: '.ini_get('max_file_uploads'));
 		$response = $this->openrosa->submit_data($submission_url, $xml_submission_filepath, $_FILES, $credentials);
 		unlink ($xml_submission_filepath);
+
+		if (!empty($response) && !empty($response['status_code']) && ($response['status_code'] == '200')) {
+			log_message('debug', 'increasing submission count');
+			$this->Survey_model->increase_submission_count();
+		}
 		//log_message('debug', 'result of submission: '.json_encode($response));
 		//log_message('debug', 'data submission took '.(time()-$time_start).' seconds.');
 		$this->output->set_status_header($response['status_code']);

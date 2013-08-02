@@ -239,12 +239,12 @@ function submitForm() {
 		gui.alert('Form contains errors <br/>(please see fields marked in red)');
 		return;
 	}
-	record = { 'data': form.getDataStr(true, true), 'ready': true};
+	record = { 'data': form.getDataStr(true, true), 'ready': true };
 	name = form.getName()+' - '+store.getCounterValue();
 	saveResult = store.setRecord(name, record, false, false);
 
 	console.log('result of save: '+saveResult);
-	if (saveResult === 'success'){
+	if ( saveResult === 'success' ) {
 		gui.feedback('Record queued for submission.', 3);
 		resetForm(true);
 		$('form.jr').trigger('save', JSON.stringify(store.getRecordList()));
@@ -256,7 +256,7 @@ function submitForm() {
 			//store.getSurveyDataArr(true),
 			{name: name, data: record.data},
 			{
-				success: function(formDataArr){
+				success: function( formDataArr ) {
 					connection.uploadRecords(formDataArr, true);
 				},
 				error: function(){
@@ -264,8 +264,7 @@ function submitForm() {
 				}
 			}
 		);
-	}
-	else{
+	} else {
 		gui.alert('Error trying to save data locally before submit');
 	}
 }
@@ -353,7 +352,7 @@ function prepareFormDataArray(record, callbacks){
 			instanceID,
 			files,
 			{
-				success: function(retFiles){
+				success: function( retFiles ) {
 					for (k = 0 ; k < retFiles.length ; k++){
 						sizes.push(retFiles[k].file.size);
 						//formData.append(files[k].nodeName, files[k].file);
@@ -373,14 +372,13 @@ function prepareFormDataArray(record, callbacks){
 						callbacks.success(recordPrepped);
 					}
 				},
-				error: function(e){
+				error: function( e ) {
 					console.error('Error occured when trying to retrieve files from local filesystem', e);
 					//TODO: sent it anyway without files?
 				}
 			}
 		);
-	}
-	else{
+	} else {
 		formData = new FormData();
 		formData.append('xml_submission_data', xmlData);
 		recordPrepped = { name: record.name, instanceID: instanceID, formData: formData, batches: 1, batchIndex: 0 };
@@ -394,7 +392,7 @@ function prepareFormDataArray(record, callbacks){
  * @deprecated
  * @param  {boolean=} finalOnly [description]
  */
-function exportData(finalOnly){
+function exportData( finalOnly ) {
 	"use strict";
 	var i,dataArr, dataStr, uriContent, newWindow;
 	finalOnly = finalOnly || true;
@@ -414,25 +412,24 @@ function exportData(finalOnly){
 /**
  * Function to export or backup data to a file. In Chrome it will get an appropriate file name.
  */
-function exportToFile(){
+function exportToFile() {
 	"use strict";
 	var i, dataArr, dataStr, bb, blob, server,
 		finalOnly = true,
 		fileName = form.getName()+'_data_backup.xml';
 
-	gui.confirm({
+	gui.confirm( {
 		msg: 'Records are stored inside the browser until they are submitted (even if you turn off '+
 			'your computer or go offline). <br/><br/>As a backup, to save all queued records to a file, click export.',
 		heading: 'Export queued records'
 		},{
 		posButton: 'Export',
 		negButton: 'Cancel',
-		posAction: function(){
+		posAction: function() {
 			dataArr = store.getSurveyDataOnlyArr(finalOnly);//store.getSurveyDataXMLStr(finalOnly));
-			if (!dataArr || dataArr.length === 0){
+			if ( !dataArr || dataArr.length === 0 ){
 				gui.alert('No records in queue. The records may have been successfully submitted already.');
-			}
-			else{
+			} else {
 				server = settings['serverURL'] || '';
 				dataStr = vkbeautify.xml('<exported server="'+server+'">'+dataArr.join('')+'</exported>');
 				bb = new BlobBuilder();
@@ -441,12 +438,12 @@ function exportToFile(){
 				saveAs(blob, fileName);
 			}
 		}
-	});
+	} );
 }
 
 //Extend GUI
 //setCustomEventHandlers is called automatically by GUI.init();
-GUI.prototype.setCustomEventHandlers = function(){
+GUI.prototype.setCustomEventHandlers = function() {
 	"use strict";
 	var settingsForm, that = this;
 	/*
@@ -468,34 +465,50 @@ GUI.prototype.setCustomEventHandlers = function(){
 	*/
 	$('button#submit-form')
 		.click(function(){
-			form.validateForm();
-			submitForm();
-			return false;
+			var $button = $(this);
+			$button.btnBusyState(true);
+			setTimeout(function(){
+				form.validateForm();
+				submitForm();
+				$button.btnBusyState(false);
+				return false;
+			}, 100);
+			
 	});
 	$('button#submit-edited-data')
 		.click(function(){
-			form.validateForm();
-			submitEditedForm();
-			return false;
+			var $button = $(this);
+			$button.btnBusyState(true);
+			setTimeout(function(){
+				form.validateForm();
+				submitEditedForm();
+				$button.btnBusyState(false);
+				return false;
+			}, 100);
 	});
-	$(document).on('click', 'button#validate-form:not(.disabled)', function(){
+	$(document).on('click', 'button#validate-form:not(.disabled)', function() {
 		//$('form.jr').trigger('beforesave');
 		if (typeof form !== 'undefined'){
-			form.validateForm();
-			if (!form.isValid()){
-				gui.alert('Form contains errors <br/>(please see fields marked in red)');
-				return;
-			}
+			var $button = $(this);
+			$button.btnBusyState(true);
+			setTimeout(function(){
+				form.validateForm();
+				$button.btnBusyState(false);
+				if (!form.isValid()) {
+					gui.alert('Form contains errors <br/>(please see fields marked in red)');
+					return;
+				}
+			}, 100);
 		}
 	});
 
-	$('.records').on('click', function(){
+	$('.records').on('click', function() {
 		exportToFile();
 	});
 
 	$('#form-controls button').toLargestWidth();
 
-	$(document).on('save delete', 'form.jr', function(e, formList){
+	$(document).on('save delete', 'form.jr', function(e, formList) {
 		console.debug('save or delete event detected with new formlist: '+formList);
 		that.updateRecordList(JSON.parse(formList));
 	});

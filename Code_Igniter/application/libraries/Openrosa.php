@@ -129,7 +129,7 @@ class Openrosa {
         log_message('debug', 'request to '.$url.' responded with status code: '.$http_code);
         //log_message('debug', json_encode($info));
         //log_message('debug', 'result: '.$result);
-        $http_code = $info['http_code'];
+        $http_code = (!empty($info['http_code'])) ? $info['http_code'] : '0';
 
         curl_close($ch);
         unset($ch);

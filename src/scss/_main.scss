@@ -13,7 +13,7 @@
 
 body{
   font-family: 'OpenSansRegular', Helvetica, Arial, sans-serif;
-  background: #f0f0f0 no-repeat;
+  background: $body-bg no-repeat;
   //background: $bg url(../images/tex2res2.png) repeat;
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
@@ -173,3 +173,18 @@ progress{
     left: 20px; }
   .close {
     right: 20px; } }
+
+.ad {
+  position: absolute;
+  left: 30px;
+  top: 100px;
+  width: 250px;
+  padding: 7px;
+  @include border-radius(7px);
+  color: #777;
+  font-size: 14px;
+  border: 7px solid #e7e7e7;
+  background-color: #fcf8e3; }
+@media screen and (max-width: 1366px){
+  .ad {
+    display: none; } }

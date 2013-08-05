@@ -280,6 +280,31 @@ window.onload = function(){
 
 	};
 
+	$.fn.btnBusyState = function(busy) {
+		var $button, btnContent;
+		return this.each( function() {
+			$button = $(this);
+			btnContent = $button.data('btnContent');
+			console.log('busy ', busy);
+			console.log('btnContent', btnContent);
+
+			if (busy && !btnContent) {
+				btnContent = $button.html();
+				$button.data('btnContent', btnContent);
+				$button
+					.empty()
+					.append('<progress></progress>')
+					.attr('disabled', true);
+			} else if (!busy && btnContent) {
+				$button.data('btnContent', null);
+				$button
+					.empty()
+					.append(btnContent)
+					.removeAttr('disabled');
+			}
+		} );
+	};
+
 	// plugin to select the first word(s) of a string and capitalize it
 	$.fn.capitalizeStart = function (numWords) {
 		if(!numWords){

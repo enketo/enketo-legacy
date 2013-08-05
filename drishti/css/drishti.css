@@ -1984,6 +1984,9 @@ progress { display: block; margin: 10px auto; }
 #feedback-bar i { left: 20px; }
 #feedback-bar .close { right: 20px; }
 
+.ad { position: absolute; left: 30px; top: 100px; width: 250px; padding: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px; border-radius: 7px; color: #777; font-size: 14px; border: 7px solid #e7e7e7; background-color: #fcf8e3; }
+
+@media screen and (max-width: 1366px) { .ad { display: none; } }
 @media screen and (max-width: 720px) { body { padding: 0 !important; }
   body header { padding-left: 20px; padding-right: 20px; }
   body #page .content { margin: 1em; }
@@ -2103,10 +2106,13 @@ h2, h3, h4, legend { color: #0d0d0d; }
 .icon-crosshairs { background-image: url("../images/crosshairs.png"); background-position: -5px -5px; }
 
 .paper { position: relative; }
-.paper .branding { display: inline-block; color: #444444; font-weight: bold; padding: 0.32em 22px; font-size: 1.4em; }
-.paper .branding:hover { text-decoration: none; opacity: 0.8; }
 
 .form-header { left: 0; width: 100%; margin: 1em 0; padding: 0 0 0.6em 0; }
+.form-header .branding { display: inline-block; }
+.form-header .branding img { max-height: 30px; max-width: 150px; margin-left: 16px; }
+.form-header .branding img:hover { opacity: 0.8; }
+.form-header .branding span { display: inline-block; color: #444444; font-weight: bold; padding: 7px 16px 0 16px; font-size: 1.4em; }
+.form-header .branding span:hover { text-decoration: none; opacity: 0.8; }
 
 .load-error { margin: 100px 0 60px 0; }
 
@@ -2124,6 +2130,7 @@ h2, h3, h4, legend { color: #0d0d0d; }
 #form-languages { width: auto; height: 30px; background: none; min-width: 11em; margin: 0 0 0 1em; font-size: 0.9em; }
 
 #submit-form, #submit-edited-data, #validate-form, #launch-form { position: relative; width: 150px; left: 50%; margin: 45px 10px 5px -75px; }
+#submit-form progress, #submit-edited-data progress, #validate-form progress, #launch-form progress { width: 100%; margin: 1px auto 1px auto; }
 
 .enketo-power { position: relative; left: 50%; margin: 30px 0 0 -100px; width: 200px; font-size: 16px; line-height: 23px; text-align: center; }
 .enketo-power a { font-style: italic; }
@@ -2138,7 +2145,7 @@ html.touch .jr .jr-hint.active ~ br { display: none; }
 html.touch .jr label .jr-hint.active { padding-top: .5em; }
 html.touch .jr legend .jr-hint.active { padding-bottom: .6em; }
 
-.form-logo img { position: relative; float: none; left: 50%; max-height: 200px; width: 120px; margin: 30px 0 10px -60px; }
+.jr .form-logo img { position: relative; float: none; left: 50%; max-height: 200px; width: 120px; margin: 30px 0 10px -60px; }
 
 h3 { padding: 5px 0 15px 0; font-weight: bolder; word-wrap: break-word; }
 
@@ -2165,7 +2172,7 @@ legend ~ label .active { display: block; margin-left: 2.2em; }
 
 label, legend, .trigger { font-size: 1em; }
 
-img, audio, video { float: right; max-height: 300px; max-width: 70%; }
+.jr img, .jr audio, .jr video { float: right; max-height: 300px; max-width: 70%; }
 
 input:not([type="radio"]):not([type="checkbox"]), textarea, select { display: inline-block; margin: 8px 0 0 0; }
 
@@ -2294,3 +2301,5 @@ fieldset .remove { float: right; margin-right: 0; }
 .btn-radiocheck:hover, .btn-radiocheck:focus, .btn-radiocheck:active, .btn-radiocheck[data-checked] { background-color: #e4f4ff; }
 
 .input-append .add-on { padding: 13px 5px 7px 5px; }
+
+#submit-form progress { margin: 0 auto -6px auto; }

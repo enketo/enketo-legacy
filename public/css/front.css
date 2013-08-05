@@ -1984,6 +1984,9 @@ progress { display: block; margin: 10px auto; }
 #feedback-bar i { left: 20px; }
 #feedback-bar .close { right: 20px; }
 
+.ad { position: absolute; left: 30px; top: 100px; width: 250px; padding: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px; border-radius: 7px; color: #777; font-size: 14px; border: 7px solid #e7e7e7; background-color: #fcf8e3; }
+
+@media screen and (max-width: 1366px) { .ad { display: none; } }
 .navbar.navbar-fixed-top { margin-bottom: 0; }
 .navbar .brand { font-size: 2em; }
 .navbar .brand .component { font-size: 0.4em; }

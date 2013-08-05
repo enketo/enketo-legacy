@@ -19,6 +19,7 @@
 @mixin hints-visible{
   .jr{
     .jr-hint.active{
+      @include font-normal;
       color: #888888;
       display: block;
       line-height: 1.5em;
@@ -85,6 +86,16 @@
   font-size: 0.85em;
   font-weight: bold;
   color: #B94A48;}
+
+@mixin default-normal {
+  font-family: 'OpenSansRegular', Arial, sans-serif;
+  font-weight: normal;
+  font-style: normal; }
+
+@mixin default-bold {
+  font-family: 'OpenSansBold', Arial, sans-serif;;
+  font-weight: normal;
+  font-style: normal; }
 
 @mixin appearance-none{
   -moz-appearance: none;

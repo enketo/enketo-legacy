@@ -11,8 +11,16 @@
     font-weight: normal;
     font-style: normal;}
 
+@font-face {
+    font-family: 'OpenSansBold';
+    src: url('/css/fonts/OpenSans-Bold-webfont.woff') format('woff'),
+         url('/css/fonts/OpenSans-Bold-webfont.ttf') format('truetype'),
+         url('/css/fonts/OpenSans-Bold-webfont.svg#OpenSansBold') format('svg');
+    font-weight: normal;
+    font-style: normal;}
+
 body{
-  font-family: 'OpenSansRegular', Helvetica, Arial, sans-serif;
+  @include font-normal;
   background: $body-bg no-repeat;
   //background: $bg url(../images/tex2res2.png) repeat;
   font-size: $baseFontSize;
@@ -25,7 +33,11 @@ body{
     top: -4.4em;
     border: none; } }
 
+strong {
+  @include font-bold; }
+
 h2, h3, h4 {
+  @include font-bold;
   color: $title;
   text-align: center;}
 

@@ -1,5 +1,21 @@
-@import "_variables";
-@import "_mixins";
+$baseFontSize: 15px;
+$baseLineHeight: 20px;
+$iconSpritePath: '/images/glyphicons-halflings.png'; //patches bug in bootstrap-sass
+$iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
+
+@mixin font-normal {
+  font-family: courier, times, serif;
+  font-weight: normal;
+  font-style: normal; }
+
+@mixin font-bold {
+  font-family: courier, times, serif;
+  font-weight: bold;
+  font-style: normal; }
+
+@import "_main";
+@import "_responsive";
+@import "_form";
 
 $very_dark: #444444;
 $dark: #666666;
@@ -8,7 +24,6 @@ $light: #aaaaaa;
 $very_light: #cccccc;
 
 body{
-  font-family: courier, times, serif;
   background: none; 
   .main{
     margin: 0;

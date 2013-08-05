@@ -1935,9 +1935,9 @@ body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:
 body .main article { padding: 3em; }
 body .form-header { position: absolute; top: -4.4em; border: none; }
 
-strong { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; }
+strong { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; }
 
-h2, h3, h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; color: #ce4f07; text-align: center; }
+h2, h3, h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; color: #ce4f07; text-align: center; }
 
 .preview-header { position: absolute; top: -90px; width: 100%; z-index: 1000; color: #333333; opacity: 0.5; margin: 0; }
 
@@ -2019,11 +2019,9 @@ progress { display: block; margin: 10px auto; }
   body .form-header .form-language-selector { border-right: none; }
   body button.print { display: none; } }
 /* overriding main rules */
-body { color: #0d0d0d; }
+body, h2, h3, h4, legend { color: #0d0d0d; }
 
-h3 { font-size: 30px; }
-
-h2, h3, h4, legend { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #0d0d0d; }
+h3 { font-weight: bolder; font-size: 30px; }
 
 .btn-info { background-image: -moz-linear-gradient(top, #5bc0de, #2f96b4); background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#5bc0de), to(#2f96b4)); background-image: -webkit-linear-gradient(top, #5bc0de, #2f96b4); background-image: -o-linear-gradient(top, #5bc0de, #2f96b4); background-image: linear-gradient(to bottom, #3ca5d6, #3696c2); border: 1px solid #3186ad; }
 
@@ -2164,7 +2162,7 @@ h4 { text-align: left; }
 
 #stats + .jr-group, #jr-preload-items + .jr-group, #form-languages + .jr-group { border-top: none; }
 
-label, fieldset { margin: 0 0 0.7em 0; padding-top: 0.9em; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; }
+label, fieldset { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-style: normal; margin: 0 0 0.7em 0; padding-top: 0.9em; }
 
 .restoring-sanity-to-legends fieldset { padding: 0; margin: 0; }
 
@@ -2256,7 +2254,7 @@ fieldset .remove { float: right; margin-right: 0; }
 .geopoint button[name="geodetect"], .geopoint .input-append .add-on[name="geodetect"] { display: inline-block; float: right; margin: 8px 0 0 4%; width: 40px; }
 .geopoint .no-search-input.no-map { border-left: none; }
 .geopoint .no-search-input button[name="geodetect"] { float: none; display: block; margin: 15px auto 15px auto; width: 50%; }
-.geopoint label.geo { display: block; border: none; padding: 0; margin: 15px 0 0 0; }
+.geopoint label.geo { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; display: block; border: none; padding: 0; margin: 15px 0 0 0; }
 .geopoint label.geo:nth-of-type(1) { padding-top: 5px; }
 .geopoint label.geo:nth-of-type(2) { margin-bottom: 20px; }
 .geopoint label.geo:nth-of-type(3) { border-top: solid 1px #bbbbbb; padding: 12px 0 0 0; margin: 0 0 0 0; }
@@ -2297,6 +2295,8 @@ fieldset .remove { float: right; margin-right: 0; }
 .jr-appearance-compact input ~ img.active, .jr-appearance-quickcompact input ~ img.active { margin-left: 0; max-width: 150px; max-height: 150px; border: 2px solid transparent; }
 .jr-appearance-compact input ~ img:hover, .jr-appearance-quickcompact input ~ img:hover { border-color: #faa474; }
 .jr-appearance-compact input:checked ~ img, .jr-appearance-compact input:checked ~ img:hover, .jr-appearance-quickcompact input:checked ~ img, .jr-appearance-quickcompact input:checked ~ img:hover { border-color: #ce4f07; }
+
+.file-feedback { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; }
 
 /* overriding _form rules */
 .paper .form-language-selector { border-right: none; }

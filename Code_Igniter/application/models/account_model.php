@@ -18,12 +18,12 @@ class Account_model extends CI_Model {
     }
 
     private $mocks = array(
-        'https://active.api.high.testserver'   => array('api_token' => 'a', 'api_access' => TRUE,  'quota' => 1000000 ),
-        'https://active.api.low.testserver'    => array('api_token' => 'b', 'api_access' => TRUE,  'quota' => -1 ),
-        'https://active.noapi.high.testserver' => array('api_token' => 'c', 'api_access' => FALSE, 'quota' => 1000000 ),
-        'https://active.noapi.low.testserver'  => array('api_token' => 'd', 'api_access' => FALSE, 'quota' => -1 ),
-        'https://inactive.testserver'          => array('api_token' => 'e', 'quota' => FALSE ),
-        'https://noexist.testserver'           => array('api_token' => NULL, 'quota' => NULL )     
+        'https://testserver.com/bob'            => array('api_token' => 'abc', 'api_access' => TRUE,  'quota' => 1000000 ),
+        'https://testserver.com/noquota'        => array('api_token' => 'abc', 'api_access' => TRUE,  'quota' => -1 ),
+        'https://testserver.com/noapi'          => array('api_token' => 'abc', 'api_access' => FALSE, 'quota' => 1000000 ),
+        'https://testserver.com/noquotanoapi'   => array('api_token' => 'abc', 'api_access' => FALSE, 'quota' => -1 ),
+        'https://testserver.com/notpaid'        => array('api_token' => 'abc', 'quota' => FALSE ),
+        'https://testserver.com/notexist'       => array('api_token' => NULL,  'quota' => NULL )     
     );
 
     public function get_status($server_url)

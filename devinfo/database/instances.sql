@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 08, 2012 at 08:36 PM
--- Server version: 5.5.24
--- PHP Version: 5.3.10-1ubuntu3.4
+-- Generation Time: Aug 02, 2013 at 02:49 PM
+-- Server version: 5.5.32
+-- PHP Version: 5.3.10-1ubuntu3.7
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -27,13 +27,13 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `instances` (
-  `instanceid` varchar(255) NOT NULL,
-  `subdomain` varchar(100) NOT NULL,
+  `instanceid` varchar(50) NOT NULL,
+  `subdomain` varchar(12) NOT NULL,
   `return_url` varchar(255) NOT NULL,
   `instance_xml` mediumtext,
   `timestamp` bigint(20) NOT NULL,
-  UNIQUE KEY `idx_instanceid` (`instanceid`),
-  KEY `idx_subdomain` (`subdomain`)
+  PRIMARY KEY (`instanceid`,`subdomain`),
+  KEY `subdomain` (`subdomain`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

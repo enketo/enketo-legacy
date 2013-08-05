@@ -161,9 +161,9 @@ h4{
 #stats + .jr-group, #jr-preload-items + .jr-group, #form-languages + .jr-group{
 	border-top: none;}
 label, fieldset {
+	@include font-bold;
 	margin: 0 0 0.7em 0;
-	padding-top: 0.9em;
-	@include font-bold;}
+	padding-top: 0.9em;}
 .restoring-sanity-to-legends{
 	fieldset{
 	padding: 0;
@@ -388,6 +388,7 @@ fieldset {
 			margin: 15px auto 15px auto;
 			width: 50%; } }
 	label.geo{
+		@include font-normal;
 		display: block;
 		border: none;
 		padding: 0;
@@ -507,3 +508,5 @@ fieldset {
 			border-color: lighten($title, 30%);}
 		&:checked ~ img, &:checked ~ img:hover{
 			border-color: $title; } } }
+.file-feedback {
+	@include font-normal;}

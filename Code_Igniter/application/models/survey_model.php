@@ -159,7 +159,6 @@ class Survey_model extends CI_Model {
         return $this->_update_item('active' , FALSE);
     }
 
-
     public function has_offline_launch_enabled()
     {
         return !$this->_has_subdomain_suffix();
@@ -205,7 +204,8 @@ class Survey_model extends CI_Model {
             && $this->_remove_item('server_url', 'https://testserver.com/notexist');
     }
 
-    public function number_surveys($server_url = NULL, $active_only = TRUE){
+    public function number_surveys($server_url = NULL, $active_only = TRUE)
+    {
         $this->remove_test_entries();
         return $this->_get_record_number($server_url, $active_only);
     }
@@ -284,14 +284,20 @@ class Survey_model extends CI_Model {
         }
     }
 
-    private function _get_base_url($subdomain = false, $suffix = false) {
-        if(empty($_SERVER['HTTPS'])) {
-            $protocol = 'http://';
-            $default_port = 80;
-        } else {
-            $protocol = 'https://';
-            $default_port = 443;
-        }
+    public function increase_submission_count()
+    {
+        return $this->_update_item('submissions', 'submissions + 1', FALSE);
+    }
+
+	private function _get_base_url($subdomain = false, $suffix = false) 
+    {
+		if(empty($_SERVER['HTTPS'])) {
+			$protocol = 'http://';
+			$default_port = 80;
+		} else {
+			$protocol = 'https://';
+			$default_port = 443;
+		}
         $domain = $_SERVER['SERVER_NAME'];
         // append port to domain only if it's a nonstandard port. don't use HTTP_HOST as it can be manipulated by the client
         if($_SERVER['SERVER_PORT'] != $default_port) $domain .=  ':' . $_SERVER['SERVER_PORT'];
@@ -499,23 +505,30 @@ class Survey_model extends CI_Model {
         return $query->result_array();
     }
 
-    private function _update_item($field, $value)
+    private function _update_item($field, $value, $escape = TRUE)
     {
-        $data = array($field => $value);
-        return $this->_update_items($data);
+        $this->db->where('subdomain', $this->db_subdomain);
+        $this->db->set($field, $value, $escape);
+        $this->db->update('surveys');
+        log_message('debug', 'last query: '.$this->db->last_query());
+        if ($this->db->affected_rows() > 0) {
+            return TRUE;
+        }
+        log_message('error', 'database update on record with subdomain '.$this->db_subdomain);
+        return FALSE;   
     }
 
     private function _update_items($data)
     {
         $this->db->where('subdomain', $this->db_subdomain);
         $this->db->limit(1);
-        $query = $this->db->update('surveys', $data);
+        $query = $this->db->update('surveys', $data); 
         if ($this->db->affected_rows() > 0) {
             return TRUE;
-        } else {
-            log_message('debug', 'failed database update '.$this->db->last_query());
-            return FALSE;   
         }
+        
+        log_message('debug', 'failed database update '.$this->db->last_query());
+        return FALSE;   
     }
 
     private function _remove_item($field, $value)

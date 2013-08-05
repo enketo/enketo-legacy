@@ -2130,6 +2130,7 @@ h2, h3, h4, legend { color: #0d0d0d; }
 #form-languages { width: auto; height: 30px; background: none; min-width: 11em; margin: 0 0 0 1em; font-size: 0.9em; }
 
 #submit-form, #submit-edited-data, #validate-form, #launch-form { position: relative; width: 150px; left: 50%; margin: 45px 10px 5px -75px; }
+#submit-form progress, #submit-edited-data progress, #validate-form progress, #launch-form progress { width: 100%; margin: 1px auto 1px auto; }
 
 .enketo-power { position: relative; left: 50%; margin: 30px 0 0 -100px; width: 200px; font-size: 16px; line-height: 23px; text-align: center; }
 .enketo-power a { font-style: italic; }
@@ -2300,3 +2301,5 @@ fieldset .remove { float: right; margin-right: 0; }
 .btn-radiocheck:hover, .btn-radiocheck:focus, .btn-radiocheck:active, .btn-radiocheck[data-checked] { background-color: #e4f4ff; }
 
 .input-append .add-on { padding: 13px 5px 7px 5px; }
+
+#submit-form progress { margin: 0 auto -6px auto; }

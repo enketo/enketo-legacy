@@ -197,7 +197,12 @@ class Survey_model extends CI_Model {
     {
         return $this->_remove_item('server_url', 'http://testserver/bob') 
             && $this->_remove_item('server_url', 'http://testserver.com/bob')
-            && $this->_remove_item('server_url', 'https://testserver.com/bob');
+            && $this->_remove_item('server_url', 'https://testserver.com/bob')
+            && $this->_remove_item('server_url', 'https://testserver.com/noquota')
+            && $this->_remove_item('server_url', 'https://testserver.com/noapi')
+            && $this->_remove_item('server_url', 'https://testserver.com/noquotanoapi')
+            && $this->_remove_item('server_url', 'https://testserver.com/notpaid')
+            && $this->_remove_item('server_url', 'https://testserver.com/notexist');
     }
 
     public function number_surveys($server_url = NULL, $active_only = TRUE){

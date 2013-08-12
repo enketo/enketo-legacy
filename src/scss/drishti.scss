@@ -4,16 +4,25 @@ $iconSpritePath: '../images/glyphicons-halflings.png'; //patches bug in bootstra
 $iconWhiteSpritePath: '../images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
 $mainColor: #0d0d0d;
 
+@mixin font-normal {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  font-style: normal; }
+
+@mixin font-bold {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;;
+  font-weight: bold;
+  font-style: normal; }
+
 @import "_main";
 @import "_responsive";
 /* overriding main rules */
-body{
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: $mainColor}
-h3 {
-  font-size: 30px; }
-h2,h3,h4,legend{
+body, h2,h3,h4,legend{
+    //font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: $mainColor;}
+h3 {
+  font-weight: bolder;
+  font-size: 30px; }
 .btn-info{
     @include btn-info-extension-flat;}
 

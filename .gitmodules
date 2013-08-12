@@ -10,6 +10,3 @@
 [submodule "Code_Igniter/system"]
 	path = Code_Igniter/system
 	url = https://github.com/MartijnR/CodeIgniter_system.git
-[submodule "Code_Igniter/application/third_party/form_auth"]
-	path = Code_Igniter/application/third_party/form_auth
-	url = https://github.com/MartijnR/enketo_form_auth.git

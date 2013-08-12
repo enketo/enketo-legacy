@@ -1,0 +1,16 @@
+$baseFontSize: 16px;
+$baseLineHeight: 20px;
+$iconSpritePath: '/images/glyphicons-halflings.png'; //patches bug in bootstrap-sass
+$iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
+
+@import "_main";
+@import "_responsive";
+@import "_form";
+@import "_iframe";
+
+.paper .branding{
+		display: none;}
+
+@media screen and (max-width: 720px){
+	body .form-header{
+		border-bottom: none;} }

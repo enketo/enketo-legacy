@@ -86,21 +86,20 @@ class Front extends CI_Controller {
 
 	public function get_number_launched()
 	{
-		$this->load->model('Survey_model','',TRUE);
-		echo $this->Survey_model->number_surveys();
+		echo $this->_get_number_launched();
 	}
 
 	private function _get_number_launched()
 	{
 		$this->load->model('Survey_model','',TRUE);
-		return (int) $this->Survey_model->number_surveys();
+		return (int) $this->Survey_model->number_surveys(NULL, FALSE);
 	}
 
 	public function get_number_launched_everywhere()
 	{
 		$deployments = array(
-			"enketo.formhub.org" => "http://enketo.formhub.org",
-			"enketo.org" => "http://enketo.org"
+			"enketo.formhub.org" => "https://enketo.formhub.org",
+			"enketo.org" => "https://enketo.org"
 		);
 		$result = array('total' => 0);
 

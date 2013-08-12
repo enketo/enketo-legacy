@@ -19,12 +19,12 @@ var xpathEvalNum=0, xpathEvalTime=0, xpathEvalTimePure=0;
  * @param {string} taskName [description]
  * @constructor
  */
-function Profiler(taskName){
+function Profiler( taskName ) {
 	var start = new Date().getTime();
 	/**
 	 * @param  {string=} message [description]
 	 */
-	this.report = function(message){
+	this.report = function( message ) {
 		message = message || 'time taken for '+taskName+' to execute in milliseconds: '+ (new Date().getTime() - start);
 		//console.error(message);
 		profilerRecords.push(message);
@@ -33,30 +33,30 @@ function Profiler(taskName){
 
 /**
  * splits an array of file sizes into batches (for submission) based on a limit
- * @param  {Array.<number>}	fileSizes	array of file sizes
- * @param  {number}		limit	limit in byte size of one chunk (can be exceeded for a single item)
- * @return {Array.<Array.<number>>}	array of arrays with index, each secondary array of indices represents a batch
+ * @param  {Array.<number>} fileSizes   array of file sizes
+ * @param  {number}     limit   limit in byte size of one chunk (can be exceeded for a single item)
+ * @return {Array.<Array.<number>>} array of arrays with index, each secondary array of indices represents a batch
  */
-function divideIntoBatches(fileSizes, limit){
+function divideIntoBatches( fileSizes, limit ) {
 	var i, j, batch, batchSize,
 		sizes = [],
 		batches = [];
 	//limit = limit || 5 * 1024 * 1024;
-	for (i=0; i<fileSizes.length ; i++){
-        sizes.push({'index': i, 'size': fileSizes[i]});
-    }
+	for ( i=0; i<fileSizes.length ; i++ ){
+		sizes.push({'index': i, 'size': fileSizes[i]});
+	}
 	while( sizes.length > 0){
 		batch = [sizes[0].index];
 		batchSize = sizes[0].size;
-		if (sizes[0].size < limit){
-			for (i = 1; i<sizes.length; i++){
-				if (( batchSize + sizes[i].size) < limit){
+		if (sizes[0].size < limit) {
+			for ( i = 1; i<sizes.length; i++ ) {
+				if (( batchSize + sizes[i].size) < limit ) {
 					batch.push(sizes[i].index);
 					batchSize += sizes[i].size;
 				}
 			}
 		}
-        batches.push(batch);
+		batches.push(batch);
 		for (i=0; i<sizes.length; i++){
 			for (j=0; j<batch.length; j++){
 				if (sizes[i].index === batch[j]){
@@ -72,7 +72,7 @@ var helper = new Helper();
 /**
  * @constructor
  */
-function Helper(){
+function Helper() {
 	"use strict";
 	this.setSettings = function() {
 		var i, queryParam,
@@ -89,14 +89,14 @@ function Helper(){
 				{q: 'instanceId', s: 'instanceId'},
 				{q: 'entityId', s: 'entityId'}
 			];
-		for (i=0 ; i< settingsMap.length ; i++){
+		for (i=0 ; i< settingsMap.length ; i++) {
 			queryParam = this.getQueryParam(settingsMap[i].q);
 			//a query variable has preference
 			settings[settingsMap[i].s] = (queryParam !== null) ?
 				queryParam : (typeof settings[settingsMap[i].s] !== 'undefined') ? settings[settingsMap[i].s] : null;
 		}
 	};
-	this.getQueryParam = function (param) {
+	this.getQueryParam = function ( param ) {
 		var allParams = this.getAllQueryParams();
 		for (var paramName in allParams){
 			if (paramName.toLowerCase() === param.toLowerCase()){
@@ -105,7 +105,7 @@ function Helper(){
 		}
 		return null;
 	};
-	this.getAllQueryParams = function(){
+	this.getAllQueryParams = function() {
 		var val, processedVal,
 			query = window.location.search.substring(1),
 			vars = query.split("&"),
@@ -113,7 +113,7 @@ function Helper(){
 		for (var i = 0; i < vars.length; i++) {
 			var pair = vars[i].split("=");
 			if (pair[0].length > 0){
-				val = encodeURI(pair[1]);
+				val = decodeURIComponent(pair[1]);
 				processedVal = (val === 'true') ? true : (val === 'false') ? false : val;
 				params[pair[0]] = processedVal;
 			}
@@ -122,8 +122,8 @@ function Helper(){
 	};
 }
 
-window.onload = function(){
-	setTimeout(function(){
+window.onload = function() {
+	setTimeout( function(){
 		var loadLog, t, loadingTime, exLog, timingO = {};
 		if (window.performance){
 			t = window.performance.timing;
@@ -144,18 +144,18 @@ window.onload = function(){
 			if (window.opener && window.performance && window.postMessage) window.opener.postMessage(JSON.stringify(timingO), '*');
 			$(profilerRecords).each(function(i,v){console.log(v);});
 		}
-	}, 0);
+	}, 0 );
 };
 
-(function($){
+( function( $ ){
 	"use strict";
 
 	/**
-     * Creates an XPath from a node (currently not used inside this Class (instead FormHTML.prototype.generateName is used) but will be in future);
-     * @param  {string=} rootNodeName	if absent the root is #document
-     * @return {string}                 XPath
-     */
-    $.fn.getXPath = function(rootNodeName){
+	 * Creates an XPath from a node (currently not used inside this Class (instead FormHTML.prototype.generateName is used) but will be in future);
+	 * @param  {string=} rootNodeName   if absent the root is #document
+	 * @return {string}                 XPath
+	 */
+	$.fn.getXPath = function(rootNodeName) {
 		//other nodes may have the same XPath but because this function is used to determine the corresponding input name of a data node, index is not included 
 		var position,
 			$node = this.first(),
@@ -168,7 +168,7 @@ window.onload = function(){
 		//position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($node)+1)+']' : '';
 		//steps.push(nodeName+position);
 
-		while ($parent.length == 1 && parentName !== rootNodeName && parentName !== '#document'){
+		while ($parent.length == 1 && parentName !== rootNodeName && parentName !== '#document') {
 			//$sibSameNameAndSelf = $parent.siblings(parentName).addBack();
 			//position = ($sibSameNameAndSelf.length > 1) ? '['+($sibSameNameAndSelf.index($parent)+1)+']' : '';
 			//steps.push(parentName+position);
@@ -180,7 +180,7 @@ window.onload = function(){
 	};
 
 	// give a set of elements the same (longest) width
-	$.fn.toLargestWidth = function(plus){
+	$.fn.toLargestWidth = function( plus ){
 		var largestWidth = 0;
 		plus = plus || 0;
 		return this.each(function(){
@@ -192,7 +192,7 @@ window.onload = function(){
 		});
 	};
 
-	$.fn.toSmallestWidth = function(){
+	$.fn.toSmallestWidth = function() {
 		var smallestWidth = 2000;
 		return this.each(function(){
 			if ($(this).width() < smallestWidth) {
@@ -207,7 +207,7 @@ window.onload = function(){
 	$.fn.reverse = [].reverse;
 
 	// Alphanumeric plugin for form input elements see http://www.itgroup.com.ph/alphanumeric/
-	$.fn.alphanumeric = function(p) {
+	$.fn.alphanumeric = function( p ) {
 
 		p = $.extend({
 			ichars: "!@#$%^&*()+=[]\\\';,/{}|\":<>?~`.- ",
@@ -247,7 +247,7 @@ window.onload = function(){
 		});
 	};
 
-	$.fn.numeric = function(p) {
+	$.fn.numeric = function( p ) {
 
 		var az = "abcdefghijklmnopqrstuvwxyz";
 		az += az.toUpperCase();
@@ -264,7 +264,7 @@ window.onload = function(){
 
 	};
 
-	$.fn.alpha = function(p) {
+	$.fn.alpha = function( p ) {
 
 		var nm = "1234567890";
 
@@ -306,7 +306,7 @@ window.onload = function(){
 	};
 
 	// plugin to select the first word(s) of a string and capitalize it
-	$.fn.capitalizeStart = function (numWords) {
+	$.fn.capitalizeStart = function ( numWords ) {
 		if(!numWords){
 			numWords = 1;
 		}

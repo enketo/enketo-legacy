@@ -47,7 +47,11 @@ $config['brand'] = "formhub";
 /**
  * OpenRosa servers that are allowed to connect
  */
-$config['openrosa_domains_allowed'] = array("formhub.org", "www.formhub.org");
+$config['openrosa_domains_allowed'] = array(
+	array('url' => 'formhub.org', 		'api_token' => 'abcde'),
+	array('url' => 'www.formhub.org', 	'api_token' => 'abcde'),
+	array('url' => 'dev.formhub.org', 	'api_token' => 'abcde')
+);
 
 /**
  * **********************************************************

@@ -25,7 +25,7 @@ var /**@type {FileManager}*/fileManager;
 $(document).ready(function() {
 	'use strict';
 	var loadErrors;
-	settings.returnURL = '/webform/thanks';
+
 	form = new Form('form.jr:eq(0)', jrDataStr);
 	connection = new Connection();
 	loadErrors = form.init();

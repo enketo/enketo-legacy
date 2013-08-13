@@ -2451,7 +2451,7 @@ function Form (formSelector, dataStr, dataStrToEdit){
                             .prop('disabled', false)
                             .siblings('.file-feedback').remove()
                             .end()
-                            .after('<div class="text-info">'+
+                            .after('<div class="file-feedback text-info">'+
                                 'File inputs are experimental. Use only for testing.');
                     },
                     error: function(){

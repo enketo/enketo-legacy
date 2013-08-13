@@ -137,7 +137,7 @@ html.touch{
 	margin: 30px 0 10px -60px; }
 h3{
 	padding: 5px 0 15px 0;
-	font-weight: bolder;
+	//font-weight: bolder;
 	word-wrap: break-word;}
 h4{
 	text-align: left;  }
@@ -161,9 +161,9 @@ h4{
 #stats + .jr-group, #jr-preload-items + .jr-group, #form-languages + .jr-group{
 	border-top: none;}
 label, fieldset {
+	@include font-bold;
 	margin: 0 0 0.7em 0;
-	padding-top: 0.9em;
-	font-weight: bold; }
+	padding-top: 0.9em;}
 .restoring-sanity-to-legends{
 	fieldset{
 	padding: 0;
@@ -178,7 +178,8 @@ legend {
 	~ label {
 		margin: 0;
 		padding: 5px 0 3px 0;
-		font-weight: normal; 
+		@include font-normal;
+		//font-weight: normal; 
 		&:not(.btn-radiocheck):hover{
 			background-color: lighten($title, 48%);}
 		.active{
@@ -294,6 +295,7 @@ fieldset {
 .alert{
 	margin-bottom: 4px;}
 .trigger {
+	@include font-normal;
 	padding: 7px 12px;
 	margin: 1em 0; }
 .required{
@@ -386,6 +388,7 @@ fieldset {
 			margin: 15px auto 15px auto;
 			width: 50%; } }
 	label.geo{
+		@include font-normal;
 		display: block;
 		border: none;
 		padding: 0;
@@ -431,7 +434,8 @@ fieldset {
 	.dropdown-toggle{
 		line-height: $input-height;
 		min-width: $input-min-width - 14px;
-		font-weight: normal;
+		//font-weight: normal;
+		@include font-normal;
 		font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 		text-align: left;
 		min-width: $input-min-width -14px;
@@ -439,7 +443,8 @@ fieldset {
 			padding-right: 10px;}
 		~ .dropdown-menu{
 			label{
-				font-weight: normal;
+				//font-weight: normal;
+				@include font-normal;
 				padding-top: 0px;
 				padding-left: 0px; 
 				font-size: 1em;
@@ -503,3 +508,5 @@ fieldset {
 			border-color: lighten($title, 30%);}
 		&:checked ~ img, &:checked ~ img:hover{
 			border-color: $title; } } }
+.file-feedback {
+	@include font-normal;}

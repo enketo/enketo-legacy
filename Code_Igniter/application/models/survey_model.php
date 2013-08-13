@@ -514,7 +514,8 @@ class Survey_model extends CI_Model {
         if ($this->db->affected_rows() > 0) {
             return TRUE;
         }
-        log_message('error', 'database update on record with subdomain '.$this->db_subdomain);
+        log_message('error', 'database update failed on record with subdomain '.$this->db_subdomain.' for field:'.$field.', value: '.$value);
+        log_message('debug', $this->db->last_query());
         return FALSE;   
     }
 

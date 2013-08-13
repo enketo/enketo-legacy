@@ -75,7 +75,7 @@ GUI.prototype.init = function(){
 
 	// checking for support for specific fancy css3 visual stuff
 	//if (Modernizr.borderradius && Modernizr.boxshadow && Modernizr.csstransitions && Modernizr.opacity){
-	//	$(document).trigger('browsersupport', 'fancy-visuals');
+	//  $(document).trigger('browsersupport', 'fancy-visuals');
 	//}
 
 	$('footer').detach().appendTo('#container');
@@ -117,7 +117,7 @@ GUI.prototype.setEventHandlers = function(){
 	});
 
 	//$(document).on('click', '.touch #page', function(event){
-	//	that.pages.close();
+	//  that.pages.close();
 	//});
 
 	// capture all internal links to navigation menu items (except the links in the navigation menu itself)
@@ -333,7 +333,7 @@ GUI.prototype.feedbackBar = {
 /**
  * Select what type of unobtrusive feedback message to show to the user.
  *
- * @param {string}	message
+ * @param {string}  message
  * @param {number=} duration duration in seconds for the message to show
  * @param {string=} heading  heading to show - defaults to information, ignored in feedback bar
  * @param {Object=} choices  choices to show - defaults to simple Close button, ignored in feedback bar for now
@@ -542,8 +542,8 @@ GUI.prototype.confirmLogin = function(msg, serverURL){
 
 /**
  * Shows modal with load errors
- * @param  {Array.<string>} loadErrors	load error messagesg
- * @param  {string=}		advice	a string with advice
+ * @param  {Array.<string>} loadErrors  load error messagesg
+ * @param  {string=}        advice  a string with advice
  */
 GUI.prototype.showLoadErrors = function(loadErrors, advice){
 	var errorStringHTML = '<ul class="error-list"><li>' + loadErrors.join('</li><li>') + '</li></ul',
@@ -679,12 +679,13 @@ GUI.prototype.setSettings = function(settings){
  * @param { boolean=} reset if list provided is empty and reset is true, no error message is shown
  */
 GUI.prototype.parseFormlist = function(list, $target, reset){
-	var i, listHTML='';
+	var i = 0, 
+		listHTML='';
 	console.log('list: ', list);
 	if(!$.isEmptyObject(list)){
-		for (i in list){
-			listHTML += '<li><a class="btn btn-block btn-info" id="'+i+'" title="'+list[i].title+'" '+
-				'href="'+list[i].url+'" data-server="'+list[i].server+'" >'+list[i].name+'</a></li>';
+		for (i ; i<list.length; i++){
+			listHTML += '<li><a class="btn btn-block btn-info" id="'+list[i].form_id+'" title="'+list[i].title+'" '+
+				'href="'+list[i].url+'" data-server="'+list[i].server_url+'" >'+list[i].name+'</a></li>';
 		}
 		$target.removeClass('empty');
 	}
@@ -704,23 +705,23 @@ GUI.prototype.parseFormlist = function(list, $target, reset){
 function Print(){
 	"use strict";
 	//var mpl,
-	//	that = this;
+	//  that = this;
 	this.setStyleSheet();
 	//IE, FF, the 'proper' way:
-    //if (typeof window.onbeforeprint !== 'undefined'){
-	//	$(window).on('beforeprint', this.printForm);
-    //}
-    //Chrome, Safari, Opera: (this approach has problems)
+	//if (typeof window.onbeforeprint !== 'undefined'){
+	//  $(window).on('beforeprint', this.printForm);
+	//}
+	//Chrome, Safari, Opera: (this approach has problems)
 	//else {
-	//	mpl = window.matchMedia('print');
-	//	mpl.addListener(function(mql){
-	//		if (mql.matches && !that.ongoing){
-	//			that.ongoing = true;
-	//			that.printForm();
-	//			that.ongoing = false;
-	//		}
-	//		return false;
-	//	});
+	//  mpl = window.matchMedia('print');
+	//  mpl.addListener(function(mql){
+	//      if (mql.matches && !that.ongoing){
+	//          that.ongoing = true;
+	//          that.printForm();
+	//          that.ongoing = false;
+	//      }
+	//      return false;
+	//  });
 	//}
 	this.setDpi();
 }

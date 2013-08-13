@@ -3,6 +3,12 @@
 ?>
 		<script type="text/javascript">
 			var jrDataStr = <?= $form_data ?>;
+		<? if (!empty($form_data_to_edit)): ?>
+			var jrDataStrToEdit = <?= $form_data_to_edit ?>;
+		<? endif; ?>
+		<? if (!empty($return_url)): ?>
+			settings['returnURL'] = '<?= $return_url ?>';
+		<? endif; ?>
 		</script>
 	
 	
@@ -17,12 +23,10 @@
 			<article class="paper" >
 				<? include_once 'elements/form-header.php'; ?>
 				<?= $form ?>	
-				<button id="submit-form" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
+				<button id="<?= (!empty($form_data_to_edit)) ? 'submit-form' : 'submit-edited-data'; ?>" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
 				<? include_once 'elements/enketo-power.php'; ?>
 				<? include 'elements/logout.php'; ?>
 			</article>
 		</div>
-
-		<? //require 'elements/status.php'; ?>	
 
 	<? require 'elements/footer++.php' ?>

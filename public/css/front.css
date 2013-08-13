@@ -1929,11 +1929,15 @@ a.label:hover, a.label:focus, a.badge:hover, a.badge:focus { color: white; text-
 /** copy of bootstrap style for alert-error */
 @font-face { font-family: 'OpenSansRegular'; src: url("/css/fonts/OpenSans-Regular-webfont.woff") format("woff"), url("/css/fonts/OpenSans-Regular-webfont.ttf") format("truetype"), url("/css/fonts/OpenSans-Regular-webfont.svg#OpenSansRegular") format("svg"); font-weight: normal; font-style: normal; }
 
-body { font-family: 'OpenSansRegular', Helvetica, Arial, sans-serif; background: #f0f0f0 no-repeat; font-size: 16px; line-height: 20px; overflow-x: hidden; }
+@font-face { font-family: 'OpenSansBold'; src: url("/css/fonts/OpenSans-Bold-webfont.woff") format("woff"), url("/css/fonts/OpenSans-Bold-webfont.ttf") format("truetype"), url("/css/fonts/OpenSans-Bold-webfont.svg#OpenSansBold") format("svg"); font-weight: normal; font-style: normal; }
+
+body { font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; background: #f0f0f0 no-repeat; font-size: 16px; line-height: 20px; overflow-x: hidden; }
 body .main article { padding: 3em; }
 body .form-header { position: absolute; top: -4.4em; border: none; }
 
-h2, h3, h4 { color: #ce4f07; text-align: center; }
+strong { font-family: 'OpenSansBold', Arial, sans-serif; font-weight: normal; font-style: normal; }
+
+h2, h3, h4 { font-family: 'OpenSansBold', Arial, sans-serif; font-weight: normal; font-style: normal; color: #ce4f07; text-align: center; }
 
 .preview-header { position: absolute; top: -90px; width: 100%; z-index: 1000; color: #333333; opacity: 0.5; margin: 0; }
 

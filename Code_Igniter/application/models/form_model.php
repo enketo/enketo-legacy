@@ -561,6 +561,7 @@ class Form_model extends CI_Model {
     {
         $current_hash = $this->info['xml_hash'];
         $previous_hash = (string) $previous_hash;
+        log_message('debug', 'current xml hash:'.$current_hash.', previous: '.$previous_hash);
         return (!empty($current_hash) && !empty($previous_hash) && $current_hash === $previous_hash);
     }
 
@@ -571,6 +572,7 @@ class Form_model extends CI_Model {
         $form_xsl_hash_new = md5_file($this->file_path_to_jr2HTML5_XSL);
         $model_xsl_hash_new = md5_file($this->file_path_to_jr2Data_XSL);
         if($last['form_xsl_hash'] !== $form_xsl_hash_new || $last['model_xsl_hash'] !== $model_xsl_hash_new) {
+            log_message('debug', 'changed XSLT stylesheets');
             $xsl_version++;
             $this->_update_properties(array(
                 'xsl_version' => $xsl_version,
@@ -586,6 +588,7 @@ class Form_model extends CI_Model {
     {
         $current_hash = $this->info['media_hash'];
         $previous_hash = (string) $previous_media_hash;
+        log_message('debug', 'current media hash:'.$current_hash.', previous: '.$previous_hash);
         return (!empty($current_hash) && !empty($previous_hash) && $current_hash === $previous_hash);
     }
 }

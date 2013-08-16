@@ -30,7 +30,7 @@ class Api_v1 extends CI_Controller {
     function __construct()
     {
         parent::__construct();
-        $this->load->model('Account_model', '', TRUE);
+        $this->load->library('account');
         $params = $this->_get_params();
         $request_token = $this->_get_request_token();
         $account_status = $this->_get_account_status($params);
@@ -111,7 +111,7 @@ class Api_v1 extends CI_Controller {
 
     private function _get_account_status($params)
     {
-        return (isset($params['server_url'])) ? $this->Account_model->get_status($params['server_url']) : NULL;
+        return (isset($params['server_url'])) ? $this->account->get_status($params['server_url']) : NULL;
     }
 
     private function _get_request_token()

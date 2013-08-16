@@ -97,7 +97,8 @@ class Api_v1 extends CI_Controller {
                 break;
 
             case 'POST':
-                $params = $this->input->post(NULL, TRUE);
+                //temporarily switch off XSS filter as it garbles up the instance XML
+                $params = $this->input->post(); //(NULL, TRUE)
                 break;
 
             case 'GET':
@@ -121,6 +122,7 @@ class Api_v1 extends CI_Controller {
     private function _is_trusted_request()
     {
         //TODO needs to be checked for disallowing different origin ajax requests
+        //log_message('debug', 'API request received from: '.$_SERVER['REMOTE_ADDR']);
         return $this->input->is_ajax_request() || $_SERVER['REMOTE_ADDR'] == '127.0.0.1';
     }
 

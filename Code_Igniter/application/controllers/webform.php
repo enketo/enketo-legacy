@@ -65,6 +65,7 @@ class Webform extends CI_Controller {
         if (!empty($this->subdomain))
         {
             $form_props = $this->Survey_model->get_form_props();
+            log_message('$form_props: '.json_encode($form_props));
             $this->server_url= (isset($form_props['server_url'])) ? $form_props['server_url'] : NULL;
             $this->form_id = (isset($form_props['form_id'])) ? $form_props['form_id'] : NULL; 
             $this->form_hash_prev = (isset($form_props['hash'])) ? $form_props['hash'] : NULL; 
@@ -360,7 +361,7 @@ class Webform extends CI_Controller {
                 log_message('error', 'failed to obtain transformation result from database for '.$this->subdomain);
             }
         } else {
-            //log_message('debug', 'form changed, form media changed, xslt stylesheets changed or form never transformed before, going to perform transformation');
+            log_message('debug', 'form changed, form media changed, xslt stylesheets changed or form never transformed before, going to perform transformation');
             $form = $this->Form_model->get_transform_result_obj();
             if (!empty($form->html) && !empty($form->default_instance))
             {

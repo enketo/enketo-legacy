@@ -67,7 +67,7 @@ class Data extends CI_Controller {
 		unlink ($xml_submission_filepath);
 
 		if (!empty($response) && !empty($response['status_code']) && ($response['status_code'] == '201')) {
-			log_message('debug', 'increasing submission count');
+			//log_message('debug', 'increasing submission count');
 			$this->Survey_model->increase_submission_count();
 		}
 		//log_message('debug', 'result of submission: '.json_encode($response));
@@ -81,56 +81,6 @@ class Data extends CI_Controller {
 		$this->load->library('openrosa');
 		$submission_url = $this->Survey_model->get_form_submission_url();
 		echo $this->openrosa->request_max_size($submission_url);
-	}
-
-	public function edit_url()
-	{
-		log_message('debug', 'edit url function started');
-		$subdomain = get_subdomain();
-
-		if (isset($subdomain))
-		{
-			show_404();
-		}
-		else 
-		{
-			extract($_POST);
-
-			//trim strings first??
-			if (!empty($server_url) && !empty($form_id))
-			{
-				//to be replaced by user-submitted and -editable submission_url
-				$submission_url = (strrpos($server_url, '/') === strlen($server_url)-1) ? 
-					$server_url.'submission' :$server_url.'/submission';
-
-				$data_url = (empty($data_url)) ? NULL : $data_url;
-				$email = (empty($email)) ? NULL : $email;
-
-				$result = $this->Survey_model->launch_survey($server_url, $form_id, $submission_url, $data_url, $email);
-
-		        if(isset($instance) && isset($instance_id) && isset($result['subdomain']))
-		        {
-		            $rs = $this->Instance_model->insert_instance($result['subdomain'], $instance_id,
-		                $instance, $return_url);
-		            if($rs !== null)
-		            {
-		                $result['edit_url'] = $result['edit_url'] . '?instance_id=' . $instance_id;
-		            }
-		            else
-		            {
-		              unset($result['edit_url']);
-		              $result['reason'] = "someone is already editing instance";
-		            }
-		        }
-
-				echo json_encode($result);
-			}	
-			else
-			{
-				echo json_encode(array('success'=>FALSE, 'reason'=>'empty'));
-			}
-
-		}
 	}
 }
 ?>

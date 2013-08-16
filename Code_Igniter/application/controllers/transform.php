@@ -28,12 +28,17 @@ class Transform extends CI_Controller {
 		parent::__construct();
 		$this->load->model('Form_model', '', TRUE);
 	}
-	
+
 	public function index()
 	{
 		show_404();
 	}
 
+	/** 
+	 * this should be moved to api_v1 POST /transformation/
+	 * remaining question is whether that API should return json (like all others) or XML
+	 * or whether we should have /transformation/xml/ and transformation/json
+	 */
 	public function get_html_form()
 	{			
 		//log_message('debug', 'controller to serve html form started with POST vars: '.json_encode($_POST));

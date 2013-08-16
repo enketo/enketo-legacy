@@ -27,7 +27,7 @@ window.addEventListener("load", function() {
 	}, 0);
 }, false);
 
-$(document).ready(function(){
+$(document).ready(function() {
 	"use strict";
 	var url, $settings,
 		popoverOptions = {placement: 'top', trigger: 'click'},
@@ -77,21 +77,21 @@ $(document).ready(function(){
 		})
 		.addBack().find('[data-value="'+settings['defaultServerURLHelper']+'"]').click();
 
-	$settings.find('input#server').change(function(){
+	$settings.find('input#server').change(function() {
 		$settings.find('.go').click();
 	}).popover(popoverOptions);
 
-	$(document).on('click', '#refresh-list, #page .go', function(){
+	$(document).on('click', '#refresh-list, #page .go', function() {
 		var props, reset,
 			frag = $settings.find('input#server').val(),
 			type = $settings.find('.url-helper li.active > a').attr('data-value');
-		if ($('progress').css('display') === 'none'){
+		if ($('progress').css('display') === 'none') {
 			props = {
 				server: connection.oRosaHelper.fragToServerURL(type, frag),
 				helper: $settings.find('.url-helper li.active > a').attr('data-value'),
 				inputValue: $settings.find('input#server').val()
 			};
-			if (props.server){
+			if (props.server) {
 				$('progress').show();
 				connection.getFormlist(props.server, {
 					success: function(resp, msg){
@@ -106,7 +106,7 @@ $(document).ready(function(){
 					}
 				});
 			}
-			else{
+			else {
 				reset = true;
 				processFormlistResponse([], null, props, reset);
 			}
@@ -114,12 +114,12 @@ $(document).ready(function(){
 		$('#page .close, header a:not(.collapsed)[data-toggle="collapse"]').click();
 	});
 
-	$('#form-list').on('click', 'a', function(){
+	$('#form-list').on('click', 'a', function() {
 		var server, id,
 			href = /**@type {string}*/$(this).attr('href');
 			
 		//request a url first by launching this in enketo
-		if ( !href || href === "" || href==="#" ){
+		if ( !href || href === "" || href==="#" ) {
 			console.log('going to request enketo url');
 			server = $(this).attr('data-server');
 			id = $(this).attr('id');
@@ -137,13 +137,13 @@ $(document).ready(function(){
 		return false;
 	});
 
-	$('#page').on('change', function(){
+	$('#page').on('change', function() {
 		$settings.find('input#server').popover('hide');
 	});
 
 	loadPreviousState();
 
-	$(window).on('resize', function(){
+	$(window).on('resize', function() {
 		$('.paper').css('min-height', gui.fillHeight($('.paper')));
 		if ($('#form-list li').length === 0 && !gui.pages.isShowing() && !$('header nav').hasClass('in')){
 			showVirginHint();
@@ -153,7 +153,7 @@ $(document).ready(function(){
 /**
  * Loads the previous state of the formlist and server settings
  */
-function loadPreviousState(){
+function loadPreviousState() {
 	var i, list,
 		$settings = gui.pages.get('settings'),
 		server = store.getRecord('__current_server');
@@ -170,7 +170,7 @@ function loadPreviousState(){
 		}
 	}
 }
-function showVirginHint(){
+function showVirginHint() {
 	var left, offset, $popover,
 		$collapsedMenuIcon = $('header a[data-toggle="collapse"]'),
 		$menuItem = $('nav [href="#settings"]'),
@@ -204,16 +204,18 @@ function showVirginHint(){
  * @param  {Object} props [description]
  * @param  {boolean=} reset [description]
  */
-function processFormlistResponse(resp, msg, props, reset){
+function processFormlistResponse(resp, msg, props, reset) {
 	var helper, inputValue;
 	console.log('processing formlist response');
 	if (typeof resp === 'object' && !$.isEmptyObject(resp)){
 		store.setRecord('__server_' + props.server, resp, false, true);
 		store.setRecord('__current_server', {'url': props.server, 'helper': props.helper, 'inputValue': props.inputValue}, false, true);
-	}
-	else if (reset){
-		showVirginHint();
-		store.removeRecord('__current_server');
+	} else {
+		resp = {};
+		if (reset) {
+			showVirginHint();
+			store.removeRecord('__current_server');
+		}
 	}
 	$('progress').hide();
 	gui.parseFormlist(resp, $('#form-list'), reset);
@@ -224,7 +226,7 @@ function processFormlistResponse(resp, msg, props, reset){
  * @param  {?Object.<string, string>} resp [description]
  * @param  {string} msg  [description]
  */
-function processSurveyURLResponse(resp, msg){
+function processSurveyURLResponse(resp, msg) {
 	var record,
 		url = resp.url || null,
 		server = resp.serverURL || null,
@@ -232,24 +234,23 @@ function processSurveyURLResponse(resp, msg){
 		id = resp.formId || null;
 	console.debug(resp);
 	console.debug('processing link to:  '+url);
-	if (url && server && id){
+	if (url && server && id) {
 		record = store.getRecord('__server_'+server) || {};
 		record[id]['url'] = url;
 		store.setRecord('__server_'+server, record, false, true);
 		//$('a[id="'+id+'"][data-server="'+server+'"]').attr('href', url).click();
 		window.location = url;
-	}
-	else{
+	} else {
 		//TODO: add error handling
 		gui.alert('Form launch failed. '+reason, 'Form could not be launched.');
 	}
 }
 
 //overriding
-Cache.prototype.showBookmarkMsg = function(){};
+Cache.prototype.showBookmarkMsg = function() {};
 
 //overriding
-Cache.prototype.informUpdate = function(){
+Cache.prototype.informUpdate = function() {
 	return gui.confirm({
 			msg: '<div class="alert alert-success">A new version of this application has been downloaded.</div>'+
 				'<br/> Refresh the window to start using it.',

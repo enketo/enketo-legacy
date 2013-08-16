@@ -1,0 +1,1 @@
+<? show_error('The account is not active. Please contact your survey administrator to (re-)activate it.', 405); ?>

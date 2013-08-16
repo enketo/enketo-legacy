@@ -114,9 +114,12 @@ class Openrosa {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
-        if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+        if (!empty($data)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        }
         if (!empty($credentials)) {
-            log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
+            ///log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST | CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $credentials['username'].':'.$credentials['password']);
         } 

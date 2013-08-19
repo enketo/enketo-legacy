@@ -62,10 +62,8 @@ class Webform extends CI_Controller {
         $suf = $this->Survey_model->ONLINE_SUBDOMAIN_SUFFIX;
         $this->subdomain = ($this->Survey_model->has_offline_launch_enabled()) 
             ? $sub : substr($sub, 0, strlen($sub) - strlen($suf));
-        if (!empty($this->subdomain))
-        {
+        if (!empty($this->subdomain)) {
             $form_props = $this->Survey_model->get_form_props();
-            log_message('$form_props: '.json_encode($form_props));
             $this->server_url= (isset($form_props['server_url'])) ? $form_props['server_url'] : NULL;
             $this->form_id = (isset($form_props['form_id'])) ? $form_props['form_id'] : NULL; 
             $this->form_hash_prev = (isset($form_props['hash'])) ? $form_props['hash'] : NULL; 
@@ -73,11 +71,15 @@ class Webform extends CI_Controller {
             $this->xsl_version_prev = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; 
         }
         $this->iframe = ( $this->input->get('iframe', TRUE) == 'true' );
-        if ($this->config->item('auth_support'))
-        {
+
+        if ($this->config->item('auth_support')) {
             $this->load->add_package_path(APPPATH.'third_party/form_auth');
         }
         $this->load->library('form_auth');
+        if ($this->config->item('account_support')) {
+            $this->load->add_package_path(APPPATH.'third_party/account');
+        }
+        $this->load->library('account');
         log_message('debug', 'Webform Controller Initialized');
     }
 
@@ -109,6 +111,7 @@ class Webform extends CI_Controller {
             'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
             'server_url' => $this->server_url,
             'form_id' => $this->form_id,
+            'logo_url' => $this->account->logo_url($this->server_url),
             'logout' => $this->credentials !== NULL
         );
 
@@ -183,6 +186,7 @@ class Webform extends CI_Controller {
             'form_data'=> $form->default_instance,
             'form_data_to_edit' => $edit_obj->instance_xml,
             'return_url' => $edit_obj->return_url,
+            'logo_url' => $this->account->logo_url($this->server_url),
             'stylesheets'=> $this->iframe ? array(
                 array( 'href' => '/css/webform_edit_iframe.css', 'media' => 'all'),
                 array( 'href' => '/css/webform_print.css', 'media' => 'print')
@@ -254,6 +258,7 @@ class Webform extends CI_Controller {
             'form_data_to_edit' => NULL,
             'return_url' => '/webform/thanks',
             'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
+            'logo_url' => $this->account->logo_url($this->server_url),
             'logout' => $this->credentials !== NULL
         );
 
@@ -296,6 +301,7 @@ class Webform extends CI_Controller {
             'form'=> '',
             'return_url' => NULL,
             'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
+            'logo_url' => $this->account->logo_url($this->server_url),
             'logout' => $this->credentials !== NULL
         );
         if (ENVIRONMENT === 'production') {
@@ -427,8 +433,7 @@ class Webform extends CI_Controller {
 
     private function _paywall_check_route()
     {
-        $this->load->model('Account_model');
-        if (!$this->Account_model->serve_allowed($this->server_url)) {
+        if (!$this->account->serve_allowed($this->server_url)) {
             $this->load->view('unpaid_view');
             return TRUE;
         }

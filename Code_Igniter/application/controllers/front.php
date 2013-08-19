@@ -24,8 +24,7 @@ class Front extends CI_Controller {
 		$this->load->helper(array('subdomain', 'url'));
 		$subdomain = get_subdomain();
 		log_message('debug', 'Front controller started');
-		if (!empty($subdomain))
-		{
+		if (!empty($subdomain)) {
 			log_message('debug', 'front controller loaded with subdomain: '.$subdomain.' -> sending 404');
 			show_404();
 		}
@@ -33,14 +32,12 @@ class Front extends CI_Controller {
 
 	public function index()
 	{
-		$default_library_scripts = array
-		(
+		$default_library_scripts = array(
 			'/libraries/jquery.min.js',
 			'/libraries/bootstrap/js/bootstrap.min.js',
 			'/libraries/modernizr.min.js'
 		);
-		$default_main_scripts = array
-		(
+		$default_main_scripts = array(
 			'/js-source/helpers.js',
 			'/js-source/gui.js',
 			'/js-source/connection.js',
@@ -53,30 +50,24 @@ class Front extends CI_Controller {
 			//,'num_surveys' => $this->Survey_model->get_previous_number_surveys()
 		);
 
-		if (ENVIRONMENT === 'production')
-		{
+		if (ENVIRONMENT === 'production') {
 			$data['scripts'] = array(
 				'/libraries/libraries-all-min.js',
 				'/js-min/front-all-min.js'
 			);
-		}
-		else
-		{
+		} else {
 			$data['scripts'] = array_merge(
 				$default_library_scripts,
 				$default_main_scripts
 			);
 		}
 		
-		if (strlen($this->config->item('integrated')) > 0)
-		{
+		if (strlen($this->config->item('integrated')) > 0) {
 			$data['stylesheets'] = array(
 				array( 'href' => '/css/front.css', 'media' => 'screen')
 			);
 			$this->load->view('front_view_bare', $data);
-		}
-		else
-		{
+		} else {
 			$data['stylesheets'] = array(
 				array( 'href' => '/css/private/front.css', 'media' => 'screen')
 			);
@@ -84,32 +75,27 @@ class Front extends CI_Controller {
 		}	
 	}
 
-	public function get_number_launched()
-	{
+	public function get_number_launched() {
 		echo $this->_get_number_launched();
 	}
 
-	private function _get_number_launched()
-	{
+	private function _get_number_launched() {
 		$this->load->model('Survey_model','',TRUE);
 		return (int) $this->Survey_model->number_surveys(NULL, FALSE);
 	}
 
-	public function get_number_launched_everywhere()
-	{
+	public function get_number_launched_everywhere() {
 		$deployments = array(
 			"enketo.formhub.org" => "https://enketo.formhub.org",
 			"enketo.org" => "https://enketo.org"
 		);
 		$result = array('total' => 0);
 
-		foreach ($deployments as $name => $url)
-		{
+		foreach ($deployments as $name => $url) {
 			$this->load->helper('subdomain');
 			$number = (full_base_url() == $url.'/') ? 
 				$this->_get_number_launched() : file_get_contents($url.'/front/get_number_launched');
-			if (!empty($number))
-			{
+			if (!empty($number)) {
 				$result[$name] = (int) $number;
 				$result['total'] += (int) $number;
 			}

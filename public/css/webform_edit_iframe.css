@@ -1929,11 +1929,15 @@ a.label:hover, a.label:focus, a.badge:hover, a.badge:focus { color: white; text-
 /** copy of bootstrap style for alert-error */
 @font-face { font-family: 'OpenSansRegular'; src: url("/css/fonts/OpenSans-Regular-webfont.woff") format("woff"), url("/css/fonts/OpenSans-Regular-webfont.ttf") format("truetype"), url("/css/fonts/OpenSans-Regular-webfont.svg#OpenSansRegular") format("svg"); font-weight: normal; font-style: normal; }
 
-body { font-family: 'OpenSansRegular', Helvetica, Arial, sans-serif; background: #f0f0f0 no-repeat; font-size: 16px; line-height: 20px; overflow-x: hidden; }
+@font-face { font-family: 'OpenSansBold'; src: url("/css/fonts/OpenSans-Bold-webfont.woff") format("woff"), url("/css/fonts/OpenSans-Bold-webfont.ttf") format("truetype"), url("/css/fonts/OpenSans-Bold-webfont.svg#OpenSansBold") format("svg"); font-weight: normal; font-style: normal; }
+
+body { font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; background: #f0f0f0 no-repeat; font-size: 16px; line-height: 20px; overflow-x: hidden; }
 body .main article { padding: 3em; }
 body .form-header { position: absolute; top: -4.4em; border: none; }
 
-h2, h3, h4 { color: #ce4f07; text-align: center; }
+strong { font-family: 'OpenSansBold', Arial, sans-serif; font-weight: normal; font-style: normal; }
+
+h2, h3, h4 { font-family: 'OpenSansBold', Arial, sans-serif; font-weight: normal; font-style: normal; color: #ce4f07; text-align: center; }
 
 .preview-header { position: absolute; top: -90px; width: 100%; z-index: 1000; color: #333333; opacity: 0.5; margin: 0; }
 
@@ -1984,6 +1988,9 @@ progress { display: block; margin: 10px auto; }
 #feedback-bar i { left: 20px; }
 #feedback-bar .close { right: 20px; }
 
+.ad { position: absolute; left: 30px; top: 100px; width: 250px; padding: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px; border-radius: 7px; color: #777; font-size: 14px; border: 7px solid #e7e7e7; background-color: #fcf8e3; }
+
+@media screen and (max-width: 1366px) { .ad { display: none; } }
 @media screen and (max-width: 720px) { body { padding: 0 !important; }
   body header { padding-left: 20px; padding-right: 20px; }
   body #page .content { margin: 1em; }
@@ -2082,17 +2089,27 @@ progress { display: block; margin: 10px auto; }
 
 .input-append.date .add-on i, .input-prepend.date .add-on i { display: block; cursor: pointer; width: 16px; height: 16px; }
 
+/** BOOTSTRAP DATEPICKER Fix for month/year views **/
+.datepicker-months td, .datepicker-months th, .datepicker-years td, .datepicker-years th { width: 65px; }
+
+/** BOOTSTRAP DATEPICKER Tweaks for Mobile **/
+.touch .datepicker .datepicker-days td, .touch .datepicker .datepicker-days th { font-size: 25px; width: 35px; height: 35px; }
+.touch .datepicker .datepicker-months td, .touch .datepicker .datepicker-months th, .touch .datepicker .datepicker-years td, .touch .datepicker .datepicker-years th { width: 100px; }
+
 .icon-crosshairs { background-image: url("../images/crosshairs.png"); background-position: -5px -5px; }
 
 .paper { position: relative; }
-.paper .branding { display: inline-block; color: #444444; font-weight: bold; padding: 0.32em 16px; font-size: 1.4em; }
-.paper .branding:hover { text-decoration: none; opacity: 0.8; }
 
 .form-header { left: 0; width: 100%; margin: 1em 0; padding: 0 0 0.6em 0; }
+.form-header .branding { display: inline-block; margin: 0 10px 0 16px; }
+.form-header .branding img { max-height: 30px; max-width: 130px; margin-left: 16px; }
+.form-header .branding img:hover { opacity: 0.8; }
+.form-header .branding span { display: inline-block; color: #444444; font-weight: bold; font-size: 1.4em; }
+.form-header .branding span:hover { text-decoration: none; opacity: 0.8; }
 
 .load-error { margin: 100px 0 60px 0; }
 
-.records { display: none; position: relative; bottom: 4px; margin-left: -10px; background-color: #c9c9c9; border: 1px solid #bbbbbb; height: 20px; min-width: 20px; border-radius: 10px; }
+.records { display: inline-block; vertical-align: bottom; background-color: #c9c9c9; border: 1px solid #bbbbbb; height: 20px; min-width: 20px; border-radius: 10px; }
 
 .queue-length { color: #ffffff; text-align: center; padding: 0 7px; }
 .queue-length.submitting { color: #ce4f07; }
@@ -2106,6 +2123,7 @@ progress { display: block; margin: 10px auto; }
 #form-languages { width: auto; height: 30px; background: none; min-width: 11em; margin: 0 0 0 1em; font-size: 0.9em; }
 
 #submit-form, #submit-edited-data, #validate-form, #launch-form { position: relative; width: 150px; left: 50%; margin: 45px 10px 5px -75px; }
+#submit-form progress, #submit-edited-data progress, #validate-form progress, #launch-form progress { width: 100%; margin: 1px auto 1px auto; }
 
 .enketo-power { position: relative; left: 50%; margin: 30px 0 0 -100px; width: 200px; font-size: 16px; line-height: 23px; text-align: center; }
 .enketo-power a { font-style: italic; }
@@ -2115,14 +2133,14 @@ progress { display: block; margin: 10px auto; }
 
 .tab-content #form-languages { /*margin-top: -10px;*/ }
 
-html.touch .jr .jr-hint.active { color: #888888; display: block; line-height: 1.5em; font-weight: normal; font-size: .7em; font-style: italic; }
+html.touch .jr .jr-hint.active { font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; color: #888888; display: block; line-height: 1.5em; font-weight: normal; font-size: .7em; font-style: italic; }
 html.touch .jr .jr-hint.active ~ br { display: none; }
 html.touch .jr label .jr-hint.active { padding-top: .5em; }
 html.touch .jr legend .jr-hint.active { padding-bottom: .6em; }
 
-.form-logo img { position: relative; float: none; left: 50%; max-height: 200px; width: 120px; margin: 30px 0 10px -60px; }
+.jr .form-logo img { position: relative; float: none; left: 50%; max-height: 200px; width: 120px; margin: 30px 0 10px -60px; }
 
-h3 { padding: 5px 0 15px 0; font-weight: bolder; word-wrap: break-word; }
+h3 { padding: 5px 0 15px 0; word-wrap: break-word; }
 
 h4 { text-align: left; }
 
@@ -2135,19 +2153,19 @@ h4 { text-align: left; }
 
 #stats + .jr-group, #jr-preload-items + .jr-group, #form-languages + .jr-group { border-top: none; }
 
-label, fieldset { margin: 0 0 0.7em 0; padding-top: 0.9em; font-weight: bold; }
+label, fieldset { font-family: 'OpenSansBold', Arial, sans-serif; font-weight: normal; font-style: normal; margin: 0 0 0.7em 0; padding-top: 0.9em; }
 
 .restoring-sanity-to-legends fieldset { padding: 0; margin: 0; }
 
 legend { position: relative; line-height: 12px; border: none; margin-bottom: 0.6em; }
 legend > span { vertical-align: 12px; }
-legend ~ label { margin: 0; padding: 5px 0 3px 0; font-weight: normal; }
+legend ~ label { margin: 0; padding: 5px 0 3px 0; font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; }
 legend ~ label:not(.btn-radiocheck):hover { background-color: #fddecd; }
 legend ~ label .active { display: block; margin-left: 2.2em; }
 
 label, legend, .trigger { font-size: 1em; }
 
-img, audio, video { float: right; max-height: 300px; max-width: 70%; }
+.jr img, .jr audio, .jr video { float: right; max-height: 300px; max-width: 70%; }
 
 input:not([type="radio"]):not([type="checkbox"]), textarea, select { display: inline-block; margin: 8px 0 0 0; }
 
@@ -2191,7 +2209,7 @@ fieldset .remove { float: right; margin-right: 0; }
 
 .alert { margin-bottom: 4px; }
 
-.trigger { padding: 7px 12px; margin: 1em 0; }
+.trigger { font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; padding: 7px 12px; margin: 1em 0; }
 
 .required { margin-left: 3px; color: #ce4f07; }
 
@@ -2227,7 +2245,7 @@ fieldset .remove { float: right; margin-right: 0; }
 .geopoint button[name="geodetect"], .geopoint .input-append .add-on[name="geodetect"] { display: inline-block; float: right; margin: 8px 0 0 4%; width: 40px; }
 .geopoint .no-search-input.no-map { border-left: none; }
 .geopoint .no-search-input button[name="geodetect"] { float: none; display: block; margin: 15px auto 15px auto; width: 50%; }
-.geopoint label.geo { display: block; border: none; padding: 0; margin: 15px 0 0 0; }
+.geopoint label.geo { font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; display: block; border: none; padding: 0; margin: 15px 0 0 0; }
 .geopoint label.geo:nth-of-type(1) { padding-top: 5px; }
 .geopoint label.geo:nth-of-type(2) { margin-bottom: 20px; }
 .geopoint label.geo:nth-of-type(3) { border-top: solid 1px #bbbbbb; padding: 12px 0 0 0; margin: 0 0 0 0; }
@@ -2241,9 +2259,9 @@ fieldset .remove { float: right; margin-right: 0; }
 .geopoint .map-canvas img { max-width: none; }
 
 .bootstrap-select { margin-top: 15px; }
-.bootstrap-select .dropdown-toggle { line-height: 34px; min-width: 130px; font-weight: normal; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; text-align: left; min-width: 144px -14px; }
+.bootstrap-select .dropdown-toggle { line-height: 34px; min-width: 130px; font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; text-align: left; min-width: 144px -14px; }
 .bootstrap-select .dropdown-toggle a .filter-option { padding-right: 10px; }
-.bootstrap-select .dropdown-toggle ~ .dropdown-menu label { font-weight: normal; padding-top: 0px; padding-left: 0px; font-size: 1em; }
+.bootstrap-select .dropdown-toggle ~ .dropdown-menu label { font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; padding-top: 0px; padding-left: 0px; font-size: 1em; }
 .bootstrap-select .dropdown-toggle ~ .dropdown-menu label input[type="checkbox"] { margin: 5px 10px 1px 0; }
 
 .restoring-sanity-to-legends .jr-appearance-list-nolabel, .restoring-sanity-to-legends .jr-appearance-label { margin: -0.9em 0 -0.7em 0; }
@@ -2268,6 +2286,8 @@ fieldset .remove { float: right; margin-right: 0; }
 .jr-appearance-compact input ~ img.active, .jr-appearance-quickcompact input ~ img.active { margin-left: 0; max-width: 150px; max-height: 150px; border: 2px solid transparent; }
 .jr-appearance-compact input ~ img:hover, .jr-appearance-quickcompact input ~ img:hover { border-color: #faa474; }
 .jr-appearance-compact input:checked ~ img, .jr-appearance-compact input:checked ~ img:hover, .jr-appearance-quickcompact input:checked ~ img, .jr-appearance-quickcompact input:checked ~ img:hover { border-color: #ce4f07; }
+
+.file-feedback { font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; }
 
 .paper { border-radius: 0; border: none; }
 

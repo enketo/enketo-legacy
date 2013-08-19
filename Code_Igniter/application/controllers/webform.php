@@ -64,7 +64,6 @@ class Webform extends CI_Controller {
             ? $sub : substr($sub, 0, strlen($sub) - strlen($suf));
         if (!empty($this->subdomain)) {
             $form_props = $this->Survey_model->get_form_props();
-            log_message('$form_props: '.json_encode($form_props));
             $this->server_url= (isset($form_props['server_url'])) ? $form_props['server_url'] : NULL;
             $this->form_id = (isset($form_props['form_id'])) ? $form_props['form_id'] : NULL; 
             $this->form_hash_prev = (isset($form_props['hash'])) ? $form_props['hash'] : NULL; 

@@ -111,6 +111,7 @@ class Webform extends CI_Controller {
             'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
             'server_url' => $this->server_url,
             'form_id' => $this->form_id,
+            'logo_url' => $this->account->logo_url($this->server_url),
             'logout' => $this->credentials !== NULL
         );
 
@@ -185,6 +186,7 @@ class Webform extends CI_Controller {
             'form_data'=> $form->default_instance,
             'form_data_to_edit' => $edit_obj->instance_xml,
             'return_url' => $edit_obj->return_url,
+            'logo_url' => $this->account->logo_url($this->server_url),
             'stylesheets'=> $this->iframe ? array(
                 array( 'href' => '/css/webform_edit_iframe.css', 'media' => 'all'),
                 array( 'href' => '/css/webform_print.css', 'media' => 'print')
@@ -299,6 +301,7 @@ class Webform extends CI_Controller {
             'form'=> '',
             'return_url' => NULL,
             'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
+            'logo_url' => $this->account->logo_url($this->server_url),
             'logout' => $this->credentials !== NULL
         );
         if (ENVIRONMENT === 'production') {

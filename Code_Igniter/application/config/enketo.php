@@ -37,7 +37,7 @@ $config['support_email'] = "support@formhub.org";
  * In the forms (form browser) view this defines which server URL helper to set as default
  * options: 'http', 'https', 'formhub', 'formhub_u', 'appspot' 
  */
-$config['default_server_url_helper'] = "formhub";
+$config['default_server_url_helper'] = "";
 
 /**
  * In the webform view this is the brand name shown (empty = enketo)

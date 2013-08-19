@@ -1,20 +1,22 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 /**
- * Paywall Class
+ * Account Class
  *
- * Communicates with survey model and account model to determine whether request is allowed
+ * Account Mock class that determines whether requests are allowed
  *
  * @author        	Martijn van de Rijdt
  * @license         see link
  * @link			https://github.com/MartijnR/enketo
  */
 
-class Account_model extends CI_Model {
+class Account {
+
+    private $CI;
 
     function __construct()
     {
-        parent::__construct();
-        log_message('debug', 'Account Model initialized');
+        $this->CI =& get_instance();
+        log_message('debug', 'Mock Account Model initialized');
     }
 
     private $mocks = array(
@@ -33,7 +35,6 @@ class Account_model extends CI_Model {
             return $this->mocks[$server_url];
         } else {
             $api_token = $this->_get_api_token($server_url);
-            log_message('debug', 'api token returned: '.$api_token);
             return ($api_token) 
             ? array('api_token' => $api_token,  'api_access' => TRUE,   'quota' => 10000000)
             : array('api_token' => NULL,        'api_access' => FALSE,  'quota' => NULL);
@@ -42,7 +43,9 @@ class Account_model extends CI_Model {
 
     public function logo_url($server_url)
     {
-        return NULL;
+        if ($this->CI->config->item('brand') === 'formhub') {
+            return "/images/formhub_160x29.png";
+        } else return "/private_media/images/enketo_bare_150x56.png";
     }
 
     public function serve_allowed($server_url)
@@ -56,7 +59,7 @@ class Account_model extends CI_Model {
      */
     private function _get_api_token($server_url)
     {
-    	$domains_allowed = $this->config->item('openrosa_domains_allowed');
+    	$domains_allowed = $this->CI->config->item('openrosa_domains_allowed');
     	if (empty($domains_allowed)) {
             return NULL;
         }
@@ -67,7 +70,6 @@ class Account_model extends CI_Model {
     		}
     	}
     	//log_message('error', 'attempt was made to launch enketo form for dissallowed OpenRosa server URL or with invalid API token: '.$server_url.' : '.$api_token);
-        log_message('debug', 'returning null token');
     	return NULL;
     }
 }

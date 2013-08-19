@@ -7,10 +7,8 @@
 			((empty($return_url)) ? $this->config->item('integration_with_url') : $return_url );
 	?>
 	<a class="branding" href="<?= $link ?>" title="Go Back">
-	<? if ($brand === 'enketo'): ?>
-		<img src="/private_media/images/enketo_bare_150x56.png" alt="logo" />
-	<? else: ?>
-		<span><?= $brand ?></span>
+	<? if (!empty($logo_url)): ?>
+		<img src="<?= $logo_url ?>" alt="logo" />
 	<? endif; ?>
 	</a>
 	<span class="records" title="Records Queued - Click to Backup to File" style="display:none;"><span class="queue-length"></span></span>

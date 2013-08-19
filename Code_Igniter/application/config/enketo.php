@@ -60,3 +60,4 @@ $config['openrosa_domains_allowed'] = array(
  */
 $config['integrated'] = strlen($config['integration_with_url']) > 0;
 $config['auth_support'] = is_dir(APPPATH.'third_party/form_auth');
+$config['account_support'] = is_dir(APPPATH.'third_party/account');

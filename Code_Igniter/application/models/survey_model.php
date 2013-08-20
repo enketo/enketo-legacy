@@ -410,6 +410,12 @@ class Survey_model extends CI_Model {
         return ($first === 'www') ? $protocol.'://'.$rest : $protocol.'://www.'.$first.'.'.$rest;
     }
 
+    private function _has_path($url)
+    {
+        list($protocol, $rest) = explode('://', $url);
+        return strpos($rest, '/') !== FALSE && strrpos($rest, '/') !== strlen($url) - 1;
+    }
+
     private function _generate_subdomain()
     {
         //$result_num = 1;
@@ -480,8 +486,25 @@ class Survey_model extends CI_Model {
 
     private function _get_record_number($server_url = NULL, $active_only = TRUE)
     {
+        $this->_db_where_alt_server_urls($server_url, $active_only);
+        $query = $this->db->get('surveys'); 
+        log_message('debug', 'query: '.$this->db->last_query());
+        return $query->num_rows(); 
+    }
+
+    private function _get_records($server_url = NULL)
+    {
+        $this->db->select(array('subdomain', 'server_url', 'form_id', 'transform_result_title'));
+        $this->_db_where_alt_server_urls($server_url, TRUE);
+        $this->db->order_by('server_url', 'asc');
+        $query = $this->db->get('surveys');
+        return $query->result_array();
+    }
+
+    private function _db_where_alt_server_urls($server_url, $active_only)
+    {
+        $active_str = ($active_only == TRUE) ? ' AND active = 1' : '';
         if ($server_url) {
-            $active_str = ($active_only == TRUE) ? ' AND active = 1' : '';
             $alt_server_url_1 = $this->_switch_protocol($server_url);
             $alt_server_url_2 = $this->_switch_www($server_url);
             $alt_server_url_3 = $this->_switch_www($alt_server_url_1);
@@ -489,20 +512,16 @@ class Survey_model extends CI_Model {
             $this->db->or_where("server_url = '".$alt_server_url_1."'".$active_str);
             $this->db->or_where("server_url = '".$alt_server_url_2."'".$active_str);
             $this->db->or_where("server_url = '".$alt_server_url_3."'".$active_str);
-        } else if ($active_only == TRUE) {
-            $this->db->where('active = 1');
+            if (!$this->_has_path($server_url)) {
+                $this->db->or_where("server_url LIKE '".$server_url."%'".$active_str);
+                $this->db->or_where("server_url LIKE '".$alt_server_url_1."%'".$active_str);
+                $this->db->or_where("server_url LIKE '".$alt_server_url_2."%'".$active_str);
+                $this->db->or_where("server_url LIKE'".$alt_server_url_3."%'".$active_str);
+            }
+        } else { 
+            $this->db->where('active = 1'); 
         }
-        $query = $this->db->get('surveys'); 
-        return $query->num_rows(); 
-    }
-
-    private function _get_records($server_url = NULL)
-    {
-        $this->db->select(array('subdomain', 'server_url', 'form_id', 'transform_result_title'));
-        $query = (!$server_url) 
-            ? $this->db->get_where('surveys', array('active' => TRUE)) 
-            : $this->db->get_where('surveys', array('server_url' => $server_url, 'active' => TRUE));
-        return $query->result_array();
+        return;
     }
 
     private function _update_item($field, $value, $escape = TRUE)

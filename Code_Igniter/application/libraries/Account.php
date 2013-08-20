@@ -41,7 +41,7 @@ class Account {
         }
     }
 
-    public function logo_url($server_url)
+    public function logo_url($bla=NULL)
     {
         if ($this->CI->config->item('brand') === 'formhub') {
             return "/images/formhub_160x29.png";

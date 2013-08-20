@@ -45,20 +45,18 @@ if ( ! function_exists('get_subdomain'))
 		$full_url = full_base_url(); 
 		$base_url = base_url();
 		
-		if ($full_url != $base_url)
-		{		
-			//log_message('debug', 'full_url '.$full_url);
+		if ($full_url != $base_url) {		
 			$base_name = substr($base_url, strpos($base_url, '://')+3, -1);
-			//log_message('debug', 'base_name '.$base_name);
 			$start = strpos($full_url, '://') + 3;
 			$end = strpos($full_url, '.'.$base_name);
-			if($start < $end) $subdomain_name = substr($full_url, $start , $end - $start);
-			else $subdomain_name = '';
-			//log_message('debug', 'subdomain extracted: '.$subdomain_name);
+			if($start < $end) {
+				$subdomain_name = substr($full_url, $start , $end - $start);
+			} else {
+				$subdomain_name = '';
+			}
 		}
 	 
-		if ( !isset($subdomain_name) || $subdomain_name === 'www' || $subdomain_name === '')
-		{
+		if ( !isset($subdomain_name) || $subdomain_name === 'www' || $subdomain_name === '') {
 			return $default;
 		}
 
@@ -68,7 +66,8 @@ if ( ! function_exists('get_subdomain'))
 
 if ( ! function_exists('full_base_url') )
 {
-	function full_base_url($path=''){
+	function full_base_url($path='')
+	{
 		if(empty($_SERVER['HTTPS'])) {
 			$protocol = 'http://';
 			$default_port = 80;
@@ -77,21 +76,9 @@ if ( ! function_exists('full_base_url') )
 			$default_port = 443;
 		}
         $domain = $_SERVER['SERVER_NAME'];
-        //log_message('debug', 'server_name: '.$domain);
 		// append port to domain only if it's a nonstandard port. don't use HTTP_HOST as it can be manipulated by the client
 		if($_SERVER['SERVER_PORT'] != $default_port) $domain .=  ':' . $_SERVER['SERVER_PORT'];
-		$domain = (strpos($domain, 'www.') === 0 ) ? substr($domain, 4) : $domain; 
-
 		return $protocol.$domain . '/'.$path;
 	}
 }
 
-//if ( ! function_exists('get_subdomain_plus_base_url') )
-//{
-//	function get_subdomain_plus_base_url()
-//	{
-//		$this->load->helper('http');
-//		
-//		return url_add_protocol($_SERVER['SERVER_NAME'].'/');
-//	}
-//}

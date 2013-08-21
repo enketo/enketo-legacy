@@ -55,9 +55,6 @@
 <? if (!empty($support_email)): ?>
 			settings['supportEmail'] = '<?= $support_email ?>';
 <? endif; ?>
-<? if (!empty($default_server_url_helper)): ?>
-			settings['defaultServerURLHelper'] = '<?= $default_server_url_helper ?>';
-<? endif; ?>
 <? if (!empty($server_url)): ?>
 			settings['serverURL'] = '<?= $server_url ?>';
 <? endif; ?>

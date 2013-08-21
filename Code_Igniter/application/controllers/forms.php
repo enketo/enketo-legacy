@@ -31,16 +31,14 @@ class Forms extends CI_Controller {
             show_404();
         }
 
-        $default_scripts = array
-        (
+        $default_scripts = array(
             '/libraries/jquery.min.js',
             '/libraries/bootstrap/js/bootstrap.min.js',
             '/libraries/modernizr.min.js'//,
             //'/libraries/fastclick/lib/fastclick.js'
         );
 
-        $default_stylesheets = array
-        (
+        $default_stylesheets = array(
             array( 'href' => '/css/forms.css', 'media' => 'screen')
         );
 
@@ -66,7 +64,7 @@ class Forms extends CI_Controller {
                 '/js-source/formlist.js'
             ));
         }
-        $this->output->cache(10);
+        //$this->output->cache(10);
         $this->load->view('formlist_view', $data);
     }
 

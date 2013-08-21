@@ -1,12 +1,26 @@
 .navbar{
   &.navbar-fixed-top{
     margin-bottom: 0;}
-  .brand{
+  .btn-navbar {
+    margin-top: 13px; }
+  .branding{
+    float: left;
     font-size: 2em;
+    img{
+      margin-top: 7px;
+      margin-bottom: 10px;
+      width: 90px; }
+    a:hover img{
+      width: 91px;}
     .component{
-      font-size: 0.4em;} } 
+      color: #999999;
+      font-size: 0.4em;
+      margin-bottom: 5px;
+      display: inline-block;
+      vertical-align: bottom;} }
   nav{
     float:right;
+    margin-top: 5px;
     a{
       text-align: right; }
     img{

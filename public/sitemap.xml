@@ -3,15 +3,18 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url> 
-    <loc>http://www.enketo.org</loc> 
+    <loc>https://www.enketo.org</loc> 
     <image:image>
-       <image:loc>http://enketo.org/ss.jpg</image:loc> 
+       <image:loc>https://enketo.org/ss.jpg</image:loc> 
     </image:image>
   </url>
   <url> 
-    <loc>http://www.enketo.org/formtester</loc> 
+    <loc>https://www.enketo.org/formtester</loc> 
   </url>
   <url> 
-    <loc>http://www.enketo.org/forms</loc> 
+    <loc>https://www.enketo.org/forms</loc> 
+  </url>
+  <url> 
+    <loc>https://www.enketo.org/openrosa</loc> 
   </url>
 </urlset>

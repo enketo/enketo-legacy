@@ -75,7 +75,7 @@ $(document).ready(function() {
 				$settings.find('input#server').val(value).trigger('change');
 			}
 		})
-		.addBack().find('[data-value="https"]').click();
+		.first().click();
 
 	$settings.find('input#server').change(function() {
 		$settings.find('.go').click();

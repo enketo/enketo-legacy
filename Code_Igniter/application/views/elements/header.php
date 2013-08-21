@@ -15,11 +15,16 @@
 				<nav class="nav-collapse collapse">
 				    <ul class="nav">
 				    <? if (!($this->config->item('integrated'))): ?>
+				    	<li>
+				    		<a href="https://accounts.enketo.org" title="account">account</a>
 				    	<li class="<?= ($title_component == 'forms') ? 'active': '' ?>">
 				    		<a href="/forms" title="forms">forms</a>
 				    	</li>
 				    	<li class="<?= ($title_component == 'form-tester') ? 'active': '' ?>">
 				    		<a href="/formtester" title="form-tester">tester</a>
+				    	</li>
+				    	<li>
+				    		<a href="http://blog.enketo.org" title="blog">blog</a>
 				    	</li>
 				    <? endif; ?>
 				    </ul>

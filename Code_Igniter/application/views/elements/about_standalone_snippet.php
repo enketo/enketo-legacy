@@ -10,7 +10,7 @@
 		</p>
 		<h3>Who built this?</h3>
 		<p>
-			The enketo open-source project is a joint effort by Aid Web Solutions and Modi Research Group at Columbia University. Enketo.org is a stand-alone application hosted by Aid Web Solutions primarily for the benefit of ODK Aggregate users. A separate version of enketo is available on <a href="http://formhub.org">formhub.org</a> and is fully integrated with formhub.
+			The enketo open-source project is a joint effort by Enketo LLC and Modi Research Group at Columbia University. Enketo.org is a stand-alone application hosted by Aid Web Solutions primarily for the benefit of ODK Aggregate users. A separate version of enketo is available on <a href="http://formhub.org">formhub.org</a> and is fully integrated with formhub.
 		</p>
 		<h3>Where can I get help?</h3>
 		<p>

@@ -6,27 +6,25 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</a>
-	          	<!--<span class="offline-capable">offline-capable</span>-->
-				<a class="brand" href="/">
-					 <!--<img src="images/title.png" alt="enketo" />-->enketo <span class="component"><?= $title_component ?></span>
-				</a>
-				<!--<div id="survey-info">provided by Aid Web Solutions</a></div>
-				<div id="status">
-					<span id="status-connection" title=""></span>
-					<span id="status-editing" title=""></span>
-					<span id="status-upload" title=""></span>
-				</div>-->
-				
+				<div class="branding">
+					<a href="/">
+					 <img src="private_media/images/enketo_bare_white_150x56.png" alt="enketo logo" />
+					</a>
+					<span class="component"><?= $title_component ?></span>
+				</div>
 				<nav class="nav-collapse collapse">
 				    <ul class="nav">
-				    <? $integration_url = $this->config->item('integration_with_url'); ?>
-				    <? if (empty($integration_url)): ?>
-				    	<li class="<?= ($title_component == 'forms') ? 'active': ''?>">
+				    <? if (!($this->config->item('integrated'))): ?>
+				    	<li>
+				    		<a href="https://accounts.enketo.org" title="account">account</a>
+				    	<li class="<?= ($title_component == 'forms') ? 'active': '' ?>">
 				    		<a href="/forms" title="forms">forms</a>
 				    	</li>
-				    	<li class="<?= ($title_component == 'form-tester') ? 'active': ''?>">
-				    		<a href="/formtester" title="form-tester" 
-				    		>tester</a>
+				    	<li class="<?= ($title_component == 'form-tester') ? 'active': '' ?>">
+				    		<a href="/formtester" title="form-tester">tester</a>
+				    	</li>
+				    	<li>
+				    		<a href="http://blog.enketo.org" title="blog">blog</a>
 				    	</li>
 				    <? endif; ?>
 				    </ul>

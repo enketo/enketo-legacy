@@ -301,7 +301,7 @@ class Webform extends CI_Controller {
             'form'=> '',
             'return_url' => NULL,
             'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
-            'logo_url' => $this->account->logo_url($this->server_url),
+            'logo_url' => !empty($params['server']) ? $this->account->logo_url($params['server']) : $this->account->logo_url(),
             'logout' => $this->credentials !== NULL
         );
         if (ENVIRONMENT === 'production') {

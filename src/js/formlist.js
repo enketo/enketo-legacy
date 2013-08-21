@@ -54,14 +54,14 @@ $(document).ready(function() {
 	$settings = gui.pages.get('settings');
 
 	/*** TEMPORARY FIX? https://github.com/twitter/bootstrap/issues/4550 ***/
-	$('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+	//$('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
 	/*********************/
 
 	$settings.find('.url-helper a')
 		.click(function(){
 			var helper, hText, value;
 			$(this).parent().addClass('active').siblings().removeClass('active');
-			helper = $(this).attr('data-value') || settings['defaultServerURLHelper'];
+			helper = $(this).attr('data-value');
 			hText = urlHelperText[helper];
 			value = hText.val || '';
 
@@ -75,7 +75,7 @@ $(document).ready(function() {
 				$settings.find('input#server').val(value).trigger('change');
 			}
 		})
-		.addBack().find('[data-value="'+settings['defaultServerURLHelper']+'"]').click();
+		.addBack().find('[data-value="https"]').click();
 
 	$settings.find('input#server').change(function() {
 		$settings.find('.go').click();

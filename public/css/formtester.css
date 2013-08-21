@@ -2019,9 +2019,12 @@ progress { display: block; margin: 10px auto; }
   body .form-header .form-language-selector { border-right: none; }
   body button.print { display: none; } }
 .navbar.navbar-fixed-top { margin-bottom: 0; }
-.navbar .brand { font-size: 2em; }
-.navbar .brand .component { font-size: 0.4em; }
-.navbar nav { float: right; }
+.navbar .btn-navbar { margin-top: 13px; }
+.navbar .branding { float: left; font-size: 2em; }
+.navbar .branding img { margin-top: 7px; margin-bottom: 10px; width: 90px; }
+.navbar .branding a:hover img { width: 91px; }
+.navbar .branding .component { color: #999999; font-size: 0.4em; margin-bottom: 5px; display: inline-block; vertical-align: bottom; }
+.navbar nav { float: right; margin-top: 5px; }
 .navbar nav a { text-align: right; }
 .navbar nav img { width: 1em; height: 1em; }
 

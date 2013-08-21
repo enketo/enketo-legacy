@@ -23,6 +23,7 @@ class Front extends CI_Controller {
 		parent::__construct();
 		$this->load->helper(array('subdomain', 'url'));
 		$subdomain = get_subdomain();
+		$this->load->database();
 		log_message('debug', 'Front controller started');
 		if (!empty($subdomain)) {
 			log_message('debug', 'front controller loaded with subdomain: '.$subdomain.' -> sending 404');
@@ -44,10 +45,10 @@ class Front extends CI_Controller {
 			'/js-source/front.js'
 		);
 		$data = array(
-			'offline'=>FALSE, 
-			'title_component'=>'', 
-			'robots'=>TRUE
-			//,'num_surveys' => $this->Survey_model->get_previous_number_surveys()
+			'offline'			=> FALSE, 
+			'title_component'	=> '', 
+			'robots'     		=> TRUE,
+			'number_launched'	=> $this->_get_db_number_launched()
 		);
 
 		if (ENVIRONMENT === 'production') {
@@ -100,7 +101,21 @@ class Front extends CI_Controller {
 				$result['total'] += (int) $number;
 			}
 		}
+		$this->_set_db_number_launched($result['total']);
 		echo json_encode($result);
+	}
+
+	private function _get_db_number_launched() {
+		$this->db->select('forms_launched');
+		$query = $this->db->get('properties');
+		if ($query->num_rows() > 0) {
+    		return $query->row()->forms_launched;
+		}
+		else return '?';
+	}
+	
+	private function _set_db_number_launched($number) {
+		$this->db->update('properties', array('forms_launched' => $number));
 	}
 }
 ?>

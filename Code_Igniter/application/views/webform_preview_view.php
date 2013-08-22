@@ -3,7 +3,7 @@
 ?>
 		<script type="text/javascript">
 			settings['returnURL'] = '<?= $return_url ?>';
-			settings['showBranch'] = true;
+			//settings['showBranch'] = true;
 		</script>
 		
 	</head>

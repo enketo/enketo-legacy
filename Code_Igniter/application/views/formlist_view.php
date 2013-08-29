@@ -21,7 +21,7 @@
 			
 		</article>
 	</div>
-	<article id="settings" class="page" data-title="load forms" data-display-icon="settings.png">
+	<article id="settings" class="page" data-title="load forms" data-display"settings">
 		<div class="btn-toolbar">
 			<div class="<? if (!$integrated): ?>input-prepend<? endif ?> input-append btn-group">
 			<? if(!$integrated): ?>

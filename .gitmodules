@@ -22,3 +22,6 @@
 [submodule "Code_Igniter/application/views/private_views"]
 	path = Code_Igniter/application/views/private_views
 	url = https://github.com/MartijnR/enketo_org_views.git
+[submodule "Code_Igniter/application/third_party/account"]
+	path = Code_Igniter/application/third_party/account
+	url = https://github.com/MartijnR/enketo_account.git

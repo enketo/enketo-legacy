@@ -188,7 +188,7 @@ GUI.prototype.nav = {
 			}
 			else link = '#'+id;
 			$('<li class=""><a href="'+link+'" title="'+title+'" >'+display+'</a></li>')
-				.appendTo($('nav ul'));
+				.appendTo($('nav.pull-right ul'));
 
 		});
 	},

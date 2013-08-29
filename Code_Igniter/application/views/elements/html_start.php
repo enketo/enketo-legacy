@@ -8,7 +8,7 @@
 <html lang="en" <?= (!empty($manifest)) ? 'manifest="'.$manifest.'"' : '' ?> class="no-js">
 	<head>
 		<title><?= !empty($html_title) ? $brand.' - '.$html_title : 
-			( !empty($title_component) ? 'enketo - '.$title_component : 'enketo' ); 
+			( !empty($title_component) ? 'Enketo - '.$title_component : 'Enketo Smart Paper - Next Generation Webforms' ); 
 		?></title>
 		
 		<link rel="shortcut icon" href="/images/enketo.ico">

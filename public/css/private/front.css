@@ -2059,7 +2059,7 @@ body { background: white; padding: 0 !important; }
 a { color: #ed5732; font-family: 'OpenSansBold', Arial, sans-serif; font-weight: normal; font-style: normal; }
 
 .main-sell { padding-top: 60px; padding-bottom: 15px; background-color: #e6e6e6; }
-.main-sell .btn { margin-top: 10px; font-size: 14px; background: #1b8dd9; }
+.main-sell .btn { margin-top: 10px; font-size: 16px; padding: 8px 25px 8px 25px; background: #1b8dd9; }
 .main-sell .btn:hover { background: #3276b1; border: 1px solid #285e8e; }
 .main-sell .taglines { font-family: 'OpenSansBold', Arial, sans-serif; font-weight: normal; font-style: normal; margin-top: 20px; text-align: left; font-size: 1.27em; line-height: 28px; width: 60%; font-weight: 600; color: #231f20; }
 .main-sell img { vertical-align: bottom; }

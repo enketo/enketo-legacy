@@ -123,7 +123,7 @@ class Api_v1 extends CI_Controller {
     {
         //TODO needs to be checked for disallowing different origin ajax requests
         //log_message('debug', 'API request received from: '.$_SERVER['REMOTE_ADDR']);
-        return $this->input->is_ajax_request() || $_SERVER['REMOTE_ADDR'] == '127.0.0.1';
+        return $this->input->is_ajax_request() || $_SERVER['REMOTE_ADDR'] == '146.185.129.211';
     }
 
     private function _print_output($response)

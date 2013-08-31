@@ -30,6 +30,9 @@ class Api_v1 extends CI_Controller {
     function __construct()
     {
         parent::__construct();
+        if ($this->config->item('account_support')) {
+            $this->load->add_package_path(APPPATH.'third_party/account');
+        }
         $this->load->library('account');
         $params = $this->_get_params();
         $request_token = $this->_get_request_token();

@@ -65,11 +65,13 @@ class Media extends CI_Controller {
 
 	private function _get_media($url)
 	{
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
-			curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
-			curl_exec($ch);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+		curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+		//the account_manager SSL verification fails for some reason
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_exec($ch);
 	}
 
 	private function _correct_mime($mimetype)

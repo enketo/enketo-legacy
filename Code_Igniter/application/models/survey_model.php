@@ -121,7 +121,7 @@ class Survey_model extends CI_Model {
         
         if ( $quota_used == $quota ){
             $url_obj = $this->get_webform_url_if_launched($server_url, $form_id, $options);
-            return ($url_obj) ? $url_obj : $quota_exceeded_response;
+            return (empty($url_obj['error'])) ? $url_obj : $quota_exceeded_response;
         } else if ($quota_used > $quota) {
             return $quota_exceeded_response;
         }

@@ -1995,6 +1995,8 @@ progress { display: block; margin: 10px auto; }
 .ad { position: absolute; left: 30px; top: 100px; width: 250px; padding: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px; border-radius: 7px; color: #777; font-size: 14px; border: 7px solid #e7e7e7; background-color: #fcf8e3; }
 
 @media screen and (max-width: 1366px) { .ad { display: none; } }
+@media screen and (max-width: 979px) { .navbar-fixed-top { margin-bottom: 0; } }
+@media screen and (max-width: 979px) { .nav-collapse.pull-right, .nav-collapse.collapse.pull-right { float: left; } }
 .navbar { font-size: 14px; }
 .navbar .brand { position: relative; width: 100px; }
 .navbar .brand .navbar-logo { top: 5px; left: 30px; height: 30px; position: absolute; }
@@ -2069,8 +2071,8 @@ a { color: #ed5732; font-family: 'OpenSansBold', Arial, sans-serif; font-weight:
 .main-sell nav a { font-family: 'OpenSansBold', Arial, sans-serif; font-weight: normal; font-style: normal; }
 
 @media screen and (max-width: 900px) { .main-sell .main-image { float: right; margin-left: 0; } }
-@media screen and (max-width: 900px) { .main-sell .taglines { width: 100%; }
-  .main-sell .main-image { margin: 10px 0; } }
+@media screen and (max-width: 680px) { .main-sell .taglines { width: 100%; }
+  .main-sell .main-image { float: none; margin: 10px 0; } }
 h3 { font-weight: normal; font-size: 1.9em; text-align: left; color: black; display: block; margin-bottom: 1.5em; }
 
 h4 { font-family: 'OpenSansBold', Arial, sans-serif; font-weight: normal; font-style: normal; text-align: left; color: black; margin-top: 25px; }
@@ -2147,7 +2149,7 @@ a{
 	margin-bottom: 1em; } }*/ }
 
 .instructions { margin-right: 10px; display: block; }
-@media screen and (max-width: 750px) { .instructions { width: 100%; } }
+@media screen and (max-width: 680px) { .instructions { width: 100%; } }
 .instructions li { margin-bottom: .6em; }
 
 .footer { font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; color: #ffffff; background-color: #000000; }

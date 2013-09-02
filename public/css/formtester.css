@@ -2018,6 +2018,8 @@ progress { display: block; margin: 10px auto; }
   body #page .close { font-size: 4em; }
   body .form-header .form-language-selector { border-right: none; }
   body button.print { display: none; } }
+@media screen and (max-width: 979px) { .navbar-fixed-top { margin-bottom: 0; } }
+@media screen and (max-width: 979px) { .nav-collapse.pull-right, .nav-collapse.collapse.pull-right { float: left; } }
 .navbar { font-size: 14px; }
 .navbar .brand { position: relative; width: 100px; }
 .navbar .brand .navbar-logo { top: 5px; left: 30px; height: 30px; position: absolute; }

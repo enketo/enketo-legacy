@@ -1,6 +1,14 @@
+//correct bootstrap feature
+@media screen and (max-width: 979px){
+  .navbar-fixed-top {
+    margin-bottom: 0;}}
+@media screen and (max-width: 979px){
+  //negate pull-right in dropdown nav menu
+  .nav-collapse.pull-right, .nav-collapse.collapse.pull-right {
+    float:left; } }
+
 .navbar{
   font-size: 14px;
-
   .brand {
     position: relative;
     width: 100px;

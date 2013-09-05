@@ -66,17 +66,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	if ( $ads.length > 0 ) {
-		$ads.hide();
-		setInterval( function() {
-			$ads.hide();
-			$ads.eq( i % 4).removeAttr('style');
-			i++;
-		}, 15000 );
-	}
-	
-
-	//connection.init();
 	gui.setup();
 });
 

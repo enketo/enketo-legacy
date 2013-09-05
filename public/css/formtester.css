@@ -2018,15 +2018,16 @@ progress { display: block; margin: 10px auto; }
   body #page .close { font-size: 4em; }
   body .form-header .form-language-selector { border-right: none; }
   body button.print { display: none; } }
-.navbar.navbar-fixed-top { margin-bottom: 0; }
-.navbar .btn-navbar { margin-top: 13px; }
-.navbar .branding { float: left; font-size: 2em; }
-.navbar .branding img { margin-top: 7px; margin-bottom: 10px; height: 34px; }
-.navbar .branding a:hover img { width: 91px; }
-.navbar .branding .component { color: #999999; font-size: 0.4em; margin-bottom: 5px; display: inline-block; vertical-align: bottom; }
-.navbar nav { float: right; margin-top: 5px; }
-.navbar nav a { text-align: right; }
-.navbar nav img { width: 1em; height: 1em; }
+@media screen and (max-width: 979px) { .navbar-fixed-top { margin-bottom: 0; } }
+@media screen and (max-width: 979px) { .nav-collapse.pull-right, .nav-collapse.collapse.pull-right { float: left; } }
+.navbar { font-size: 14px; }
+.navbar .brand { position: relative; width: 100px; }
+.navbar .brand .navbar-logo { top: 5px; left: 30px; height: 30px; position: absolute; }
+.navbar .brand .component { position: absolute; top: 20px; left: 120px; color: #999999; font-size: 0.4em; }
+.navbar .nav { margin-top: 5px; }
+.navbar .nav a { font-family: 'OpenSansRegular', Arial, sans-serif; font-weight: normal; font-style: normal; }
+.navbar .nav > li > a.highlight { color: #ed5732 !important; }
+.navbar .nav img { width: 1em; height: 1em; }
 
 .page { display: none; }
 

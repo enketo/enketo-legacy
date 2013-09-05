@@ -1991,8 +1991,33 @@ progress { display: block; margin: 10px auto; }
 .ad { position: absolute; left: 30px; top: 100px; width: 250px; padding: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px; border-radius: 7px; color: #777; font-size: 14px; border: 7px solid #e7e7e7; background-color: #fcf8e3; }
 
 @media screen and (max-width: 1366px) { .ad { display: none; } }
-@media screen and (max-width: 979px) { .navbar-fixed-top { margin-bottom: 0; } }
-@media screen and (max-width: 979px) { .nav-collapse.pull-right, .nav-collapse.collapse.pull-right { float: left; } }
+@media screen and (max-width: 720px) { body { padding: 0 !important; }
+  body header { padding-left: 20px; padding-right: 20px; }
+  body #page .content { margin: 1em; }
+  body { background: none; }
+  body .main { margin: 0; }
+  body .preview-header { top: -5px; }
+  body .paper { -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; }
+  body .form-header { top: 0; border-bottom: 1px solid #bbbbbb; }
+  body .form-header .form-language-selector > span { display: none; }
+  body h3 { padding-top: 25px; }
+  body #page .close { font-size: 2em; } }
+@media screen and (max-width: 600px) { body { padding: 0 !important; }
+  body header { padding-left: 20px; padding-right: 20px; }
+  body #page .content { margin: 1em; }
+  body { background: none; line-height: 21px; }
+  body .main { margin: 0; }
+  body .main article { padding: 3em 2em 2em 2em; }
+  body #page .close { font-size: 3em; } }
+@media screen and (max-width: 400px) { body { padding: 0 !important; }
+  body header { padding-left: 20px; padding-right: 20px; }
+  body #page .content { margin: 1em; }
+  body { background: none; line-height: 21.8px; }
+  body .main { margin: 0; }
+  body .main article { padding: 3em 1em 1em 1em; }
+  body #page .close { font-size: 4em; }
+  body .form-header .form-language-selector { border-right: none; }
+  body button.print { display: none; } }
 .navbar { font-size: 14px; }
 .navbar .brand { position: relative; width: 100px; }
 .navbar .brand .navbar-logo { top: 5px; left: 30px; height: 30px; position: absolute; }
@@ -2015,3 +2040,14 @@ progress { display: block; margin: 10px auto; }
 #page .content p:last-child { margin-bottom: 0; }
 #page .close { position: absolute; right: 0; bottom: 0; opacity: 1; text-shadow: none; }
 #page .column { width: 50%; float: left; height: 100%; }
+
+h3 { margin: 30px 0; text-align: left; }
+
+.puzzle { margin-left: 50px; max-width: 350px; }
+
+.right { float: right; }
+
+.table td:not(:first-child) { text-align: center; }
+
+.footnotes { margin-top: 50px; font-size: 12px; }
+.footnotes ul { margin-left: 0; list-style-type: none; }

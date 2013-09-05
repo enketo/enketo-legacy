@@ -124,10 +124,10 @@ $(document).ready(function() {
 			server = $(this).attr('data-server');
 			id = $(this).attr('id');
 			connection.getSurveyURL(server, id, {
-				success: function(resp, msg){
-					resp.serverURL = server;
-					resp.formId = id;
-					processSurveyURLResponse(resp, msg);
+				complete: function(resp){
+					resp.responseJSON.serverURL = server;
+					resp.responseJSON.formId = id;
+					processSurveyURLResponse(resp);
 				}
 			});
 		}
@@ -226,23 +226,29 @@ function processFormlistResponse(resp, msg, props, reset) {
  * @param  {?Object.<string, string>} resp [description]
  * @param  {string} msg  [description]
  */
-function processSurveyURLResponse(resp, msg) {
-	var record,
+function processSurveyURLResponse(response) {
+	var records, recordArr,
+		resp = response.responseJSON,
 		url = resp.url || null,
 		server = resp.serverURL || null,
-		reason = resp.reason || '',
+		reason = resp.message || '',
 		id = resp.formId || null;
 	console.debug(resp);
 	console.debug('processing link to:  '+url);
 	if (url && server && id) {
-		record = store.getRecord('__server_'+server) || {};
-		record[id]['url'] = url;
-		store.setRecord('__server_'+server, record, false, true);
-		//$('a[id="'+id+'"][data-server="'+server+'"]').attr('href', url).click();
-		window.location = url;
+		records = store.getRecord('__server_'+server) || {};
+		//record[id]['url'] = url;
+		recordArr = $.grep(records, function(rec){return (rec.form_id == id);});
+		if (recordArr[0]) {
+			recordArr[0].url = url;
+			store.setRecord('__server_'+server, records, false, true);
+			//$('a[id="'+id+'"][data-server="'+server+'"]').attr('href', url).click();
+			window.location = url;
+		}
+		console.error('record not found in localStorage');
 	} else {
 		//TODO: add error handling
-		gui.alert('Form launch failed. '+reason, 'Form could not be launched.');
+		gui.alert('Form launch failed. Reason: '+reason, 'Form could not be launched.');
 	}
 }
 

@@ -1,28 +1,34 @@
+//correct bootstrap feature
+@media screen and (max-width: 979px){
+  .navbar-fixed-top {
+    margin-bottom: 0;}}
+@media screen and (max-width: 979px){
+  //negate pull-right in dropdown nav menu
+  .nav-collapse.pull-right, .nav-collapse.collapse.pull-right {
+    float:left; } }
+
 .navbar{
-  &.navbar-fixed-top{
-    margin-bottom: 0;}
-  .btn-navbar {
-    margin-top: 13px; }
-  .branding{
-    float: left;
-    font-size: 2em;
-    img{
-      margin-top: 7px;
-      margin-bottom: 10px;
-      height: 34px; }
-    a:hover img{
-      width: 91px;}
+  font-size: 14px;
+  .brand {
+    position: relative;
+    width: 100px;
+    .navbar-logo{
+      top: 5px;
+      left: 30px;
+      height: 30px;
+      position: absolute;}
     .component{
+      position:absolute;
+      top: 20px;
+      left: 120px;
       color: #999999;
-      font-size: 0.4em;
-      margin-bottom: 5px;
-      display: inline-block;
-      vertical-align: bottom;} }
-  nav{
-    float:right;
+      font-size: 0.4em; } }
+  .nav{
     margin-top: 5px;
     a{
-      text-align: right; }
+      @include font-normal; }
+    > li > a.highlight{
+      color: rgb(237,87,50) !important; }
     img{
       width: 1em;
       height: 1em; } } }

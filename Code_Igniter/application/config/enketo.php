@@ -21,7 +21,7 @@ $config['google_analytics_key'] = "";
 /**
  * Used for various purposes, best to fill something in for now
  */
-$config['integration_with_url'] = "https://formhub.org";
+$config['integration_with_url'] = "http://google.com";
 
 /**
  * Will be used to direct users throughout application
@@ -31,15 +31,13 @@ $config['support_email'] = "support@formhub.org";
 /**
  * In the webform view this is the brand name shown (empty = enketo)
  */
-$config['brand'] = "formhub";
+$config['brand'] = "";
 
 /**
  * OpenRosa servers that are allowed to connect
  */
 $config['openrosa_domains_allowed'] = array(
-	array('url' => 'formhub.org', 		'api_token' => 'abcde'),
-	array('url' => 'www.formhub.org', 	'api_token' => 'abcde'),
-	array('url' => 'dev.formhub.org', 	'api_token' => 'abcde')
+	array('url' => '(www\.|dev\.)?formhub\.org\/?(martijnr|formhub_u)?', 'api_token' => 'abcde'),
 );
 
 /**

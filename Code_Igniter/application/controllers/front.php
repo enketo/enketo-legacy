@@ -46,7 +46,7 @@ class Front extends CI_Controller {
 		);
 		$data = array(
 			'offline'			=> FALSE, 
-			'title_component'	=> '', 
+			'title_component'	=> 'home', 
 			'robots'     		=> TRUE,
 			'number_launched'	=> $this->_get_db_number_launched()
 		);

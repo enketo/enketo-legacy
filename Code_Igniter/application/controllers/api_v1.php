@@ -30,6 +30,9 @@ class Api_v1 extends CI_Controller {
     function __construct()
     {
         parent::__construct();
+        if ($this->config->item('account_support')) {
+            $this->load->add_package_path(APPPATH.'third_party/account');
+        }
         $this->load->library('account');
         $params = $this->_get_params();
         $request_token = $this->_get_request_token();
@@ -123,7 +126,7 @@ class Api_v1 extends CI_Controller {
     {
         //TODO needs to be checked for disallowing different origin ajax requests
         //log_message('debug', 'API request received from: '.$_SERVER['REMOTE_ADDR']);
-        return $this->input->is_ajax_request() || $_SERVER['REMOTE_ADDR'] == '127.0.0.1';
+        return $this->input->is_ajax_request() || $_SERVER['REMOTE_ADDR'] == '146.185.129.211';
     }
 
     private function _print_output($response)

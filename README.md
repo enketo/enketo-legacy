@@ -8,7 +8,12 @@ nav: readme
 [Enketo Smart Paper](http://enketo.org)
 ======
 
-Enketo is a lightweight web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). Enketo is integrated inside [formhub.org](http://formhub.org) and available as a standalone application on [enketo.org](http://enketo.org). More info on [blog](http://blog.enketo.org) and [@enketo](https://twitter.com/enketo).
+Enketo is a lightweight web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). Enketo is integrated inside [formhub.org](http://formhub.org) and available as a paid service on [enketo.org](http://enketo.org). More info on [blog](http://blog.enketo.org) and [@enketo](https://twitter.com/enketo).
+
+API Documentation
+--------------
+Instead of installing and maintaining Enketo yourself you could also use [enketo.org](https://enketo.org)'s API if you have an [account](https://accounts.enketo.org). The [API documentation](http://apidocs.enketo.org) describes how you can easily achieve the same level of integration that currently exists on [formhub.org](https://formhub.org)
+
 
 Browser support
 ---------------
@@ -40,7 +45,7 @@ Tools required:
 * SASS/SCSS compiler to compile css (e.g. Compass)
 * Apache ANT to compile javascript 
 
-Code contributions are very welcome!
+Code contributions will be actively facilitated once the Form engine is separated from the main repo. You will then be able to easily run enketo forms locally, extend them and build your own applications around them. TO FOLLOW later in 2013.
 
 License
 -------

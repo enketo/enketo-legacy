@@ -175,7 +175,7 @@
       <sources dir="${basedir}/public/libraries">
         <file name="jquery.min.js"/>
         <file name="bootstrap/js/bootstrap.min.js"/>
-        <file name="jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js"/>
+        <file name="bootstrap-timepicker/js/bootstrap-timepicker.js"/>
         <file name="bootstrap-datepicker/js/bootstrap-datepicker.js"/>
         <file name="modernizr.min.js"/>
         <file name="xpathjs_javarosa/build/xpathjs_javarosa.min.js"/>
@@ -192,7 +192,7 @@
       <sources dir="${basedir}/public/libraries">
         <file name="jquery.min.js"/>
         <file name="bootstrap/js/bootstrap.min.js"/>
-        <file name="jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js"/>
+        <file name="bootstrap-timepicker/js/bootstrap-timepicker.js"/>
         <file name="bootstrap-datepicker/js/bootstrap-datepicker.js"/>
         <file name="modernizr.min.js"/>
         <file name="xpathjs_javarosa/build/xpathjs_javarosa.min.js"/>

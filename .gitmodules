@@ -10,3 +10,6 @@
 [submodule "Code_Igniter/system"]
 	path = Code_Igniter/system
 	url = https://github.com/MartijnR/CodeIgniter_system.git
+[submodule "public/libraries/bootstrap-timepicker"]
+	path = public/libraries/bootstrap-timepicker
+	url = https://github.com/jdewit/bootstrap-timepicker.git

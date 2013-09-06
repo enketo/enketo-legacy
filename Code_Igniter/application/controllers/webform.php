@@ -22,7 +22,7 @@ class Webform extends CI_Controller {
     (
         '/libraries/jquery.min.js',
         '/libraries/bootstrap/js/bootstrap.min.js', 
-        '/libraries/jdewit-bootstrap-timepicker/js/bootstrap-timepicker.js',
+        '/libraries/bootstrap-timepicker/js/bootstrap-timepicker.js',
         '/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
         '/libraries/modernizr.min.js',
         '/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',

@@ -4,7 +4,7 @@ $input-min-width: 0.2 * $content-width;
 $input-max-width: 80%;
 
 /** BOOTSTRAP PLUGINS **/
-@import "../../public/libraries/jdewit-bootstrap-timepicker/timepicker";
+@import "../../public/libraries/timepicker";
 @import "../../public/libraries/datepicker";
 
 /** BOOTSTRAP DATEPICKER Fix for month/year views **/
@@ -307,6 +307,7 @@ fieldset {
 	@media screen and (max-width: 500px){
 		font-size: 0.5em; }
 	float: right;
+
 	margin-top: 4px;
 	color: #e00e0e;
 &.focus{
@@ -334,13 +335,27 @@ fieldset {
 .date, .bootstrap-timepicker {
 	input{
 		width: $input-min-width;} }
-.datetimepicker{
+.datetimepicker{}
 	//float: left;
 .bootstrap-timepicker{
-	display: inline-block;}
+	display: inline-block; }
 .date{
 	display: inline-block;
-	margin-right: 10px; } }
+	margin-right: 10px; } 
+.btn-reset{
+  margin-left: 10px;
+	color: #ddd;
+	background: none;
+	border: none;
+	box-shadow: none;
+	opacity: 0.5;
+  &:hover{
+    opacity: 0.7;}
+  &[readonly]{
+    background: none;
+  }
+	i{
+		vertical-align: bottom;} }
 .mobileselect{
 	margin-left: 10px;}
 .geopoint{ 

@@ -2130,8 +2130,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
                         ($p.hasClass('jr-appearance-year')) ? 'changeYear' : 'changeDate',
                     format = (startView === 'year') ? 'yyyy-mm' :
                         (startView === 'decade') ? 'yyyy' : 'yyyy-mm-dd',
-                    $fakeDate = $('<div class="widget input-append date"><input class="ignore input-small" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
-                        '<span class="add-on"><i class="icon-calendar"></i></span></div>'),
+                    $fakeDate = $('<div class="widget date"><input class="ignore input-small" readonly="readonly" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
+                        '</div>'),
                     $fakeDateI = $fakeDate.find('input');
                 $dateI.next('.widget.date').remove();
                 $dateI.hide().after($fakeDate);
@@ -2175,9 +2175,9 @@ function Form (formSelector, dataStr, dataStrToEdit){
                 var $timeI = $(this),
                     $p = $(this).parent('label'),
                     timeVal = $(this).val(),
-                    $fakeTime = $('<div class="widget input-append bootstrap-timepicker-component">'+
-                        '<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
-                        '<span class="add-on"><i class="icon-time"></i></span></div>'),
+                    $fakeTime = $('<div class="widget bootstrap-timepicker">'+
+                        '<input class="ignore timepicker-default input-small" readonly="readonly" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
+                        '</div>'),
                     $fakeTimeI = $fakeTime.find('input');
 
                 $timeI.next('.widget.bootstrap-timepicker-component').remove();
@@ -2211,19 +2211,19 @@ function Form (formSelector, dataStr, dataStrToEdit){
                     vals = val.split('T'),
                     dateVal = vals[0], 
                     timeVal = (vals[1] && vals[1].length > 4) ? vals[1].substring(0,5) : '',
-                    $fakeDate = $('<div class="input-append date" >'+
-                        '<input class="ignore input-small" type="text" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
-                        '<span class="add-on"><i class="icon-calendar"></i></span></div>'),
-                    $fakeTime = $('<div class="input-append bootstrap-timepicker-component">'+
-                        '<input class="ignore timepicker-default input-small" type="text" value="'+timeVal+'" placeholder="hh:mm"/>'+
-                        '<span class="add-on"><i class="icon-time"></i></span></div>'),
+                    $fakeDate = $('<div class="date" >'+
+                        '<input class="ignore input-small" type="text" readonly="readonly" value="'+dateVal+'" placeholder="yyyy-mm-dd"/>'+
+                        '</div>'),
+                    $fakeTime = $('<div class="bootstrap-timepicker">'+
+                        '<input class="ignore timepicker-default input-small" readonly="readonly" type="text" value="'+timeVal+'" placeholder="hh:mm"/>'+
+                        '</div>'),
                     $fakeDateI = $fakeDate.find('input'),
                     $fakeTimeI = $fakeTime.find('input');
 
                 $dateTimeI.next('.widget.datetimepicker').remove();
                 $dateTimeI.hide().after('<div class="datetimepicker widget" />');
                 $dateTimeI.siblings('.datetimepicker').append($fakeDate).append($fakeTime);
-                $fakeDate.datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true});
+                $fakeDateI.datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true});
                 $fakeTimeI.timepicker({defaultTime: (timeVal.length > 0) ? 'value' : 'current', showMeridian: false}).val(timeVal);
                 
                 $fakeDateI.on('change changeDate', function(){

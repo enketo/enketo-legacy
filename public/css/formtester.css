@@ -2252,9 +2252,9 @@ fieldset .remove { float: right; margin-right: 0; }
 
 .jr-branch { display: none; }
 
-.date input, .bootstrap-timepicker-component input { width: 144px; }
+.date input, .bootstrap-timepicker input { width: 144px; }
 
-.datetimepicker .bootstrap-timepicker-component { display: inline-block; }
+.datetimepicker .bootstrap-timepicker { display: inline-block; }
 .datetimepicker .date { display: inline-block; margin-right: 10px; }
 
 .mobileselect { margin-left: 10px; }

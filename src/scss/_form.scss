@@ -331,12 +331,12 @@ fieldset {
 		@include error-text; } } 
 .jr-branch {
 	display: none;}
-.date, .bootstrap-timepicker-component {
+.date, .bootstrap-timepicker {
 	input{
 		width: $input-min-width;} }
 .datetimepicker{
 	//float: left;
-.bootstrap-timepicker-component{
+.bootstrap-timepicker{
 	display: inline-block;}
 .date{
 	display: inline-block;

@@ -2131,7 +2131,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
                     format = (startView === 'year') ? 'yyyy-mm' :
                         (startView === 'decade') ? 'yyyy' : 'yyyy-mm-dd',
                     $fakeDate = $('<div class="widget date"><input class="ignore input-small" readonly="readonly" type="text" value="'+$(this).val()+'" placeholder="'+format+'" />'+
-                        '</div>'),
+                        '<button class="btn-reset"><i class="icon icon-trash"></i></button></div>'),
+                    $fakeDateReset = $fakeDate.find('.btn-reset'),
                     $fakeDateI = $fakeDate.find('input');
                 $dateI.next('.widget.date').remove();
                 $dateI.hide().after($fakeDate);
@@ -2156,6 +2157,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
                     $dateI.trigger(event.type);
                 });
 
+                //reset button
+                $fakeDateReset.on('click', function(event){
+                    $fakeDateI.val('').trigger('change').datepicker('update');
+                });
+
                 $fakeDateI.datepicker({
                     format:         format, 
                     autoclose:      true, 
@@ -2177,19 +2183,25 @@ function Form (formSelector, dataStr, dataStrToEdit){
                     timeVal = $(this).val(),
                     $fakeTime = $('<div class="widget bootstrap-timepicker">'+
                         '<input class="ignore timepicker-default input-small" readonly="readonly" type="text" value="'+timeVal+'" placeholder="hh:mm" />'+
-                        '</div>'),
+                        '<button class="btn-reset"><i class="icon icon-trash"></i></button></div>'),
+                    $fakeTimeReset = $fakeTime.find('.btn-reset'),
                     $fakeTimeI = $fakeTime.find('input');
 
                 $timeI.next('.widget.bootstrap-timepicker-component').remove();
                 $timeI.hide().after($fakeTime);
                 $fakeTimeI.timepicker({
-                    defaultTime: (timeVal.length > 0) ? 'value' : 'current',
+                    defaultTime: (timeVal.length > 0) ? timeVal : 'current',
                     showMeridian: false
                 }).val(timeVal);
 
                 $fakeTimeI.on('change', function(){
                     $timeI.val($(this).val()).trigger('change').blur();
                     return false;
+                });
+
+                //reset button
+                $fakeTimeReset.on('click', function(event){
+                    $fakeTimeI.val('').trigger('change');
                 });
 
                 $fakeTimeI.on('focus blur', function(event){
@@ -2216,7 +2228,8 @@ function Form (formSelector, dataStr, dataStrToEdit){
                         '</div>'),
                     $fakeTime = $('<div class="bootstrap-timepicker">'+
                         '<input class="ignore timepicker-default input-small" readonly="readonly" type="text" value="'+timeVal+'" placeholder="hh:mm"/>'+
-                        '</div>'),
+                        '<button class="btn-reset"><i class="icon icon-trash"></i></button></div>'),
+                    $fakeDateTimeReset = $fakeTime.find('.btn-reset'),
                     $fakeDateI = $fakeDate.find('input'),
                     $fakeTimeI = $fakeTime.find('input');
 
@@ -2236,6 +2249,11 @@ function Form (formSelector, dataStr, dataStrToEdit){
                 });
                 $fakeDateI.add($fakeTimeI).on('focus blur', function(event){
                     $dateTimeI.trigger(event.type);
+                });
+                //reset button
+                $fakeDateTimeReset.on('click', function(event){
+                    $fakeDateI.val('').trigger('change').datepicker('update');
+                    $fakeTimeI.val('').trigger('change');
                 });
 
                 function changeVal(){

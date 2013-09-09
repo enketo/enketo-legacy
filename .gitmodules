@@ -13,3 +13,6 @@
 [submodule "public/libraries/bootstrap-timepicker"]
 	path = public/libraries/bootstrap-timepicker
 	url = https://github.com/jdewit/bootstrap-timepicker.git
+[submodule "public/libraries/file-manager"]
+	path = public/libraries/file-manager
+	url = https://github.com/MartijnR/file-manager.git

@@ -33,7 +33,7 @@ function FileManager(){
 		currentQuotaUsed = null,
 		DEFAULTBYTESREQUESTED = 100 * 1024 * 1024;
 
-	this.getCurrentQuota = function(){return currentQuota;}; //REMOVE, IS TEMPORARY
+	this.getCurrentQuota = function(){return currentQuota;};
 	this.getCurrentQuotaUsed = function(){return currentQuotaUsed;};
 	this.getFS = function(){return fs;};
 	

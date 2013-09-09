@@ -1683,6 +1683,14 @@ function Form (formSelector, dataStr, dataStrToEdit){
                 }
                 else{
                     $branchNode.prop('disabled', false);
+
+                    /*
+                    A temporary workaround for a Chrome bug described in https://github.com/modilabs/enketo/issues/503 
+                    where the file inputs end up in a weird partially enabled state. 
+                    Refresh the state by disabling and enabling the file inputs again.
+                    */
+                    $branchNode.find('*:not(.jr-branch) input[type="file"]:not(.force-disabled, [data-relevant])')
+                        .prop('disabled', true).prop('disabled', false);
                 }
             }
         };

@@ -27,7 +27,8 @@ class Webform extends CI_Controller {
         '/libraries/modernizr.min.js',
         '/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
         '/libraries/FileSaver.min.js',
-        '/libraries/BlobBuilder.min.js'
+        '/libraries/BlobBuilder.min.js',
+        '/libraries/file-manager/source/files.js'
     );
     private $default_main_scripts = array
         (
@@ -36,7 +37,6 @@ class Webform extends CI_Controller {
             '/js-source/form.js',
             '/js-source/widgets.js',
             '/js-source/storage.js',
-            '/js-source/files.js',
             '/js-source/connection.js',
             '/js-source/survey_controls.js',
             '/js-source/debug.js'

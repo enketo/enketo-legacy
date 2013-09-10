@@ -335,7 +335,6 @@ function prepareFormDataArray( record, callbacks ) {
   var j, k, l, xmlData, formData, dataO, instanceID, $fileNodes, fileIndex, fileO, recordPrepped, 
     count = 0,
     sizes = [], 
-    workflow = $({}),
     failedFiles = [],
     files = [],
     batches = [];
@@ -345,14 +344,13 @@ function prepareFormDataArray( record, callbacks ) {
   instanceID = dataO.getInstanceID();
   $fileNodes = dataO.$.find('[type="file"]').removeAttr('type');
 
-  if ( typeof fileManager == 'undefined' || $fileNodes.length === 0 ){
+  function basicRecordPrepped( batchesLength, batchIndex ) {
     formData = new FormData();
     formData.append('xml_submission_data', xmlData);
-    recordPrepped = { name: record.name, instanceID: instanceID, formData: formData, batches: 1, batchIndex: 0 };
-    return callbacks.success(recordPrepped);
+    return { name: record.name, instanceID: instanceID, formData: formData, batches: batchesLength, batchIndex: batchIndex };
   }
 
-  workflow.on('gatherFiles', function() {
+ function gatherFiles() {
     $fileNodes.each(function(){
       fileO = { newName: $(this).nodeName, fileName: $(this).text() };
       fileManager.retrieveFile( instanceID, fileO, {
@@ -361,7 +359,7 @@ function prepareFormDataArray( record, callbacks ) {
           files.push( fileObj );
           sizes.push( fileObj.file.size );
           if ( count == $fileNodes.length ) {
-            workflow.trigger('distributeFiles');
+            distributeFiles();
           }
         },
         error: function( e ) {
@@ -369,33 +367,51 @@ function prepareFormDataArray( record, callbacks ) {
           failedFiles.push( fileO.fileName );
           console.error( 'Error occured when trying to retrieve ' + fileO.fileName + ' from local filesystem', e );
           if ( count == $fileNodes.length ) {
-            workflow.trigger('distributeFiles');
+            distributeFiles();
           }
         }
       });
     });
-  });
+  }
   
-  workflow.on( 'distributeFiles', function() {
+ function distributeFiles() {
     var maxSize = connection.maxSubmissionSize();
-    batches = divideIntoBatches( sizes, maxSize );
-    console.debug('size: ', sizes, 'max: ', maxSize);
-    console.debug('splitting record into ' + batches.length + ' batches to reduce submission size ', batches );
-    for ( k = 0 ; k < batches.length ; k++ ) {
-      formData = new FormData();
-      formData.append('xml_submission_data', xmlData);
-      recordPrepped = { name: record.name, instanceID: instanceID, formData: formData, batches: batches.length, batchIndex: k };
-      for ( l = 0 ; l < batches[k].length ; l++ ) {
-        fileIndex = batches[k][l];
-        console.log( 'adding file: ', files[fileIndex] );
-        recordPrepped.formData.append( files[fileIndex].newName+'[]', files[fileIndex].file );
+    if ( files.length > 0 ) {
+      batches = divideIntoBatches( sizes, maxSize );
+      console.debug('splitting record into ' + batches.length + ' batches to reduce submission size ', batches );
+      for ( k = 0 ; k < batches.length ; k++ ) {
+        recordPrepped = basicRecordPrepped( batches.length, k );
+        for ( l = 0 ; l < batches[k].length ; l++ ) {
+          fileIndex = batches[k][l];
+          //console.log( 'adding file: ', files[fileIndex] );
+          recordPrepped.formData.append( files[fileIndex].newName+'[]', files[fileIndex].file );
+        }
+        //console.log( 'returning record with formdata : ', recordPrepped );
+        callbacks.success( recordPrepped );
       }
-      console.log( 'returning record with formdata : ', recordPrepped );
+    } else {
+      recordPrepped = basicRecordPrepped( 1, 0 );
+      //console.log('sending submission without files', recordPrepped)
       callbacks.success( recordPrepped );
     }
-  });
+    showErrors();
+  }
 
-  workflow.trigger('gatherFiles');
+  function showErrors() {
+    if ( failedFiles.length > 0 ) {
+      gui.alert( '<p>The following media files could not be retrieved: ' + failedFiles.join(', ') + '. ' +
+        'The submission will go ahead and show the missing filenames in the data, but without the actual file(s).</p>' +
+        '<p>Thanks for helping test this experimental feature. If you find out how you can reproduce this issue, ' +
+        'please contact ' + settings.supportEmail + '.</p>', 
+        'Experimental feature failed' );
+    }
+  }
+
+  if ( typeof fileManager == 'undefined' || $fileNodes.length === 0 ) { 
+    distributeFiles();
+  } else {
+    gatherFiles();
+  }
 }
 
 /**
@@ -568,8 +584,7 @@ GUI.prototype.updateRecordList = function(recordList, $page) {
       if (recordList[i]['ready']){// === true){//} || recordList[i]['ready'] == 'true'){
         icon = 'check';
         finishedFormsQty++;
-      }
-      else {
+      } else {
         icon = 'pencil';
         draftFormsQty++;
       }

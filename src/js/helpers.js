@@ -42,8 +42,8 @@ function divideIntoBatches( fileSizes, limit ) {
 		sizes = [],
 		batches = [];
 	//limit = limit || 5 * 1024 * 1024;
-	for ( i=0; i<fileSizes.length ; i++ ){
-		sizes.push({'index': i, 'size': fileSizes[i]});
+	for ( i=0; i < fileSizes.length ; i++ ) {
+		sizes.push({ 'index': i, 'size': fileSizes[i] });
 	}
 	while( sizes.length > 0){
 		batch = [sizes[0].index];

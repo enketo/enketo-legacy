@@ -679,11 +679,11 @@ GUI.prototype.setSettings = function(settings){
  * @param { boolean=} reset if list provided is empty and reset is true, no error message is shown
  */
 GUI.prototype.parseFormlist = function(list, $target, reset){
-	var i = 0, 
-		listHTML='';
-	console.log('list: ', list);
-	if(!$.isEmptyObject(list)){
-		for (i ; i<list.length; i++){
+	var i, 
+		listHTML = '';
+	console.log( 'list: ', list );
+	if( !$.isEmptyObject( list ) ){
+		for ( i = 0 ; i < list.length ; i++ ){
 			listHTML += '<li><a class="btn btn-block btn-info" id="'+list[i].form_id+'" title="'+list[i].title+'" '+
 				'href="'+list[i].url+'" data-server="'+list[i].server_url+'" >'+list[i].name+'</a></li>';
 		}
@@ -691,11 +691,11 @@ GUI.prototype.parseFormlist = function(list, $target, reset){
 	}
 	else {
 		$target.addClass('empty');
-		if (!reset){
+		if ( !reset ) {
 			listHTML = '<p class="alert alert-error">Error occurred during creation of form list or no forms found</p>';
 		}
 	}
-	$target.find('ul').empty().append(listHTML);
+	$target.find('ul').empty().append( listHTML );
 };
 
 /**

@@ -33,6 +33,10 @@ Frequently Asked Questions
 ##### Why are file-upload inputs greyed out and not usable?
 File uploads are only experimentially supported on Chrome at the moment until other browser catch up with support for the FileSytem API. If file uploads (images/sound/video) are important, ODK Collect may be a better option.
 
+Style Guides
+-----------
+* javascript: https://github.com/rwaldron/idiomatic.js/
+* PHP: http://pear.php.net/manual/en/standards.php
 
 Development
 -----------

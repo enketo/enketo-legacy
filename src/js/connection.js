@@ -379,7 +379,7 @@ Connection.prototype.maxSubmissionSize = function(){
         defaultMax = 5000000,
         absoluteMax = 100 * 1024 * 1024,
         that = this;
-    if (typeof this.maxSize == 'undefined' && !this.maxSize){
+    if ( typeof this.maxSize == 'undefined' ){
         $.ajax('/data/max_size', {
             type: 'GET',
             async: false,

@@ -133,8 +133,7 @@
            
             this.$newElement.find('li').on('click', function(e) {
                 e.preventDefault();
-               
-               var  $li = $(this),
+                var  $li = $(this),
                     $input = $li.find('input'),
                     $picker = $li.parents('.bootstrap-select'),
                     $select = $picker.prev('select'),
@@ -153,7 +152,9 @@
                     $option.prop('selected', false);
                 }
                 else{
-                    if (!_this.multiple) $li.addClass('active');
+                    if (!_this.multiple) {
+                        $li.addClass('active');
+                    }
                     $input.prop('checked', true);
                     $option.prop('selected', true);
                 }

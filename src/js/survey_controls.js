@@ -503,7 +503,7 @@ GUI.prototype.setCustomEventHandlers = function() {
       }, 100);
       
   });
-  $('button#submit-edited-data')
+  $('button#submit-form-single')
     .click(function(){
       var $button = $(this);
       $button.btnBusyState(true);

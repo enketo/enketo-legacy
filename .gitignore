@@ -11,6 +11,8 @@ public/js-source
 Code_Igniter/application/config/database.php
 Code_Igniter/application/cache/*
 Code_Igniter/application/logs/*
+node_modules/*
+public/build/*
 _site/*
 ._.DS_Store
 ._css
@@ -22,3 +24,4 @@ _site/*
 .~lock*
 ._*.sql
 ._*.xml
+.__*

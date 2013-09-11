@@ -16,3 +16,9 @@
 [submodule "public/libraries/file-manager"]
 	path = public/libraries/file-manager
 	url = https://github.com/MartijnR/file-manager.git
+[submodule "public/libraries/enketo-core"]
+	path = public/libraries/enketo-core
+	url = https://github.com/MartijnR/enketo-core.git
+[submodule "Code_Igniter/application/libraries/xslt"]
+	path = Code_Igniter/application/libraries/xslt
+	url = https://github.com/MartijnR/enketo-xslt.git

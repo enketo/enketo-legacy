@@ -103,6 +103,24 @@ module.exports = function(grunt) {
           'public/build/css/front.css': 'src/scss/front.scss'
         }
       }
+    },
+    jasmine: {
+      test: {
+        src: ['src/js/connection.js', 'src/js/storage.js', 'src/js/helpers.js'],
+        options: {
+          specs: 'tests/spec/*.js',
+          helpers: ['tests/util/*.js', 'tests/mock/*.js'],
+          vendor: [
+            'public/libraries/enketo-core/lib/jquery.min.js', 
+            'public/libraries/enketo-core/lib/bootstrap.min.js',
+            'public/libraries/enketo-core/lib/modernizr.min.js',
+            'public/libraries/enketo-core/src/js/utils.js',
+            'public/libraries/enketo-core/lib/xpath/build/xpathjs_javarosa.min.js',
+            'public/libraries/enketo-core/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
+            'public/libraries/enketo-core/lib/bootstrap-timepicker/js/bootstrap-timepicker.js'
+          ]
+        }
+      }
     }
   });
 
@@ -112,5 +130,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jasmine');
 
   grunt.registerTask('test', ['jasmine']);
-  grunt.registerTask('default', ['uglify', 'jshint'grunt]);
+  grunt.registerTask('default', ['uglify', 'jshint']);
 };

@@ -1,8 +1,9 @@
 describe("LocalStorage", function () {
 	var store, record;
 
+	store = new StorageLocal();
+
 	beforeEach(function(){
-		store = new StorageLocal();
 		record = {data: 'bla'};
 	});
 
@@ -14,7 +15,7 @@ describe("LocalStorage", function () {
 		expect(store.isSupported()).toEqual(true);
 	});
 
-	describe('attempts to save records', function(){
+	describe('attempt to save records', function(){
 		var name = 'myname',
 			otherName = 'anothername',
 			testKeys = function(keys, expectedResp){
@@ -31,7 +32,7 @@ describe("LocalStorage", function () {
 		testKeys(emptyKeys, 'require');
 		testKeys(forbiddenKeys, 'forbidden');
 		
-		it('fail if the there is already a record with that name and overwrite parameter is not true', function(){
+		it('fail if there is already a record with that name and the overwrite parameter is not true', function(){
 			expect(store.setRecord(name, record)).toEqual('success');
 			expect(store.setRecord(name, record)).toEqual('existing');
 			expect(store.setRecord(name, record, null, null, name)).toEqual('existing');
@@ -40,7 +41,7 @@ describe("LocalStorage", function () {
 			expect(store.setRecord(name, record, null, false, otherName)).toEqual('existing');
 		});
 
-		it('succeed if the record name already exists but the overwrite paramater is set to true', function(){
+		it('succeed if the record name already exists but the overwrite parameter is set to true', function(){
 			expect(store.setRecord(name, record)).toEqual('success');
 			expect(store.setRecord(name, record, null, true, name)).toEqual('success');
 			expect(store.setRecord(name, record, null, true, otherName)).toEqual('success');

@@ -14,14 +14,5 @@ Code_Igniter/application/logs/*
 node_modules/*
 public/build/*
 _site/*
-._.DS_Store
-._css
-._img
-._js
-._*.png
-._bootstrap
-.fuse_*
-.~lock*
-._*.sql
-._*.xml
-.__*
+._*
+.fuse*

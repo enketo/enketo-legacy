@@ -4,9 +4,9 @@ title: About enketo
 nav: readme
 ---
 
-
 [Enketo Smart Paper](http://enketo.org)
 ======
+
 
 Enketo is a lightweight web application that is compatible with JavaRosa/OpenRosa XForm-derived format and compliant servers. It is 'offline-cable' which means it is able to launch offline (after 1 successful online launch) and is able to persistently store survey data inside the browser (to be uploaded once a connection becomes available). This capability makes it particularly suitable for situations where Internet Access is unreliable (though sometimes available). Enketo is integrated inside [formhub.org](http://formhub.org) and available as a paid service on [enketo.org](http://enketo.org). More info on [blog](http://blog.enketo.org) and [@enketo](https://twitter.com/enketo).
 
@@ -14,6 +14,10 @@ API Documentation
 --------------
 Instead of installing and maintaining Enketo yourself you could also use [enketo.org](https://enketo.org)'s API if you have an [account](https://accounts.enketo.org). The [API documentation](http://apidocs.enketo.org) describes how you can easily achieve the same level of integration that currently exists on [formhub.org](https://formhub.org)
 
+Follow
+----------
+- Best way to stay up date on this project is to follow the [Enketo Blog](http://blog.enketo.org).
+- Second best way is follow Enketo's [twitter account](https://twitter.com/enketo)
 
 Browser support
 ---------------
@@ -33,6 +37,10 @@ Frequently Asked Questions
 ##### Why are file-upload inputs greyed out and not usable?
 File uploads are only experimentially supported on Chrome at the moment until other browser catch up with support for the FileSytem API. If file uploads (images/sound/video) are important, ODK Collect may be a better option.
 
+Style Guides
+-----------
+* javascript: https://github.com/rwaldron/idiomatic.js/
+* PHP: http://pear.php.net/manual/en/standards.php
 
 Development
 -----------

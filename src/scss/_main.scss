@@ -1,21 +1,20 @@
 @import "bootstrap";
-@import "bootstrap-responsive";
-@import "_variables";
-@import "_mixins";
+@import "variables";
+@import "mixins";
 
 @font-face {
     font-family: 'OpenSansRegular';
-    src: url('/css/fonts/OpenSans-Regular-webfont.woff') format('woff'),
-         url('/css/fonts/OpenSans-Regular-webfont.ttf') format('truetype'),
-         url('/css/fonts/OpenSans-Regular-webfont.svg#OpenSansRegular') format('svg');
+    src: url('/fonts/OpenSans-Regular-webfont.woff') format('woff'),
+         url('/fonts/OpenSans-Regular-webfont.ttf') format('truetype'),
+         url('/fonts/OpenSans-Regular-webfont.svg#OpenSansRegular') format('svg');
     font-weight: normal;
     font-style: normal;}
 
 @font-face {
     font-family: 'OpenSansBold';
-    src: url('/css/fonts/OpenSans-Bold-webfont.woff') format('woff'),
-         url('/css/fonts/OpenSans-Bold-webfont.ttf') format('truetype'),
-         url('/css/fonts/OpenSans-Bold-webfont.svg#OpenSansBold') format('svg');
+    src: url('/fonts/OpenSans-Bold-webfont.woff') format('woff'),
+         url('/fonts/OpenSans-Bold-webfont.ttf') format('truetype'),
+         url('/fonts/OpenSans-Bold-webfont.svg#OpenSansBold') format('svg');
     font-weight: normal;
     font-style: normal;}
 
@@ -38,7 +37,7 @@ strong {
 
 h2, h3, h4 {
   @include font-bold;
-  color: $title;
+  color: $accent-color-1;
   text-align: center;}
 
 .preview-header{

@@ -1,0 +1,46 @@
+.form-header {
+  .branding{
+    display: inline-block;
+    margin: 0 10px 0 16px;
+    img{
+      max-height: 30px;
+      max-width: 130px;
+      margin-left: 16px;
+      &:hover{
+        opacity: 0.8;} }
+    span{
+      display: inline-block;
+      color: #444444;
+      font-weight: bold;
+      font-size: 1.4em;
+      &:hover{
+        text-decoration: none;
+        opacity: 0.8;} } } }
+.load-error{
+  margin: 100px 0 60px 0;} //move this
+.records{ //move this
+  $size: 20px;
+  display: inline-block;
+  vertical-align: bottom;
+  background-color: #c9c9c9;
+  border: 1px solid $groupline;
+  height: $size;
+  min-width: $size;
+  border-radius: $size/2; }
+.queue-length{
+  color: #ffffff;
+  text-align: center;
+  padding: 0 7px;
+  &.submitting{
+    color: #ce4f07; }
+  &:hover{
+    color: green; } }
+.print{
+  background: none;
+  border-radius: 0;
+  border: none;
+  width: 60px;
+  padding: 0.3em $baseFontSize;
+  float: right;
+  &:hover{
+  opacity: 0.7; } }

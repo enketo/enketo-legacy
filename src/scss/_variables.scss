@@ -1,15 +1,16 @@
 $bg: #ddd;
 $body-bg: #f0f0f0;
-$groupline: #bbbbbb;
 $shadow: #cccccc; /*light gray*/
-$title: #CE4F07;
+//$title: #CE4F07;
+$accent-color-1: #CE4F07;
 $content_border: #E7E7E7;
-$drawer_border: #aaaaaa;
-$pagecolor: #333333;
+//$drawer_border: #aaaaaa;
+//$pagecolor: #333333;
+$images-path: '../../images/';
 
-$drawer-width: 300px;
-$tab-width: 18px;
+//$drawer-width: 300px;
+//$tab-width: 18px;
 $content-width: 720px;
 
-
-
+$iconSpritePath: '/images/glyphicons-halflings.png'; 
+$iconWhiteSpritePath: '/images/glyphicons-halflings-white.png';

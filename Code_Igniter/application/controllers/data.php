@@ -19,11 +19,10 @@
 class Data extends CI_Controller {
 
 	function __construct() {
-			parent::__construct();
-			$this->load->model('Survey_model', '', TRUE);
-			$this->load->model('Instance_model', '', TRUE);
-			$this->load->helper(array('subdomain','url', 'string', 'http'));
-		
+		parent::__construct();
+		$this->load->model('Survey_model', '', TRUE);
+		$this->load->model('Instance_model', '', TRUE);
+		$this->load->helper(array('subdomain','url', 'string', 'http'));
 	}
 
 	public function index()

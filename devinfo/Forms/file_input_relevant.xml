@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:orx="http://openrosa.org/xforms/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>file_input_relevant</h:title>
+    <model>
+      <instance>
+        <file_input_relevant id="file_input_relevant">
+          <txt/>
+          <rep>
+            <aud/>
+            <pic/>
+          </rep>
+          <pic2/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </file_input_relevant>
+      </instance>
+      <bind nodeset="/file_input_relevant/txt" type="string"/>
+      <bind nodeset="/file_input_relevant/rep" relevant="string-length( /file_input_relevant/txt ) &gt; 0"/>
+      <bind nodeset="/file_input_relevant/rep/aud" type="binary"/>
+      <bind nodeset="/file_input_relevant/rep/pic" type="binary"/>
+      <bind nodeset="/file_input_relevant/pic2" relevant="string-length( /file_input_relevant/txt ) &gt; 0" type="binary"/>
+      <bind calculate="concat('uuid:', uuid())" nodeset="/file_input_relevant/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/file_input_relevant/txt">
+      <label>Enter something</label>
+    </input>
+    <group ref="/file_input_relevant/rep">
+      <label>media input inside repeats</label>
+      <upload mediatype="audio/*" ref="/file_input_relevant/rep/aud">
+        <label>upload audio</label>
+      </upload>
+      <upload mediatype="image/*" ref="/file_input_relevant/rep/pic">
+        <label>upload image</label>
+      </upload>
+    </group>
+    <upload mediatype="image/*" ref="/file_input_relevant/pic2">
+      <label>upload image</label>
+    </upload>
+  </h:body>
+</h:html>

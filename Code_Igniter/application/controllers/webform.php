@@ -44,13 +44,13 @@ class Webform extends CI_Controller {
         ); 
     private $default_stylesheets = array
     (
-        array( 'href' => '/css/webform.css', 'media' => 'all'),
-        array( 'href' => '/css/webform_print.css', 'media' => 'print')
+        array( 'href' => '/build/css/webform.css', 'media' => 'all'),
+        array( 'href' => '/build/css/webform_print.css', 'media' => 'print')
     );
     private $default_iframe_stylesheets = array
     (
-        array( 'href' => '/css/webform_iframe.css', 'media' => 'all'),
-        array( 'href' => '/css/webform_print.css', 'media' => 'print')
+        array( 'href' => '/build/css/webform_iframe.css', 'media' => 'all'),
+        array( 'href' => '/build/css/webform_print.css', 'media' => 'print')
     );
     private $credentials = NULL;
 
@@ -189,8 +189,8 @@ class Webform extends CI_Controller {
             'return_url' => $edit_obj->return_url,
             'logo_url' => $this->account->logo_url($this->server_url),
             'stylesheets'=> $this->iframe ? array(
-                array( 'href' => '/css/webform_edit_iframe.css', 'media' => 'all'),
-                array( 'href' => '/css/webform_print.css', 'media' => 'print')
+                array( 'href' => '/build/css/webform_edit_iframe.css', 'media' => 'all'),
+                array( 'href' => '/build/css/webform_print.css', 'media' => 'print')
             ) : $this->default_stylesheets
         );
 

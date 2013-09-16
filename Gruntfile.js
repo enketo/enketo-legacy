@@ -101,9 +101,13 @@ module.exports = function( grunt ) {
         options: {
           style: 'expanded'
         },
-        files: {
-          'public/build/css/front.css': 'src/scss/front.scss'
-        }
+        files: [ {
+          expand: true,
+          cwd: 'src/scss',
+          src: [ '**/*.scss', '!**/_*.scss' ],
+          dest: 'public/build/css',
+          ext: '.css'
+        } ]
       }
     },
     jasmine: {
@@ -132,5 +136,5 @@ module.exports = function( grunt ) {
   grunt.loadNpmTasks( 'grunt-contrib-jasmine' );
 
   grunt.registerTask( 'test', [ 'jasmine' ] );
-  grunt.registerTask( 'default', [ 'uglify', 'jshint' ] );
+  grunt.registerTask( 'default', [ 'jshint', 'uglify', 'sass', 'test' ] );
 };

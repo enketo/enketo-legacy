@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Jasmine Spec Runner</title>
+
+  <link rel="stylesheet" type="text/css" href="lib/jasmine-1.3.1/jasmine.css">
+  <style>
+    .datepicker, .bootstrap-timepicker{display: none;}
+  </style>
+  <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine.js"></script>
+  <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine-html.js"></script>
+
+  <!-- include library files here... -->
+  <script type="text/javascript" src="../public/libraries/enketo-core/lib/jquery.min.js"></script>
+  <script type="text/javascript" src="../public/libraries/enketo-core/lib/bootstrap.min.js"></script>
+  <script type="text/javascript" src="../public/libraries/enketo-core/lib/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+  <script type="text/javascript" src="../public/libraries/enketo-core/lib/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+  <script type="text/javascript" src="../public/libraries/enketo-core/lib/modernizr.min.js"></script>
+  <script type="text/javascript" src="../public/libraries/enketo-core/lib/xpath/build/xpathjs_javarosa.min.js"></script>
+  <script type="text/javascript" src="../public/libraries/enketo-core/src/js/utils.js"></script>
+
+  <!-- include mock files here ... -->
+  <script type="text/javascript" src="mock/gui.mock.js"></script>
+  <script type="text/javascript" src="mock/connection.mock.js"></script>
+
+  <!-- include source files here... -->
+  <script type="text/javascript" src="../src/js/helpers.js"></script>
+  <script type="text/javascript" src="../src/js/storage.js"></script>
+  <script type="text/javascript" src="../src/js/connection.js"></script>
+
+  <!-- include spec files here... -->
+  <script type="text/javascript" src="util/test_utils.js"></script>
+  <script type="text/javascript" src="spec/storage.spec.js"></script>
+  <script type="text/javascript" src="spec/connection.spec.js"></script>
+  <script type="text/javascript" src="spec/helpers.spec.js"></script>
+  <script type="text/javascript">
+    (function() {
+      if (typeof console.debug === 'undefined'){
+        console.debug = console.log;
+      }
+
+      var jasmineEnv = jasmine.getEnv();
+      jasmineEnv.updateInterval = 1000;
+
+      var htmlReporter = new jasmine.HtmlReporter();
+
+      jasmineEnv.addReporter(htmlReporter);
+
+      jasmineEnv.specFilter = function(spec) {
+        return htmlReporter.specFilter(spec);
+      };
+
+      var currentWindowOnload = window.onload;
+
+      window.onload = function() {
+        if (currentWindowOnload) {
+          currentWindowOnload();
+        }
+        execJasmine();
+      };
+
+      function execJasmine() {
+        jasmineEnv.execute();
+      }
+
+    })();
+  </script>
+
+</head>
+
+<body>
+</body>
+</html>

@@ -1,13 +1,11 @@
 $baseFontSize: 16px;
 $baseLineHeight: 20px;
-$iconSpritePath: '/images/glyphicons-halflings.png'; //patches bug in bootstrap-sass
-$iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
 
 @mixin font-bold {
   @include default-bold; }
 
 @mixin font-normal {
   @include default-normal; }
-
-@import "_main";
-@import "_menu";
+  
+@import "main";
+@import "menu";

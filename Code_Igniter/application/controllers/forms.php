@@ -32,14 +32,13 @@ class Forms extends CI_Controller {
         }
 
         $default_scripts = array(
-            '/libraries/jquery.min.js',
-            '/libraries/bootstrap/js/bootstrap.min.js',
-            '/libraries/modernizr.min.js'//,
-            //'/libraries/fastclick/lib/fastclick.js'
+            '/libraries/enketo-core/lib/jquery.min.js',
+            '/libraries/enketo-core/lib/bootstrap.min.js',
+            '/libraries/enketo-core/lib/modernizr.min.js'
         );
 
         $default_stylesheets = array(
-            array( 'href' => '/css/forms.css', 'media' => 'screen')
+            array( 'href' => '/build/css/forms.css', 'media' => 'screen')
         );
 
         $data = array(
@@ -50,11 +49,12 @@ class Forms extends CI_Controller {
         );
 
         if (ENVIRONMENT === 'production') {
-            $data['scripts'] = array_merge($default_scripts, array(
-                '/js-min/formlist-all-min.js'
-            ));
+            $data['scripts'] = array(
+                '/build/js/formlist.min.js'
+            );
         } else {
             $data['scripts'] = array_merge($default_scripts, array(
+                '/libraries/enketo-core/src/js/utils.js',
                 '/js-source/helpers.js',
                 '/js-source/debug.js',
                 '/js-source/gui.js',       

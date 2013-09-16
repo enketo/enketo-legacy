@@ -1,7 +1,5 @@
 $baseFontSize: 15px;
 $baseLineHeight: 20px;
-$iconSpritePath: '/images/glyphicons-halflings.png'; //patches bug in bootstrap-sass
-$iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
 
 @mixin font-normal {
   font-family: courier, times, serif;
@@ -13,9 +11,8 @@ $iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in
   font-weight: bold;
   font-style: normal; }
 
-@import "_main";
-@import "_responsive";
-@import "_form";
+@import "main";
+@import "form";
 
 $very_dark: #444444;
 $dark: #666666;
@@ -150,5 +147,3 @@ button,
   color: transparent;
   border-bottom: none;
   page-break-before: always !important;}
-
-

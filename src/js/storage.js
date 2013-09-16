@@ -57,7 +57,7 @@ function StorageLocal() {
    */
   this.setRecord = function( newKey, record, del, overwrite, oldKey ) {
     if ( !newKey || typeof newKey !== 'string' || newKey.length < 1 ) {
-      console.error( 'no key or empty key provided for record: ' + newKey );
+      //console.error( 'no key or empty key provided for record: ' + newKey );
       return 'require';
     }
     newKey = newKey.trim();

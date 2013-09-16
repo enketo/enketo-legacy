@@ -81,16 +81,18 @@ $( document ).ready( function() {
     //getCurrentRecordName() to prevent currenty open record from being submitted
     //connection.uploadRecords(store.getSurveyDataArr(true));
     var i,
-      records = store.getSurveyDataArr( true );
+      records = store.getSurveyDataArr( true ),
+      successHandler = function( recordPrepped ) {
+        connection.uploadRecords( recordPrepped );
+      },
+      errorHandlers = function() {
+        console.error( 'Something went wrong while trying to prepare the record(s) for uploading.' );
+      };
     for ( i = 0; i < records.length; i++ ) {
       prepareFormDataArray(
         records[ i ], {
-          success: function( recordPrepped ) {
-            connection.uploadRecords( recordPrepped );
-          },
-          error: function() {
-            console.error( 'Something went wrong while trying to prepare the record(s) for uploading.' );
-          }
+          success: successHandler,
+          error: errorHandler
         }
       );
     }

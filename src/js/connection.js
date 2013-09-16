@@ -317,7 +317,7 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
       }
     };
 
-  console.debug( 'submission results with status: ' + status + ' for ', props );
+  //console.debug( 'submission results with status: ' + status + ' for ', props );
 
   batchText = ( props.batches > 1 ) ? ' (batch #' + ( props.batchIndex + 1 ) + ' out of ' + props.batches + ')' : '';
   props.batchText = batchText;

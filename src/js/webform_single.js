@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global Connection, gui, jrDataStr, jrDataStrToEdit, Form*/
+var /**@type {Form}*/ form;
+var /**@type {Connection}*/ connection;
+var currentOnlineStatus = false;
+var /**@type {FileManager}*/ fileManager;
 
-
-var /**@type {Form}*/form;
-var /**@type {Connection}*/connection;
-var	currentOnlineStatus = false;
-var /**@type {FileManager}*/fileManager;
-
-$(document).ready(function() {
+$( document ).ready( function() {
 	'use strict';
 	var loadErrors;
 
-	form = new Form('form.jr:eq(0)', jrDataStr);
+	form = new Form( 'form.jr:eq(0)', jrDataStr );
 	connection = new Connection();
 	loadErrors = form.init();
-	if (loadErrors.length > 0){
-		gui.showLoadErrors(loadErrors, 'It is recommended not to use this form for data entry until this is resolved.');
+	if ( loadErrors.length > 0 ) {
+		gui.showLoadErrors( loadErrors, 'It is recommended not to use this form for data entry until this is resolved.' );
 	}
 	connection.init();
 	gui.setup();
-});
+} );

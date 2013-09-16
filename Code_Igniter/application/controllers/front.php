@@ -53,8 +53,8 @@ class Front extends CI_Controller {
 
 		if (ENVIRONMENT === 'production') {
 			$data['scripts'] = array(
-				'/libraries/libraries-all-min.js',
-				'/js-min/front-all-min.js'
+				//'/libraries/libraries-all-min.js',
+				'/build/js/front.min.js'
 			);
 		} else {
 			$data['scripts'] = array_merge(

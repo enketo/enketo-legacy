@@ -1,12 +1,21 @@
 [submodule "public/libraries/xpathjs_javarosa"]
 	path = public/libraries/xpathjs_javarosa
 	url = https://github.com/MartijnR/xpathjs_javarosa.git
-[submodule "lib/phantom-jasmine"]
-	path = lib/phantom-jasmine
-	url = https://github.com/jcarver989/phantom-jasmine.git
 [submodule "public/libraries/bootstrap-datepicker"]
 	path = public/libraries/bootstrap-datepicker
 	url = https://github.com/eternicode/bootstrap-datepicker.git
 [submodule "Code_Igniter/system"]
 	path = Code_Igniter/system
 	url = https://github.com/MartijnR/CodeIgniter_system.git
+[submodule "public/libraries/bootstrap-timepicker"]
+	path = public/libraries/bootstrap-timepicker
+	url = https://github.com/jdewit/bootstrap-timepicker.git
+[submodule "public/libraries/file-manager"]
+	path = public/libraries/file-manager
+	url = https://github.com/MartijnR/file-manager.git
+[submodule "public/libraries/enketo-core"]
+	path = public/libraries/enketo-core
+	url = https://github.com/MartijnR/enketo-core.git
+[submodule "Code_Igniter/application/libraries/xslt"]
+	path = Code_Igniter/application/libraries/xslt
+	url = https://github.com/MartijnR/enketo-xslt.git

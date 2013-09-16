@@ -12,5 +12,5 @@ $images-path: '../../images/';
 //$tab-width: 18px;
 $content-width: 720px;
 
-$iconSpritePath: '/images/glyphicons-halflings.png'; 
-$iconWhiteSpritePath: '/images/glyphicons-halflings-white.png';
+$iconSpritePath: url('/images/glyphicons-halflings.png'); 
+$iconWhiteSpritePath: url('/images/glyphicons-halflings-white.png');

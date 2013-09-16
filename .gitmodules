@@ -19,6 +19,3 @@
 [submodule "Code_Igniter/application/libraries/xslt"]
 	path = Code_Igniter/application/libraries/xslt
 	url = https://github.com/MartijnR/enketo-xslt.git
-[submodule "devinfo/forms"]
-	path = devinfo/forms
-	url = https://github.com/MartijnR/openrosa-forms.git

@@ -3,11 +3,11 @@ IndexIgnore *
 
 RewriteEngine on
 
-#RewriteCond %{HTTPS} off
-#RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
 
 #clean urls
-RewriteCond $1 !^(index\.php|info\.php|sitemap\.xml|css|images|private_media|js-source|js-min|libraries|robots\.txt|favicon\.ico|checkforconnection\.txt|checkforconnection\.php)
+RewriteCond $1 !^(index\.php|info\.php|sitemap\.xml|css|images|fonts|private_media|js-source|build|libraries|robots\.txt|favicon\.ico|checkforconnection\.txt|checkforconnection\.php)
 RewriteRule ^(.*)$ /index.php/$1 [L]
 
 #attempt to allow .appcache extension for manifest files (not working yet)

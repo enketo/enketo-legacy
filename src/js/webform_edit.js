@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true sub:true *//*global Connection, gui, jrDataStr, settings, jrDataStrToEdit, Form*/
-
-/* Global Variables and Constants -  CONSTANTS SHOULD BE MOVED TO CONFIG FILE AND ADDED DYNAMICALLY*/
-var /**@type {Form}*/form;
-var /**@type {Connection}*/connection;
-var	currentOnlineStatus = false;
-var /**@type {FileManager}*/fileManager;
+/* Global Variables and Constants */
+var /**@type {Form}*/ form;
+var /**@type {Connection}*/ connection;
+var currentOnlineStatus = false;
+var /**@type {FileManager}*/ fileManager;
 
 //var /**@type {StorageLocal}*/store; //leave, though not used, to prevent compilation error
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
 // !Document.ready()
 /************ Document Ready ****************/
-$(document).ready(function() {
-	'use strict';
-	var loadErrors;
+$( document ).ready( function() {
+  'use strict';
+  var loadErrors;
 
-	form = new Form('form.jr:eq(0)', jrDataStr, jrDataStrToEdit);
+  form = new Form( 'form.jr:eq(0)', jrDataStr, jrDataStrToEdit );
 
-	connection = new Connection();
-	
-	loadErrors = form.init();
-	if (loadErrors.length > 0){
-		gui.showLoadErrors(loadErrors, 'It is highly recommended <strong>not to edit</strong> this record until this is resolved.');
-	}
-	connection.init();
-	gui.setup();
-});
+  connection = new Connection();
+
+  loadErrors = form.init();
+  if ( loadErrors.length > 0 ) {
+    gui.showLoadErrors( loadErrors, 'It is highly recommended <strong>not to edit</strong> this record until this is resolved.' );
+  }
+  connection.init();
+  gui.setup();
+} );

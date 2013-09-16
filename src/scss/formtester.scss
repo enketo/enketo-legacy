@@ -1,7 +1,5 @@
 $baseFontSize: 16px;
 $baseLineHeight: 20px;
-$iconSpritePath: '/images/glyphicons-halflings.png'; //patches bug in bootstrap-sass
-$iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in bootstrap-sass
 
 @mixin font-bold {
   @include default-bold; }
@@ -9,10 +7,9 @@ $iconWhiteSpritePath: '/images/glyphicons-halflings-white.png'; //patches bug in
 @mixin font-normal {
   @include default-normal; }
 
-@import "_main";
-@import "_responsive";
-@import "_menu";
-@import "_form";
+@import "main";
+@import "menu";
+@import "form";
 
 textarea.source {
 	@include border-box;

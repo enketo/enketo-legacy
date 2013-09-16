@@ -37,38 +37,37 @@ class Formtester extends CI_Controller {
 			);
 			
 			$default_library_scripts = array(
-				'/libraries/jquery.min.js',
-				'/libraries/bootstrap/js/bootstrap.min.js',
-				'/libraries/bootstrap-timepicker/js/bootstrap-timepicker.js',
-				'/libraries/bootstrap-datepicker/js/bootstrap-datepicker.js',
-				'/libraries/modernizr.min.js',
-				'/libraries/xpathjs_javarosa/build/xpathjs_javarosa.min.js',
+				'/libraries/enketo-core/lib/jquery.min.js',
+				'/libraries/enketo-core/lib/bootstrap.min.js',
+				'/libraries/enketo-core/lib/bootstrap-timepicker/js/bootstrap-timepicker.js',
+				'/libraries/enketo-core/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
+				'/libraries/enketo-core/lib/modernizr.min.js',
+				'/libraries/enketo-core/lib/xpath/build/xpathjs_javarosa.min.js',
 				'/libraries/vkbeautify.js'
-				//'/libraries/fastclick/lib/fastclick.js'
 			);
 			$default_main_scripts = array(
-					'/js-source/helpers.js',
-					'/js-source/gui.js',
-					'/js-source/form.js',
-					'/js-source/storage.js',
-					'/js-source/widgets.js',
-					'/js-source/survey_controls.js',
-					'/js-source/connection.js',
-					'/js-source/debug.js',
-					'/js-source/formtester.js'
+				'/libraries/enketo-core/src/js/utils.js',
+				'/js-source/helpers.js',
+				'/js-source/gui.js',
+				'/libraries/enketo-core/src/js/form.js',
+				'/js-source/storage.js',
+				'/libraries/enketo-core/src/js/widgets.js',
+				'/js-source/survey_controls.js',
+				'/js-source/connection.js',
+				'/js-source/debug.js',
+				'/js-source/formtester.js'
 			);
 			$default_stylesheets = array
 			(
-				array( 'href' => '/css/formtester.css', 'media' => 'all'),
-				array( 'href' => '/css/webform_print.css', 'media' => 'print')
+				array( 'href' => '/build/css/formtester.css', 'media' => 'all'),
+				array( 'href' => 'build/css/webform_print.css', 'media' => 'print')
 			);
 
 			if (ENVIRONMENT === 'production')
 			{
 				$data['scripts'] = array
 				(
-					'/libraries/libraries-all-min.js',
-					'/js-min/tester-all-min.js'
+					'/build/js/formtester.min.js'
 				);
 			}
 			else

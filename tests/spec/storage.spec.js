@@ -16,22 +16,23 @@ describe("LocalStorage", function () {
 	});
 
 	describe('attempt to save records', function(){
-		var name = 'myname',
+		var i, name = 'myname',
 			otherName = 'anothername',
-			testKeys = function(keys, expectedResp){
-				for (var i = 0; i<keys.length ; i++){
-					var key = keys[i];
-					it('fail if record name: '+key+' is provided and returns "'+expectedResp+'"', function(){
-						expect(store.setRecord(key, record)).toEqual(expectedResp);
-					});
-				}
+			testKey = function(key, expectedResp){
+				it('fail if record name: '+key+' is provided and returns "'+expectedResp+'"', function(){
+					expect(store.setRecord(key, record)).toEqual(expectedResp);
+				});
 			},
 			emptyKeys = [null, false, true, {}, [], '', undefined],
 			forbiddenKeys = ['__settings', 'null','__history', 'Firebug', 'undefined', '__bookmark', '__counter', '__current_server'];
 
-		testKeys(emptyKeys, 'require');
-		testKeys(forbiddenKeys, 'forbidden');
-		
+		for ( i=0 ; i < emptyKeys.length ; i++ ) {
+			testKey(emptyKeys[i], 'require');
+		}
+		for ( i=0 ; i < forbiddenKeys.length ; i++ ) {
+			testKey(forbiddenKeys[i], 'forbidden');
+		}
+
 		it('fail if there is already a record with that name and the overwrite parameter is not true', function(){
 			expect(store.setRecord(name, record)).toEqual('success');
 			expect(store.setRecord(name, record)).toEqual('existing');

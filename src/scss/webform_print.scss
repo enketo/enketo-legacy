@@ -113,9 +113,10 @@ button,
     -webkit-print-color-adjust: exact;
     background-image: url('/images/line.png');
     background-repeat: repeat; }
-  .bootstrap-select, .bootstrap-multiselect{
+  .bootstrap-select {
+    @include clearfix;
     .dropdown-toggle{
-      display: none;}
+      display: none; }
     ul{
       position: static;
       display: block;

@@ -10,16 +10,17 @@ Array.prototype.prefix = function( prefix, suffix ) {
 
 _ = require( 'underscore' );
 js = {
-  common: [].concat(
+  common: [ ].concat(
     [ 'jquery.min.js',
       'bootstrap.min.js',
       'modernizr.min.js',
       'bootstrap-timepicker/js/bootstrap-timepicker.js',
       'bootstrap-datepicker/js/bootstrap-datepicker.js',
       'xpath/build/xpathjs_javarosa.min.js'
-    ].prefix( 'public/libraries/enketo-core/lib/' ), [ 'vkbeautify.js',
-      'FileSaver.min.js',
-      'BlobBuilder.min.js'
+    ].prefix( 'public/libraries/enketo-core/lib/' ), [
+      'vkbeautify.js',
+      'file-saver/FileSaver.js',
+      'blob/Blob.js'
     ].prefix( 'public/libraries/' ), [ 'helpers.js',
       'gui.js'
     ].prefix( 'src/js/' ) ),
@@ -56,40 +57,40 @@ module.exports = function( grunt ) {
       },
       tester: {
         files: [ {
-          src: [].concat( js.common, js.engine, js.online, 'src/js/formtester.js' ),
+          src: [ ].concat( js.common, js.engine, js.online, 'src/js/formtester.js' ),
           dest: 'public/build/js/formtester.min.js',
           nonull: true
         } ]
       },
       webforms: {
         files: [ {
-          src: [].concat( js.common, js.files, js.engine, js.online, js.offline, 'src/js/webform.js' ),
+          src: [ ].concat( js.common, js.files, js.engine, js.online, js.offline, 'src/js/webform.js' ),
           dest: 'public/build/js/webform.min.js',
           nonull: true
         }, {
-          src: [].concat( js.common, js.files, js.engine, js.online, 'src/js/webform_preview.js' ),
+          src: [ ].concat( js.common, js.files, js.engine, js.online, 'src/js/webform_preview.js' ),
           dest: 'public/build/js/webform-preview.min.js',
           nonull: true
         }, {
-          src: [].concat( js.common, js.files, js.engine, js.online, 'src/js/webform_edit.js' ),
+          src: [ ].concat( js.common, js.files, js.engine, js.online, 'src/js/webform_edit.js' ),
           dest: 'public/build/js/webform-edit.min.js',
           nonull: true
         }, {
-          src: [].concat( js.common, js.files, js.engine, js.online, 'src/js/webform_single.js' ),
+          src: [ ].concat( js.common, js.files, js.engine, js.online, 'src/js/webform_single.js' ),
           dest: 'public/build/js/webform-single.min.js',
           nonull: true
         } ]
       },
       front: {
         files: [ {
-          src: [].concat( js.common, 'src/js/front.js' ),
+          src: [ ].concat( js.common, 'src/js/front.js' ),
           dest: 'public/build/js/front.min.js',
           nonull: true
         } ]
       },
       list: {
         files: [ {
-          src: [].concat( js.common, js.offline, 'public/libraries/enketo-core/src/js/utils.js',
+          src: [ ].concat( js.common, js.offline, 'public/libraries/enketo-core/src/js/utils.js',
             'src/js/storage.js', 'src/js/connection.js', 'src/js/formlist.js' ),
           dest: 'public/build/js/formlist.min.js',
           nonull: true

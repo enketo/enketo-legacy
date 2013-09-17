@@ -21,15 +21,15 @@ var /**@type {Cache}*/ cache;
 var /**@type {FileManager}*/ fileManager;
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
-$( document ).ready( function() {
+$( document ).ready( function( ) {
   'use strict';
   var message, choices, loadErrors, trySubmission;
 
   form = new Form( 'form.jr:eq(0)', jrDataStr );
-  fileManager = new FileManager();
-  connection = new Connection();
+  fileManager = new FileManager( );
+  connection = new Connection( );
 
-  if ( !store.isSupported() ) {
+  if ( !store.isSupported( ) ) {
     window.location = settings[ 'modernBrowsersURL' ];
   } else {
     $( document ).trigger( 'browsersupport', 'local-storage' );
@@ -38,9 +38,9 @@ $( document ).ready( function() {
   gui.updateStatus.offlineLaunch( false );
 
   if ( $( 'html' ).attr( 'manifest' ) ) {
-    cache = new Cache();
-    if ( cache.isSupported() ) {
-      cache.init();
+    cache = new Cache( );
+    if ( cache.isSupported( ) ) {
+      cache.init( );
       $( document ).trigger( 'browsersupport', 'offline-launch' );
     }
     // if applicationCache is not supported
@@ -50,7 +50,7 @@ $( document ).ready( function() {
       choices = {
         posButton: 'Show options',
         negButton: 'Use it',
-        posAction: function() {
+        posAction: function( ) {
           window.location = settings[ 'modernBrowsersURL' ];
         }
       };
@@ -61,22 +61,22 @@ $( document ).ready( function() {
     }
   }
 
-  loadErrors = form.init();
+  loadErrors = form.init( );
   if ( loadErrors.length > 0 ) {
     gui.showLoadErrors( loadErrors, 'It is recommended not to use this form for data entry until this is resolved.' );
   }
 
-  connection.init();
-  gui.setup();
+  connection.init( );
+  gui.setup( );
 
   //trigger fake save event to update formlist on data page
-  $( 'form.jr' ).trigger( 'save', JSON.stringify( store.getRecordList() ) );
+  $( 'form.jr' ).trigger( 'save', JSON.stringify( store.getRecordList( ) ) );
 
-  window.setInterval( function() {
-    trySubmission();
+  window.setInterval( function( ) {
+    trySubmission( );
   }, 30 * 1000 );
 
-  trySubmission = function() {
+  trySubmission = function( ) {
     //TODO: add second parameter to getSurveyDataArr() to
     //getCurrentRecordName() to prevent currenty open record from being submitted
     //connection.uploadRecords(store.getSurveyDataArr(true));
@@ -85,7 +85,7 @@ $( document ).ready( function() {
       successHandler = function( recordPrepped ) {
         connection.uploadRecords( recordPrepped );
       },
-      errorHandlers = function() {
+      errorHandler = function( ) {
         console.error( 'Something went wrong while trying to prepare the record(s) for uploading.' );
       };
     for ( i = 0; i < records.length; i++ ) {

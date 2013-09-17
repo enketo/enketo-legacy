@@ -34,3 +34,9 @@
 [submodule "Code_Igniter/application/libraries/xslt"]
 	path = Code_Igniter/application/libraries/xslt
 	url = https://github.com/MartijnR/enketo-xslt.git
+[submodule "public/libraries/file-saver"]
+	path = public/libraries/file-saver
+	url = https://github.com/eligrey/FileSaver.js.git
+[submodule "public/libraries/blob"]
+	path = public/libraries/blob
+	url = https://github.com/eligrey/Blob.js.git

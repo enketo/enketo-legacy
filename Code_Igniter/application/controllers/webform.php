@@ -26,8 +26,9 @@ class Webform extends CI_Controller {
         '/libraries/enketo-core/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
         '/libraries/enketo-core/lib/modernizr.min.js',
         '/libraries/enketo-core/lib/xpath/build/xpathjs_javarosa.min.js',
-        '/libraries/FileSaver.min.js',
-        '/libraries/BlobBuilder.min.js',
+        '/libraries/file-saver/FileSaver.js',
+        '/libraries/blob/Blob.js',
+        '/libraries/vkbeautify.js',
         '/libraries/file-manager/src/files.js'
     );
     private $default_main_scripts = array

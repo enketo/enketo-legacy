@@ -12,7 +12,7 @@ Related Projects
 * [Enketo Core](https://github.com/MartijnR/enketo-core) - used inside this repo
 * [XPathJS JavaRosa](https://github.com/MartijnR/xpathjs_javarosa) - used inside enketo-core
 * [Enketo XSLT](https://github.com/MartijnR/enketo-xslt) - used inside this repo
-* [Enketo Dristhi](https://github.com/MartijnR/enketo-drishti) used in [Dristhi](https://play.google.com/store/apps/details?id=org.ei.drishti)
+* [Enketo Dristhi](https://github.com/MartijnR/enketo-dristhi) used in [Dristhi](https://play.google.com/store/apps/details?id=org.ei.drishti)
 * [Manifest Builder](https://github.com/MartijnR/Manifest-Builder) - used inside this repo
 * [File Manager](https://github.com/MartijnR/file-manager) - used inside this repo
 * [enketo-xslt-transformer-php] - To follow
@@ -25,7 +25,7 @@ Instead of installing and maintaining Enketo yourself you could also consider us
 Browser support
 ---------------
 * IE is only supported from version 10 onwards (older versions do not support the required technologies). 
-* Chrome, Firefox, Safari for both desktop and mobile devices are. Chrome is recommended.
+* Chrome, Firefox, Safari for both desktop and mobile devices are supported. Chrome is recommended at the mome.
 
 Prerequisites
 -----------
@@ -49,7 +49,6 @@ Acknowledgements
 ----------------
 I would like to acknowledge and thank the indirect contribution by the creators of the following excellent works that were used in the project:
 
-* [Code Igniter by EllisLab](http://codeigniter.com)
-* [vkbeautify by Vadim Kiryukhin](https://github.com/vkiryukhin/vkBeautify)
-
+* [Code Igniter](http://codeigniter.com) by EllisLab
+* [vkbeautify](https://github.com/vkiryukhin/vkBeautify) by Vadim Kiryukhin
 * many more

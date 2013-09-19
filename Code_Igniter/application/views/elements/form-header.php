@@ -11,7 +11,10 @@
 		<img src="<?= $logo_url ?>" alt="logo" />
 	<? endif; ?>
 	</a>
-	<span class="records" title="Records Queued - Click to Backup to File" style="display:none;"><span class="queue-length"></span></span>
+	<div class='offline-enabled'>
+		<div class='offline-enabled-icon' title="This form is able to launch offline"></div>
+		<div class='queue-length' title="Records Queued - Click to Backup to File">34</div>
+	</div>
 	<button onclick="return false;" class="print"><img src="/images/print.png" alt="print button" title="Print Form"/></button>
 	<span class="form-language-selector"><span>Choose Language</span></span>
 </div>

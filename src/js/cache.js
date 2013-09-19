@@ -182,21 +182,22 @@ Cache.prototype.onErrors = function( e ) {
  * @param  {boolean=} force   whether to force the message regardless of how many times it has been shown already
  */
 Cache.prototype.showBookmarkMsg = function( prepend, force ) {
-	var bookmark, shown;
-	prepend = prepend || '';
-	force = force || false;
-	//reminder to bookmark page will be shown 3 times
-	bookmark = store.getRecord( '__bookmark' );
-	shown = ( bookmark ) ? bookmark[ 'shown' ] : 0;
-	if ( force || shown < 3 ) {
-		gui.feedback( prepend + 'Bookmark this form for easy ' +
-			'offline access. ', 15 );
-		//'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
-		shown++;
-		store.setRecord( '__bookmark', {
-			'shown': shown
-		} );
-	}
+//	var bookmark, shown;
+//	prepend = prepend || '';
+//	force = force || false;
+//	//reminder to bookmark page will be shown 3 times
+//	bookmark = store.getRecord( '__bookmark' );
+//	shown = ( bookmark ) ? bookmark[ 'shown' ] : 0;
+//	if ( force || shown < 3 ) {
+//		gui.feedback( prepend + 'Bookmark this form for easy ' +
+//			'offline access. ', 15 );
+//		//'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
+//		shown++;
+//		store.setRecord( '__bookmark', {
+//			'shown': shown
+//		} );
+//	}
+	$('.offline-enabled').show();
 };
 
 /**

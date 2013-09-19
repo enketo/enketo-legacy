@@ -1,4 +1,7 @@
+$offline-color: rgb(231, 67, 41);
+
 .form-header {
+  height: 60px;
   .branding{
     display: inline-block;
     margin: 0 10px 0 16px;
@@ -16,31 +19,43 @@
       &:hover{
         text-decoration: none;
         opacity: 0.8;} } } }
-.load-error{
-  margin: 100px 0 60px 0;} //move this
-.records{ //move this
-  $size: 20px;
-  display: inline-block;
-  vertical-align: bottom;
-  background-color: #c9c9c9;
-  border: 1px solid $groupline;
-  height: $size;
-  min-width: $size;
-  border-radius: $size/2; }
-.queue-length{
-  color: #ffffff;
-  text-align: center;
-  padding: 0 7px;
-  &.submitting{
-    color: #ce4f07; }
-  &:hover{
-    color: green; } }
-.print{
+
+.load-error {
+  margin: 100px 0 60px 0;} //move this??
+
+.offline-enabled {
+  display: none;
+  position: fixed;
+  top: 7px;
+  left: 7px;
+  .offline-enabled-icon {
+    width: 36px;
+    height: 36px;
+    background-color: $offline-color;
+    background-image: url($images-path+'offline-enabled.png');
+    background-repeat: no-repeat; 
+    &:hover{
+      opacity: 0.8;} }
+  .queue-length {
+    //display: none;
+    width: 36px;
+    color: $offline-color;
+    background-color: white;
+    text-align: center;
+    padding: 8px 0 8px 0;
+    line-height: 20px;
+    font-size: 20px;
+    &.submitting{
+      color: #ce4f07; }
+    &:hover {
+      color: green; } } }
+.print {
   background: none;
   border-radius: 0;
   border: none;
   width: 60px;
   padding: 0.3em $baseFontSize;
+  margin-right: 20px;
   float: right;
   &:hover{
-  opacity: 0.7; } }
+    opacity: 0.7; } }

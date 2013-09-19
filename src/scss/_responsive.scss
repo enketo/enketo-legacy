@@ -1,49 +1,59 @@
+//tweaks to form-header (extending enketo-core)
+
 @media screen and (max-width: 720px){
-  @include small-screen-paddings;
-  body{
-    background: none;    
+  body{    
     .main{ 
-      margin: 0;}
-    .preview-header{
-		top: -5px;}
-    .paper{
-    	@include border-radius(0px);}
-    .form-header{
-      top: 0;
-      border-bottom: 1px solid $groupline;
-      .form-language-selector > span{
-        display: none; } }
-    h3{
-    	padding-top: 25px;}
-    #page .close{
-      font-size: 2em; } } }
+      article { 
+        padding-top: 70px; } } }
+  .form-header{
+    .branding {
+      margin-left: 30px } } }
 
-@media screen and (max-width: 600px){
-  @include small-screen-paddings;
-  body{
-    background: none;
-    //@include font-sizes($baseFontSize, 1.05);
-    line-height: 1.05 * $baseLineHeight;
-    .main{ 
-      margin: 0;
-      article{
-        padding: 3em 2em 2em 2em; } }
-    #page .close{
-      font-size: 3em; } } }
+@media screen and (max-width: 600px) {
+  .form-header {
+    height: auto;
+    .branding {
+      vertical-align: top;
+      margin-left: 10px; }
+    .offline-enabled{
+      margin: -5px 0 8px 0;
+      position: static;
+      display: inline-block;
+      .offline-enabled-icon {
+        float: left;
+        display: inline-block;
+      }
+      .queue-length{
+        display: inline-block;
+      }
+    }
+    .print {
+      margin-right: 10px; } }
+}
 
-@media screen and (max-width: 400px){
-  @include small-screen-paddings;
-  body{
-    background: none;
-    //@include font-sizes($baseFontSize, 1.09);
-    line-height: 1.09 * $baseLineHeight;
-    .main{ 
-      margin: 0;
-      article{
-        padding: 3em 1em 1em 1em; } }
-    #page .close{
-      font-size: 4em; }
-    .form-header .form-language-selector{
-      border-right: none; }
-    button.print{
+@media screen and (max-width: 490px){
+  .form-header {
+    .print {
       display: none; } } }
+
+@media screen and (max-width: 430px){
+  .form-header {
+    border: none;
+    .offline-enabled {
+      margin-right: 5px;
+      float: right; } }
+  .form-language-selector {
+    padding: 0;
+    width: 100%; }
+  #form-languages {
+      margin: 0 5%;
+      width:90%; } }
+
+@media screen and (max-width: 400px) {
+  .form-header {
+    margin: 16px 0;
+    .branding {
+      margin-left: 0px;
+    }
+  }
+}

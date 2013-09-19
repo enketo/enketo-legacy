@@ -549,7 +549,7 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     }
   } );
 
-  $( '.records' ).on( 'click', function( ) {
+  $( '.queue-length' ).on( 'click', function( ) {
     exportToFile( );
   } );
 
@@ -615,7 +615,7 @@ GUI.prototype.updateRecordList = function( recordList, $page ) {
     $( '.queue-length' ).text( recordList.length ).parent( ).show( );
   } else {
     $( '<li class="no-click">no locally saved records found</li>' ).appendTo( $list );
-    $( '.queue-length' ).text( '0' ).parent( ).hide( );
+    //$( '.queue-length' ).text( 0 ).hide( );
   }
   // update status counters
   $page.find( '#records-draft-qty' ).text( draftFormsQty );

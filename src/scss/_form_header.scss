@@ -28,14 +28,14 @@ $offline-color: rgb(231, 67, 41);
   position: fixed;
   top: 7px;
   left: 7px;
-  &.hide{
-    display: none;}
   .offline-enabled-icon {
     width: 36px;
     height: 36px;
     background-color: $offline-color;
     background-image: url($images-path+'offline-enabled.png');
     background-repeat: no-repeat; 
+    &.hide{
+      display: none;}
     &:hover{
       opacity: 0.8;} }
   .queue-length {
@@ -46,6 +46,8 @@ $offline-color: rgb(231, 67, 41);
     padding: 8px 0 8px 0;
     line-height: 20px;
     font-size: 20px;
+    &.hide{
+      display: none;}
     &.submitting{
       color: #ce4f07; }
     &:hover {

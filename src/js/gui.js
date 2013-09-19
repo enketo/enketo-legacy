@@ -109,16 +109,16 @@ GUI.prototype.setEventHandlers = function( ) {
     printO.printForm( );
   } );
 
-  $( '.offline-enabled-icon').on ('click', function(){
+  $( '.offline-enabled-icon' ).on( 'click', function( ) {
     var msg = "<p>This form can now be loaded and used without an Internet connection on this device. " +
       "Bookmark it for easy offline access." +
       "<p>Records are automatically stored and queued on your computer until an Internet connection is available. " +
-      "When the app is online, records will be automatically submitted - one by one.</p>"+
-      "<p>Only after a record has been succesfully submitted, it will be removed from the queue. " + 
+      "When the app is online, records will be automatically submitted - one by one.</p>" +
+      "<p>Only after a record has been succesfully submitted, it will be removed from the queue. " +
       "You can safely close down your browser and computer with items in the queue. " +
       "They will still be there next time you load the form.</p>";
-    that.alert(msg, 'Form works offline!', 'normal');
-  });
+    that.alert( msg, 'Form works offline!', 'normal' );
+  } );
 
   // capture all internal links to navigation menu items (except the links in the navigation menu itself)
   $( document ).on( 'click', 'a[href^="#"]:not([href="#"]):not(nav ul li a)', function( event ) {

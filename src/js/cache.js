@@ -197,7 +197,7 @@ Cache.prototype.showBookmarkMsg = function( prepend, force ) {
 //			'shown': shown
 //		} );
 //	}
-	$('.offline-enabled.hide').removeClass('hide');
+	$('.offline-enabled-icon.hide').removeClass('hide');
 };
 
 /**

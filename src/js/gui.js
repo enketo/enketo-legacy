@@ -117,7 +117,7 @@ GUI.prototype.setEventHandlers = function( ) {
       "<p>Only after a record has been succesfully submitted, it will be removed from the queue. " + 
       "You can safely close down your browser and computer with items in the queue. " +
       "They will still be there next time you load the form.</p>";
-    that.alert(msg, 'Form works offline!', 'info');
+    that.alert(msg, 'Form works offline!', 'normal');
   });
 
   // capture all internal links to navigation menu items (except the links in the navigation menu itself)
@@ -357,7 +357,7 @@ GUI.prototype.feedback = function( message, duration, heading, choices ) {
  *
  * @param {string} message
  * @param {string=} heading
- * @param {string=} level bootstrap css class
+ * @param {string=} level bootstrap css class or normal (no styling)
  * @param {number=} duration duration in secondsafter which dialog should self-destruct
  */
 GUI.prototype.alert = function( message, heading, level, duration ) {

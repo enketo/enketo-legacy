@@ -24,9 +24,12 @@ $offline-color: rgb(231, 67, 41);
   margin: 100px 0 60px 0;} //move this??
 
 .offline-enabled {
+  display: block;
   position: fixed;
   top: 7px;
   left: 7px;
+  &.hide{
+    display: none;}
   .offline-enabled-icon {
     width: 36px;
     height: 36px;

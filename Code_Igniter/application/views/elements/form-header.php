@@ -11,7 +11,7 @@
 		<img src="<?= $logo_url ?>" alt="logo" />
 	<? endif; ?>
 	</a>
-	<div class='offline-enabled'>
+	<div class='offline-enabled hide'>
 		<div class='offline-enabled-icon' title="This form is able to launch offline"></div>
 		<div class='queue-length' title="Records Queued - Click to Backup to File">34</div>
 	</div>

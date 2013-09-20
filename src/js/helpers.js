@@ -1,3 +1,14 @@
+$( document ).ready( function( ) {
+  /* Prototypical inheritance http://javascript.crockford.com/prototypal.html */
+  if ( typeof Object.create !== 'function' ) {
+    Object.create = function( o ) {
+      function F( ) {}
+      F.prototype = o;
+      return new F( );
+    };
+  }
+} );
+
 /**
  * splits an array of file sizes into batches (for submission) based on a limit
  * @param  {Array.<number>} fileSizes   array of file sizes
@@ -7,8 +18,8 @@
 
 function divideIntoBatches( fileSizes, limit ) {
   var i, j, batch, batchSize,
-    sizes = [],
-    batches = [];
+    sizes = [ ],
+    batches = [ ];
   //limit = limit || 5 * 1024 * 1024;
   for ( i = 0; i < fileSizes.length; i++ ) {
     sizes.push( {

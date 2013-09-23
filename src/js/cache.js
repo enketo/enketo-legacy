@@ -33,7 +33,7 @@ Cache.prototype.init = function() {
 		that = this;
 
 	//first check if it is supported
-  if ( !this.isSupported ) {
+  	if ( !this.isSupported ) {
 		return false;
 	}
 
@@ -130,7 +130,6 @@ Cache.prototype.onNoUpdate = function() {
 	gui.updateStatus.offlineLaunch( true );
 };
 
-
 /**
  * Handler for cache update-ready event
  */
@@ -146,19 +145,6 @@ Cache.prototype.onUpdateReady = function() {
 		}
 	);
 };
-
-
-/*
-gui.confirm({
-			msg: '<div class="alert alert-success">A new version of this application has been downloaded.</div>'+
-				'<br/> Refresh the window to start using it.',
-			heading: 'Updated!'
-		},{
-			posButton: 'Refresh',
-			negButton: 'Cancel',
-			posAction: function(){document.location.reload(true);}
-		});
-*/
 
 /**
  * Handler for cache error
@@ -197,7 +183,7 @@ Cache.prototype.showBookmarkMsg = function( prepend, force ) {
 //			'shown': shown
 //		} );
 //	}
-	$('.offline-enabled-icon.hide').removeClass('hide');
+	$('.offline-enabled-icon.not-enabled').removeClass('not-enabled');
 };
 
 /**

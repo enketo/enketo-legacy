@@ -5,23 +5,23 @@ $offline-color: rgb(231, 67, 41);
   .branding{
     display: inline-block;
     margin: 0 10px 0 16px;
-    img{
+    img {
       max-height: 30px;
       max-width: 130px;
       margin-left: 16px;
-      &:hover{
+      &:hover {
         opacity: 0.8;} }
-    span{
+    span {
       display: inline-block;
       color: #444444;
       font-weight: bold;
       font-size: 1.4em;
-      &:hover{
+      &:hover {
         text-decoration: none;
-        opacity: 0.8;} } } }
+        opacity: 0.8; } } } }
 
 .load-error {
-  margin: 100px 0 60px 0;} //move this??
+  margin: 100px 0 60px 0; } //move this??
 
 .offline-enabled {
   display: block;
@@ -33,11 +33,14 @@ $offline-color: rgb(231, 67, 41);
     height: 36px;
     background-color: $offline-color;
     background-image: url($images-path+'offline-enabled.png');
-    background-repeat: no-repeat; 
-    &.hide{
-      display: none;}
-    &:hover{
-      opacity: 0.8;} }
+    background-repeat: no-repeat;
+    opacity: 1;
+    @include transition-slow(opacity, 3s); 
+    &.not-enabled {
+      opacity: 0;
+      width: 0; }
+    &:hover {
+      opacity: 0.8; } }
   .queue-length {
     width: 36px;
     color: $offline-color;
@@ -46,8 +49,9 @@ $offline-color: rgb(231, 67, 41);
     padding: 8px 0 8px 0;
     line-height: 20px;
     font-size: 20px;
-    &.hide{
-      display: none;}
+    @include transition-slow; 
+    &.hide {
+      display: none; }
     &.submitting{
       color: #ce4f07; }
     &:hover {

@@ -12,8 +12,8 @@
 	<? endif; ?>
 	</a>
 	<div class='offline-enabled'>
-		<div class='offline-enabled-icon hide' title="This form is able to launch offline"></div>
-		<div class='queue-length hide' title="Records Queued - Click to Backup to File"></div>
+		<div class='offline-enabled-icon not-enabled' title="This form is able to launch offline"></div>
+		<div class='queue-length no-show' title="Records Queued - Click to Backup to File"></div>
 	</div>
 	<button onclick="return false;" class="print"><img src="/images/print.png" alt="print button" title="Print Form"/></button>
 	<span class="form-language-selector"><span>Choose Language</span></span>

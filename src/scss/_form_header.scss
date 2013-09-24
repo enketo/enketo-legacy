@@ -1,14 +1,22 @@
 $offline-color: rgb(231, 67, 41);
 
 .form-header {
-  height: 60px;
+  //height: 60px;
+  //min-height: 68px;
   .branding{
-    display: inline-block;
-    margin: 0 10px 0 16px;
+    //display: inline-block;
+    margin: 0;
+    height: 36px;
+    display: inline-table;
+    .logo-wrapper {
+      display: table-cell;
+      vertical-align: middle;
+    }
     img {
       max-height: 30px;
       max-width: 130px;
-      margin-left: 16px;
+      vertical-align: middle;
+      //margin-left: 16px;
       &:hover {
         opacity: 0.8;} }
     span {
@@ -37,14 +45,16 @@ $offline-color: rgb(231, 67, 41);
     opacity: 1;
     @include transition-slow(opacity, 3s); 
     &.not-enabled {
+      height:0;
       opacity: 0;
       width: 0; }
     &:hover {
       opacity: 0.8; } }
   .queue-length {
+    margin-top: 2px;
     width: 36px;
     color: $offline-color;
-    background-color: white;
+    background-color: rgb(245,245,245);
     text-align: center;
     padding: 8px 0 8px 0;
     line-height: 20px;
@@ -61,7 +71,7 @@ $offline-color: rgb(231, 67, 41);
   border-radius: 0;
   border: none;
   width: 60px;
-  padding: 0.3em $baseFontSize;
+  padding: 7px $baseFontSize;
   margin-right: 20px;
   float: right;
   &:hover{

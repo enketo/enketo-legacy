@@ -1,5 +1,13 @@
 //tweaks to form-header (extending enketo-core)
 
+
+//fixes an issue when reducing window after loading in Chrome (OS X)
+@media screen and (min-width: 721px) {
+  .form-header {
+    .branding{
+      float: none; } } }
+
+
 @media screen and (max-width: 720px){
   body{    
     .main{ 
@@ -7,25 +15,32 @@
         padding-top: 70px; } } }
   .form-header{
     .branding {
-      margin-left: 30px } } }
+      float: left;
+      //margin-left: 10px 
+    } }
+  .offline-enabled{
+    //margin: -5px 0 8px 0;
+    position: static;
+    display: inline-block;
+    float: left;
+    .offline-enabled-icon {
+      float: left;
+      display: inline-block; }
+    .queue-length{
+      margin-top:0;
+      margin-left: 2px;
+      margin-right: 10px;
+      display: inline-block; } } }
 
 @media screen and (max-width: 600px) {
   .form-header {
     height: auto;
     .branding {
-      vertical-align: top;
-      margin-left: 10px; } 
+      //vertical-align: top;
+      //margin-left: 10px; 
+    } 
     .print {
-      margin-right: 10px; } }
-  .offline-enabled{
-    margin: -5px 0 8px 0;
-    position: static;
-    display: inline-block;
-    .offline-enabled-icon {
-      float: left;
-      display: inline-block; }
-    .queue-length{
-      display: inline-block; } } }
+      margin-right: 10px; } } }
 
 @media screen and (max-width: 490px){
   .print {
@@ -34,9 +49,6 @@
 @media screen and (max-width: 430px){
   .form-header {
     border: none; }
-  .offline-enabled {
-      margin-right: 5px;
-      float: right; }
   .form-language-selector {
     padding: 0;
     width: 100%; }
@@ -48,4 +60,5 @@
   .form-header {
     margin: 16px 0; 
     .branding {
-      margin-left: 0px; } } }
+      //margin-left: 0px; 
+    } } }

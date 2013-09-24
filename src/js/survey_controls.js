@@ -21,17 +21,6 @@ $( document ).ready( function( ) {
     store = new StorageLocal( );
     store.init( );
   }
-
-  if ( typeof fileManager !== "undefined" ) {
-    $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {
-      fileManager.deleteDir( instanceID );
-    } );
-  }
-    //empties filesystem storage for this form (clean up)
-    //if ( typeof store !== "undefined" && store.getRecordList.length === 0 ) {
-    //  fileManager.deleteAll( );
-    //}
-  
 } );
 
 /**

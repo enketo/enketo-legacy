@@ -2,63 +2,62 @@
 
 
 //fixes an issue when reducing window after loading in Chrome (OS X)
-@media screen and (min-width: 721px) {
+@media screen and (min-width: 821px) {
   .form-header {
     .branding{
-      float: none; } } }
+      //float: none; 
+      } } }
 
 
-@media screen and (max-width: 720px){
+@media screen and (max-width: 820px){
   body{    
     .main{ 
       article { 
         padding-top: 70px; } } }
   .form-header{
     .branding {
-      float: left;
-      //margin-left: 10px 
-    } }
+      float: left; } }
   .offline-enabled{
-    //margin: -5px 0 8px 0;
     position: static;
     display: inline-block;
     float: left;
     .offline-enabled-icon {
       float: left;
-      display: inline-block; }
+      margin-right: 12px;
+      display: block;
+      &.not-enabled ~ .queue-length {
+        margin-left: 0; } }
     .queue-length{
-      margin-top:0;
-      margin-left: 2px;
+      margin-top: 0;
+      margin-left: -10px;
       margin-right: 10px;
-      display: inline-block; } } }
+      float: left;
+      display: block; } } }
 
 @media screen and (max-width: 600px) {
   .form-header {
-    height: auto;
-    .branding {
-      //vertical-align: top;
-      //margin-left: 10px; 
-    } 
-    .print {
-      margin-right: 10px; } } }
+    height: auto;} }
 
 @media screen and (max-width: 490px){
+  .form-language-selector {
+    padding-right: 0; }
   .print {
       display: none; } } 
 
 @media screen and (max-width: 430px){
+  body{    
+    .main{ 
+      article { 
+        padding-top: 90px; } } }
   .form-header {
     border: none; }
   .form-language-selector {
     padding: 0;
+    margin: 7px auto;
     width: 100%; }
   #form-languages {
-      margin: 0 5%;
-      width:90%; } }
+    margin: 0;
+    width: 100%
+    } }
 
-@media screen and (max-width: 400px) {
-  .form-header {
-    margin: 16px 0; 
-    .branding {
-      //margin-left: 0px; 
-    } } }
+//@media screen and (max-width: 400px) { }

@@ -10,8 +10,7 @@ $offline-color: rgb(231, 67, 41);
     display: inline-table;
     .logo-wrapper {
       display: table-cell;
-      vertical-align: middle;
-    }
+      vertical-align: middle; }
     img {
       max-height: 30px;
       max-width: 130px;
@@ -59,20 +58,24 @@ $offline-color: rgb(231, 67, 41);
     padding: 8px 0 8px 0;
     line-height: 20px;
     font-size: 20px;
-    @include transition-slow; 
+    opacity: 1;
+    @include transition-slow(opacity, 3s); 
     &.hide {
+      opacity: 0;
       display: none; }
     &.submitting{
       color: #ce4f07; }
     &:hover {
       color: green; } } }
+.form-language-selector {
+  padding-right: 20px; }
 .print {
   background: none;
   border-radius: 0;
   border: none;
-  width: 60px;
-  padding: 7px $baseFontSize;
-  margin-right: 20px;
+  padding: 7px 0 7px 20px;
+  margin-right: 0;
   float: right;
+  border-left: 1px solid #999999;
   &:hover{
-  opacity: 0.7; } }
+    opacity: 0.7; } }

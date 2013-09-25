@@ -42,7 +42,9 @@
   .form-language-selector {
     padding-right: 0; }
   .print {
-      display: none; } } 
+      display: none;
+      ~ .form-language-selector {
+        border-right: none; } } }
 
 @media screen and (max-width: 430px){
   body{    

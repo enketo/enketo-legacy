@@ -76,6 +76,7 @@ $offline-color: rgb(231, 67, 41);
   padding: 7px 0 7px 20px;
   margin-right: 0;
   float: right;
-  border-left: 1px solid #999999;
   &:hover{
-    opacity: 0.7; } }
+    opacity: 0.7; }
+  ~ .form-language-selector {
+     border-right: 1px solid #999999;} }

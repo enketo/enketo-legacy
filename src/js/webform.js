@@ -38,7 +38,7 @@ $( document ).ready( function( ) {
   if ( fileManager.isSupported( ) && store.getRecordList( ).length === 0 ) {
     //clean up filesystem storage
     fileManager.deleteAll( );
-  };
+  }
 
   //remove filesystem folder after successful submission
   $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {

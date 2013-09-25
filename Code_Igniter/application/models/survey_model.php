@@ -160,6 +160,21 @@ class Survey_model extends CI_Model {
         return $this->_update_item('active' , FALSE);
     }
 
+    public function remove_unused_transform_results()
+    {
+         $values = array(
+            'transform_result_title'    => NULL,
+            'transform_result_model'    => NULL,
+            'transform_result_form'     => NULL,
+            'hash'                      => NULL,
+            'media_hash'                => NULL,
+            'xsl_version'               => NULL
+        );
+        $this->db->where('TIMESTAMPDIFF(MONTH, `last_accessed`, CURRENT_TIMESTAMP) >= 3', NULL, FALSE);
+        $query = $this->db->update('surveys', $values); 
+        return $this->db->affected_rows();  
+    }
+
     public function has_offline_launch_enabled()
     {
         return !$this->_has_subdomain_suffix();
@@ -478,6 +493,7 @@ class Survey_model extends CI_Model {
         $query = $this->db->get('surveys', 1); 
         if ($query->num_rows() === 1) {
             $row = $query->row_array();
+            $this->_update_item('last_accessed', 'CURRENT_TIMESTAMP', FALSE);
             return $row;
         } else {
             log_message('error', 'db query for '.json_encode($items).' returned '.$query->num_rows().' results.');

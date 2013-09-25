@@ -534,8 +534,7 @@ class Survey_model extends CI_Model {
         if ($this->db->affected_rows() > 0) {
             return TRUE;
         }
-        log_message('error', 'database update failed on record with subdomain '.$this->db_subdomain.' for field:'.$field.', value: '.$value);
-        log_message('debug', $this->db->last_query());
+        log_message('debug', 'failed datebase item update (maybe nothing to update) '.$this->db->last_query());
         return FALSE;   
     }
 
@@ -548,7 +547,7 @@ class Survey_model extends CI_Model {
             return TRUE;
         }
         
-        log_message('debug', 'failed database update '.$this->db->last_query());
+        log_message('debug', 'failed database items update (maybe nothing to update) '.$this->db->last_query());
         return FALSE;   
     }
 

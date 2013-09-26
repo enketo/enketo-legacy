@@ -592,7 +592,8 @@ GUI.prototype.updateStatus = {
   },
   support: function( supported ) {},
   offlineLaunch: function( offlineCapable ) {
-    var status = ( offlineCapable ) ? 'Offline Launch: Yes' : 'Offline Launch: No';
+    //var status = ( offlineCapable ) ? 'Offline Launch: Yes' : 'Offline Launch: No';
+    $( '.offline-enabled-icon.not-enabled' ).removeClass( 'not-enabled' );
     //$( '.drawer #status-offline-launch' ).text( status );
   }
 };

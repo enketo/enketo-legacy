@@ -1,14 +1,5 @@
 //tweaks to form-header (extending enketo-core)
 
-
-//fixes an issue when reducing window after loading in Chrome (OS X)
-@media screen and (min-width: 821px) {
-  .form-header {
-    .branding{
-      //float: none; 
-      } } }
-
-
 @media screen and (max-width: 820px){
   body{    
     .main{ 
@@ -23,7 +14,7 @@
     float: left;
     .offline-enabled-icon {
       float: left;
-      margin-right: 12px;
+      margin-right: 10px;
       display: block;
       &.not-enabled ~ .queue-length {
         margin-left: 0; } }
@@ -33,6 +24,11 @@
       margin-right: 10px;
       float: left;
       display: block; } } }
+
+@media screen and (max-width: 720px){
+  .offline-enabled {
+    .queue-length {
+      background-color: rgb(245,245,245); } } } 
 
 @media screen and (max-width: 600px) {
   .form-header {

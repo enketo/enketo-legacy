@@ -118,7 +118,6 @@ Cache.prototype.onObsolete = function( ) {
  * Handler for newly-cached event
  */
 Cache.prototype.onCached = function( ) {
-  this.showBookmarkMsg( 'This form works offline!    ', true );
   gui.updateStatus.offlineLaunch( true );
 };
 
@@ -126,7 +125,6 @@ Cache.prototype.onCached = function( ) {
  * Handler for no-update event
  */
 Cache.prototype.onNoUpdate = function( ) {
-  this.showBookmarkMsg( );
   gui.updateStatus.offlineLaunch( true );
 };
 
@@ -135,6 +133,7 @@ Cache.prototype.onNoUpdate = function( ) {
  */
 Cache.prototype.onUpdateReady = function( ) {
   applicationCache.swapCache( );
+  gui.updateStatus.offlineLaunch( true );
   gui.feedback( "A new version of this application or form has been downloaded. " +
     "Refresh this page to load the updated version.", 20, 'Updated!', {
       posButton: 'Refresh',
@@ -167,24 +166,23 @@ Cache.prototype.onErrors = function( e ) {
  * @param  {string=} prepend message to prepend to standard bookmark message
  * @param  {boolean=} force   whether to force the message regardless of how many times it has been shown already
  */
-Cache.prototype.showBookmarkMsg = function( prepend, force ) {
-  //	var bookmark, shown;
-  //	prepend = prepend || '';
-  //	force = force || false;
-  //	//reminder to bookmark page will be shown 3 times
-  //	bookmark = store.getRecord( '__bookmark' );
-  //	shown = ( bookmark ) ? bookmark[ 'shown' ] : 0;
-  //	if ( force || shown < 3 ) {
-  //		gui.feedback( prepend + 'Bookmark this form for easy ' +
-  //			'offline access. ', 15 );
-  //		//'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
-  //		shown++;
-  //		store.setRecord( '__bookmark', {
-  //			'shown': shown
-  //		} );
-  //	}
-  $( '.offline-enabled-icon.not-enabled' ).removeClass( 'not-enabled' );
-};
+//Cache.prototype.showBookmarkMsg = function( prepend, force ) {
+//	var bookmark, shown;
+//	prepend = prepend || '';
+//	force = force || false;
+//	//reminder to bookmark page will be shown 3 times
+//	bookmark = store.getRecord( '__bookmark' );
+//	shown = ( bookmark ) ? bookmark[ 'shown' ] : 0;
+//	if ( force || shown < 3 ) {
+//		gui.feedback( prepend + 'Bookmark this form for easy ' +
+//			'offline access. ', 15 );
+//		//'This reminder will be shown '+(2-shown)+' more '+time+'.', 20);
+//		shown++;
+//		store.setRecord( '__bookmark', {
+//			'shown': shown
+//		} );
+//	}
+//};
 
 /**
  * check if applicationCache is supported in browser

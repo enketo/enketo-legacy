@@ -27,7 +27,7 @@
  *   return description
  */
 
-function Connection() {
+function Connection( ) {
   "use strict";
   var that = this;
   this.CONNECTION_URL = '/checkforconnection.php';
@@ -38,19 +38,19 @@ function Connection() {
   this.uploadOngoingID = null;
   this.uploadOngoingBatchIndex = null;
   this.uploadResult = {
-    win: [],
-    fail: []
+    win: [ ],
+    fail: [ ]
   };
-  this.uploadQueue = [];
+  this.uploadQueue = [ ];
   this.oRosaHelper = new this.ORosaHelper( this );
 
-  this.init = function() {
+  this.init = function( ) {
     //console.log('initializing Connection object');
-    this.checkOnlineStatus();
+    this.checkOnlineStatus( );
     that = this;
-    window.setInterval( function() {
+    window.setInterval( function( ) {
       //console.log('setting status'); //DEBUG
-      that.checkOnlineStatus();
+      that.checkOnlineStatus( );
       //that.uploadFromStore();
     }, 15 * 1000 );
     //window.addEventListener("offline", function(e){
@@ -61,9 +61,9 @@ function Connection() {
     //  console.log('online event detected');
     //  setStatus();
     //}
-    $( window ).on( 'offline online', function() {
+    $( window ).on( 'offline online', function( ) {
       console.log( 'window network event detected' );
-      that.setOnlineStatus( that.getOnlineStatus() );
+      that.setOnlineStatus( that.getOnlineStatus( ) );
     } );
     //since network change events are not properly fired, at least not in Firefox 13 (OS X), this is an temporary fix
     //that can be removed eventually or set to to 60x1000 (1 min)
@@ -74,7 +74,7 @@ function Connection() {
   };
 }
 
-Connection.prototype.checkOnlineStatus = function() {
+Connection.prototype.checkOnlineStatus = function( ) {
   var online,
     that = this;
   //console.log('checking connection status');
@@ -109,7 +109,7 @@ Connection.prototype.checkOnlineStatus = function() {
  *
  * @return {?boolean} true if it seems the browser is online, false if it does not, null if not known
  */
-Connection.prototype.getOnlineStatus = function() {
+Connection.prototype.getOnlineStatus = function( ) {
   //return navigator.onLine;
   return this.currentOnlineStatus;
 };
@@ -124,14 +124,14 @@ Connection.prototype.setOnlineStatus = function( newStatus ) {
   this.currentOnlineStatus = newStatus;
 };
 
-Connection.prototype.cancelSubmissionProcess = function() {
+Connection.prototype.cancelSubmissionProcess = function( ) {
   this.uploadOngoingID = null;
   this.uploadOngoingBatchIndex = null;
   this.uploadResult = {
-    win: [],
-    fail: []
+    win: [ ],
+    fail: [ ]
   };
-  this.uploadQueue = [];
+  this.uploadQueue = [ ];
 };
 
 /**
@@ -162,8 +162,8 @@ Connection.prototype.uploadRecords = function( record, force, callbacks ) {
     this.uploadQueue.push( record );
     if ( !this.uploadOngoingID ) {
       this.uploadResult = {
-        win: [],
-        fail: []
+        win: [ ],
+        fail: [ ]
       };
       this.uploadBatchesResult = {};
       this.uploadOne( callbacks );
@@ -202,7 +202,7 @@ Connection.prototype.uploadOne = function( callbacks ) { //dataXMLStr, name, las
        * as it duplicates 1 entry and omits the other but returns 201 for both...
        * so we wait for the previous POST to finish before sending the next
        */
-      that.uploadOne();
+      that.uploadOne( );
     },
     error: function( jqXHR, textStatus ) {
       if ( textStatus === 'timeout' ) {
@@ -211,18 +211,19 @@ Connection.prototype.uploadOne = function( callbacks ) { //dataXMLStr, name, las
         console.error( 'error during submission, textStatus:', textStatus );
       }
     },
-    success: function() {}
+    success: function( ) {}
   } : callbacks;
 
   if ( this.uploadQueue.length > 0 ) {
-    record = this.uploadQueue.pop();
+    record = this.uploadQueue.pop( );
+    this.log.add( record, this.uploadQueue.length + 1 );
     if ( this.currentOnlineStatus === false ) {
       this.processOpenRosaResponse( 0, record );
     } else {
       this.uploadOngoingID = record.instanceID;
       this.uploadOngoingBatchIndex = record.batchIndex;
       content = record.formData;
-      content.append( 'Date', new Date().toUTCString() );
+      content.append( 'Date', new Date( ).toUTCString( ) );
       console.debug( 'prepared to send: ', content );
       //last = (this.uploadQueue.length === 0) ? true : false;
       this.setOnlineStatus( null );
@@ -249,6 +250,47 @@ Connection.prototype.uploadOne = function( callbacks ) { //dataXMLStr, name, las
   }
 };
 
+Connection.prototype.log = {
+  $: $( '<div class="submissions"/>' ),
+  add: function( record, queueLength ) {
+    var $log,
+      log = " submitting " + record.name;
+    log += ( record.batches > 1 ) ? " (part " + record.batchIndex + " of " + record.batches + ") " : " ";
+    $log = $( '<div class="log" id="' + this.id( record ) + '">' + log + '</div>' );
+    this.$.append( $log );
+    $logs = this.$.find( '.log' );
+    if ( $logs.length > 10 ) {
+      $logs.eq( 0 ).remove( );
+    }
+    this.dot( record );
+    this.show( );
+  },
+  id: function( record ) {
+    return ( record.instanceID + '_' + record.batchIndex ).replace( ':', '--' );
+  },
+  $log: function( record ) {
+    return this.$.find( '#' + this.id( record ) );
+  },
+  update: function( record, msg, level ) {
+    console.log( 'u' )
+    level = level || '';
+    this.$log( record ).append( '<span class="text-' + level + '">' + msg + '</span>' );
+    this.show( );
+    window.clearInterval( this.interval );
+  },
+  show: function( ) {
+    $( '.submissions' ).replaceWith( this.$ );
+  },
+  dot: function( record ) {
+    var that = this;
+    window.clearInterval( this.interval );
+    this.interval = window.setInterval( function( ) {
+      that.$log( record ).append( '.' );
+      that.show( );
+    }, 2000 );
+  }
+};
+
 //TODO: move this outside this class?
 /**
  * processes the OpenRosa response
@@ -258,14 +300,15 @@ Connection.prototype.uploadOne = function( callbacks ) { //dataXMLStr, name, las
 Connection.prototype.processOpenRosaResponse = function( status, props ) {
   var i, waswere, name, namesStr, batchText, partial,
     msg = '',
-    names = [],
+    names = [ ],
+    level = 'error',
     contactSupport = 'Contact ' + settings[ 'supportEmail' ] + ' please.',
     contactAdmin = 'Contact the survey administrator please.',
     serverDown = 'Sorry, the enketo or formhub server is down. Please try again later or contact ' + settings[ 'supportEmail' ] + ' please.',
     statusMap = {
       0: {
         success: false,
-        msg: ( typeof jrDataStrToEdit !== 'undefined' ) ? "Uploading of data failed. Please try again." : "Uploading of data failed (maybe offline) and will be tried again later."
+        msg: ( typeof jrDataStrToEdit !== 'undefined' ) ? "Failed (offline?). Please try again." : "Failed (offline?)."
       },
       200: {
         success: false,
@@ -273,11 +316,11 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
       },
       201: {
         success: true,
-        msg: ""
+        msg: "Done!"
       },
       202: {
         success: true,
-        msg: ""
+        msg: "Done! (duplicate)"
       },
       '2xx': {
         success: false,
@@ -289,7 +332,7 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
       },
       403: {
         success: false,
-        msg: "You are not allowed to post data to this data server. " + contactAdmin
+        msg: "Not allowed to post data to this data server. " + contactAdmin
       },
       404: {
         success: false,
@@ -325,9 +368,10 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
   if ( typeof statusMap[ status ] !== 'undefined' ) {
     props.msg = statusMap[ status ].msg;
     if ( statusMap[ status ].success === true ) {
+      level = 'success';
       if ( props.batches > 1 ) {
         if ( typeof this.uploadBatchesResult[ props.instanceID ] == 'undefined' ) {
-          this.uploadBatchesResult[ props.instanceID ] = [];
+          this.uploadBatchesResult[ props.instanceID ] = [ ];
         }
         this.uploadBatchesResult[ props.instanceID ].push( props.batchIndex );
         for ( i = 0; i < props.batches; i++ ) {
@@ -343,11 +387,15 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
       }
       this.uploadResult.win.push( props );
     } else if ( statusMap[ status ].success === false ) {
+      this.log.update( {
+        'instanceID': props.instanceID
+      }, statusMap[ status ].msg, 'error' );
       this.uploadResult.fail.push( props );
     }
   } else if ( status == 401 ) {
-    this.cancelSubmissionProcess();
-    gui.confirmLogin();
+    props.msg = 'Authentication Required.';
+    this.cancelSubmissionProcess( );
+    gui.confirmLogin( );
   }
   //unforeseen statuscodes
   else if ( status > 500 ) {
@@ -364,11 +412,16 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
     this.uploadResult.fail.push( props );
   }
 
+  this.log.update( {
+    'instanceID': props.instanceID,
+    'batchIndex': props.batchIndex
+  }, props.msg, level );
+
   if ( this.uploadQueue.length > 0 ) {
     return;
   }
 
-  console.debug( 'online: ' + this.currentOnlineStatus, this.uploadResult );
+  //console.debug( 'online: ' + this.currentOnlineStatus, this.uploadResult );
 
   if ( this.uploadResult.win.length > 0 ) {
     for ( i = 0; i < this.uploadResult.win.length; i++ ) {
@@ -409,7 +462,7 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
  *
  * @return {number} [description]
  */
-Connection.prototype.maxSubmissionSize = function() {
+Connection.prototype.maxSubmissionSize = function( ) {
   var maxSize,
     defaultMax = 5000000,
     absoluteMax = 100 * 1024 * 1024,
@@ -425,7 +478,7 @@ Connection.prototype.maxSubmissionSize = function() {
         maxSize = ( maxSize > absoluteMax ) ? absoluteMax : maxSize;
         that.maxSize = maxSize;
       },
-      error: function() {
+      error: function( ) {
         maxSize = defaultMax;
       }
     } );
@@ -495,13 +548,13 @@ Connection.prototype.getSurveyURL = function( serverURL, formId, callbacks ) {
  * @param  {Object.<string, Function>=} callbacks   callbacks
  */
 Connection.prototype.getTransForm = function( serverURL, formId, formFile, formURL, callbacks ) {
-  var formData = new FormData();
+  var formData = new FormData( );
 
   callbacks = this.getCallbacks( callbacks );
   serverURL = serverURL || null;
   formId = formId || null;
   formURL = formURL || null;
-  formFile = formFile || new Blob();
+  formFile = formFile || new Blob( );
 
   if ( formFile.size === 0 && ( !serverURL || !formId ) && !formURL ) {
     callbacks.error( null, 'validationerror', 'No form file or URLs provided' );
@@ -537,7 +590,7 @@ Connection.prototype.getTransForm = function( serverURL, formId, formFile, formU
 };
 
 Connection.prototype.validateHTML = function( htmlStr, callbacks ) {
-  var content = new FormData();
+  var content = new FormData( );
 
   callbacks = this.getCallbacks( callbacks );
 
@@ -644,8 +697,8 @@ Connection.prototype.getCallbacks = function( callbacks ) {
   callbacks.error = callbacks.error || function( jqXHR, textStatus, errorThrown ) {
     console.error( textStatus + ' : ' + errorThrown );
   };
-  callbacks.complete = callbacks.complete || function() {};
-  callbacks.success = callbacks.success || function() {
+  callbacks.complete = callbacks.complete || function( ) {};
+  callbacks.success = callbacks.success || function( ) {
     console.log( 'success!' );
   };
   return callbacks;

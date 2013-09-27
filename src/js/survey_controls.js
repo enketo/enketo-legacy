@@ -334,6 +334,27 @@ function submitEditedForm( ) {
   );
 }
 
+function submitQueue( ) {
+  //TODO: add second parameter to getSurveyDataArr() to
+  //getCurrentRecordName() to prevent currenty open record from being submitted
+  //connection.uploadRecords(store.getSurveyDataArr(true));
+  var i,
+    records = store.getSurveyDataArr( true ),
+    successHandler = function( recordPrepped ) {
+      connection.uploadRecords( recordPrepped );
+    },
+    errorHandler = function( ) {
+      console.error( 'Something went wrong while trying to prepare the record(s) for uploading.' );
+    };
+  for ( i = 0; i < records.length; i++ ) {
+    prepareFormDataArray(
+      records[ i ], {
+        success: successHandler,
+        error: errorHandler
+      }
+    );
+  }
+}
 
 /**
  * Asynchronous function that builds up a form data array including media files
@@ -439,51 +460,66 @@ function prepareFormDataArray( record, callbacks ) {
  * @deprecated
  * @param  {boolean=} finalOnly [description]
  */
+//function exportData( finalOnly ) {
+//  "use strict";
+//  var i, dataArr, dataStr, uriContent, newWindow;
+//  finalOnly = finalOnly || true;//
 
-function exportData( finalOnly ) {
-  "use strict";
-  var i, dataArr, dataStr, uriContent, newWindow;
-  finalOnly = finalOnly || true;
+//  dataArr = store.getSurveyDataOnlyArr( finalOnly );//
 
-  dataArr = store.getSurveyDataOnlyArr( finalOnly );
+//  if ( dataArr.length === 0 ) {
+//    gui.feedback( 'No data to export.' );
+//  } else {
+//    dataStr = vkbeautify.xml( '<exported>' + dataArr.join( '' ) + '</exported>' );
+//    uriContent = "data:application/octet-stream," + encodeURIComponent( dataStr ); /*data:application/octet-stream*/
+//    newWindow = window.open( uriContent, 'exportedData' );
+//  }
+//}
 
-  if ( dataArr.length === 0 ) {
-    gui.feedback( 'No data to export.' );
-  } else {
-    dataStr = vkbeautify.xml( '<exported>' + dataArr.join( '' ) + '</exported>' );
-    uriContent = "data:application/octet-stream," + encodeURIComponent( dataStr ); /*data:application/octet-stream*/
-    newWindow = window.open( uriContent, 'exportedData' );
-  }
-}
 
 /**
  * Function to export or backup data to a file. In Chrome it will get an appropriate file name.
  */
 
-function exportToFile( ) {
+function exportToTextFile( fileName, dataStr ) {
   "use strict";
-  var i, dataArr, dataStr, blob, server,
-    finalOnly = true,
-    fileName = form.getName( ) + '_data_backup.xml';
+  var blob;
+  blob = new Blob( [ dataStr ], {
+    type: "text/plain; charset=utf-8"
+  } );
+  saveAs( blob, fileName );
+}
 
+function recordsDialog( ) {
+  var bodyTxt = '<p>Records are stored safely inside the browser until they have been succesfully submitted ' +
+    '(even if you turn off your computer or go offline).</p>' +
+    '<p>Queued records are submitted <em>automatically, in the background</em> when this page is open ' +
+    'and an internet connection is available.</p>' +
+    '<p>To see the submission process as it happens, click Submission</p>' +
+    '<p>As a backup for peace of mind, to save all queued records to a file, click export.</p>';
   gui.confirm( {
-    msg: 'Records are stored inside the browser until they are submitted (even if you turn off ' + 'your computer or go offline). <br/><br/>As a backup, to save all queued records to a file, click export.',
-    heading: 'Export queued records'
+    msg: bodyTxt,
+    heading: 'Queued records'
   }, {
     posButton: 'Export',
-    negButton: 'Cancel',
+    negButton: 'Submission',
     posAction: function( ) {
+      var dataArr, dataStr, server,
+        finalOnly = true,
+        fileName = form.getName( ) + '_data_backup.xml';
       dataArr = store.getSurveyDataOnlyArr( finalOnly ); //store.getSurveyDataXMLStr(finalOnly));
       if ( !dataArr || dataArr.length === 0 ) {
         gui.alert( 'No records in queue. The records may have been successfully submitted already.' );
       } else {
         server = settings[ 'serverURL' ] || '';
         dataStr = vkbeautify.xml( '<exported server="' + server + '">' + dataArr.join( '' ) + '</exported>' );
-        blob = new Blob( [ dataStr ], {
-          type: "text/plain; charset=utf-8"
-        } );
-        saveAs( blob, fileName );
+        exportToTextFile( fileName, dataStr );
       }
+    },
+    negAction: function( ) {
+      submitQueue( );
+      gui.alert( 'last submission attempts: <p class="submissions"></p>', 'Submissions in Action', 'normal' );
+      connection.log.show( );
     }
   } );
 }
@@ -550,7 +586,7 @@ GUI.prototype.setCustomEventHandlers = function( ) {
   } );
 
   $( '.queue-length' ).on( 'click', function( ) {
-    exportToFile( );
+    recordsDialog( );
   } );
 
   $( '#form-controls button' ).toLargestWidth( );

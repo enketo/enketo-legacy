@@ -123,6 +123,15 @@ progress{
 .page-break{
   display: none; }
 
+//inside the submissions dialog
+.submissions {
+  background-color: #ccc;
+  font-size: 11px;
+  padding: 10px;}
+.log {
+  word-break: break-all;
+}
+
 #feedback-bar {
   @include transition-slow;
   @include border-box;

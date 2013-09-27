@@ -21,6 +21,8 @@ class Maintain extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
+		$this->load->model('Survey_model', '', true);
+		$this->load->helper(array('json', 'url'));
 		if ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1') {
 			show_error('not allowed', 405);
 		}
@@ -33,9 +35,20 @@ class Maintain extends CI_Controller {
 
 	public function transform_results()
 	{
-		$this->load->model('Survey_model', '', true);
 		echo $this->Survey_model->remove_unused_transform_results().
 			' records were cleared of their transformation results';
+	}
+
+	public function usage_stats()
+	{
+		$data = array(
+			'date' => time(),
+			'server' => base_url(),
+			'forms' => $this->Survey_model->number_surveys(NULL, FALSE),
+			'active' => $this->Survey_model->number_surveys(NULL, TRUE),
+			'submissions' => $this->Survey_model->number_submissions()
+		);
+		echo json_format(json_encode($data)).',';
 	}
 }
 ?>

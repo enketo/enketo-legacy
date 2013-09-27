@@ -226,6 +226,12 @@ class Survey_model extends CI_Model {
         return $this->_get_record_number($server_url, $active_only);
     }
 
+    public function number_submissions($server_url = NULL)
+    {
+        $this->remove_test_entries();
+        return $this->_get_submission_number($server_url);
+    }
+
     /**
      * Creates a unique ID (subdomain) for a form and writes this to the database
      * @return  {string} ID (subdomain)
@@ -505,7 +511,7 @@ class Survey_model extends CI_Model {
     {
         $this->_db_where_alt_server_urls($server_url, $active_only);
         $query = $this->db->get('surveys'); 
-        log_message('debug', 'query: '.$this->db->last_query());
+        //log_message('debug', 'query: '.$this->db->last_query());
         return $query->num_rows(); 
     }
 
@@ -516,6 +522,17 @@ class Survey_model extends CI_Model {
         $this->db->order_by('server_url', 'asc');
         $query = $this->db->get('surveys');
         return $query->result_array();
+    }
+
+    private function _get_submission_number($server_url = NULL)
+    {
+        $this->db->select('SUM(`submissions`) AS `submission_total`');
+        $query = $this->db->get('surveys');
+        if ($query->num_rows() === 1) {
+            $result = $query->row_array();
+            return (int) $result['submission_total'];
+        }
+        return NULL;
     }
 
     private function _db_where_alt_server_urls($server_url, $active_only)
@@ -535,7 +552,7 @@ class Survey_model extends CI_Model {
                 $this->db->or_where("server_url LIKE '".$alt_server_url_2."%'".$active_str);
                 $this->db->or_where("server_url LIKE'".$alt_server_url_3."%'".$active_str);
             }
-        } else { 
+        } else if ($active_only == TRUE) { 
             $this->db->where('active = 1'); 
         }
         return;

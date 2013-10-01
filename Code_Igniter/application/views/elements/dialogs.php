@@ -9,7 +9,7 @@
 		<h3></h3>
 	</div>
 	<div class="modal-body">
-		<p class="alert alert-block alert-error"></p>
+		<p class=""></p>
 	</div>
 	<div class="modal-footer">
 		<span class="self-destruct-timer"></span>

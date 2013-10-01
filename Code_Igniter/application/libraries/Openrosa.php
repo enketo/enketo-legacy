@@ -22,7 +22,6 @@ class Openrosa {
     public function request_resource($url, $credentials=NULL)
     {
         if (empty($url)) {
-            log_message('error', 'called _load_xml_from_url without a url parameter');
             return NULL;
         }
         //log_message('debug', 'first header request result: '.json_encode($this->_request_headers_and_info($url)));

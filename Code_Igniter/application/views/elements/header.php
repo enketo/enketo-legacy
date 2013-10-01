@@ -8,7 +8,8 @@
 				</a>
 				<div class="brand">
 					<a href="/">
-						<img class="navbar-logo" src="private_media/images/logo-black.png" alt="enketo logo" />
+						<? $logo_src = (file_exists(SELF.'private_media/images/logo-black.png')) ? 'private_media/images/logo-black.png' : 'images/logo-black.png' ?>
+						<img class="navbar-logo" src="<?= $logo_src ?>" alt="logo" />
 					</a>
 				</div>
 				<nav class="nav-collapse collapse">

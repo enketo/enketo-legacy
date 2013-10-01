@@ -105,6 +105,10 @@ GUI.prototype.setEventHandlers = function( ) {
     return false;
   } );
 
+  $( document ).on( 'click', '.side-slider .close', function( event ) {
+    $( 'body' ).removeClass( 'show-side-slider' );
+  } );
+
   $( 'button.print' ).on( 'click', function( ) {
     printO.printForm( );
   } );

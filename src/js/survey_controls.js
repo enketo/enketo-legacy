@@ -586,13 +586,37 @@ GUI.prototype.setCustomEventHandlers = function( ) {
   } );
 
   $( '.queue-length' ).on( 'click', function( ) {
-    recordsDialog( );
+    //this can be done with flexboxes in near future;
+    $( '.side-slider' ).css( 'height', $( 'body' ).height( ) );
+    window.scrollTo( 0, 0 );
+    $( 'body' ).toggleClass( 'show-side-slider' );
+    //recordsDialog( );
+  } );
+
+  $( '.export-records' ).on( 'click', function( ) {
+    var dataArr, dataStr, server,
+      finalOnly = true,
+      fileName = form.getName( ) + '_data_backup.xml';
+    dataArr = store.getSurveyDataOnlyArr( finalOnly ); //store.getSurveyDataXMLStr(finalOnly));
+    if ( !dataArr || dataArr.length === 0 ) {
+      gui.alert( 'No records in queue. The records may have been successfully submitted already.' );
+    } else {
+      server = settings[ 'serverURL' ] || '';
+      dataStr = vkbeautify.xml( '<exported server="' + server + '">' + dataArr.join( '' ) + '</exported>' );
+      exportToTextFile( fileName, dataStr );
+    }
+  } );
+
+  $( '.upload-records' ).on( 'click', function( ) {
+    submitQueue( );
+
+    //connection.log.show( );
   } );
 
   $( '#form-controls button' ).toLargestWidth( );
 
   $( document ).on( 'save delete', 'form.jr', function( e, formList ) {
-    console.debug( 'save or delete event detected with new formlist: ' + formList );
+    //console.debug( 'save or delete event detected with new formlist: ' + formList );
     that.updateRecordList( JSON.parse( formList ) );
   } );
 
@@ -617,45 +641,31 @@ GUI.prototype.setCustomEventHandlers = function( ) {
 //update the survey forms names list
 GUI.prototype.updateRecordList = function( recordList, $page ) {
   "use strict";
-  //var name, date, clss, i, icon, $list, $li,
-  //finishedFormsQty = 0,
-  //draftFormsQty = 0;
-  //console.debug( 'updating recordlist in GUI' );
-  //if ( !$page ) {
-  //  $page = this.pages.get( 'records' );
-  //}
+  var name, i, $li,
+    $list = $( '.side-slider .record-list' ),
+    $uploaded = $list.find( '.record.success' ).detach( );
 
-  //$list = $page.find( '#records-saved ol' );
-
-  //remove the existing option elements
-  //$list.children( ).remove( );
   // get form list object (keys + upload) ordered by time last saved
   recordList = recordList || [ ]; //store.getRecordList();
+  $( '.queue-length' ).text( recordList.length );
+  $( '.side-slider progress' ).attr( 'max', recordList.length );
+
+  //show just the succesfully uploaded records for a little while longer
+  $list.empty( ).append( $uploaded );
+  window.clearTimeout( window.removeUploadedRecords );
+  window.removeUploadedRecords = window.setTimeout( function( ) {
+    $( this ).remove( );
+  }, 1 * 60 * 1000 );
 
   if ( recordList.length > 0 ) {
-    //for ( i = 0; i < recordList.length; i++ ) {
-    //  name = recordList[ i ].key;
-    //  date = new Date( recordList[ i ][ 'lastSaved' ] ).toDateString( );
-    //  if ( recordList[ i ][ 'ready' ] ) { // === true){//} || recordList[i]['ready'] == 'true'){
-    //    icon = 'check';
-    //    finishedFormsQty++;
-    //  } else {
-    //    icon = 'pencil';
-    //    draftFormsQty++;
-    //  }
-    //  $li = $( '<li><span class="ui-icon ui-icon-' + icon + '"></span><span class="name">' +
-    //    '</span><span class="date"> (' + date + ')</span></li>' );
-    //  $li.find( '.name' ).text( name ); // encodes string to html
-    //  $list.append( $li );
-    //}
-    $( '.queue-length' ).text( recordList.length ).removeClass( 'hide' );
-  } else {
-    //$( '<li class="no-click">no locally saved records found</li>' ).appendTo( $list );
-    $( '.queue-length' ).text( 0 ).addClass( 'hide' );
+    for ( i = 0; i < recordList.length; i++ ) {
+      name = recordList[ i ].key;
+      $li = $( '<li class="record"></li' );
+      $li.text( name ); // encodes string to html
+      $li.attr( 'name', name );
+      $list.append( $li );
+    }
   }
-  // update status counters
-  //$page.find( '#records-draft-qty' ).text( draftFormsQty );
-  //$page.find( '#records-final-qty' ).text( finishedFormsQty );
 };
 /*
 GUI.prototype.saveConfirm = function(){

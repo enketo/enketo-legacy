@@ -216,7 +216,7 @@ Connection.prototype.uploadOne = function( callbacks ) { //dataXMLStr, name, las
 
   if ( this.uploadQueue.length > 0 ) {
     record = this.uploadQueue.pop( );
-    this.log.add( record, this.uploadQueue.length + 1 );
+    this.progress.update( record, 'ongoing' );
     if ( this.currentOnlineStatus === false ) {
       this.processOpenRosaResponse( 0, record );
     } else {
@@ -250,44 +250,81 @@ Connection.prototype.uploadOne = function( callbacks ) { //dataXMLStr, name, las
   }
 };
 
-Connection.prototype.log = {
-  $: $( '<div class="submissions"/>' ),
-  add: function( record, queueLength ) {
-    var $log,
-      log = " submitting " + record.name;
-    log += ( record.batches > 1 ) ? " (part " + record.batchIndex + " of " + record.batches + ") " : " ";
-    $log = $( '<div class="log" id="' + this.id( record ) + '">' + log + '</div>' );
-    this.$.append( $log );
-    $logs = this.$.find( '.log' );
-    if ( $logs.length > 10 ) {
-      $logs.eq( 0 ).remove( );
+//Connection.prototype.log = {
+//  $: $( '<div class="submissions"/>' ),
+//  add: function( record, queueLength ) {
+//    var $log,
+//      log = " submitting " + record.name;
+//    log += ( record.batches > 1 ) ? " (part " + record.batchIndex + " of " + record.batches + ") " : " ";
+//    $log = $( '<div class="log" id="' + this.id( record ) + '">' + log + '</div>' );
+//    this.$.append( $log );
+//    $logs = this.$.find( '.log' );
+//    if ( $logs.length > 10 ) {
+//      $logs.eq( 0 ).remove( );
+//    }
+//    this.dot( record );
+//    this.show( );
+//  },
+//  id: function( record ) {
+//    return ( record.instanceID + '_' + record.batchIndex ).replace( ':', '--' );
+//  },
+//  $log: function( record ) {
+//    return this.$.find( '#' + this.id( record ) );
+//  },
+//  update: function( record, msg, level ) {
+//    level = level || '';
+//    this.$log( record ).append( '<span class="text-' + level + '">' + msg + '</span>' );
+//    this.show( );
+//    window.clearInterval( this.interval );
+//  },
+//  show: function( ) {
+//    $( '.submissions' ).replaceWith( this.$ );
+//  },
+//  dot: function( record ) {
+//    var that = this;
+//    window.clearInterval( this.interval );
+//    this.interval = window.setInterval( function( ) {
+//      that.$log( record ).append( '.' );
+//      that.show( );
+//    }, 2000 );
+//  }
+//};
+
+Connection.prototype.progress = {
+
+  _getLi: function( record ) {
+    var $lis = $( '.record-list' ).find( '[name="' + record.name + '"]' );
+    console.debug( 'return list items', $lis );
+    return $lis;
+  },
+
+  _updateClass: function( $els, status, last ) {
+    console.log( 'updating class', $els, status, last );
+    if ( last ) {
+      $els.removeClass( 'ongoing error' ).addClass( status );
+    } else {
+      $els.last( ).removeClass( 'ongoing error' ).addClass( status );
     }
-    this.dot( record );
-    this.show( );
   },
-  id: function( record ) {
-    return ( record.instanceID + '_' + record.batchIndex ).replace( ':', '--' );
+
+  _getMsg: function( record, status, msg ) {
+    var displayMsg = ( record.batches > 1 ) ? 'part ' + ( record.batchIndex + 1 ) + ' of ' + record.batches + ': ' : '';
+    displayMsg += ( status === 'error' || record.batches > 1 ) ? msg : '';
+    return displayMsg;
   },
-  $log: function( record ) {
-    return this.$.find( '#' + this.id( record ) );
-  },
-  update: function( record, msg, level ) {
-    console.log( 'u' )
-    level = level || '';
-    this.$log( record ).append( '<span class="text-' + level + '">' + msg + '</span>' );
-    this.show( );
-    window.clearInterval( this.interval );
-  },
-  show: function( ) {
-    $( '.submissions' ).replaceWith( this.$ );
-  },
-  dot: function( record ) {
-    var that = this;
-    window.clearInterval( this.interval );
-    this.interval = window.setInterval( function( ) {
-      that.$log( record ).append( '.' );
-      that.show( );
-    }, 2000 );
+
+  update: function( record, status, msg ) {
+    var $result,
+      last = ( record.batchIndex + 1 === record.batches ),
+      $lis = this._getLi( record ),
+      displayMsg = this._getMsg( record, status, msg );
+
+    if ( displayMsg ) {
+      $result = $( '<li name="' + record.name + '">' + displayMsg + '</li>' ).insertAfter( $lis.last( ) );
+      $lis.add( $result );
+    }
+
+    this._updateClass( $lis, status, last );
   }
 };
 
@@ -387,9 +424,6 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
       }
       this.uploadResult.win.push( props );
     } else if ( statusMap[ status ].success === false ) {
-      this.log.update( {
-        'instanceID': props.instanceID
-      }, statusMap[ status ].msg, 'error' );
       this.uploadResult.fail.push( props );
     }
   } else if ( status == 401 ) {
@@ -412,10 +446,11 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
     this.uploadResult.fail.push( props );
   }
 
-  this.log.update( {
-    'instanceID': props.instanceID,
+  this.progress.update( {
+    //'instanceID': props.instanceID,
+    'name': props.name,
     'batchIndex': props.batchIndex
-  }, props.msg, level );
+  }, level, props.msg );
 
   if ( this.uploadQueue.length > 0 ) {
     return;

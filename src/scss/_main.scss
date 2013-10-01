@@ -19,13 +19,16 @@
     font-weight: normal;
     font-style: normal;}
 
-body{
+body {
   background: $body-bg no-repeat;
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
   overflow-x: hidden; }
 
-.preview-header{
+.main {
+  @include transition-fast; }
+
+.preview-header {
 	position: absolute;
 	top: -90px;
 	width:100%;
@@ -34,13 +37,12 @@ body{
   opacity: 0.5;
   margin: 0;}
 
-progress{
+progress {
   display: block;
   margin: 10px auto;}
 
-.preview progress{
-	margin: 80px auto;
-}
+.preview progres s{
+	margin: 80px auto; }
 
 .alert{
   .error-list{
@@ -131,6 +133,64 @@ progress{
 .log {
   word-break: break-all;
 }
+
+.side-slider {
+  @include border-box;
+  @include transition-fast;
+  position: absolute;
+  color: white;
+  font-size: 13px;
+  top: 0;
+  left: -240px;
+  background-color: rgb(50,50,50);
+  width: 240px;
+  height: 100%;
+  padding: 10px;
+  .close {
+    color: white;
+    text-shadow-color: #bbb;
+    opacity: 0.9;}
+  .upload-records, .export-records {
+    width: 45%;}
+  progress {
+    width: 100%;}
+  ul {
+    list-style-type: none;
+    margin-left: 0; }
+  li.record {
+    padding: 2px 5px;
+    margin-bottom: 3px;
+    border: 1px solid white;
+    &.success {
+      opacity: 0.6;
+      border-width: 2px;
+      border-color: green;}
+    &.ongoing {
+      border-width: 2px;
+      border-color: orange;}
+    &.error {
+      border-width: 2px;
+      border-color: red; } }
+  li:not(.record) {
+    &.success {
+      color: green;}
+    &.ongoing {
+      color: orange;}
+    &.error {
+      color: red; } }
+  h3 {
+    color: white; } }
+
+.show-side-slider {
+  .side-slider {
+    @include transition-fast;
+    left: 0; }
+  .main {
+    @include transition-fast;
+    left: 240px; }
+  .offline-enabled {
+    @include transition-fast;
+    left: 240px; } }
 
 #feedback-bar {
   @include transition-slow;

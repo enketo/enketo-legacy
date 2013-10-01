@@ -215,8 +215,8 @@ Connection.prototype.uploadOne = function( callbacks ) { //dataXMLStr, name, las
   } : callbacks;
 
   if ( this.uploadQueue.length > 0 ) {
-    record = this.uploadQueue.pop( );
-    this.progress.update( record, 'ongoing' );
+    record = this.uploadQueue.shift( );
+    this.progress.update( record, 'ongoing', '', this );
     if ( this.currentOnlineStatus === false ) {
       this.processOpenRosaResponse( 0, record );
     } else {
@@ -294,37 +294,71 @@ Connection.prototype.progress = {
 
   _getLi: function( record ) {
     var $lis = $( '.record-list' ).find( '[name="' + record.name + '"]' );
-    console.debug( 'return list items', $lis );
     return $lis;
   },
 
-  _updateClass: function( $els, status, last ) {
-    console.log( 'updating class', $els, status, last );
-    if ( last ) {
-      $els.removeClass( 'ongoing error' ).addClass( status );
+  _reset: function( record ) {
+    var $allLis = $( '.record-list' ).find( 'li' );
+    //if the current record, is the first in the list, reset the list
+    if ( $allLis.first( ).attr( 'name' ) === record.name ) {
+      $allLis.removeClass( 'ongoing success error' ).filter( function( ) {
+        return !$( this ).hasClass( 'record' );
+      } ).remove( );
+    }
+  },
+
+  _updateClass: function( $el, status ) {
+    $el.removeClass( 'ongoing error' ).addClass( status );
+  },
+
+  _updateProgressBar: function( status, connO ) {
+    var max = connO.uploadQueue.length + connO.uploadResult.win.length + connO.uploadResult.fail.length,
+      value = connO.uploadResult.win.length + connO.uploadResult.fail.length;
+
+    max += ( status == 'ongoing' ) ? 1 : 0;
+
+    $progress = $( '.upload-progress' ).attr( {
+      'max': max,
+      'value': value
+    } );
+
+    if ( value === max ) {
+      $progress.css( 'visibility', 'hidden' );
     } else {
-      $els.last( ).removeClass( 'ongoing error' ).addClass( status );
+      $progress.css( 'visibility', 'visible' );
     }
   },
 
   _getMsg: function( record, status, msg ) {
-    var displayMsg = ( record.batches > 1 ) ? 'part ' + ( record.batchIndex + 1 ) + ' of ' + record.batches + ': ' : '';
-    displayMsg += ( status === 'error' || record.batches > 1 ) ? msg : '';
+    if ( record.batches > 1 && msg ) {
+      return 'part ' + ( record.batchIndex + 1 ) + ' of ' + record.batches + ': ' + msg;
+    } else {
+      return ( status === 'error' ) ? msg : '';
+    }
+
     return displayMsg;
   },
 
-  update: function( record, status, msg ) {
+  update: function( record, status, msg, connO ) {
     var $result,
-      last = ( record.batchIndex + 1 === record.batches ),
       $lis = this._getLi( record ),
       displayMsg = this._getMsg( record, status, msg );
 
+    this._reset( record );
+
+    //add display messages (always showing end status)
     if ( displayMsg ) {
-      $result = $( '<li name="' + record.name + '">' + displayMsg + '</li>' ).insertAfter( $lis.last( ) );
-      $lis.add( $result );
+      $result = $( '<li name="' + record.name + '" class="' + status + '">' + displayMsg + '</li>' ).insertAfter( $lis.last( ) );
     }
 
-    this._updateClass( $lis, status, last );
+    this._updateClass( $lis.first( ), status );
+    this._updateProgressBar( status, connO );
+
+    if ( connO.uploadQueue.length === 0 && status !== 'ongoing' ) {
+      $( 'button.upload-records' ).removeAttr( 'disabled' );
+    } else {
+      $( 'button.upload-records' ).attr( 'disabled', 'disabled' );
+    }
   }
 };
 
@@ -335,7 +369,8 @@ Connection.prototype.progress = {
  * @param  {{name:string, instanceID:string, batches:number, batchIndex:number, forced:boolean}} props  record properties
  */
 Connection.prototype.processOpenRosaResponse = function( status, props ) {
-  var i, waswere, name, namesStr, batchText, partial,
+  var i, waswere, name, namesStr, batchText,
+    partial = false,
     msg = '',
     names = [ ],
     level = 'error',
@@ -373,7 +408,7 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
       },
       404: {
         success: false,
-        msg: "Submission service on data server not found or not properly configured."
+        msg: "Submission service on data server not found."
       },
       '4xx': {
         success: false,
@@ -417,11 +452,6 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
           }
         }
       }
-      if ( !partial ) {
-        $( document ).trigger( 'submissionsuccess', [ props.name, props.instanceID ] );
-      } else {
-        console.debug( 'not all batches for instanceID have been submitted, current queue:', this.uploadQueue );
-      }
       this.uploadResult.win.push( props );
     } else if ( statusMap[ status ].success === false ) {
       this.uploadResult.fail.push( props );
@@ -446,11 +476,13 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
     this.uploadResult.fail.push( props );
   }
 
-  this.progress.update( {
-    //'instanceID': props.instanceID,
-    'name': props.name,
-    'batchIndex': props.batchIndex
-  }, level, props.msg );
+  this.progress.update( props, level, props.msg, this );
+
+  if ( !partial && level === 'success' ) {
+    $( document ).trigger( 'submissionsuccess', [ props.name, props.instanceID ] );
+  } else if ( level === 'success' ) {
+    console.debug( 'not all batches for instanceID have been submitted, current queue:', this.uploadQueue );
+  }
 
   if ( this.uploadQueue.length > 0 ) {
     return;
@@ -468,7 +500,7 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
     }
     waswere = ( names.length > 1 ) ? ' were' : ' was';
     namesStr = names.join( ', ' );
-    gui.feedback( namesStr.substring( 0, namesStr.length ) + waswere + ' successfully uploaded. ' + msg );
+    gui.feedback( namesStr.substring( 0, namesStr.length ) + waswere + ' successfully uploaded!' );
     this.setOnlineStatus( true );
   }
 
@@ -486,8 +518,10 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
     } else {
       // not sure if there should be any notification if forms fail automatic submission when offline
     }
-    //this is actually not correct as there could be many reasons for uploads to fail, but let's use it for now.
-    this.setOnlineStatus( false );
+
+    if ( status === 0 ) {
+      this.setOnlineStatus( false );
+    }
   }
 };
 

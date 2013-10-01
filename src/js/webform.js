@@ -84,8 +84,10 @@ $( document ).ready( function( ) {
 
   window.setInterval( function( ) {
     submitQueue( );
-  }, 30 * 1000 );
-  submitQueue( );
+  }, 300 * 1000 );
+  window.setTimeout( function( ) {
+    submitQueue( );
+  }, 5 * 1000 );
 
   profilerRecords.push( xpathEvalNum + ' XPath Evaluations during initialization took ' + xpathEvalTime + ' milliseconds of which ' + xpathEvalTimePure + ' for pure XPath evaluation.' );
 } );

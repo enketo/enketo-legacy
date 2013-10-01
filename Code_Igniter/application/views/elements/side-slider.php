@@ -6,7 +6,7 @@
 	<p>Records are stored inside your browser until they have been uploaded 
     (even if you turn off your computer or go offline).
     </p>
-    <progress></progress>
+    <progress class="upload-progress"></progress>
 	<ul class="record-list">
 	</ul>
 	<p>

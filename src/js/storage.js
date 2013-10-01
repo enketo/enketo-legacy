@@ -19,12 +19,12 @@
  * @constructor
  */
 
-function StorageLocal() {
+function StorageLocal( ) {
   "use strict";
   var RESERVED_KEYS = [ '__settings', 'null', '__history', 'Firebug', 'undefined', '__bookmark', '__counter', '__current_server', '__loadLog' ],
     localStorage = window.localStorage;
 
-  this.init = function() {
+  this.init = function( ) {
     var that = this;
     $( document ).on( 'submissionsuccess', function( ev, recordName ) {
       that.removeRecord( recordName );
@@ -33,7 +33,7 @@ function StorageLocal() {
   };
 
   // Could be replaced by Modernizr function if Modernizr remains used in final version
-  this.isSupported = function() {
+  this.isSupported = function( ) {
     try {
       return 'localStorage' in window && window[ 'localStorage' ] !== null;
     } catch ( e ) {
@@ -42,7 +42,7 @@ function StorageLocal() {
   };
 
   //used for testing
-  this.getForbiddenKeys = function() {
+  this.getForbiddenKeys = function( ) {
     return RESERVED_KEYS;
   };
 
@@ -60,8 +60,8 @@ function StorageLocal() {
       //console.error( 'no key or empty key provided for record: ' + newKey );
       return 'require';
     }
-    newKey = newKey.trim();
-    oldKey = ( typeof oldKey === 'string' ) ? oldKey.trim() : null;
+    newKey = newKey.trim( );
+    oldKey = ( typeof oldKey === 'string' ) ? oldKey.trim( ) : null;
     overwrite = ( typeof overwrite !== 'undefined' && overwrite === true ) ? true : false;
 
     //using the knowledge that only survey data is provided as a "data" property (and is a string)
@@ -76,10 +76,10 @@ function StorageLocal() {
     try {
       //add timestamp to survey data
       if ( typeof record[ 'data' ] === 'string' ) {
-        record[ 'lastSaved' ] = ( new Date() ).getTime();
+        record[ 'lastSaved' ] = ( new Date( ) ).getTime( );
         //if (newKey == this.getCounterValue() ){
         localStorage.setItem( '__counter', JSON.stringify( {
-          'counter': this.getCounterValue()
+          'counter': this.getCounterValue( )
         } ) );
         //}
       }
@@ -125,7 +125,7 @@ function StorageLocal() {
     try {
       localStorage.removeItem( key );
       //console.log('removed record with key:'+key) // DEBUG
-      $( 'form.jr' ).trigger( 'delete', JSON.stringify( this.getRecordList() ) );
+      $( 'form.jr' ).trigger( 'delete', JSON.stringify( this.getRecordList( ) ) );
       return true;
     } catch ( e ) {
       console.log( 'error with removing data from store: ' + e.message );
@@ -149,9 +149,9 @@ function StorageLocal() {
    * returns an ordered array of objects with record keys and final variables {{"key": "name1", "final": true},{"key": "name2", etc.
    * @return { Array.<Object.<string, (boolean|string)>>} [description]
    */
-  this.getRecordList = function() {
+  this.getRecordList = function( ) {
     var i, ready, record,
-      formList = [],
+      formList = [ ],
       records = this.getSurveyRecords( false );
     //console.log('data received:'+JSON.stringify(data)); // DEBUG
     for ( i = 0; i < records.length; i++ ) {
@@ -166,7 +166,7 @@ function StorageLocal() {
     console.debug( 'formList returning ' + formList.length + ' items' ); //DEBUG
     //order formList by lastSaved timestamp
     formList.sort( function( a, b ) {
-      return b[ 'lastSaved' ] - a[ 'lastSaved' ];
+      return a[ 'lastSaved' ] - b[ 'lastSaved' ];
     } );
     return formList;
   };
@@ -179,7 +179,7 @@ function StorageLocal() {
    */
   this.getSurveyRecords = function( finalOnly, excludeName ) {
     var i, key,
-      records = [],
+      records = [ ],
       record = {};
     finalOnly = finalOnly || false;
     excludeName = excludeName || null;
@@ -218,7 +218,7 @@ function StorageLocal() {
    */
   this.getSurveyDataArr = function( finalOnly, excludeName ) {
     var i, records,
-      dataArr = [];
+      dataArr = [ ];
     finalOnly = finalOnly || true;
     records = this.getSurveyRecords( finalOnly, excludeName );
     //console.debug('getSurveyDataArr will build array from these records: '+JSON.stringify(records));
@@ -240,7 +240,7 @@ function StorageLocal() {
   this.getSurveyDataOnlyArr = function( finalOnly ) {
     var i,
       dataObjArr = this.getSurveyDataArr( finalOnly ),
-      dataOnlyArr = [];
+      dataOnlyArr = [ ];
     for ( i = 0; i < dataObjArr.length; i++ ) {
       dataOnlyArr.push( dataObjArr[ i ].data );
     }
@@ -282,10 +282,10 @@ function StorageLocal() {
    * Obtain a new counter string value that is one higher than the previous
    * @return {?(string|String)} [description]
    */
-  this.getCounterValue = function() {
+  this.getCounterValue = function( ) {
     var record = this.getRecord( '__counter' ),
       number = ( record && typeof record[ 'counter' ] !== 'undefined' && isNumber( record[ 'counter' ] ) ) ? Number( record[ 'counter' ] ) : 0,
-      numberStr = ( number + 1 ).toString().pad( 4 );
+      numberStr = ( number + 1 ).toString( ).pad( 4 );
     //this.setRecord('__counter', numberStr);
     return numberStr;
   };

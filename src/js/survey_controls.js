@@ -338,6 +338,7 @@ function submitQueue( ) {
   //TODO: add second parameter to getSurveyDataArr() to
   //getCurrentRecordName() to prevent currenty open record from being submitted
   //connection.uploadRecords(store.getSurveyDataArr(true));
+
   var i,
     records = store.getSurveyDataArr( true ),
     successHandler = function( recordPrepped ) {
@@ -346,13 +347,17 @@ function submitQueue( ) {
     errorHandler = function( ) {
       console.error( 'Something went wrong while trying to prepare the record(s) for uploading.' );
     };
-  for ( i = 0; i < records.length; i++ ) {
-    prepareFormDataArray(
-      records[ i ], {
-        success: successHandler,
-        error: errorHandler
-      }
-    );
+  ///the check for whether an upload is currently ongoing prevents an ugly-looking issue whereby e.g. #1 in the queue failed to submit
+  //is removed from the queue and then re-entered before the old queue was emptied.
+  if ( !connection.uploadOngoingID && connection.uploadQueue.length === 0 ) {
+    for ( i = 0; i < records.length; i++ ) {
+      prepareFormDataArray(
+        records[ i ], {
+          success: successHandler,
+          error: errorHandler
+        }
+      );
+    }
   }
 }
 
@@ -607,7 +612,7 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     }
   } );
 
-  $( '.upload-records' ).on( 'click', function( ) {
+  $( '.upload-records:not(:disabled)' ).on( 'click', function( ) {
     submitQueue( );
 
     //connection.log.show( );
@@ -642,31 +647,42 @@ GUI.prototype.setCustomEventHandlers = function( ) {
 GUI.prototype.updateRecordList = function( recordList, $page ) {
   "use strict";
   var name, i, $li,
-    $list = $( '.side-slider .record-list' ),
-    $uploaded = $list.find( '.record.success' ).detach( );
+    $list = $( '.side-slider .record-list' );
 
   // get form list object (keys + upload) ordered by time last saved
-  recordList = recordList || [ ]; //store.getRecordList();
+  recordList = recordList || [ ];
   $( '.queue-length' ).text( recordList.length );
-  $( '.side-slider progress' ).attr( 'max', recordList.length );
 
-  //show just the succesfully uploaded records for a little while longer
-  $list.empty( ).append( $uploaded );
-  window.clearTimeout( window.removeUploadedRecords );
-  window.removeUploadedRecords = window.setTimeout( function( ) {
-    $( this ).remove( );
-  }, 1 * 60 * 1000 );
+  //cleanup 
+  $list.find( '.record' ).each( function( ) {
+    name = $( this ).attr( 'name' );
+    //if the record in the DOM no longer exists in storage
+    if ( $.grep( recordList, function( record ) {
+      return record.key == name;
+    } ).length === 0 ) {
+      console.log( 'record with name no longer exists', name );
+      //remove the DOM element and its same-name-siblings (split submissions)
+      $( this ).siblings( '[name="' + name + '"]' ).addBack( ).hide( 2000, function( ) {
+        $( this ).remove( );
+      } );
+    }
+  } );
 
+  //add new records
   if ( recordList.length > 0 ) {
     for ( i = 0; i < recordList.length; i++ ) {
       name = recordList[ i ].key;
-      $li = $( '<li class="record"></li' );
-      $li.text( name ); // encodes string to html
-      $li.attr( 'name', name );
-      $list.append( $li );
+      if ( $list.find( '[name="' + name + '"]' ).length === 0 ) {
+        $li = $( '<li class="record"></li' );
+        $li.text( name ); // encodes string to html
+        $li.attr( 'name', name );
+        $list.append( $li );
+      }
     }
   }
+
 };
+
 /*
 GUI.prototype.saveConfirm = function(){
   "use strict";

@@ -153,13 +153,14 @@ progress {
   .upload-records, .export-records {
     width: 45%;}
   progress {
+    visibility: hidden;
     width: 100%;}
   ul {
     list-style-type: none;
     margin-left: 0; }
   li.record {
     padding: 2px 5px;
-    margin-bottom: 3px;
+    margin: 5px 0 2px 0;
     border: 1px solid white;
     &.success {
       opacity: 0.6;
@@ -172,6 +173,8 @@ progress {
       border-width: 2px;
       border-color: red; } }
   li:not(.record) {
+    padding: 0 5px;
+    line-height: 15px;
     &.success {
       color: green;}
     &.ongoing {

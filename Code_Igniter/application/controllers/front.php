@@ -39,7 +39,7 @@ class Front extends CI_Controller {
 			'/libraries/enketo-core/lib/modernizr.min.js'
 		);
 		$default_main_scripts = array(
-			'/js-source/helpers.js',
+			'/libraries/enketo-core/src/js/utils.js',
 			'/js-source/gui.js',
 			'/js-source/connection.js',
 			'/js-source/front.js'

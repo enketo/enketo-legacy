@@ -369,12 +369,9 @@ class Webform extends CI_Controller {
                 log_message('error', 'failed to obtain transformation result from database for '.$this->subdomain);
             }
         } else {
-            log_message('debug', 'form changed, form media changed, xslt stylesheets changed or form never transformed before, going to perform transformation');
+            //log_message('debug', 'form changed, form media changed, xslt stylesheets changed, form removed, or form never transformed before, going to perform transformation');
             $form = $this->Form_model->get_transform_result_obj();
-            if (!empty($form->html) && !empty($form->default_instance))
-            {
-                $this->Survey_model->update_transform_result($form);
-            }
+            $this->Survey_model->update_transform_result($form);
         }
         
         if (!empty($form->html) && !empty($form->default_instance)) {
@@ -445,7 +442,7 @@ class Webform extends CI_Controller {
     private function _form_null_check_route($form)
     {
         if ($form === NULL) {
-            log_message('error', 'Form could not be found or transformed');
+            //log_message('error', 'Form could not be found or transformed');
             show_error('Form not reachable (or an error occurred during transformation). ', 404);
             return TRUE;
         }

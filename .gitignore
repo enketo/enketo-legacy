@@ -1,16 +1,11 @@
-*/logs/log-*.php
-*/logs/!index.html
-*/cache/*
-*/cache/!index.html
 *.sublime-project
 *.sublime-workspace
 */libraries/xpathjs_javarosa.min.js
-sftp-config.json
 .sass-cache
 public/js-source
 Code_Igniter/application/config/database.php
 Code_Igniter/application/cache/*
-Code_Igniter/application/logs/*
+Code_Igniter/application/logs/log-*.php
 node_modules/*
 public/build/*
 _site/*

@@ -35,6 +35,16 @@ $( document ).ready( function( ) {
     $( document ).trigger( 'browsersupport', 'local-storage' );
   }
 
+  if ( fileManager.isSupported( ) && store.getRecordList( ).length === 0 ) {
+    //clean up filesystem storage
+    fileManager.deleteAll( );
+  }
+
+  //remove filesystem folder after successful submission
+  $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {
+    fileManager.deleteDir( instanceID );
+  } );
+
   gui.updateStatus.offlineLaunch( false );
 
   if ( $( 'html' ).attr( 'manifest' ) ) {

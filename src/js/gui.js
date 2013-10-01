@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-/*jslint browser:true, devel:true, jquery:true, smarttabs:true*/
-/*global Modernizr, settings, console:true*/
-
 var /** @type {GUI}*/ gui;
 var /** @type {Print} */ printO;
 
-$( document ).ready( function() {
+$( document ).ready( function( ) {
   "use strict";
-  helper.setSettings();
-  gui = new GUI();
-  gui.init();
+  helper.setSettings( );
+  gui = new GUI( );
+  gui.init( );
   // avoid windows console errors
   if ( typeof console == "undefined" ) {
     console = {
-      log: function() {}
+      log: function( ) {}
     };
   }
   if ( typeof window.console.debug == "undefined" ) {
@@ -36,8 +33,8 @@ $( document ).ready( function() {
   }
 
   if ( !settings.debug ) {
-    window.console.log = function() {};
-    window.console.debug = function() {};
+    window.console.log = function( ) {};
+    window.console.debug = function( ) {};
   }
   //override Modernizr's detection (for development purposes)
   if ( settings.touch ) {
@@ -47,11 +44,7 @@ $( document ).ready( function() {
     Modernizr.touch = false;
     $( 'html' ).removeClass( 'touch' );
   }
-  printO = new Print();
-
-  //window.addEventListener('load', function() {
-  //new FastClick(document.body);
-  //}, false);
+  printO = new Print( );
 } );
 
 /**
@@ -59,7 +52,7 @@ $( document ).ready( function() {
  * @constructor
  */
 
-function GUI() {
+function GUI( ) {
   "use strict";
   this.supportLink = '<a href="mailto:' + settings[ 'supportEmail' ] + '">' + settings[ 'supportEmail' ] + '</a>';
 }
@@ -67,33 +60,26 @@ function GUI() {
 /**
  * Initializes a GUI object.
  */
-GUI.prototype.init = function() {
+GUI.prototype.init = function( ) {
   "use strict";
 
-  this.nav.setup();
-  this.pages.init();
-  this.setEventHandlers();
+  this.nav.setup( );
+  this.pages.init( );
+  this.setEventHandlers( );
   // setup additional 'custom' eventHandlers declared other js file
   if ( typeof this.setCustomEventHandlers === 'function' ) {
-    this.setCustomEventHandlers();
+    this.setCustomEventHandlers( );
   }
 
-  //$('.dialog [title]').tooltip({});
-
-  // checking for support for specific fancy css3 visual stuff
-  //if (Modernizr.borderradius && Modernizr.boxshadow && Modernizr.csstransitions && Modernizr.opacity){
-  //  $(document).trigger('browsersupport', 'fancy-visuals');
-  //}
-
-  $( 'footer' ).detach().appendTo( '#container' );
+  $( 'footer' ).detach( ).appendTo( '#container' );
   //this.nav.reset();
-  this.positionPageAndBar();
+  this.positionPageAndBar( );
 };
 
 /**
  * final setup of GUI object
  */
-GUI.prototype.setup = function() {
+GUI.prototype.setup = function( ) {
   "use strict";
   $( window ).trigger( 'resize' );
 };
@@ -101,31 +87,38 @@ GUI.prototype.setup = function() {
 /**
  * Sets the default (common) UI eventhandlers (extended in each class for custom handlers)
  */
-GUI.prototype.setEventHandlers = function() {
+GUI.prototype.setEventHandlers = function( ) {
   "use strict";
   var that = this;
 
   $( document ).on( 'click', '#feedback-bar .close', function( event ) {
-    that.feedbackBar.hide();
+    that.feedbackBar.hide( );
     return false;
   } );
 
   $( document ).on( 'click', '.touch #feedback-bar', function( event ) {
-    that.feedbackBar.hide();
+    that.feedbackBar.hide( );
   } );
 
   $( document ).on( 'click', '#page .close', function( event ) {
-    that.pages.close();
+    that.pages.close( );
     return false;
   } );
 
-  $( 'button.print' ).on( 'click', function() {
-    printO.printForm();
+  $( 'button.print' ).on( 'click', function( ) {
+    printO.printForm( );
   } );
 
-  //$(document).on('click', '.touch #page', function(event){
-  //  that.pages.close();
-  //});
+  $( '.offline-enabled-icon' ).on( 'click', function( ) {
+    var msg = "<p>This form can now be loaded and used without an Internet connection on this device. " +
+      "Bookmark it for easy offline access." +
+      "<p>Records are automatically stored and queued on your computer until an Internet connection is available. " +
+      "When the app is online, records will be automatically submitted - one by one.</p>" +
+      "<p>Only after a record has been succesfully submitted, it will be removed from the queue. " +
+      "You can safely close down your browser and computer with items in the queue. " +
+      "They will still be there next time you load the form.</p>";
+    that.alert( msg, 'Form works offline!', 'normal' );
+  } );
 
   // capture all internal links to navigation menu items (except the links in the navigation menu itself)
   $( document ).on( 'click', 'a[href^="#"]:not([href="#"]):not(nav ul li a)', function( event ) {
@@ -133,18 +126,18 @@ GUI.prototype.setEventHandlers = function() {
     console.log( 'captured click to nav page, href=' + href );
     //if href is not just an empty anchor it is an internal link and will trigger a navigation menu click
     if ( href !== '#' ) {
-      event.preventDefault();
-      $( 'nav li a[href="' + href + '"]' ).click();
+      event.preventDefault( );
+      $( 'nav li a[href="' + href + '"]' ).click( );
     }
   } );
 
   // event handlers for navigation menu
   $( 'nav ul li a[href^="#"]' )
     .click( function( event ) {
-      event.preventDefault();
+      event.preventDefault( );
       var targetPage = $( this ).attr( 'href' ).substr( 1 );
       that.pages.open( targetPage );
-      $( this ).closest( 'li' ).addClass( 'active' ).siblings().removeClass( 'active' );
+      $( this ).closest( 'li' ).addClass( 'active' ).siblings( ).removeClass( 'active' );
     } );
 
   // handlers for status icons in header
@@ -161,8 +154,8 @@ GUI.prototype.setEventHandlers = function() {
     that.updateStatus.support( supported );
   } );
 
-  $( '#page, #feedback-bar' ).on( 'change', function() {
-    that.positionPageAndBar();
+  $( '#page, #feedback-bar' ).on( 'change', function( ) {
+    that.positionPageAndBar( );
   } );
 
   $( document ).on( 'xpatherror', function( ev, error ) {
@@ -174,9 +167,9 @@ GUI.prototype.setEventHandlers = function() {
 };
 
 GUI.prototype.nav = {
-  setup: function() {
+  setup: function( ) {
     "use strict";
-    $( 'article.page' ).each( function() {
+    $( 'article.page' ).each( function( ) {
       var display, title = '',
         id, link;
       id = $( this ).attr( 'id' );
@@ -196,7 +189,7 @@ GUI.prototype.nav = {
 
     } );
   },
-  reset: function() {
+  reset: function( ) {
     "use strict";
     $( 'nav ul li' ).removeClass( 'active' );
   }
@@ -206,11 +199,11 @@ GUI.prototype.pages = {
   /**
    * initializes the pages
    */
-  init: function() {
+  init: function( ) {
     // placeholder 'parent' element for the articles (pages)
     this.$pages = $( '<pages></pages>' );
     // detaching pages from DOM and storing them in the pages variable
-    $( 'article.page' ).detach().appendTo( this.$pages );
+    $( 'article.page' ).detach( ).appendTo( this.$pages );
   },
 
   /**
@@ -253,23 +246,23 @@ GUI.prototype.pages = {
       return;
     }
 
-    if ( this.isShowing() ) {
-      this.close();
+    if ( this.isShowing( ) ) {
+      this.close( );
     }
 
-    $( '#page .content' ).prepend( $page.show() ).trigger( 'change' );
-    $( '#page' ).show();
+    $( '#page .content' ).prepend( $page.show( ) ).trigger( 'change' );
+    $( '#page' ).show( );
     //$('.overlay').show();
     $( '.main' ).css( 'opacity', '0.3' );
 
-    $( window ).on( 'resize.pageEvents', function() {
+    $( window ).on( 'resize.pageEvents', function( ) {
       $( '#page' ).trigger( 'change' );
     } );
-    setTimeout( function() {
+    setTimeout( function( ) {
       $( window ).on( 'click.pageEvents', function( event ) {
         console.log( $( event.target ).prop( 'nodeName' ) );
         if ( $( event.target ).parents( '.btn-toolbar, label, fieldset' ).length === 0 ) {
-          that.close();
+          that.close( );
         }
         return true;
       } );
@@ -279,8 +272,8 @@ GUI.prototype.pages = {
   /**
    * Closes the currently shown page
    */
-  close: function() {
-    var $page = ( $( '#page .page' ).length > 0 ) ? $( '#page .page' ).detach() : [];
+  close: function( ) {
+    var $page = ( $( '#page .page' ).length > 0 ) ? $( '#page .page' ).detach( ) : [ ];
     if ( $page.length > 0 ) {
       this.$pages.append( $page );
       $( '#page' ).trigger( 'change' );
@@ -309,27 +302,27 @@ GUI.prototype.feedbackBar = {
     duration = ( duration ) ? duration * 1000 : 10 * 1000;
 
     // max 2 messages displayed
-    $( '#feedback-bar p' ).eq( 1 ).remove();
+    $( '#feedback-bar p' ).eq( 1 ).remove( );
 
     // if an already shown message isn't exactly the same
-    if ( $( '#feedback-bar p' ).html() !== message ) {
+    if ( $( '#feedback-bar p' ).html( ) !== message ) {
       $msg = $( '<p></p>' );
       $msg.append( message );
       $( '#feedback-bar' ).append( $msg );
     }
-    $( '#feedback-bar' ).show().trigger( 'change' );
+    $( '#feedback-bar' ).show( ).trigger( 'change' );
 
     // automatically remove feedback after a period
-    setTimeout( function() {
+    setTimeout( function( ) {
       if ( typeof $msg !== 'undefined' ) {
-        $msg.remove();
+        $msg.remove( );
       }
       $( '#feedback-bar' ).trigger( 'change' );
     }, duration );
   },
-  hide: function() {
+  hide: function( ) {
     "use strict";
-    $( '#feedback-bar p' ).remove();
+    $( '#feedback-bar p' ).remove( );
     $( '#feedback-bar' ).trigger( 'change' );
   }
 };
@@ -364,7 +357,7 @@ GUI.prototype.feedback = function( message, duration, heading, choices ) {
  *
  * @param {string} message
  * @param {string=} heading
- * @param {string=} level bootstrap css class
+ * @param {string=} level bootstrap css class or normal (no styling)
  * @param {number=} duration duration in secondsafter which dialog should self-destruct
  */
 GUI.prototype.alert = function( message, heading, level, duration ) {
@@ -378,28 +371,28 @@ GUI.prototype.alert = function( message, heading, level, duration ) {
 
   //write content into alert dialog
   $alert.find( '.modal-header h3' ).text( heading );
-  $alert.find( '.modal-body p' ).removeClass().addClass( cls ).html( message ).capitalizeStart();
+  $alert.find( '.modal-body p' ).removeClass( ).addClass( cls ).html( message ).capitalizeStart( );
 
   $alert.modal( {
     keyboard: true,
     show: true
   } );
 
-  $alert.on( 'hidden', function() {
+  $alert.on( 'hidden', function( ) {
     $alert.find( '.modal-header h3, .modal-body p' ).html( '' );
     clearInterval( timer );
   } );
 
   if ( typeof duration === 'number' ) {
-    var left = duration.toString();
+    var left = duration.toString( );
     $alert.find( '.self-destruct-timer' ).text( left );
-    timer = setInterval( function() {
+    timer = setInterval( function( ) {
       left--;
       $alert.find( '.self-destruct-timer' ).text( left );
     }, 1000 );
-    setTimeout( function() {
+    setTimeout( function( ) {
       clearInterval( timer );
-      $alert.find( '.close' ).click();
+      $alert.find( '.close' ).click( );
     }, duration * 1000 );
   }
 
@@ -436,22 +429,22 @@ GUI.prototype.confirm = function( texts, choices, duration ) {
   choices = ( typeof choices !== 'undefined' ) ? choices : {};
   choices.posButton = choices.posButton || 'Confirm';
   choices.negButton = choices.negButton || 'Cancel';
-  choices.posAction = choices.posAction || function() {
+  choices.posAction = choices.posAction || function( ) {
     return false;
   };
-  choices.negAction = choices.negAction || function() {
+  choices.negAction = choices.negAction || function( ) {
     return false;
   };
-  choices.beforeAction = choices.beforeAction || function() {};
+  choices.beforeAction = choices.beforeAction || function( ) {};
 
   $dialog = $( '#dialog-' + dialogName );
 
   //write content into confirmation dialog
   $dialog.find( '.modal-header h3' ).text( heading );
-  $dialog.find( '.modal-body .msg' ).html( msg ).capitalizeStart();
-  $dialog.find( '.modal-body .alert-error' ).html( errorMsg ).show();
+  $dialog.find( '.modal-body .msg' ).html( msg ).capitalizeStart( );
+  $dialog.find( '.modal-body .alert-error' ).html( errorMsg ).show( );
   if ( !errorMsg ) {
-    $dialog.find( '.modal-body .alert-error' ).hide();
+    $dialog.find( '.modal-body .alert-error' ).hide( );
   }
 
   //instantiate dialog
@@ -461,41 +454,41 @@ GUI.prototype.confirm = function( texts, choices, duration ) {
   } );
 
   //set eventhanders
-  $dialog.on( 'shown', function() {
-    choices.beforeAction.call();
+  $dialog.on( 'shown', function( ) {
+    choices.beforeAction.call( );
   } );
 
-  $dialog.find( 'button.positive' ).on( 'click', function() {
-    choices.posAction.call();
+  $dialog.find( 'button.positive' ).on( 'click', function( ) {
+    choices.posAction.call( );
     $dialog.modal( 'hide' );
   } ).text( choices.posButton );
 
-  $dialog.find( 'button.negative' ).on( 'click', function() {
-    choices.negAction.call();
+  $dialog.find( 'button.negative' ).on( 'click', function( ) {
+    choices.negAction.call( );
     $dialog.modal( 'hide' );
   } ).text( choices.negButton );
 
-  $dialog.on( 'hide', function() {
+  $dialog.on( 'hide', function( ) {
     //remove eventhandlers
     $dialog.off( 'shown hidden hide' );
     $dialog.find( 'button.positive, button.negative' ).off( 'click' );
   } );
 
-  $dialog.on( 'hidden', function() {
+  $dialog.on( 'hidden', function( ) {
     $dialog.find( '.modal-body .msg, .modal-body .alert-error, button' ).text( '' );
     //console.debug('dialog destroyed');
   } );
 
   if ( typeof duration === 'number' ) {
-    var left = duration.toString();
+    var left = duration.toString( );
     $dialog.find( '.self-destruct-timer' ).text( left );
-    timer = setInterval( function() {
+    timer = setInterval( function( ) {
       left--;
       $dialog.find( '.self-destruct-timer' ).text( left );
     }, 1000 );
-    setTimeout( function() {
+    setTimeout( function( ) {
       clearInterval( timer );
-      $dialog.find( '.close' ).click();
+      $dialog.find( '.close' ).click( );
     }, duration * 1000 );
   }
 
@@ -534,17 +527,17 @@ GUI.prototype.confirmLogin = function( msg, serverURL ) {
   }, {
     posButton: 'Log in now',
     negButton: 'Later',
-    posAction: function() {
+    posAction: function( ) {
       var search = '?server=' + encodeURIComponent( serverURL ) + '&return=' + encodeURIComponent( location.href );
       search += ( settings.formId ) ? '&id=' + settings.formId : '';
       search += ( settings.touch ) ? '&touch=' + settings.touch : '';
       search += ( settings.debug ) ? '&debug=' + settings.debug : '';
       location.href = location.protocol + '//' + location.host + '/authenticate' + search;
     },
-    negAction: function() {
+    negAction: function( ) {
       console.log( 'login cancelled' );
     },
-    beforeAction: function() {}
+    beforeAction: function( ) {}
   } );
 };
 
@@ -591,16 +584,17 @@ GUI.prototype.updateStatus = {
   edit: function( editing ) {
     "use strict";
     if ( editing ) {
-      $( 'header #status-editing' ).removeClass().addClass( 'ui-icon ui-icon-pencil' )
+      $( 'header #status-editing' ).removeClass( ).addClass( 'ui-icon ui-icon-pencil' )
         .attr( 'title', 'Form is being edited.' );
     } else {
-      $( 'header #status-editing' ).removeClass().attr( 'title', '' );
+      $( 'header #status-editing' ).removeClass( ).attr( 'title', '' );
     }
   },
   support: function( supported ) {},
   offlineLaunch: function( offlineCapable ) {
-    var status = ( offlineCapable ) ? 'Offline Launch: Yes' : 'Offline Launch: No';
-    $( '.drawer #status-offline-launch' ).text( status );
+    //var status = ( offlineCapable ) ? 'Offline Launch: Yes' : 'Offline Launch: No';
+    $( '.offline-enabled-icon.not-enabled' ).removeClass( 'not-enabled' );
+    //$( '.drawer #status-offline-launch' ).text( status );
   }
 };
 
@@ -611,27 +605,27 @@ GUI.prototype.updateStatus = {
  * @return {number}       [description]
  */
 GUI.prototype.fillHeight = function( $elem ) {
-  var bottom = $( window ).height(),
+  var bottom = $( window ).height( ),
     above = $( 'header' ).outerHeight( true ),
-    fluff = $elem.outerHeight() - $elem.height();
+    fluff = $elem.outerHeight( ) - $elem.height( );
   return bottom - above - fluff;
 };
 
 /**
  * Makes sure sliders that reveal the feedback bar and page have the correct css 'top' property when the header is fixed
  */
-GUI.prototype.positionPageAndBar = function() {
+GUI.prototype.positionPageAndBar = function( ) {
   "use strict";
   console.log( 'positionPageAndBar called' );
   var fTop, pTop,
     $header = $( 'header' ),
-    hHeight = $header.outerHeight() || 0,
+    hHeight = $header.outerHeight( ) || 0,
     $feedback = $( '#feedback-bar' ),
     fShowing = ( $feedback.find( 'p' ).length > 0 ) ? true : false,
-    fHeight = $feedback.outerHeight(),
+    fHeight = $feedback.outerHeight( ),
     $page = $( '#page' ),
-    pShowing = this.pages.isShowing(),
-    pHeight = $page.outerHeight();
+    pShowing = this.pages.isShowing( ),
+    pHeight = $page.outerHeight( );
 
   //to go with the responsive flow, copy the css position type of the header
   $page.css( {
@@ -640,10 +634,10 @@ GUI.prototype.positionPageAndBar = function() {
 
   if ( $header.length > 0 && $header.css( 'position' ) !== 'fixed' ) {
     if ( !fShowing ) {
-      $feedback.hide();
+      $feedback.hide( );
     }
     if ( !pShowing ) {
-      $page.hide();
+      $page.hide( );
     }
     return false;
   }
@@ -703,7 +697,7 @@ GUI.prototype.parseFormlist = function( list, $target, reset ) {
       listHTML = '<p class="alert alert-error">Error occurred during creation of form list or no forms found</p>';
     }
   }
-  $target.find( 'ul' ).empty().append( listHTML );
+  $target.find( 'ul' ).empty( ).append( listHTML );
 };
 
 /**
@@ -711,11 +705,11 @@ GUI.prototype.parseFormlist = function( list, $target, reset ) {
  * @constructor
  */
 
-function Print() {
+function Print( ) {
   "use strict";
   //var mpl,
   //  that = this;
-  this.setStyleSheet();
+  this.setStyleSheet( );
   //IE, FF, the 'proper' way:
   //if (typeof window.onbeforeprint !== 'undefined'){
   //  $(window).on('beforeprint', this.printForm);
@@ -732,13 +726,13 @@ function Print() {
   //      return false;
   //  });
   //}
-  this.setDpi();
+  this.setDpi( );
 }
 
 /**
  * Calculates the dots per inch and sets the dpi property
  */
-Print.prototype.setDpi = function() {
+Print.prototype.setDpi = function( ) {
   var dpi = {},
     e = document.body.appendChild( document.createElement( "DIV" ) );
   e.style.width = "1in";
@@ -751,8 +745,8 @@ Print.prototype.setDpi = function() {
 /**
  * Sets print stylesheet properties
  */
-Print.prototype.setStyleSheet = function() {
-  this.styleSheet = this.getStyleSheet();
+Print.prototype.setStyleSheet = function( ) {
+  this.styleSheet = this.getStyleSheet( );
   this.$styleSheetLink = $( 'link[media="print"]:eq(0)' );
 };
 
@@ -760,7 +754,7 @@ Print.prototype.setStyleSheet = function() {
  * Gets print stylesheets
  * @return {Element} [description]
  */
-Print.prototype.getStyleSheet = function() {
+Print.prototype.getStyleSheet = function( ) {
   for ( var i = 0; i < document.styleSheets.length; i++ ) {
     if ( document.styleSheets[ i ].media.mediaText === 'print' ) {
       return document.styleSheets[ i ];
@@ -772,9 +766,9 @@ Print.prototype.getStyleSheet = function() {
 /**
  * Applies the print stylesheet to the current view by changing stylesheets media property to 'all'
  */
-Print.prototype.styleToAll = function() {
+Print.prototype.styleToAll = function( ) {
   //sometimes, setStylesheet fails upon loading
-  if ( !this.styleSheet ) this.setStyleSheet();
+  if ( !this.styleSheet ) this.setStyleSheet( );
   //Chrome:
   this.styleSheet.media.mediaText = 'all';
   //Firefox:
@@ -784,7 +778,7 @@ Print.prototype.styleToAll = function() {
 /**
  * Resets the print stylesheet to only apply to media 'print'
  */
-Print.prototype.styleReset = function() {
+Print.prototype.styleReset = function( ) {
   this.styleSheet.media.mediaText = 'print';
   this.$styleSheetLink.attr( 'media', 'print' );
 };
@@ -792,48 +786,48 @@ Print.prototype.styleReset = function() {
 /**
  * Prints the form after first setting page breaks (every time it is called)
  */
-Print.prototype.printForm = function() {
+Print.prototype.printForm = function( ) {
   //console.debug('preparing form for printing');
-  this.removePageBreaks();
-  this.removePossiblePageBreaks();
-  this.styleToAll();
-  this.addPageBreaks();
-  this.styleReset();
-  window.print();
+  this.removePageBreaks( );
+  this.removePossiblePageBreaks( );
+  this.styleToAll( );
+  this.addPageBreaks( );
+  this.styleReset( );
+  window.print( );
 };
 
 /**
  * Removes all current page breaks
  */
-Print.prototype.removePageBreaks = function() {
-  $( '.page-break' ).remove();
+Print.prototype.removePageBreaks = function( ) {
+  $( '.page-break' ).remove( );
 };
 
 /**
  * Removes all potential page breaks
  */
-Print.prototype.removePossiblePageBreaks = function() {
-  $( '.possible-break' ).remove();
+Print.prototype.removePossiblePageBreaks = function( ) {
+  $( '.possible-break' ).remove( );
 };
 
 
 /**
  * Adds a temporary potential page break to each location in the form that is allowed to have one
  */
-Print.prototype.addPossiblePageBreaks = function() {
+Print.prototype.addPossiblePageBreaks = function( ) {
   var possible_break = $( "<hr>", {
     "class": "possible-break" /*, "style":"background-color:blue; height: 1px"*/
   } );
 
-  this.removePossiblePageBreaks();
+  this.removePossiblePageBreaks( );
 
-  $( 'form.jr' ).before( possible_break.clone() ).after( possible_break.clone() )
+  $( 'form.jr' ).before( possible_break.clone( ) ).after( possible_break.clone( ) )
     .find( 'fieldset>legend, label:not(.geo)>input:not(input:radio, input:checkbox), label>select, label>textarea,' +
       ' .trigger>*, h4>*, h3>*, .jr-appearance-field-list>*' )
-    .parent().each( function() {
+    .parent( ).each( function( ) {
       var $this, prev;
       $this = $( this );
-      prev = $this.prev().get( 0 );
+      prev = $this.prev( ).get( 0 );
       //some exceptions
       if (
         prev && ( prev.nodeName === "H3" || prev.nodeName === "H4" ) ||
@@ -843,14 +837,14 @@ Print.prototype.addPossiblePageBreaks = function() {
       ) {
         return null;
       } else {
-        return $this.before( possible_break.clone() );
+        return $this.before( possible_break.clone( ) );
       }
     } );
 
   //correction of placing two direct sibling breaks
-  $( '.possible-break' ).each( function() {
-    if ( $( this ).prev().hasClass( 'possible-break' ) ) {
-      return $( this ).remove();
+  $( '.possible-break' ).each( function( ) {
+    if ( $( this ).prev( ).hasClass( 'possible-break' ) ) {
+      return $( this ).remove( );
     }
   } );
 };
@@ -859,13 +853,13 @@ Print.prototype.addPossiblePageBreaks = function() {
  * Adds page breaks intelligently
  * Thank you, Alex Dorey!
  */
-Print.prototype.addPageBreaks = function() {
+Print.prototype.addPageBreaks = function( ) {
   var i, page, page_a, page_h, pages, possible_break, possible_breaks, qgroup, qgroups, _i, _j, _k, _len, _len1, _ref,
     page_height_in_inches = 9.5,
     page_height_in_pixels = this.dpi * page_height_in_inches,
     pb = "<hr class='page-break' />",
 
-    QGroup = ( function() {
+    QGroup = ( function( ) {
       /*
 			This is supposed to be a representation of a "Question Group", which exists only to
 			calculate the height of the question group and to make it easy to prepend a pagebreak
@@ -874,9 +868,9 @@ Print.prototype.addPageBreaks = function() {
 
       function QGroup( begin, end ) {
         this.begin = $( begin );
-        this.begin_top = this.begin.offset().top;
+        this.begin_top = this.begin.offset( ).top;
         this.end = $( end );
-        this.end_top = this.end.offset().top;
+        this.end_top = this.end.offset( ).top;
         this.h = this.end_top - this.begin_top;
         if ( this.h < 0 ) {
           console.debug( 'begin (top: ' + this.begin_top + ')', begin );
@@ -885,11 +879,11 @@ Print.prototype.addPageBreaks = function() {
         }
       }
 
-      QGroup.prototype.break_before = function() {
+      QGroup.prototype.break_before = function( ) {
         var action, elem, prev, where_to_situate_breakpoint;
-        prev = this.begin.prev().get( 0 );
+        prev = this.begin.prev( ).get( 0 );
         if ( !prev ) {
-          where_to_situate_breakpoint = [ 'before', this.begin.parent().get( 0 ) ];
+          where_to_situate_breakpoint = [ 'before', this.begin.parent( ).get( 0 ) ];
         } else {
           where_to_situate_breakpoint = [ 'after', prev ];
         }
@@ -900,21 +894,21 @@ Print.prototype.addPageBreaks = function() {
       };
 
       return QGroup;
-    } )();
+    } )( );
 
-  this.removePageBreaks();
+  this.removePageBreaks( );
 
-  this.addPossiblePageBreaks();
+  this.addPossiblePageBreaks( );
   possible_breaks = $( '.possible-break' );
 
-  qgroups = [];
+  qgroups = [ ];
   for ( i = 1; i < possible_breaks.length; i++ ) {
     qgroups.push( new QGroup( possible_breaks[ i - 1 ], possible_breaks[ i ] ) );
   }
 
   page_h = 0;
-  page_a = [];
-  pages = [];
+  page_a = [ ];
+  pages = [ ];
 
   for ( _j = 0, _len = qgroups.length; _j < _len; _j++ ) {
     qgroup = qgroups[ _j ];
@@ -936,10 +930,10 @@ Print.prototype.addPageBreaks = function() {
   for ( _k = 1, _len1 = pages.length; _k < _len1; _k++ ) {
     page = pages[ _k ];
     if ( page.length > 0 ) {
-      page[ 0 ].break_before();
+      page[ 0 ].break_before( );
     }
   }
 
   //remove the possible-breaks
-  return $( '.possible-break' ).remove();
+  return $( '.possible-break' ).remove( );
 };

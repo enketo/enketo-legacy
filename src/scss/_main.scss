@@ -1,4 +1,5 @@
 @import "variables";
+@import "../../public/libraries/enketo-core/src/sass/core/_mixins";
 @import "mixins";
 @import "bootstrap";
 
@@ -19,26 +20,10 @@
     font-style: normal;}
 
 body{
-  @include font-normal;
   background: $body-bg no-repeat;
-  //background: $bg url(../images/tex2res2.png) repeat;
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
-  overflow-x: hidden;
-  .main article{
-    padding: 3em;}
-  .form-header{
-    position:absolute;
-    top: -4.4em;
-    border: none; } }
-
-strong {
-  @include font-bold; }
-
-h2, h3, h4 {
-  @include font-bold;
-  color: $accent-color-1;
-  text-align: center;}
+  overflow-x: hidden; }
 
 .preview-header{
 	position: absolute;
@@ -89,25 +74,7 @@ progress{
 }
 
 .paper{
-	background-color: #fff;
-	border-radius: 7px;
 	border: 7px solid $content_border;}
-
-.main {
-  margin: 100px auto 60px auto;
-  position: relative;
-  display: block;
-  text-align: left; 
-  max-width: $content-width;
-  article {
-    //padding: 50px;
-    min-height: 300px; }
-  ul.nav-tabs{
-      margin: 20px 0 0 0;
-      li{
-        margin: 0;
-        a{
-          background: none; } } } }
 
 .formlist{
   ul{

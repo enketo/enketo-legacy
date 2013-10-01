@@ -1,6 +1,7 @@
 $baseFontSize: 15px;
 $baseLineHeight: 20px;
 
+
 @mixin font-bold {
   @include default-bold; }
 
@@ -10,3 +11,5 @@ $baseLineHeight: 20px;
 @import "main";
 @import "form";
 @import "form_header";
+//only required for offline-enabled webforms
+@import "responsive";

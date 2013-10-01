@@ -74,12 +74,10 @@ class Form_model extends CI_Model {
 
     function can_be_loaded_from_cache()
     {
-        //$this->xsl_version = $this->_stylesheets_changed($this->xsl_version_prev);
-        return (
-            $this->_content_unchanged($this->form_xml_hash_prev) &&  
-            $this->_stylesheets_unchanged($this->xsl_ver_prev) &&
-            $this->_media_unchanged($this->form_media_hash_prev)
-        );
+        $c_unchanged = $this->_content_unchanged($this->form_xml_hash_prev); 
+        $s_unchanged = $this->_stylesheets_unchanged($this->xsl_ver_prev);
+        $m_unchanged = $this->_media_unchanged($this->form_media_hash_prev);
+        return ($c_unchanged && $s_unchanged && $m_unchanged);
     }
 
     function is_listed(){
@@ -94,18 +92,20 @@ class Form_model extends CI_Model {
 
         $form = new stdClass();
         $form->title = (!empty($title[0])) ? $title[0] : '';
-        $form->html = $result->form->asXML();
-        $form->default_instance = $result->model->asXML();
+        $form->html = (!empty($result->form)) ? $result->form->asXML() : '';
+        $form->default_instance = (!empty($result->model)) ? $result->model->asXML() : '';
         //a later version of PHP XSLST processor seems to output jr:template= instead of template=
         //$form->default_instance = str_replace(' jr:template=', ' template=', $form->default_instance);
         //$form->default_instance = str_replace(array("\r", "\r\n", "\n", "\t"), '', $form->default_instance);
         //$form->default_instance = preg_replace('/\/\>\s+\</', '/><', $form->default_instance);
         //the preg replacement below is very aggressive!... maybe too aggressive
-        $form->default_instance = preg_replace('/\>\s+\</', '><', $form->default_instance);
-        $form->default_instance = json_encode($form->default_instance);
+        if (!empty($form->default_instance)) {
+            $form->default_instance = preg_replace('/\>\s+\</', '><', $form->default_instance);
+            $form->default_instance = json_encode($form->default_instance);
+        }
         $form->hash = $this->info['xml_hash'];
-        $form->xsl_version = $this->xsl_version;
         $form->media_hash = $this->info['media_hash'];
+        $form->xsl_version = (!empty($result->form)) ? $this->xsl_version : NULL;
         //log_message('debug', 'xsl version returned in transformation result: '.$this->xsl_version);
         return $form;
     }
@@ -216,7 +216,7 @@ class Form_model extends CI_Model {
                     return $info;
                 }
             } if (empty($info['xml'])) {
-                log_message('error', 'Form with id: '.$this->form_id.' could not be found in formlist for '.$this->server_url);
+                log_message('debug', 'Form with id: '.$this->form_id.' could not be found in formlist for '.$this->server_url);
             }
         }
         return NULL;
@@ -265,7 +265,9 @@ class Form_model extends CI_Model {
             set_error_handler('_exception_handler');
         
             if(!$success) {
-                log_message('error', 'XML/XSL doc load errors: '.json_encode($errors));
+                if (!empty($errors)) {
+                    log_message('error', 'XML/XSL doc load errors: '.json_encode($errors));
+                }
                 //see if fatal errors occurred. Return FALSE for doc if one occurred
                 //foreach ($errors as $error)// (array_search(LIBXML_ERR_FATAL, (array) $errors) === 'level')
                 //{

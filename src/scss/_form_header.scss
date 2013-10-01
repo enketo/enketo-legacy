@@ -1,46 +1,82 @@
+$offline-color: rgb(231, 67, 41);
+
 .form-header {
+  //height: 60px;
+  //min-height: 68px;
   .branding{
-    display: inline-block;
-    margin: 0 10px 0 16px;
-    img{
+    //display: inline-block;
+    margin: 0;
+    height: 34px;
+    display: inline-table;
+    .logo-wrapper {
+      display: table-cell;
+      vertical-align: middle; }
+    img {
       max-height: 30px;
       max-width: 130px;
-      margin-left: 16px;
-      &:hover{
+      vertical-align: middle;
+      //margin-left: 16px;
+      &:hover {
         opacity: 0.8;} }
-    span{
+    span {
       display: inline-block;
       color: #444444;
       font-weight: bold;
       font-size: 1.4em;
-      &:hover{
+      &:hover {
         text-decoration: none;
-        opacity: 0.8;} } } }
-.load-error{
-  margin: 100px 0 60px 0;} //move this
-.records{ //move this
-  $size: 20px;
-  display: inline-block;
-  vertical-align: bottom;
-  background-color: #c9c9c9;
-  border: 1px solid $groupline;
-  height: $size;
-  min-width: $size;
-  border-radius: $size/2; }
-.queue-length{
-  color: #ffffff;
-  text-align: center;
-  padding: 0 7px;
-  &.submitting{
-    color: #ce4f07; }
-  &:hover{
-    color: green; } }
-.print{
+        opacity: 0.8; } } } }
+
+.load-error {
+  margin: 100px 0 60px 0; } //move this??
+
+.offline-enabled {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  .offline-enabled-icon {
+    width: 34px;
+    height: 34px;
+    background-color: $offline-color;
+    background-image: url($images-path+'offline-enabled.png');
+    background-repeat: no-repeat;
+    opacity: 1;
+    @include transition-slow(opacity, 3s); 
+    &.not-enabled {
+      height:0;
+      opacity: 0;
+      width: 0; }
+    &:hover {
+      opacity: 0.8; } }
+  .queue-length {
+    margin-top: 2px;
+    width: 34px;
+    color: $offline-color;
+    background-color: #ffffff;
+    text-align: center;
+    padding: 9.5px 0 9.5px 0;
+    line-height: 15px;
+    font-size: 15px;
+    opacity: 1;
+    @include transition-slow(opacity, 3s); 
+    &.hide {
+      opacity: 0;
+      display: none; }
+    &.submitting{
+      color: #ce4f07; }
+    &:hover {
+      color: green; } } }
+.form-language-selector {
+  padding-right: 20px; }
+.print {
   background: none;
   border-radius: 0;
   border: none;
-  width: 60px;
-  padding: 0.3em $baseFontSize;
+  padding: 7px 0 7px 20px;
+  margin-right: 0;
   float: right;
   &:hover{
-  opacity: 0.7; } }
+    opacity: 0.7; }
+  ~ .form-language-selector {
+     border-right: 1px solid #999999;} }

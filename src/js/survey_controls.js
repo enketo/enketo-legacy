@@ -17,7 +17,7 @@
 var /**@type {StorageLocal}*/ store;
 
 $( document ).ready( function( ) {
-  if ( typeof StorageLocal !== undefined ) {
+  if ( typeof StorageLocal !== "undefined" ) {
     store = new StorageLocal( );
     store.init( );
   }
@@ -549,7 +549,7 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     }
   } );
 
-  $( '.records' ).on( 'click', function( ) {
+  $( '.queue-length' ).on( 'click', function( ) {
     exportToFile( );
   } );
 
@@ -581,45 +581,45 @@ GUI.prototype.setCustomEventHandlers = function( ) {
 //update the survey forms names list
 GUI.prototype.updateRecordList = function( recordList, $page ) {
   "use strict";
-  var name, date, clss, i, icon, $list, $li,
-    finishedFormsQty = 0,
-    draftFormsQty = 0;
-  console.debug( 'updating recordlist in GUI' );
-  if ( !$page ) {
-    $page = this.pages.get( 'records' );
-  }
+  //var name, date, clss, i, icon, $list, $li,
+  //finishedFormsQty = 0,
+  //draftFormsQty = 0;
+  //console.debug( 'updating recordlist in GUI' );
+  //if ( !$page ) {
+  //  $page = this.pages.get( 'records' );
+  //}
 
-  $list = $page.find( '#records-saved ol' );
+  //$list = $page.find( '#records-saved ol' );
 
   //remove the existing option elements
-  $list.children( ).remove( );
+  //$list.children( ).remove( );
   // get form list object (keys + upload) ordered by time last saved
   recordList = recordList || [ ]; //store.getRecordList();
 
   if ( recordList.length > 0 ) {
-    for ( i = 0; i < recordList.length; i++ ) {
-      name = recordList[ i ].key;
-      date = new Date( recordList[ i ][ 'lastSaved' ] ).toDateString( );
-      if ( recordList[ i ][ 'ready' ] ) { // === true){//} || recordList[i]['ready'] == 'true'){
-        icon = 'check';
-        finishedFormsQty++;
-      } else {
-        icon = 'pencil';
-        draftFormsQty++;
-      }
-      $li = $( '<li><span class="ui-icon ui-icon-' + icon + '"></span><span class="name">' +
-        '</span><span class="date"> (' + date + ')</span></li>' );
-      $li.find( '.name' ).text( name ); // encodes string to html
-      $list.append( $li );
-    }
-    $( '.queue-length' ).text( recordList.length ).parent( ).show( );
+    //for ( i = 0; i < recordList.length; i++ ) {
+    //  name = recordList[ i ].key;
+    //  date = new Date( recordList[ i ][ 'lastSaved' ] ).toDateString( );
+    //  if ( recordList[ i ][ 'ready' ] ) { // === true){//} || recordList[i]['ready'] == 'true'){
+    //    icon = 'check';
+    //    finishedFormsQty++;
+    //  } else {
+    //    icon = 'pencil';
+    //    draftFormsQty++;
+    //  }
+    //  $li = $( '<li><span class="ui-icon ui-icon-' + icon + '"></span><span class="name">' +
+    //    '</span><span class="date"> (' + date + ')</span></li>' );
+    //  $li.find( '.name' ).text( name ); // encodes string to html
+    //  $list.append( $li );
+    //}
+    $( '.queue-length' ).text( recordList.length ).removeClass( 'hide' );
   } else {
-    $( '<li class="no-click">no locally saved records found</li>' ).appendTo( $list );
-    $( '.queue-length' ).text( '0' ).parent( ).hide( );
+    //$( '<li class="no-click">no locally saved records found</li>' ).appendTo( $list );
+    $( '.queue-length' ).text( 0 ).addClass( 'hide' );
   }
   // update status counters
-  $page.find( '#records-draft-qty' ).text( draftFormsQty );
-  $page.find( '#records-final-qty' ).text( finishedFormsQty );
+  //$page.find( '#records-draft-qty' ).text( draftFormsQty );
+  //$page.find( '#records-final-qty' ).text( finishedFormsQty );
 };
 /*
 GUI.prototype.saveConfirm = function(){

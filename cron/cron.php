@@ -120,9 +120,8 @@ else
 }
 
 // Log the results of this run
-error_log("////// ".date('Y-m-d H:i:s')." cron.php $cmdline\r\n", 3, CRON_LOG);
+error_log("\r\n\r\n////// ".date('Y-m-d H:i:s')." cron.php $cmdline\r\n", 3, CRON_LOG);
 error_log(str_replace("\n", "\r\n", $output), 3, CRON_LOG);
 //error_log("\r\n////// \r\n\r\n", 3, CRON_LOG);
-
 echo "\n\n"; 
 

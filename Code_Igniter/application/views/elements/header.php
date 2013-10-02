@@ -8,7 +8,7 @@
 				</a>
 				<div class="brand">
 					<a href="/">
-						<? $logo_src = (file_exists(SELF.'private_media/images/logo-black.png')) ? 'private_media/images/logo-black.png' : 'images/logo-black.png' ?>
+						<? $logo_src = (file_exists(FCPATH.'private_media/images/logo-black.png')) ? 'private_media/images/logo-black.png' : 'images/logo-black.png' ?>
 						<img class="navbar-logo" src="<?= $logo_src ?>" alt="logo" />
 					</a>
 				</div>

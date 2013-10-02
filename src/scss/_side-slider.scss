@@ -9,7 +9,7 @@
   background-color: rgb(50,50,50);
   width: 240px;
   min-height: 100%;
-  padding: 17px;
+  padding: 20px;
   .close {
     color: white;
     text-shadow-color: #bbb;
@@ -34,6 +34,7 @@
       border-width: 2px;
       border-color: orange;}
     &.error {
+      cursor: pointer;
       border-width: 2px;
       border-color: red; } }
   li.no-records {

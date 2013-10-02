@@ -286,9 +286,8 @@ function submitForm( ) {
 }
 
 /**
- * Used to submit a form with data that was loaded by POST. This function is not saved in localStorage and not used
- * in offline-capable views.
- *
+ * Used to submit a form with data that was loaded by POST. This function does not save the record in localStorage
+ * and is not used in offline-capable views.
  */
 
 function submitEditedForm( ) {
@@ -616,8 +615,17 @@ GUI.prototype.setCustomEventHandlers = function( ) {
 
   $( document ).on( 'click', '.upload-records:not(:disabled)', function( ) {
     submitQueue( );
+  } );
 
-    //connection.log.show( );
+  $( document ).on( 'click', '.record.error', function( ) {
+    var name = $( this ).attr( 'name' ),
+      $info = $( this ).siblings( '[name="' + name + '"]' );
+
+    if ( $info.is( ':visible' ) ) {
+      $info.hide( 500 );
+    } else {
+      $info.show( 500 );
+    }
   } );
 
   $( '#form-controls button' ).toLargestWidth( );

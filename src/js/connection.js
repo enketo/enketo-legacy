@@ -349,6 +349,9 @@ Connection.prototype.progress = {
     //add display messages (always showing end status)
     if ( displayMsg ) {
       $result = $( '<li name="' + record.name + '" class="' + status + '">' + displayMsg + '</li>' ).insertAfter( $lis.last( ) );
+      window.setTimeout( function( ) {
+        $result.hide( 500 );
+      }, 3000 );
     }
 
     this._updateClass( $lis.first( ), status );

@@ -1,6 +1,6 @@
 <html>
 <head>
-<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="icon" type="image/png" href="images/enketo.ico">
 <title>Database Error</title>
 <style type="text/css">
 

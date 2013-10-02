@@ -322,7 +322,7 @@ Connection.prototype.progress = {
       'value': value
     } );
 
-    if ( value === max ) {
+    if ( value === max || max === 1 ) {
       $progress.css( 'visibility', 'hidden' );
     } else {
       $progress.css( 'visibility', 'visible' );

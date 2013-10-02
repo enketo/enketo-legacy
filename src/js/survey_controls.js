@@ -20,6 +20,16 @@ $( document ).ready( function( ) {
   if ( typeof StorageLocal !== "undefined" ) {
     store = new StorageLocal( );
     store.init( );
+    $( '.side-slider' ).append(
+      '<h3>Queue</h3>' +
+      '<p>Records are stored inside your browser until they have been uploaded ' +
+      '(even if you turn off your computer or go offline).</p>' +
+      '<progress class="upload-progress"></progress>' +
+      '<ul class="record-list"></ul>' +
+      '<p><button class="btn export-records">Export</button>' +
+      '<button class="btn btn-primary pull-right upload-records">Upload</button></p>' +
+      '<p>Queued records are uploaded <em>automatically, in the background</em> every 5 minutes when this page is open ' +
+      'and an internet connection is available. To force an upload in between automatic tries, click Upload.</p>' );
   }
 } );
 
@@ -590,15 +600,7 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     }
   } );
 
-  $( '.queue-length' ).on( 'click', function( ) {
-    //this can be done with flexboxes in near future;
-    $( '.side-slider' ).css( 'height', $( 'body' ).height( ) );
-    window.scrollTo( 0, 0 );
-    $( 'body' ).toggleClass( 'show-side-slider' );
-    //recordsDialog( );
-  } );
-
-  $( '.export-records' ).on( 'click', function( ) {
+  $( document ).on( 'click', '.export-records', function( ) {
     var dataArr, dataStr, server,
       finalOnly = true,
       fileName = form.getName( ) + '_data_backup.xml';
@@ -612,7 +614,7 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     }
   } );
 
-  $( '.upload-records:not(:disabled)' ).on( 'click', function( ) {
+  $( document ).on( 'click', '.upload-records:not(:disabled)', function( ) {
     submitQueue( );
 
     //connection.log.show( );
@@ -647,6 +649,7 @@ GUI.prototype.setCustomEventHandlers = function( ) {
 GUI.prototype.updateRecordList = function( recordList, $page ) {
   "use strict";
   var name, i, $li,
+    $buttons = $( '.side-slider .upload-records, .side-slider .export-records' ),
     $list = $( '.side-slider .record-list' );
 
   // get form list object (keys + upload) ordered by time last saved
@@ -660,7 +663,6 @@ GUI.prototype.updateRecordList = function( recordList, $page ) {
     if ( $.grep( recordList, function( record ) {
       return record.key == name;
     } ).length === 0 ) {
-      console.log( 'record with name no longer exists', name );
       //remove the DOM element and its same-name-siblings (split submissions)
       $( this ).siblings( '[name="' + name + '"]' ).addBack( ).hide( 2000, function( ) {
         $( this ).remove( );
@@ -670,6 +672,8 @@ GUI.prototype.updateRecordList = function( recordList, $page ) {
 
   //add new records
   if ( recordList.length > 0 ) {
+    $list.find( '.no-records' ).remove( );
+    $buttons.removeAttr( 'disabled' );
     for ( i = 0; i < recordList.length; i++ ) {
       name = recordList[ i ].key;
       if ( $list.find( '[name="' + name + '"]' ).length === 0 ) {
@@ -678,6 +682,11 @@ GUI.prototype.updateRecordList = function( recordList, $page ) {
         $li.attr( 'name', name );
         $list.append( $li );
       }
+    }
+  } else {
+    $buttons.attr( 'disabled', 'disabled' );
+    if ( $list.find( '.no-records' ).length === 0 ) {
+      $list.append( '<li class="no-records">no records queued</li>' );
     }
   }
 

@@ -113,6 +113,14 @@ GUI.prototype.setEventHandlers = function( ) {
     printO.printForm( );
   } );
 
+  $( '.side-slider-toggle' ).on( 'click', function( ) {
+    //this can be done with flexboxes in near future;
+    $( '.side-slider' ).css( 'height', $( 'body' ).height( ) );
+    window.scrollTo( 0, 0 );
+    $( 'body' ).toggleClass( 'show-side-slider' );
+    //recordsDialog( );
+  } );
+
   $( '.offline-enabled-icon' ).on( 'click', function( ) {
     var msg = "<p>This form can now be loaded and used without an Internet connection on this device. " +
       "Bookmark it for easy offline access." +

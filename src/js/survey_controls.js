@@ -20,6 +20,16 @@ $( document ).ready( function( ) {
   if ( typeof StorageLocal !== "undefined" ) {
     store = new StorageLocal( );
     store.init( );
+    $( '.side-slider' ).append(
+      '<h3>Queue</h3>' +
+      '<p>Records are stored inside your browser until they have been uploaded ' +
+      '(even if you turn off your computer or go offline).</p>' +
+      '<progress class="upload-progress"></progress>' +
+      '<ul class="record-list"></ul>' +
+      '<p><button class="btn export-records">Export</button>' +
+      '<button class="btn btn-primary pull-right upload-records">Upload</button></p>' +
+      '<p>Queued records are uploaded <em>automatically, in the background</em> every 5 minutes when this page is open ' +
+      'and an internet connection is available. To force an upload in between automatic tries, click Upload.</p>' );
   }
 } );
 
@@ -276,9 +286,8 @@ function submitForm( ) {
 }
 
 /**
- * Used to submit a form with data that was loaded by POST. This function is not saved in localStorage and not used
- * in offline-capable views.
- *
+ * Used to submit a form with data that was loaded by POST. This function does not save the record in localStorage
+ * and is not used in offline-capable views.
  */
 
 function submitEditedForm( ) {
@@ -334,6 +343,32 @@ function submitEditedForm( ) {
   );
 }
 
+function submitQueue( ) {
+  //TODO: add second parameter to getSurveyDataArr() to
+  //getCurrentRecordName() to prevent currenty open record from being submitted
+  //connection.uploadRecords(store.getSurveyDataArr(true));
+
+  var i,
+    records = store.getSurveyDataArr( true ),
+    successHandler = function( recordPrepped ) {
+      connection.uploadRecords( recordPrepped );
+    },
+    errorHandler = function( ) {
+      console.error( 'Something went wrong while trying to prepare the record(s) for uploading.' );
+    };
+  ///the check for whether an upload is currently ongoing prevents an ugly-looking issue whereby e.g. #1 in the queue failed to submit
+  //is removed from the queue and then re-entered before the old queue was emptied.
+  if ( !connection.uploadOngoingID && connection.uploadQueue.length === 0 ) {
+    for ( i = 0; i < records.length; i++ ) {
+      prepareFormDataArray(
+        records[ i ], {
+          success: successHandler,
+          error: errorHandler
+        }
+      );
+    }
+  }
+}
 
 /**
  * Asynchronous function that builds up a form data array including media files
@@ -439,53 +474,34 @@ function prepareFormDataArray( record, callbacks ) {
  * @deprecated
  * @param  {boolean=} finalOnly [description]
  */
+//function exportData( finalOnly ) {
+//  "use strict";
+//  var i, dataArr, dataStr, uriContent, newWindow;
+//  finalOnly = finalOnly || true;//
 
-function exportData( finalOnly ) {
-  "use strict";
-  var i, dataArr, dataStr, uriContent, newWindow;
-  finalOnly = finalOnly || true;
+//  dataArr = store.getSurveyDataOnlyArr( finalOnly );//
 
-  dataArr = store.getSurveyDataOnlyArr( finalOnly );
+//  if ( dataArr.length === 0 ) {
+//    gui.feedback( 'No data to export.' );
+//  } else {
+//    dataStr = vkbeautify.xml( '<exported>' + dataArr.join( '' ) + '</exported>' );
+//    uriContent = "data:application/octet-stream," + encodeURIComponent( dataStr ); /*data:application/octet-stream*/
+//    newWindow = window.open( uriContent, 'exportedData' );
+//  }
+//}
 
-  if ( dataArr.length === 0 ) {
-    gui.feedback( 'No data to export.' );
-  } else {
-    dataStr = vkbeautify.xml( '<exported>' + dataArr.join( '' ) + '</exported>' );
-    uriContent = "data:application/octet-stream," + encodeURIComponent( dataStr ); /*data:application/octet-stream*/
-    newWindow = window.open( uriContent, 'exportedData' );
-  }
-}
 
 /**
  * Function to export or backup data to a file. In Chrome it will get an appropriate file name.
  */
 
-function exportToFile( ) {
+function exportToTextFile( fileName, dataStr ) {
   "use strict";
-  var i, dataArr, dataStr, blob, server,
-    finalOnly = true,
-    fileName = form.getName( ) + '_data_backup.xml';
-
-  gui.confirm( {
-    msg: 'Records are stored inside the browser until they are submitted (even if you turn off ' + 'your computer or go offline). <br/><br/>As a backup, to save all queued records to a file, click export.',
-    heading: 'Export queued records'
-  }, {
-    posButton: 'Export',
-    negButton: 'Cancel',
-    posAction: function( ) {
-      dataArr = store.getSurveyDataOnlyArr( finalOnly ); //store.getSurveyDataXMLStr(finalOnly));
-      if ( !dataArr || dataArr.length === 0 ) {
-        gui.alert( 'No records in queue. The records may have been successfully submitted already.' );
-      } else {
-        server = settings[ 'serverURL' ] || '';
-        dataStr = vkbeautify.xml( '<exported server="' + server + '">' + dataArr.join( '' ) + '</exported>' );
-        blob = new Blob( [ dataStr ], {
-          type: "text/plain; charset=utf-8"
-        } );
-        saveAs( blob, fileName );
-      }
-    }
+  var blob;
+  blob = new Blob( [ dataStr ], {
+    type: "text/plain; charset=utf-8"
   } );
+  saveAs( blob, fileName );
 }
 
 //Extend GUI
@@ -549,14 +565,39 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     }
   } );
 
-  $( '.queue-length' ).on( 'click', function( ) {
-    exportToFile( );
+  $( document ).on( 'click', '.export-records', function( ) {
+    var dataArr, dataStr, server,
+      finalOnly = true,
+      fileName = form.getName( ) + '_data_backup.xml';
+    dataArr = store.getSurveyDataOnlyArr( finalOnly ); //store.getSurveyDataXMLStr(finalOnly));
+    if ( !dataArr || dataArr.length === 0 ) {
+      gui.alert( 'No records in queue. The records may have been successfully submitted already.' );
+    } else {
+      server = settings[ 'serverURL' ] || '';
+      dataStr = vkbeautify.xml( '<exported server="' + server + '">' + dataArr.join( '' ) + '</exported>' );
+      exportToTextFile( fileName, dataStr );
+    }
+  } );
+
+  $( document ).on( 'click', '.upload-records:not(:disabled)', function( ) {
+    submitQueue( );
+  } );
+
+  $( document ).on( 'click', '.record.error', function( ) {
+    var name = $( this ).attr( 'name' ),
+      $info = $( this ).siblings( '[name="' + name + '"]' );
+
+    if ( $info.is( ':visible' ) ) {
+      $info.hide( 500 );
+    } else {
+      $info.show( 500 );
+    }
   } );
 
   $( '#form-controls button' ).toLargestWidth( );
 
   $( document ).on( 'save delete', 'form.jr', function( e, formList ) {
-    console.debug( 'save or delete event detected with new formlist: ' + formList );
+    //console.debug( 'save or delete event detected with new formlist: ' + formList );
     that.updateRecordList( JSON.parse( formList ) );
   } );
 
@@ -581,46 +622,50 @@ GUI.prototype.setCustomEventHandlers = function( ) {
 //update the survey forms names list
 GUI.prototype.updateRecordList = function( recordList, $page ) {
   "use strict";
-  //var name, date, clss, i, icon, $list, $li,
-  //finishedFormsQty = 0,
-  //draftFormsQty = 0;
-  //console.debug( 'updating recordlist in GUI' );
-  //if ( !$page ) {
-  //  $page = this.pages.get( 'records' );
-  //}
+  var name, i, $li,
+    $buttons = $( '.side-slider .upload-records, .side-slider .export-records' ),
+    $list = $( '.side-slider .record-list' );
 
-  //$list = $page.find( '#records-saved ol' );
-
-  //remove the existing option elements
-  //$list.children( ).remove( );
   // get form list object (keys + upload) ordered by time last saved
-  recordList = recordList || [ ]; //store.getRecordList();
+  recordList = recordList || [ ];
+  $( '.queue-length' ).text( recordList.length );
 
+  //cleanup 
+  $list.find( '.record' ).each( function( ) {
+    name = $( this ).attr( 'name' );
+    //if the record in the DOM no longer exists in storage
+    if ( $.grep( recordList, function( record ) {
+      return record.key == name;
+    } ).length === 0 ) {
+      //remove the DOM element and its same-name-siblings (split submissions)
+      $( this ).siblings( '[name="' + name + '"]' ).addBack( ).hide( 2000, function( ) {
+        $( this ).remove( );
+      } );
+    }
+  } );
+
+  //add new records
   if ( recordList.length > 0 ) {
-    //for ( i = 0; i < recordList.length; i++ ) {
-    //  name = recordList[ i ].key;
-    //  date = new Date( recordList[ i ][ 'lastSaved' ] ).toDateString( );
-    //  if ( recordList[ i ][ 'ready' ] ) { // === true){//} || recordList[i]['ready'] == 'true'){
-    //    icon = 'check';
-    //    finishedFormsQty++;
-    //  } else {
-    //    icon = 'pencil';
-    //    draftFormsQty++;
-    //  }
-    //  $li = $( '<li><span class="ui-icon ui-icon-' + icon + '"></span><span class="name">' +
-    //    '</span><span class="date"> (' + date + ')</span></li>' );
-    //  $li.find( '.name' ).text( name ); // encodes string to html
-    //  $list.append( $li );
-    //}
-    $( '.queue-length' ).text( recordList.length ).removeClass( 'hide' );
+    $list.find( '.no-records' ).remove( );
+    $buttons.removeAttr( 'disabled' );
+    for ( i = 0; i < recordList.length; i++ ) {
+      name = recordList[ i ].key;
+      if ( $list.find( '[name="' + name + '"]' ).length === 0 ) {
+        $li = $( '<li class="record"></li' );
+        $li.text( name ); // encodes string to html
+        $li.attr( 'name', name );
+        $list.append( $li );
+      }
+    }
   } else {
-    //$( '<li class="no-click">no locally saved records found</li>' ).appendTo( $list );
-    $( '.queue-length' ).text( 0 ).addClass( 'hide' );
+    $buttons.attr( 'disabled', 'disabled' );
+    if ( $list.find( '.no-records' ).length === 0 ) {
+      $list.append( '<li class="no-records">no records queued</li>' );
+    }
   }
-  // update status counters
-  //$page.find( '#records-draft-qty' ).text( draftFormsQty );
-  //$page.find( '#records-final-qty' ).text( finishedFormsQty );
+
 };
+
 /*
 GUI.prototype.saveConfirm = function(){
   "use strict";

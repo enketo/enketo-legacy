@@ -7,7 +7,7 @@
 			((empty($return_url)) ? $this->config->item('integration_with_url') : $return_url );
 	?>
 	<div class='offline-enabled'>
-		<div class='offline-enabled-icon not-enabled' title="This form is able to launch offline"></div><div class='queue-length hide' title="Records Queued - Click to Backup to File"></div>
+		<? if(!empty($manifest)): ?><div class='offline-enabled-icon not-enabled' title="This form is able to launch offline"></div><? endif; ?><div class='queue-length side-slider-toggle' title="Records Queued"></div>
 	</div>
 	<a class="branding" href="<?= $link ?>" title="Go Back">
 	<? if (!empty($logo_url)): ?>

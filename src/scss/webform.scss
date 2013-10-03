@@ -9,7 +9,7 @@ $baseLineHeight: 20px;
   @include default-normal; }
 
 @import "main";
+@import "side-slider";
 @import "form";
 @import "form_header";
-//only required for offline-enabled webforms
 @import "responsive";

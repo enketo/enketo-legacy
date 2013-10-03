@@ -2,14 +2,14 @@
 <html lang="">
 <head>
     <meta charset="utf-8">
-	<link rel="icon" type="image/png" href="images/favicon.png">
+	<link rel="icon" type="image/png" href="images/enketo.ico">
     <title>Browser not supported</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="robots" content="">
     
-    <script type="text/javascript" src="/libraries/jquery.min.js"></script>
-	<script type="text/javascript" src="/libraries/modernizr.min.js"></script>
+    <script type="text/javascript" src="/libraries/enketo-core/lib/jquery.min.js"></script>
+	<script type="text/javascript" src="/libraries/enketo-core/lib/modernizr.min.js"></script>
 	<script type="text/javascript">
 		var notSupported = [], and='';
 		if (!Modernizr.localstorage) notSupported.push('local data storage');

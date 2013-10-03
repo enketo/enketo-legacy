@@ -1,8 +1,9 @@
 //override properties for iframe-friendly view
-.paper{
+.paper {
 	border-radius: 0;
-	border: none}
-.print{
-	display: none;}
-.form-language-selector{
-	border-right: none; }
+	border: none } 
+.print {
+	display: none; 
+	~ .form-language-selector{
+		border-right: none; 
+		padding-right: 0; } } 

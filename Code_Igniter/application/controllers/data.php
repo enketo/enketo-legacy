@@ -32,28 +32,27 @@ class Data extends CI_Controller {
 
 	public function submission()
 	{
-		if ($this->config->item('auth_support'))
-		{
+		if ($this->config->item('auth_support')) {
 			$this->load->add_package_path(APPPATH.'third_party/form_auth');
 		}
+
 		$this->load->library(array('form_auth', 'openrosa'));
 		$time_start = time();
 		$submission_url = $this->Survey_model->get_form_submission_url();
 
 		extract($_POST);
 
-		if (!$submission_url){
+		if (!$submission_url) {
 			return $this->output->set_status_header(500, 'OpenRosa server submission url not set');
 		}
-		if(!isset($xml_submission_data) || $xml_submission_data == '')
-		{
+
+		if(!isset($xml_submission_data) || $xml_submission_data == '') {
 			return $this->output->set_status_header(500, 'Enketo server did not receive data');
 		}
 		$xml_submission_filepath = "/tmp/".random_string('alpha', 10).".xml";//*/"/tmp/data_submission.xml";
 		$xml_submission_file = fopen($xml_submission_filepath, 'w');
 			
-		if (!$xml_submission_file)
-		{
+		if (!$xml_submission_file) {
 			return $this->output->set_status_header(500, "Issue creating file from uploaded XML data (Enketo server)");
 		}
 

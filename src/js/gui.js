@@ -105,8 +105,20 @@ GUI.prototype.setEventHandlers = function( ) {
     return false;
   } );
 
+  $( document ).on( 'click', '.side-slider .close', function( event ) {
+    $( 'body' ).removeClass( 'show-side-slider' );
+  } );
+
   $( 'button.print' ).on( 'click', function( ) {
     printO.printForm( );
+  } );
+
+  $( '.side-slider-toggle' ).on( 'click', function( ) {
+    //this can be done with flexboxes in near future;
+    $( '.side-slider' ).css( 'height', $( 'body' ).height( ) );
+    window.scrollTo( 0, 0 );
+    $( 'body' ).toggleClass( 'show-side-slider' );
+    //recordsDialog( );
   } );
 
   $( '.offline-enabled-icon' ).on( 'click', function( ) {

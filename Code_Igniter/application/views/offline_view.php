@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="utf-8">
-	<link rel="icon" type="image/png" href="images/favicon.png">
+	<link rel="icon" type="image/png" href="images/enketo.ico">
     <title>Browser offline</title>
     <meta name="description" content="">
     <meta name="keywords" content="">

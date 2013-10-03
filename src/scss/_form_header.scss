@@ -31,6 +31,7 @@ $offline-color: rgb(231, 67, 41);
   margin: 100px 0 60px 0; } //move this??
 
 .offline-enabled {
+  @include transition-fast;
   display: block;
   position: fixed;
   top: 0;
@@ -50,6 +51,7 @@ $offline-color: rgb(231, 67, 41);
     &:hover {
       opacity: 0.8; } }
   .queue-length {
+    cursor: pointer;
     margin-top: 2px;
     width: 34px;
     color: $offline-color;

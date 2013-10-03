@@ -15,10 +15,10 @@
 
 
 		</head>
-	<body>
+	<body class="clearfix">
 		
 	<? require 'elements/dialogs.php'; ?>
-
+	<? require 'elements/side-slider.php'; ?>
 		<div class="main">
 			<article class="paper" >
 				<? include_once 'elements/form-header.php'; ?>

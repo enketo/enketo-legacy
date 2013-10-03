@@ -83,31 +83,11 @@ $( document ).ready( function( ) {
   $( 'form.jr' ).trigger( 'save', JSON.stringify( store.getRecordList( ) ) );
 
   window.setInterval( function( ) {
-    trySubmission( );
-  }, 30 * 1000 );
-
-  trySubmission = function( ) {
-    //TODO: add second parameter to getSurveyDataArr() to
-    //getCurrentRecordName() to prevent currenty open record from being submitted
-    //connection.uploadRecords(store.getSurveyDataArr(true));
-    var i,
-      records = store.getSurveyDataArr( true ),
-      successHandler = function( recordPrepped ) {
-        connection.uploadRecords( recordPrepped );
-      },
-      errorHandler = function( ) {
-        console.error( 'Something went wrong while trying to prepare the record(s) for uploading.' );
-      };
-    for ( i = 0; i < records.length; i++ ) {
-      prepareFormDataArray(
-        records[ i ], {
-          success: successHandler,
-          error: errorHandler
-        }
-      );
-    }
-  };
+    submitQueue( );
+  }, 300 * 1000 );
+  window.setTimeout( function( ) {
+    submitQueue( );
+  }, 5 * 1000 );
 
   profilerRecords.push( xpathEvalNum + ' XPath Evaluations during initialization took ' + xpathEvalTime + ' milliseconds of which ' + xpathEvalTimePure + ' for pure XPath evaluation.' );
-
 } );

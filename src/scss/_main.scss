@@ -19,13 +19,16 @@
     font-weight: normal;
     font-style: normal;}
 
-body{
+body {
   background: $body-bg no-repeat;
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
   overflow-x: hidden; }
 
-.preview-header{
+.main {
+  @include transition-fast; }
+
+.preview-header {
 	position: absolute;
 	top: -90px;
 	width:100%;
@@ -34,13 +37,12 @@ body{
   opacity: 0.5;
   margin: 0;}
 
-progress{
+progress {
   display: block;
   margin: 10px auto;}
 
-.preview progress{
-	margin: 80px auto;
-}
+.preview progres s{
+	margin: 80px auto; }
 
 .alert{
   .error-list{
@@ -122,6 +124,15 @@ progress{
 
 .page-break{
   display: none; }
+
+//inside the submissions dialog
+.submissions {
+  background-color: #ccc;
+  font-size: 11px;
+  padding: 10px;}
+.log {
+  word-break: break-all;
+}
 
 #feedback-bar {
   @include transition-slow;

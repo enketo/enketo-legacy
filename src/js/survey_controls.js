@@ -504,40 +504,6 @@ function exportToTextFile( fileName, dataStr ) {
   saveAs( blob, fileName );
 }
 
-function recordsDialog( ) {
-  var bodyTxt = '<p>Records are stored safely inside the browser until they have been succesfully submitted ' +
-    '(even if you turn off your computer or go offline).</p>' +
-    '<p>Queued records are submitted <em>automatically, in the background</em> when this page is open ' +
-    'and an internet connection is available.</p>' +
-    '<p>To see the submission process as it happens, click Submission</p>' +
-    '<p>As a backup for peace of mind, to save all queued records to a file, click export.</p>';
-  gui.confirm( {
-    msg: bodyTxt,
-    heading: 'Queued records'
-  }, {
-    posButton: 'Export',
-    negButton: 'Submission',
-    posAction: function( ) {
-      var dataArr, dataStr, server,
-        finalOnly = true,
-        fileName = form.getName( ) + '_data_backup.xml';
-      dataArr = store.getSurveyDataOnlyArr( finalOnly ); //store.getSurveyDataXMLStr(finalOnly));
-      if ( !dataArr || dataArr.length === 0 ) {
-        gui.alert( 'No records in queue. The records may have been successfully submitted already.' );
-      } else {
-        server = settings[ 'serverURL' ] || '';
-        dataStr = vkbeautify.xml( '<exported server="' + server + '">' + dataArr.join( '' ) + '</exported>' );
-        exportToTextFile( fileName, dataStr );
-      }
-    },
-    negAction: function( ) {
-      submitQueue( );
-      gui.alert( 'last submission attempts: <p class="submissions"></p>', 'Submissions in Action', 'normal' );
-      connection.log.show( );
-    }
-  } );
-}
-
 //Extend GUI
 //setCustomEventHandlers is called automatically by GUI.init();
 GUI.prototype.setCustomEventHandlers = function( ) {

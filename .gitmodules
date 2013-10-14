@@ -7,21 +7,6 @@
 [submodule "Code_Igniter/system"]
 	path = Code_Igniter/system
 	url = https://github.com/MartijnR/CodeIgniter_system.git
-[submodule "Code_Igniter/application/third_party/form_auth"]
-	path = Code_Igniter/application/third_party/form_auth
-	url = https://github.com/MartijnR/enketo_form_auth.git
-[submodule "public/private_media"]
-	path = public/private_media
-	url = https://github.com/MartijnR/enketo_org_media.git
-[submodule "src/scss/private"]
-	path = src/scss/private
-	url = https://github.com/MartijnR/enketo_org_scss.git
-[submodule "Code_Igniter/application/views/private_views"]
-	path = Code_Igniter/application/views/private_views
-	url = https://github.com/MartijnR/enketo_org_views.git
-[submodule "Code_Igniter/application/third_party/account"]
-	path = Code_Igniter/application/third_party/account
-	url = https://github.com/MartijnR/enketo_account.git
 [submodule "public/libraries/bootstrap-timepicker"]
 	path = public/libraries/bootstrap-timepicker
 	url = https://github.com/jdewit/bootstrap-timepicker.git

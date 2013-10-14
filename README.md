@@ -16,6 +16,7 @@ Related Projects
 * [Enketo Dristhi](https://github.com/MartijnR/enketo-dristhi) used in [Dristhi](https://play.google.com/store/apps/details?id=org.ei.drishti)
 * [Manifest Builder](https://github.com/MartijnR/Manifest-Builder) - used inside this repo
 * [File Manager](https://github.com/MartijnR/file-manager) - used inside this repo
+* [OpenRosa Forms](https://github.com/MartijnR/openrosa-forms) - test forms
 * [enketo-xslt-transformer-php] - To follow
 * [enketo-xslt-transformer-node] - To follow
 
@@ -31,7 +32,14 @@ Browser support
 Frequently Asked Questions
 ---------------------------
 ##### How to install this thing?
-After a year without meaningful code contributions and without a stable source of revenue, a new strategy was adopted to make the Enketo project sustainable. We are no longer encouraging or supporting self-installation of this PHP app. Instead the enketo repository has been split up into various easy-to-use open-source libraries that can serve as building blocks for creating your own enketo-powered app (see Related Projects above). We would like to encourage you to use these libraries, welcome contributions and will gladly help out if you experience issues. License of this PHP app is subject to change in the future.
+To better encourage code contributions and at the same time try to create a stable source of revenue to continue development on this project, a new strategy was adopted to make the Enketo project sustainable. We are no longer encouraging or supporting self-installation of this PHP app. 
+
+Instead, the main Enketo repository has been split up into various easy-to-use open-source libraries that can serve as building blocks for developers to create their own enketo-powered app (see [Related Projects](#related-projects) above). We would like to encourage developers to use these libraries, would welcome contributions and will gladly help out if you experience issues. 
+
+If you're not interested in extending enketo but would just like to use it and at the same time support the Enketo project, the best option is to use the service at [enketo.org](https://enketo.org) which can be linked to your own installation of ODK Aggregate or Formhub.
+
+Note that the Form Authentication module deployed on [enketo.org](https://enketo.org) and [formhub.org](https://formhub.org) is not included in the master branch and is not open-source. License of this PHP app is subject to change in the future.
+
 ##### Why are file-upload inputs greyed out and not usable?
 File uploads are only experimentially supported on Chrome (except on iOS) and Opera desktop at the moment. It uses the still experimental FileSytem API to ensure that Enketo forms work offline. If file uploads (images/sound/video) are important, ODK Collect may be a better option. Alternatively, it would be easy to develop an online-only version of Enketo using [Enketo Core](https://github.com/MartijnR/enketo-core) with full cross-browser support for file uploads.
 ##### Why is form authentication not working on my own installation?

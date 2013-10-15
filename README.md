@@ -38,7 +38,7 @@ Instead, the main Enketo repository has been split up into various easy-to-use o
 
 If you're not interested in extending enketo but would just like to use it and at the same time support the Enketo project, the best option is to use the service at [enketo.org](https://enketo.org) which can be linked to your own installation of ODK Aggregate or Formhub.
 
-Note that the Form Authentication module deployed on [enketo.org](https://enketo.org) and [formhub.org](https://formhub.org) is not included in the master branch and is not open-source. License of this PHP app is subject to change in the future.
+License of this PHP app is subject to change in the future. Note that the Form Authentication module deployed on [enketo.org](https://enketo.org) and [formhub.org](https://formhub.org) is not included in the master branch and is not open-source. 
 
 ##### Why are file-upload inputs greyed out and not usable?
 File uploads are only experimentially supported on Chrome (except on iOS) and Opera desktop at the moment. It uses the still experimental FileSytem API to ensure that Enketo forms work offline. If file uploads (images/sound/video) are important, ODK Collect may be a better option. Alternatively, it would be easy to develop an online-only version of Enketo using [Enketo Core](https://github.com/MartijnR/enketo-core) with full cross-browser support for file uploads.

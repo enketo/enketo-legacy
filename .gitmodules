@@ -25,3 +25,15 @@
 [submodule "public/libraries/blob"]
 	path = public/libraries/blob
 	url = https://github.com/eligrey/Blob.js.git
+[submodule "Code_Igniter/application/third_party/form_auth"]
+	path = Code_Igniter/application/third_party/form_auth
+	url = https://github.com/MartijnR/enketo_form_auth.git
+[submodule "public/private_media"]
+	path = public/private_media
+	url = https://github.com/MartijnR/enketo_org_media.git
+[submodule "src/scss/private"]
+	path = src/scss/private
+	url = https://github.com/MartijnR/enketo_org_scss.git
+[submodule "Code_Igniter/application/third_party/account"]
+	path = Code_Igniter/application/third_party/account
+	url = https://github.com/MartijnR/enketo_account.git

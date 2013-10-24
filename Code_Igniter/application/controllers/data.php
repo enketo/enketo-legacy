@@ -23,6 +23,7 @@ class Data extends CI_Controller {
 		$this->load->model('Survey_model', '', TRUE);
 		$this->load->model('Instance_model', '', TRUE);
 		$this->load->helper(array('subdomain','url', 'string', 'http'));
+		log_message('debug', 'Data controller initialized');
 	}
 
 	public function index()

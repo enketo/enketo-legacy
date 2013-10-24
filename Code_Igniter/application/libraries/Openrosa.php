@@ -56,7 +56,15 @@ class Openrosa {
     public function request_max_size($submission_url)
     {
         $header_arr = $this->_request_headers_and_info($submission_url);
-        return $header_arr['X-Openrosa-Accept-Content-Length'];
+
+        if ($header_arr['X-Openrosa-Accept-Content-Length']) {
+            return $header_arr['X-Openrosa-Accept-Content-Length'];
+        } else {
+            log_message('error', 'expected X-OpenRosa-Accept-Content-Length header but only got: '
+                .json_encode($header_arr));
+            //use a default value
+            return 5 * 1024 * 1024;
+        }
     }
 
     public function get_headers($url, $credentials=NULL)

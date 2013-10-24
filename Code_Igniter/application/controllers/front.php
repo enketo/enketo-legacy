@@ -47,8 +47,8 @@ class Front extends CI_Controller {
 		$data = array(
 			'offline'			=> FALSE, 
 			'title_component'	=> 'home', 
-			'robots'     		=> TRUE,
-			'number_launched'	=> $this->_get_db_number_launched()
+			'robots'     		=> TRUE//,
+			//'number_launched'	=> $this->_get_db_number_launched()
 		);
 
 		if (ENVIRONMENT === 'production') {
@@ -76,6 +76,7 @@ class Front extends CI_Controller {
 		}	
 	}
 
+	/*
 	public function get_number_launched() {
 		echo $this->_get_number_launched();
 	}
@@ -117,5 +118,6 @@ class Front extends CI_Controller {
 	private function _set_db_number_launched($number) {
 		$this->db->update('properties', array('forms_launched' => $number));
 	}
+	*/
 }
 ?>

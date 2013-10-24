@@ -147,6 +147,7 @@ Connection.prototype.uploadRecords = function( record, force, callbacks ) {
   callbacks = callbacks || null;
 
   if ( !record.name || !record.instanceID || !record.formData || !record.batches || typeof record.batchIndex == 'undefined' ) {
+    console.error( 'record name, instanceID, formData, batches and/or batchIndex was not defined!', record );
     return false;
   }
   sameItemInQueue = $.grep( this.uploadQueue, function( item ) {
@@ -735,7 +736,7 @@ Connection.prototype.ORosaHelper = function( conn ) {
  * Get the number of forms launched on enketo (all know deployments)
  * @param  {Object.<string, Function>=} callbacks callbacks
  */
-Connection.prototype.getNumberFormsLaunched = function( callbacks ) {
+/*Connection.prototype.getNumberFormsLaunched = function( callbacks ) {
   callbacks = this.getCallbacks( callbacks );
   $.ajax( {
     url: '/front/get_number_launched_everywhere',
@@ -744,7 +745,7 @@ Connection.prototype.getNumberFormsLaunched = function( callbacks ) {
     error: callbacks.error,
     complete: callbacks.complete
   } );
-};
+};*/
 
 /**
  * Loads a google maps API v3 script

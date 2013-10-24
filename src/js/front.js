@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-$( document ).ready( function() {
-  var connection = new Connection();
+$( document ).ready( function( ) {
+  var connection = new Connection( );
   $( '.update-forms-total' ).click( function( event ) {
-    event.preventDefault();
-    updateFormsTotal();
-  } ).click();
+    event.preventDefault( );
+    updateFormsTotal( );
+  } ).click( );
 
   //override GUI handler to restore default bookmark functionality
-  $( document ).on( 'click', 'a[href^="#"]:not([href="#"])', function() {
+  $( document ).on( 'click', 'a[href^="#"]:not([href="#"])', function( ) {
     window.location.hash = $( this ).attr( 'href' );
   } );
 
-  function updateFormsTotal() {
+  /*function updateFormsTotal() {
     console.log( 'updating number of launched forms' );
     connection.getNumberFormsLaunched( {
       success: function( resp ) {
@@ -35,5 +35,5 @@ $( document ).ready( function() {
         }
       }
     } );
-  }
+  }*/
 } );

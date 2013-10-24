@@ -50,7 +50,7 @@ class Transform extends CI_Controller {
 		}
 		$this->load->library('form_auth');
 
-		if ($_FILES['xml_file']['size'] > 0)
+		if (isset($_FILES['xml_file']) && $_FILES['xml_file']['size'] > 0)
 		{
 			//log_message('debug', 'file path: '.$_FILES['xml_file']['tmp_name']);
 			$file_path_to_XML_form = $_FILES['xml_file']['tmp_name'];

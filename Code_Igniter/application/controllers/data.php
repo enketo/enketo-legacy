@@ -74,6 +74,10 @@ class Data extends CI_Controller {
 			//log_message('debug', 'increasing submission count');
 			$this->Survey_model->increase_submission_count();
 		}
+
+		if ($response['status_code'] !== '201' || $response['status_code'] !== '202') {
+			log_message('error', 'result of submission to '.$submission_url.': '.json_encode($response));
+		}
 		//log_message('debug', 'result of submission: '.json_encode($response));
 		//log_message('debug', 'data submission took '.(time()-$time_start).' seconds.');
 		$this->output->set_status_header($response['status_code']);

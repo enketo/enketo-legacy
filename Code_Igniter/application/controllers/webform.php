@@ -188,6 +188,7 @@ class Webform extends CI_Controller {
             'form_data'=> $form->default_instance,
             'form_data_to_edit' => $edit_obj->instance_xml,
             'return_url' => $edit_obj->return_url,
+            'offline_storage' => FALSE,
             'logo_url' => $this->account->logo_url($this->server_url),
             'stylesheets'=> $this->iframe ? array(
                 array( 'href' => '/build/css/webform_edit_iframe.css', 'media' => 'all'),
@@ -259,6 +260,7 @@ class Webform extends CI_Controller {
             'form_data'=> $form->default_instance,
             'form_data_to_edit' => NULL,
             'return_url' => '/webform/thanks',
+            'offline_storage' => FALSE,
             'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
             'logo_url' => $this->account->logo_url($this->server_url),
             'logout' => $this->credentials !== NULL
@@ -302,6 +304,7 @@ class Webform extends CI_Controller {
             'html_title'=> 'enketo webform preview',
             'form'=> '',
             'return_url' => NULL,
+            'offline_storage' => FALSE,
             'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
             'logo_url' => !empty($params['server']) ? $this->account->logo_url($params['server']) : $this->account->logo_url(),
             'logout' => $this->credentials !== NULL

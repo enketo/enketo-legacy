@@ -353,8 +353,8 @@ class Webform extends CI_Controller {
         }
         
         $this->load->model('Form_model', '', TRUE);
-        
-        $s = ($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) ? $this->input->get('s', TRUE) : NULL;
+        log_message('debug', 'remote: '.$_SERVER['REMOTE_ADDR'].', local: '.$_SERVER['SERVER_ADDR']);
+        $s = ($_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) ? $this->input->get('s', TRUE) : NULL;
         $this->credentials = $this->form_auth->get_credentials($s);
         $this->Form_model->setup($this->server_url, $this->form_id, $this->credentials, $this->form_hash_prev, $this->xsl_version_prev, $this->media_hash_prev);
         

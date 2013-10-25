@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
     | force cache update 
     |--------------------------------------------------------------------------
     */
-        private $hash_manual_override = '0030'; //time();
+        private $hash_manual_override = '0032'; //time();
     /*
     |-------------------------------------------------------------------------- 
     | pages to be cached (urls relative to sub.example.com/)
@@ -84,7 +84,7 @@ class Manifest extends CI_Controller {
         $this->load->model('Survey_model','',TRUE);
         $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         $this->manifest_url = $this->_full_url(uri_string());
-        $this->_set_context();
+        //$this->_set_context();
         log_message('debug', 'Manifest Controller initialized for url: '. $this->manifest_url);
     }
 
@@ -105,9 +105,9 @@ class Manifest extends CI_Controller {
                 }
                 $this->_set_data();
                 $data = $this->data;
-                $this->cache->save($this->manifest_url, $data, 60);
-            } else {
-                log_message('debug', 'loading manifest from cache');
+                if (count($data['cache']) > 0) {
+                    $this->cache->save($this->manifest_url, $data, 60);
+                }
             }
             
             if (count($data['cache']) > 0 ) {
@@ -127,6 +127,7 @@ class Manifest extends CI_Controller {
      */
     public function test()
     {
+        $this->cache->delete($this->manifest_url);
         $args = func_get_args();
         call_user_func_array(array($this, 'html'), $args);
     }
@@ -143,7 +144,7 @@ class Manifest extends CI_Controller {
             $this->data['cache'] = $this->pages;    
             foreach ($this->pages as $page) {
                 //log_message('debug', 'checking resources on page: '.$this->_full_url($page));
-                $page_full_url = $this->_full_url($page.'?manifest=true');
+                $page_full_url = $this->_full_url($page.'?manifest=true&s='.$this->session->userdata('session_id'));
                 $result = $this->_add_resources_to_cache($page_full_url);
                 if (!$result) {
                     //if the master page is null, cancel everything and return a 404
@@ -278,8 +279,9 @@ class Manifest extends CI_Controller {
             $abs_path = constant('FCPATH'). $rel_path; 
             $content = (is_file($abs_path)) ? file_get_contents($abs_path) : NULL;
         } else {
-            $context = stream_context_create( $this->context_arr );
-            $content = file_get_contents($url_or_path, FALSE, $context);
+            //$context = stream_context_create( $this->context_arr );
+            //$content = file_get_contents($url_or_path, FALSE, $context);
+            $content = file_get_contents($url_or_path);
         }
         if (empty($content)) {
             log_message('error', 'Manifest controller failed to get contents of '.$url_or_path);
@@ -306,9 +308,11 @@ class Manifest extends CI_Controller {
 
     /**
      * sets context (cookie with session identifier) for file_get_contents so credentials for form can be retrieved
+     * TODO: doesn't work because session is re-created every 5 minutes and uses IP address
+     * TODO: need to pass IP address
      * from browser session (and not from a NEW session that file_get_contents would otherwise create.
      */
-    private function _set_context()
+    /*private function _set_context()
     {
         $opts['http']['method'] = 'GET';
         $opts['http']['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
@@ -327,6 +331,6 @@ class Manifest extends CI_Controller {
         }
         $this->context_arr = $opts;
         //log_message('debug', 'context for file_get_contents created from browser cookie');
-    }
+    }*/
 }
 ?>

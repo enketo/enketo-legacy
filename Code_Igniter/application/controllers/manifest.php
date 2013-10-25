@@ -231,7 +231,6 @@ class Manifest extends CI_Controller {
         
         if (isset($content)) {
             $this->data['hashes'] .= md5($content);
-            log_message('debug', 'md5 of '.$url.': '.md5($content));
 
             preg_match_all($pattern, $content, $result_array);
             $found_resources = $result_array[$i];
@@ -247,7 +246,6 @@ class Manifest extends CI_Controller {
                     //if (strpos($resource, '/media/get/') === 0) log_message('debug', 'content retrieved: '.$content);
                     if (!empty($content)) {
                         $cache_resources[] = $resource;
-                        log_message('debug', 'md5 of '.$resource.': '.md5($content));
                         $this->data['hashes'] .= md5($content);
                     } else {
                         log_message('error', 'resource: '.$resource.' could not be found, removed from manifest.');

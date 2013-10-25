@@ -353,7 +353,8 @@ class Webform extends CI_Controller {
         }
         
         $this->load->model('Form_model', '', TRUE);
-        $this->credentials = $this->form_auth->get_credentials();
+        $s = ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') ? $this->input->get('s', TRUE) : NULL;
+        $this->credentials = $this->form_auth->get_credentials($s);
         $this->Form_model->setup($this->server_url, $this->form_id, $this->credentials, $this->form_hash_prev, $this->xsl_version_prev, $this->media_hash_prev);
         
         if($this->Form_model->requires_auth()) {
@@ -424,6 +425,7 @@ class Webform extends CI_Controller {
     {
         if (isset($form->authenticate) && $form->authenticate) {
             if ($this->input->get('manifest') == 'true') {
+                log_message('debug', 'authentication not provided, sending empty string to manifest');
                 $this->output->set_output('');
             } else {
                 $this->_login($append);

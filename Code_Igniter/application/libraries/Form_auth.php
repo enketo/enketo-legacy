@@ -23,7 +23,7 @@ class Form_auth {
     	$this->CI->load->view('auth_error_view');
     }
 
-    public function get_credentials()
+    public function get_credentials($s = 5)
     {
     	return NULL;
     }

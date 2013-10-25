@@ -152,6 +152,7 @@ Cache.prototype.onUpdateReady = function( ) {
 Cache.prototype.onErrors = function( e ) {
   if ( connection.currentOnlineStatus === true && window.applicationCache.status !== window.applicationCache.IDLE ) {
     console.error( 'HTML5 cache error event', e );
+    gui.updateStatus.offlineLaunch( false );
     gui.alert( 'There is a new version of this application or form available but an error occurs when' +
       ' trying to download it. Please try to refresh the page or send a bug report to ' +
       '<a href="mailto:' + settings[ 'supportEmail' ] + '">' + settings[ 'supportEmail' ] + '</a>.' );

@@ -144,7 +144,9 @@ class Manifest extends CI_Controller {
             $this->data['cache'] = $this->pages;    
             foreach ($this->pages as $page) {
                 //log_message('debug', 'checking resources on page: '.$this->_full_url($page));
-                $page_full_url = $this->_full_url($page.'?manifest=true&s='.$this->session->userdata('session_id'));
+                $page_full_url = $this->_full_url($page.
+                    '?manifest=true&s='.urlencode($this->session->userdata('session_id')).
+                    '&token='.urlencode($this->encrypt->encode('localrequest')));
                 $result = $this->_add_resources_to_cache($page_full_url);
                 if (!$result) {
                     //if the master page is null, cancel everything and return a 404

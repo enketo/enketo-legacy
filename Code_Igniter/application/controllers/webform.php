@@ -60,6 +60,7 @@ class Webform extends CI_Controller {
         parent::__construct();
         $this->load->helper(array('subdomain','url', 'form'));
         $this->load->model('Survey_model','',TRUE);
+        $this->load->library('encrypt');
         $sub = get_subdomain();
         $suf = $this->Survey_model->ONLINE_SUBDOMAIN_SUFFIX;
         $this->subdomain = ($this->Survey_model->has_offline_launch_enabled()) 
@@ -353,8 +354,8 @@ class Webform extends CI_Controller {
         }
         
         $this->load->model('Form_model', '', TRUE);
-        log_message('debug', 'remote: '.$_SERVER['REMOTE_ADDR'].', local: '.$_SERVER['SERVER_ADDR']);
-        $s = (TRUE) ? $this->input->get('s', TRUE) : NULL;
+        $token = $this->input->get('token', TRUE);
+        $s = ($this->encrypt->decode($this->input->get('token', TRUE)) === 'localrequest') ? $this->input->get('s', TRUE) : NULL;
         $this->credentials = $this->form_auth->get_credentials($s);
         $this->Form_model->setup($this->server_url, $this->form_id, $this->credentials, $this->form_hash_prev, $this->xsl_version_prev, $this->media_hash_prev);
         

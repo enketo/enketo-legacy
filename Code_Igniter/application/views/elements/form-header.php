@@ -16,6 +16,6 @@
 	</div>
 	<? endif; ?>
 	</a>
-	<button onclick="return false;" class="print"><img src="/images/print.png" alt="print button" title="Print Form"/></button>
+	<button onclick="return false;" class="print"><img src="/images/print.png" alt="print button" title="Print this Form with Chrome or Safari"/></button>
 	<span class="form-language-selector"><span>Choose Language</span></span>
 </div>

@@ -68,7 +68,7 @@ class Survey_model extends CI_Model {
 
     public function get_form_submission_url()
     {
-        return strtolower($this->_get_item('submission_url'));
+        return $this->_get_item('submission_url');
     }
 
     public function get_webform_url_if_launched($server_url, $form_id, $options = array('type' => NULL))
@@ -252,9 +252,9 @@ class Survey_model extends CI_Model {
             $submission_url = !empty($submission_url) ? $submission_url : $this->_get_submission_url($server_url);   
             $data = array(
                 'subdomain'         => $subdomain,
-                'server_url'        => strtolower($server_url),
+                'server_url'        => $server_url,
                 'form_id'           => $form_id,
-                'submission_url'    => strtolower($submission_url),
+                'submission_url'    => $submission_url,
                 'data_url'          => NULL,
                 'email'             => NULL,
                 'launch_date'       => date( 'Y-m-d H:i:s', time())

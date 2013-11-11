@@ -65,7 +65,7 @@ class Account {
         }
 
     	foreach ($domains_allowed as $domain_allowed){
-    		if (preg_match('/^https?:\/\/'.strtolower(trim($domain_allowed['url'])).'.*/' , strtolower(trim($server_url)))) {
+    		if (preg_match('/^https?:\/\/'.trim($domain_allowed['url']).'.*/' , trim($server_url))) {
     			return $domain_allowed['api_token'];
     		}
     	}

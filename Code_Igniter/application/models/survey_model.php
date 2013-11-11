@@ -238,6 +238,9 @@ class Survey_model extends CI_Model {
      **/
     private function _launch($server_url, $form_id, $submission_url = NULL)
     {
+        if (strrpos($server_url, '/') === strlen($server_url)-1) {
+            $server_url = substr($server_url, 0, -1);
+        }
         if ($server_url && url_valid($server_url) && !empty($form_id)) {
             //TODO: CHECK URLS FOR LIVENESS?
             $existing_subdomain = $this->_get_subdomain($server_url, $form_id, NULL);
@@ -456,6 +459,9 @@ class Survey_model extends CI_Model {
     
     private function _get_subdomain($server_url, $form_id, $active = TRUE)
     {
+        if (strrpos($server_url, '/') === strlen($server_url)-1) {
+            $server_url = substr($server_url, 0, -1);
+        }
         $active_str = ($active == TRUE) ? ' AND active = 1' : '';
         $alt_server_url_1 = $this->_switch_protocol($server_url);
         $alt_server_url_2 = $this->_switch_www($server_url);
@@ -466,7 +472,7 @@ class Survey_model extends CI_Model {
         $this->db->or_where("server_url = '".$alt_server_url_2."' AND BINARY form_id = '".$form_id."'".$active_str);
         $this->db->or_where("server_url = '".$alt_server_url_3."' AND BINARY form_id = '".$form_id."'".$active_str);
         $query = $this->db->get('surveys', 1); 
-        //log_message('debug', $this->db->last_query());
+        log_message('debug', $this->db->last_query());
         if ($query->num_rows() === 1) {
             $row = $query->row_array();
             //log_message('debug', 'db query returned '.json_encode($row));

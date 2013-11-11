@@ -43,6 +43,7 @@ class Unit_test extends CI_Controller {
         $https = $this->Survey_model->get_webform_url('https://testserver.com/bob', 'unit', 1000, NULL, $options);
         $httpwww = $this->Survey_model->get_webform_url('http://www.testserver.com/bob', 'unit', 1000, NULL, $options);
         $httpswww = $this->Survey_model->get_webform_url('https://www.testserver.com/bob', 'unit', 1000, NULL, $options);
+        $trailslash = $this->Survey_model->get_webform_url('https://testserver.com/bob/', 'unit', 1000, NULL, $options);
 
         $props = array('url', 'single_url', 'iframe_url');
         foreach ($props as $prop)
@@ -57,6 +58,13 @@ class Unit_test extends CI_Controller {
             $test = ( strlen($httpwww[$prop]) > 0 && ( $httpwww[$prop] === $http[$prop] ) );
             $this->unit->run($test, TRUE, 'http://www.testserver.com and https://testserver.com server url return same '.$prop, 
                 'httpwww: '.$httpwww[$prop].', http:'.$http[$prop]);
+        }
+
+        foreach ($props as $prop)
+        {
+            $test = ( strlen($https[$prop]) > 0 && ( $https[$prop] === $trailslash[$prop] ) );
+            $this->unit->run($test, TRUE, 'https://www.testserver.com/bob and https://testserver.com/bob/ server url return same '.$prop, 
+                'https: '.$https[$prop].', with trailing slash:'.$trailslash[$prop]);
         }
 
         $props = array('single_url'=>TRUE, 'iframe_url'=>TRUE, 'url'=>FALSE);

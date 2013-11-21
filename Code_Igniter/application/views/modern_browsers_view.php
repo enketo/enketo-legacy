@@ -32,9 +32,8 @@
 	<p>
 		Ouch! Sorry, you were probably sent here because your browser is outdated or perhaps it has its key features disabled by using 'private browsing' mode.
 	</p>
-	<p>Enketo is a state-of-the-art web application that uses features that are not supported in outdated browser.</p>
 	<p>
-	 	We <strong>recommend</strong> using a recent version of one of the following excellent modern browsers:		
+	 	If you are using an outdated browser, we <strong>recommend</strong> upgrading to a recent version of one of the following excellent modern browsers:		
 		<ul>
 			<li><a href="http://www.google.com/chrome/" title="Chrome download page">Chrome</a></li>
 			<li><a href="http://www.apple.com/safari/" title="Safari download page">Safari</a></li>

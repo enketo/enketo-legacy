@@ -16,10 +16,10 @@
 
 var /**@type {StorageLocal}*/ store;
 
-$( document ).ready( function( ) {
+$( document ).ready( function() {
   if ( typeof StorageLocal !== "undefined" ) {
-    store = new StorageLocal( );
-    store.init( );
+    store = new StorageLocal();
+    store.init();
     $( '.side-slider' ).append(
       '<h3>Queue</h3>' +
       '<p>Records are stored inside your browser until they have been uploaded ' +
@@ -180,19 +180,19 @@ function resetForm( confirmed ) {
   //valueFirst = /**@type {string} */$('#saved-forms option:first').val();
   //console.debug('first form is '+valueFirst);
   //gui.pages.get('records').find('#records-saved').val(valueFirst);
-  console.debug( 'editstatus: ' + form.getEditStatus( ) );
-  if ( !confirmed && form.getEditStatus( ) ) {
+  console.debug( 'editstatus: ' + form.getEditStatus() );
+  if ( !confirmed && form.getEditStatus() ) {
     message = 'There are unsaved changes, would you like to continue <strong>without</strong> saving those?';
     choices = {
-      posAction: function( ) {
+      posAction: function() {
         resetForm( true );
       }
     };
     gui.confirm( message, choices );
   } else {
-    form.resetHTML( );
+    form.resetHTML();
     form = new Form( 'form.jr:eq(0)', jrDataStr );
-    form.init( );
+    form.init();
     $( 'button#delete-form' ).button( 'disable' );
   }
 }
@@ -243,10 +243,10 @@ function deleteForm(confirmed) {
  * resetForm() does not function as expected.
  */
 
-function submitForm( ) {
+function submitForm() {
   var record, name, saveResult;
   $( 'form.jr' ).trigger( 'beforesave' );
-  if ( !form.isValid( ) ) {
+  if ( !form.isValid() ) {
     gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
     return;
   }
@@ -254,14 +254,14 @@ function submitForm( ) {
     'data': form.getDataStr( true, true ),
     'ready': true
   };
-  name = form.getName( ) + ' - ' + store.getCounterValue( );
+  name = form.getName() + ' - ' + store.getCounterValue();
   saveResult = store.setRecord( name, record, false, false );
 
   console.log( 'result of save: ' + saveResult );
   if ( saveResult === 'success' ) {
     gui.feedback( 'Record queued for submission.', 3 );
     resetForm( true );
-    $( 'form.jr' ).trigger( 'save', JSON.stringify( store.getRecordList( ) ) );
+    $( 'form.jr' ).trigger( 'save', JSON.stringify( store.getRecordList() ) );
     //attempt uploading the data (all data in localStorage)
     //TODO: THIS (force=true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
     //TODO: add second parameter getCurrentRecordName() to prevent currenty open record from being submitted
@@ -275,13 +275,13 @@ function submitForm( ) {
         success: function( formDataArr ) {
           connection.uploadRecords( formDataArr, true );
         },
-        error: function( ) {
+        error: function() {
           gui.alert( 'Something went wrong while trying to prepare the record(s) for uploading.', 'Record Error' );
         }
       }
     );
   } else {
-    gui.alert( 'Error trying to save data locally before submit' );
+    gui.alert( 'Error trying to save data locally before submitting (message: ' + saveResult + ')' );
   }
 }
 
@@ -290,10 +290,10 @@ function submitForm( ) {
  * and is not used in offline-capable views.
  */
 
-function submitEditedForm( ) {
+function submitEditedForm() {
   var name, record, saveResult, redirect, beforeMsg, callbacks;
   $( 'form.jr' ).trigger( 'beforesave' );
-  if ( !form.isValid( ) ) {
+  if ( !form.isValid() ) {
     gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
     return;
   }
@@ -310,13 +310,13 @@ function submitEditedForm( ) {
   };
 
   callbacks = {
-    error: function( ) {
+    error: function() {
       gui.alert( 'Please try submitting again.', 'Submission Failed' );
     },
-    success: function( ) {
+    success: function() {
       if ( redirect ) {
         gui.alert( 'You will now be redirected.', 'Submission Successful!', 'success' );
-        setTimeout( function( ) {
+        setTimeout( function() {
           location.href = settings.returnURL;
         }, 1500 );
       }
@@ -326,7 +326,7 @@ function submitEditedForm( ) {
         resetForm( true );
       }
     },
-    complete: function( ) {}
+    complete: function() {}
   };
 
   //connection.uploadRecords(record, true, callbacks);
@@ -336,14 +336,14 @@ function submitEditedForm( ) {
       success: function( formDataArr ) {
         connection.uploadRecords( formDataArr, true, callbacks );
       },
-      error: function( ) {
+      error: function() {
         gui.alert( 'Something went wrong while trying to prepare the record(s) for uploading.', 'Record Error' );
       }
     }
   );
 }
 
-function submitQueue( ) {
+function submitQueue() {
   //TODO: add second parameter to getSurveyDataArr() to
   //getCurrentRecordName() to prevent currenty open record from being submitted
   //connection.uploadRecords(store.getSurveyDataArr(true));
@@ -353,7 +353,7 @@ function submitQueue( ) {
     successHandler = function( recordPrepped ) {
       connection.uploadRecords( recordPrepped );
     },
-    errorHandler = function( ) {
+    errorHandler = function() {
       console.error( 'Something went wrong while trying to prepare the record(s) for uploading.' );
     };
   ///the check for whether an upload is currently ongoing prevents an ugly-looking issue whereby e.g. #1 in the queue failed to submit
@@ -379,18 +379,18 @@ function submitQueue( ) {
 function prepareFormDataArray( record, callbacks ) {
   var j, k, l, xmlData, formData, dataO, instanceID, $fileNodes, fileIndex, fileO, recordPrepped,
     count = 0,
-    sizes = [ ],
-    failedFiles = [ ],
-    files = [ ],
-    batches = [ ];
+    sizes = [],
+    failedFiles = [],
+    files = [],
+    batches = [];
 
   dataO = form.Data( record.data );
   xmlData = dataO.getStr( true, true );
-  instanceID = dataO.getInstanceID( );
+  instanceID = dataO.getInstanceID();
   $fileNodes = dataO.$.find( '[type="file"]' ).removeAttr( 'type' );
 
   function basicRecordPrepped( batchesLength, batchIndex ) {
-    formData = new FormData( );
+    formData = new FormData();
     formData.append( 'xml_submission_data', xmlData );
     return {
       name: record.name,
@@ -401,11 +401,11 @@ function prepareFormDataArray( record, callbacks ) {
     };
   }
 
-  function gatherFiles( ) {
-    $fileNodes.each( function( ) {
+  function gatherFiles() {
+    $fileNodes.each( function() {
       fileO = {
         newName: $( this ).nodeName,
-        fileName: $( this ).text( )
+        fileName: $( this ).text()
       };
       fileManager.retrieveFile( instanceID, fileO, {
         success: function( fileObj ) {
@@ -413,7 +413,7 @@ function prepareFormDataArray( record, callbacks ) {
           files.push( fileObj );
           sizes.push( fileObj.file.size );
           if ( count == $fileNodes.length ) {
-            distributeFiles( );
+            distributeFiles();
           }
         },
         error: function( e ) {
@@ -421,15 +421,15 @@ function prepareFormDataArray( record, callbacks ) {
           failedFiles.push( fileO.fileName );
           console.error( 'Error occured when trying to retrieve ' + fileO.fileName + ' from local filesystem', e );
           if ( count == $fileNodes.length ) {
-            distributeFiles( );
+            distributeFiles();
           }
         }
       } );
     } );
   }
 
-  function distributeFiles( ) {
-    var maxSize = connection.maxSubmissionSize( );
+  function distributeFiles() {
+    var maxSize = connection.maxSubmissionSize();
     if ( files.length > 0 ) {
       batches = divideIntoBatches( sizes, maxSize );
       console.debug( 'splitting record into ' + batches.length + ' batches to reduce submission size ', batches );
@@ -437,7 +437,7 @@ function prepareFormDataArray( record, callbacks ) {
         recordPrepped = basicRecordPrepped( batches.length, k );
         for ( l = 0; l < batches[ k ].length; l++ ) {
           fileIndex = batches[ k ][ l ];
-          //console.log( 'adding file: ', files[fileIndex] );
+          //console.log( 'adding file: ', files[ fileIndex ] );
           recordPrepped.formData.append( files[ fileIndex ].newName + '[]', files[ fileIndex ].file );
         }
         //console.log( 'returning record with formdata : ', recordPrepped );
@@ -445,13 +445,13 @@ function prepareFormDataArray( record, callbacks ) {
       }
     } else {
       recordPrepped = basicRecordPrepped( 1, 0 );
-      //console.log('sending submission without files', recordPrepped)
+      //console.log( 'sending submission without files', recordPrepped );
       callbacks.success( recordPrepped );
     }
-    showErrors( );
+    showErrors();
   }
 
-  function showErrors( ) {
+  function showErrors() {
     if ( failedFiles.length > 0 ) {
       gui.alert( '<p>The following media files could not be retrieved: ' + failedFiles.join( ', ' ) + '. ' +
         'The submission will go ahead and show the missing filenames in the data, but without the actual file(s).</p>' +
@@ -462,9 +462,9 @@ function prepareFormDataArray( record, callbacks ) {
   }
 
   if ( typeof fileManager == 'undefined' || $fileNodes.length === 0 ) {
-    distributeFiles( );
+    distributeFiles();
   } else {
-    gatherFiles( );
+    gatherFiles();
   }
 }
 
@@ -506,7 +506,7 @@ function exportToTextFile( fileName, dataStr ) {
 
 //Extend GUI
 //setCustomEventHandlers is called automatically by GUI.init();
-GUI.prototype.setCustomEventHandlers = function( ) {
+GUI.prototype.setCustomEventHandlers = function() {
   "use strict";
   var settingsForm, that = this;
   /*
@@ -517,8 +517,8 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     });
   */
   $( 'button#reset-form' )
-    .click( function( ) {
-      resetForm( );
+    .click( function() {
+      resetForm();
     } );
   /*
   $('button#delete-form')
@@ -527,37 +527,37 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     });
   */
   $( 'button#submit-form' )
-    .click( function( ) {
+    .click( function() {
       var $button = $( this );
       $button.btnBusyState( true );
-      setTimeout( function( ) {
-        form.validateForm( );
-        submitForm( );
+      setTimeout( function() {
+        form.validateForm();
+        submitForm();
         $button.btnBusyState( false );
         return false;
       }, 100 );
 
     } );
   $( 'button#submit-form-single' )
-    .click( function( ) {
+    .click( function() {
       var $button = $( this );
       $button.btnBusyState( true );
-      setTimeout( function( ) {
-        form.validateForm( );
-        submitEditedForm( );
+      setTimeout( function() {
+        form.validateForm();
+        submitEditedForm();
         $button.btnBusyState( false );
         return false;
       }, 100 );
     } );
-  $( document ).on( 'click', 'button#validate-form:not(.disabled)', function( ) {
+  $( document ).on( 'click', 'button#validate-form:not(.disabled)', function() {
     //$('form.jr').trigger('beforesave');
     if ( typeof form !== 'undefined' ) {
       var $button = $( this );
       $button.btnBusyState( true );
-      setTimeout( function( ) {
-        form.validateForm( );
+      setTimeout( function() {
+        form.validateForm();
         $button.btnBusyState( false );
-        if ( !form.isValid( ) ) {
+        if ( !form.isValid() ) {
           gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
           return;
         }
@@ -565,10 +565,10 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     }
   } );
 
-  $( document ).on( 'click', '.export-records', function( ) {
+  $( document ).on( 'click', '.export-records', function() {
     var dataArr, dataStr, server,
       finalOnly = true,
-      fileName = form.getName( ) + '_data_backup.xml';
+      fileName = form.getName() + '_data_backup.xml';
     dataArr = store.getSurveyDataOnlyArr( finalOnly ); //store.getSurveyDataXMLStr(finalOnly));
     if ( !dataArr || dataArr.length === 0 ) {
       gui.alert( 'No records in queue. The records may have been successfully submitted already.' );
@@ -579,11 +579,11 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     }
   } );
 
-  $( document ).on( 'click', '.upload-records:not(:disabled)', function( ) {
-    submitQueue( );
+  $( document ).on( 'click', '.upload-records:not(:disabled)', function() {
+    submitQueue();
   } );
 
-  $( document ).on( 'click', '.record.error', function( ) {
+  $( document ).on( 'click', '.record.error', function() {
     var name = $( this ).attr( 'name' ),
       $info = $( this ).siblings( '[name="' + name + '"]' );
 
@@ -594,7 +594,7 @@ GUI.prototype.setCustomEventHandlers = function( ) {
     }
   } );
 
-  $( '#form-controls button' ).toLargestWidth( );
+  $( '#form-controls button' ).toLargestWidth();
 
   $( document ).on( 'save delete', 'form.jr', function( e, formList ) {
     //console.debug( 'save or delete event detected with new formlist: ' + formList );
@@ -615,7 +615,7 @@ GUI.prototype.setCustomEventHandlers = function( ) {
   //  settings.set(name, value);
   //});
 
-  $( '#dialog-save' ).hide( );
+  $( '#dialog-save' ).hide();
 
 };
 
@@ -627,26 +627,26 @@ GUI.prototype.updateRecordList = function( recordList, $page ) {
     $list = $( '.side-slider .record-list' );
 
   // get form list object (keys + upload) ordered by time last saved
-  recordList = recordList || [ ];
+  recordList = recordList || [];
   $( '.queue-length' ).text( recordList.length );
 
   //cleanup 
-  $list.find( '.record' ).each( function( ) {
+  $list.find( '.record' ).each( function() {
     name = $( this ).attr( 'name' );
     //if the record in the DOM no longer exists in storage
     if ( $.grep( recordList, function( record ) {
       return record.key == name;
     } ).length === 0 ) {
       //remove the DOM element and its same-name-siblings (split submissions)
-      $( this ).siblings( '[name="' + name + '"]' ).addBack( ).hide( 2000, function( ) {
-        $( this ).remove( );
+      $( this ).siblings( '[name="' + name + '"]' ).addBack().hide( 2000, function() {
+        $( this ).remove();
       } );
     }
   } );
 
   //add new records
   if ( recordList.length > 0 ) {
-    $list.find( '.no-records' ).remove( );
+    $list.find( '.no-records' ).remove();
     $buttons.removeAttr( 'disabled' );
     for ( i = 0; i < recordList.length; i++ ) {
       name = recordList[ i ].key;

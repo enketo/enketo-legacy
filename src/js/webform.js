@@ -21,73 +21,73 @@ var /**@type {Cache}*/ cache;
 var /**@type {FileManager}*/ fileManager;
 
 //tight coupling with Form and Storage class, but loose coupling with GUI
-$( document ).ready( function( ) {
-  'use strict';
-  var message, choices, loadErrors, trySubmission;
+$( document ).ready( function() {
+    'use strict';
+    var message, choices, loadErrors, trySubmission;
 
-  form = new Form( 'form.jr:eq(0)', jrDataStr );
-  fileManager = new FileManager( );
-  connection = new Connection( );
+    form = new Form( 'form.jr:eq(0)', jrDataStr );
+    fileManager = new FileManager();
+    connection = new Connection();
 
-  if ( !store.isSupported( ) ) {
-    window.location = settings[ 'modernBrowsersURL' ];
-  } else {
-    $( document ).trigger( 'browsersupport', 'local-storage' );
-  }
-
-  if ( fileManager.isSupported( ) && store.getRecordList( ).length === 0 ) {
-    //clean up filesystem storage
-    fileManager.deleteAll( );
-  }
-
-  //remove filesystem folder after successful submission
-  $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {
-    fileManager.deleteDir( instanceID );
-  } );
-
-  gui.updateStatus.offlineLaunch( false );
-
-  if ( $( 'html' ).attr( 'manifest' ) ) {
-    cache = new Cache( );
-    if ( cache.isSupported( ) ) {
-      cache.init( );
-      $( document ).trigger( 'browsersupport', 'offline-launch' );
+    if ( !store.isSupported() || !store.isWritable() ) {
+        window.location = settings[ 'modernBrowsersURL' ];
+    } else {
+        $( document ).trigger( 'browsersupport', 'local-storage' );
     }
-    // if applicationCache is not supported
-    else {
-      message = 'Offline application launch is not supported by your browser. ' +
-        'You can use the form without this feature or see options for resolving this';
-      choices = {
-        posButton: 'Show options',
-        negButton: 'Use it',
-        posAction: function( ) {
-          window.location = settings[ 'modernBrowsersURL' ];
+
+    if ( fileManager.isSupported() && store.getRecordList().length === 0 ) {
+        //clean up filesystem storage
+        fileManager.deleteAll();
+    }
+
+    //remove filesystem folder after successful submission
+    $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {
+        fileManager.deleteDir( instanceID );
+    } );
+
+    gui.updateStatus.offlineLaunch( false );
+
+    if ( $( 'html' ).attr( 'manifest' ) ) {
+        cache = new Cache();
+        if ( cache.isSupported() ) {
+            cache.init();
+            $( document ).trigger( 'browsersupport', 'offline-launch' );
         }
-      };
-      gui.confirm( {
-        msg: message,
-        heading: 'Application cannot launch offline'
-      }, choices );
+        // if applicationCache is not supported
+        else {
+            message = 'Offline application launch is not supported by your browser. ' +
+                'You can use the form without this feature or see options for resolving this';
+            choices = {
+                posButton: 'Show options',
+                negButton: 'Use it',
+                posAction: function() {
+                    window.location = settings[ 'modernBrowsersURL' ];
+                }
+            };
+            gui.confirm( {
+                msg: message,
+                heading: 'Application cannot launch offline'
+            }, choices );
+        }
     }
-  }
 
-  loadErrors = form.init( );
-  if ( loadErrors.length > 0 ) {
-    gui.showLoadErrors( loadErrors, 'It is recommended not to use this form for data entry until this is resolved.' );
-  }
+    loadErrors = form.init();
+    if ( loadErrors.length > 0 ) {
+        gui.showLoadErrors( loadErrors, 'It is recommended not to use this form for data entry until this is resolved.' );
+    }
 
-  connection.init( );
-  gui.setup( );
+    connection.init();
+    gui.setup();
 
-  //trigger fake save event to update formlist on data page
-  $( 'form.jr' ).trigger( 'save', JSON.stringify( store.getRecordList( ) ) );
+    //trigger fake save event to update formlist on data page
+    $( 'form.jr' ).trigger( 'save', JSON.stringify( store.getRecordList() ) );
 
-  window.setInterval( function( ) {
-    submitQueue( );
-  }, 300 * 1000 );
-  window.setTimeout( function( ) {
-    submitQueue( );
-  }, 5 * 1000 );
+    window.setInterval( function() {
+        submitQueue();
+    }, 300 * 1000 );
+    window.setTimeout( function() {
+        submitQueue();
+    }, 5 * 1000 );
 
-  profilerRecords.push( xpathEvalNum + ' XPath Evaluations during initialization took ' + xpathEvalTime + ' milliseconds of which ' + xpathEvalTimePure + ' for pure XPath evaluation.' );
+    profilerRecords.push( xpathEvalNum + ' XPath Evaluations during initialization took ' + xpathEvalTime + ' milliseconds of which ' + xpathEvalTimePure + ' for pure XPath evaluation.' );
 } );

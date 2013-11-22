@@ -19,55 +19,55 @@ var /**@type {Connection}*/ connection;
 var /**@type {FileManager}*/ fileManager;
 
 $( document ).ready( function() {
-	'use strict';
-	var response, bgColor,
-		i = 0,
-		$ads = $( '.ad' ),
-		$validateButton = $( '#validate-form' ),
-		$loading = $( 'progress' );
+    'use strict';
+    var response, bgColor,
+        i = 0,
+        $ads = $( '.ad' ),
+        $validateButton = $( '#validate-form' ),
+        $loading = $( 'progress' );
 
-	if ( ( !settings.serverURL || !settings.formId ) && !settings.formURL ) {
-		showError( 'No server url and/or id provided or no form url provided.' );
-		return;
-	}
+    if ( ( !settings.serverURL || !settings.formId ) && !settings.formURL ) {
+        showError( 'No server url and/or id provided or no form url provided.' );
+        return;
+    }
 
-	connection = new Connection();
-	connection.getTransForm( settings.serverURL, settings.formId, null, settings.formURL, {
-		success: function( response ) {
-			var loadErrors, formStr, modelStr,
-				$response = $( response );
+    connection = new Connection();
+    connection.getTransForm( settings.serverURL, settings.formId, null, settings.formURL, {
+        success: function( response ) {
+            var loadErrors, formStr, modelStr,
+                $response = $( response );
 
-			if ( $response.find( ':first>form' ).length > 0 && $response.find( ':first>model' ).length > 0 ) {
-				formStr = new XMLSerializer().serializeToString( $response.find( ':first>form' )[ 0 ] );
-				modelStr = new XMLSerializer().serializeToString( $response.find( ':first>model' )[ 0 ] );
-				$validateButton.before( formStr );
-				form = new Form( 'form.jr:eq(0)', modelStr );
-				loadErrors = form.init();
-				if ( loadErrors.length > 0 ) {
-					gui.showLoadErrors( loadErrors );
-				}
-				$validateButton.removeAttr( 'disabled' );
-			} else {
-				showError( 'An error occurred trying to obtain or transform the form.' );
-			}
-		},
-		error: function( jqXHR, status, errorThrown ) {
-			if ( jqXHR && jqXHR.status === 401 ) {
-				gui.confirmLogin( '<p>Form is protected and requires authentication.</p><p>Would you like to log in now?</p>' );
-			} else {
-				showError( 'An error occurred trying to obtain or transform the form (' + errorThrown + ')' );
-			}
-			$loading.remove();
-		},
-		complete: function() {
-			$loading.remove();
-		}
-	} );
+            if ( $response.find( ':first>form' ).length > 0 && $response.find( ':first>model' ).length > 0 ) {
+                formStr = new XMLSerializer().serializeToString( $response.find( ':first>form' )[ 0 ] );
+                modelStr = new XMLSerializer().serializeToString( $response.find( ':first>model' )[ 0 ] );
+                $validateButton.before( formStr );
+                form = new Form( 'form.jr:eq(0)', modelStr );
+                loadErrors = form.init();
+                if ( loadErrors.length > 0 ) {
+                    gui.showLoadErrors( loadErrors );
+                }
+                $validateButton.removeAttr( 'disabled' );
+            } else {
+                showError( 'An error occurred trying to obtain or transform the form.' );
+            }
+        },
+        error: function( jqXHR, status, errorThrown ) {
+            if ( jqXHR && jqXHR.status === 401 ) {
+                gui.confirmLogin( '<p>Form is protected and requires authentication.</p><p>Would you like to log in now?</p>' );
+            } else {
+                showError( 'An error occurred trying to obtain or transform the form (' + errorThrown + ')' );
+            }
+            $loading.remove();
+        },
+        complete: function() {
+            $loading.remove();
+        }
+    } );
 
-	gui.setup();
+    gui.setup();
 } );
 
 function showError( msg ) {
-	$( '#validate-form' ).prev( '.alert' ).remove();
-	$( '#validate-form' ).before( '<p class="load-error alert alert-error alert-block">' + msg + '</p>' );
+    $( '#validate-form' ).prev( '.alert' ).remove();
+    $( '#validate-form' ).before( '<p class="load-error alert alert-error alert-block">' + msg + '</p>' );
 }

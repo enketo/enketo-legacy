@@ -27,78 +27,65 @@
  *   return description
  */
 
-function Connection( ) {
-  "use strict";
-  var that = this;
-  this.CONNECTION_URL = '/checkforconnection.php';
-  this.SUBMISSION_URL = '/data/submission';
-  this.GETSURVEYURL_URL = '/api_v1/survey';
-  //this.SUBMISSION_TRIES = 2;
-  this.currentOnlineStatus = null;
-  this.uploadOngoingID = null;
-  this.uploadOngoingBatchIndex = null;
-  this.uploadResult = {
-    win: [ ],
-    fail: [ ]
-  };
-  this.uploadQueue = [ ];
-  this.oRosaHelper = new this.ORosaHelper( this );
+function Connection() {
+    "use strict";
+    var that = this;
+    this.CONNECTION_URL = '/checkforconnection.php';
+    this.SUBMISSION_URL = '/data/submission';
+    this.GETSURVEYURL_URL = '/api_v1/survey';
+    //this.SUBMISSION_TRIES = 2;
+    this.currentOnlineStatus = null;
+    this.uploadOngoingID = null;
+    this.uploadOngoingBatchIndex = null;
+    this.uploadResult = {
+        win: [],
+        fail: []
+    };
+    this.uploadQueue = [];
+    this.oRosaHelper = new this.ORosaHelper( this );
 
-  this.init = function( ) {
-    //console.log('initializing Connection object');
-    this.checkOnlineStatus( );
-    that = this;
-    window.setInterval( function( ) {
-      //console.log('setting status'); //DEBUG
-      that.checkOnlineStatus( );
-      //that.uploadFromStore();
-    }, 15 * 1000 );
-    //window.addEventListener("offline", function(e){
-    //  console.log('offline event detected');
-    //  setStatus();
-    //}
-    //window.addEventListener("online", function(e){
-    //  console.log('online event detected');
-    //  setStatus();
-    //}
-    $( window ).on( 'offline online', function( ) {
-      console.log( 'window network event detected' );
-      that.setOnlineStatus( that.getOnlineStatus( ) );
-    } );
-    //since network change events are not properly fired, at least not in Firefox 13 (OS X), this is an temporary fix
-    //that can be removed eventually or set to to 60x1000 (1 min)
-    /*window.setInterval(function(){
-            $(window).trigger('online');
-        }, 10*1000);*/
-    $( window ).trigger( 'online' );
-  };
+    this.init = function() {
+        //console.log('initializing Connection object');
+        this.checkOnlineStatus();
+        that = this;
+        window.setInterval( function() {
+            //console.log('setting status'); //DEBUG
+            that.checkOnlineStatus();
+            //that.uploadFromStore();
+        }, 15 * 1000 );
+        $( window ).on( 'offline online', function() {
+            console.log( 'window network event detected' );
+            that.setOnlineStatus( that.getOnlineStatus() );
+        } );
+        $( window ).trigger( 'online' );
+    };
 }
 
-Connection.prototype.checkOnlineStatus = function( ) {
-  var online,
-    that = this;
-  //console.log('checking connection status');
-  //navigator.onLine is totally unreliable (returns incorrect trues) on Firefox, Chrome, Safari (on OS X 10.8),
-  //but I assume falses are correct
-  if ( navigator.onLine ) {
-    if ( !this.uploadOngoingID ) {
-      $.ajax( {
-        type: 'GET',
-        url: this.CONNECTION_URL,
-        cache: false,
-        dataType: 'json',
-        timeout: 3000,
-        complete: function( response ) {
-          //important to check for the content of the no-cache response as it will
-          //start receiving the fallback page specified in the manifest!
-          online = typeof response.responseText !== 'undefined' && response.responseText === 'connected';
-          that.setOnlineStatus( online );
+Connection.prototype.checkOnlineStatus = function() {
+    var online,
+        that = this;
+    //console.log('checking connection status');
+    //navigator.onLine is totally unreliable (returns incorrect trues) on Firefox, Chrome, Safari (on OS X 10.8),
+    //but I assume falses are correct
+    if ( navigator.onLine ) {
+        if ( !this.uploadOngoingID ) {
+            $.ajax( {
+                type: 'GET',
+                url: this.CONNECTION_URL,
+                cache: false,
+                dataType: 'json',
+                timeout: 3000,
+                complete: function( response ) {
+                    //important to check for the content of the no-cache response as it will
+                    //start receiving the fallback page specified in the manifest!
+                    online = typeof response.responseText !== 'undefined' && response.responseText === 'connected';
+                    that.setOnlineStatus( online );
+                }
+            } );
         }
-      } );
+    } else {
+        this.setOnlineStatus( false );
     }
-  } else {
-    this.setOnlineStatus( false );
-  }
 };
 
 /**
@@ -109,29 +96,29 @@ Connection.prototype.checkOnlineStatus = function( ) {
  *
  * @return {?boolean} true if it seems the browser is online, false if it does not, null if not known
  */
-Connection.prototype.getOnlineStatus = function( ) {
-  //return navigator.onLine;
-  return this.currentOnlineStatus;
+Connection.prototype.getOnlineStatus = function() {
+    //return navigator.onLine;
+    return this.currentOnlineStatus;
 };
 
 Connection.prototype.setOnlineStatus = function( newStatus ) {
-  //var oldStatus = onlineStatus;
-  //onlineStatus = online;
-  if ( newStatus !== this.currentOnlineStatus ) {
-    console.log( 'online status changed to: ' + newStatus + ', triggering window.onlinestatuschange' );
-    $( window ).trigger( 'onlinestatuschange', newStatus );
-  }
-  this.currentOnlineStatus = newStatus;
+    //var oldStatus = onlineStatus;
+    //onlineStatus = online;
+    if ( newStatus !== this.currentOnlineStatus ) {
+        console.log( 'online status changed to: ' + newStatus + ', triggering window.onlinestatuschange' );
+        $( window ).trigger( 'onlinestatuschange', newStatus );
+    }
+    this.currentOnlineStatus = newStatus;
 };
 
-Connection.prototype.cancelSubmissionProcess = function( ) {
-  this.uploadOngoingID = null;
-  this.uploadOngoingBatchIndex = null;
-  this.uploadResult = {
-    win: [ ],
-    fail: [ ]
-  };
-  this.uploadQueue = [ ];
+Connection.prototype.cancelSubmissionProcess = function() {
+    this.uploadOngoingID = null;
+    this.uploadOngoingBatchIndex = null;
+    this.uploadResult = {
+        win: [],
+        fail: []
+    };
+    this.uploadQueue = [];
 };
 
 /**
@@ -142,41 +129,41 @@ Connection.prototype.cancelSubmissionProcess = function( ) {
  * @return {boolean}           [description]
  */
 Connection.prototype.uploadRecords = function( record, force, callbacks ) {
-  var sameItemInQueue, sameItemSubmitted, sameItemOngoing;
-  force = force || false;
-  callbacks = callbacks || null;
+    var sameItemInQueue, sameItemSubmitted, sameItemOngoing;
+    force = force || false;
+    callbacks = callbacks || null;
 
-  if ( !record.name || !record.instanceID || !record.formData || !record.batches || typeof record.batchIndex == 'undefined' ) {
-    console.error( 'record name, instanceID, formData, batches and/or batchIndex was not defined!', record );
-    return false;
-  }
-  sameItemInQueue = $.grep( this.uploadQueue, function( item ) {
-    return ( record.instanceID === item.instanceID && record.batchIndex === item.batchIndex );
-  } );
-  sameItemSubmitted = $.grep( this.uploadResult.win, function( item ) {
-    return ( record.instanceID === item.instanceID && record.batchIndex === item.batchIndex );
-  } );
-  sameItemOngoing = ( this.uploadOngoingID === record.instanceID && this.uploadOngoingBatchIndex === record.batchIndex );
-  if ( sameItemInQueue.length === 0 && sameItemSubmitted.length === 0 && !sameItemOngoing ) {
-    record.forced = force;
-    //TODO ADD CALLBACKS TO EACH RECORD??
-    this.uploadQueue.push( record );
-    if ( !this.uploadOngoingID ) {
-      this.uploadResult = {
-        win: [ ],
-        fail: [ ]
-      };
-      this.uploadBatchesResult = {};
-      this.uploadOne( callbacks );
+    if ( !record.name || !record.instanceID || !record.formData || !record.batches || typeof record.batchIndex == 'undefined' ) {
+        console.error( 'record name, instanceID, formData, batches and/or batchIndex was not defined!', record );
+        return false;
     }
-  }
-  //override force property
-  //this caters to a situation where the record is already in a queue through automatic uploads, 
-  //but the user orders a forced upload
-  else {
-    sameItemInQueue.forced = force;
-  }
-  return true;
+    sameItemInQueue = $.grep( this.uploadQueue, function( item ) {
+        return ( record.instanceID === item.instanceID && record.batchIndex === item.batchIndex );
+    } );
+    sameItemSubmitted = $.grep( this.uploadResult.win, function( item ) {
+        return ( record.instanceID === item.instanceID && record.batchIndex === item.batchIndex );
+    } );
+    sameItemOngoing = ( this.uploadOngoingID === record.instanceID && this.uploadOngoingBatchIndex === record.batchIndex );
+    if ( sameItemInQueue.length === 0 && sameItemSubmitted.length === 0 && !sameItemOngoing ) {
+        record.forced = force;
+        //TODO ADD CALLBACKS TO EACH RECORD??
+        this.uploadQueue.push( record );
+        if ( !this.uploadOngoingID ) {
+            this.uploadResult = {
+                win: [],
+                fail: []
+            };
+            this.uploadBatchesResult = {};
+            this.uploadOne( callbacks );
+        }
+    }
+    //override force property
+    //this caters to a situation where the record is already in a queue through automatic uploads, 
+    //but the user orders a forced upload
+    else {
+        sameItemInQueue.forced = force;
+    }
+    return true;
 };
 
 /**
@@ -184,186 +171,146 @@ Connection.prototype.uploadRecords = function( record, force, callbacks ) {
  * @param  {Object.<string, Function>=} callbacks [description]
  */
 Connection.prototype.uploadOne = function( callbacks ) { //dataXMLStr, name, last){
-  var record, content, last, props,
-    that = this;
+    var record, content, last, props,
+        that = this;
 
-  callbacks = ( typeof callbacks === 'undefined' || !callbacks ) ? {
-    complete: function( jqXHR, response ) {
-      $( document ).trigger( 'submissioncomplete' );
-      that.processOpenRosaResponse( jqXHR.status,
-        props = {
-          name: record.name,
-          instanceID: record.instanceID,
-          batches: record.batches,
-          batchIndex: record.batchIndex,
-          forced: record.forced
-        } );
-      /**
-       * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
-       * as it duplicates 1 entry and omits the other but returns 201 for both...
-       * so we wait for the previous POST to finish before sending the next
-       */
-      that.uploadOne( );
-    },
-    error: function( jqXHR, textStatus ) {
-      if ( textStatus === 'timeout' ) {
-        console.debug( 'submission request timed out' );
-      } else {
-        console.error( 'error during submission, textStatus:', textStatus );
-      }
-    },
-    success: function( ) {}
-  } : callbacks;
-
-  if ( this.uploadQueue.length > 0 ) {
-    record = this.uploadQueue.shift( );
-    this.progress.update( record, 'ongoing', '', this );
-    if ( this.currentOnlineStatus === false ) {
-      this.processOpenRosaResponse( 0, record );
-    } else {
-      this.uploadOngoingID = record.instanceID;
-      this.uploadOngoingBatchIndex = record.batchIndex;
-      content = record.formData;
-      content.append( 'Date', new Date( ).toUTCString( ) );
-      console.debug( 'prepared to send: ', content );
-      //last = (this.uploadQueue.length === 0) ? true : false;
-      this.setOnlineStatus( null );
-      $( document ).trigger( 'submissionstart' );
-      //console.debug('calbacks: ', callbacks );
-      $.ajax( this.SUBMISSION_URL, {
-        type: 'POST',
-        data: content,
-        cache: false,
-        contentType: false,
-        processData: false,
-        //TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
-        timeout: 300 * 1000,
-        //beforeSend: function(){return false;},
+    callbacks = ( typeof callbacks === 'undefined' || !callbacks ) ? {
         complete: function( jqXHR, response ) {
-          that.uploadOngoingID = null;
-          that.uploadOngoingBatchIndex = null;
-          callbacks.complete( jqXHR, response );
+            $( document ).trigger( 'submissioncomplete' );
+            that.processOpenRosaResponse( jqXHR.status,
+                props = {
+                    name: record.name,
+                    instanceID: record.instanceID,
+                    batches: record.batches,
+                    batchIndex: record.batchIndex,
+                    forced: record.forced
+                } );
+            /**
+             * ODK Aggregrate gets very confused if two POSTs are sent in quick succession,
+             * as it duplicates 1 entry and omits the other but returns 201 for both...
+             * so we wait for the previous POST to finish before sending the next
+             */
+            that.uploadOne();
         },
-        error: callbacks.error,
-        success: callbacks.success
-      } );
-    }
-  }
-};
+        error: function( jqXHR, textStatus ) {
+            if ( textStatus === 'timeout' ) {
+                console.debug( 'submission request timed out' );
+            } else {
+                console.error( 'error during submission, textStatus:', textStatus );
+            }
+        },
+        success: function() {}
+    } : callbacks;
 
-//Connection.prototype.log = {
-//  $: $( '<div class="submissions"/>' ),
-//  add: function( record, queueLength ) {
-//    var $log,
-//      log = " submitting " + record.name;
-//    log += ( record.batches > 1 ) ? " (part " + record.batchIndex + " of " + record.batches + ") " : " ";
-//    $log = $( '<div class="log" id="' + this.id( record ) + '">' + log + '</div>' );
-//    this.$.append( $log );
-//    $logs = this.$.find( '.log' );
-//    if ( $logs.length > 10 ) {
-//      $logs.eq( 0 ).remove( );
-//    }
-//    this.dot( record );
-//    this.show( );
-//  },
-//  id: function( record ) {
-//    return ( record.instanceID + '_' + record.batchIndex ).replace( ':', '--' );
-//  },
-//  $log: function( record ) {
-//    return this.$.find( '#' + this.id( record ) );
-//  },
-//  update: function( record, msg, level ) {
-//    level = level || '';
-//    this.$log( record ).append( '<span class="text-' + level + '">' + msg + '</span>' );
-//    this.show( );
-//    window.clearInterval( this.interval );
-//  },
-//  show: function( ) {
-//    $( '.submissions' ).replaceWith( this.$ );
-//  },
-//  dot: function( record ) {
-//    var that = this;
-//    window.clearInterval( this.interval );
-//    this.interval = window.setInterval( function( ) {
-//      that.$log( record ).append( '.' );
-//      that.show( );
-//    }, 2000 );
-//  }
-//};
+    if ( this.uploadQueue.length > 0 ) {
+        record = this.uploadQueue.shift();
+        this.progress.update( record, 'ongoing', '', this );
+        if ( this.currentOnlineStatus === false ) {
+            this.processOpenRosaResponse( 0, record );
+        } else {
+            this.uploadOngoingID = record.instanceID;
+            this.uploadOngoingBatchIndex = record.batchIndex;
+            content = record.formData;
+            content.append( 'Date', new Date().toUTCString() );
+            console.debug( 'prepared to send: ', content );
+            //last = (this.uploadQueue.length === 0) ? true : false;
+            this.setOnlineStatus( null );
+            $( document ).trigger( 'submissionstart' );
+            //console.debug('calbacks: ', callbacks );
+            $.ajax( this.SUBMISSION_URL, {
+                type: 'POST',
+                data: content,
+                cache: false,
+                contentType: false,
+                processData: false,
+                //TIMEOUT TO BE TESTED WITH LARGE SIZE PAYLOADS AND SLOW CONNECTIONS...
+                timeout: 300 * 1000,
+                //beforeSend: function(){return false;},
+                complete: function( jqXHR, response ) {
+                    that.uploadOngoingID = null;
+                    that.uploadOngoingBatchIndex = null;
+                    callbacks.complete( jqXHR, response );
+                },
+                error: callbacks.error,
+                success: callbacks.success
+            } );
+        }
+    }
+};
 
 Connection.prototype.progress = {
 
-  _getLi: function( record ) {
-    var $lis = $( '.record-list' ).find( '[name="' + record.name + '"]' );
-    return $lis;
-  },
+    _getLi: function( record ) {
+        var $lis = $( '.record-list' ).find( '[name="' + record.name + '"]' );
+        return $lis;
+    },
 
-  _reset: function( record ) {
-    var $allLis = $( '.record-list' ).find( 'li' );
-    //if the current record, is the first in the list, reset the list
-    if ( $allLis.first( ).attr( 'name' ) === record.name ) {
-      $allLis.removeClass( 'ongoing success error' ).filter( function( ) {
-        return !$( this ).hasClass( 'record' );
-      } ).remove( );
+    _reset: function( record ) {
+        var $allLis = $( '.record-list' ).find( 'li' );
+        //if the current record, is the first in the list, reset the list
+        if ( $allLis.first().attr( 'name' ) === record.name ) {
+            $allLis.removeClass( 'ongoing success error' ).filter( function() {
+                return !$( this ).hasClass( 'record' );
+            } ).remove();
+        }
+    },
+
+    _updateClass: function( $el, status ) {
+        $el.removeClass( 'ongoing error' ).addClass( status );
+    },
+
+    _updateProgressBar: function( status, connO ) {
+        var max = connO.uploadQueue.length + connO.uploadResult.win.length + connO.uploadResult.fail.length,
+            value = connO.uploadResult.win.length + connO.uploadResult.fail.length;
+
+        max += ( status == 'ongoing' ) ? 1 : 0;
+
+        $progress = $( '.upload-progress' ).attr( {
+            'max': max,
+            'value': value
+        } );
+
+        if ( value === max || max === 1 ) {
+            $progress.css( 'visibility', 'hidden' );
+        } else {
+            $progress.css( 'visibility', 'visible' );
+        }
+    },
+
+    _getMsg: function( record, status, msg ) {
+        if ( record.batches > 1 && msg ) {
+            return 'part ' + ( record.batchIndex + 1 ) + ' of ' + record.batches + ': ' + msg;
+        } else {
+            return ( status === 'error' ) ? msg : '';
+        }
+
+        return displayMsg;
+    },
+
+    update: function( record, status, msg, connO ) {
+        var $result,
+            $lis = this._getLi( record ),
+            displayMsg = this._getMsg( record, status, msg );
+
+        this._reset( record );
+
+        //add display messages (always showing end status)
+        if ( displayMsg ) {
+            $result = $( '<li name="' + record.name + '" class="' + status + '">' + displayMsg + '</li>' ).insertAfter( $lis.last() );
+            window.setTimeout( function() {
+                $result.hide( 500 );
+            }, 3000 );
+        }
+
+        this._updateClass( $lis.first(), status );
+        this._updateProgressBar( status, connO );
+
+        if ( connO.uploadQueue.length === 0 && status !== 'ongoing' ) {
+            $( 'button.upload-records' ).removeAttr( 'disabled' );
+        } else {
+            $( 'button.upload-records' ).attr( 'disabled', 'disabled' );
+        }
     }
-  },
-
-  _updateClass: function( $el, status ) {
-    $el.removeClass( 'ongoing error' ).addClass( status );
-  },
-
-  _updateProgressBar: function( status, connO ) {
-    var max = connO.uploadQueue.length + connO.uploadResult.win.length + connO.uploadResult.fail.length,
-      value = connO.uploadResult.win.length + connO.uploadResult.fail.length;
-
-    max += ( status == 'ongoing' ) ? 1 : 0;
-
-    $progress = $( '.upload-progress' ).attr( {
-      'max': max,
-      'value': value
-    } );
-
-    if ( value === max || max === 1 ) {
-      $progress.css( 'visibility', 'hidden' );
-    } else {
-      $progress.css( 'visibility', 'visible' );
-    }
-  },
-
-  _getMsg: function( record, status, msg ) {
-    if ( record.batches > 1 && msg ) {
-      return 'part ' + ( record.batchIndex + 1 ) + ' of ' + record.batches + ': ' + msg;
-    } else {
-      return ( status === 'error' ) ? msg : '';
-    }
-
-    return displayMsg;
-  },
-
-  update: function( record, status, msg, connO ) {
-    var $result,
-      $lis = this._getLi( record ),
-      displayMsg = this._getMsg( record, status, msg );
-
-    this._reset( record );
-
-    //add display messages (always showing end status)
-    if ( displayMsg ) {
-      $result = $( '<li name="' + record.name + '" class="' + status + '">' + displayMsg + '</li>' ).insertAfter( $lis.last( ) );
-      window.setTimeout( function( ) {
-        $result.hide( 500 );
-      }, 3000 );
-    }
-
-    this._updateClass( $lis.first( ), status );
-    this._updateProgressBar( status, connO );
-
-    if ( connO.uploadQueue.length === 0 && status !== 'ongoing' ) {
-      $( 'button.upload-records' ).removeAttr( 'disabled' );
-    } else {
-      $( 'button.upload-records' ).attr( 'disabled', 'disabled' );
-    }
-  }
 };
 
 //TODO: move this outside this class?
@@ -373,160 +320,160 @@ Connection.prototype.progress = {
  * @param  {{name:string, instanceID:string, batches:number, batchIndex:number, forced:boolean}} props  record properties
  */
 Connection.prototype.processOpenRosaResponse = function( status, props ) {
-  var i, waswere, name, namesStr, batchText,
-    partial = false,
-    msg = '',
-    names = [ ],
-    level = 'error',
-    contactSupport = 'Contact ' + settings[ 'supportEmail' ] + ' please.',
-    contactAdmin = 'Contact the survey administrator please.',
-    serverDown = 'Sorry, the enketo or formhub server is down. Please try again later or contact ' + settings[ 'supportEmail' ] + ' please.',
-    statusMap = {
-      0: {
-        success: false,
-        msg: ( typeof jrDataStrToEdit !== 'undefined' ) ? "Failed (offline?). Please try again." : "Failed (offline?)."
-      },
-      200: {
-        success: false,
-        msg: "Data server did not accept data. " + contactSupport
-      },
-      201: {
-        success: true,
-        msg: "Done!"
-      },
-      202: {
-        success: true,
-        msg: "Done! (duplicate)"
-      },
-      '2xx': {
-        success: false,
-        msg: "Unknown error occurred when submitting data. " + contactSupport
-      },
-      400: {
-        success: false,
-        msg: "Data server did not accept data. " + contactAdmin
-      },
-      403: {
-        success: false,
-        msg: "Not allowed to post data to this data server. " + contactAdmin
-      },
-      404: {
-        success: false,
-        msg: "Submission service on data server not found."
-      },
-      '4xx': {
-        success: false,
-        msg: "Unknown submission problem on data server."
-      },
-      413: {
-        success: false,
-        msg: "Data is too large. Please contact " + settings[ 'supportEmail' ] + "."
-      },
-      500: {
-        success: false,
-        msg: serverDown
-      },
-      503: {
-        success: false,
-        msg: serverDown
-      },
-      '5xx': {
-        success: false,
-        msg: serverDown
-      }
-    };
+    var i, waswere, name, namesStr, batchText,
+        partial = false,
+        msg = '',
+        names = [],
+        level = 'error',
+        contactSupport = 'Contact ' + settings[ 'supportEmail' ] + ' please.',
+        contactAdmin = 'Contact the survey administrator please.',
+        serverDown = 'Sorry, the enketo or formhub server is down. Please try again later or contact ' + settings[ 'supportEmail' ] + ' please.',
+        statusMap = {
+            0: {
+                success: false,
+                msg: ( typeof jrDataStrToEdit !== 'undefined' ) ? "Failed (offline?). Please try again." : "Failed (offline?)."
+            },
+            200: {
+                success: false,
+                msg: "Data server did not accept data. " + contactSupport
+            },
+            201: {
+                success: true,
+                msg: "Done!"
+            },
+            202: {
+                success: true,
+                msg: "Done! (duplicate)"
+            },
+            '2xx': {
+                success: false,
+                msg: "Unknown error occurred when submitting data. " + contactSupport
+            },
+            400: {
+                success: false,
+                msg: "Data server did not accept data. " + contactAdmin
+            },
+            403: {
+                success: false,
+                msg: "Not allowed to post data to this data server. " + contactAdmin
+            },
+            404: {
+                success: false,
+                msg: "Submission service on data server not found."
+            },
+            '4xx': {
+                success: false,
+                msg: "Unknown submission problem on data server."
+            },
+            413: {
+                success: false,
+                msg: "Data is too large. Please contact " + settings[ 'supportEmail' ] + "."
+            },
+            500: {
+                success: false,
+                msg: serverDown
+            },
+            503: {
+                success: false,
+                msg: serverDown
+            },
+            '5xx': {
+                success: false,
+                msg: serverDown
+            }
+        };
 
-  //console.debug( 'submission results with status: ' + status + ' for ', props );
+    //console.debug( 'submission results with status: ' + status + ' for ', props );
 
-  batchText = ( props.batches > 1 ) ? ' (batch #' + ( props.batchIndex + 1 ) + ' out of ' + props.batches + ')' : '';
-  props.batchText = batchText;
+    batchText = ( props.batches > 1 ) ? ' (batch #' + ( props.batchIndex + 1 ) + ' out of ' + props.batches + ')' : '';
+    props.batchText = batchText;
 
-  if ( typeof statusMap[ status ] !== 'undefined' ) {
-    props.msg = statusMap[ status ].msg;
-    if ( statusMap[ status ].success === true ) {
-      level = 'success';
-      if ( props.batches > 1 ) {
-        if ( typeof this.uploadBatchesResult[ props.instanceID ] == 'undefined' ) {
-          this.uploadBatchesResult[ props.instanceID ] = [ ];
+    if ( typeof statusMap[ status ] !== 'undefined' ) {
+        props.msg = statusMap[ status ].msg;
+        if ( statusMap[ status ].success === true ) {
+            level = 'success';
+            if ( props.batches > 1 ) {
+                if ( typeof this.uploadBatchesResult[ props.instanceID ] == 'undefined' ) {
+                    this.uploadBatchesResult[ props.instanceID ] = [];
+                }
+                this.uploadBatchesResult[ props.instanceID ].push( props.batchIndex );
+                for ( i = 0; i < props.batches; i++ ) {
+                    if ( $.inArray( i, this.uploadBatchesResult[ props.instanceID ] ) === -1 ) {
+                        partial = true;
+                    }
+                }
+            }
+            this.uploadResult.win.push( props );
+        } else if ( statusMap[ status ].success === false ) {
+            this.uploadResult.fail.push( props );
         }
-        this.uploadBatchesResult[ props.instanceID ].push( props.batchIndex );
-        for ( i = 0; i < props.batches; i++ ) {
-          if ( $.inArray( i, this.uploadBatchesResult[ props.instanceID ] ) === -1 ) {
-            partial = true;
-          }
+    } else if ( status == 401 ) {
+        props.msg = 'Authentication Required.';
+        this.cancelSubmissionProcess();
+        gui.confirmLogin();
+    }
+    //unforeseen statuscodes
+    else if ( status > 500 ) {
+        console.error( 'Error during uploading, received unexpected statuscode: ' + status );
+        props.msg = statusMap[ '5xx' ].msg;
+        this.uploadResult.fail.push( props );
+    } else if ( status > 400 ) {
+        console.error( 'Error during uploading, received unexpected statuscode: ' + status );
+        props.msg = statusMap[ '4xx' ].msg;
+        this.uploadResult.fail.push( props );
+    } else if ( status > 200 ) {
+        console.error( 'Error during uploading, received unexpected statuscode: ' + status );
+        props.msg = statusMap[ '2xx' ].msg;
+        this.uploadResult.fail.push( props );
+    }
+
+    this.progress.update( props, level, props.msg, this );
+
+    if ( !partial && level === 'success' ) {
+        $( document ).trigger( 'submissionsuccess', [ props.name, props.instanceID ] );
+    } else if ( level === 'success' ) {
+        console.debug( 'not all batches for instanceID have been submitted, current queue:', this.uploadQueue );
+    }
+
+    if ( this.uploadQueue.length > 0 ) {
+        return;
+    }
+
+    //console.debug( 'online: ' + this.currentOnlineStatus, this.uploadResult );
+
+    if ( this.uploadResult.win.length > 0 ) {
+        for ( i = 0; i < this.uploadResult.win.length; i++ ) {
+            name = this.uploadResult.win[ i ].name;
+            if ( $.inArray( name, names ) === -1 ) {
+                names.push( name );
+                msg = ( typeof this.uploadResult.win[ i ].msg !== 'undefined' ) ? msg + ( this.uploadResult.win[ i ].msg ) + ' ' : '';
+            }
         }
-      }
-      this.uploadResult.win.push( props );
-    } else if ( statusMap[ status ].success === false ) {
-      this.uploadResult.fail.push( props );
+        waswere = ( names.length > 1 ) ? ' were' : ' was';
+        namesStr = names.join( ', ' );
+        gui.feedback( namesStr.substring( 0, namesStr.length ) + waswere + ' successfully uploaded!' );
+        this.setOnlineStatus( true );
     }
-  } else if ( status == 401 ) {
-    props.msg = 'Authentication Required.';
-    this.cancelSubmissionProcess( );
-    gui.confirmLogin( );
-  }
-  //unforeseen statuscodes
-  else if ( status > 500 ) {
-    console.error( 'Error during uploading, received unexpected statuscode: ' + status );
-    props.msg = statusMap[ '5xx' ].msg;
-    this.uploadResult.fail.push( props );
-  } else if ( status > 400 ) {
-    console.error( 'Error during uploading, received unexpected statuscode: ' + status );
-    props.msg = statusMap[ '4xx' ].msg;
-    this.uploadResult.fail.push( props );
-  } else if ( status > 200 ) {
-    console.error( 'Error during uploading, received unexpected statuscode: ' + status );
-    props.msg = statusMap[ '2xx' ].msg;
-    this.uploadResult.fail.push( props );
-  }
 
-  this.progress.update( props, level, props.msg, this );
-
-  if ( !partial && level === 'success' ) {
-    $( document ).trigger( 'submissionsuccess', [ props.name, props.instanceID ] );
-  } else if ( level === 'success' ) {
-    console.debug( 'not all batches for instanceID have been submitted, current queue:', this.uploadQueue );
-  }
-
-  if ( this.uploadQueue.length > 0 ) {
-    return;
-  }
-
-  //console.debug( 'online: ' + this.currentOnlineStatus, this.uploadResult );
-
-  if ( this.uploadResult.win.length > 0 ) {
-    for ( i = 0; i < this.uploadResult.win.length; i++ ) {
-      name = this.uploadResult.win[ i ].name;
-      if ( $.inArray( name, names ) === -1 ) {
-        names.push( name );
-        msg = ( typeof this.uploadResult.win[ i ].msg !== 'undefined' ) ? msg + ( this.uploadResult.win[ i ].msg ) + ' ' : '';
-      }
-    }
-    waswere = ( names.length > 1 ) ? ' were' : ' was';
-    namesStr = names.join( ', ' );
-    gui.feedback( namesStr.substring( 0, namesStr.length ) + waswere + ' successfully uploaded!' );
-    this.setOnlineStatus( true );
-  }
-
-  if ( this.uploadResult.fail.length > 0 ) {
-    msg = '';
-    //console.debug('upload failed');
-    if ( this.currentOnlineStatus !== false ) {
-      for ( i = 0; i < this.uploadResult.fail.length; i++ ) {
-        //if the record upload was forced
-        if ( this.uploadResult.fail[ i ].forced ) {
-          msg += this.uploadResult.fail[ i ].name + this.uploadResult.fail[ i ].batchText + ': ' + this.uploadResult.fail[ i ].msg + '<br />';
+    if ( this.uploadResult.fail.length > 0 ) {
+        msg = '';
+        //console.debug('upload failed');
+        if ( this.currentOnlineStatus !== false ) {
+            for ( i = 0; i < this.uploadResult.fail.length; i++ ) {
+                //if the record upload was forced
+                if ( this.uploadResult.fail[ i ].forced ) {
+                    msg += this.uploadResult.fail[ i ].name + this.uploadResult.fail[ i ].batchText + ': ' + this.uploadResult.fail[ i ].msg + '<br />';
+                }
+            }
+            if ( msg ) gui.alert( msg, 'Failed data submission' );
+        } else {
+            // not sure if there should be any notification if forms fail automatic submission when offline
         }
-      }
-      if ( msg ) gui.alert( msg, 'Failed data submission' );
-    } else {
-      // not sure if there should be any notification if forms fail automatic submission when offline
-    }
 
-    if ( status === 0 ) {
-      this.setOnlineStatus( false );
+        if ( status === 0 ) {
+            this.setOnlineStatus( false );
+        }
     }
-  }
 };
 
 /**
@@ -535,81 +482,81 @@ Connection.prototype.processOpenRosaResponse = function( status, props ) {
  *
  * @return {number} [description]
  */
-Connection.prototype.maxSubmissionSize = function( ) {
-  var maxSize,
-    defaultMax = 5000000,
-    absoluteMax = 100 * 1024 * 1024,
-    that = this;
-  if ( typeof this.maxSize == 'undefined' ) {
-    $.ajax( '/data/max_size', {
-      type: 'GET',
-      async: false,
-      timeout: 5 * 1000,
-      success: function( response ) {
-        maxSize = parseInt( response, 10 ) || defaultMax;
-        //setting an absolute max as defined in enketo .htaccess file
-        maxSize = ( maxSize > absoluteMax ) ? absoluteMax : maxSize;
-        that.maxSize = maxSize;
-      },
-      error: function( ) {
-        maxSize = defaultMax;
-      }
-    } );
-    return maxSize;
-  }
-  return this.maxSize;
+Connection.prototype.maxSubmissionSize = function() {
+    var maxSize,
+        defaultMax = 5000000,
+        absoluteMax = 100 * 1024 * 1024,
+        that = this;
+    if ( typeof this.maxSize == 'undefined' ) {
+        $.ajax( '/data/max_size', {
+            type: 'GET',
+            async: false,
+            timeout: 5 * 1000,
+            success: function( response ) {
+                maxSize = parseInt( response, 10 ) || defaultMax;
+                //setting an absolute max as defined in enketo .htaccess file
+                maxSize = ( maxSize > absoluteMax ) ? absoluteMax : maxSize;
+                that.maxSize = maxSize;
+            },
+            error: function() {
+                maxSize = defaultMax;
+            }
+        } );
+        return maxSize;
+    }
+    return this.maxSize;
 };
 
 Connection.prototype.isValidURL = function( url ) {
-  return ( /^(https?:\/\/)(([\da-z\.\-]+)\.([a-z\.]{2,6})|(([0-9]{1,3}\.){3}[0-9]{1,3}))([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/ ).test( url );
+    return ( /^(https?:\/\/)(([\da-z\.\-]+)\.([a-z\.]{2,6})|(([0-9]{1,3}\.){3}[0-9]{1,3}))([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/ ).test( url );
 };
 
 Connection.prototype.getFormlist = function( serverURL, callbacks ) {
-  callbacks = this.getCallbacks( callbacks );
+    callbacks = this.getCallbacks( callbacks );
 
-  if ( !this.isValidURL( serverURL ) ) {
-    callbacks.error( null, 'validationerror', 'not a valid URL' );
-    return;
-  }
-  $.ajax( '/forms/get_list', {
-    type: 'GET',
-    data: {
-      server_url: serverURL
-    },
-    cache: false,
-    contentType: 'json',
-    timeout: 60 * 1000,
-    success: callbacks.success,
-    error: callbacks.error,
-    complete: callbacks.complete
-  } );
+    if ( !this.isValidURL( serverURL ) ) {
+        callbacks.error( null, 'validationerror', 'not a valid URL' );
+        return;
+    }
+    $.ajax( '/forms/get_list', {
+        type: 'GET',
+        data: {
+            server_url: serverURL
+        },
+        cache: false,
+        contentType: 'json',
+        timeout: 60 * 1000,
+        success: callbacks.success,
+        error: callbacks.error,
+        complete: callbacks.complete
+    } );
 };
 
 Connection.prototype.getSurveyURL = function( serverURL, formId, callbacks ) {
-  callbacks = this.getCallbacks( callbacks );
+    callbacks = this.getCallbacks( callbacks );
 
-  if ( !serverURL || !this.isValidURL( serverURL ) ) {
-    callbacks.error( null, 'validationerror', 'not a valid server URL' );
-    return;
-  }
-  if ( !formId || formId.length === 0 ) {
-    callbacks.error( null, 'validationerror', 'not a valid formId' );
-    return;
-  }
-  $.ajax( {
-    url: this.GETSURVEYURL_URL,
-    type: 'POST',
-    data: {
-      server_url: serverURL,
-      form_id: formId
-    },
-    cache: false,
-    timeout: 60 * 1000,
-    dataType: 'json',
-    success: callbacks.success,
-    error: callbacks.error,
-    complete: callbacks.complete
-  } );
+    if ( !serverURL || !this.isValidURL( serverURL ) ) {
+        callbacks.error( null, 'validationerror', 'not a valid server URL' );
+        return;
+    }
+    if ( !formId || formId.length === 0 ) {
+        callbacks.error( null, 'validationerror', 'not a valid formId' );
+        return;
+    }
+    $.ajax( {
+        url: this.GETSURVEYURL_URL,
+        type: 'POST',
+        data: {
+            server_url: serverURL,
+            form_id: formId
+        },
+        cache: false,
+        timeout: 60 * 1000,
+        dataType: 'json',
+        success: callbacks.success,
+        error: callbacks.error,
+        complete: callbacks.complete
+    } );
 };
 
 /**
@@ -621,64 +568,64 @@ Connection.prototype.getSurveyURL = function( serverURL, formId, callbacks ) {
  * @param  {Object.<string, Function>=} callbacks   callbacks
  */
 Connection.prototype.getTransForm = function( serverURL, formId, formFile, formURL, callbacks ) {
-  var formData = new FormData( );
+    var formData = new FormData();
 
-  callbacks = this.getCallbacks( callbacks );
-  serverURL = serverURL || null;
-  formId = formId || null;
-  formURL = formURL || null;
-  formFile = formFile || new Blob( );
+    callbacks = this.getCallbacks( callbacks );
+    serverURL = serverURL || null;
+    formId = formId || null;
+    formURL = formURL || null;
+    formFile = formFile || new Blob();
 
-  if ( formFile.size === 0 && ( !serverURL || !formId ) && !formURL ) {
-    callbacks.error( null, 'validationerror', 'No form file or URLs provided' );
-    return;
-  }
-  if ( formFile.size === 0 && !this.isValidURL( serverURL ) && !this.isValidURL( formURL ) ) {
-    callbacks.error( null, 'validationerror', 'Not a valid server or form url' );
-    return;
-  }
-  if ( formFile.size === 0 && !formURL && ( !formId || formId.length === 0 ) ) {
-    callbacks.error( null, 'validationerror', 'No form id provided' );
-    return;
-  }
-  //don't append if null, as FF turns null into 'null'
-  if ( serverURL ) formData.append( 'server_url', serverURL );
-  if ( formId ) formData.append( 'form_id', formId );
-  if ( formURL ) formData.append( 'form_url', formURL );
-  if ( formFile ) formData.append( 'xml_file', formFile );
+    if ( formFile.size === 0 && ( !serverURL || !formId ) && !formURL ) {
+        callbacks.error( null, 'validationerror', 'No form file or URLs provided' );
+        return;
+    }
+    if ( formFile.size === 0 && !this.isValidURL( serverURL ) && !this.isValidURL( formURL ) ) {
+        callbacks.error( null, 'validationerror', 'Not a valid server or form url' );
+        return;
+    }
+    if ( formFile.size === 0 && !formURL && ( !formId || formId.length === 0 ) ) {
+        callbacks.error( null, 'validationerror', 'No form id provided' );
+        return;
+    }
+    //don't append if null, as FF turns null into 'null'
+    if ( serverURL ) formData.append( 'server_url', serverURL );
+    if ( formId ) formData.append( 'form_id', formId );
+    if ( formURL ) formData.append( 'form_url', formURL );
+    if ( formFile ) formData.append( 'xml_file', formFile );
 
-  console.debug( 'form file: ', formFile );
+    console.debug( 'form file: ', formFile );
 
-  $.ajax( '/transform/get_html_form', {
-    type: 'POST',
-    cache: false,
-    contentType: false,
-    processData: false,
-    dataType: 'xml',
-    data: formData,
-    success: callbacks.success,
-    error: callbacks.error,
-    complete: callbacks.complete
-  } );
+    $.ajax( '/transform/get_html_form', {
+        type: 'POST',
+        cache: false,
+        contentType: false,
+        processData: false,
+        dataType: 'xml',
+        data: formData,
+        success: callbacks.success,
+        error: callbacks.error,
+        complete: callbacks.complete
+    } );
 };
 
 Connection.prototype.validateHTML = function( htmlStr, callbacks ) {
-  var content = new FormData( );
+    var content = new FormData();
 
-  callbacks = this.getCallbacks( callbacks );
+    callbacks = this.getCallbacks( callbacks );
 
-  content.append( 'level', 'error' );
-  content.append( 'content', htmlStr );
+    content.append( 'level', 'error' );
+    content.append( 'content', htmlStr );
 
-  $.ajax( '/html5validate/', {
-    type: 'POST',
-    data: content,
-    contentType: false,
-    processData: false,
-    success: callbacks.success,
-    error: callbacks.error,
-    complete: callbacks.complete
-  } );
+    $.ajax( '/html5validate/', {
+        type: 'POST',
+        data: content,
+        contentType: false,
+        processData: false,
+        success: callbacks.success,
+        error: callbacks.error,
+        complete: callbacks.complete
+    } );
 };
 
 /**
@@ -687,77 +634,62 @@ Connection.prototype.validateHTML = function( htmlStr, callbacks ) {
  * @constructor
  */
 Connection.prototype.ORosaHelper = function( conn ) {
-  /**
-   * Magically generates a well-formed serverURL from a type and fragment
-   * @param  {string} type    type of server or account (http, https, formhub_uni, formhub, appspot)
-   * @param  {string} frag    a user input for the given type
-   * @return {?string}        a full serverURL
-   */
-  this.fragToServerURL = function( type, frag ) {
-    var protocol,
-      serverURL = '';
+    /**
+     * Magically generates a well-formed serverURL from a type and fragment
+     * @param  {string} type    type of server or account (http, https, formhub_uni, formhub, appspot)
+     * @param  {string} frag    a user input for the given type
+     * @return {?string}        a full serverURL
+     */
+    this.fragToServerURL = function( type, frag ) {
+        var protocol,
+            serverURL = '';
 
-    if ( !frag ) {
-      console.log( 'nothing to do' );
-      return null;
-    }
-    console.debug( 'frag: ' + frag );
-    //always override if valid URL is entered
-    //TODO: REMOVE reference to connection
-    if ( conn.isValidURL( frag ) ) {
-      return frag;
-    }
+        if ( !frag ) {
+            console.log( 'nothing to do' );
+            return null;
+        }
+        console.debug( 'frag: ' + frag );
+        //always override if valid URL is entered
+        //TODO: REMOVE reference to connection
+        if ( conn.isValidURL( frag ) ) {
+            return frag;
+        }
 
-    switch ( type ) {
-      case 'http':
-      case 'https':
-        protocol = ( /^http(|s):\/\//.test( frag ) ) ? '' : type + '://';
-        serverURL = protocol + frag;
-        break;
-      case 'formhub_uni':
-      case 'formhub':
-        serverURL = 'https://formhub.org/' + frag;
-        break;
-      case 'appspot':
-        serverURL = 'https://' + frag + '.appspot.com';
-        break;
-    }
+        switch ( type ) {
+            case 'http':
+            case 'https':
+                protocol = ( /^http(|s):\/\//.test( frag ) ) ? '' : type + '://';
+                serverURL = protocol + frag;
+                break;
+            case 'formhub_uni':
+            case 'formhub':
+                serverURL = 'https://formhub.org/' + frag;
+                break;
+            case 'appspot':
+                serverURL = 'https://' + frag + '.appspot.com';
+                break;
+        }
 
-    if ( !conn.isValidURL( serverURL ) ) {
-      console.error( 'not a valid url: ' + serverURL );
-      return null;
-    }
-    console.log( 'server_url: ' + serverURL );
-    return serverURL;
-  };
+        if ( !conn.isValidURL( serverURL ) ) {
+            console.error( 'not a valid url: ' + serverURL );
+            return null;
+        }
+        console.log( 'server_url: ' + serverURL );
+        return serverURL;
+    };
 };
-
-/**
- * Get the number of forms launched on enketo (all know deployments)
- * @param  {Object.<string, Function>=} callbacks callbacks
- */
-/*Connection.prototype.getNumberFormsLaunched = function( callbacks ) {
-  callbacks = this.getCallbacks( callbacks );
-  $.ajax( {
-    url: '/front/get_number_launched_everywhere',
-    dataType: 'json',
-    success: callbacks.success,
-    error: callbacks.error,
-    complete: callbacks.complete
-  } );
-};*/
 
 /**
  * Loads a google maps API v3 script
  * @param  {Function} callback function to call when script has been loaded and added to DOM
  */
 Connection.prototype.loadGoogleMaps = function( callback ) {
-  var APIKey = settings[ 'mapsDynamicAPIKey' ] || '',
-    script = document.createElement( "script" );
-  window.googleMapsInit = callback;
-  script.type = "text/javascript";
-  script.src = "https://maps.googleapis.com/maps/api/js?v=3.exp&key=" + APIKey + "&sensor=false&libraries=places&callback=googleMapsInit";
-  document.body.appendChild( script );
+    var APIKey = settings[ 'mapsDynamicAPIKey' ] || '',
+        script = document.createElement( "script" );
+    window.googleMapsInit = callback;
+    script.type = "text/javascript";
+    script.src = "https://maps.googleapis.com/maps/api/js?v=3.exp&key=" + APIKey + "&sensor=false&libraries=places&callback=googleMapsInit";
+    document.body.appendChild( script );
 };
 
 /**
@@ -766,13 +698,13 @@ Connection.prototype.loadGoogleMaps = function( callback ) {
  * @return {Object.<string, Function>}           [description]
  */
 Connection.prototype.getCallbacks = function( callbacks ) {
-  callbacks = callbacks || {};
-  callbacks.error = callbacks.error || function( jqXHR, textStatus, errorThrown ) {
-    console.error( textStatus + ' : ' + errorThrown );
-  };
-  callbacks.complete = callbacks.complete || function( ) {};
-  callbacks.success = callbacks.success || function( ) {
-    console.log( 'success!' );
-  };
-  return callbacks;
+    callbacks = callbacks || {};
+    callbacks.error = callbacks.error || function( jqXHR, textStatus, errorThrown ) {
+        console.error( textStatus + ' : ' + errorThrown );
+    };
+    callbacks.complete = callbacks.complete || function() {};
+    callbacks.success = callbacks.success || function() {
+        console.log( 'success!' );
+    };
+    return callbacks;
 };

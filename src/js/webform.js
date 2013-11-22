@@ -20,7 +20,6 @@ var /**@type {Connection}*/ connection;
 var /**@type {Cache}*/ cache;
 var /**@type {FileManager}*/ fileManager;
 
-//tight coupling with Form and Storage class, but loose coupling with GUI
 $( document ).ready( function() {
     'use strict';
     var message, choices, loadErrors, trySubmission;

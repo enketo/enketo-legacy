@@ -20,15 +20,15 @@ var currentOnlineStatus = false;
 var /**@type {FileManager}*/ fileManager;
 
 $( document ).ready( function() {
-	'use strict';
-	var loadErrors;
+    'use strict';
+    var loadErrors;
 
-	form = new Form( 'form.jr:eq(0)', jrDataStr );
-	connection = new Connection();
-	loadErrors = form.init();
-	if ( loadErrors.length > 0 ) {
-		gui.showLoadErrors( loadErrors, 'It is recommended not to use this form for data entry until this is resolved.' );
-	}
-	connection.init();
-	gui.setup();
+    form = new Form( 'form.jr:eq(0)', jrDataStr );
+    connection = new Connection();
+    loadErrors = form.init();
+    if ( loadErrors.length > 0 ) {
+        gui.showLoadErrors( loadErrors, 'It is recommended not to use this form for data entry until this is resolved.' );
+    }
+    connection.init();
+    gui.setup();
 } );

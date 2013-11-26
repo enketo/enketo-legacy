@@ -1,5 +1,5 @@
 /**
- * @preserve Copyright 2012 Martijn van de Rijdt
+ * @preserve Copyright 2013 Martijn van de Rijdt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,46 +14,44 @@
  * limitations under the License.
  */
 
-/**
- * Storage Class
- * @constructor
- */
-
-function StorageLocal() {
+define( [ 'jquery' ], function( $ ) {
     "use strict";
+
     var RESERVED_KEYS = [ '__settings', 'null', '__history', 'Firebug', 'undefined', '__bookmark', '__counter', '__current_server', '__loadLog', '__writetest' ],
         localStorage = window.localStorage;
 
-    this.init = function() {
-        var that = this;
+    init();
+
+    function init() {
+        console.error( 'INITIALIXING JKLFDJLKDSJFLKDSJFKLJDSKLFJ' );
         $( document ).on( 'submissionsuccess', function( ev, recordName ) {
-            that.removeRecord( recordName );
+            removeRecord( recordName );
             console.log( 'After submission event was detected, tried to remove record with key: ' + recordName );
         } );
-    };
+    }
 
     // Could be replaced by Modernizr function if Modernizr remains used in final version
-    this.isSupported = function() {
+    function isSupported() {
         try {
             return 'localStorage' in window && window[ 'localStorage' ] !== null;
         } catch ( e ) {
             return false;
         }
-    };
+    }
 
-    this.isWritable = function() {
-        var result = this.setRecord( '__writetest', 'x', null, true );
+    function isWritable() {
+        var result = setRecord( '__writetest', 'x', null, true );
         if ( result === 'success' ) {
-            this.removeRecord( '__writetest' );
+            removeRecord( '__writetest' );
             return true;
         }
         return false;
-    };
+    }
 
     //used for testing
-    this.getForbiddenKeys = function() {
+    function getForbiddenKeys() {
         return RESERVED_KEYS;
-    };
+    }
 
     /**
      * saves a data object in JSON format (string)
@@ -64,7 +62,7 @@ function StorageLocal() {
      * @param {?string=} oldKey    [description]
      * @return {string}
      */
-    this.setRecord = function( newKey, record, del, overwrite, oldKey ) {
+    function setRecord( newKey, record, del, overwrite, oldKey ) {
         var error;
         if ( !newKey || typeof newKey !== 'string' || newKey.length < 1 ) {
             //console.error( 'no key or empty key provided for record: ' + newKey );
@@ -87,9 +85,9 @@ function StorageLocal() {
             //add timestamp to survey data
             if ( typeof record[ 'data' ] === 'string' ) {
                 record[ 'lastSaved' ] = ( new Date() ).getTime();
-                //if (newKey == this.getCounterValue() ){
+                //if (newKey == getCounterValue() ){
                 localStorage.setItem( '__counter', JSON.stringify( {
-                    'counter': this.getCounterValue()
+                    'counter': getCounterValue()
                 } ) );
                 //}
             }
@@ -100,7 +98,7 @@ function StorageLocal() {
             if ( oldKey !== null && oldKey !== '' && oldKey !== newKey ) {
                 if ( del ) {
                     console.log( 'going to remove old record with key:' + oldKey );
-                    this.removeRecord( oldKey );
+                    removeRecord( oldKey );
                 }
             }
             return 'success';
@@ -112,7 +110,7 @@ function StorageLocal() {
             error = ( e ) ? JSON.stringify( e ) : 'unknown';
             return 'error: ' + error;
         }
-    };
+    }
 
 
     /**
@@ -120,7 +118,7 @@ function StorageLocal() {
      * @param  {string} key [description]
      * @return {?*}     [description]
      */
-    this.getRecord = function( key ) {
+    function getRecord( key ) {
         var record;
         try {
             record = JSON.parse( localStorage.getItem( key ) );
@@ -129,41 +127,42 @@ function StorageLocal() {
             console.error( 'error with loading data from store: ' + e.message );
             return null;
         }
-    };
+    }
 
     // removes a record
-    this.removeRecord = function( key ) {
+    function removeRecord( key ) {
         try {
             localStorage.removeItem( key );
-            //console.log('removed record with key:'+key) // DEBUG
-            $( 'form.jr' ).trigger( 'delete', JSON.stringify( this.getRecordList() ) );
+            //console.log('removed record with key:'+key)
+            //TODO remove this single jQuery dependency
+            $( 'form.or' ).trigger( 'delete', JSON.stringify( getRecordList() ) );
             return true;
         } catch ( e ) {
             console.log( 'error with removing data from store: ' + e.message );
             return false;
         }
-    };
+    }
 
     /**
      * Returns a list of locally stored form names and properties for a provided server URL
      * @param  {string} serverURL
      * @return {Array.<{name: string, server: string, title: string, url: string}>}
      */
-    this.getFormList = function( serverURL ) {
+    function getFormList( serverURL ) {
         if ( typeof serverURL == 'undefined' ) {
             return null;
         }
-        return /**@type {Array.<{name: string, server: string, title: string, url: string}>}*/ this.getRecord( '__server_' + serverURL );
-    };
+        return /**@type {Array.<{name: string, server: string, title: string, url: string}>}*/ getRecord( '__server_' + serverURL );
+    }
 
     /**
      * returns an ordered array of objects with record keys and final variables {{"key": "name1", "final": true},{"key": "name2", etc.
      * @return { Array.<Object.<string, (boolean|string)>>} [description]
      */
-    this.getRecordList = function() {
+    function getRecordList() {
         var i, ready, record,
             formList = [],
-            records = this.getSurveyRecords( false );
+            records = getSurveyRecords( false );
         //console.log('data received:'+JSON.stringify(data)); // DEBUG
         for ( i = 0; i < records.length; i++ ) {
             record = records[ i ];
@@ -180,7 +179,7 @@ function StorageLocal() {
             return a[ 'lastSaved' ] - b[ 'lastSaved' ];
         } );
         return formList;
-    };
+    }
 
     /**
      * retrieves all survey data
@@ -188,7 +187,7 @@ function StorageLocal() {
      * @param  {?string=} excludeName [description]
      * @return {Array.<Object.<(string|number), (string|boolean)>>}             [description]
      */
-    this.getSurveyRecords = function( finalOnly, excludeName ) {
+    function getSurveyRecords( finalOnly, excludeName ) {
         var i, key,
             records = [],
             record = {};
@@ -198,7 +197,7 @@ function StorageLocal() {
         for ( i = 0; i < localStorage.length; i++ ) {
             key = localStorage.key( i );
             //console.debug('found record with with key:'+key);
-            record = this.getRecord( key ); //localStorage.getItem(key);
+            record = getRecord( key ); //localStorage.getItem(key);
             // get record - all non-reserved keys contain survey data
             if ( !isReservedKey( key ) ) {
                 //console.debug('record with key: '+key+' is survey data');
@@ -219,7 +218,7 @@ function StorageLocal() {
         }
 
         return records;
-    };
+    }
 
     /**
      * [getSurveyDataArr description]
@@ -227,11 +226,11 @@ function StorageLocal() {
      * @param  {?string=} excludeName the (currently open) record name to exclude from the returned data set
      * @return {Array.<{name: string, data: string}>}             [description]
      */
-    this.getSurveyDataArr = function( finalOnly, excludeName ) {
+    function getSurveyDataArr( finalOnly, excludeName ) {
         var i, records,
             dataArr = [];
         finalOnly = finalOnly || true;
-        records = this.getSurveyRecords( finalOnly, excludeName );
+        records = getSurveyRecords( finalOnly, excludeName );
         //console.debug('getSurveyDataArr will build array from these records: '+JSON.stringify(records));
         for ( i = 0; i < records.length; i++ ) {
             dataArr.push( {
@@ -241,22 +240,22 @@ function StorageLocal() {
         }
         //console.debug('returning data array: '+JSON.stringify(dataArr));
         return dataArr;
-    };
+    }
 
     /**
      * [getSurveyDataOnlyArr description]
      * @param  {boolean=} finalOnly [description]
      * @return {?Array.<string>}           [description]
      */
-    this.getSurveyDataOnlyArr = function( finalOnly ) {
+    function getSurveyDataOnlyArr( finalOnly ) {
         var i,
-            dataObjArr = this.getSurveyDataArr( finalOnly ),
+            dataObjArr = getSurveyDataArr( finalOnly ),
             dataOnlyArr = [];
         for ( i = 0; i < dataObjArr.length; i++ ) {
             dataOnlyArr.push( dataObjArr[ i ].data );
         }
         return ( dataOnlyArr.length > 0 ) ? dataOnlyArr : null;
-    };
+    }
 
     /**
      * private function to check if key is forbidden
@@ -293,16 +292,30 @@ function StorageLocal() {
      * Obtain a new counter string value that is one higher than the previous
      * @return {?(string|String)} [description]
      */
-    this.getCounterValue = function() {
-        var record = this.getRecord( '__counter' ),
+    function getCounterValue() {
+        var record = getRecord( '__counter' ),
             number = ( record && typeof record[ 'counter' ] !== 'undefined' && isNumber( record[ 'counter' ] ) ) ? Number( record[ 'counter' ] ) : 0,
             numberStr = ( number + 1 ).toString().pad( 4 );
-        //this.setRecord('__counter', numberStr);
         return numberStr;
+    }
+
+
+    function isNumber( n ) {
+        return !isNaN( parseFloat( n ) ) && isFinite( n );
+    }
+
+    return {
+        isSupported: isSupported,
+        isWritable: isWritable,
+        getForbiddenKeys: getForbiddenKeys,
+        getRecord: getRecord,
+        setRecord: setRecord,
+        removeRecord: removeRecord,
+        getFormList: getFormList,
+        getRecordList: getRecordList,
+        getSurveyRecords: getSurveyRecords,
+        getSurveyDataArr: getSurveyDataArr,
+        getSurveyDataOnlyArr: getSurveyDataOnlyArr,
+        getCounterValue: getCounterValue
     };
-
-}
-
-function isNumber( n ) {
-    return !isNaN( parseFloat( n ) ) && isFinite( n );
-}
+} );

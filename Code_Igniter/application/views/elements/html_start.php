@@ -36,7 +36,8 @@
 
 <? if(isset($scripts)): ?>
 <? foreach ($scripts as $script): ?>
-		<script type="text/javascript" src="<?= $script; ?>"></script>
+		<? $data_main = (!empty($script['data-main'])) ? $script['data-main'] : ''; ?>
+		<script type="text/javascript" data-main="<?= $data_main; ?>" src="<?= $script['src']; ?>"></script>
 <? endforeach; ?>
 <? endif; ?>
 

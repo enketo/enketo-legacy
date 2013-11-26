@@ -2,9 +2,9 @@
 	require 'elements/html_start.php'; 
 ?>
 		<script type="text/javascript">
-			var jrDataStr = <?= $form_data ?>;
+			var modelStr = <?= $form_data ?>;
 		<? if (!empty($form_data_to_edit)): ?>
-			var jrDataStrToEdit = <?= $form_data_to_edit ?>;
+			var instanceStrToEdit = <?= $form_data_to_edit ?>;
 		<? endif; ?>
 		<? if (!empty($return_url)): ?>
 			settings['returnURL'] = '<?= $return_url ?>';

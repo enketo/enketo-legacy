@@ -118,7 +118,11 @@ class Webform extends CI_Controller {
             'logout' => $this->credentials !== NULL
         );
 
-        if (ENVIRONMENT === 'production') {
+        $data['scripts'] = (ENVIRONMENT === 'production') 
+            ? array(array('src' => '/build/js/webform-combined.min.js'))
+            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform.js'));
+        
+        /*if (ENVIRONMENT === 'production') {
             $data['scripts'] = array
             (
                 //'/libraries/libraries-all-min.js',
@@ -138,7 +142,7 @@ class Webform extends CI_Controller {
                     '/js-source/webform.js'
                 )
             );
-        }
+        }*/
         $this->load->view('webform_view', $data);
     }
 

@@ -18,19 +18,24 @@
  * Deals with the HTML5 applicationCache
  */
 
-define( [ 'jquery' ], function( $ ) {
+define( [ 'gui', 'jquery' ], function( gui, $ ) {
     "use strict";
 
-    var CACHE_CHECK_INTERVAL = 3600 * 1000;
+    var CACHE_CHECK_INTERVAL = 3600 * 1000,
+        active = init();
 
     function requested() {
         return !!$( 'html' ).attr( 'manifest' );
+    }
+
+    function activated() {
+        return active;
     }
     /**
      * Initializes Cache object
      * @return {boolean} returns false if applicationCache is not supported
      */
-    function activated() {
+    function init() {
         var appCache;
 
         if ( !isSupported ) {
@@ -38,6 +43,8 @@ define( [ 'jquery' ], function( $ ) {
         }
 
         appCache = window.applicationCache;
+
+        console.log( 'starting appcache init:', appCache.status );
 
         if ( appCache.status === appCache.UPDATEREADY ) {
             onUpdateReady();
@@ -74,8 +81,11 @@ define( [ 'jquery' ], function( $ ) {
 
         setInterval( function() {
             update();
-            //applicationCache.update();
         }, CACHE_CHECK_INTERVAL );
+
+        if ( appCache.status === appCache.IDLE ) {
+            update();
+        }
 
         return true;
     }
@@ -91,7 +101,6 @@ define( [ 'jquery' ], function( $ ) {
      * Handler for cache obsolete event
      */
     function onObsolete() {
-        store.removeRecord( '__bookmark' );
         gui.confirm( {
             msg: 'Refreshing the page may restore it.',
             heading: 'Offline-disabled.',
@@ -128,7 +137,7 @@ define( [ 'jquery' ], function( $ ) {
         applicationCache.swapCache();
         gui.updateStatus.offlineLaunch( true );
         gui.feedback( "A new version of this application or form has been downloaded. " +
-            "Refresh this page to load the updated version.", 20, 'Updated!', {
+            "<a href=" + document.location + ">Refresh</a> this page to load the updated version.", 20, 'Updated!', {
                 posButton: 'Refresh',
                 negButton: 'Cancel',
                 posAction: function() {
@@ -161,7 +170,7 @@ define( [ 'jquery' ], function( $ ) {
     function isSupported() {
         return ( window.applicationCache ) ? true : false;
     }
-
+    console.log( 'cache setup done' );
     return {
         requested: requested,
         activated: activated

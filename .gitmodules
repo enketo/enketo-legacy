@@ -13,9 +13,6 @@
 [submodule "Code_Igniter/application/libraries/xslt"]
 	path = Code_Igniter/application/libraries/xslt
 	url = https://github.com/MartijnR/enketo-xslt.git
-[submodule "public/lib/file-manager"]
-	path = public/lib/file-manager
-	url = https://github.com/MartijnR/file-manager.git
 [submodule "public/lib/blob"]
 	path = public/lib/blob
 	url = https://github.com/eligrey/Blob.js.git
@@ -25,3 +22,6 @@
 [submodule "public/lib/enketo-core"]
 	path = public/lib/enketo-core
 	url = https://github.com/MartijnR/enketo-core.git
+[submodule "public/lib/vkbeautify"]
+	path = public/lib/vkbeautify
+	url = https://github.com/vkiryukhin/vkBeautify.git

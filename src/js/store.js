@@ -20,16 +20,6 @@ define( [ 'jquery' ], function( $ ) {
     var RESERVED_KEYS = [ '__settings', 'null', '__history', 'Firebug', 'undefined', '__bookmark', '__counter', '__current_server', '__loadLog', '__writetest' ],
         localStorage = window.localStorage;
 
-    init();
-
-    function init() {
-        console.error( 'INITIALIXING JKLFDJLKDSJFLKDSJFKLJDSKLFJ' );
-        $( document ).on( 'submissionsuccess', function( ev, recordName ) {
-            removeRecord( recordName );
-            console.log( 'After submission event was detected, tried to remove record with key: ' + recordName );
-        } );
-    }
-
     // Could be replaced by Modernizr function if Modernizr remains used in final version
     function isSupported() {
         try {
@@ -133,9 +123,10 @@ define( [ 'jquery' ], function( $ ) {
     function removeRecord( key ) {
         try {
             localStorage.removeItem( key );
-            //console.log('removed record with key:'+key)
-            //TODO remove this single jQuery dependency
-            $( 'form.or' ).trigger( 'delete', JSON.stringify( getRecordList() ) );
+            if ( !isReservedKey( key ) ) {
+                //TODO remove this single jQuery dependency
+                $( 'form.or' ).trigger( 'delete', JSON.stringify( getRecordList() ) );
+            }
             return true;
         } catch ( e ) {
             console.log( 'error with removing data from store: ' + e.message );

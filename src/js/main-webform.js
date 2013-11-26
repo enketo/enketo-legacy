@@ -11,7 +11,10 @@ requirejs.config( {
         "jquery.xpath": "../lib/enketo-core/lib/jquery-xpath/jquery.xpath",
         "Modernizr": "../lib/enketo-core/lib/Modernizr",
         "bootstrap": "../lib/enketo-core/lib/bootstrap",
-        "jquery": "../lib/enketo-core/lib/jquery"
+        "jquery": "../lib/enketo-core/lib/jquery",
+        "file-saver": "../lib/file-saver/FileSaver",
+        "Blob": "../lib/blob/Blob",
+        "vkbeautify": "../lib/vkbeautify/vkbeautify"
     },
     shim: {
         "xpath": {
@@ -31,50 +34,35 @@ requirejs.config( {
         },
         "Modernizr": {
             exports: "Modernizr"
+        },
+        "file-saver": {
+            exports: "saveAs"
+        },
+        "Blob": {
+            exports: "Blob"
+        },
+        "vkbeautify": {
+            exports: "vkbeautify"
         }
+
     }
 } );
 
-requirejs( [ 'Modernizr', 'enketo-js/Form', 'file-manager', 'store', 'controls', 'cache', 'gui', 'jquery', ],
-    function( Modernizr, Form, fileManager, store, controls, cache, gui, $ ) {
+requirejs( [ 'cache', 'gui', 'store', 'file-manager', 'controls' ],
+    function( cache, gui, recordStore, fileStore, controls ) {
         var loadErrors, form;
 
-        if ( !store.isSupported() || !store.isWritable() ) {
+        if ( !recordStore.isSupported() || !recordStore.isWritable() ) {
             window.location = settings[ 'modernBrowsersURL' ];
-        } else if ( fileManager.isSupported() && store.getRecordList().length === 0 ) {
-            //clean up filesystem storage
-            fileManager.deleteAll();
-        }
-
-        //remove filesystem folder after successful submission
-        $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {
-            fileManager.deleteDir( instanceID );
-        } );
-
-        gui.updateStatus.offlineLaunch( false );
-
-        if ( cache.requested() && cache.activated() ) {
+        } else if ( cache.requested() && cache.activated() ) {
             $( document ).trigger( 'browsersupport', 'offline-launch' );
         } else if ( cache.requested() ) {
             gui.showCacheUnsupported();
         }
 
-        form = new Form( 'form.or:eq(0)', modelStr );
-
-        //for debugging
-        window.form = form;
-        window.gui = gui;
-
-        //initialize form and check for load errors
-        loadErrors = form.init();
-
-        if ( loadErrors.length > 0 ) {
-            console.error( 'load errors:', loadErrors );
-            gui.showLoadErrors( loadErrors, 'It is recommended not to use this form for data entry until this is resolved.' );
-        }
-
-        controls.init( form, {
-            submitInterval: 300 * 1000,
-            localStorage: true
+        controls.init( 'form.or:eq(0)', modelStr, null, {
+            recordStore: recordStore,
+            fileStore: fileStore,
+            submitInterval: 300 * 1000
         } );
     } );

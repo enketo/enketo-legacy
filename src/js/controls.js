@@ -18,15 +18,45 @@
  * Deals with the main high level survey controls: saving, submitting etc.
  */
 
-define( [ 'store', 'connection', 'settings', 'enketo-js/FormModel', 'jquery', 'bootstrap' ],
-    function( store, connection, settings, FormModel, $ ) {
+define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormModel', 'file-saver', 'Blob', 'vkbeautify', 'jquery', 'bootstrap' ],
+    function( gui, connection, settings, Form, FormModel, saveAs, Blob, vkbeautify, $ ) {
         "use strict";
-        var form;
+        var form, $form, formSelector, defaultModelStr, store, fileManager;
 
-        function init( form, options ) {
-            form = form;
+        function init( selector, modelStr, instanceStrToEdit, options ) {
+            var loadErrors;
+
+            console.log( 'starting control init' );
+            formSelector = selector;
+            defaultModelStr = modelStr;
             options = options || {};
-            if ( options.localStorage ) {
+            store = options.recordStore || null;
+            fileManager = options.fileStore || null;
+
+            if ( fileManager && store && fileManager.isSupported() && store.getRecordList().length === 0 ) {
+                //clean up filesystem storage
+                fileManager.deleteAll();
+            }
+
+            form = new Form( formSelector, defaultModelStr, instanceStrToEdit );
+
+            //for debugging
+            //window.form = form;
+            //window.gui = gui;
+
+            //initialize form and check for load errors
+            loadErrors = form.init();
+
+            if ( loadErrors.length > 0 ) {
+                console.error( 'load errors:', loadErrors );
+                gui.showLoadErrors( loadErrors, 'It is recommended not to use this form for data entry until this is resolved.' );
+            }
+
+            $form = form.getView().$;
+
+            setEventHandlers();
+
+            if ( store ) {
                 $( '.side-slider' ).append(
                     '<h3>Queue</h3>' +
                     '<p>Records are stored inside your browser until they have been uploaded ' +
@@ -38,9 +68,8 @@ define( [ 'store', 'connection', 'settings', 'enketo-js/FormModel', 'jquery', 'b
                     '<p>Queued records are uploaded <em>automatically, in the background</em> every 5 minutes when this page is open ' +
                     'and an internet connection is available. To force an upload in between automatic tries, click Upload.</p>' );
                 //trigger fake save event to update formlist in slider
-                $( 'form.or:eq(0)' ).trigger( 'save', JSON.stringify( store.getRecordList() ) );
+                $form.trigger( 'save', JSON.stringify( store.getRecordList() ) );
             }
-            setEventHandlers();
             if ( options.submitInterval ) {
                 window.setInterval( function() {
                     submitQueue();
@@ -73,12 +102,12 @@ define( [ 'store', 'connection', 'settings', 'enketo-js/FormModel', 'jquery', 'b
                 gui.confirm( message, choices );
             } else {
                 form.resetHTML();
-                form = new Form( 'form.jr:eq(0)', jrDataStr );
+                form = new Form( 'form.or:eq(0)', defaultModelStr );
                 form.init();
+                $form = form.getView().$;
                 $( 'button#delete-form' ).button( 'disable' );
             }
         }
-
 
         /**
          * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a queue, without saved data loading
@@ -91,7 +120,7 @@ define( [ 'store', 'connection', 'settings', 'enketo-js/FormModel', 'jquery', 'b
 
         function submitForm() {
             var record, name, saveResult;
-            $( 'form.jr' ).trigger( 'beforesave' );
+            $form.trigger( 'beforesave' );
             if ( !form.isValid() ) {
                 gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
                 return;
@@ -107,7 +136,7 @@ define( [ 'store', 'connection', 'settings', 'enketo-js/FormModel', 'jquery', 'b
             if ( saveResult === 'success' ) {
                 gui.feedback( 'Record queued for submission.', 3 );
                 resetForm( true );
-                $( 'form.jr' ).trigger( 'save', JSON.stringify( store.getRecordList() ) );
+                $form.trigger( 'save', JSON.stringify( store.getRecordList() ) );
                 //attempt uploading the data (all data in localStorage)
                 //TODO: THIS (force=true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
                 //TODO: add second parameter getCurrentRecordName() to prevent currenty open record from being submitted
@@ -138,7 +167,7 @@ define( [ 'store', 'connection', 'settings', 'enketo-js/FormModel', 'jquery', 'b
 
         function submitEditedForm() {
             var name, record, saveResult, redirect, beforeMsg, callbacks;
-            $( 'form.jr' ).trigger( 'beforesave' );
+            $form.trigger( 'beforesave' );
             if ( !form.isValid() ) {
                 gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
                 return;
@@ -338,7 +367,7 @@ define( [ 'store', 'connection', 'settings', 'enketo-js/FormModel', 'jquery', 'b
                     var $button = $( this );
                     $button.btnBusyState( true );
                     setTimeout( function() {
-                        form.validateForm();
+                        form.validate();
                         submitForm();
                         $button.btnBusyState( false );
                         return false;
@@ -350,19 +379,19 @@ define( [ 'store', 'connection', 'settings', 'enketo-js/FormModel', 'jquery', 'b
                     var $button = $( this );
                     $button.btnBusyState( true );
                     setTimeout( function() {
-                        form.validateForm();
+                        form.validate();
                         submitEditedForm();
                         $button.btnBusyState( false );
                         return false;
                     }, 100 );
                 } );
             $( document ).on( 'click', 'button#validate-form:not(.disabled)', function() {
-                //$('form.jr').trigger('beforesave');
+                //$form.trigger('beforesave');
                 if ( typeof form !== 'undefined' ) {
                     var $button = $( this );
                     $button.btnBusyState( true );
                     setTimeout( function() {
-                        form.validateForm();
+                        form.validate();
                         $button.btnBusyState( false );
                         if ( !form.isValid() ) {
                             gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
@@ -403,12 +432,24 @@ define( [ 'store', 'connection', 'settings', 'enketo-js/FormModel', 'jquery', 'b
 
             $( '#form-controls button' ).toLargestWidth();
 
-            $( document ).on( 'save delete', 'form.jr', function( e, formList ) {
-                //console.debug( 'save or delete event detected with new formlist: ' + formList );
+            $( document ).on( 'save delete', 'form.or', function( e, formList ) {
+                console.debug( 'save or delete event detected with new formlist: ', formList );
                 updateRecordList( JSON.parse( formList ) );
             } );
 
             $( '#dialog-save' ).hide();
+
+            //remove filesystem folder after successful submission
+            $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {
+                fileManager.deleteDir( instanceID );
+                store.removeRecord( recordName );
+                console.log( 'After submission success, attempted to remove record with key:', recordName, 'and files in folder:', instanceID );
+            } );
+
+            $( document ).on( 'submissionsuccess', function( ev, recordName ) {
+
+
+            } );
         }
 
         //update the survey forms names list

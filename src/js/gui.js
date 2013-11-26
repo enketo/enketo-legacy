@@ -33,6 +33,28 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         setEventHandlers();
         $( 'footer' ).detach().appendTo( '#container' ); //WTF?
         positionPageAndBar();
+        // avoid windows console errors
+        if ( typeof console == "undefined" ) {
+            console = {
+                log: function() {}
+            };
+        }
+        if ( typeof window.console.debug == "undefined" ) {
+            console.debug = console.log;
+        }
+
+        if ( !settings.debug ) {
+            window.console.log = function() {};
+            window.console.debug = function() {};
+        }
+        //override Modernizr's detection (for development purposes)
+        if ( settings.touch ) {
+            Modernizr.touch = true;
+            $( 'html' ).addClass( 'touch' );
+        } else if ( settings.touch === false ) {
+            Modernizr.touch = false;
+            $( 'html' ).removeClass( 'touch' );
+        }
     }
 
     /**
@@ -267,7 +289,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             if ( $( '#feedback-bar p' ).html() !== message ) {
                 $msg = $( '<p></p>' );
                 $msg.append( message );
-                $( '#feedback-bar' ).append( $msg );
+                $( '#feedback-bar' ).prepend( $msg );
             }
             $( '#feedback-bar' ).show().trigger( 'change' );
 
@@ -280,7 +302,6 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             }, duration );
         },
         hide: function() {
-
             $( '#feedback-bar p' ).remove();
             $( '#feedback-bar' ).trigger( 'change' );
         }
@@ -324,8 +345,8 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             $alert = $( '#dialog-alert' );
 
         heading = heading || 'Alert';
-        level = level || 'error';
-        cls = ( level === 'normal' ) ? '' : 'alert alert-block alert-' + level;
+        level = level || 'danger';
+        cls = ( level === 'normal' ) ? '' : 'alert alert-' + level;
 
         //write content into alert dialog
         $alert.find( '.modal-header h3' ).text( heading );
@@ -398,9 +419,9 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         //write content into confirmation dialog
         $dialog.find( '.modal-header h3' ).text( heading );
         $dialog.find( '.modal-body .msg' ).html( msg ).capitalizeStart();
-        $dialog.find( '.modal-body .alert-error' ).html( errorMsg ).show();
+        $dialog.find( '.modal-body .alert-danger' ).html( errorMsg ).show();
         if ( !errorMsg ) {
-            $dialog.find( '.modal-body .alert-error' ).hide();
+            $dialog.find( '.modal-body .alert-danger' ).hide();
         }
 
         //instantiate dialog
@@ -431,7 +452,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         } );
 
         $dialog.on( 'hidden', function() {
-            $dialog.find( '.modal-body .msg, .modal-body .alert-error, button' ).text( '' );
+            $dialog.find( '.modal-body .msg, .modal-body .alert-danger, button' ).text( '' );
             //console.debug('dialog destroyed');
         } );
 
@@ -642,37 +663,15 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         } else {
             $target.addClass( 'empty' );
             if ( !reset ) {
-                listHTML = '<p class="alert alert-error">Error occurred during creation of form list or no forms found</p>';
+                listHTML = '<p class="alert alert-danger">Error occurred during creation of form list or no forms found</p>';
             }
         }
         $target.find( 'ul' ).empty().append( listHTML );
     }
 
-    $( document ).ready( function() {
-        init();
-        // avoid windows console errors
-        if ( typeof console == "undefined" ) {
-            console = {
-                log: function() {}
-            };
-        }
-        if ( typeof window.console.debug == "undefined" ) {
-            console.debug = console.log;
-        }
-
-        if ( !settings.debug ) {
-            window.console.log = function() {};
-            window.console.debug = function() {};
-        }
-        //override Modernizr's detection (for development purposes)
-        if ( settings.touch ) {
-            Modernizr.touch = true;
-            $( 'html' ).addClass( 'touch' );
-        } else if ( settings.touch === false ) {
-            Modernizr.touch = false;
-            $( 'html' ).removeClass( 'touch' );
-        }
-    } );
+    //$( document ).ready( function() {
+    init();
+    //} );
 
     return {
         alert: alert,

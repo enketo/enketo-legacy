@@ -24,12 +24,13 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
         var form, $form, formSelector, defaultModelStr, store, fileManager;
 
         function init( selector, modelStr, instanceStrToEdit, options ) {
-            var loadErrors;
+            var loadErrors, purpose;
 
             console.log( 'starting control init' );
             formSelector = selector;
             defaultModelStr = modelStr;
             options = options || {};
+            instanceStrToEdit = instanceStrToEdit || null;
             store = options.recordStore || null;
             fileManager = options.fileStore || null;
 
@@ -49,7 +50,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             if ( loadErrors.length > 0 ) {
                 console.error( 'load errors:', loadErrors );
-                gui.showLoadErrors( loadErrors, 'It is recommended not to use this form for data entry until this is resolved.' );
+                purpose = ( instanceStrToEdit ) ? '<strong>to edit data</data>' : 'for data entry';
+                gui.showLoadErrors( loadErrors, 'It is recommended not to use this form ' + purpose + ' until this is resolved.' );
             }
 
             $form = form.getView().$;
@@ -495,6 +497,47 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     $list.append( '<li class="no-records">no records queued</li>' );
                 }
             }
+        }
+
+        /**
+         * splits an array of file sizes into batches (for submission) based on a limit
+         * @param  {Array.<number>} fileSizes   array of file sizes
+         * @param  {number}     limit   limit in byte size of one chunk (can be exceeded for a single item)
+         * @return {Array.<Array.<number>>} array of arrays with index, each secondary array of indices represents a batch
+         */
+
+        function divideIntoBatches( fileSizes, limit ) {
+            var i, j, batch, batchSize,
+                sizes = [],
+                batches = [];
+            //limit = limit || 5 * 1024 * 1024;
+            for ( i = 0; i < fileSizes.length; i++ ) {
+                sizes.push( {
+                    'index': i,
+                    'size': fileSizes[ i ]
+                } );
+            }
+            while ( sizes.length > 0 ) {
+                batch = [ sizes[ 0 ].index ];
+                batchSize = sizes[ 0 ].size;
+                if ( sizes[ 0 ].size < limit ) {
+                    for ( i = 1; i < sizes.length; i++ ) {
+                        if ( ( batchSize + sizes[ i ].size ) < limit ) {
+                            batch.push( sizes[ i ].index );
+                            batchSize += sizes[ i ].size;
+                        }
+                    }
+                }
+                batches.push( batch );
+                for ( i = 0; i < sizes.length; i++ ) {
+                    for ( j = 0; j < batch.length; j++ ) {
+                        if ( sizes[ i ].index === batch[ j ] ) {
+                            sizes.splice( i, 1 );
+                        }
+                    }
+                }
+            }
+            return batches;
         }
 
         return {

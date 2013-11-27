@@ -121,28 +121,7 @@ class Webform extends CI_Controller {
         $data['scripts'] = (ENVIRONMENT === 'production') 
             ? array(array('src' => '/build/js/webform-combined.min.js'))
             : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform.js'));
-        
-        /*if (ENVIRONMENT === 'production') {
-            $data['scripts'] = array
-            (
-                //'/libraries/libraries-all-min.js',
-                '/build/js/webform.min.js'
-            );
-        } else {       
-            $data['scripts'] = array_merge
-            (
-                $this->default_library_scripts, 
-                array
-                (
-                    '/js-source/cache.js'
-                ),
-                $this->default_main_scripts,
-                array
-                (
-                    '/js-source/webform.js'
-                )
-            );
-        }*/
+
         $this->load->view('webform_view', $data);
     }
 
@@ -201,22 +180,10 @@ class Webform extends CI_Controller {
             ) : $this->default_stylesheets
         );
 
-        if (ENVIRONMENT === 'production') {
-            $data['scripts'] = array
-            (
-                //'/libraries/libraries-all-min.js',
-                '/build/js/webform-edit.min.js'
-            );
-        } else {       
-            $data['scripts'] = array_merge(
-                $this->default_library_scripts,
-                $this->default_main_scripts,
-                array
-                (
-                    '/js-source/webform_edit.js'
-                )
-            );
-        }
+        $data['scripts'] = (ENVIRONMENT === 'production') 
+            ? array(array('src' => '/build/js/webform-edit-combined.min.js'))
+            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform-edit.js'));
+
         $this->load->view('webform_view', $data);
     }
 
@@ -271,23 +238,10 @@ class Webform extends CI_Controller {
             'logout' => $this->credentials !== NULL
         );
 
-        if (ENVIRONMENT === 'production') {
-            $data['scripts'] = array
-            (
-                //'/libraries/libraries-all-min.js',
-                '/build/js/webform-single.min.js'
-            );
-        } else {       
-            $data['scripts'] = array_merge
-            (
-                $this->default_library_scripts,
-                $this->default_main_scripts,
-                array
-                (
-                    '/js-source/webform_single.js'
-                )
-            );
-        }
+        $data['scripts'] = (ENVIRONMENT === 'production') 
+            ? array(array('src' => '/build/js/webform-single-combined.min.js'))
+            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform-single.js'));
+
         $this->load->view('webform_view',$data);
     }
 

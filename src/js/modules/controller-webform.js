@@ -50,8 +50,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             if ( loadErrors.length > 0 ) {
                 console.error( 'load errors:', loadErrors );
-                purpose = ( instanceStrToEdit ) ? '<strong>to edit data</data>' : 'for data entry';
-                gui.showLoadErrors( loadErrors, 'It is recommended not to use this form ' + purpose + ' until this is resolved.' );
+                purpose = ( instanceStrToEdit ) ? 'to edit data' : 'for data entry';
+                gui.showLoadErrors( loadErrors, 'It is recommended <strong>not to use this form</strong> ' + purpose + ' until this is resolved.' );
             }
 
             $form = form.getView().$;

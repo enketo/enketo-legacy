@@ -50,3 +50,9 @@ require.config( {
         }
     }
 } );
+
+if ( !document.getElementsByTagName( 'html' )[ 0 ].getAttribute( 'manifest' ) ) {
+    define( 'file-manager', function() {
+        return undefined;
+    } );
+}

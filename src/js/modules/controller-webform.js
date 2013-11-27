@@ -447,11 +447,6 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 store.removeRecord( recordName );
                 console.log( 'After submission success, attempted to remove record with key:', recordName, 'and files in folder:', instanceID );
             } );
-
-            $( document ).on( 'submissionsuccess', function( ev, recordName ) {
-
-
-            } );
         }
 
         //update the survey forms names list

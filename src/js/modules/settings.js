@@ -17,7 +17,7 @@
 
 define( [], function() {
     "use strict";
-    var i, queryParam,
+    var queryParams = _getAllQueryParams(),
         evaluatedSettings = [],
         settingsMap = [ {
             q: 'return',
@@ -53,25 +53,14 @@ define( [], function() {
             q: 'supportEmail',
             s: 'supportEmail'
         } ];
-    for ( i = 0; i < settingsMap.length; i++ ) {
-        queryParam = getQueryParam( settingsMap[ i ].q );
-        //a query variable has preference
-        evaluatedSettings[ settingsMap[ i ].s ] = ( queryParam !== null ) ?
-            queryParam : ( typeof settings[ settingsMap[ i ].s ] !== 'undefined' ) ? settings[ settingsMap[ i ].s ] : null;
-    }
-    console.log( 'the settings were set', evaluatedSettings );
 
-    function getQueryParam( param ) {
-        var allParams = getAllQueryParams();
-        for ( var paramName in allParams ) {
-            if ( paramName.toLowerCase() === param.toLowerCase() ) {
-                return allParams[ paramName ];
-            }
+    settingsMap.forEach( function( obj, i ) {
+        if ( queryParams[ obj.q ] || settings[ obj.q ] ) {
+            evaluatedSettings[ obj.s ] = queryParams[ obj.q ] || settings[ obj.q ] || null;
         }
-        return null;
-    }
+    } );
 
-    function getAllQueryParams() {
+    function _getAllQueryParams() {
         var val, processedVal,
             query = window.location.search.substring( 1 ),
             vars = query.split( "&" ),
@@ -84,6 +73,7 @@ define( [], function() {
                 params[ pair[ 0 ] ] = processedVal;
             }
         }
+
         return params;
     }
 

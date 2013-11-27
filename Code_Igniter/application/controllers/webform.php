@@ -250,7 +250,7 @@ class Webform extends CI_Controller {
         $params = $this->input->get(NULL, TRUE);
 
         if (!$params || ( empty($params['form']) && (empty($params['server']) || empty($params['id']))) ) {
-            show_error('Preview requires server url and form id variables or a form url variable.', 404);
+            show_error('Preview requires server and id variables or a form variable.', 404);
             return;
         }
         if (isset($this->subdomain)) {
@@ -268,23 +268,11 @@ class Webform extends CI_Controller {
             'logo_url' => !empty($params['server']) ? $this->account->logo_url($params['server']) : $this->account->logo_url(),
             'logout' => $this->credentials !== NULL
         );
-        if (ENVIRONMENT === 'production') {
-            $data['scripts'] = array
-            (
-                //'/libraries/libraries-all-min.js',
-                '/build/js/webform-preview.min.js'
-            );
-        } else {       
-            $data['scripts'] = array_merge
-            (
-                $this->default_library_scripts,
-                $this->default_main_scripts,
-                array
-                (
-                    '/js-source/webform_preview.js'
-                )
-            );
-        }
+
+        $data['scripts'] = (ENVIRONMENT === 'production') 
+            ? array(array('src' => '/build/js/webform-preview-combined.min.js'))
+            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform-preview.js'));
+        
         $this->load->view('webform_preview_view', $data);
     }
 
@@ -375,7 +363,7 @@ class Webform extends CI_Controller {
     private function _online_only_check_route()
     {
         if ($this->Survey_model->has_offline_launch_enabled()) {
-            show_error('The iframe view can only be launched in online-only mode', 404);
+            show_error('This webform view can only be launched in online-only mode', 404);
             return TRUE;
         }
         return FALSE;

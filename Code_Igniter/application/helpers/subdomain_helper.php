@@ -40,7 +40,7 @@
  */
 if ( ! function_exists('get_subdomain'))
 {
-	function get_subdomain($default = NULL)
+	function get_subdomain()
 	{ 
 		$full_url = full_base_url(); 
 		$base_url = base_url();
@@ -57,7 +57,7 @@ if ( ! function_exists('get_subdomain'))
 		}
 	 
 		if ( !isset($subdomain_name) || $subdomain_name === 'www' || $subdomain_name === '') {
-			return $default;
+			return NULL;
 		}
 
 		return strtolower($subdomain_name);

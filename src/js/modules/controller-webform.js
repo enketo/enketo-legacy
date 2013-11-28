@@ -26,7 +26,6 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
         function init( selector, modelStr, instanceStrToEdit, options ) {
             var loadErrors, purpose;
 
-            console.log( 'starting control init' );
             formSelector = selector;
             defaultModelStr = modelStr;
             options = options || {};

@@ -25,12 +25,12 @@
 				<h3 class="ui-widget-header ui-corner-all">OpenRosa XForm to Load</h3>
 				<form id="upload-form" enctype="multipart/form-data" accept-charset="utf-8">
 					<div id="input-switcher" class="btn-group" data-toggle="buttons-radio">
-						<a type="button" href="#" id="xml_file" class="btn btn-mini">file</a> 
-						<a type="button" href="#" id="server_url" class="btn btn-mini">url</a>
+						<a type="button" href="#" id="xml_file" class="btn btn-default btn-xs">file</a> 
+						<a type="button" href="#" id="server_url" class="btn btn-default btn-xs">url</a>
 					</div>
 					<fieldset>
 						<label>
-							<div class="fakefileinput uneditable-input"><span>Select XML Form File or drag it here</span></div>
+							<div class="fakefileinput form-control"><span>Select XML Form File or drag it here</span></div>
 							<div><input type="file" name="xml_file" /></div>
 						</label>
 						<label>

@@ -1,5 +1,5 @@
 /**
- * Default /webform
+ * /webform/single
  */
 
 require( [ 'require-config' ], function( rc ) {

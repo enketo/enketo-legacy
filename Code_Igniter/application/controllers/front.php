@@ -49,17 +49,10 @@ class Front extends CI_Controller {
 			//'number_launched'	=> $this->_get_db_number_launched()
 		);
 
-		if (ENVIRONMENT === 'production') {
-			$data['scripts'] = array(
-				//'/libraries/libraries-all-min.js',
-				'/build/js/front.min.js'
-			);
-		} else {
-			$data['scripts'] = array_merge(
-				$default_library_scripts,
-				$default_main_scripts
-			);
-		}
+
+		 $data['scripts'] = (ENVIRONMENT === 'production') 
+            ? array(array('src' => '/build/js/front-combined.min.js'))
+            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-front.js'));
 		
 		if (strlen($this->config->item('integrated')) > 0) {
 			$data['stylesheets'] = array(

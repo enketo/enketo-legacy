@@ -63,21 +63,10 @@ class Formtester extends CI_Controller {
 				array( 'href' => 'build/css/webform_print.css', 'media' => 'print')
 			);
 
-			if (ENVIRONMENT === 'production')
-			{
-				$data['scripts'] = array
-				(
-					'/build/js/formtester.min.js'
-				);
-			}
-			else
-			{
-				$data['scripts'] = array_merge
-				(
-					$default_library_scripts, 
-					$default_main_scripts
-				);
-			}
+			$data['scripts'] = (ENVIRONMENT === 'production') 
+            	? array(array('src' => '/build/js/formtester-combined.min.js'))
+            	: array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-formtester.js'));
+
 			$data['stylesheets'] = $default_stylesheets;
 			//$this->output->cache(10);
 			$this->load->view('formtester_view', $data);

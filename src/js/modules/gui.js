@@ -681,6 +681,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         pages: pages,
         confirmLogin: confirmLogin,
         showLoadErrors: showLoadErrors,
-        showCacheUnsupported: showCacheUnsupported
+        showCacheUnsupported: showCacheUnsupported,
+        parseFormlist: parseFormlist
     };
 } );

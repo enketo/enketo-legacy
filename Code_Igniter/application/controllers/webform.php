@@ -18,31 +18,6 @@
 
 class Webform extends CI_Controller {
 
-    private $default_library_scripts = array
-    (
-        '/libraries/enketo-core/lib/jquery.min.js',
-        '/libraries/enketo-core/lib/bootstrap.min.js', 
-        '/libraries/enketo-core/lib/bootstrap-timepicker/js/bootstrap-timepicker.js',
-        '/libraries/enketo-core/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
-        '/libraries/enketo-core/lib/modernizr.min.js',
-        '/libraries/enketo-core/lib/xpath/build/xpathjs_javarosa.min.js',
-        '/libraries/file-saver/FileSaver.js',
-        '/libraries/blob/Blob.js',
-        '/libraries/vkbeautify.js',
-        '/libraries/file-manager/src/files.js'
-    );
-    private $default_main_scripts = array
-        (
-            '/js-source/helpers.js',
-            '/js-source/gui.js',
-            '/libraries/enketo-core/src/js/utils.js',
-            '/libraries/enketo-core/src/js/form.js',
-            '/libraries/enketo-core/src/js/widgets.js',
-            '/js-source/storage.js',
-            '/js-source/connection.js',
-            '/js-source/survey_controls.js',
-            '/js-source/debug.js'
-        ); 
     private $default_stylesheets = array
     (
         array( 'href' => '/build/css/webform.css', 'media' => 'all'),

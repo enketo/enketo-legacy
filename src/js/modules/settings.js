@@ -52,6 +52,9 @@ define( [], function() {
         }, {
             q: 'supportEmail',
             s: 'supportEmail'
+        }, {
+            q: 'source',
+            s: 'source'
         } ];
 
     settingsMap.forEach( function( obj, i ) {

@@ -1,5 +1,5 @@
 /**
- * Default /webform
+ * /webform/edit
  */
 
 require( [ 'require-config' ], function( rc ) {

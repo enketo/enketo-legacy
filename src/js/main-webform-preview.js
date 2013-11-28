@@ -1,5 +1,5 @@
 /**
- * Default /webform
+ * /webform/preview
  */
 
 

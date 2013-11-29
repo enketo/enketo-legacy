@@ -30,21 +30,18 @@
   top: -320px;
   width: 100%;
   background-color: white;
-  //background-color: $pagecolor;
+  background-color: #ffffff;//$pagecolor;
   //color: $shadow;
   border: none;
   border-top: $border;
   border-bottom: $border;
   #settings{
-    .btn-toolbar{
-      margin-top: 70px; } }
-  input, .input-append{
-    text-align: center;}
-  .input-append{
-    margin-top: 30px;
-    width: 100%; }
+    .input-group{
+      margin-top: 70px;
+      button {
+        height: 34px; } } }
   input{
-    width: 80%; }
+    text-align: center;}
   hr {
     position: absolute;
     margin: 0;

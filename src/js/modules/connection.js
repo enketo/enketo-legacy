@@ -621,7 +621,7 @@ define( [ 'gui', 'jquery' ], function( gui, $ ) {
             console.debug( 'frag: ' + frag );
             //always override if valid URL is entered
             //TODO: REMOVE reference to connection
-            if ( conn.isValidURL( frag ) ) {
+            if ( isValidURL( frag ) ) {
                 return frag;
             }
 
@@ -640,7 +640,7 @@ define( [ 'gui', 'jquery' ], function( gui, $ ) {
                     break;
             }
 
-            if ( !conn.isValidURL( serverURL ) ) {
+            if ( !isValidURL( serverURL ) ) {
                 console.error( 'not a valid url: ' + serverURL );
                 return null;
             }
@@ -675,6 +675,7 @@ define( [ 'gui', 'jquery' ], function( gui, $ ) {
         getFormlist: getFormlist,
         isValidURL: isValidURL,
         getSurveyURL: getSurveyURL,
-        getMaxSubmissionSize: getMaxSubmissionSize
+        getMaxSubmissionSize: getMaxSubmissionSize,
+        oRosaHelper: oRosaHelper
     };
 } );

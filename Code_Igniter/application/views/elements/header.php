@@ -5,13 +5,13 @@
 					<? $logo_src = (file_exists(FCPATH.'private_media/images/logo-black.png')) ? 'private_media/images/logo-black.png' : 'images/logo-black.png' ?>
 					<img class="navbar-logo" src="<?= $logo_src ?>" alt="logo" />
 				</a>
-				<button class="navbar-toggle collapsed" data-toggle="collapse" data-target=".my-navbar-collapse">
+				<button class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</a>
 			</div>
-			<div class="navbar-collapse my-navbar-collapse collapse">
+			<nav class="navbar-collapse collapse">
 			    <ul class="nav navbar-nav">
 			    <? if (!($this->config->item('integrated'))): ?>
 			    	<li>
@@ -37,7 +37,7 @@
 					</li>
 				<? endif ?>
 				</ul>
-			</div>
+			</nav>
 		</div>	
 	</header> 
 

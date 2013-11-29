@@ -156,7 +156,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
                     id, link;
                 id = $( this ).attr( 'id' );
                 if ( $( this ).attr( 'data-display-icon' ) ) {
-                    display = '<img src="/images/' + $( this ).attr( 'data-display-icon' ) + '" alt="menu-icon" />';
+                    display = '<span class="glyphicon glyphicon-' + $( this ).attr( 'data-display-icon' ) + '" > </span>';
                 } else if ( $( this ).attr( 'data-display' ) ) {
                     display = $( this ).attr( 'data-display' );
                 } else display = id;
@@ -166,8 +166,9 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
                 if ( $( this ).attr( 'data-ext-link' ) ) {
                     link = $( this ).attr( 'data-ext-link' );
                 } else link = '#' + id;
+
                 $( '<li class=""><a href="' + link + '" title="' + title + '" >' + display + '</a></li>' )
-                    .appendTo( $( 'nav.pull-right ul' ) );
+                    .appendTo( $( '.navbar-right' ) );
 
             } );
         },
@@ -242,8 +243,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             } );
             setTimeout( function() {
                 $( window ).on( 'click.pageEvents', function( event ) {
-                    console.log( $( event.target ).prop( 'nodeName' ) );
-                    if ( $( event.target ).parents( '.btn-toolbar, label, fieldset' ).length === 0 ) {
+                    if ( $( event.target ).parents( '#page' ).length === 0 ) {
                         that.close();
                     }
                     return true;
@@ -255,11 +255,11 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
          * Closes the currently shown page
          */
         close: function() {
-            var $page = ( $( '#page .page' ).length > 0 ) ? $( '#page .page' ).detach() : [];
+            var $page = $( '#page .page' );
             if ( $page.length > 0 ) {
-                this.$pages.append( $page );
+                this.$pages.append( $page.detach() );
                 $( '#page' ).trigger( 'change' );
-                $( 'nav ul li' ).removeClass( 'active' );
+                $( '.navbar-right li' ).removeClass( 'active' );
                 //$('#overlay').hide();
                 $( window ).off( '.pageEvents' );
             }
@@ -679,6 +679,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         feedback: feedback,
         updateStatus: updateStatus,
         pages: pages,
+        fillHeight: fillHeight,
         confirmLogin: confirmLogin,
         showLoadErrors: showLoadErrors,
         showCacheUnsupported: showCacheUnsupported,

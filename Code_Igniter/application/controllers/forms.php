@@ -31,12 +31,6 @@ class Forms extends CI_Controller {
             show_404();
         }
 
-        $default_scripts = array(
-            '/libraries/enketo-core/lib/jquery.min.js',
-            '/libraries/enketo-core/lib/bootstrap.min.js',
-            '/libraries/enketo-core/lib/modernizr.min.js'
-        );
-
         $default_stylesheets = array(
             array( 'href' => '/build/css/forms.css', 'media' => 'screen')
         );
@@ -48,22 +42,10 @@ class Forms extends CI_Controller {
             'stylesheets' => $default_stylesheets
         );
 
-        if (ENVIRONMENT === 'production') {
-            $data['scripts'] = array(
-                '/build/js/formlist.min.js'
-            );
-        } else {
-            $data['scripts'] = array_merge($default_scripts, array(
-                '/libraries/enketo-core/src/js/utils.js',
-                '/js-source/helpers.js',
-                '/js-source/debug.js',
-                '/js-source/gui.js',       
-                '/js-source/storage.js',
-                '/js-source/connection.js',
-                '/js-source/cache.js',
-                '/js-source/formlist.js'
-            ));
-        }
+        $data['scripts'] = (ENVIRONMENT === 'production') 
+                ? array(array('src' => '/build/js/formlist-combined.min.js'))
+                : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-formlist.js'));
+
         //$this->output->cache(10);
         $this->load->view('formlist_view', $data);
     }

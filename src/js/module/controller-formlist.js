@@ -62,6 +62,8 @@ define( [ 'gui', 'store', 'connection', 'jquery', 'bootstrap' ], function( gui, 
                 }
             };
 
+        connection.init();
+
         $settings = gui.pages.get( 'settings' );
 
         $settings.find( '.url-helper a' )

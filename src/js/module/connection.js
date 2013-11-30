@@ -18,7 +18,7 @@
  * Deals with communication to the server
  */
 
-define( [ 'gui', 'jquery' ], function( gui, $ ) {
+define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
     "use strict";
     var oRosaHelper, progress, maxSubmissionSize,
         that = this,
@@ -36,7 +36,7 @@ define( [ 'gui', 'jquery' ], function( gui, $ ) {
         uploadBatchesResult = {},
         uploadQueue = [];
 
-    init();
+    //init();
 
     function init() {
         //console.log('initializing Connection object');
@@ -666,8 +666,18 @@ define( [ 'gui', 'jquery' ], function( gui, $ ) {
         return callbacks;
     }
 
+    //for testing
+    function forceOnlineStatus( status ) {
+        currentOnlineStatus = status;
+    }
+
     return {
+        init: init,
         uploadRecords: uploadRecords,
+        _processOpenRosaResponse: processOpenRosaResponse,
+        _uploadResult: uploadResult,
+        _currentOnlineStatus: currentOnlineStatus,
+        forceOnlineStatus: forceOnlineStatus,
         getTransForm: getTransForm,
         uploadQueue: uploadQueue,
         uploadOngoingID: uploadOngoingID,

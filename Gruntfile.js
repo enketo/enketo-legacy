@@ -4,11 +4,26 @@
 module.exports = function( grunt ) {
     grunt.initConfig( {
         pkg: grunt.file.readJSON( 'package.json' ),
+        jsbeautifier: {
+            test: {
+                src: [ "*.js", "src/js/**/*.js" ],
+                options: {
+                    config: "./.jsbeautifyrc",
+                    mode: "VERIFY_ONLY"
+                }
+            },
+            fix: {
+                src: [ "*.js", "src/js/**/*.js" ],
+                options: {
+                    config: "./.jsbeautifyrc"
+                }
+            }
+        },
         jshint: {
             options: {
                 jshintrc: '.jshintrc'
             },
-            all: [ 'Gruntfile.js', 'src/js/**/*.js', '!src/js/extern.js' ]
+            all: [ '*.js', 'src/js/**/*.js', '!src/js/extern.js' ]
         },
         prepWidgetSass: {
             writePath: 'src/scss/_widgets.scss',
@@ -17,7 +32,7 @@ module.exports = function( grunt ) {
         sass: {
             dist: {
                 options: {
-                    style: 'compressed'
+                    style: 'expanded'
                 },
                 files: [ {
                     expand: true,
@@ -30,28 +45,47 @@ module.exports = function( grunt ) {
         },
         jasmine: {
             test: {
-                src: [ 'src/js/connection.js', 'src/js/storage.js', 'src/js/helpers.js' ],
+                src: [ 'src/js/module/connection.js', 'src/js/module/store.js' ],
                 options: {
-                    specs: 'tests/spec/*.js',
-                    helpers: [ 'tests/util/*.js', 'tests/mock/*.js' ],
-                    vendor: [
-                        'public/libraries/enketo-core/lib/jquery.min.js',
-                        'public/libraries/enketo-core/lib/bootstrap.min.js',
-                        'public/libraries/enketo-core/lib/modernizr.min.js',
-                        'public/libraries/enketo-core/src/js/utils.js',
-                        'public/libraries/enketo-core/lib/xpath/build/xpathjs_javarosa.min.js',
-                        'public/libraries/enketo-core/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
-                        'public/libraries/enketo-core/lib/bootstrap-timepicker/js/bootstrap-timepicker.js'
-                    ]
+                    keepRunner: true,
+                    specs: 'test/spec/*.spec.js',
+                    helpers: [ 'test/mock/connection.mock.js' ],
+                    template: require( 'grunt-template-jasmine-requirejs' ),
+                    templateOptions: {
+                        //requireConfigFile: 'src/js/require-config.js',
+                        requireConfig: {
+                            baseUrl: "src/js/module",
+                            paths: {
+                                "gui": "../../../test/mock/gui.mock",
+                                "lib": "../../../public/lib",
+                                "enketo-js/Form": "../../../test/mock/Form.mock",
+                                "enketo-js/FormModel": "../../../test/mock/FormModel.mock",
+                                "enketo-widget": "../../../test/mock/empty.mock",
+                                "enketo-config": "config.json", //should move elsewhere
+                                "text": "../../../public/lib/enketo-core/lib/text/text",
+                                "xpath": "../../../test/mock/empty.mock",
+                                "file-manager": "../../../test/mock/empty.mock",
+                                "jquery.xpath": "../../../test/mock/empty.mock",
+                                "Modernizr": "../../../test/mock/empty.mock",
+                                "bootstrap": "../../../public/lib/enketo-core/lib/bootstrap",
+                                "jquery": "../../../public/lib/enketo-core/lib/jquery",
+                                "file-saver": "../../../test/mock/file-saver.mock",
+                                "Blob": "../../../test/mock/Blob.mock",
+                                "vkbeautify": "../../../test/mock/vkbeautify.mock"
+                            },
+                        }
+                    }
                 }
             }
         }
     } );
 
-    grunt.loadNpmTasks( 'grunt-contrib-uglify' );
+    grunt.loadNpmTasks( 'grunt-jsbeautifier' );
+    grunt.loadNpmTasks( 'grunt-contrib-jasmine' );
+    grunt.loadNpmTasks( 'grunt-contrib-watch' );
     grunt.loadNpmTasks( 'grunt-contrib-jshint' );
     grunt.loadNpmTasks( 'grunt-contrib-sass' );
-    grunt.loadNpmTasks( 'grunt-contrib-jasmine' );
+    grunt.loadNpmTasks( 'grunt-contrib-requirejs' );
 
     //maybe this can be turned into a npm module?
     grunt.registerTask( 'prepWidgetSass', 'Preparing _widgets.scss dynamically', function() {
@@ -82,7 +116,7 @@ module.exports = function( grunt ) {
         grunt.file.write( config.writePath, content );
 
     } );
-    grunt.registerTask( 'test', [ 'jasmine' ] );
+    grunt.registerTask( 'test', [ 'jsbeautifier:test', 'jshint', 'jasmine' ] );
     grunt.registerTask( 'style', [ 'prepWidgetSass', 'sass' ] );
     grunt.registerTask( 'default', [ 'jshint', 'uglify', 'sass', 'test' ] );
 };

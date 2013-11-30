@@ -33,6 +33,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             store = options.recordStore || null;
             fileManager = options.fileStore || null;
 
+            connection.init();
+
             if ( fileManager && store && fileManager.isSupported() && store.getRecordList().length === 0 ) {
                 //clean up filesystem storage
                 fileManager.deleteAll();
@@ -536,6 +538,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
         return {
             init: init,
-            submitQueue: submitQueue
+            submitQueue: submitQueue,
+            divideIntoBatches: divideIntoBatches
         };
     } );

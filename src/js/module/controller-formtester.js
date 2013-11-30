@@ -28,6 +28,7 @@ define( [ 'gui', 'enketo-js/Form', 'settings', 'connection', 'vkbeautify', 'cont
         function init() {
             state = new State();
             state.init();
+            connection.init();
 
             _error = console.error;
             console.error = function() {

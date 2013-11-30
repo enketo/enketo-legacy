@@ -236,7 +236,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 };
             ///the check for whether an upload is currently ongoing prevents an ugly-looking issue whereby e.g. #1 in the queue failed to submit
             //is removed from the queue and then re-entered before the old queue was emptied.
-            if ( !connection.uploadOngoingID && connection.uploadQueue.length === 0 ) {
+            if ( !connection.getUploadOngoingID() && connection.getUploadQueue().length === 0 ) {
                 for ( i = 0; i < records.length; i++ ) {
                     prepareFormDataArray(
                         records[ i ], {

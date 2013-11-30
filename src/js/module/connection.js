@@ -41,7 +41,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
     function init() {
         //console.log('initializing Connection object');
         checkOnlineStatus();
-        setMaxSubmissionSize();
+        _setMaxSubmissionSize();
         window.setInterval( function() {
             checkOnlineStatus();
         }, 15 * 1000 );
@@ -64,16 +64,16 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
                         //important to check for the content of the no-cache response as it will
                         //start receiving the fallback page specified in the manifest!
                         online = typeof response.responseText !== 'undefined' && response.responseText === 'connected';
-                        setOnlineStatus( online );
+                        _setOnlineStatus( online );
                     }
                 } );
             }
         } else {
-            setOnlineStatus( false );
+            _setOnlineStatus( false );
         }
     }
 
-    function setOnlineStatus( newStatus ) {
+    function _setOnlineStatus( newStatus ) {
         //var oldStatus = onlineStatus;
         //onlineStatus = online;
         if ( newStatus !== currentOnlineStatus ) {
@@ -83,13 +83,10 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
         currentOnlineStatus = newStatus;
     }
 
-    function cancelSubmissionProcess() {
+    function _cancelSubmissionProcess() {
         uploadOngoingID = null;
         uploadOngoingBatchIndex = null;
-        uploadResult = {
-            win: [],
-            fail: []
-        };
+        _resetUploadResult();
         uploadQueue = [];
     }
 
@@ -121,12 +118,9 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
             //TODO ADD CALLBACKS TO EACH RECORD??
             uploadQueue.push( record );
             if ( !uploadOngoingID ) {
-                uploadResult = {
-                    win: [],
-                    fail: []
-                };
+                _resetUploadResult();
                 uploadBatchesResult = {};
-                uploadOne( callbacks );
+                _uploadOne( callbacks );
             }
         }
         //override force property
@@ -142,13 +136,13 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
      * Uploads a record from the queue
      * @param  {Object.<string, Function>=} callbacks [description]
      */
-    function uploadOne( callbacks ) { //dataXMLStr, name, last){
+    function _uploadOne( callbacks ) { //dataXMLStr, name, last){
         var record, content, last, props;
 
         callbacks = ( typeof callbacks === 'undefined' || !callbacks ) ? {
             complete: function( jqXHR, response ) {
                 $( document ).trigger( 'submissioncomplete' );
-                processOpenRosaResponse( jqXHR.status,
+                _processOpenRosaResponse( jqXHR.status,
                     props = {
                         name: record.name,
                         instanceID: record.instanceID,
@@ -161,7 +155,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
                  * as it duplicates 1 entry and omits the other but returns 201 for both...
                  * so we wait for the previous POST to finish before sending the next
                  */
-                uploadOne();
+                _uploadOne();
             },
             error: function( jqXHR, textStatus ) {
                 if ( textStatus === 'timeout' ) {
@@ -177,7 +171,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
             record = uploadQueue.shift();
             progress.update( record, 'ongoing', '' );
             if ( currentOnlineStatus === false ) {
-                processOpenRosaResponse( 0, record );
+                _processOpenRosaResponse( 0, record );
             } else {
                 uploadOngoingID = record.instanceID;
                 uploadOngoingBatchIndex = record.batchIndex;
@@ -185,7 +179,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
                 content.append( 'Date', new Date().toUTCString() );
                 console.debug( 'prepared to send: ', content );
                 //last = (this.uploadQueue.length === 0) ? true : false;
-                setOnlineStatus( null );
+                _setOnlineStatus( null );
                 $( document ).trigger( 'submissionstart' );
                 //console.debug('calbacks: ', callbacks );
                 $.ajax( SUBMISSION_URL, {
@@ -291,7 +285,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
      * @param  {number} status [description]
      * @param  {{name:string, instanceID:string, batches:number, batchIndex:number, forced:boolean}} props  record properties
      */
-    function processOpenRosaResponse( status, props ) {
+    function _processOpenRosaResponse( status, props ) {
         var i, waswere, name, namesStr, batchText,
             partial = false,
             msg = '',
@@ -355,7 +349,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
                 }
             };
 
-        //console.debug( 'submission results with status: ' + status + ' for ', props );
+        console.debug( 'submission results with status: ' + status + ' for ', props );
 
         batchText = ( props.batches > 1 ) ? ' (batch #' + ( props.batchIndex + 1 ) + ' out of ' + props.batches + ')' : '';
         props.batchText = batchText;
@@ -381,7 +375,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
             }
         } else if ( status == 401 ) {
             props.msg = 'Authentication Required.';
-            cancelSubmissionProcess();
+            _cancelSubmissionProcess();
             gui.confirmLogin();
         }
         //unforeseen statuscodes
@@ -411,7 +405,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
             return;
         }
 
-        //console.debug( 'online: ' + this.currentOnlineStatus, this.uploadResult );
+        console.debug( 'online: ' + currentOnlineStatus, uploadResult );
 
         if ( uploadResult.win.length > 0 ) {
             for ( i = 0; i < uploadResult.win.length; i++ ) {
@@ -424,7 +418,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
             waswere = ( names.length > 1 ) ? ' were' : ' was';
             namesStr = names.join( ', ' );
             gui.feedback( namesStr.substring( 0, namesStr.length ) + waswere + ' successfully uploaded!' );
-            setOnlineStatus( true );
+            _setOnlineStatus( true );
         }
 
         if ( uploadResult.fail.length > 0 ) {
@@ -443,7 +437,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
             }
 
             if ( status === 0 ) {
-                setOnlineStatus( false );
+                _setOnlineStatus( false );
             }
         }
     }
@@ -454,7 +448,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
      *
      * @return {number} [description]
      */
-    function setMaxSubmissionSize() {
+    function _setMaxSubmissionSize() {
         var maxSize,
             defaultMax = 5000000,
             absoluteMax = 100 * 1024 * 1024;
@@ -482,7 +476,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
     }
 
     function getFormlist( serverURL, callbacks ) {
-        callbacks = getCallbacks( callbacks );
+        callbacks = _getCallbacks( callbacks );
 
         if ( !isValidURL( serverURL ) ) {
             callbacks.error( null, 'validationerror', 'not a valid URL' );
@@ -503,7 +497,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
     }
 
     function getSurveyURL( serverURL, formId, callbacks ) {
-        callbacks = getCallbacks( callbacks );
+        callbacks = _getCallbacks( callbacks );
 
         if ( !serverURL || !isValidURL( serverURL ) ) {
             callbacks.error( null, 'validationerror', 'not a valid server URL' );
@@ -540,7 +534,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
     function getTransForm( serverURL, formId, formFile, formURL, callbacks ) {
         var formData = new FormData();
 
-        callbacks = getCallbacks( callbacks );
+        callbacks = _getCallbacks( callbacks );
         serverURL = serverURL || null;
         formId = formId || null;
         formURL = formURL || null;
@@ -582,7 +576,7 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
     function validateHTML( htmlStr, callbacks ) {
         var content = new FormData();
 
-        callbacks = getCallbacks( callbacks );
+        callbacks = _getCallbacks( callbacks );
 
         content.append( 'level', 'error' );
         content.append( 'content', htmlStr );
@@ -649,12 +643,31 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
         }
     };
 
+    function _resetUploadResult() {
+        uploadResult = {
+            win: [],
+            fail: []
+        };
+    }
+
+    function _getUploadResult() {
+        return uploadResult;
+    }
+
+    function getUploadQueue() {
+        return uploadQueue;
+    }
+
+    function getUploadOngoingID() {
+        return uploadOngoingID;
+    }
+
     /**
      * Sets defaults for optional callbacks if not provided
      * @param  {Object.<string, Function>=} callbacks [description]
      * @return {Object.<string, Function>}           [description]
      */
-    function getCallbacks( callbacks ) {
+    function _getCallbacks( callbacks ) {
         callbacks = callbacks || {};
         callbacks.error = callbacks.error || function( jqXHR, textStatus, errorThrown ) {
             console.error( textStatus + ' : ' + errorThrown );
@@ -666,26 +679,22 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
         return callbacks;
     }
 
-    //for testing
-    function forceOnlineStatus( status ) {
-        currentOnlineStatus = status;
-    }
-
     return {
         init: init,
         uploadRecords: uploadRecords,
-        _processOpenRosaResponse: processOpenRosaResponse,
-        _uploadResult: uploadResult,
-        _currentOnlineStatus: currentOnlineStatus,
-        forceOnlineStatus: forceOnlineStatus,
         getTransForm: getTransForm,
-        uploadQueue: uploadQueue,
-        uploadOngoingID: uploadOngoingID,
+        getUploadQueue: getUploadQueue,
+        getUploadOngoingID: getUploadOngoingID,
         validateHTML: validateHTML,
         getFormlist: getFormlist,
         isValidURL: isValidURL,
         getSurveyURL: getSurveyURL,
         getMaxSubmissionSize: getMaxSubmissionSize,
-        oRosaHelper: oRosaHelper
+        oRosaHelper: oRosaHelper,
+        // "private" but used for tests:
+        _processOpenRosaResponse: _processOpenRosaResponse,
+        _getUploadResult: _getUploadResult,
+        _resetUploadResult: _resetUploadResult,
+        _setOnlineStatus: _setOnlineStatus
     };
 } );

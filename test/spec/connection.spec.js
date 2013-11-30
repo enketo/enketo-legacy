@@ -7,8 +7,6 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
     describe( "The connection object ", function() {
         var callbacks;
 
-        //connection.init();
-
         //TODO: implement async=true .... query string to run async tests
         //connection.GETSURVEYURL_URL = "http://enketo-dev.formhub.org"+connection.GETSURVEYURL_URL;
 
@@ -100,21 +98,24 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
 
             beforeEach( function() {
                 console.log( 'running before function' );
-                idle = false;
                 spyOn( gui, 'alert' );
                 spyOn( gui, 'feedback' );
                 spyOn( gui, 'confirmLogin' );
             } );
 
+            afterEach( function() {
+                connection._resetUploadResult();
+            } );
+
             function testFail( statusCode ) {
                 it( 'and correctly identifies statusCode ' + statusCode + ' as a failed submission.', function() {
-                    var wins = connection._uploadResult.win.length,
-                        fails = connection._uploadResult.fail.length;
+                    console.log( 'starting testFail with', statusCode );
                     connection._processOpenRosaResponse( statusCode, {
                         name: 'aname'
                     } );
-                    expect( connection._uploadResult.win.length - wins ).toBe( 0 );
-                    expect( connection._uploadResult.fail.length - fails ).toBe( 1 );
+                    expect( connection._getUploadResult().win.length ).toBe( 0 );
+                    expect( connection._getUploadResult().fail.length ).toBe( 1 );
+                    console.log( 'finished testFail', statusCode, connection._uploadResult );
                 } );
             }
 
@@ -124,11 +125,14 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
 
             function testWin( statusCode ) {
                 it( 'and correctly identifies statusCode ' + statusCode + ' as a succesful submission.', function() {
-                    var wins = connection._uploadResult.win.length,
-                        fails = connection._uploadResult.fail.length;
-                    connection._processOpenRosaResponse( statusCode, 'aname', true );
-                    expect( connection._uploadResult.win.length - wins ).toBe( 1 );
-                    expect( connection._uploadResult.fail.length - fails ).toBe( 0 );
+                    console.log( 'starting testWin with', statusCode, connection._uploadResult );
+                    connection._processOpenRosaResponse( statusCode, {
+                        name: 'aname'
+                    } );
+                    console.log( 'ending testWin with', statusCode, connection._uploadResult );
+                    expect( connection._getUploadResult().win.length ).toBe( 1 );
+                    expect( connection._getUploadResult().fail.length ).toBe( 0 );
+
                 } );
             }
 
@@ -139,8 +143,7 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
             function testFailAlert( forced, online, alert ) {
                 var anno = ( alert ) ? 'an' : 'NO';
                 it( 'and shows ' + anno + ' alert when failed upload was conducted with forced:' + forced + ' and online: ' + online, function() {
-                    console.log( 'starting failAlert test' );
-                    if ( !alert ) expect( gui.alert ).not.toHaveBeenCalled();
+                    connection._setOnlineStatus( online );
                     connection._processOpenRosaResponse( 404, {
                         name: 'aname',
                         instanceID: 'MyInstanceID',
@@ -152,9 +155,8 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
                         expect( gui.alert ).toHaveBeenCalled();
                         expect( gui.alert.mostRecentCall.args[ 1 ] ).toEqual( errorHeading );
                     } else {
-                        expect( gui.alert ).not.toHaveBeenCalled();
+                        expect( gui.alert.callCount ).toEqual( 0 );
                     }
-                    console.log( 'finished failAlert test' );
                 } );
             }
 
@@ -165,7 +167,7 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
             function testWinFeedback( forced, online ) {
                 it( 'shows a feedback message when succesful upload was conducted with forced:' + forced + ' and online: ' + online, function() {
                     // connection.forced = forced;
-                    connection.forceOnlineStatus( online );
+                    connection._setOnlineStatus( online );
                     connection._processOpenRosaResponse( 201, {
                         name: 'aname',
                         instanceID: 'MyInstanceID',
@@ -181,18 +183,15 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
             }
 
             it( 'cancels uploads if an authentication error (401) occurs and shows a login screen', function() {
-                var wins = connection._uploadResult.win.length,
-                    fails = connection._uploadResult.fail.length;
                 connection._processOpenRosaResponse( 401, {
                     name: 'aname',
                     instanceID: 'MyInstanceID',
                     forced: true
                 } );
                 expect( gui.confirmLogin ).toHaveBeenCalled();
-                expect( connection._uploadResult.win.length - wins ).toBe( 0 );
-                expect( connection._uploadResult.fail.length - fails ).toBe( 0 );
+                expect( connection._getUploadResult().win.length ).toBe( 0 );
+                expect( connection._getUploadResult().fail.length ).toBe( 0 );
             } );
-
         } );
 
     } );

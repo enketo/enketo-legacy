@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define( [ 'jquery' ], function( $ ) {
+define( [ 'jquery', 'enketo-js/extend' ], function( $ ) {
     "use strict";
 
     var RESERVED_KEYS = [ '__settings', 'null', '__history', 'Firebug', 'undefined', '__bookmark', '__counter', '__current_server', '__loadLog', '__writetest' ],
@@ -79,10 +79,11 @@ define( [ 'jquery' ], function( $ ) {
                 localStorage.setItem( '__counter', JSON.stringify( {
                     'counter': getCounterValue()
                 } ) );
+
                 //}
             }
             localStorage.setItem( newKey, JSON.stringify( record ) );
-            //console.debug('saved: '+newKey+', old key was: '+oldKey);
+            //console.debug( 'saved: ' + newKey + ', old key was: ' + oldKey );
             //if the record was loaded from the store (oldKey != null) and the key's value was changed during editing
             //delete the old record if del=true
             if ( oldKey !== null && oldKey !== '' && oldKey !== newKey ) {
@@ -285,8 +286,9 @@ define( [ 'jquery' ], function( $ ) {
      */
     function getCounterValue() {
         var record = getRecord( '__counter' ),
-            number = ( record && typeof record[ 'counter' ] !== 'undefined' && isNumber( record[ 'counter' ] ) ) ? Number( record[ 'counter' ] ) : 0,
+            number = ( record && record[ 'counter' ] && isNumber( record[ 'counter' ] ) ) ? Number( record[ 'counter' ] ) : 0,
             numberStr = ( number + 1 ).toString().pad( 4 );
+
         return numberStr;
     }
 

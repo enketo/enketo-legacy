@@ -49,7 +49,7 @@ module.exports = function( grunt ) {
                 options: {
                     keepRunner: true,
                     specs: 'test/spec/*.spec.js',
-                    helpers: [ 'test/mock/connection.mock.js' ],
+                    helpers: [],
                     template: require( 'grunt-template-jasmine-requirejs' ),
                     templateOptions: {
                         //requireConfigFile: 'src/js/require-config.js',
@@ -58,6 +58,7 @@ module.exports = function( grunt ) {
                             paths: {
                                 "gui": "../../../test/mock/gui.mock",
                                 "lib": "../../../public/lib",
+                                "enketo-js": "../../../public/lib/enketo-core/src/js",
                                 "enketo-js/Form": "../../../test/mock/Form.mock",
                                 "enketo-js/FormModel": "../../../test/mock/FormModel.mock",
                                 "enketo-widget": "../../../test/mock/empty.mock",

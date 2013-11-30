@@ -11,3 +11,5 @@ public/build/*
 _site/*
 ._*
 .fuse*
+.grunt/*
+_SpecRunner.html

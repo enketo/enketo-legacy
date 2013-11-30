@@ -58,7 +58,7 @@ define( [], function() {
         } ];
 
     settingsMap.forEach( function( obj, i ) {
-        if ( queryParams[ obj.q ] || settings[ obj.q ] ) {
+        if ( queryParams[ obj.q ] || ( typeof settings !== 'undefined' && settings[ obj.q ] ) ) {
             evaluatedSettings[ obj.s ] = queryParams[ obj.q ] || settings[ obj.q ] || null;
         }
     } );

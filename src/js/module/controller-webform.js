@@ -339,7 +339,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 }
             }
 
-            if ( typeof fileManager == 'undefined' || $fileNodes.length === 0 ) {
+            if ( !fileManager || $fileNodes.length === 0 ) {
                 distributeFiles();
             } else {
                 gatherFiles();
@@ -444,8 +444,12 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             //remove filesystem folder after successful submission
             $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {
-                fileManager.deleteDir( instanceID );
-                store.removeRecord( recordName );
+                if ( fileManager ) {
+                    fileManager.deleteDir( instanceID );
+                }
+                if ( store ) {
+                    store.removeRecord( recordName );
+                }
                 console.log( 'After submission success, attempted to remove record with key:', recordName, 'and files in folder:', instanceID );
             } );
         }

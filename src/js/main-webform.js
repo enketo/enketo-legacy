@@ -3,6 +3,7 @@
  */
 
 require( [ 'require-config' ], function( rc ) {
+
     require( [ 'performance', 'cache', 'gui', 'store', 'file-manager', 'controller-webform' ],
         function( monitor, cache, gui, recordStore, fileStore, controller ) {
 

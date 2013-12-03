@@ -4,8 +4,8 @@
 
 
 require( [ 'require-config' ], function( rc ) {
-    require( [ 'controller-webform', 'settings', 'gui', 'connection' ],
-        function( controller, settings, gui, connection ) {
+    require( [ 'controller-webform', 'settings', 'gui', 'connection', 'file-manager' ],
+        function( controller, settings, gui, connection, fileStore ) {
             var response, bgColor,
                 i = 0,
                 $ads = $( '.ad' ),
@@ -27,7 +27,9 @@ require( [ 'require-config' ], function( rc ) {
                         modelStr = new XMLSerializer().serializeToString( $response.find( ':first>model' )[ 0 ] );
                         $validateButton.before( formStr );
 
-                        controller.init( 'form.or:eq(0)', modelStr );
+                        controller.init( 'form.or:eq(0)', modelStr, null, {
+                            fileStore: fileStore
+                        } );
 
                         $validateButton.removeAttr( 'disabled' );
                     } else {

@@ -3,9 +3,8 @@
  */
 
 require.config( {
-    baseUrl: "../src-js/module",
+    baseUrl: "/src-js/module",
     paths: {
-        "lib": "../lib",
         "enketo-js": "../../lib/enketo-core/src/js",
         "enketo-widget": "../../lib/enketo-core/src/widget",
         "enketo-config": "../../src-js/config.json", //should move elsewhere
@@ -51,8 +50,10 @@ require.config( {
     }
 } );
 
+/*
 if ( !document.getElementsByTagName( 'html' )[ 0 ].getAttribute( 'manifest' ) ) {
     define( 'file-manager', function() {
         return undefined;
     } );
 }
+*/

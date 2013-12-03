@@ -18,8 +18,8 @@
  * Controller for the form tester. Very old code. Needs thorough rewrite.
  */
 
-define( [ 'gui', 'enketo-js/Form', 'settings', 'connection', 'vkbeautify', 'controller-webform', 'jquery' ],
-    function( gui, Form, settings, connection, vkbeautify, controller, $ ) {
+define( [ 'gui', 'enketo-js/Form', 'settings', 'connection', 'vkbeautify', 'controller-webform', 'file-manager', 'jquery' ],
+    function( gui, Form, settings, connection, vkbeautify, controller, fileManager, $ ) {
         "use strict";
         var form, source, url, $tabs, $upload, _error, state,
             error_msg = 'There were errors. Please see the "report" tab for details.',
@@ -36,6 +36,11 @@ define( [ 'gui', 'enketo-js/Form', 'settings', 'connection', 'vkbeautify', 'cont
                 gui.feedback( error_msg );
                 return _error.apply( console, arguments );
             };
+
+            if ( fileManager && fileManager.isSupported() ) {
+                //clean up filesystem storage for this (sub).domain (should not clear storage of other subdomains)
+                fileManager.deleteAll();
+            }
 
             if ( !state.source ) {
                 $( '#html5-form-source' ).hide();
@@ -105,13 +110,13 @@ define( [ 'gui', 'enketo-js/Form', 'settings', 'connection', 'vkbeautify', 'cont
                 return false;
             } );
 
-            $( '#upload-form #input-switcher a' )
+            $( '#upload-form #input-switcher button' )
                 .click( function( e ) {
-                    e.preventDefault();
                     $( '#upload-form label' ).hide().find( 'input[name="' + $( this ).attr( 'id' ) + '"]' ).parents( 'label' ).show();
-                    $( this ).siblings().removeClass( 'active' );
-                    $( this ).addClass( 'active' );
+                    $( this ).siblings().removeClass( 'active' ).end().addClass( 'active' );
                 } );
+
+            $( '#upload-form #input-switcher button#server_url' ).click();
 
             $( '#data-template-show input' ).change( function() {
                 templateShow = ( $( this ).is( ':checked' ) ) ? true : false;
@@ -155,7 +160,6 @@ define( [ 'gui', 'enketo-js/Form', 'settings', 'connection', 'vkbeautify', 'cont
                 return false;
             } );
 
-            $( '#upload-form #input-switcher a#server_url' ).click();
 
 
             $( document ).on( 'click', 'button#validate-form:not(.disabled)', function() {

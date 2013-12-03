@@ -53,6 +53,7 @@ label#data-template-show {
 				span{
 					line-height: 60px;} }
 			input[type=file] {
+				visibility: hidden;
 				z-index: 5;} } }
 		.hurry {
 			font-size: .8em;

@@ -35,7 +35,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             connection.init();
 
-            if ( fileManager && store && fileManager.isSupported() && store.getRecordList().length === 0 ) {
+            if ( fileManager && fileManager.isSupported() && ( !store || store.getRecordList().length === 0 ) ) {
                 //clean up filesystem storage
                 fileManager.deleteAll();
             }

@@ -67,7 +67,7 @@ define( [ 'gui', 'store', 'connection', 'jquery', 'bootstrap' ], function( gui, 
         $settings = gui.pages.get( 'settings' );
 
         $settings.find( '.url-helper a' )
-            .click( function() {
+            .click( function( event ) {
                 var helper, hText, value,
                     $settings = gui.pages.get( 'settings' );
 

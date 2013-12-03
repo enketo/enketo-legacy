@@ -1,37 +1,21 @@
-//correct bootstrap feature
-@media screen and (max-width: 979px){
-  .navbar-fixed-top {
-    margin-bottom: 0;}}
-@media screen and (max-width: 979px){
-  //negate pull-right in dropdown nav menu
-  .nav-collapse.pull-right, .nav-collapse.collapse.pull-right {
-    float:left; } }
-
+/* customize nav bar */
 .navbar{
   font-size: 14px;
-  .brand {
-    position: relative;
-    width: 100px;
-    .navbar-logo{
-      top: 5px;
-      left: 30px;
-      height: 30px;
-      position: absolute;}
-    .component{
-      position:absolute;
-      top: 20px;
-      left: 120px;
-      color: #999999;
-      font-size: 0.4em; } }
-  .nav{
-    margin-top: 5px;
-    a{
-      @include font-normal; }
-    > li > a.highlight{
-      color: rgb(237,87,50) !important; }
-    img{
-      width: 1em;
-      height: 1em; } } }
+  -webkit-box-shadow: 0 2px 5px rgba(0,0,0,0.125);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.125); }
+.navbar .navbar-brand {
+  font-weight: bold;
+  color: #003d5f;
+  position: relative;
+  display: inline-block;
+  width: 160px; }
+.navbar .navbar-brand .navbar-logo {
+  top: 10px;
+  left: 30px;
+  height: 30px;
+  position: absolute; }
+.navbar a.highlight{
+  color: rgb(237,87,50) !important; }
 
 .page{
   display:none;}
@@ -46,21 +30,18 @@
   top: -320px;
   width: 100%;
   background-color: white;
-  //background-color: $pagecolor;
+  background-color: #ffffff;//$pagecolor;
   //color: $shadow;
   border: none;
   border-top: $border;
   border-bottom: $border;
   #settings{
-    .btn-toolbar{
-      margin-top: 70px; } }
-  input, .input-append{
-    text-align: center;}
-  .input-append{
-    margin-top: 30px;
-    width: 100%; }
+    .input-group{
+      margin-top: 70px;
+      button {
+        height: 34px; } } }
   input{
-    width: 80%; }
+    text-align: center;}
   hr {
     position: absolute;
     margin: 0;

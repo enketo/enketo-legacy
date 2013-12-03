@@ -35,7 +35,7 @@ class Api_ver1 {
         $this->method   = $params['http_method'];
         $this->trusted  = $params['trusted'];
         $this->CI->load->model('Survey_model', '', TRUE);
-        //log_message('debug', 'Api_v1 library initialized with '.json_encode($params));
+        log_message('debug', 'Api_v1 library initialized with '.json_encode($params));
     }
 
     public function survey_response($options)
@@ -129,6 +129,9 @@ class Api_ver1 {
                 (empty($this->params['instance']) ? 'instance, ' : '').
                 (empty($this->params['instance_id']) ? 'instance_id, ' : '').
                 (empty($this->params['return_url']) ? 'return_url, ' : ''), 0, -2).')';
+        } else if ( !$this->_valid_xml($this->params['instance']) ) {
+            $response['code'] = '400';
+            $response['message'] = 'Instance was not a valid XML string.';
         } else {
             if (!$this->_authenticated()) {
                 $response['code']    = '401';
@@ -149,6 +152,14 @@ class Api_ver1 {
             }
         }
         return $response;
+    }
+
+    private function _valid_xml($xml_str)
+    {
+        libxml_use_internal_errors(true);
+        $valid = simplexml_load_string($xml_str);
+        libxml_clear_errors();
+        return $valid;
     }
 
     private function _authenticated() 

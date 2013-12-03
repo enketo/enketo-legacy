@@ -46,15 +46,18 @@ class Api_v1 extends CI_Controller {
             'trusted'           => $trusted,
             'http_method'       => $_SERVER['REQUEST_METHOD']
         ));
-        $this->load->helper(array('json'));
-       /* if ($_SERVER['SERVER_PORT'] != '443'){
+        $this->load->helper(array('json', 'subdomain'));
+        /*if ($_SERVER['SERVER_PORT'] != '443'){
             $this->output
                 ->set_status_header('405')
                 ->set_output('API access only allowed through encrypted (https) connections');
             exit();
         } else {*/ 
             //$this->_set_properties();
-        //}
+        //} 
+        if (get_subdomain()) {
+            show_error('API not accessible on subdomain', 404);
+        }
         log_message('debug', 'API_v1 controller initialized');
     }
 
@@ -62,6 +65,7 @@ class Api_v1 extends CI_Controller {
     {
         //$data = array('stylesheets' => array(), 'scripts' => array(), 'title_component' => 'API V1 Documentation');
         //$this->load->view('api_documentation_view', $data);
+        
         $this->load->helper('url');
         redirect('http://apidocs.enketo.org', 'refresh');
     }
@@ -131,6 +135,7 @@ class Api_v1 extends CI_Controller {
 
     private function _print_output($response)
     {
+        log_message('debug', 'printing outoup'.json_encode($response));
         if ($response['code'] == '401'){
             header('WWW-Authenticate: Basic realm="Valid Enketo API Token Required"');
             header('HTTP/1.0 401 Unauthorized');

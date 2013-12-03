@@ -1,32 +1,34 @@
 var modelStr, jrDataStr, jrDataStrToEdit,
-	/*@type {{string:{html_form:string, xml_model:string}}}*/mockForms1,
-	/*@type {{string:{html_form:string, xml_model:string}}}*/mockForms2,
-	mockInstances;
+    /*@type {{string:{html_form:string, xml_model:string}}}*/
+    mockForms1,
+    /*@type {{string:{html_form:string, xml_model:string}}}*/
+    mockForms2,
+    mockInstances;
 
 var androidContext = {
-	formName: helper.getQueryParam('formName'),
-	getForm : function(){},
-	getModel : function(){},
-	goBack : function(){}
+    formName: helper.getQueryParam( 'formName' ),
+    getForm: function() {},
+    getModel: function() {},
+    goBack: function() {}
 };
 
 var enketo = {
-	FormDataRepository : function(){},
-	FormDataController : function(entityRelO, formDefO, formModelMapperO){
-		this.get = function(params){
-			return mockInstances[params.instanceId] || null;
-		};
-		this.save = function(instanceId, data){
-			console.log('saving...');
-		};
-	},
-	EntityRelationshipLoader : function(){},
-	FormDefinitionLoader : function(){},
-	FormModelMapper : function(dataRepo, sqlBuilder, idFactory){},
-	SQLQueryBuilder : function(dataRepo){},
-	IdFactory : function(bridge){},
-	IdFactoryBridge : function(){},
-	FormSubmissionRouter : function(){}
+    FormDataRepository: function() {},
+    FormDataController: function( entityRelO, formDefO, formModelMapperO ) {
+        this.get = function( params ) {
+            return mockInstances[ params.instanceId ] || null;
+        };
+        this.save = function( instanceId, data ) {
+            console.log( 'saving...' );
+        };
+    },
+    EntityRelationshipLoader: function() {},
+    FormDefinitionLoader: function() {},
+    FormModelMapper: function( dataRepo, sqlBuilder, idFactory ) {},
+    SQLQueryBuilder: function( dataRepo ) {},
+    IdFactory: function( bridge ) {},
+    IdFactoryBridge: function() {},
+    FormSubmissionRouter: function() {}
 };
 
 /** @type {{returnURL: string, serverURL: string, formId: string, instanceId: string, entityId: string, formURL: string, mapsStaticAPIKey:string, mapsDynamicAPIKey:string,
@@ -39,39 +41,39 @@ var settings;
  */
 applicationCache.OBSOLETE;
 
-window.webkitResolveLocalFileSystemURL = function(){};
+window.webkitResolveLocalFileSystemURL = function() {};
 
 
-function vkbeautify(){}
+function vkbeautify() {}
 
 /**
  * @param {?string} str
  */
-vkbeautify.xml = function(str){};
+vkbeautify.xml = function( str ) {};
 /**
  * @param {?string} str
  */
-vkbeautify.json = function(str){};
+vkbeautify.json = function( str ) {};
 
 
-function history(){}
+function history() {}
 /**
  * @param  {Object.<string, (boolean|string)>} obj   [description]
  * @param  {string} title [description]
  * @param  {string} path  [description]
  */
-history.pushState = function(obj, title, path){};
+history.pushState = function( obj, title, path ) {};
 
 
-var XPathJS = (function(){})();
+var XPathJS = ( function() {} )();
 
-XPathJS.bindDomLevel3XPath = function(){};
+XPathJS.bindDomLevel3XPath = function() {};
 
 /**
  * @param  {*} blob     [description]
  * @param  {string} filename [description]
  */
-function saveAs(blob, filename){}
+function saveAs( blob, filename ) {}
 
 
 /*jshint expr:true */
@@ -80,7 +82,7 @@ function saveAs(blob, filename){}
  */
 var Modernizr;
 
-Modernizr.inputtypes = function(){};
+Modernizr.inputtypes = function() {};
 /**
  * @type boolean
  **/
@@ -113,8 +115,6 @@ Modernizr.opacity;
 
 
 
-
-
 /*
  * Copyright 2009 Google Inc.
  *
@@ -143,70 +143,70 @@ var console = {};
 /**
  * @param {...*} var_args
  */
-console.debug = function(var_args) {};
+console.debug = function( var_args ) {};
 
 /** 
  * @param {...*} var_args
  */
-console.error = function(var_args) {};
+console.error = function( var_args ) {};
 
 /**
  * @param {...*} var_args
  */
-console.info = function(var_args) {};
+console.info = function( var_args ) {};
 
 /**
  * @param {...*} var_args
  */
-console.log = function(var_args) {};
+console.log = function( var_args ) {};
 
 /**
  * @param {...*} var_args
  */
-console.warn = function(var_args) {};
+console.warn = function( var_args ) {};
 
 /**
  * @param {*} value
  */
-console.dir = function(value) {};
+console.dir = function( value ) {};
 
 /**
  * @param {...*} var_args
  */
-console.dirxml = function(var_args) {};
+console.dirxml = function( var_args ) {};
 
 /**
  * @param {*=} value
  */
-console.trace = function(value) {};
+console.trace = function( value ) {};
 
 /**
  * @param {*} condition
  * @param {...*} var_args
  */
-console.assert = function(condition, var_args) {};
+console.assert = function( condition, var_args ) {};
 
 /**
  * @param {*} value
  */
-console.count = function(value) {};
+console.count = function( value ) {};
 
 /**
  * @param {string=} opt_title
  */
-console.profile = function(opt_title) {};
+console.profile = function( opt_title ) {};
 
 console.profileEnd = function() {};
 
 /**
  * @param {string} name
  */
-console.time = function(name) {};
+console.time = function( name ) {};
 
 /**
  * @param {string} name
  */
-console.timeEnd = function(name) {};
+console.timeEnd = function( name ) {};
 
 console.group = function() {};
 console.groupEnd = function() {};
@@ -241,7 +241,7 @@ var JSON = {};
  * @param {(function(string, *) : *)=} opt_reviver
  * @return {*} The JSON object.
  */
-JSON.parse = function(jsonStr, opt_reviver) {};
+JSON.parse = function( jsonStr, opt_reviver ) {};
 
 /**
  * @param {*} jsonObj Input object.
@@ -249,7 +249,7 @@ JSON.parse = function(jsonStr, opt_reviver) {};
  * @param {(number|string)=} opt_space
  * @return {string} json string which represents jsonObj.
  */
-JSON.stringify = function(jsonObj, opt_replacer, opt_space) {};
+JSON.stringify = function( jsonObj, opt_replacer, opt_space ) {};
 
 
 /*
@@ -298,7 +298,7 @@ var jQueryCallback;
  *     Object.<string, (string|function(!jQuery.event=))>)=} arg2
  * @return {!jQuery}
  */
-function jQuery(arg1, arg2) {}
+function jQuery( arg1, arg2 ) {}
 
 /**
  * @constructor
@@ -309,7 +309,7 @@ function jQuery(arg1, arg2) {}
  *     Object.<string, (string|function(!jQuery.event=))>)=} arg2
  * @return {!jQuery}
  */
-function $(arg1, arg2) {}
+function $( arg1, arg2 ) {}
 
 /**
  * @param {(jQuerySelector|Array.<Element>|string|jQuery)} arg1
@@ -317,66 +317,66 @@ function $(arg1, arg2) {}
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.add = function(arg1, context) {};
+jQuery.prototype.add = function( arg1, context ) {};
 
 /**
  * @param {(string|function(number,String))} arg1
  * @return {!jQuery}
  */
-jQuery.prototype.addClass = function(arg1) {};
+jQuery.prototype.addClass = function( arg1 ) {};
 
 /**
  * @param {(string|Element|jQuery|function(number))} arg1
  * @param {(string|Element|Array.<Element>|jQuery)=} content
  * @return {!jQuery}
  */
-jQuery.prototype.after = function(arg1, content) {};
+jQuery.prototype.after = function( arg1, content ) {};
 
 /**
  * @param {(string|Object.<string,*>)} arg1
  * @param {Object.<string,*>=} settings
  * @return {jQuery.jqXHR}
  */
-jQuery.ajax = function(arg1, settings) {};
+jQuery.ajax = function( arg1, settings ) {};
 
 /**
  * @param {(string|Object.<string,*>)} arg1
  * @param {Object.<string,*>=} settings
  * @return {jQuery.jqXHR}
  */
-$.ajax = function(arg1, settings) {};
+$.ajax = function( arg1, settings ) {};
 
 /**
  * @param {function(!jQuery.event,XMLHttpRequest,Object.<string, *>)} handler
  * @return {!jQuery}
  */
-jQuery.prototype.ajaxComplete = function(handler) {};
+jQuery.prototype.ajaxComplete = function( handler ) {};
 
 /**
  * @param {function(!jQuery.event,jQuery.jqXHR,Object.<string, *>,*)} handler
  * @return {!jQuery}
  */
-jQuery.prototype.ajaxError = function(handler) {};
+jQuery.prototype.ajaxError = function( handler ) {};
 
 /**
  * @param {(string|
  *     function(Object.<string,*>,Object.<string, *>,jQuery.jqXHR))} dataTypes
  * @param {function(Object.<string,*>,Object.<string, *>,jQuery.jqXHR)=} handler
  */
-jQuery.ajaxPrefilter = function(dataTypes, handler) {};
+jQuery.ajaxPrefilter = function( dataTypes, handler ) {};
 
 /**
  * @param {(string|
  *     function(Object.<string,*>,Object.<string, *>,jQuery.jqXHR))} dataTypes
  * @param {function(Object.<string,*>,Object.<string, *>,jQuery.jqXHR)=} handler
  */
-$.ajaxPrefilter = function(dataTypes, handler) {};
+$.ajaxPrefilter = function( dataTypes, handler ) {};
 
 /**
  * @param {function(!jQuery.event,jQuery.jqXHR,Object.<string, *>)} handler
  * @return {!jQuery}
  */
-jQuery.prototype.ajaxSend = function(handler) {};
+jQuery.prototype.ajaxSend = function( handler ) {};
 
 /** @const */
 jQuery.ajaxSettings = {};
@@ -469,28 +469,28 @@ jQuery.ajaxSettings.xhr = function() {};
 $.ajaxSettings.xhr = function() {};
 
 /** @param {Object.<string,*>} options */
-jQuery.ajaxSetup = function(options) {};
+jQuery.ajaxSetup = function( options ) {};
 
 /** @param {Object.<string,*>} options */
-$.ajaxSetup = function(options) {};
+$.ajaxSetup = function( options ) {};
 
 /**
  * @param {function()} handler
  * @return {!jQuery}
  */
-jQuery.prototype.ajaxStart = function(handler) {};
+jQuery.prototype.ajaxStart = function( handler ) {};
 
 /**
  * @param {function()} handler
  * @return {!jQuery}
  */
-jQuery.prototype.ajaxStop = function(handler) {};
+jQuery.prototype.ajaxStop = function( handler ) {};
 
 /**
  * @param {function(!jQuery.event,XMLHttpRequest,Object.<string, *>)} handler
  * @return {!jQuery}
  */
-jQuery.prototype.ajaxSuccess = function(handler) {};
+jQuery.prototype.ajaxSuccess = function( handler ) {};
 
 /**
  * @return {!jQuery}
@@ -504,34 +504,34 @@ jQuery.prototype.addBack = function() {};
  * @param {function()=} complete
  * @return {!jQuery}
  */
-jQuery.prototype.animate = function(properties, arg2, easing, complete) {};
+jQuery.prototype.animate = function( properties, arg2, easing, complete ) {};
 
 /**
  * @param {(string|Element|jQuery|function(number,string))} arg1
  * @param {(string|Element|Array.<Element>|jQuery)=} content
  * @return {!jQuery}
  */
-jQuery.prototype.append = function(arg1, content) {};
+jQuery.prototype.append = function( arg1, content ) {};
 
 /**
  * @param {(jQuerySelector|Element|jQuery)} target
  * @return {!jQuery}
  */
-jQuery.prototype.appendTo = function(target) {};
+jQuery.prototype.appendTo = function( target ) {};
 
 /**
  * @param {(string|Object.<string,*>)} arg1
  * @param {(string|number|function(number,string))=} arg2
  * @return {(string|!jQuery)}
  */
-jQuery.prototype.attr = function(arg1, arg2) {};
+jQuery.prototype.attr = function( arg1, arg2 ) {};
 
 /**
  * @param {(string|Element|jQuery|function())} arg1
  * @param {(string|Element|Array.<Element>|jQuery)=} content
  * @return {!jQuery}
  */
-jQuery.prototype.before = function(arg1, content) {};
+jQuery.prototype.before = function( arg1, content ) {};
 
 /**
  * @param {(string|Object.<string, function(!jQuery.event=)>)} arg1
@@ -539,14 +539,14 @@ jQuery.prototype.before = function(arg1, content) {};
  * @param {(function(!jQuery.event=)|boolean)=} arg3
  * @return {!jQuery}
  */
-jQuery.prototype.bind = function(arg1, eventData, arg3) {};
+jQuery.prototype.bind = function( arg1, eventData, arg3 ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.blur = function(arg1, handler) {};
+jQuery.prototype.blur = function( arg1, handler ) {};
 
 /** @type {boolean} */
 jQuery.boxModel;
@@ -558,16 +558,16 @@ $.boxModel;
  * @constructor
  * @private
  */
-jQuery.callbacks = function () {};
+jQuery.callbacks = function() {};
 
 /**
  * @param {string=} flags
  * @return {jQuery.callbacks}
  */
-jQuery.Callbacks = function (flags) {};
+jQuery.Callbacks = function( flags ) {};
 
 /** @param {function()} callbacks */
-jQuery.callbacks.prototype.add = function(callbacks) {};
+jQuery.callbacks.prototype.add = function( callbacks ) {};
 
 /** @return {undefined} */
 jQuery.callbacks.prototype.disable = function() {};
@@ -576,20 +576,20 @@ jQuery.callbacks.prototype.disable = function() {};
 jQuery.callbacks.prototype.empty = function() {};
 
 /** @param {...*} var_args */
-jQuery.callbacks.prototype.fire = function(var_args) {};
+jQuery.callbacks.prototype.fire = function( var_args ) {};
 
 /** @return {boolean} */
 jQuery.callbacks.prototype.fired = function() {};
 
 /** @param {...*} var_args */
-jQuery.callbacks.prototype.fireWith = function(var_args) {};
+jQuery.callbacks.prototype.fireWith = function( var_args ) {};
 
 /**
  * @param {function()} callback
  * @return {boolean}
  * @nosideeffects
  */
-jQuery.callbacks.prototype.has = function(callback) {};
+jQuery.callbacks.prototype.has = function( callback ) {};
 
 /** @return {undefined} */
 jQuery.callbacks.prototype.lock = function() {};
@@ -598,34 +598,34 @@ jQuery.callbacks.prototype.lock = function() {};
 jQuery.callbacks.prototype.locked = function() {};
 
 /** @param {function()} callbacks */
-jQuery.callbacks.prototype.remove = function(callbacks) {};
+jQuery.callbacks.prototype.remove = function( callbacks ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.change = function(arg1, handler) {};
+jQuery.prototype.change = function( arg1, handler ) {};
 
 /**
  * @param {jQuerySelector=} selector
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.children = function(selector) {};
+jQuery.prototype.children = function( selector ) {};
 
 /**
  * @param {string=} queueName
  * @return {!jQuery}
  */
-jQuery.prototype.clearQueue = function(queueName) {};
+jQuery.prototype.clearQueue = function( queueName ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.click = function(arg1, handler) {};
+jQuery.prototype.click = function( arg1, handler ) {};
 
 /**
  * @param {boolean=} withDataAndEvents
@@ -633,7 +633,7 @@ jQuery.prototype.click = function(arg1, handler) {};
  * @return {!jQuery}
  * @suppress {checkTypes} see issue 583
  */
-jQuery.prototype.clone = function(withDataAndEvents, deepWithDataAndEvents) {};
+jQuery.prototype.clone = function( withDataAndEvents, deepWithDataAndEvents ) {};
 
 /**
  * @param {(jQuerySelector|jQuery|Element|string|Array.<string>)} arg1
@@ -641,21 +641,21 @@ jQuery.prototype.clone = function(withDataAndEvents, deepWithDataAndEvents) {};
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.closest = function(arg1, context) {};
+jQuery.prototype.closest = function( arg1, context ) {};
 
 /**
  * @param {Element} container
  * @param {Element} contained
  * @return {boolean}
  */
-jQuery.contains = function(container, contained) {};
+jQuery.contains = function( container, contained ) {};
 
 /**
  * @param {Element} container
  * @param {Element} contained
  * @return {boolean}
  */
-$.contains = function(container, contained) {};
+$.contains = function( container, contained ) {};
 
 /**
  * @return {!jQuery}
@@ -671,7 +671,7 @@ jQuery.prototype.context;
  * @param {(string|number|function(number,*))=} arg2
  * @return {(string|!jQuery)}
  */
-jQuery.prototype.css = function(arg1, arg2) {};
+jQuery.prototype.css = function( arg1, arg2 ) {};
 
 /** @type {Object.<string, *>} */
 jQuery.cssHooks;
@@ -685,14 +685,14 @@ $.cssHooks;
  * @param {*=} value
  * @return {*}
  */
-jQuery.data = function(elem, key, value) {};
+jQuery.data = function( elem, key, value ) {};
 
 /**
  * @param {(string|Object.<string, *>)=} arg1
  * @param {*=} value
  * @return {*}
  */
-jQuery.prototype.data = function(arg1, value) {};
+jQuery.prototype.data = function( arg1, value ) {};
 
 /**
  * @param {Element} elem
@@ -700,14 +700,14 @@ jQuery.prototype.data = function(arg1, value) {};
  * @param {*=} value
  * @return {*}
  */
-$.data = function(elem, key, value) {};
+$.data = function( elem, key, value ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.dblclick = function(arg1, handler) {};
+jQuery.prototype.dblclick = function( arg1, handler ) {};
 
 /**
  * @constructor
@@ -715,7 +715,7 @@ jQuery.prototype.dblclick = function(arg1, handler) {};
  * @param {function()=} opt_fn
  * @see http://api.jquery.com/category/deferred-object/
  */
-jQuery.deferred = function(opt_fn) {};
+jQuery.deferred = function( opt_fn ) {};
 
 /**
  * @constructor
@@ -723,7 +723,7 @@ jQuery.deferred = function(opt_fn) {};
  * @param {function()=} opt_fn
  * @return {jQuery.Deferred}
  */
-jQuery.Deferred = function(opt_fn) {};
+jQuery.Deferred = function( opt_fn ) {};
 
 /**
  * @constructor
@@ -731,7 +731,7 @@ jQuery.Deferred = function(opt_fn) {};
  * @param {function()=} opt_fn
  * @see http://api.jquery.com/category/deferred-object/
  */
-$.deferred = function(opt_fn) {};
+$.deferred = function( opt_fn ) {};
 
 /**
  * @constructor
@@ -739,7 +739,7 @@ $.deferred = function(opt_fn) {};
  * @param {function()=} opt_fn
  * @return {jQuery.deferred}
  */
-$.Deferred = function(opt_fn) {};
+$.Deferred = function( opt_fn ) {};
 
 /**
  * @override
@@ -747,8 +747,7 @@ $.Deferred = function(opt_fn) {};
  * @param {jQueryCallback=} alwaysCallbacks2
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.always
-    = function(alwaysCallbacks, alwaysCallbacks2) {};
+jQuery.deferred.prototype.always = function( alwaysCallbacks, alwaysCallbacks2 ) {};
 
 /**
  * @override
@@ -756,7 +755,7 @@ jQuery.deferred.prototype.always
  * @param {jQueryCallback=} doneCallbacks2
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.done = function(doneCallbacks, doneCallbacks2) {};
+jQuery.deferred.prototype.done = function( doneCallbacks, doneCallbacks2 ) {};
 
 /**
  * @override
@@ -764,20 +763,20 @@ jQuery.deferred.prototype.done = function(doneCallbacks, doneCallbacks2) {};
  * @param {jQueryCallback=} failCallbacks2
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.fail = function(failCallbacks, failCallbacks2) {};
+jQuery.deferred.prototype.fail = function( failCallbacks, failCallbacks2 ) {};
 
 /**
  * @param {...*} var_args
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.notify = function(var_args) {};
+jQuery.deferred.prototype.notify = function( var_args ) {};
 
 /**
  * @param {Object} context
  * @param {...*} var_args
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.notifyWith = function(context, var_args) {};
+jQuery.deferred.prototype.notifyWith = function( context, var_args ) {};
 
 /**
  * @override
@@ -786,46 +785,45 @@ jQuery.deferred.prototype.notifyWith = function(context, var_args) {};
  * @param {function()=} progressFilter
  * @return {jQuery.Promise}
  */
-jQuery.deferred.prototype.pipe
-    = function(doneFilter, failFilter, progressFilter) {};
+jQuery.deferred.prototype.pipe = function( doneFilter, failFilter, progressFilter ) {};
 
 /**
  * @param {function()} progressCallbacks
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.progress = function(progressCallbacks) {};
+jQuery.deferred.prototype.progress = function( progressCallbacks ) {};
 
 /**
  * @param {Object=} target
  * @return {jQuery.Promise}
  */
-jQuery.deferred.prototype.promise = function(target) {};
+jQuery.deferred.prototype.promise = function( target ) {};
 
 /**
  * @param {...*} var_args
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.reject = function(var_args) {};
+jQuery.deferred.prototype.reject = function( var_args ) {};
 
 /**
  * @param {Object} context
  * @param {Array.<*>=} args
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.rejectWith = function(context, args) {};
+jQuery.deferred.prototype.rejectWith = function( context, args ) {};
 
 /**
  * @param {...*} var_args
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.resolve = function(var_args) {};
+jQuery.deferred.prototype.resolve = function( var_args ) {};
 
 /**
  * @param {Object} context
  * @param {Array.<*>=} args
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.resolveWith = function(context, args) {};
+jQuery.deferred.prototype.resolveWith = function( context, args ) {};
 
 /** @return {string} */
 jQuery.deferred.prototype.state = function() {};
@@ -837,15 +835,14 @@ jQuery.deferred.prototype.state = function() {};
  * @param {jQueryCallback=} progressCallbacks
  * @return {jQuery.deferred}
  */
-jQuery.deferred.prototype.then
-    = function(doneCallbacks, failCallbacks, progressCallbacks) {};
+jQuery.deferred.prototype.then = function( doneCallbacks, failCallbacks, progressCallbacks ) {};
 
 /**
  * @param {number} duration
  * @param {string=} queueName
  * @return {!jQuery}
  */
-jQuery.prototype.delay = function(duration, queueName) {};
+jQuery.prototype.delay = function( duration, queueName ) {};
 
 /**
  * @param {string} selector
@@ -854,51 +851,51 @@ jQuery.prototype.delay = function(duration, queueName) {};
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.delegate = function(selector, arg2, arg3, handler) {};
+jQuery.prototype.delegate = function( selector, arg2, arg3, handler ) {};
 
 /**
  * @param {Element} elem
  * @param {string=} queueName
  */
-jQuery.dequeue = function(elem, queueName) {};
+jQuery.dequeue = function( elem, queueName ) {};
 
 /**
  * @param {string=} queueName
  * @return {!jQuery}
  */
-jQuery.prototype.dequeue = function(queueName) {};
+jQuery.prototype.dequeue = function( queueName ) {};
 
 /**
  * @param {Element} elem
  * @param {string=} queueName
  */
-$.dequeue = function(elem, queueName) {};
+$.dequeue = function( elem, queueName ) {};
 
 /**
  * @param {jQuerySelector=} selector
  * @return {!jQuery}
  */
-jQuery.prototype.detach = function(selector) {};
+jQuery.prototype.detach = function( selector ) {};
 
 /**
  * @param {Object} collection
  * @param {function(number,?)} callback
  * @return {Object}
  */
-jQuery.each = function(collection, callback) {};
+jQuery.each = function( collection, callback ) {};
 
 /**
  * @param {function(number,Element)} fnc
  * @return {!jQuery}
  */
-jQuery.prototype.each = function(fnc) {};
+jQuery.prototype.each = function( fnc ) {};
 
 /**
  * @param {Object} collection
  * @param {function(number,?)} callback
  * @return {Object}
  */
-$.each = function(collection, callback) {};
+$.each = function( collection, callback ) {};
 
 /** @return {!jQuery} */
 jQuery.prototype.empty = function() {};
@@ -913,10 +910,10 @@ jQuery.prototype.end = function() {};
  * @param {number} arg1
  * @return {!jQuery}
  */
-jQuery.prototype.eq = function(arg1) {};
+jQuery.prototype.eq = function( arg1 ) {};
 
 /** @param {string} message */
-jQuery.error = function(message) {};
+jQuery.error = function( message ) {};
 
 /**
  * @deprecated
@@ -924,16 +921,16 @@ jQuery.error = function(message) {};
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.error = function(arg1, handler) {};
+jQuery.prototype.error = function( arg1, handler ) {};
 
 /** @param {string} message */
-$.error = function(message) {};
+$.error = function( message ) {};
 
 /**
  * @constructor
  * @param {string} eventType
  */
-jQuery.event = function(eventType) {};
+jQuery.event = function( eventType ) {};
 
 /**
  * @constructor
@@ -942,14 +939,14 @@ jQuery.event = function(eventType) {};
  * @param {Object=} properties
  * @return {jQuery.Event}
  */
-jQuery.Event = function(eventType, properties) {};
+jQuery.Event = function( eventType, properties ) {};
 
 /**
  * @constructor
  * @extends {jQuery.event}
  * @param {string} eventType
  */
-$.event = function(eventType) {};
+$.event = function( eventType ) {};
 
 /**
  * @constructor
@@ -958,7 +955,7 @@ $.event = function(eventType) {};
  * @param {Object=} properties
  * @return {$.Event}
  */
-$.Event = function(eventType, properties) {};
+$.Event = function( eventType, properties ) {};
 
 /** @type {Element} */
 jQuery.event.prototype.currentTarget;
@@ -1034,21 +1031,21 @@ jQuery.event.prototype.which;
  * @param {...*} var_args
  * @return {Object}
  */
-jQuery.extend = function(arg1, var_args) {};
+jQuery.extend = function( arg1, var_args ) {};
 
 /**
  * @param {(Object|boolean)} arg1
  * @param {...*} var_args
  * @return {Object}
  */
-jQuery.prototype.extend = function(arg1, var_args) {};
+jQuery.prototype.extend = function( arg1, var_args ) {};
 
 /**
  * @param {(Object|boolean)} arg1
  * @param {...*} var_args
  * @return {Object}
  */
-$.extend = function(arg1, var_args) {};
+$.extend = function( arg1, var_args ) {};
 
 /**
  * @param {(string|number|function())=} duration
@@ -1056,7 +1053,7 @@ $.extend = function(arg1, var_args) {};
  * @param {function()=} callback
  * @return {!jQuery}
  */
-jQuery.prototype.fadeIn = function(duration, arg2, callback) {};
+jQuery.prototype.fadeIn = function( duration, arg2, callback ) {};
 
 /**
  * @param {(string|number|function())=} duration
@@ -1064,7 +1061,7 @@ jQuery.prototype.fadeIn = function(duration, arg2, callback) {};
  * @param {function()=} callback
  * @return {!jQuery}
  */
-jQuery.prototype.fadeOut = function(duration, arg2, callback) {};
+jQuery.prototype.fadeOut = function( duration, arg2, callback ) {};
 
 /**
  * @param {(string|number)} duration
@@ -1073,7 +1070,7 @@ jQuery.prototype.fadeOut = function(duration, arg2, callback) {};
  * @param {function()=} callback
  * @return {!jQuery}
  */
-jQuery.prototype.fadeTo = function(duration, opacity, arg3, callback) {};
+jQuery.prototype.fadeTo = function( duration, opacity, arg3, callback ) {};
 
 /**
  * @param {(string|number|function())=} duration
@@ -1081,20 +1078,20 @@ jQuery.prototype.fadeTo = function(duration, opacity, arg3, callback) {};
  * @param {function()=} callback
  * @return {!jQuery}
  */
-jQuery.prototype.fadeToggle = function(duration, easing, callback) {};
+jQuery.prototype.fadeToggle = function( duration, easing, callback ) {};
 
 /**
  * @param {(jQuerySelector|function(number)|Element|jQuery)} arg1
  * @return {!jQuery}
  */
-jQuery.prototype.filter = function(arg1) {};
+jQuery.prototype.filter = function( arg1 ) {};
 
 /**
  * @param {(jQuerySelector|jQuery|Element)} arg1
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.find = function(arg1) {};
+jQuery.prototype.find = function( arg1 ) {};
 
 /** @return {!jQuery} */
 jQuery.prototype.first = function() {};
@@ -1110,21 +1107,21 @@ $.fn;
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.focus = function(arg1, handler) {};
+jQuery.prototype.focus = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.focusin = function(arg1, handler) {};
+jQuery.prototype.focusin = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.focusout = function(arg1, handler) {};
+jQuery.prototype.focusout = function( arg1, handler ) {};
 
 /** @const */
 jQuery.fx = {};
@@ -1152,14 +1149,14 @@ $.fx.off;
  * @param {string=} dataType
  * @return {jQuery.jqXHR}
  */
-jQuery.get = function(url, data, success, dataType) {};
+jQuery.get = function( url, data, success, dataType ) {};
 
 /**
  * @param {number=} index
  * @return {(Element|Array.<Element>)}
  * @nosideeffects
  */
-jQuery.prototype.get = function(index) {};
+jQuery.prototype.get = function( index ) {};
 
 /**
  * @param {string} url
@@ -1169,7 +1166,7 @@ jQuery.prototype.get = function(index) {};
  * @param {string=} dataType
  * @return {jQuery.jqXHR}
  */
-$.get = function(url, data, success, dataType) {};
+$.get = function( url, data, success, dataType ) {};
 
 /**
  * @param {string} url
@@ -1177,7 +1174,7 @@ $.get = function(url, data, success, dataType) {};
  * @param {function(string,string,jQuery.jqXHR)=} success
  * @return {jQuery.jqXHR}
  */
-jQuery.getJSON = function(url, data, success) {};
+jQuery.getJSON = function( url, data, success ) {};
 
 /**
  * @param {string} url
@@ -1185,27 +1182,27 @@ jQuery.getJSON = function(url, data, success) {};
  * @param {function(string,string,jQuery.jqXHR)=} success
  * @return {jQuery.jqXHR}
  */
-$.getJSON = function(url, data, success) {};
+$.getJSON = function( url, data, success ) {};
 
 /**
  * @param {string} url
  * @param {function(Node,string,jQuery.jqXHR)=} success
  * @return {jQuery.jqXHR}
  */
-jQuery.getScript = function(url, success) {};
+jQuery.getScript = function( url, success ) {};
 
 /**
  * @param {string} url
  * @param {function(Node,string,jQuery.jqXHR)=} success
  * @return {jQuery.jqXHR}
  */
-$.getScript = function(url, success) {};
+$.getScript = function( url, success ) {};
 
 /** @param {string} code */
-jQuery.globalEval = function(code) {};
+jQuery.globalEval = function( code ) {};
 
 /** @param {string} code */
-$.globalEval = function(code) {};
+$.globalEval = function( code ) {};
 
 /**
  * @param {Array.<*>} arr
@@ -1213,7 +1210,7 @@ $.globalEval = function(code) {};
  * @param {boolean=} invert
  * @return {Array.<*>}
  */
-jQuery.grep = function(arr, fnc, invert) {};
+jQuery.grep = function( arr, fnc, invert ) {};
 
 /**
  * @param {Array.<*>} arr
@@ -1221,41 +1218,41 @@ jQuery.grep = function(arr, fnc, invert) {};
  * @param {boolean=} invert
  * @return {Array.<*>}
  */
-$.grep = function(arr, fnc, invert) {};
+$.grep = function( arr, fnc, invert ) {};
 
 /**
  * @param {(string|Element)} arg1
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.has = function(arg1) {};
+jQuery.prototype.has = function( arg1 ) {};
 
 /**
  * @param {string} className
  * @return {boolean}
  * @nosideeffects
  */
-jQuery.prototype.hasClass = function(className) {};
+jQuery.prototype.hasClass = function( className ) {};
 
 /**
  * @param {Element} elem
  * @return {boolean}
  * @nosideeffects
  */
-jQuery.hasData = function(elem) {};
+jQuery.hasData = function( elem ) {};
 
 /**
  * @param {Element} elem
  * @return {boolean}
  * @nosideeffects
  */
-$.hasData = function(elem) {};
+$.hasData = function( elem ) {};
 
 /**
  * @param {(string|number|function(number,number))=} arg1
  * @return {(number|!jQuery)}
  */
-jQuery.prototype.height = function(arg1) {};
+jQuery.prototype.height = function( arg1 ) {};
 
 /**
  * @param {(string|number|function())=} duration
@@ -1263,26 +1260,26 @@ jQuery.prototype.height = function(arg1) {};
  * @param {function()=} callback
  * @return {!jQuery}
  */
-jQuery.prototype.hide = function(duration, arg2, callback) {};
+jQuery.prototype.hide = function( duration, arg2, callback ) {};
 
 /** @param {boolean} hold */
-jQuery.holdReady = function(hold) {};
+jQuery.holdReady = function( hold ) {};
 
 /** @param {boolean} hold */
-$.holdReady = function(hold) {};
+$.holdReady = function( hold ) {};
 
 /**
  * @param {function(!jQuery.event=)} arg1
  * @param {function(!jQuery.event=)=} handlerOut
  * @return {!jQuery}
  */
-jQuery.prototype.hover = function(arg1, handlerOut) {};
+jQuery.prototype.hover = function( arg1, handlerOut ) {};
 
 /**
  * @param {(string|function(number,string))=} arg1
  * @return {(string|!jQuery)}
  */
-jQuery.prototype.html = function(arg1) {};
+jQuery.prototype.html = function( arg1 ) {};
 
 /**
  * @param {*} value
@@ -1291,7 +1288,7 @@ jQuery.prototype.html = function(arg1) {};
  * @return {number}
  * @nosideeffects
  */
-jQuery.inArray = function(value, arr, fromIndex) {};
+jQuery.inArray = function( value, arr, fromIndex ) {};
 
 /**
  * @param {*} value
@@ -1300,13 +1297,13 @@ jQuery.inArray = function(value, arr, fromIndex) {};
  * @return {number}
  * @nosideeffects
  */
-$.inArray = function(value, arr, fromIndex) {};
+$.inArray = function( value, arr, fromIndex ) {};
 
 /**
  * @param {(jQuerySelector|Element|jQuery)=} arg1
  * @return {number}
  */
-jQuery.prototype.index = function(arg1) {};
+jQuery.prototype.index = function( arg1 ) {};
 
 /**
  * @return {number}
@@ -1324,117 +1321,117 @@ jQuery.prototype.innerWidth = function() {};
  * @param {(jQuerySelector|Element|jQuery)} target
  * @return {!jQuery}
  */
-jQuery.prototype.insertAfter = function(target) {};
+jQuery.prototype.insertAfter = function( target ) {};
 
 /**
  * @param {(jQuerySelector|Element|jQuery)} target
  * @return {!jQuery}
  */
-jQuery.prototype.insertBefore = function(target) {};
+jQuery.prototype.insertBefore = function( target ) {};
 
 /**
  * @param {(jQuerySelector|function(number)|jQuery|Element)} arg1
  * @return {boolean}
  */
-jQuery.prototype.is = function(arg1) {};
+jQuery.prototype.is = function( arg1 ) {};
 
 /**
  * @param {*} obj
  * @return {boolean}
  * @nosideeffects
  */
-jQuery.isArray = function(obj) {};
+jQuery.isArray = function( obj ) {};
 
 /**
  * @param {*} obj
  * @return {boolean}
  * @nosideeffects
  */
-$.isArray = function(obj) {};
+$.isArray = function( obj ) {};
 
 /**
  * @param {Object} obj
  * @return {boolean}
  * @nosideeffects
  */
-jQuery.isEmptyObject = function(obj) {};
+jQuery.isEmptyObject = function( obj ) {};
 
 /**
  * @param {Object} obj
  * @return {boolean}
  * @nosideeffects
  */
-$.isEmptyObject = function(obj) {};
+$.isEmptyObject = function( obj ) {};
 
 /**
  * @param {*} obj
  * @return {boolean}
  * @nosideeffects
  */
-jQuery.isFunction = function(obj) {};
+jQuery.isFunction = function( obj ) {};
 
 /**
  * @param {*} obj
  * @return {boolean}
  * @nosideeffects
  */
-$.isFunction = function(obj) {};
+$.isFunction = function( obj ) {};
 
 /**
  * @param {*} value
  * @return {boolean}
  * @nosideeffects
  */
-jQuery.isNumeric = function(value) {};
+jQuery.isNumeric = function( value ) {};
 
 /**
  * @param {*} value
  * @return {boolean}
  * @nosideeffects
  */
-$.isNumeric = function(value) {};
+$.isNumeric = function( value ) {};
 
 /**
  * @param {Object} obj
  * @return {boolean}
  * @nosideeffects
  */
-jQuery.isPlainObject = function(obj) {};
+jQuery.isPlainObject = function( obj ) {};
 
 /**
  * @param {Object} obj
  * @return {boolean}
  * @nosideeffects
  */
-$.isPlainObject = function(obj) {};
+$.isPlainObject = function( obj ) {};
 
 /**
  * @param {*} obj
  * @return {boolean}
  * @nosideeffects
  */
-jQuery.isWindow = function(obj) {};
+jQuery.isWindow = function( obj ) {};
 
 /**
  * @param {*} obj
  * @return {boolean}
  * @nosideeffects
  */
-$.isWindow = function(obj) {};
+$.isWindow = function( obj ) {};
 
 /**
  * @param {Element} node
  * @return {boolean}
  * @nosideeffects
  */
-jQuery.isXMLDoc = function(node) {};
+jQuery.isXMLDoc = function( node ) {};
 
 /**
  * @param {Element} node
  * @return {boolean}
  * @nosideeffects
  */
-$.isXMLDoc = function(node) {};
+$.isXMLDoc = function( node ) {};
 
 /** @type {string} */
 jQuery.prototype.jquery;
@@ -1446,7 +1443,7 @@ jQuery.prototype.jquery;
  * @private
  * @see http://api.jquery.com/jQuery.ajax/#jqXHR
  */
-jQuery.jqXHR = function () {};
+jQuery.jqXHR = function() {};
 
 /**
  * @override
@@ -1455,41 +1452,41 @@ jQuery.jqXHR = function () {};
  * @return {jQuery.jqXHR}
  */
 jQuery.jqXHR.prototype.always =
-    function(alwaysCallbacks, alwaysCallbacks2) {};
+    function( alwaysCallbacks, alwaysCallbacks2 ) {};
 
 /**
  * @deprecated
  * @param {function()} callback
  * @return {jQuery.jqXHR}
-*/
-jQuery.jqXHR.prototype.complete = function (callback) {};
+ */
+jQuery.jqXHR.prototype.complete = function( callback ) {};
 
 /**
  * @override
  * @param {jQueryCallback} doneCallbacks
  * @return {jQuery.jqXHR}
  */
-jQuery.jqXHR.prototype.done = function(doneCallbacks) {};
+jQuery.jqXHR.prototype.done = function( doneCallbacks ) {};
 
 /**
  * @deprecated
  * @param {function()} callback
  * @return {jQuery.jqXHR}
-*/
-jQuery.jqXHR.prototype.error = function (callback) {};
+ */
+jQuery.jqXHR.prototype.error = function( callback ) {};
 
 /**
  * @override
  * @param {jQueryCallback} failCallbacks
  * @return {jQuery.jqXHR}
  */
-jQuery.jqXHR.prototype.fail = function(failCallbacks) {};
+jQuery.jqXHR.prototype.fail = function( failCallbacks ) {};
 
 /**
  * @deprecated
  * @override
  */
-jQuery.jqXHR.prototype.onreadystatechange = function (callback) {};
+jQuery.jqXHR.prototype.onreadystatechange = function( callback ) {};
 
 /**
  * @param {function()=} doneFilter
@@ -1498,14 +1495,14 @@ jQuery.jqXHR.prototype.onreadystatechange = function (callback) {};
  * @return {jQuery.jqXHR}
  */
 jQuery.jqXHR.prototype.pipe =
-    function(doneFilter, failFilter, progressFilter) {};
+    function( doneFilter, failFilter, progressFilter ) {};
 
 /**
  * @deprecated
  * @param {function()} callback
  * @return {jQuery.jqXHR}
-*/
-jQuery.jqXHR.prototype.success = function (callback) {};
+ */
+jQuery.jqXHR.prototype.success = function( callback ) {};
 
 /**
  * @override
@@ -1515,28 +1512,28 @@ jQuery.jqXHR.prototype.success = function (callback) {};
  * @return {jQuery.jqXHR}
  */
 jQuery.jqXHR.prototype.then =
-    function(doneCallbacks, failCallbacks, progressCallbacks) {};
+    function( doneCallbacks, failCallbacks, progressCallbacks ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.keydown = function(arg1, handler) {};
+jQuery.prototype.keydown = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.keypress = function(arg1, handler) {};
+jQuery.prototype.keypress = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.keyup = function(arg1, handler) {};
+jQuery.prototype.keyup = function( arg1, handler ) {};
 
 /** @return {!jQuery} */
 jQuery.prototype.last = function() {};
@@ -1551,116 +1548,116 @@ jQuery.prototype.length;
  * @param {function(string,string,XMLHttpRequest)=} complete
  * @return {!jQuery}
  */
-jQuery.prototype.load = function(arg1, arg2, complete) {};
+jQuery.prototype.load = function( arg1, arg2, complete ) {};
 
 /**
  * @param {*} obj
  * @return {Array.<*>}
  */
-jQuery.makeArray = function(obj) {};
+jQuery.makeArray = function( obj ) {};
 
 /**
  * @param {*} obj
  * @return {Array.<*>}
  */
-$.makeArray = function(obj) {};
+$.makeArray = function( obj ) {};
 
 /**
  * @param {(Array.<*>|Object.<string, *>)} arg1
  * @param {(function(*,number)|function(*,(string|number)))} callback
  * @return {Array.<*>}
  */
-jQuery.map = function(arg1, callback) {};
+jQuery.map = function( arg1, callback ) {};
 
 /**
  * @param {function(number,Element)} callback
  * @return {!jQuery}
  */
-jQuery.prototype.map = function(callback) {};
+jQuery.prototype.map = function( callback ) {};
 
 /**
  * @param {(Array.<*>|Object.<string, *>)} arg1
  * @param {(function(*,number)|function(*,(string|number)))} callback
  * @return {Array.<*>}
  */
-$.map = function(arg1, callback) {};
+$.map = function( arg1, callback ) {};
 
 /**
  * @param {Array.<*>} first
  * @param {Array.<*>} second
  * @return {Array.<*>}
  */
-jQuery.merge = function(first, second) {};
+jQuery.merge = function( first, second ) {};
 
 /**
  * @param {Array.<*>} first
  * @param {Array.<*>} second
  * @return {Array.<*>}
  */
-$.merge = function(first, second) {};
+$.merge = function( first, second ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.mousedown = function(arg1, handler) {};
+jQuery.prototype.mousedown = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.mouseenter = function(arg1, handler) {};
+jQuery.prototype.mouseenter = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.mouseleave = function(arg1, handler) {};
+jQuery.prototype.mouseleave = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.mousemove = function(arg1, handler) {};
+jQuery.prototype.mousemove = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.mouseout = function(arg1, handler) {};
+jQuery.prototype.mouseout = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.mouseover = function(arg1, handler) {};
+jQuery.prototype.mouseover = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.mouseup = function(arg1, handler) {};
+jQuery.prototype.mouseup = function( arg1, handler ) {};
 
 /**
  * @param {jQuerySelector=} selector
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.next = function(selector) {};
+jQuery.prototype.next = function( selector ) {};
 
 /**
  * @param {string=} selector
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.nextAll = function(selector) {};
+jQuery.prototype.nextAll = function( selector ) {};
 
 /**
  * @param {(jQuerySelector|Element)=} arg1
@@ -1668,19 +1665,19 @@ jQuery.prototype.nextAll = function(selector) {};
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.nextUntil = function(arg1, filter) {};
+jQuery.prototype.nextUntil = function( arg1, filter ) {};
 
 /**
  * @param {boolean=} removeAll
  * @return {Object}
  */
-jQuery.noConflict = function(removeAll) {};
+jQuery.noConflict = function( removeAll ) {};
 
 /**
  * @param {boolean=} removeAll
  * @return {Object}
  */
-$.noConflict = function(removeAll) {};
+$.noConflict = function( removeAll ) {};
 
 /**
  * @return {function()}
@@ -1698,7 +1695,7 @@ $.noop = function() {};
  * @param {(jQuerySelector|Array.<Element>|function(number)|jQuery)} arg1
  * @return {!jQuery}
  */
-jQuery.prototype.not = function(arg1) {};
+jQuery.prototype.not = function( arg1 ) {};
 
 /**
  * @return {number}
@@ -1718,14 +1715,14 @@ $.now = function() {};
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.off = function(arg1, selector, handler) {};
+jQuery.prototype.off = function( arg1, selector, handler ) {};
 
 /**
  * @param {({left:number,top:number}|
  *     function(number,{top:number,left:number}))=} arg1
  * @return {({left:number,top:number}|!jQuery)}
  */
-jQuery.prototype.offset = function(arg1) {};
+jQuery.prototype.offset = function( arg1 ) {};
 
 /**
  * @return {!jQuery}
@@ -1740,7 +1737,7 @@ jQuery.prototype.offsetParent = function() {};
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.on = function(arg1, selector, data, handler) {};
+jQuery.prototype.on = function( arg1, selector, data, handler ) {};
 
 /**
  * @param {(string|Object.<string,*>)} arg1
@@ -1749,49 +1746,49 @@ jQuery.prototype.on = function(arg1, selector, data, handler) {};
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.one = function(arg1, arg2, arg3, handler) {};
+jQuery.prototype.one = function( arg1, arg2, arg3, handler ) {};
 
 /**
  * @param {boolean=} includeMargin
  * @return {number}
  * @nosideeffects
  */
-jQuery.prototype.outerHeight = function(includeMargin) {};
+jQuery.prototype.outerHeight = function( includeMargin ) {};
 
 /**
  * @param {boolean=} includeMargin
  * @return {number}
  * @nosideeffects
  */
-jQuery.prototype.outerWidth = function(includeMargin) {};
+jQuery.prototype.outerWidth = function( includeMargin ) {};
 
 /**
  * @param {(Object.<string, *>|Array.<Object.<string, *>>)} obj
  * @param {boolean=} traditional
  * @return {string}
  */
-jQuery.param = function(obj, traditional) {};
+jQuery.param = function( obj, traditional ) {};
 
 /**
  * @param {(Object.<string, *>|Array.<Object.<string, *>>)} obj
  * @param {boolean=} traditional
  * @return {string}
  */
-$.param = function(obj, traditional) {};
+$.param = function( obj, traditional ) {};
 
 /**
  * @param {jQuerySelector=} selector
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.parent = function(selector) {};
+jQuery.prototype.parent = function( selector ) {};
 
 /**
  * @param {jQuerySelector=} selector
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.parents = function(selector) {};
+jQuery.prototype.parents = function( selector ) {};
 
 /**
  * @param {(jQuerySelector|Element)=} arg1
@@ -1799,7 +1796,7 @@ jQuery.prototype.parents = function(selector) {};
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.parentsUntil = function(arg1, filter) {};
+jQuery.prototype.parentsUntil = function( arg1, filter ) {};
 
 /**
  * @param {string} data
@@ -1807,7 +1804,7 @@ jQuery.prototype.parentsUntil = function(arg1, filter) {};
  * @param {boolean=} keepScripts
  * @return {Array.<Element>}
  */
-jQuery.parseHTML = function(data, context, keepScripts) {};
+jQuery.parseHTML = function( data, context, keepScripts ) {};
 
 /**
  * @param {string} data
@@ -1815,31 +1812,31 @@ jQuery.parseHTML = function(data, context, keepScripts) {};
  * @param {boolean=} keepScripts
  * @return {Array.<Element>}
  */
-$.parseHTML = function(data, context, keepScripts) {};
+$.parseHTML = function( data, context, keepScripts ) {};
 
 /**
  * @param {string} json
  * @return {Object.<string, *>}
  */
-jQuery.parseJSON = function(json) {};
+jQuery.parseJSON = function( json ) {};
 
 /**
  * @param {string} json
  * @return {Object.<string, *>}
  */
-$.parseJSON = function(json) {};
+$.parseJSON = function( json ) {};
 
 /**
  * @param {string} data
  * @return {Document}
  */
-jQuery.parseXML = function(data) {};
+jQuery.parseXML = function( data ) {};
 
 /**
  * @param {string} data
  * @return {Document}
  */
-$.parseXML = function(data) {};
+$.parseXML = function( data ) {};
 
 /**
  * @return {{left:number,top:number}}
@@ -1855,7 +1852,7 @@ jQuery.prototype.position = function() {};
  * @param {string=} dataType
  * @return {jQuery.jqXHR}
  */
-jQuery.post = function(url, data, success, dataType) {};
+jQuery.post = function( url, data, success, dataType ) {};
 
 /**
  * @param {string} url
@@ -1865,34 +1862,34 @@ jQuery.post = function(url, data, success, dataType) {};
  * @param {string=} dataType
  * @return {jQuery.jqXHR}
  */
-$.post = function(url, data, success, dataType) {};
+$.post = function( url, data, success, dataType ) {};
 
 /**
  * @param {(string|Element|jQuery|function(number,string))} arg1
  * @param {(string|Element|jQuery)=} content
  * @return {!jQuery}
  */
-jQuery.prototype.prepend = function(arg1, content) {};
+jQuery.prototype.prepend = function( arg1, content ) {};
 
 /**
  * @param {(jQuerySelector|Element|jQuery)} target
  * @return {!jQuery}
  */
-jQuery.prototype.prependTo = function(target) {};
+jQuery.prototype.prependTo = function( target ) {};
 
 /**
  * @param {jQuerySelector=} selector
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.prev = function(selector) {};
+jQuery.prototype.prev = function( selector ) {};
 
 /**
  * @param {jQuerySelector=} selector
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.prevAll = function(selector) {};
+jQuery.prototype.prevAll = function( selector ) {};
 
 /**
  * @param {(jQuerySelector|Element)=} arg1
@@ -1900,21 +1897,21 @@ jQuery.prototype.prevAll = function(selector) {};
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.prevUntil = function(arg1, filter) {};
+jQuery.prototype.prevUntil = function( arg1, filter ) {};
 
 /**
  * @param {(string|Object)=} type
  * @param {Object=} target
  * @return {jQuery.Promise}
  */
-jQuery.prototype.promise = function(type, target) {};
+jQuery.prototype.promise = function( type, target ) {};
 
 /**
  * @interface
  * @private
  * @see http://api.jquery.com/Types/#Promise
  */
-jQuery.Promise = function () {};
+jQuery.Promise = function() {};
 
 /**
  * @param {jQueryCallback} alwaysCallbacks
@@ -1922,19 +1919,19 @@ jQuery.Promise = function () {};
  * @return {jQuery.Promise}
  */
 jQuery.Promise.prototype.always =
-    function(alwaysCallbacks, alwaysCallbacks2) {};
+    function( alwaysCallbacks, alwaysCallbacks2 ) {};
 
 /**
  * @param {jQueryCallback} doneCallbacks
  * @return {jQuery.Promise}
  */
-jQuery.Promise.prototype.done = function(doneCallbacks) {};
+jQuery.Promise.prototype.done = function( doneCallbacks ) {};
 
 /**
  * @param {jQueryCallback} failCallbacks
  * @return {jQuery.Promise}
  */
-jQuery.Promise.prototype.fail = function(failCallbacks) {};
+jQuery.Promise.prototype.fail = function( failCallbacks ) {};
 
 /**
  * @param {function()=} doneFilter
@@ -1943,7 +1940,7 @@ jQuery.Promise.prototype.fail = function(failCallbacks) {};
  * @return {jQuery.Promise}
  */
 jQuery.Promise.prototype.pipe =
-    function(doneFilter, failFilter, progressFilter) {};
+    function( doneFilter, failFilter, progressFilter ) {};
 
 /**
  * @param {jQueryCallback} doneCallbacks
@@ -1952,26 +1949,26 @@ jQuery.Promise.prototype.pipe =
  * @return {jQuery.Promise}
  */
 jQuery.Promise.prototype.then =
-    function(doneCallbacks, failCallbacks, progressCallbacks) {};
+    function( doneCallbacks, failCallbacks, progressCallbacks ) {};
 
 /**
  * @param {(string|Object.<string,*>)} arg1
  * @param {(string|number|boolean|function(number,String))=} arg2
  * @return {(string|!jQuery)}
  */
-jQuery.prototype.prop = function(arg1, arg2) {};
+jQuery.prototype.prop = function( arg1, arg2 ) {};
 
 /**
  * @param {...*} var_args
  * @return {function()}
  */
-jQuery.proxy = function(var_args) {};
+jQuery.proxy = function( var_args ) {};
 
 /**
  * @param {...*} var_args
  * @return {function()}
  */
-$.proxy = function(var_args) {};
+$.proxy = function( var_args ) {};
 
 /**
  * @param {Array.<Element>} elements
@@ -1979,14 +1976,14 @@ $.proxy = function(var_args) {};
  * @param {Array.<*>=} args
  * @return {!jQuery}
  */
-jQuery.prototype.pushStack = function(elements, name, args) {};
+jQuery.prototype.pushStack = function( elements, name, args ) {};
 
 /**
  * @param {(string|Array.<function()>|function(function()))=} queueName
  * @param {(Array.<function()>|function(function()))=} arg2
  * @return {(Array.<Element>|!jQuery)}
  */
-jQuery.prototype.queue = function(queueName, arg2) {};
+jQuery.prototype.queue = function( queueName, arg2 ) {};
 
 /**
  * @param {Element} elem
@@ -1994,7 +1991,7 @@ jQuery.prototype.queue = function(queueName, arg2) {};
  * @param {(Array.<function()>|function())=} arg3
  * @return {(Array.<Element>|!jQuery)}
  */
-jQuery.queue = function(elem, queueName, arg3) {};
+jQuery.queue = function( elem, queueName, arg3 ) {};
 
 /**
  * @param {Element} elem
@@ -2002,102 +1999,102 @@ jQuery.queue = function(elem, queueName, arg3) {};
  * @param {(Array.<function()>|function())=} arg3
  * @return {(Array.<Element>|!jQuery)}
  */
-$.queue = function(elem, queueName, arg3) {};
+$.queue = function( elem, queueName, arg3 ) {};
 
 /**
  * @param {function()} handler
  * @return {!jQuery}
  */
-jQuery.prototype.ready = function(handler) {};
+jQuery.prototype.ready = function( handler ) {};
 
 /**
  * @param {string=} selector
  * @return {!jQuery}
  */
-jQuery.prototype.remove = function(selector) {};
+jQuery.prototype.remove = function( selector ) {};
 
 /**
  * @param {string} attributeName
  * @return {!jQuery}
  */
-jQuery.prototype.removeAttr = function(attributeName) {};
+jQuery.prototype.removeAttr = function( attributeName ) {};
 
 /**
  * @param {(string|function(number,string))=} arg1
  * @return {!jQuery}
  */
-jQuery.prototype.removeClass = function(arg1) {};
+jQuery.prototype.removeClass = function( arg1 ) {};
 
 /**
  * @param {(string|Array.<string>)=} arg1
  * @return {!jQuery}
  */
-jQuery.prototype.removeData = function(arg1) {};
+jQuery.prototype.removeData = function( arg1 ) {};
 
 /**
  * @param {Element} elem
  * @param {string=} name
  * @return {!jQuery}
  */
-jQuery.removeData = function(elem, name) {};
+jQuery.removeData = function( elem, name ) {};
 
 /**
  * @param {Element} elem
  * @param {string=} name
  * @return {!jQuery}
  */
-$.removeData = function(elem, name) {};
+$.removeData = function( elem, name ) {};
 
 /**
  * @param {string} propertyName
  * @return {!jQuery}
  */
-jQuery.prototype.removeProp = function(propertyName) {};
+jQuery.prototype.removeProp = function( propertyName ) {};
 
 /**
  * @param {jQuerySelector} target
  * @return {!jQuery}
  */
-jQuery.prototype.replaceAll = function(target) {};
+jQuery.prototype.replaceAll = function( target ) {};
 
 /**
  * @param {(string|Element|jQuery|function())} arg1
  * @return {!jQuery}
  */
-jQuery.prototype.replaceWith = function(arg1) {};
+jQuery.prototype.replaceWith = function( arg1 ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.resize = function(arg1, handler) {};
+jQuery.prototype.resize = function( arg1, handler ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.scroll = function(arg1, handler) {};
+jQuery.prototype.scroll = function( arg1, handler ) {};
 
 /**
  * @param {number=} value
  * @return {(number|!jQuery)}
  */
-jQuery.prototype.scrollLeft = function(value) {};
+jQuery.prototype.scrollLeft = function( value ) {};
 
 /**
  * @param {number=} value
  * @return {(number|!jQuery)}
  */
-jQuery.prototype.scrollTop = function(value) {};
+jQuery.prototype.scrollTop = function( value ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.select = function(arg1, handler) {};
+jQuery.prototype.select = function( arg1, handler ) {};
 
 /**
  * @return {string}
@@ -2117,14 +2114,14 @@ jQuery.prototype.serializeArray = function() {};
  * @param {function()=} callback
  * @return {!jQuery}
  */
-jQuery.prototype.show = function(duration, arg2, callback) {};
+jQuery.prototype.show = function( duration, arg2, callback ) {};
 
 /**
  * @param {jQuerySelector=} selector
  * @return {!jQuery}
  * @nosideeffects
  */
-jQuery.prototype.siblings = function(selector) {};
+jQuery.prototype.siblings = function( selector ) {};
 
 /**
  * @deprecated
@@ -2138,7 +2135,7 @@ jQuery.prototype.size = function() {};
  * @param {number=} end
  * @return {!jQuery}
  */
-jQuery.prototype.slice = function(start, end) {};
+jQuery.prototype.slice = function( start, end ) {};
 
 /**
  * @param {(string|number|function())=} duration
@@ -2146,7 +2143,7 @@ jQuery.prototype.slice = function(start, end) {};
  * @param {function()=} callback
  * @return {!jQuery}
  */
-jQuery.prototype.slideDown = function(duration, arg2, callback) {};
+jQuery.prototype.slideDown = function( duration, arg2, callback ) {};
 
 /**
  * @param {(string|number|function())=} duration
@@ -2154,7 +2151,7 @@ jQuery.prototype.slideDown = function(duration, arg2, callback) {};
  * @param {function()=} callback
  * @return {!jQuery}
  */
-jQuery.prototype.slideToggle = function(duration, arg2, callback) {};
+jQuery.prototype.slideToggle = function( duration, arg2, callback ) {};
 
 /**
  * @param {(string|number|function())=} duration
@@ -2162,7 +2159,7 @@ jQuery.prototype.slideToggle = function(duration, arg2, callback) {};
  * @param {function()=} callback
  * @return {!jQuery}
  */
-jQuery.prototype.slideUp = function(duration, arg2, callback) {};
+jQuery.prototype.slideUp = function( duration, arg2, callback ) {};
 
 /**
  * @param {(boolean|string)=} arg1
@@ -2170,14 +2167,14 @@ jQuery.prototype.slideUp = function(duration, arg2, callback) {};
  * @param {boolean=} jumpToEnd
  * @return {!jQuery}
  */
-jQuery.prototype.stop = function(arg1, arg2, jumpToEnd) {};
+jQuery.prototype.stop = function( arg1, arg2, jumpToEnd ) {};
 
 /**
  * @param {(function(!jQuery.event=)|Object.<string, *>)=} arg1
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.submit = function(arg1, handler) {};
+jQuery.prototype.submit = function( arg1, handler ) {};
 
 /** @type {Object.<string, *>} */
 jQuery.support;
@@ -2267,7 +2264,7 @@ $.support.tbody;
  * @param {(string|function(number,string))=} arg1
  * @return {(string|!jQuery)}
  */
-jQuery.prototype.text = function(arg1) {};
+jQuery.prototype.text = function( arg1 ) {};
 
 /**
  * @return {Array.<Element>}
@@ -2283,63 +2280,63 @@ jQuery.prototype.toArray = function() {};
  * @param {function()=} arg3
  * @return {!jQuery}
  */
-jQuery.prototype.toggle = function(arg1, arg2, arg3) {};
+jQuery.prototype.toggle = function( arg1, arg2, arg3 ) {};
 
 /**
  * @param {(string|boolean|function(number,string,boolean))=} arg1
  * @param {boolean=} flag
  * @return {!jQuery}
  */
-jQuery.prototype.toggleClass = function(arg1, flag) {};
+jQuery.prototype.toggleClass = function( arg1, flag ) {};
 
 /**
  * @param {(string|jQuery.event)} arg1
  * @param {...*} var_args
  * @return {!jQuery}
  */
-jQuery.prototype.trigger = function(arg1, var_args) {};
+jQuery.prototype.trigger = function( arg1, var_args ) {};
 
 /**
  * @param {string} eventType
  * @param {Array.<*>=} extraParameters
  * @return {*}
  */
-jQuery.prototype.triggerHandler = function(eventType, extraParameters) {};
+jQuery.prototype.triggerHandler = function( eventType, extraParameters ) {};
 
 /**
  * @param {string} str
  * @return {string}
  * @nosideeffects
  */
-jQuery.trim = function(str) {};
+jQuery.trim = function( str ) {};
 
 /**
  * @param {string} str
  * @return {string}
  * @nosideeffects
  */
-$.trim = function(str) {};
+$.trim = function( str ) {};
 
 /**
  * @param {*} obj
  * @return {string}
  * @nosideeffects
  */
-jQuery.type = function(obj) {};
+jQuery.type = function( obj ) {};
 
 /**
  * @param {*} obj
  * @return {string}
  * @nosideeffects
  */
-$.type = function(obj) {};
+$.type = function( obj ) {};
 
 /**
  * @param {(string|function(!jQuery.event=)|jQuery.event)=} arg1
  * @param {(function(!jQuery.event=)|boolean)=} arg2
  * @return {!jQuery}
  */
-jQuery.prototype.unbind = function(arg1, arg2) {};
+jQuery.prototype.unbind = function( arg1, arg2 ) {};
 
 /**
  * @param {string=} arg1
@@ -2347,19 +2344,19 @@ jQuery.prototype.unbind = function(arg1, arg2) {};
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.undelegate = function(arg1, arg2, handler) {};
+jQuery.prototype.undelegate = function( arg1, arg2, handler ) {};
 
 /**
  * @param {Array.<Element>} arr
  * @return {Array.<Element>}
  */
-jQuery.unique = function(arr) {};
+jQuery.unique = function( arr ) {};
 
 /**
  * @param {Array.<Element>} arr
  * @return {Array.<Element>}
  */
-$.unique = function(arr) {};
+$.unique = function( arr ) {};
 
 /**
  * @deprecated
@@ -2367,7 +2364,7 @@ $.unique = function(arr) {};
  * @param {function(!jQuery.event=)=} handler
  * @return {!jQuery}
  */
-jQuery.prototype.unload = function(arg1, handler) {};
+jQuery.prototype.unload = function( arg1, handler ) {};
 
 /** @return {!jQuery} */
 jQuery.prototype.unwrap = function() {};
@@ -2376,45 +2373,45 @@ jQuery.prototype.unwrap = function() {};
  * @param {(string|Array.<string>|function(number,*))=} arg1
  * @return {(string|number|Array.<string>|!jQuery)}
  */
-jQuery.prototype.val = function(arg1) {};
+jQuery.prototype.val = function( arg1 ) {};
 
 /**
  * @param {jQuery.deferred} deferred
  * @param {...jQuery.deferred} deferreds
  * @return {jQuery.Promise}
  */
-jQuery.when = function(deferred, deferreds) {};
+jQuery.when = function( deferred, deferreds ) {};
 
 /**
  * @param {jQuery.deferred} deferred
  * @param {...jQuery.deferred} deferreds
  * @return {jQuery.Promise}
  */
-$.when = function(deferred, deferreds) {};
+$.when = function( deferred, deferreds ) {};
 
 /**
  * @param {(string|number|function(number,number))=} arg1
  * @return {(number|!jQuery)}
  */
-jQuery.prototype.width = function(arg1) {};
+jQuery.prototype.width = function( arg1 ) {};
 
 /**
  * @param {(string|jQuerySelector|Element|jQuery|function(number))} arg1
  * @return {!jQuery}
  */
-jQuery.prototype.wrap = function(arg1) {};
+jQuery.prototype.wrap = function( arg1 ) {};
 
 /**
  * @param {(string|jQuerySelector|Element|jQuery)} wrappingElement
  * @return {!jQuery}
  */
-jQuery.prototype.wrapAll = function(wrappingElement) {};
+jQuery.prototype.wrapAll = function( wrappingElement ) {};
 
 /**
  * @param {(string|function(number))} arg1
  * @return {!jQuery}
  */
-jQuery.prototype.wrapInner = function(arg1) {};
+jQuery.prototype.wrapInner = function( arg1 ) {};
 
 //********************************************
 //****** JQuery addons & UI stuff used in app: ********
@@ -2423,22 +2420,22 @@ jQuery.prototype.wrapInner = function(arg1) {};
 /**
  * @param {Object} obj
  **/
-jQuery.prototype.ajaxForm = function(obj){};
+jQuery.prototype.ajaxForm = function( obj ) {};
 
 /** 
  * @param {Object.<string, (string|boolean)>} options
  */
-jQuery.prototype.datepicker = function (options){};
+jQuery.prototype.datepicker = function( options ) {};
 /** 
  * @param {Object.<string, (string|boolean)>} options
  **/
-jQuery.prototype.timepicker = function (options){};
+jQuery.prototype.timepicker = function( options ) {};
 /** @type {Object.<string, (string|boolean)>} */
 jQuery.prototype.datetimepicker = {};
 /** 
  *  @param {Object} obj
  * */
-jQuery.prototype.multiselect = function(obj){};
+jQuery.prototype.multiselect = function( obj ) {};
 
 
 /*
@@ -2469,8 +2466,8 @@ google.maps = {};
  * @enum {number|string}
  */
 google.maps.Animation = {
-  BOUNCE: '',
-  DROP: ''
+    BOUNCE: '',
+    DROP: ''
 };
 
 /**
@@ -2489,14 +2486,14 @@ google.maps.BicyclingLayer.prototype.getMap = function() {};
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.BicyclingLayer.prototype.setMap = function(map) {};
+google.maps.BicyclingLayer.prototype.setMap = function( map ) {};
 
 /**
  * @param {(google.maps.CircleOptions|Object.<string>)=} opt_opts
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.Circle = function(opt_opts) {};
+google.maps.Circle = function( opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -2538,37 +2535,37 @@ google.maps.Circle.prototype.getVisible = function() {};
  * @param {google.maps.LatLng} center
  * @return {undefined}
  */
-google.maps.Circle.prototype.setCenter = function(center) {};
+google.maps.Circle.prototype.setCenter = function( center ) {};
 
 /**
  * @param {boolean} editable
  * @return {undefined}
  */
-google.maps.Circle.prototype.setEditable = function(editable) {};
+google.maps.Circle.prototype.setEditable = function( editable ) {};
 
 /**
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.Circle.prototype.setMap = function(map) {};
+google.maps.Circle.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.CircleOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.Circle.prototype.setOptions = function(options) {};
+google.maps.Circle.prototype.setOptions = function( options ) {};
 
 /**
  * @param {number} radius
  * @return {undefined}
  */
-google.maps.Circle.prototype.setRadius = function(radius) {};
+google.maps.Circle.prototype.setRadius = function( radius ) {};
 
 /**
  * @param {boolean} visible
  * @return {undefined}
  */
-google.maps.Circle.prototype.setVisible = function(visible) {};
+google.maps.Circle.prototype.setVisible = function( visible ) {};
 
 /**
  * @constructor
@@ -2644,18 +2641,18 @@ google.maps.CircleOptions.prototype.zIndex;
  * @enum {number|string}
  */
 google.maps.ControlPosition = {
-  BOTTOM_CENTER: '',
-  BOTTOM_LEFT: '',
-  BOTTOM_RIGHT: '',
-  LEFT_BOTTOM: '',
-  LEFT_CENTER: '',
-  LEFT_TOP: '',
-  RIGHT_BOTTOM: '',
-  RIGHT_CENTER: '',
-  RIGHT_TOP: '',
-  TOP_CENTER: '',
-  TOP_LEFT: '',
-  TOP_RIGHT: ''
+    BOTTOM_CENTER: '',
+    BOTTOM_LEFT: '',
+    BOTTOM_RIGHT: '',
+    LEFT_BOTTOM: '',
+    LEFT_CENTER: '',
+    LEFT_TOP: '',
+    RIGHT_BOTTOM: '',
+    RIGHT_CENTER: '',
+    RIGHT_TOP: '',
+    TOP_CENTER: '',
+    TOP_LEFT: '',
+    TOP_RIGHT: ''
 };
 
 /**
@@ -2718,7 +2715,7 @@ google.maps.DirectionsLeg.prototype.via_waypoints;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.DirectionsRenderer = function(opt_opts) {};
+google.maps.DirectionsRenderer = function( opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -2748,31 +2745,31 @@ google.maps.DirectionsRenderer.prototype.getRouteIndex = function() {};
  * @param {google.maps.DirectionsResult} directions
  * @return {undefined}
  */
-google.maps.DirectionsRenderer.prototype.setDirections = function(directions) {};
+google.maps.DirectionsRenderer.prototype.setDirections = function( directions ) {};
 
 /**
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.DirectionsRenderer.prototype.setMap = function(map) {};
+google.maps.DirectionsRenderer.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.DirectionsRendererOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.DirectionsRenderer.prototype.setOptions = function(options) {};
+google.maps.DirectionsRenderer.prototype.setOptions = function( options ) {};
 
 /**
  * @param {Node} panel
  * @return {undefined}
  */
-google.maps.DirectionsRenderer.prototype.setPanel = function(panel) {};
+google.maps.DirectionsRenderer.prototype.setPanel = function( panel ) {};
 
 /**
  * @param {number} routeIndex
  * @return {undefined}
  */
-google.maps.DirectionsRenderer.prototype.setRouteIndex = function(routeIndex) {};
+google.maps.DirectionsRenderer.prototype.setRouteIndex = function( routeIndex ) {};
 
 /**
  * @constructor
@@ -2964,20 +2961,20 @@ google.maps.DirectionsService = function() {};
  * @param {function(google.maps.DirectionsResult, google.maps.DirectionsStatus)} callback
  * @return {undefined}
  */
-google.maps.DirectionsService.prototype.route = function(request, callback) {};
+google.maps.DirectionsService.prototype.route = function( request, callback ) {};
 
 /**
  * @enum {number|string}
  */
 google.maps.DirectionsStatus = {
-  INVALID_REQUEST: '',
-  MAX_WAYPOINTS_EXCEEDED: '',
-  NOT_FOUND: '',
-  OK: '',
-  OVER_QUERY_LIMIT: '',
-  REQUEST_DENIED: '',
-  UNKNOWN_ERROR: '',
-  ZERO_RESULTS: ''
+    INVALID_REQUEST: '',
+    MAX_WAYPOINTS_EXCEEDED: '',
+    NOT_FOUND: '',
+    OK: '',
+    OVER_QUERY_LIMIT: '',
+    REQUEST_DENIED: '',
+    UNKNOWN_ERROR: '',
+    ZERO_RESULTS: ''
 };
 
 /**
@@ -3064,9 +3061,9 @@ google.maps.Distance.prototype.value;
  * @enum {number|string}
  */
 google.maps.DistanceMatrixElementStatus = {
-  NOT_FOUND: '',
-  OK: '',
-  ZERO_RESULTS: ''
+    NOT_FOUND: '',
+    OK: '',
+    ZERO_RESULTS: ''
 };
 
 /**
@@ -3169,19 +3166,19 @@ google.maps.DistanceMatrixService = function() {};
  * @param {function(google.maps.DistanceMatrixResponse, google.maps.DistanceMatrixStatus)} callback
  * @return {undefined}
  */
-google.maps.DistanceMatrixService.prototype.getDistanceMatrix = function(request, callback) {};
+google.maps.DistanceMatrixService.prototype.getDistanceMatrix = function( request, callback ) {};
 
 /**
  * @enum {number|string}
  */
 google.maps.DistanceMatrixStatus = {
-  INVALID_REQUEST: '',
-  MAX_DIMENSIONS_EXCEEDED: '',
-  MAX_ELEMENTS_EXCEEDED: '',
-  OK: '',
-  OVER_QUERY_LIMIT: '',
-  REQUEST_DENIED: '',
-  UNKNOWN_ERROR: ''
+    INVALID_REQUEST: '',
+    MAX_DIMENSIONS_EXCEEDED: '',
+    MAX_ELEMENTS_EXCEEDED: '',
+    OK: '',
+    OVER_QUERY_LIMIT: '',
+    REQUEST_DENIED: '',
+    UNKNOWN_ERROR: ''
 };
 
 /**
@@ -3229,24 +3226,24 @@ google.maps.ElevationService = function() {};
  * @param {function(Array.<google.maps.ElevationResult>, google.maps.ElevationStatus)} callback
  * @return {undefined}
  */
-google.maps.ElevationService.prototype.getElevationAlongPath = function(request, callback) {};
+google.maps.ElevationService.prototype.getElevationAlongPath = function( request, callback ) {};
 
 /**
  * @param {google.maps.LocationElevationRequest|Object.<string>} request
  * @param {function(Array.<google.maps.ElevationResult>, google.maps.ElevationStatus)} callback
  * @return {undefined}
  */
-google.maps.ElevationService.prototype.getElevationForLocations = function(request, callback) {};
+google.maps.ElevationService.prototype.getElevationForLocations = function( request, callback ) {};
 
 /**
  * @enum {number|string}
  */
 google.maps.ElevationStatus = {
-  INVALID_REQUEST: '',
-  OK: '',
-  OVER_QUERY_LIMIT: '',
-  REQUEST_DENIED: '',
-  UNKNOWN_ERROR: ''
+    INVALID_REQUEST: '',
+    OK: '',
+    OVER_QUERY_LIMIT: '',
+    REQUEST_DENIED: '',
+    UNKNOWN_ERROR: ''
 };
 
 /**
@@ -3279,7 +3276,7 @@ google.maps.FusionTablesHeatmap.prototype.enabled;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.FusionTablesLayer = function(options) {};
+google.maps.FusionTablesLayer = function( options ) {};
 
 /**
  * @nosideeffects
@@ -3291,13 +3288,13 @@ google.maps.FusionTablesLayer.prototype.getMap = function() {};
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.FusionTablesLayer.prototype.setMap = function(map) {};
+google.maps.FusionTablesLayer.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.FusionTablesLayerOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.FusionTablesLayer.prototype.setOptions = function(options) {};
+google.maps.FusionTablesLayer.prototype.setOptions = function( options ) {};
 
 /**
  * @constructor
@@ -3489,7 +3486,7 @@ google.maps.Geocoder = function() {};
  * @param {function(Array.<google.maps.GeocoderResult>, google.maps.GeocoderStatus)} callback
  * @return {undefined}
  */
-google.maps.Geocoder.prototype.geocode = function(request, callback) {};
+google.maps.Geocoder.prototype.geocode = function( request, callback ) {};
 
 /**
  * @constructor
@@ -3540,10 +3537,10 @@ google.maps.GeocoderGeometry.prototype.viewport;
  * @enum {number|string}
  */
 google.maps.GeocoderLocationType = {
-  APPROXIMATE: '',
-  GEOMETRIC_CENTER: '',
-  RANGE_INTERPOLATED: '',
-  ROOFTOP: ''
+    APPROXIMATE: '',
+    GEOMETRIC_CENTER: '',
+    RANGE_INTERPOLATED: '',
+    ROOFTOP: ''
 };
 
 /**
@@ -3600,13 +3597,13 @@ google.maps.GeocoderResult.prototype.types;
  * @enum {number|string}
  */
 google.maps.GeocoderStatus = {
-  ERROR: '',
-  INVALID_REQUEST: '',
-  OK: '',
-  OVER_QUERY_LIMIT: '',
-  REQUEST_DENIED: '',
-  UNKNOWN_ERROR: '',
-  ZERO_RESULTS: ''
+    ERROR: '',
+    INVALID_REQUEST: '',
+    OK: '',
+    OVER_QUERY_LIMIT: '',
+    REQUEST_DENIED: '',
+    UNKNOWN_ERROR: '',
+    ZERO_RESULTS: ''
 };
 
 /**
@@ -3616,7 +3613,7 @@ google.maps.GeocoderStatus = {
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.GroundOverlay = function(url, bounds, opt_opts) {};
+google.maps.GroundOverlay = function( url, bounds, opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -3646,13 +3643,13 @@ google.maps.GroundOverlay.prototype.getUrl = function() {};
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.GroundOverlay.prototype.setMap = function(map) {};
+google.maps.GroundOverlay.prototype.setMap = function( map ) {};
 
 /**
  * @param {number} opacity
  * @return {undefined}
  */
-google.maps.GroundOverlay.prototype.setOpacity = function(opacity) {};
+google.maps.GroundOverlay.prototype.setOpacity = function( opacity ) {};
 
 /**
  * @constructor
@@ -3699,7 +3696,7 @@ google.maps.IconSequence.prototype.repeat;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.ImageMapType = function(opts) {};
+google.maps.ImageMapType = function( opts ) {};
 
 /**
  * @nosideeffects
@@ -3711,7 +3708,7 @@ google.maps.ImageMapType.prototype.getOpacity = function() {};
  * @param {number} opacity
  * @return {undefined}
  */
-google.maps.ImageMapType.prototype.setOpacity = function(opacity) {};
+google.maps.ImageMapType.prototype.setOpacity = function( opacity ) {};
 
 /**
  * @constructor
@@ -3758,7 +3755,7 @@ google.maps.ImageMapTypeOptions.prototype.tileSize;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.InfoWindow = function(opt_opts) {};
+google.maps.InfoWindow = function( opt_opts ) {};
 
 /**
  * @return {undefined}
@@ -3788,31 +3785,31 @@ google.maps.InfoWindow.prototype.getZIndex = function() {};
  * @param {google.maps.MVCObject=} opt_anchor
  * @return {undefined}
  */
-google.maps.InfoWindow.prototype.open = function(opt_map, opt_anchor) {};
+google.maps.InfoWindow.prototype.open = function( opt_map, opt_anchor ) {};
 
 /**
  * @param {string|Node} content
  * @return {undefined}
  */
-google.maps.InfoWindow.prototype.setContent = function(content) {};
+google.maps.InfoWindow.prototype.setContent = function( content ) {};
 
 /**
  * @param {google.maps.InfoWindowOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.InfoWindow.prototype.setOptions = function(options) {};
+google.maps.InfoWindow.prototype.setOptions = function( options ) {};
 
 /**
  * @param {google.maps.LatLng} position
  * @return {undefined}
  */
-google.maps.InfoWindow.prototype.setPosition = function(position) {};
+google.maps.InfoWindow.prototype.setPosition = function( position ) {};
 
 /**
  * @param {number} zIndex
  * @return {undefined}
  */
-google.maps.InfoWindow.prototype.setZIndex = function(zIndex) {};
+google.maps.InfoWindow.prototype.setZIndex = function( zIndex ) {};
 
 /**
  * @constructor
@@ -3909,7 +3906,7 @@ google.maps.KmlFeatureData.prototype.snippet;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.KmlLayer = function(opt_opts) {};
+google.maps.KmlLayer = function( opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -3945,13 +3942,13 @@ google.maps.KmlLayer.prototype.getUrl = function() {};
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.KmlLayer.prototype.setMap = function(map) {};
+google.maps.KmlLayer.prototype.setMap = function( map ) {};
 
 /**
  * @param {string} url
  * @return {undefined}
  */
-google.maps.KmlLayer.prototype.setUrl = function(url) {};
+google.maps.KmlLayer.prototype.setUrl = function( url ) {};
 
 /**
  * @constructor
@@ -4012,15 +4009,15 @@ google.maps.KmlLayerOptions.prototype.url;
  * @enum {number|string}
  */
 google.maps.KmlLayerStatus = {
-  DOCUMENT_NOT_FOUND: '',
-  DOCUMENT_TOO_LARGE: '',
-  FETCH_ERROR: '',
-  INVALID_DOCUMENT: '',
-  INVALID_REQUEST: '',
-  LIMITS_EXCEEDED: '',
-  OK: '',
-  TIMED_OUT: '',
-  UNKNOWN: ''
+    DOCUMENT_NOT_FOUND: '',
+    DOCUMENT_TOO_LARGE: '',
+    FETCH_ERROR: '',
+    INVALID_DOCUMENT: '',
+    INVALID_REQUEST: '',
+    LIMITS_EXCEEDED: '',
+    OK: '',
+    TIMED_OUT: '',
+    UNKNOWN: ''
 };
 
 /**
@@ -4049,13 +4046,13 @@ google.maps.KmlMouseEvent.prototype.pixelOffset;
  * @param {boolean=} opt_noWrap
  * @constructor
  */
-google.maps.LatLng = function(lat, lng, opt_noWrap) {};
+google.maps.LatLng = function( lat, lng, opt_noWrap ) {};
 
 /**
  * @param {google.maps.LatLng} other
  * @return {boolean}
  */
-google.maps.LatLng.prototype.equals = function(other) {};
+google.maps.LatLng.prototype.equals = function( other ) {};
 
 /**
  * @return {number}
@@ -4076,32 +4073,32 @@ google.maps.LatLng.prototype.toString = function() {};
  * @param {number=} opt_precision
  * @return {string}
  */
-google.maps.LatLng.prototype.toUrlValue = function(opt_precision) {};
+google.maps.LatLng.prototype.toUrlValue = function( opt_precision ) {};
 
 /**
  * @param {google.maps.LatLng=} opt_sw
  * @param {google.maps.LatLng=} opt_ne
  * @constructor
  */
-google.maps.LatLngBounds = function(opt_sw, opt_ne) {};
+google.maps.LatLngBounds = function( opt_sw, opt_ne ) {};
 
 /**
  * @param {google.maps.LatLng} latLng
  * @return {boolean}
  */
-google.maps.LatLngBounds.prototype.contains = function(latLng) {};
+google.maps.LatLngBounds.prototype.contains = function( latLng ) {};
 
 /**
  * @param {google.maps.LatLngBounds} other
  * @return {boolean}
  */
-google.maps.LatLngBounds.prototype.equals = function(other) {};
+google.maps.LatLngBounds.prototype.equals = function( other ) {};
 
 /**
  * @param {google.maps.LatLng} point
  * @return {google.maps.LatLngBounds}
  */
-google.maps.LatLngBounds.prototype.extend = function(point) {};
+google.maps.LatLngBounds.prototype.extend = function( point ) {};
 
 /**
  * @nosideeffects
@@ -4125,7 +4122,7 @@ google.maps.LatLngBounds.prototype.getSouthWest = function() {};
  * @param {google.maps.LatLngBounds} other
  * @return {boolean}
  */
-google.maps.LatLngBounds.prototype.intersects = function(other) {};
+google.maps.LatLngBounds.prototype.intersects = function( other ) {};
 
 /**
  * @return {boolean}
@@ -4146,13 +4143,13 @@ google.maps.LatLngBounds.prototype.toString = function() {};
  * @param {number=} opt_precision
  * @return {string}
  */
-google.maps.LatLngBounds.prototype.toUrlValue = function(opt_precision) {};
+google.maps.LatLngBounds.prototype.toUrlValue = function( opt_precision ) {};
 
 /**
  * @param {google.maps.LatLngBounds} other
  * @return {google.maps.LatLngBounds}
  */
-google.maps.LatLngBounds.prototype.union = function(other) {};
+google.maps.LatLngBounds.prototype.union = function( other ) {};
 
 /**
  * @constructor
@@ -4169,7 +4166,7 @@ google.maps.LocationElevationRequest.prototype.locations;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.MVCArray = function(opt_array) {};
+google.maps.MVCArray = function( opt_array ) {};
 
 /**
  * @return {undefined}
@@ -4180,7 +4177,7 @@ google.maps.MVCArray.prototype.clear = function() {};
  * @param {function(?, number)} callback
  * @return {undefined}
  */
-google.maps.MVCArray.prototype.forEach = function(callback) {};
+google.maps.MVCArray.prototype.forEach = function( callback ) {};
 
 /**
  * @nosideeffects
@@ -4192,7 +4189,7 @@ google.maps.MVCArray.prototype.getArray = function() {};
  * @param {number} i
  * @return {*}
  */
-google.maps.MVCArray.prototype.getAt = function(i) {};
+google.maps.MVCArray.prototype.getAt = function( i ) {};
 
 /**
  * @nosideeffects
@@ -4205,7 +4202,7 @@ google.maps.MVCArray.prototype.getLength = function() {};
  * @param {*} elem
  * @return {undefined}
  */
-google.maps.MVCArray.prototype.insertAt = function(i, elem) {};
+google.maps.MVCArray.prototype.insertAt = function( i, elem ) {};
 
 /**
  * @return {*}
@@ -4216,20 +4213,20 @@ google.maps.MVCArray.prototype.pop = function() {};
  * @param {*} elem
  * @return {number}
  */
-google.maps.MVCArray.prototype.push = function(elem) {};
+google.maps.MVCArray.prototype.push = function( elem ) {};
 
 /**
  * @param {number} i
  * @return {*}
  */
-google.maps.MVCArray.prototype.removeAt = function(i) {};
+google.maps.MVCArray.prototype.removeAt = function( i ) {};
 
 /**
  * @param {number} i
  * @param {*} elem
  * @return {undefined}
  */
-google.maps.MVCArray.prototype.setAt = function(i, elem) {};
+google.maps.MVCArray.prototype.setAt = function( i, elem ) {};
 
 /**
  * @constructor
@@ -4243,44 +4240,44 @@ google.maps.MVCObject = function() {};
  * @param {boolean=} opt_noNotify
  * @return {undefined}
  */
-google.maps.MVCObject.prototype.bindTo = function(key, target, opt_targetKey, opt_noNotify) {};
+google.maps.MVCObject.prototype.bindTo = function( key, target, opt_targetKey, opt_noNotify ) {};
 
 /**
  * @param {string} key
  * @return {undefined}
  */
-google.maps.MVCObject.prototype.changed = function(key) {};
+google.maps.MVCObject.prototype.changed = function( key ) {};
 
 /**
  * @param {string} key
  * @return {*}
  */
-google.maps.MVCObject.prototype.get = function(key) {};
+google.maps.MVCObject.prototype.get = function( key ) {};
 
 /**
  * @param {string} key
  * @return {undefined}
  */
-google.maps.MVCObject.prototype.notify = function(key) {};
+google.maps.MVCObject.prototype.notify = function( key ) {};
 
 /**
  * @param {string} key
  * @param {?} value
  * @return {undefined}
  */
-google.maps.MVCObject.prototype.set = function(key, value) {};
+google.maps.MVCObject.prototype.set = function( key, value ) {};
 
 /**
  * @param {Object|undefined} values
  * @return {undefined}
  */
-google.maps.MVCObject.prototype.setValues = function(values) {};
+google.maps.MVCObject.prototype.setValues = function( values ) {};
 
 /**
  * @param {string} key
  * @return {undefined}
  */
-google.maps.MVCObject.prototype.unbind = function(key) {};
+google.maps.MVCObject.prototype.unbind = function( key ) {};
 
 /**
  * @return {undefined}
@@ -4293,7 +4290,7 @@ google.maps.MVCObject.prototype.unbindAll = function() {};
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.Map = function(mapDiv, opt_opts) {};
+google.maps.Map = function( mapDiv, opt_opts ) {};
 
 /**
  * @type {Array.<google.maps.MVCArray.<Node>>}
@@ -4314,7 +4311,7 @@ google.maps.Map.prototype.overlayMapTypes;
  * @param {google.maps.LatLngBounds} bounds
  * @return {undefined}
  */
-google.maps.Map.prototype.fitBounds = function(bounds) {};
+google.maps.Map.prototype.fitBounds = function( bounds ) {};
 
 /**
  * @nosideeffects
@@ -4375,61 +4372,61 @@ google.maps.Map.prototype.getZoom = function() {};
  * @param {number} y
  * @return {undefined}
  */
-google.maps.Map.prototype.panBy = function(x, y) {};
+google.maps.Map.prototype.panBy = function( x, y ) {};
 
 /**
  * @param {google.maps.LatLng} latLng
  * @return {undefined}
  */
-google.maps.Map.prototype.panTo = function(latLng) {};
+google.maps.Map.prototype.panTo = function( latLng ) {};
 
 /**
  * @param {google.maps.LatLngBounds} latLngBounds
  * @return {undefined}
  */
-google.maps.Map.prototype.panToBounds = function(latLngBounds) {};
+google.maps.Map.prototype.panToBounds = function( latLngBounds ) {};
 
 /**
  * @param {google.maps.LatLng} latlng
  * @return {undefined}
  */
-google.maps.Map.prototype.setCenter = function(latlng) {};
+google.maps.Map.prototype.setCenter = function( latlng ) {};
 
 /**
  * @param {number} heading
  * @return {undefined}
  */
-google.maps.Map.prototype.setHeading = function(heading) {};
+google.maps.Map.prototype.setHeading = function( heading ) {};
 
 /**
  * @param {google.maps.MapTypeId|string} mapTypeId
  * @return {undefined}
  */
-google.maps.Map.prototype.setMapTypeId = function(mapTypeId) {};
+google.maps.Map.prototype.setMapTypeId = function( mapTypeId ) {};
 
 /**
  * @param {google.maps.MapOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.Map.prototype.setOptions = function(options) {};
+google.maps.Map.prototype.setOptions = function( options ) {};
 
 /**
  * @param {google.maps.StreetViewPanorama} panorama
  * @return {undefined}
  */
-google.maps.Map.prototype.setStreetView = function(panorama) {};
+google.maps.Map.prototype.setStreetView = function( panorama ) {};
 
 /**
  * @param {number} tilt
  * @return {undefined}
  */
-google.maps.Map.prototype.setTilt = function(tilt) {};
+google.maps.Map.prototype.setTilt = function( tilt ) {};
 
 /**
  * @param {number} zoom
  * @return {undefined}
  */
-google.maps.Map.prototype.setZoom = function(zoom) {};
+google.maps.Map.prototype.setZoom = function( zoom ) {};
 
 /**
  * @extends {google.maps.MVCObject}
@@ -4442,26 +4439,26 @@ google.maps.MapCanvasProjection = function() {};
  * @param {boolean=} opt_nowrap
  * @return {google.maps.LatLng}
  */
-google.maps.MapCanvasProjection.prototype.fromContainerPixelToLatLng = function(pixel, opt_nowrap) {};
+google.maps.MapCanvasProjection.prototype.fromContainerPixelToLatLng = function( pixel, opt_nowrap ) {};
 
 /**
  * @param {google.maps.Point} pixel
  * @param {boolean=} opt_nowrap
  * @return {google.maps.LatLng}
  */
-google.maps.MapCanvasProjection.prototype.fromDivPixelToLatLng = function(pixel, opt_nowrap) {};
+google.maps.MapCanvasProjection.prototype.fromDivPixelToLatLng = function( pixel, opt_nowrap ) {};
 
 /**
  * @param {google.maps.LatLng} latLng
  * @return {google.maps.Point}
  */
-google.maps.MapCanvasProjection.prototype.fromLatLngToContainerPixel = function(latLng) {};
+google.maps.MapCanvasProjection.prototype.fromLatLngToContainerPixel = function( latLng ) {};
 
 /**
  * @param {google.maps.LatLng} latLng
  * @return {google.maps.Point}
  */
-google.maps.MapCanvasProjection.prototype.fromLatLngToDivPixel = function(latLng) {};
+google.maps.MapCanvasProjection.prototype.fromLatLngToDivPixel = function( latLng ) {};
 
 /**
  * @nosideeffects
@@ -4725,13 +4722,13 @@ google.maps.MapType.prototype.tileSize;
  * @param {Document} ownerDocument
  * @return {Node}
  */
-google.maps.MapType.prototype.getTile = function(tileCoord, zoom, ownerDocument) {};
+google.maps.MapType.prototype.getTile = function( tileCoord, zoom, ownerDocument ) {};
 
 /**
  * @param {Node} tile
  * @return {undefined}
  */
-google.maps.MapType.prototype.releaseTile = function(tile) {};
+google.maps.MapType.prototype.releaseTile = function( tile ) {};
 
 /**
  * @constructor
@@ -4757,19 +4754,19 @@ google.maps.MapTypeControlOptions.prototype.style;
  * @enum {number|string}
  */
 google.maps.MapTypeControlStyle = {
-  DEFAULT: '',
-  DROPDOWN_MENU: '',
-  HORIZONTAL_BAR: ''
+    DEFAULT: '',
+    DROPDOWN_MENU: '',
+    HORIZONTAL_BAR: ''
 };
 
 /**
  * @enum {number|string}
  */
 google.maps.MapTypeId = {
-  HYBRID: '',
-  ROADMAP: '',
-  SATELLITE: '',
-  TERRAIN: ''
+    HYBRID: '',
+    ROADMAP: '',
+    SATELLITE: '',
+    TERRAIN: ''
 };
 
 /**
@@ -4784,7 +4781,7 @@ google.maps.MapTypeRegistry = function() {};
  * @return {undefined}
  * @override
  */
-google.maps.MapTypeRegistry.prototype.set = function(id, mapType) {};
+google.maps.MapTypeRegistry.prototype.set = function( id, mapType ) {};
 
 /**
  * @constructor
@@ -4851,7 +4848,7 @@ google.maps.MapsEventListener = function() {};
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.Marker = function(opt_opts) {};
+google.maps.Marker = function( opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -4935,85 +4932,85 @@ google.maps.Marker.prototype.getZIndex = function() {};
  * @param {?google.maps.Animation} animation
  * @return {undefined}
  */
-google.maps.Marker.prototype.setAnimation = function(animation) {};
+google.maps.Marker.prototype.setAnimation = function( animation ) {};
 
 /**
  * @param {boolean} flag
  * @return {undefined}
  */
-google.maps.Marker.prototype.setClickable = function(flag) {};
+google.maps.Marker.prototype.setClickable = function( flag ) {};
 
 /**
  * @param {string} cursor
  * @return {undefined}
  */
-google.maps.Marker.prototype.setCursor = function(cursor) {};
+google.maps.Marker.prototype.setCursor = function( cursor ) {};
 
 /**
  * @param {?boolean} flag
  * @return {undefined}
  */
-google.maps.Marker.prototype.setDraggable = function(flag) {};
+google.maps.Marker.prototype.setDraggable = function( flag ) {};
 
 /**
  * @param {boolean} flag
  * @return {undefined}
  */
-google.maps.Marker.prototype.setFlat = function(flag) {};
+google.maps.Marker.prototype.setFlat = function( flag ) {};
 
 /**
  * @param {string|google.maps.MarkerImage} icon
  * @return {undefined}
  */
-google.maps.Marker.prototype.setIcon = function(icon) {};
+google.maps.Marker.prototype.setIcon = function( icon ) {};
 
 /**
  * @param {google.maps.Map|google.maps.StreetViewPanorama} map
  * @return {undefined}
  */
-google.maps.Marker.prototype.setMap = function(map) {};
+google.maps.Marker.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.MarkerOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.Marker.prototype.setOptions = function(options) {};
+google.maps.Marker.prototype.setOptions = function( options ) {};
 
 /**
  * @param {google.maps.LatLng} latlng
  * @return {undefined}
  */
-google.maps.Marker.prototype.setPosition = function(latlng) {};
+google.maps.Marker.prototype.setPosition = function( latlng ) {};
 
 /**
  * @param {string|google.maps.MarkerImage} shadow
  * @return {undefined}
  */
-google.maps.Marker.prototype.setShadow = function(shadow) {};
+google.maps.Marker.prototype.setShadow = function( shadow ) {};
 
 /**
  * @param {google.maps.MarkerShape} shape
  * @return {undefined}
  */
-google.maps.Marker.prototype.setShape = function(shape) {};
+google.maps.Marker.prototype.setShape = function( shape ) {};
 
 /**
  * @param {string} title
  * @return {undefined}
  */
-google.maps.Marker.prototype.setTitle = function(title) {};
+google.maps.Marker.prototype.setTitle = function( title ) {};
 
 /**
  * @param {boolean} visible
  * @return {undefined}
  */
-google.maps.Marker.prototype.setVisible = function(visible) {};
+google.maps.Marker.prototype.setVisible = function( visible ) {};
 
 /**
  * @param {number} zIndex
  * @return {undefined}
  */
-google.maps.Marker.prototype.setZIndex = function(zIndex) {};
+google.maps.Marker.prototype.setZIndex = function( zIndex ) {};
 
 /**
  * @constant
@@ -5029,7 +5026,7 @@ google.maps.Marker.MAX_ZINDEX;
  * @param {google.maps.Size=} opt_scaledSize
  * @constructor
  */
-google.maps.MarkerImage = function(url, opt_size, opt_origin, opt_anchor, opt_scaledSize) {};
+google.maps.MarkerImage = function( url, opt_size, opt_origin, opt_anchor, opt_scaledSize ) {};
 
 /**
  * @type {google.maps.Point}
@@ -5176,14 +5173,14 @@ google.maps.MaxZoomService = function() {};
  * @param {function(google.maps.MaxZoomResult)} callback
  * @return {undefined}
  */
-google.maps.MaxZoomService.prototype.getMaxZoomAtLatLng = function(latlng, callback) {};
+google.maps.MaxZoomService.prototype.getMaxZoomAtLatLng = function( latlng, callback ) {};
 
 /**
  * @enum {number|string}
  */
 google.maps.MaxZoomStatus = {
-  ERROR: '',
-  OK: ''
+    ERROR: '',
+    OK: ''
 };
 
 /**
@@ -5244,7 +5241,7 @@ google.maps.OverlayView.prototype.onRemove = function() {};
  * @param {google.maps.Map|google.maps.StreetViewPanorama} map
  * @return {undefined}
  */
-google.maps.OverlayView.prototype.setMap = function(map) {};
+google.maps.OverlayView.prototype.setMap = function( map ) {};
 
 /**
  * @constructor
@@ -5286,7 +5283,7 @@ google.maps.PathElevationRequest.prototype.samples;
  * @param {number} y
  * @constructor
  */
-google.maps.Point = function(x, y) {};
+google.maps.Point = function( x, y ) {};
 
 /**
  * @type {number}
@@ -5302,7 +5299,7 @@ google.maps.Point.prototype.y;
  * @param {google.maps.Point} other
  * @return {boolean}
  */
-google.maps.Point.prototype.equals = function(other) {};
+google.maps.Point.prototype.equals = function( other ) {};
 
 /**
  * @return {string}
@@ -5335,7 +5332,7 @@ google.maps.PolyMouseEvent.prototype.vertex;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.Polygon = function(opt_opts) {};
+google.maps.Polygon = function( opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -5371,37 +5368,37 @@ google.maps.Polygon.prototype.getVisible = function() {};
  * @param {boolean} editable
  * @return {undefined}
  */
-google.maps.Polygon.prototype.setEditable = function(editable) {};
+google.maps.Polygon.prototype.setEditable = function( editable ) {};
 
 /**
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.Polygon.prototype.setMap = function(map) {};
+google.maps.Polygon.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.PolygonOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.Polygon.prototype.setOptions = function(options) {};
+google.maps.Polygon.prototype.setOptions = function( options ) {};
 
 /**
  * @param {google.maps.MVCArray.<google.maps.LatLng>|Array.<google.maps.LatLng>} path
  * @return {undefined}
  */
-google.maps.Polygon.prototype.setPath = function(path) {};
+google.maps.Polygon.prototype.setPath = function( path ) {};
 
 /**
  * @param {google.maps.MVCArray.<google.maps.MVCArray.<google.maps.LatLng>>|google.maps.MVCArray.<google.maps.LatLng>|Array.<Array.<google.maps.LatLng>>|Array.<google.maps.LatLng>} paths
  * @return {undefined}
  */
-google.maps.Polygon.prototype.setPaths = function(paths) {};
+google.maps.Polygon.prototype.setPaths = function( paths ) {};
 
 /**
  * @param {boolean} visible
  * @return {undefined}
  */
-google.maps.Polygon.prototype.setVisible = function(visible) {};
+google.maps.Polygon.prototype.setVisible = function( visible ) {};
 
 /**
  * @constructor
@@ -5478,7 +5475,7 @@ google.maps.PolygonOptions.prototype.zIndex;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.Polyline = function(opt_opts) {};
+google.maps.Polyline = function( opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -5508,31 +5505,31 @@ google.maps.Polyline.prototype.getVisible = function() {};
  * @param {boolean} editable
  * @return {undefined}
  */
-google.maps.Polyline.prototype.setEditable = function(editable) {};
+google.maps.Polyline.prototype.setEditable = function( editable ) {};
 
 /**
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.Polyline.prototype.setMap = function(map) {};
+google.maps.Polyline.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.PolylineOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.Polyline.prototype.setOptions = function(options) {};
+google.maps.Polyline.prototype.setOptions = function( options ) {};
 
 /**
  * @param {google.maps.MVCArray.<google.maps.LatLng>|Array.<google.maps.LatLng>} path
  * @return {undefined}
  */
-google.maps.Polyline.prototype.setPath = function(path) {};
+google.maps.Polyline.prototype.setPath = function( path ) {};
 
 /**
  * @param {boolean} visible
  * @return {undefined}
  */
-google.maps.Polyline.prototype.setVisible = function(visible) {};
+google.maps.Polyline.prototype.setVisible = function( visible ) {};
 
 /**
  * @constructor
@@ -5604,21 +5601,21 @@ google.maps.Projection = function() {};
  * @param {google.maps.Point=} opt_point
  * @return {google.maps.Point}
  */
-google.maps.Projection.prototype.fromLatLngToPoint = function(latLng, opt_point) {};
+google.maps.Projection.prototype.fromLatLngToPoint = function( latLng, opt_point ) {};
 
 /**
  * @param {google.maps.Point} pixel
  * @param {boolean=} opt_nowrap
  * @return {google.maps.LatLng}
  */
-google.maps.Projection.prototype.fromPointToLatLng = function(pixel, opt_nowrap) {};
+google.maps.Projection.prototype.fromPointToLatLng = function( pixel, opt_nowrap ) {};
 
 /**
  * @param {(google.maps.RectangleOptions|Object.<string>)=} opt_opts
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.Rectangle = function(opt_opts) {};
+google.maps.Rectangle = function( opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -5648,31 +5645,31 @@ google.maps.Rectangle.prototype.getVisible = function() {};
  * @param {google.maps.LatLngBounds} bounds
  * @return {undefined}
  */
-google.maps.Rectangle.prototype.setBounds = function(bounds) {};
+google.maps.Rectangle.prototype.setBounds = function( bounds ) {};
 
 /**
  * @param {boolean} editable
  * @return {undefined}
  */
-google.maps.Rectangle.prototype.setEditable = function(editable) {};
+google.maps.Rectangle.prototype.setEditable = function( editable ) {};
 
 /**
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.Rectangle.prototype.setMap = function(map) {};
+google.maps.Rectangle.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.RectangleOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.Rectangle.prototype.setOptions = function(options) {};
+google.maps.Rectangle.prototype.setOptions = function( options ) {};
 
 /**
  * @param {boolean} visible
  * @return {undefined}
  */
-google.maps.Rectangle.prototype.setVisible = function(visible) {};
+google.maps.Rectangle.prototype.setVisible = function( visible ) {};
 
 /**
  * @constructor
@@ -5768,7 +5765,7 @@ google.maps.ScaleControlOptions.prototype.style;
  * @enum {number|string}
  */
 google.maps.ScaleControlStyle = {
-  DEFAULT: ''
+    DEFAULT: ''
 };
 
 /**
@@ -5778,7 +5775,7 @@ google.maps.ScaleControlStyle = {
  * @param {string=} opt_heightUnit
  * @constructor
  */
-google.maps.Size = function(width, height, opt_widthUnit, opt_heightUnit) {};
+google.maps.Size = function( width, height, opt_widthUnit, opt_heightUnit ) {};
 
 /**
  * @type {number}
@@ -5794,7 +5791,7 @@ google.maps.Size.prototype.width;
  * @param {google.maps.Size} other
  * @return {boolean}
  */
-google.maps.Size.prototype.equals = function(other) {};
+google.maps.Size.prototype.equals = function( other ) {};
 
 /**
  * @return {string}
@@ -5867,7 +5864,7 @@ google.maps.StreetViewLocation.prototype.pano;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.StreetViewPanorama = function(container, opt_opts) {};
+google.maps.StreetViewPanorama = function( container, opt_opts ) {};
 
 /**
  * @type {Array.<google.maps.MVCArray.<Node>>}
@@ -5908,31 +5905,31 @@ google.maps.StreetViewPanorama.prototype.getVisible = function() {};
  * @param {function(string):google.maps.StreetViewPanoramaData} provider
  * @return {undefined}
  */
-google.maps.StreetViewPanorama.prototype.registerPanoProvider = function(provider) {};
+google.maps.StreetViewPanorama.prototype.registerPanoProvider = function( provider ) {};
 
 /**
  * @param {string} pano
  * @return {undefined}
  */
-google.maps.StreetViewPanorama.prototype.setPano = function(pano) {};
+google.maps.StreetViewPanorama.prototype.setPano = function( pano ) {};
 
 /**
  * @param {google.maps.LatLng} latLng
  * @return {undefined}
  */
-google.maps.StreetViewPanorama.prototype.setPosition = function(latLng) {};
+google.maps.StreetViewPanorama.prototype.setPosition = function( latLng ) {};
 
 /**
  * @param {google.maps.StreetViewPov} pov
  * @return {undefined}
  */
-google.maps.StreetViewPanorama.prototype.setPov = function(pov) {};
+google.maps.StreetViewPanorama.prototype.setPov = function( pov ) {};
 
 /**
  * @param {boolean} flag
  * @return {undefined}
  */
-google.maps.StreetViewPanorama.prototype.setVisible = function(flag) {};
+google.maps.StreetViewPanorama.prototype.setVisible = function( flag ) {};
 
 /**
  * @constructor
@@ -6084,7 +6081,7 @@ google.maps.StreetViewService = function() {};
  * @param {function(google.maps.StreetViewPanoramaData, google.maps.StreetViewStatus)} callback
  * @return {undefined}
  */
-google.maps.StreetViewService.prototype.getPanoramaById = function(pano, callback) {};
+google.maps.StreetViewService.prototype.getPanoramaById = function( pano, callback ) {};
 
 /**
  * @param {google.maps.LatLng} latlng
@@ -6092,15 +6089,15 @@ google.maps.StreetViewService.prototype.getPanoramaById = function(pano, callbac
  * @param {function(google.maps.StreetViewPanoramaData, google.maps.StreetViewStatus)} callback
  * @return {undefined}
  */
-google.maps.StreetViewService.prototype.getPanoramaByLocation = function(latlng, radius, callback) {};
+google.maps.StreetViewService.prototype.getPanoramaByLocation = function( latlng, radius, callback ) {};
 
 /**
  * @enum {number|string}
  */
 google.maps.StreetViewStatus = {
-  OK: '',
-  UNKNOWN_ERROR: '',
-  ZERO_RESULTS: ''
+    OK: '',
+    UNKNOWN_ERROR: '',
+    ZERO_RESULTS: ''
 };
 
 /**
@@ -6130,15 +6127,15 @@ google.maps.StreetViewTileData.prototype.worldSize;
  * @param {number} tileY
  * @return {string}
  */
-google.maps.StreetViewTileData.prototype.getTileUrl = function(pano, tileZoom, tileX, tileY) {};
+google.maps.StreetViewTileData.prototype.getTileUrl = function( pano, tileZoom, tileX, tileY ) {};
 
 /**
  * @enum {number|string}
  */
 google.maps.StrokePosition = {
-  CENTER: '',
-  INSIDE: '',
-  OUTSIDE: ''
+    CENTER: '',
+    INSIDE: '',
+    OUTSIDE: ''
 };
 
 /**
@@ -6146,7 +6143,7 @@ google.maps.StrokePosition = {
  * @param {(google.maps.StyledMapTypeOptions|Object.<string>)=} opt_options
  * @constructor
  */
-google.maps.StyledMapType = function(styles, opt_options) {};
+google.maps.StyledMapType = function( styles, opt_options ) {};
 
 /**
  * @constructor
@@ -6227,11 +6224,11 @@ google.maps.Symbol.prototype.strokeWeight;
  * @enum {number|string}
  */
 google.maps.SymbolPath = {
-  BACKWARD_CLOSED_ARROW: '',
-  BACKWARD_OPEN_ARROW: '',
-  CIRCLE: '',
-  FORWARD_CLOSED_ARROW: '',
-  FORWARD_OPEN_ARROW: ''
+    BACKWARD_CLOSED_ARROW: '',
+    BACKWARD_OPEN_ARROW: '',
+    CIRCLE: '',
+    FORWARD_CLOSED_ARROW: '',
+    FORWARD_OPEN_ARROW: ''
 };
 
 /**
@@ -6270,7 +6267,7 @@ google.maps.TrafficLayer.prototype.getMap = function() {};
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.TrafficLayer.prototype.setMap = function(map) {};
+google.maps.TrafficLayer.prototype.setMap = function( map ) {};
 
 /**
  * @constructor
@@ -6353,7 +6350,7 @@ google.maps.TransitLayer.prototype.getMap = function() {};
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.TransitLayer.prototype.setMap = function(map) {};
+google.maps.TransitLayer.prototype.setMap = function( map ) {};
 
 /**
  * @constructor
@@ -6454,18 +6451,18 @@ google.maps.TransitVehicle.prototype.name;
  * @enum {number|string}
  */
 google.maps.TravelMode = {
-  BICYCLING: '',
-  DRIVING: '',
-  TRANSIT: '',
-  WALKING: ''
+    BICYCLING: '',
+    DRIVING: '',
+    TRANSIT: '',
+    WALKING: ''
 };
 
 /**
  * @enum {number|string}
  */
 google.maps.UnitSystem = {
-  IMPERIAL: '',
-  METRIC: ''
+    IMPERIAL: '',
+    METRIC: ''
 };
 
 /**
@@ -6487,9 +6484,9 @@ google.maps.ZoomControlOptions.prototype.style;
  * @enum {number|string}
  */
 google.maps.ZoomControlStyle = {
-  DEFAULT: '',
-  LARGE: '',
-  SMALL: ''
+    DEFAULT: '',
+    LARGE: '',
+    SMALL: ''
 };
 
 // Namespace
@@ -6499,24 +6496,24 @@ google.maps.adsense = {};
  * @enum {number|string}
  */
 google.maps.adsense.AdFormat = {
-  BANNER: '',
-  BUTTON: '',
-  HALF_BANNER: '',
-  LARGE_HORIZONTAL_LINK_UNIT: '',
-  LARGE_RECTANGLE: '',
-  LARGE_VERTICAL_LINK_UNIT: '',
-  LEADERBOARD: '',
-  MEDIUM_RECTANGLE: '',
-  MEDIUM_VERTICAL_LINK_UNIT: '',
-  SKYSCRAPER: '',
-  SMALL_HORIZONTAL_LINK_UNIT: '',
-  SMALL_RECTANGLE: '',
-  SMALL_SQUARE: '',
-  SMALL_VERTICAL_LINK_UNIT: '',
-  SQUARE: '',
-  VERTICAL_BANNER: '',
-  WIDE_SKYSCRAPER: '',
-  X_LARGE_VERTICAL_LINK_UNIT: ''
+    BANNER: '',
+    BUTTON: '',
+    HALF_BANNER: '',
+    LARGE_HORIZONTAL_LINK_UNIT: '',
+    LARGE_RECTANGLE: '',
+    LARGE_VERTICAL_LINK_UNIT: '',
+    LEADERBOARD: '',
+    MEDIUM_RECTANGLE: '',
+    MEDIUM_VERTICAL_LINK_UNIT: '',
+    SKYSCRAPER: '',
+    SMALL_HORIZONTAL_LINK_UNIT: '',
+    SMALL_RECTANGLE: '',
+    SMALL_SQUARE: '',
+    SMALL_VERTICAL_LINK_UNIT: '',
+    SQUARE: '',
+    VERTICAL_BANNER: '',
+    WIDE_SKYSCRAPER: '',
+    X_LARGE_VERTICAL_LINK_UNIT: ''
 };
 
 /**
@@ -6525,7 +6522,7 @@ google.maps.adsense.AdFormat = {
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.adsense.AdUnit = function(container, opts) {};
+google.maps.adsense.AdUnit = function( container, opts ) {};
 
 /**
  * @nosideeffects
@@ -6607,25 +6604,25 @@ google.maps.adsense.AdUnit.prototype.setBorderColor = function() {};
  * @param {string} channelNumber
  * @return {undefined}
  */
-google.maps.adsense.AdUnit.prototype.setChannelNumber = function(channelNumber) {};
+google.maps.adsense.AdUnit.prototype.setChannelNumber = function( channelNumber ) {};
 
 /**
  * @param {google.maps.adsense.AdFormat} format
  * @return {undefined}
  */
-google.maps.adsense.AdUnit.prototype.setFormat = function(format) {};
+google.maps.adsense.AdUnit.prototype.setFormat = function( format ) {};
 
 /**
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.adsense.AdUnit.prototype.setMap = function(map) {};
+google.maps.adsense.AdUnit.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.ControlPosition} position
  * @return {undefined}
  */
-google.maps.adsense.AdUnit.prototype.setPosition = function(position) {};
+google.maps.adsense.AdUnit.prototype.setPosition = function( position ) {};
 
 /**
  * @return {string}
@@ -6720,7 +6717,7 @@ google.maps.drawing.DrawingControlOptions.prototype.position;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.drawing.DrawingManager = function(opt_options) {};
+google.maps.drawing.DrawingManager = function( opt_options ) {};
 
 /**
  * @nosideeffects
@@ -6738,19 +6735,19 @@ google.maps.drawing.DrawingManager.prototype.getMap = function() {};
  * @param {?google.maps.drawing.OverlayType} drawingMode
  * @return {undefined}
  */
-google.maps.drawing.DrawingManager.prototype.setDrawingMode = function(drawingMode) {};
+google.maps.drawing.DrawingManager.prototype.setDrawingMode = function( drawingMode ) {};
 
 /**
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.drawing.DrawingManager.prototype.setMap = function(map) {};
+google.maps.drawing.DrawingManager.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.drawing.DrawingManagerOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.drawing.DrawingManager.prototype.setOptions = function(options) {};
+google.maps.drawing.DrawingManager.prototype.setOptions = function( options ) {};
 
 /**
  * @constructor
@@ -6821,11 +6818,11 @@ google.maps.drawing.OverlayCompleteEvent.prototype.type;
  * @enum {number|string}
  */
 google.maps.drawing.OverlayType = {
-  CIRCLE: '',
-  MARKER: '',
-  POLYGON: '',
-  POLYLINE: '',
-  RECTANGLE: ''
+    CIRCLE: '',
+    MARKER: '',
+    POLYGON: '',
+    POLYLINE: '',
+    RECTANGLE: ''
 };
 
 // Namespace
@@ -6838,7 +6835,7 @@ google.maps.event = {};
  * @param {boolean=} opt_capture
  * @return {google.maps.MapsEventListener}
  */
-google.maps.event.addDomListener = function(instance, eventName, handler, opt_capture) {};
+google.maps.event.addDomListener = function( instance, eventName, handler, opt_capture ) {};
 
 /**
  * @param {Object} instance
@@ -6847,7 +6844,7 @@ google.maps.event.addDomListener = function(instance, eventName, handler, opt_ca
  * @param {boolean=} opt_capture
  * @return {google.maps.MapsEventListener}
  */
-google.maps.event.addDomListenerOnce = function(instance, eventName, handler, opt_capture) {};
+google.maps.event.addDomListenerOnce = function( instance, eventName, handler, opt_capture ) {};
 
 /**
  * @param {Object} instance
@@ -6855,7 +6852,7 @@ google.maps.event.addDomListenerOnce = function(instance, eventName, handler, op
  * @param {!Function} handler
  * @return {google.maps.MapsEventListener}
  */
-google.maps.event.addListener = function(instance, eventName, handler) {};
+google.maps.event.addListener = function( instance, eventName, handler ) {};
 
 /**
  * @param {Object} instance
@@ -6863,26 +6860,26 @@ google.maps.event.addListener = function(instance, eventName, handler) {};
  * @param {!Function} handler
  * @return {google.maps.MapsEventListener}
  */
-google.maps.event.addListenerOnce = function(instance, eventName, handler) {};
+google.maps.event.addListenerOnce = function( instance, eventName, handler ) {};
 
 /**
  * @param {Object} instance
  * @return {undefined}
  */
-google.maps.event.clearInstanceListeners = function(instance) {};
+google.maps.event.clearInstanceListeners = function( instance ) {};
 
 /**
  * @param {Object} instance
  * @param {string} eventName
  * @return {undefined}
  */
-google.maps.event.clearListeners = function(instance, eventName) {};
+google.maps.event.clearListeners = function( instance, eventName ) {};
 
 /**
  * @param {google.maps.MapsEventListener} listener
  * @return {undefined}
  */
-google.maps.event.removeListener = function(listener) {};
+google.maps.event.removeListener = function( listener ) {};
 
 /**
  * @param {Object} instance
@@ -6890,7 +6887,7 @@ google.maps.event.removeListener = function(listener) {};
  * @param {...*} var_args
  * @return {undefined}
  */
-google.maps.event.trigger = function(instance, eventName, var_args) {};
+google.maps.event.trigger = function( instance, eventName, var_args ) {};
 
 // Namespace
 google.maps.geometry = {};
@@ -6902,13 +6899,13 @@ google.maps.geometry.encoding = {};
  * @param {string} encodedPath
  * @return {Array.<google.maps.LatLng>}
  */
-google.maps.geometry.encoding.decodePath = function(encodedPath) {};
+google.maps.geometry.encoding.decodePath = function( encodedPath ) {};
 
 /**
  * @param {Array.<google.maps.LatLng>|google.maps.MVCArray.<google.maps.LatLng>} path
  * @return {string}
  */
-google.maps.geometry.encoding.encodePath = function(path) {};
+google.maps.geometry.encoding.encodePath = function( path ) {};
 
 // Namespace
 google.maps.geometry.poly = {};
@@ -6918,7 +6915,7 @@ google.maps.geometry.poly = {};
  * @param {google.maps.Polygon} polygon
  * @return {boolean}
  */
-google.maps.geometry.poly.containsLocation = function(point, polygon) {};
+google.maps.geometry.poly.containsLocation = function( point, polygon ) {};
 
 /**
  * @param {google.maps.LatLng} point
@@ -6926,7 +6923,7 @@ google.maps.geometry.poly.containsLocation = function(point, polygon) {};
  * @param {number=} opt_tolerance
  * @return {boolean}
  */
-google.maps.geometry.poly.isLocationOnEdge = function(point, poly, opt_tolerance) {};
+google.maps.geometry.poly.isLocationOnEdge = function( point, poly, opt_tolerance ) {};
 
 // Namespace
 google.maps.geometry.spherical = {};
@@ -6936,7 +6933,7 @@ google.maps.geometry.spherical = {};
  * @param {number=} opt_radius
  * @return {number}
  */
-google.maps.geometry.spherical.computeArea = function(path, opt_radius) {};
+google.maps.geometry.spherical.computeArea = function( path, opt_radius ) {};
 
 /**
  * @param {google.maps.LatLng} from
@@ -6944,21 +6941,21 @@ google.maps.geometry.spherical.computeArea = function(path, opt_radius) {};
  * @param {number=} opt_radius
  * @return {number}
  */
-google.maps.geometry.spherical.computeDistanceBetween = function(from, to, opt_radius) {};
+google.maps.geometry.spherical.computeDistanceBetween = function( from, to, opt_radius ) {};
 
 /**
  * @param {google.maps.LatLng} from
  * @param {google.maps.LatLng} to
  * @return {number}
  */
-google.maps.geometry.spherical.computeHeading = function(from, to) {};
+google.maps.geometry.spherical.computeHeading = function( from, to ) {};
 
 /**
  * @param {Array.<google.maps.LatLng>|google.maps.MVCArray.<google.maps.LatLng>} path
  * @param {number=} opt_radius
  * @return {number}
  */
-google.maps.geometry.spherical.computeLength = function(path, opt_radius) {};
+google.maps.geometry.spherical.computeLength = function( path, opt_radius ) {};
 
 /**
  * @param {google.maps.LatLng} from
@@ -6967,7 +6964,7 @@ google.maps.geometry.spherical.computeLength = function(path, opt_radius) {};
  * @param {number=} opt_radius
  * @return {google.maps.LatLng}
  */
-google.maps.geometry.spherical.computeOffset = function(from, distance, heading, opt_radius) {};
+google.maps.geometry.spherical.computeOffset = function( from, distance, heading, opt_radius ) {};
 
 /**
  * @param {google.maps.LatLng} to
@@ -6976,14 +6973,14 @@ google.maps.geometry.spherical.computeOffset = function(from, distance, heading,
  * @param {number=} opt_radius
  * @return {google.maps.LatLng}
  */
-google.maps.geometry.spherical.computeOffsetOrigin = function(to, distance, heading, opt_radius) {};
+google.maps.geometry.spherical.computeOffsetOrigin = function( to, distance, heading, opt_radius ) {};
 
 /**
  * @param {Array.<google.maps.LatLng>|google.maps.MVCArray.<google.maps.LatLng>} loop
  * @param {number=} opt_radius
  * @return {number}
  */
-google.maps.geometry.spherical.computeSignedArea = function(loop, opt_radius) {};
+google.maps.geometry.spherical.computeSignedArea = function( loop, opt_radius ) {};
 
 /**
  * @param {google.maps.LatLng} from
@@ -6991,7 +6988,7 @@ google.maps.geometry.spherical.computeSignedArea = function(loop, opt_radius) {}
  * @param {number} fraction
  * @return {google.maps.LatLng}
  */
-google.maps.geometry.spherical.interpolate = function(from, to, fraction) {};
+google.maps.geometry.spherical.interpolate = function( from, to, fraction ) {};
 
 // Namespace
 google.maps.panoramio = {};
@@ -7031,7 +7028,7 @@ google.maps.panoramio.PanoramioFeature.prototype.userId;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.panoramio.PanoramioLayer = function(opt_opts) {};
+google.maps.panoramio.PanoramioLayer = function( opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -7055,25 +7052,25 @@ google.maps.panoramio.PanoramioLayer.prototype.getUserId = function() {};
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.panoramio.PanoramioLayer.prototype.setMap = function(map) {};
+google.maps.panoramio.PanoramioLayer.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.panoramio.PanoramioLayerOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.panoramio.PanoramioLayer.prototype.setOptions = function(options) {};
+google.maps.panoramio.PanoramioLayer.prototype.setOptions = function( options ) {};
 
 /**
  * @param {string} tag
  * @return {undefined}
  */
-google.maps.panoramio.PanoramioLayer.prototype.setTag = function(tag) {};
+google.maps.panoramio.PanoramioLayer.prototype.setTag = function( tag ) {};
 
 /**
  * @param {string} userId
  * @return {undefined}
  */
-google.maps.panoramio.PanoramioLayer.prototype.setUserId = function(userId) {};
+google.maps.panoramio.PanoramioLayer.prototype.setUserId = function( userId ) {};
 
 /**
  * @constructor
@@ -7139,7 +7136,7 @@ google.maps.places = {};
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.places.Autocomplete = function(inputField, opt_opts) {};
+google.maps.places.Autocomplete = function( inputField, opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -7157,19 +7154,19 @@ google.maps.places.Autocomplete.prototype.getPlace = function() {};
  * @param {google.maps.LatLngBounds} bounds
  * @return {undefined}
  */
-google.maps.places.Autocomplete.prototype.setBounds = function(bounds) {};
+google.maps.places.Autocomplete.prototype.setBounds = function( bounds ) {};
 
 /**
  * @param {google.maps.places.ComponentRestrictions} restrictions
  * @return {undefined}
  */
-google.maps.places.Autocomplete.prototype.setComponentRestrictions = function(restrictions) {};
+google.maps.places.Autocomplete.prototype.setComponentRestrictions = function( restrictions ) {};
 
 /**
  * @param {Array.<string>} types
  * @return {undefined}
  */
-google.maps.places.Autocomplete.prototype.setTypes = function(types) {};
+google.maps.places.Autocomplete.prototype.setTypes = function( types ) {};
 
 /**
  * @constructor
@@ -7365,14 +7362,14 @@ google.maps.places.PlaceSearchRequest.prototype.types;
  * @param {HTMLDivElement|google.maps.Map} attrContainer
  * @constructor
  */
-google.maps.places.PlacesService = function(attrContainer) {};
+google.maps.places.PlacesService = function( attrContainer ) {};
 
 /**
  * @param {google.maps.places.PlaceDetailsRequest|Object.<string>} request
  * @param {function(google.maps.places.PlaceResult, google.maps.places.PlacesServiceStatus)} callback
  * @return {undefined}
  */
-google.maps.places.PlacesService.prototype.getDetails = function(request, callback) {};
+google.maps.places.PlacesService.prototype.getDetails = function( request, callback ) {};
 
 /**
  * @param {google.maps.places.PlaceSearchRequest|Object.<string>} request
@@ -7380,33 +7377,33 @@ google.maps.places.PlacesService.prototype.getDetails = function(request, callba
                google.maps.places.PlaceSearchPagination)} callback
  * @return {undefined}
  */
-google.maps.places.PlacesService.prototype.nearbySearch = function(request, callback) {};
+google.maps.places.PlacesService.prototype.nearbySearch = function( request, callback ) {};
 
 /**
  * @param {google.maps.places.TextSearchRequest|Object.<string>} request
  * @param {function(Array.<google.maps.places.PlaceResult>, google.maps.places.PlacesServiceStatus)} callback
  * @return {undefined}
  */
-google.maps.places.PlacesService.prototype.textSearch = function(request, callback) {};
+google.maps.places.PlacesService.prototype.textSearch = function( request, callback ) {};
 
 /**
  * @enum {number|string}
  */
 google.maps.places.PlacesServiceStatus = {
-  INVALID_REQUEST: '',
-  OK: '',
-  OVER_QUERY_LIMIT: '',
-  REQUEST_DENIED: '',
-  UNKNOWN_ERROR: '',
-  ZERO_RESULTS: ''
+    INVALID_REQUEST: '',
+    OK: '',
+    OVER_QUERY_LIMIT: '',
+    REQUEST_DENIED: '',
+    UNKNOWN_ERROR: '',
+    ZERO_RESULTS: ''
 };
 
 /**
  * @enum {number|string}
  */
 google.maps.places.RankBy = {
-  DISTANCE: '',
-  PROMINENCE: ''
+    DISTANCE: '',
+    PROMINENCE: ''
 };
 
 /**
@@ -7447,7 +7444,7 @@ google.maps.visualization = {};
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.visualization.HeatmapLayer = function(opt_opts) {};
+google.maps.visualization.HeatmapLayer = function( opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -7465,13 +7462,13 @@ google.maps.visualization.HeatmapLayer.prototype.getMap = function() {};
  * @param {google.maps.MVCArray.<google.maps.LatLng|google.maps.visualization.WeightedLocation>|Array.<google.maps.LatLng|google.maps.visualization.WeightedLocation>} data
  * @return {undefined}
  */
-google.maps.visualization.HeatmapLayer.prototype.setData = function(data) {};
+google.maps.visualization.HeatmapLayer.prototype.setData = function( data ) {};
 
 /**
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.visualization.HeatmapLayer.prototype.setMap = function(map) {};
+google.maps.visualization.HeatmapLayer.prototype.setMap = function( map ) {};
 
 /**
  * @constructor
@@ -7547,22 +7544,22 @@ google.maps.weather.CloudLayer.prototype.getMap = function() {};
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.weather.CloudLayer.prototype.setMap = function(map) {};
+google.maps.weather.CloudLayer.prototype.setMap = function( map ) {};
 
 /**
  * @enum {number|string}
  */
 google.maps.weather.LabelColor = {
-  BLACK: '',
-  WHITE: ''
+    BLACK: '',
+    WHITE: ''
 };
 
 /**
  * @enum {number|string}
  */
 google.maps.weather.TemperatureUnit = {
-  CELSIUS: '',
-  FAHRENHEIT: ''
+    CELSIUS: '',
+    FAHRENHEIT: ''
 };
 
 /**
@@ -7680,7 +7677,7 @@ google.maps.weather.WeatherForecast.prototype.shortDay;
  * @extends {google.maps.MVCObject}
  * @constructor
  */
-google.maps.weather.WeatherLayer = function(opt_opts) {};
+google.maps.weather.WeatherLayer = function( opt_opts ) {};
 
 /**
  * @nosideeffects
@@ -7692,13 +7689,13 @@ google.maps.weather.WeatherLayer.prototype.getMap = function() {};
  * @param {google.maps.Map} map
  * @return {undefined}
  */
-google.maps.weather.WeatherLayer.prototype.setMap = function(map) {};
+google.maps.weather.WeatherLayer.prototype.setMap = function( map ) {};
 
 /**
  * @param {google.maps.weather.WeatherLayerOptions|Object.<string>} options
  * @return {undefined}
  */
-google.maps.weather.WeatherLayer.prototype.setOptions = function(options) {};
+google.maps.weather.WeatherLayer.prototype.setOptions = function( options ) {};
 
 /**
  * @constructor
@@ -7764,16 +7761,16 @@ google.maps.weather.WeatherMouseEvent.prototype.pixelOffset;
  * @enum {number|string}
  */
 google.maps.weather.WindSpeedUnit = {
-  KILOMETERS_PER_HOUR: '',
-  METERS_PER_SECOND: '',
-  MILES_PER_HOUR: ''
+    KILOMETERS_PER_HOUR: '',
+    METERS_PER_SECOND: '',
+    MILES_PER_HOUR: ''
 };
 
 
 /**
  * @fileoverview Externs for Twitter Bootstrap
  * @see http://twitter.github.com/bootstrap/
- * 
+ *
  * @author Qamal Kosim-Satyaputra
  * @externs
  */
@@ -7798,7 +7795,7 @@ google.maps.weather.WindSpeedUnit = {
  * @param {(string|Object.<string, boolean>)=} opt_eventOrOptions
  * @return {jQuery}
  */
-jQuery.prototype.modal = function(opt_eventOrOptions) {};
+jQuery.prototype.modal = function( opt_eventOrOptions ) {};
 
 
 
@@ -7827,7 +7824,7 @@ jQuery.prototype.dropdown = function() {};
  * @param {Object.<string, number>=} opt_options
  * @return {jQuery}
  */
-jQuery.prototype.scrollspy = function(opt_options) {};
+jQuery.prototype.scrollspy = function( opt_options ) {};
 
 
 
@@ -7839,7 +7836,7 @@ jQuery.prototype.scrollspy = function(opt_options) {};
  * @param {string=} opt_event
  * @return {jQuery}
  */
-jQuery.prototype.tab = function(opt_event) {};
+jQuery.prototype.tab = function( opt_event ) {};
 
 
 
@@ -7854,7 +7851,7 @@ jQuery.prototype.tab = function(opt_event) {};
  * @param {(string|Object.<string, (string|boolean|number)>)=} opt_eventOrOptions
  * @return {jQuery}
  */
-jQuery.prototype.tooltip = function(opt_eventOrOptions) {};
+jQuery.prototype.tooltip = function( opt_eventOrOptions ) {};
 
 ///** @type {boolean} */
 //jQuery.tooltip.prototype.animation;//
@@ -7907,7 +7904,7 @@ jQuery.prototype.tooltip = function(opt_eventOrOptions) {};
  * @param {(string|Object.<string, (string|number|Object.<string, number>)>)=} opt_eventOrOptions
  * @return {jQuery}
  */
-jQuery.prototype.popover = function(opt_eventOrOptions) {};
+jQuery.prototype.popover = function( opt_eventOrOptions ) {};
 
 
 
@@ -7919,7 +7916,7 @@ jQuery.prototype.popover = function(opt_eventOrOptions) {};
  * @param {string=} opt_event
  * @return {jQuery}
  */
-jQuery.prototype.alert = function(opt_event) {};
+jQuery.prototype.alert = function( opt_event ) {};
 
 
 
@@ -7931,7 +7928,7 @@ jQuery.prototype.alert = function(opt_event) {};
  * @param {string=} opt_state
  * @return {jQuery}
  */
-jQuery.prototype.button = function(opt_state) {};
+jQuery.prototype.button = function( opt_state ) {};
 
 
 
@@ -7951,7 +7948,7 @@ jQuery.prototype.button = function(opt_state) {};
 /**
  * @param {(string|Object.<string, boolean>)=} opt_eventOrOptions
  */
-jQuery.prototype.collapse = function(opt_eventOrOptions) {};
+jQuery.prototype.collapse = function( opt_eventOrOptions ) {};
 
 
 
@@ -7971,7 +7968,7 @@ jQuery.prototype.collapse = function(opt_eventOrOptions) {};
 /**
  * @param {(string|Object.<string, (number|string)>)=} opt_eventOrOptions
  */
-jQuery.prototype.carousel = function(opt_eventOrOptions) {};
+jQuery.prototype.carousel = function( opt_eventOrOptions ) {};
 
 
 // --- Typeahead ---
@@ -8000,11 +7997,11 @@ jQuery.prototype.carousel = function(opt_eventOrOptions) {};
  * @param {(string|Object.<string, number>)=} opt_options
  * @return {jQuery}
  */
-jQuery.prototype.typeahead = function(opt_options) {};
+jQuery.prototype.typeahead = function( opt_options ) {};
 
 /**
  * @param {jQuery|jQuerySelector} element
  * @param {Object.<string, number>} opt_options
  * @return {jQuery}
  */
-jQuery.prototype.typeahead.Constructor = function(element, opt_options) {};
+jQuery.prototype.typeahead.Constructor = function( element, opt_options ) {};

@@ -1,5 +1,5 @@
 @import "variables";
-@import "../../public/libraries/enketo-core/src/sass/core/_mixins";
+@import "../../public/lib/enketo-core/src/sass/core/_mixins";
 @import "mixins";
 @import "bootstrap";
 
@@ -43,6 +43,11 @@ progress {
 
 .preview progres s{
 	margin: 80px auto; }
+
+.modal {
+  h3 {
+    padding: 0 0 0 0;
+    margin-bottom: 0; } }
 
 .alert{
   .error-list{

@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-
 <? 	$integrated = $this->config->item('integrated'); 
  	$brand_setting = $this->config->item('brand');
-	$brand = (!empty($brand_setting)) ? $brand_setting : 'enketo'; ?>
-<!-- An offline-capable survey application suite (c) Aid Web Solutions -->
-
+	$brand = (!empty($brand_setting)) ? $brand_setting : 'enketo'; 
+?>
 <html lang="en" <?= (!empty($manifest)) ? 'manifest="'.$manifest.'"' : '' ?> class="no-js">
 	<head>
 		<title><?= !empty($html_title) ? $brand.' - '.$html_title : 
@@ -36,7 +34,8 @@
 
 <? if(isset($scripts)): ?>
 <? foreach ($scripts as $script): ?>
-		<script type="text/javascript" src="<?= $script; ?>"></script>
+<? $data_main = (!empty($script['data-main'])) ? $script['data-main'] : ''; ?>
+		<script type="text/javascript" data-main="<?= $data_main; ?>" src="<?= $script['src']; ?>"></script>
 <? endforeach; ?>
 <? endif; ?>
 
@@ -65,4 +64,4 @@
 			settings['modernBrowsersURL'] = 'modern_browsers';
 		</script>
 
-<? if (ENVIRONMENT === 'production'){include_once 'tracking.php';} ?>
+<? if (ENVIRONMENT === 'production' && $_SERVER['REMOTE_ADDR'] !== '127.0.0.1' ){include_once 'tracking.php';} ?>

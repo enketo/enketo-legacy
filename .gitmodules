@@ -10,20 +10,11 @@
 [submodule "public/libraries/bootstrap-timepicker"]
 	path = public/libraries/bootstrap-timepicker
 	url = https://github.com/jdewit/bootstrap-timepicker.git
-[submodule "public/libraries/file-manager"]
-	path = public/libraries/file-manager
-	url = https://github.com/MartijnR/file-manager.git
-[submodule "public/libraries/enketo-core"]
-	path = public/libraries/enketo-core
-	url = https://github.com/MartijnR/enketo-core.git
 [submodule "Code_Igniter/application/libraries/xslt"]
 	path = Code_Igniter/application/libraries/xslt
 	url = https://github.com/MartijnR/enketo-xslt.git
-[submodule "public/libraries/file-saver"]
-	path = public/libraries/file-saver
-	url = https://github.com/eligrey/FileSaver.js.git
-[submodule "public/libraries/blob"]
-	path = public/libraries/blob
+[submodule "public/lib/blob"]
+	path = public/lib/blob
 	url = https://github.com/eligrey/Blob.js.git
 [submodule "Code_Igniter/application/third_party/form_auth"]
 	path = Code_Igniter/application/third_party/form_auth
@@ -40,3 +31,15 @@
 [submodule "Code_Igniter/application/views/private_views"]
 	path = Code_Igniter/application/views/private_views
 	url = https://github.com/MartijnR/enketo_org_views.git
+[submodule "public/lib/file-saver"]
+	path = public/lib/file-saver
+	url = https://github.com/eligrey/FileSaver.js.git
+[submodule "public/lib/enketo-core"]
+	path = public/lib/enketo-core
+	url = https://github.com/MartijnR/enketo-core.git
+[submodule "public/lib/vkbeautify"]
+	path = public/lib/vkbeautify
+	url = https://github.com/vkiryukhin/vkBeautify.git
+[submodule "public/lib/file-manager"]
+	path = public/lib/file-manager
+	url = https://github.com/MartijnR/file-manager.git

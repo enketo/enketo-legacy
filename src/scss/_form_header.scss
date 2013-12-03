@@ -70,7 +70,9 @@ $offline-color: rgb(231, 67, 41);
     &:hover {
       color: green; } } }
 .form-language-selector {
-  padding-right: 20px; }
+  padding-right: 20px;
+  #form-languages {
+    display: inline-block; } }
 .print {
   background: none;
   border-radius: 0;

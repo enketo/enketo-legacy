@@ -1,4 +1,4 @@
-[Enketo Smart Paper](http://enketo.org) [![Build Status](https://travis-ci.org/MartijnR/enketo.png)](https://travis-ci.org/MartijnR/enketo-core)
+[Enketo Smart Paper](http://enketo.org) [![Build Status](https://travis-ci.org/MartijnR/enketo.png)](https://travis-ci.org/MartijnR/enketo)
 ======
 
 Enketo Smart Paper runs next generation web forms that were built according to the open-source OpenRosa XForm format. This is the advanced and popular form format used by [ODK](http://opendatakit.org), [Formhub](https://formhub.org) and [CommCare](http://www.commcarehq.org/home/). 

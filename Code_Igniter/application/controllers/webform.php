@@ -18,31 +18,6 @@
 
 class Webform extends CI_Controller {
 
-    private $default_library_scripts = array
-    (
-        '/libraries/enketo-core/lib/jquery.min.js',
-        '/libraries/enketo-core/lib/bootstrap.min.js', 
-        '/libraries/enketo-core/lib/bootstrap-timepicker/js/bootstrap-timepicker.js',
-        '/libraries/enketo-core/lib/bootstrap-datepicker/js/bootstrap-datepicker.js',
-        '/libraries/enketo-core/lib/modernizr.min.js',
-        '/libraries/enketo-core/lib/xpath/build/xpathjs_javarosa.min.js',
-        '/libraries/file-saver/FileSaver.js',
-        '/libraries/blob/Blob.js',
-        '/libraries/vkbeautify.js',
-        '/libraries/file-manager/src/files.js'
-    );
-    private $default_main_scripts = array
-        (
-            '/js-source/helpers.js',
-            '/js-source/gui.js',
-            '/libraries/enketo-core/src/js/utils.js',
-            '/libraries/enketo-core/src/js/form.js',
-            '/libraries/enketo-core/src/js/widgets.js',
-            '/js-source/storage.js',
-            '/js-source/connection.js',
-            '/js-source/survey_controls.js',
-            '/js-source/debug.js'
-        ); 
     private $default_stylesheets = array
     (
         array( 'href' => '/build/css/webform.css', 'media' => 'all'),
@@ -118,27 +93,10 @@ class Webform extends CI_Controller {
             'logout' => $this->credentials !== NULL
         );
 
-        if (ENVIRONMENT === 'production') {
-            $data['scripts'] = array
-            (
-                //'/libraries/libraries-all-min.js',
-                '/build/js/webform.min.js'
-            );
-        } else {       
-            $data['scripts'] = array_merge
-            (
-                $this->default_library_scripts, 
-                array
-                (
-                    '/js-source/cache.js'
-                ),
-                $this->default_main_scripts,
-                array
-                (
-                    '/js-source/webform.js'
-                )
-            );
-        }
+        $data['scripts'] = (ENVIRONMENT === 'production') 
+            ? array(array('src' => '/build/js/webform-combined.min.js'))
+            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform.js'));
+
         $this->load->view('webform_view', $data);
     }
 
@@ -197,22 +155,10 @@ class Webform extends CI_Controller {
             ) : $this->default_stylesheets
         );
 
-        if (ENVIRONMENT === 'production') {
-            $data['scripts'] = array
-            (
-                //'/libraries/libraries-all-min.js',
-                '/build/js/webform-edit.min.js'
-            );
-        } else {       
-            $data['scripts'] = array_merge(
-                $this->default_library_scripts,
-                $this->default_main_scripts,
-                array
-                (
-                    '/js-source/webform_edit.js'
-                )
-            );
-        }
+        $data['scripts'] = (ENVIRONMENT === 'production') 
+            ? array(array('src' => '/build/js/webform-edit-combined.min.js'))
+            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform-edit.js'));
+
         $this->load->view('webform_view', $data);
     }
 
@@ -267,23 +213,10 @@ class Webform extends CI_Controller {
             'logout' => $this->credentials !== NULL
         );
 
-        if (ENVIRONMENT === 'production') {
-            $data['scripts'] = array
-            (
-                //'/libraries/libraries-all-min.js',
-                '/build/js/webform-single.min.js'
-            );
-        } else {       
-            $data['scripts'] = array_merge
-            (
-                $this->default_library_scripts,
-                $this->default_main_scripts,
-                array
-                (
-                    '/js-source/webform_single.js'
-                )
-            );
-        }
+        $data['scripts'] = (ENVIRONMENT === 'production') 
+            ? array(array('src' => '/build/js/webform-single-combined.min.js'))
+            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform-single.js'));
+
         $this->load->view('webform_view',$data);
     }
 
@@ -292,7 +225,7 @@ class Webform extends CI_Controller {
         $params = $this->input->get(NULL, TRUE);
 
         if (!$params || ( empty($params['form']) && (empty($params['server']) || empty($params['id']))) ) {
-            show_error('Preview requires server url and form id variables or a form url variable.', 404);
+            show_error('Preview requires server and id variables or a form variable.', 404);
             return;
         }
         if (isset($this->subdomain)) {
@@ -310,23 +243,11 @@ class Webform extends CI_Controller {
             'logo_url' => !empty($params['server']) ? $this->account->logo_url($params['server']) : $this->account->logo_url(),
             'logout' => $this->credentials !== NULL
         );
-        if (ENVIRONMENT === 'production') {
-            $data['scripts'] = array
-            (
-                //'/libraries/libraries-all-min.js',
-                '/build/js/webform-preview.min.js'
-            );
-        } else {       
-            $data['scripts'] = array_merge
-            (
-                $this->default_library_scripts,
-                $this->default_main_scripts,
-                array
-                (
-                    '/js-source/webform_preview.js'
-                )
-            );
-        }
+
+        $data['scripts'] = (ENVIRONMENT === 'production') 
+            ? array(array('src' => '/build/js/webform-preview-combined.min.js'))
+            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform-preview.js'));
+        
         $this->load->view('webform_preview_view', $data);
     }
 
@@ -417,7 +338,7 @@ class Webform extends CI_Controller {
     private function _online_only_check_route()
     {
         if ($this->Survey_model->has_offline_launch_enabled()) {
-            show_error('The iframe view can only be launched in online-only mode', 404);
+            show_error('This webform view can only be launched in online-only mode', 404);
             return TRUE;
         }
         return FALSE;

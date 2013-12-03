@@ -57,7 +57,9 @@ define( [ 'jquery' ], function( $ ) {
      */
     function styleToAll() {
         //sometimes, setStylesheet fails upon loading
-        if ( !styleSheet ) setStyleSheet();
+        if ( !styleSheet ) {
+            styleSheet = getStyleSheet();
+        }
         //Chrome:
         styleSheet.media.mediaText = 'all';
         //Firefox:

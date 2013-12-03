@@ -24,9 +24,9 @@
 			<article id="upload" class="tab-pane paper">
 				<h3 class="ui-widget-header ui-corner-all">OpenRosa XForm to Load</h3>
 				<form id="upload-form" enctype="multipart/form-data" accept-charset="utf-8">
-					<div id="input-switcher" class="btn-group" data-toggle="buttons-radio">
-						<a type="button" href="#" id="xml_file" class="btn btn-default btn-xs">file</a> 
-						<a type="button" href="#" id="server_url" class="btn btn-default btn-xs">url</a>
+					<div id="input-switcher" class="btn-group">
+						<button type="button" id="xml_file" class="btn btn-default btn-xs">file</button> 
+						<button type="button" id="server_url" class="btn btn-default btn-xs">url</button>
 					</div>
 					<fieldset>
 						<label>

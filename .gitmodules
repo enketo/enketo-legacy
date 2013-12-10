@@ -28,3 +28,9 @@
 [submodule "public/lib/file-manager"]
 	path = public/lib/file-manager
 	url = https://github.com/MartijnR/file-manager.git
+[submodule "grid"]
+	path = grid
+	url = https://github.com/MartijnR/enketo-grid-theme.git
+[submodule "src/scss/grid"]
+	path = src/scss/grid
+	url = https://github.com/MartijnR/enketo-grid-theme.git

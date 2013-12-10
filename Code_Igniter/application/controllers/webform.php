@@ -20,8 +20,8 @@ class Webform extends CI_Controller {
 
     private $default_stylesheets = array
     (
-        array( 'href' => '/build/css/webform.css', 'media' => 'all'),
-        array( 'href' => '/build/css/webform_print.css', 'media' => 'print')
+        array( 'href' => '/build/css/webform_grid.css', 'media' => 'all'),
+        array( 'href' => '/build/css/webform_grid_print.css', 'media' => 'print')
     );
     private $default_iframe_stylesheets = array
     (
@@ -86,7 +86,7 @@ class Webform extends CI_Controller {
             'html_title' => $form->title,
             'form'=> $form->html,
             'form_data'=> $form->default_instance,
-            'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
+            'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->_get_stylesheets($form->theme),
             'server_url' => $this->server_url,
             'form_id' => $this->form_id,
             'logo_url' => $this->account->logo_url($this->server_url),
@@ -265,6 +265,18 @@ class Webform extends CI_Controller {
             array('server_url' => $this->server_url, 'form_id' => $this->form_id, 'return_url' => full_base_url().'webform'.$append)
         );
         redirect('/authenticate/login');
+    }
+
+    private function _get_stylesheets($theme_requested)
+    {
+        $supported_themes = $this->config->item('themes');
+
+        $theme = ( in_array($theme_requested, $supported_themes) ) ? $theme_requested : $supported_themes[0];
+        
+        return array (
+            array( 'href' => '/build/css/webform_'.$theme.'.css', 'media' => 'all'),
+            array( 'href' => '/build/css/webform_print_'.$theme.'.css', 'media' => 'print')
+        );
     }
 
     private function _get_form()

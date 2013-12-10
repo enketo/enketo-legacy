@@ -103,6 +103,8 @@ class Form_model extends CI_Model {
             $form->default_instance = preg_replace('/\>\s+\</', '><', $form->default_instance);
             $form->default_instance = json_encode($form->default_instance);
         }
+        $form->theme = (!empty($result->form))? $this->_get_theme($result->form) : NULL;
+        log_message('debug', 'theme extracted: '.$form->theme);
         $form->hash = $this->info['xml_hash'];
         $form->media_hash = $this->info['media_hash'];
         $form->xsl_version = (!empty($result->form)) ? $this->xsl_version : NULL;
@@ -176,6 +178,18 @@ class Form_model extends CI_Model {
             }   
         }
         return $result;
+    }
+
+    private function _get_theme($form_sxe = NULL) 
+    {
+        if (!empty($form_sxe) && !empty($form_sxe['class'])) {
+            $class = (string) $form_sxe['class'];
+            preg_match('/^(.*\s)?theme-([^\s]+).*$/i', $class, $matches);
+            if ( !empty( $matches[2] ) ) {
+                return strtolower($matches[2]);
+            }
+        }
+        return NULL;
     }
 
     private function _get_formlist_sxe()

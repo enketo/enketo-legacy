@@ -44,20 +44,16 @@ class Transform extends CI_Controller {
 		//log_message('debug', 'controller to serve html form started with POST vars: '.json_encode($_POST));
 		$result;
 		extract($_POST);
-		if ($this->config->item('auth_support'))
-		{
+		if ($this->config->item('auth_support')) {
 			$this->load->add_package_path(APPPATH.'third_party/form_auth');
 		}
 		$this->load->library('form_auth');
 
-		if (isset($_FILES['xml_file']) && $_FILES['xml_file']['size'] > 0)
-		{
+		if (isset($_FILES['xml_file']) && $_FILES['xml_file']['size'] > 0) {
 			//log_message('debug', 'file path: '.$_FILES['xml_file']['tmp_name']);
 			$file_path_to_XML_form = $_FILES['xml_file']['tmp_name'];
 			$result = $this->Form_model->get_transform_result_sxe($file_path_to_XML_form);
-		}
-		else if (isset($form_id) && strlen($form_id)>0 && isset($server_url) && strlen($server_url) > 0 )
-		{
+		} else if (isset($form_id) && strlen($form_id)>0 && isset($server_url) && strlen($server_url) > 0 ) {
 			//TODO: add url validity check
 			//log_message('debug', 'server url received: '.$server_url.', id: '+$form_id);
 			$credentials = $this->form_auth->get_credentials();
@@ -70,14 +66,10 @@ class Transform extends CI_Controller {
 					->set_output('authenticate');
 			}
 			$result = $this->Form_model->get_transform_result_sxe();
-		}
-		else if (!empty($form_url))
-		{
+		} else if (!empty($form_url)) {
 			log_message('debug', 'form url received: '.$form_url);
 			$result = $this->Form_model->get_transform_result_sxe($form_url);
-		}
-		else
-		{
+		} else {
 			$error = (isset($FILES['xml_file']['error'])) ? $_FILES['xml_file']['error'] : 'upload error (no file or not a valid server url and form ID)';
 			$result = new SimpleXMLElement('<root></root>');
 			$upload_errors = $result->addChild('xmlerrors');

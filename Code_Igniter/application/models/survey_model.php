@@ -187,11 +187,12 @@ class Survey_model extends CI_Model {
 
     public function get_cached_transform_result()
     {
-        $items = $this->_get_items(array('transform_result_title', 'transform_result_model', 'transform_result_form'));
+        $items = $this->_get_items(array('transform_result_title', 'transform_result_model', 'transform_result_form', 'theme'));
         $form = new stdClass();
         $form->title = $items['transform_result_title'];
         $form->default_instance = $items['transform_result_model'];
         $form->html = $items['transform_result_form'];
+        $form->theme = $items['theme'];
         return $form;
     }
 
@@ -201,6 +202,7 @@ class Survey_model extends CI_Model {
             'transform_result_title'    => (string) $form->title,
             'transform_result_model'    => (string) $form->default_instance,
             'transform_result_form'     => (string) $form->html,
+            'theme'                     => (string) $form->theme,
             'hash'                      => (string) $form->hash,
             'media_hash'                => (string) $form->media_hash,
             'xsl_version'               => (string) $form->xsl_version

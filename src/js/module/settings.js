@@ -23,6 +23,9 @@ define( [], function() {
             q: 'return',
             s: 'returnURL'
         }, {
+            q: 'returnURL',
+            s: 'returnURL'
+        }, {
             q: 'showbranch',
             s: 'showBranch'
         }, {

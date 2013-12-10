@@ -16,6 +16,21 @@
 [submodule "public/lib/blob"]
 	path = public/lib/blob
 	url = https://github.com/eligrey/Blob.js.git
+[submodule "Code_Igniter/application/third_party/form_auth"]
+	path = Code_Igniter/application/third_party/form_auth
+	url = https://github.com/MartijnR/enketo_form_auth.git
+[submodule "public/private_media"]
+	path = public/private_media
+	url = https://github.com/MartijnR/enketo_org_media.git
+[submodule "src/scss/private"]
+	path = src/scss/private
+	url = https://github.com/MartijnR/enketo_org_scss.git
+[submodule "Code_Igniter/application/third_party/account"]
+	path = Code_Igniter/application/third_party/account
+	url = https://github.com/MartijnR/enketo_account.git
+[submodule "Code_Igniter/application/views/private_views"]
+	path = Code_Igniter/application/views/private_views
+	url = https://github.com/MartijnR/enketo_org_views.git
 [submodule "public/lib/file-saver"]
 	path = public/lib/file-saver
 	url = https://github.com/eligrey/FileSaver.js.git

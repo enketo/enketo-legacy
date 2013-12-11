@@ -1,8 +1,17 @@
 $offline-color: rgb(231, 67, 41);
 
+body {
+  background: #ffffff no-repeat; }
+
+.main {
+
+  .paper {
+     }
+   }
+
 .form-header {
-  //height: 60px;
-  //min-height: 68px;
+  top: 0;
+  padding: 3px 10px 20px 50px;
   .branding{
     //display: inline-block;
     margin: 0;
@@ -12,10 +21,10 @@ $offline-color: rgb(231, 67, 41);
       display: table-cell;
       vertical-align: middle; }
     img {
+      left: auto;
       max-height: 30px;
       max-width: 130px;
       vertical-align: middle;
-      //margin-left: 16px;
       &:hover {
         opacity: 0.8;} }
     span {
@@ -26,9 +35,6 @@ $offline-color: rgb(231, 67, 41);
       &:hover {
         text-decoration: none;
         opacity: 0.8; } } } }
-
-.load-error {
-  margin: 100px 0 60px 0; } //move this??
 
 .offline-enabled {
   @include transition-fast;
@@ -52,10 +58,10 @@ $offline-color: rgb(231, 67, 41);
       opacity: 0.8; } }
   .queue-length {
     cursor: pointer;
-    margin-top: 2px;
+    margin-top: 0;
     width: 34px;
     color: $offline-color;
-    background-color: #ffffff;
+    background-color: #dddddd;
     text-align: center;
     padding: 9.5px 0 9.5px 0;
     line-height: 15px;

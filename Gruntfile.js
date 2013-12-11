@@ -29,6 +29,15 @@ module.exports = function( grunt ) {
             writePath: "src/scss/_widgets.scss",
             widgetConfigPath: "src/js/config.json"
         },
+        watch: {
+            sass: {
+                files: [ 'src/js/config.json', 'src/scss/**/*.scss', 'public/lib/enketo-core/src/**/*.scss' ],
+                tasks: [ 'style' ],
+                options: {
+                    spawn: false
+                }
+            }
+        },
         sass: {
             dist: {
                 options: {

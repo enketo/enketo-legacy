@@ -18,7 +18,7 @@
  * Deals with the HTML5 applicationCache
  */
 
-define( [ 'gui', 'jquery' ], function( gui, $ ) {
+define( [ 'gui', 'jquery', 'connection' ], function( gui, $, connection ) {
     "use strict";
 
     var CACHE_CHECK_INTERVAL = 3600 * 1000,

@@ -26,7 +26,7 @@ module.exports = function( grunt ) {
             all: [ "*.js", "src/js/**/*.js", "!src/js/extern.js" ]
         },
         prepWidgetSass: {
-            writePath: "src/sass/components/_widgets.scss",
+            writePath: "src/sass/component/_widgets.scss",
             widgetConfigPath: "src/js/config.json"
         },
         watch: {

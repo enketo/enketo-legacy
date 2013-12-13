@@ -7,4 +7,5 @@
 		<li>print-friendly</li>
 		<li>beautiful</li>
 	</ul>
+	<button class="close" aria-hidden="true">&times;</button>
 </aside>

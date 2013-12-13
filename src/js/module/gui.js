@@ -147,6 +147,10 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
                 '<a href="mailto:' + email + '?subject=xpath errors for: ' + location.href + '&body=' + error + '" target="_blank" >' + email + '</a>' +
                 ' with this error:<ul class="error-list"><li>' + error + '</li></ul>', 'Formula Error' );
         } );
+
+        $( '.ad .close' ).on( 'click', function() {
+            $( this ).closest( '.ad' ).remove();
+        } );
     }
 
     nav = {

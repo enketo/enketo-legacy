@@ -1,0 +1,89 @@
+$baseFontSize: 16px;
+$baseLineHeight: 20px;
+
+@import "component/common";
+@import "component/menu";
+@import "component/form_formhub";
+
+textarea.source {
+    @include border-box;
+    width: 100%;
+    height: 500px;
+    font-size: .8em;
+    padding: 5px;
+}
+
+label#data-template-show {
+    float: right;
+}
+
+#upload {
+    form {
+        text-align: center;
+        #input-switcher {
+            text-align: center;
+        }
+        fieldset {
+            position: relative;
+            height: 70px;
+            label {
+                text-align: center;
+                margin-top: 20px;
+                padding: 0 5%;
+                display: block;
+                z-index: 0;
+                width: 80%;
+                > span {
+                    display: block;
+                }
+                .fakefileinput span {
+                    vertical-align: middle;
+                }
+                input, .fakefileinput {
+                    position: absolute;
+                    box-sizing: border-box;
+                    top: 0;
+                    left: 0px;
+                    display: block;
+                    width: 100%;
+                    margin: 10px 0 10px 0;
+                    height: 100%;
+                    text-align: center;
+                    span {
+                        line-height: 60px;
+                    }
+                }
+                input[type=file] {
+                    visibility: hidden;
+                    z-index: 5;
+                }
+            }
+        }
+        .hurry {
+            font-size: .8em;
+            margin: 5em 0 3em 0;
+        }
+    }
+    progress {
+        margin: 30px auto 10px auto;
+    }
+    #form-list {
+        margin-top: 2em;
+        ul {
+            width: 100%;
+            list-style-type: none;
+        }
+    }
+}
+
+.tab-pane .form-language-selector {
+    padding-right: 0;
+    border-right: 0;
+    margin-top: -30px;
+    margin-right: -25px;
+}
+
+/*#launch form{
+  margin-top: 20px; 
+  input{
+    width: 300px; } }*/

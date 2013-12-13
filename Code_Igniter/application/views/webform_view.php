@@ -15,7 +15,7 @@
 
 
 		</head>
-	<body class="clearfix">
+	<body class="clearfix<?= (!empty($iframe)) ? ' iframe' : '' ?><?= (!empty($edit)) ? ' edit' : '' ?>">
 		
 	<? require 'elements/dialogs.php'; ?>
 	<? if (empty($return_url)) { require 'elements/side-slider.php'; } ?>

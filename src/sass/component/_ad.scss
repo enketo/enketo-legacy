@@ -1,0 +1,14 @@
+.ad {
+  position: absolute;
+  left: 30px;
+  top: 100px;
+  width: 250px;
+  padding: 7px;
+  @include border-radius(7px);
+  color: #777;
+  font-size: 14px;
+  border: 7px solid #e7e7e7;
+  background-color: #fcf8e3; }
+@media screen and (max-width: 1366px){
+  .ad {
+    display: none; } }

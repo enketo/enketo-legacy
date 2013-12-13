@@ -56,12 +56,12 @@ class Front extends CI_Controller {
 		
 		if (strlen($this->config->item('integrated')) > 0) {
 			$data['stylesheets'] = array(
-				array( 'href' => '/build/css/front.css', 'media' => 'screen')
+				array( 'href' => '/build/css/empty-front.css', 'media' => 'screen')
 			);
 			$this->load->view('front_view_bare', $data);
 		} else {
 			$data['stylesheets'] = array(
-				array( 'href' => '/build/css/private/front.css', 'media' => 'screen')
+				array( 'href' => '/build/css/front.css', 'media' => 'screen')
 			);
 			$this->load->view('private_views/front_view', $data);
 		}	

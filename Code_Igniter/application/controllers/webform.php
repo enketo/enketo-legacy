@@ -18,16 +18,6 @@
 
 class Webform extends CI_Controller {
 
-    private $default_stylesheets = array
-    (
-        array( 'href' => '/build/css/webform_grid.css', 'media' => 'all'),
-        array( 'href' => '/build/css/webform_grid_print.css', 'media' => 'print')
-    );
-    private $default_iframe_stylesheets = array
-    (
-        array( 'href' => '/build/css/webform_iframe.css', 'media' => 'all'),
-        array( 'href' => '/build/css/webform_print.css', 'media' => 'print')
-    );
     private $credentials = NULL;
 
     function __construct()
@@ -86,7 +76,8 @@ class Webform extends CI_Controller {
             'html_title' => $form->title,
             'form'=> $form->html,
             'form_data'=> $form->default_instance,
-            'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->_get_stylesheets($form->theme),
+            'iframe' => $this->iframe,
+            'stylesheets'=> $this->_get_stylesheets($form->theme),
             'server_url' => $this->server_url,
             'form_id' => $this->form_id,
             'logo_url' => $this->account->logo_url($this->server_url),
@@ -147,12 +138,11 @@ class Webform extends CI_Controller {
             'form_data'=> $form->default_instance,
             'form_data_to_edit' => $edit_obj->instance_xml,
             'return_url' => $edit_obj->return_url,
+            'iframe' => $this->iframe,
+            'edit' => true,
             'offline_storage' => FALSE,
             'logo_url' => $this->account->logo_url($this->server_url),
-            'stylesheets'=> $this->iframe ? array(
-                array( 'href' => '/build/css/webform_edit_iframe.css', 'media' => 'all'),
-                array( 'href' => '/build/css/webform_print.css', 'media' => 'print')
-            ) : $this->default_stylesheets
+            'stylesheets'=> $this->_get_stylesheets($form->theme)
         );
 
         $data['scripts'] = (ENVIRONMENT === 'production') 
@@ -207,8 +197,9 @@ class Webform extends CI_Controller {
             'form_data'=> $form->default_instance,
             'form_data_to_edit' => NULL,
             'return_url' => '/webform/thanks',
+            'iframe' => $this->iframe,
             'offline_storage' => FALSE,
-            'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
+            'stylesheets'=> $this->_get_stylesheets($form->theme),
             'logo_url' => $this->account->logo_url($this->server_url),
             'logout' => $this->credentials !== NULL
         );
@@ -239,7 +230,7 @@ class Webform extends CI_Controller {
             'form'=> '',
             'return_url' => NULL,
             'offline_storage' => FALSE,
-            'stylesheets'=> $this->iframe ? $this->default_iframe_stylesheets : $this->default_stylesheets,
+            'stylesheets'=> $this->_get_stylesheets(),
             'logo_url' => !empty($params['server']) ? $this->account->logo_url($params['server']) : $this->account->logo_url(),
             'logout' => $this->credentials !== NULL
         );
@@ -267,11 +258,11 @@ class Webform extends CI_Controller {
         redirect('/authenticate/login');
     }
 
-    private function _get_stylesheets($theme_requested)
+    private function _get_stylesheets($theme_requested = NULL)
     {
         $supported_themes = $this->config->item('themes');
 
-        $theme = ( in_array($theme_requested, $supported_themes) ) ? $theme_requested : $supported_themes[0];
+        $theme = ( $theme_requested && in_array($theme_requested, $supported_themes) ) ? $theme_requested : $supported_themes[0];
         
         return array (
             array( 'href' => '/build/css/webform_'.$theme.'.css', 'media' => 'all'),

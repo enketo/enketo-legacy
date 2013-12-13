@@ -46,9 +46,10 @@ module.exports = function( grunt ) {
                 },
                 files: [ {
                     expand: true,
-                    cwd: "src/scss",
-                    src: [ "**/*.scss", "!**/_*.scss", "!grid/**/*.scss" ],
+                    cwd: "src/sass",
+                    src: [ "**/*.scss", "!**/_*.scss" ],
                     dest: "public/build/css",
+                    flatten: true,
                     ext: ".css"
                 } ]
             }

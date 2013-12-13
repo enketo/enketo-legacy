@@ -1,15 +1,9 @@
 $baseFontSize: 16px;
 $baseLineHeight: 20px;
 
-@mixin font-bold {
-  @include default-bold; }
-
-@mixin font-normal {
-  @include default-normal; }
-
-@import "main";
-@import "menu";
-@import "layout";
+@import "component/common";
+@import "component/menu";
+@import "component/layout";
 
 #refresh-list{
     float: right;

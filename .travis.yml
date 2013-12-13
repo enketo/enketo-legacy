@@ -8,4 +8,4 @@ before_script:
 branches:
   except:
     - /^.*\.org.*$/
-    - sfi
+    - grid

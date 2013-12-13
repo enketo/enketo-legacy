@@ -30,7 +30,7 @@
 					</div>
 					<fieldset>
 						<label>
-							<div class="fakefileinput form-control"><span>Select XML Form File or drag it here</span></div>
+							<div class="fakefileinput form-control"><span>Click to Select XML Form File</span></div>
 							<div><input type="file" name="xml_file" /></div>
 						</label>
 						<label>

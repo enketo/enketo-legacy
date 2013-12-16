@@ -444,7 +444,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             //remove filesystem folder after successful submission
             $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {
-                if ( fileManager ) {
+                if ( fileManager && fileManager.isSupported() ) {
                     fileManager.deleteDir( instanceID );
                 }
                 if ( store ) {

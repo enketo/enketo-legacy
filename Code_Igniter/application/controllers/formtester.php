@@ -39,7 +39,7 @@ class Formtester extends CI_Controller {
 			$default_stylesheets = array
 			(
 				array( 'href' => '/build/css/formtester.css', 'media' => 'all'),
-				array( 'href' => 'build/css/webform_print.css', 'media' => 'print')
+				array( 'href' => 'build/css/webform_print_formhub.css', 'media' => 'print')
 			);
 
 			$data['scripts'] = (ENVIRONMENT === 'production') 

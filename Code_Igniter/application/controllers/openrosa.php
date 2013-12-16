@@ -34,7 +34,7 @@ class Openrosa extends CI_Controller {
 			'title_component'	=> '', 
 			'robots'			=>	TRUE,
 			'stylesheets'		=>	array( 
-				array('href' => '/build/css/private/openrosa.css', 'media' => 'screen')
+				array('href' => '/build/css/openrosa.css', 'media' => 'screen')
 			)
 		);
 		$this->load->view('private_views/openrosa_intro_view', $data);

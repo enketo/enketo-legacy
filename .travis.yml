@@ -9,3 +9,4 @@ branches:
   except:
     - /^.*\.org.*$/
     - grid
+    - production

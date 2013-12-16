@@ -126,7 +126,7 @@ class Form_model extends CI_Model {
                 //perform transformation to HTML5 form and get xslt messages
                 $result = $this->_xslt_transform($xml['doc'], $xsl_form['doc'], 'form');
                 //perform transformation to get instance
-                $data = $this->_xslt_transform($xml['doc'], $xsl_data['doc'], 'data');
+                $data = $this->_xslt_transform($xml['doc'], $xsl_data['doc'], 'model');
                 //perform fixes
                 $this->_fix_meta($data);
                 $this->_fix_lang($result);
@@ -306,7 +306,8 @@ class Form_model extends CI_Model {
         $proc = new XSLTProcessor;
         if (!$proc->hasExsltSupport()) {
             log_message('error', 'XSLT Processor at server has no EXSLT Support');
-        } else {   
+        } else { 
+            $start = microtime(true);
             //restore error handler to PHP to 'catch' libxml 'errors'
             restore_error_handler();
             libxml_use_internal_errors(true);
@@ -330,7 +331,9 @@ class Form_model extends CI_Model {
                 $result = simplexml_load_string($output);
                 //log_message('debug', 'form:'.$result->saveXML());         
             }
-            
+            array_push($errors, (object) array(
+                'message' => 'XML to HTML transformation for '.$name.' took '.round((microtime(true) - $start), 2).' seconds',
+                'level' => 0) ); 
             $errors = $this->_error_msg_process($errors);
             $result = $this->_add_errors($errors, 'xsltmessages', $result);         
         }       

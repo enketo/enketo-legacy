@@ -57,7 +57,7 @@ class Openrosa {
     {
         $header_arr = $this->_request_headers_and_info($submission_url);
 
-        if ($header_arr['X-Openrosa-Accept-Content-Length']) {
+        if (!empty($header_arr['X-Openrosa-Accept-Content-Length'])) {
             return $header_arr['X-Openrosa-Accept-Content-Length'];
         } else {
             log_message('error', 'expected X-OpenRosa-Accept-Content-Length header but only got: '

@@ -89,7 +89,11 @@ class Data extends CI_Controller {
 	{
 		$this->load->library('openrosa');
 		$submission_url = $this->Survey_model->get_form_submission_url();
-		echo $this->openrosa->request_max_size($submission_url);
+		if ($submission_url) {
+			$this->output->set_output($this->openrosa->request_max_size($submission_url));
+		} else {
+			show_404();
+		}
 	}
 }
 ?>

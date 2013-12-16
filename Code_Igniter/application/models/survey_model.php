@@ -43,32 +43,32 @@ class Survey_model extends CI_Model {
     //returns true if a requested survey or template exists and is active
     public function is_launched_survey()
     {     
-        return ($this->_get_item('subdomain', TRUE)) ? TRUE : FALSE;
+        return ($this->subdomain) ? ( ($this->_get_item('subdomain', TRUE)) ? TRUE : FALSE ) : NULL;
     }
     
     public function get_form_props()
     {
-        return $this->_get_items(array('server_url', 'form_id', 'hash', 'media_hash', 'xsl_version'), TRUE);
+        return ($this->subdomain) ? $this->_get_items(array('server_url', 'form_id', 'hash', 'media_hash', 'xsl_version'), TRUE) : NULL;
     }
 
     public function get_server_url()
     {
-        return $this->_get_item('server_url');
+        return ($this->subdomain) ? $this->_get_item('server_url') : NULL;
     }
 
     public function get_form_id()
     {        
-        return $this->_get_item('form_id');
+        return ($this->subdomain) ? $this->_get_item('form_id') : NULL;
     }
 
     public function get_data_url()
     {
-        return $this->_get_item('data_url');
+        return ($this->subdomain) ? $this->_get_item('data_url') : NULL;
     }
 
     public function get_form_submission_url()
     {
-        return $this->_get_item('submission_url');
+        return ($this->subdomain) ? $this->_get_item('submission_url') : NULL;
     }
 
     public function get_webform_url_if_launched($server_url, $form_id, $options = array('type' => NULL))

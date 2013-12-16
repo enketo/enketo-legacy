@@ -17,7 +17,7 @@
 define( [ 'jquery', 'enketo-js/extend' ], function( $ ) {
     "use strict";
 
-    var RESERVED_KEYS = [ '__settings', 'null', '__history', 'Firebug', 'undefined', '__bookmark', '__counter', '__current_server', '__loadLog', '__writetest' ],
+    var RESERVED_KEYS = [ '__settings', 'null', '__history', 'Firebug', 'undefined', '__bookmark', '__counter', '__current_server', '__loadLog', '__writetest', '__maxSize' ],
         localStorage = window.localStorage;
 
     // Could be replaced by Modernizr function if Modernizr remains used in final version

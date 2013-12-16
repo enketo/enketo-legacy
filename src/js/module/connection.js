@@ -18,7 +18,7 @@
  * Deals with communication to the server
  */
 
-define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
+define( [ 'gui', 'settings', 'store', 'jquery' ], function( gui, settings, store, $ ) {
     "use strict";
     var oRosaHelper, progress, maxSubmissionSize,
         that = this,
@@ -38,10 +38,15 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
 
     //init();
 
-    function init() {
-        //console.log('initializing Connection object');
+    /**
+     * Initialize the connection object
+     * @param  { boolean=} submissions whether or not to prepare the connection object to deal with submissions
+     */
+    function init( submissions ) {
         checkOnlineStatus();
-        _setMaxSubmissionSize();
+        if ( submissions ) {
+            _setMaxSubmissionSize();
+        }
         window.setInterval( function() {
             checkOnlineStatus();
         }, 15 * 1000 );
@@ -450,20 +455,37 @@ define( [ 'gui', 'settings', 'jquery' ], function( gui, settings, $ ) {
      */
     function _setMaxSubmissionSize() {
         var maxSize,
-            defaultMax = 5000000,
-            absoluteMax = 100 * 1024 * 1024;
+            storedMaxSize = store.getRecord( '__maxSize' ),
+            defaultMaxSize = 5000000,
+            absoluteMaxSize = 100 * 1024 * 1024;
         if ( typeof maxSubmissionSize == 'undefined' ) {
             $.ajax( '/data/max_size', {
                 type: 'GET',
                 timeout: 5 * 1000,
                 success: function( response ) {
                     maxSize = parseInt( response, 10 ) || defaultMax;
-                    //setting an absolute max as defined in enketo .htaccess file
-                    maxSize = ( maxSize > absoluteMax ) ? absoluteMax : maxSize;
-                    maxSubmissionSize = maxSize;
+                    if ( !isNaN( maxSize ) ) {
+                        // setting an absolute max corresponding to value in enketo .htaccess file
+                        maxSubmissionSize = ( maxSize > absoluteMaxSize ) ? absoluteMaxSize : maxSize;
+                        // make the value available to other modules without having to add complex dependencies
+                        $( document ).data( {
+                            "maxSubmissionSize": maxSubmissionSize
+                        } );
+                        // store the value persistently for offline use
+                        store.setRecord( '__maxSize', maxSubmissionSize );
+                    } else {
+                        console.error( '/data/max_size return a value that is not a number' );
+                    }
+                },
+                error: function( jqXHR ) {
+                    console.error( '/data/max_size returned an error', jqXHR );
                 }
             } );
-            maxSubmissionSize = defaultMax;
+
+            maxSubmissionSize = storedMaxSize || defaultMaxSize;
+            $( document ).data( {
+                "maxSubmissionSize": maxSubmissionSize
+            } );
         }
     }
 

@@ -1,0 +1,20 @@
+.form-footer {
+    .draft {
+    	@include font-normal;
+    	font-style: italic;
+        display: block;
+        width: 150px;
+        margin: 0 auto;
+    }
+    #submit-form, #submit-form-single, #validate-form, #launch-form {
+        display: block;
+        width: 150px;
+        position: static;
+        margin: 15px auto;
+    }
+    .logout {
+        display: block;
+        margin-top: 10px;
+        text-align: center;
+    }
+}

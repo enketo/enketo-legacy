@@ -1,4 +1,4 @@
-<div class="form-header clearfix">
+<header class="form-header clearfix">
 	<? 	
 		$this->load->helper('subdomain');
 		$subd = get_subdomain();
@@ -18,4 +18,4 @@
 	</a>
 	<button onclick="return false;" class="print"><img src="/images/print.png" alt="print button" title="Print this Form with Chrome or Safari"/></button>
 	<span class="form-language-selector"><span>Choose Language</span></span>
-</div>
+</header>

@@ -617,7 +617,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
     function positionPageAndBar() {
         console.log( 'positionPageAndBar called' );
         var fTop, pTop,
-            $header = $( 'header' ),
+            $header = $( 'header.navbar' ),
             hHeight = $header.outerHeight() || 0,
             $feedback = $( '#feedback-bar' ),
             fShowing = ( $feedback.find( 'p' ).length > 0 ) ? true : false,

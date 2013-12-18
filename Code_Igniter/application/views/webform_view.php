@@ -22,10 +22,8 @@
 		<div class="main">
 			<article class="paper" >
 				<? include_once 'elements/form-header.php'; ?>
-				<?= $form ?>	
-				<button id="<?= (!empty($return_url)) ? 'submit-form-single' : 'submit-form' ; ?>" class="btn btn-primary btn-large" ><i class="icon-ok icon-white"></i> Submit</button>
-				<? include_once 'elements/enketo-power.php'; ?>
-				<? include 'elements/logout.php'; ?>
+				<?= $form ?>
+				<? include_once 'elements/form-footer.php'; ?>
 			</article>
 		</div>
 

@@ -42,7 +42,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             form = new Form( formSelector, defaultModelStr, instanceStrToEdit );
 
-            //for debugging
+            // DEBUG
             //window.form = form;
             //window.gui = gui;
 
@@ -104,6 +104,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 };
                 gui.confirm( message, choices );
             } else {
+                setDraftStatus( false );
                 form.resetHTML();
                 form = new Form( 'form.or:eq(0)', defaultModelStr );
                 form.init();
@@ -122,42 +123,49 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
          */
 
         function submitForm() {
-            var record, name, saveResult;
+            var record, name, saveResult,
+                draft = getDraftStatus();
             $form.trigger( 'beforesave' );
             if ( !form.isValid() ) {
                 gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
                 return;
             }
             record = {
-                'data': form.getDataStr( true, true ),
-                'ready': true
+                'draft': draft,
+                'data': form.getDataStr( true, true )
             };
-            name = form.getName() + ' - ' + store.getCounterValue();
+            name = form.getRecordName() || form.getSurveyName() + ' - ' + store.getCounterValue();
             saveResult = store.setRecord( name, record, false, false );
 
             console.log( 'result of save: ' + saveResult );
             if ( saveResult === 'success' ) {
-                gui.feedback( 'Record queued for submission.', 3 );
                 resetForm( true );
                 $form.trigger( 'save', JSON.stringify( store.getRecordList() ) );
-                //attempt uploading the data (all data in localStorage)
-                //TODO: THIS (force=true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
-                //TODO: add second parameter getCurrentRecordName() to prevent currenty open record from being submitted
-                //connection.uploadRecords(store.getSurveyDataArr(true), true);
-                prepareFormDataArray(
-                    //store.getSurveyDataArr(true),
-                    {
-                        name: name,
-                        data: record.data
-                    }, {
-                        success: function( formDataArr ) {
-                            connection.uploadRecords( formDataArr, true );
-                        },
-                        error: function() {
-                            gui.alert( 'Something went wrong while trying to prepare the record(s) for uploading.', 'Record Error' );
+                if ( !draft ) {
+                    //try to send the record immediately
+                    gui.feedback( 'Record queued for submission.', 3 );
+
+                    //attempt uploading the data (all data in localStorage)
+                    //TODO: THIS (force=true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
+                    //TODO: add second parameter getCurrentRecordName() to prevent currenty open record from being submitted
+                    //connection.uploadRecords(store.getSurveyDataArr(true), true);
+                    prepareFormDataArray(
+                        //store.getSurveyDataArr(true),
+                        {
+                            name: name,
+                            data: record.data
+                        }, {
+                            success: function( formDataArr ) {
+                                connection.uploadRecords( formDataArr, true );
+                            },
+                            error: function() {
+                                gui.alert( 'Something went wrong while trying to prepare the record(s) for uploading.', 'Record Error' );
+                            }
                         }
-                    }
-                );
+                    );
+                } else {
+                    gui.feedback( 'Record stored as draft.', 3 );
+                }
             } else {
                 gui.alert( 'Error trying to save data locally before submitting (message: ' + saveResult + ')' );
             }
@@ -388,6 +396,13 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                         return false;
                     }, 100 );
                 } );
+
+
+            $( '.form-footer [name="draft"]' ).on( 'change', function() {
+                var text = ( $( this ).prop( 'checked' ) ) ? "Save Draft" : "Submit";
+                $( '#submit-form' ).text( text );
+            } );
+
             $( document ).on( 'click', 'button#validate-form:not(.disabled)', function() {
                 //$form.trigger('beforesave');
                 if ( typeof form !== 'undefined' ) {
@@ -407,8 +422,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             $( document ).on( 'click', '.export-records', function() {
                 var dataArr, dataStr, server,
                     finalOnly = true,
-                    fileName = form.getName() + '_data_backup.xml';
-                dataArr = store.getSurveyDataOnlyArr( finalOnly ); //store.getSurveyDataXMLStr(finalOnly));
+                    fileName = form.getSurveyName() + '_data_backup.xml';
+                dataArr = store.getSurveyDataOnlyArr( false ); //store.getSurveyDataXMLStr(finalOnly));
                 if ( !dataArr || dataArr.length === 0 ) {
                     gui.alert( 'No records in queue. The records may have been successfully submitted already.' );
                 } else {
@@ -433,14 +448,14 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 }
             } );
 
-            $( '#form-controls button' ).toLargestWidth();
+            //$( '#form-controls button' ).toLargestWidth();
 
             $( document ).on( 'save delete', 'form.or', function( e, formList ) {
                 console.debug( 'save or delete event detected with new formlist: ', formList );
                 updateRecordList( JSON.parse( formList ) );
             } );
 
-            $( '#dialog-save' ).hide();
+            //$( '#dialog-save' ).hide();
 
             //remove filesystem folder after successful submission
             $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {
@@ -456,7 +471,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
         //update the survey forms names list
         function updateRecordList( recordList, $page ) {
-            var name, i, $li,
+            var name, draft, i, $li,
                 $buttons = $( '.side-slider .upload-records, .side-slider .export-records' ),
                 $list = $( '.side-slider .record-list' );
 
@@ -482,15 +497,18 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             if ( recordList.length > 0 ) {
                 $list.find( '.no-records' ).remove();
                 $buttons.removeAttr( 'disabled' );
-                for ( i = 0; i < recordList.length; i++ ) {
+                recordList.forEach( function( record, i ) {
                     name = recordList[ i ].key;
+                    draft = recordList[ i ].draft;
                     if ( $list.find( '[name="' + name + '"]' ).length === 0 ) {
                         $li = $( '<li class="record"></li' );
                         $li.text( name ); // encodes string to html
                         $li.attr( 'name', name );
+                        $li.attr( 'data-draft', draft );
+                        $li.prepend( '<button class="open btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span></button>' );
                         $list.append( $li );
                     }
-                }
+                } );
             } else {
                 $buttons.attr( 'disabled', 'disabled' );
                 if ( $list.find( '.no-records' ).length === 0 ) {
@@ -498,6 +516,22 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 }
             }
         }
+
+        function setDraftStatus( status ) {
+            $( '.form-footer [name="draft"]' ).prop( 'checked', status );
+        }
+
+        function getDraftStatus() {
+            return $( '.form-footer [name="draft"]' ).prop( 'checked' );
+        }
+
+        /*function setFormName( name ) {
+            $( 'form.or' ).attr( 'name', name );
+        }
+
+        function getFormName( name ) {
+            $( 'form.or' ).attr( 'name' );
+        }*/
 
         /**
          * splits an array of file sizes into batches (for submission) based on a limit

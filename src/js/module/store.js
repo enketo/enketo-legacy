@@ -148,24 +148,22 @@ define( [ 'jquery', 'enketo-js/extend' ], function( $ ) {
     }
 
     /**
-     * returns an ordered array of objects with record keys and final variables {{"key": "name1", "final": true},{"key": "name2", etc.
+     * returns an ordered array of objects with record keys and final variables {{"key": "name1", "draft": true},{"key": "name2", etc.
      * @return { Array.<Object.<string, (boolean|string)>>} [description]
      */
     function getRecordList() {
-        var i, ready, record,
-            formList = [],
+        var formList = [],
             records = getSurveyRecords( false );
-        //console.log('data received:'+JSON.stringify(data)); // DEBUG
-        for ( i = 0; i < records.length; i++ ) {
-            record = records[ i ];
-            //record['ready'] = (record['ready']=== 'true' || record['ready'] === true) ? true : false;
+
+        records.forEach( function( record ) {
             formList.push( {
-                key: record[ 'key' ],
-                'ready': record[ 'ready' ],
-                'lastSaved': record[ 'lastSaved' ]
+                'key': record.key,
+                'draft': record.draft,
+                'lastSaved': record.lastSaved
             } );
-        }
-        console.debug( 'formList returning ' + formList.length + ' items' ); //DEBUG
+        } );
+        console.debug( 'formList returning:', formList );
+
         //order formList by lastSaved timestamp
         formList.sort( function( a, b ) {
             return a[ 'lastSaved' ] - b[ 'lastSaved' ];
@@ -185,25 +183,25 @@ define( [ 'jquery', 'enketo-js/extend' ], function( $ ) {
             record = {};
         finalOnly = finalOnly || false;
         excludeName = excludeName || null;
-
+        console.log( 'finalOnly:', finalOnly );
         for ( i = 0; i < localStorage.length; i++ ) {
             key = localStorage.key( i );
             //console.debug('found record with with key:'+key);
-            record = getRecord( key ); //localStorage.getItem(key);
+            record = getRecord( key );
             // get record - all non-reserved keys contain survey data
             if ( !isReservedKey( key ) ) {
                 //console.debug('record with key: '+key+' is survey data');
                 try {
                     /* although the key is also available as one of the record properties
-            this should not be relied upon and the actual storage key should be used */
+                        this should not be relied upon and the actual storage key should be used */
                     record.key = key;
-                    //=== true comparison breaks in Google Closure compiler. Should probably be called with --output_wrapper to prevent this (but not possible in ANT?)
-                    //alternatively, the complete code could perhaps be wrapped in an anonymous function (except declaration of globals?)
-                    if ( key !== excludeName && ( !finalOnly || record[ 'ready' ] === 'true' || record[ 'ready' ] === true ) ) { //} && (record.key !== form.getKey()) ){
+                    console.log( 'record:', record, key, excludeName, !finalOnly, !record.draft );
+                    //=== true comparison breaks in Google Closure compiler.
+                    if ( key !== excludeName && ( !finalOnly || !record.draft ) ) {
                         records.push( record );
                     }
                 } catch ( e ) {
-                    console.log( 'record found that was probably not in the correct JSON format' +
+                    console.log( 'record found that was probably not in the expected JSON format' +
                         ' (e.g. Firebug settings or corrupt record) (error: ' + e.message + '), record was ignored' );
                 }
             }
@@ -221,13 +219,15 @@ define( [ 'jquery', 'enketo-js/extend' ], function( $ ) {
     function getSurveyDataArr( finalOnly, excludeName ) {
         var i, records,
             dataArr = [];
+        console.log( 'finalOnly:', finalOnly );
         finalOnly = finalOnly || true;
+        excludeName = excludeName || null;
         records = getSurveyRecords( finalOnly, excludeName );
         //console.debug('getSurveyDataArr will build array from these records: '+JSON.stringify(records));
         for ( i = 0; i < records.length; i++ ) {
             dataArr.push( {
                 name: records[ i ].key,
-                data: records[ i ][ 'data' ]
+                data: records[ i ].data
             } ); //[records[i].key, records[i].data]
         }
         //console.debug('returning data array: '+JSON.stringify(dataArr));

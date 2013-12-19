@@ -43,7 +43,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             form = new Form( formSelector, defaultModelStr, instanceStrToEdit );
 
             // DEBUG
-            //window.form = form;
+            window.form = form;
             //window.gui = gui;
 
             //initialize form and check for load errors
@@ -105,11 +105,165 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 gui.confirm( message, choices );
             } else {
                 setDraftStatus( false );
-                form.resetHTML();
+                form.resetView();
                 form = new Form( 'form.or:eq(0)', defaultModelStr );
+                //DEBUG
+                window.form = form;
                 form.init();
                 $form = form.getView().$;
                 $( 'button#delete-form' ).button( 'disable' );
+            }
+        }
+
+
+        function loadForm( recordName, confirmed ) {
+            var record, texts, choices, loadErrors;
+
+            if ( !confirmed && form.getEditStatus() ) {
+                texts = {
+                    msg: 'Would you like to proceed <strong>without saving changes</strong> to the form you were working on?',
+                    heading: 'You have unsaved changes'
+                };
+                choices = {
+                    posAction: function() {
+                        loadForm( recordName, true );
+                    }
+                };
+                gui.confirm( texts, choices );
+            } else {
+                record = store.getRecord( recordName );
+                //enters that data in the form on the screen
+                // *OLD*checkForOpenForm(true);
+                if ( record && record.data ) {
+                    //var success = form.setData(data);
+                    form.resetView();
+                    //gui.closePage();
+                    form = new Form( formSelector, defaultModelStr, record.data );
+                    loadErrors = form.init();
+
+                    if ( loadErrors.length > 0 ) {
+                        console.error( 'load errors:', loadErrors );
+                        gui.showLoadErrors( loadErrors, 'It is recommended <strong>not to edit this record</strong> until this is resolved.' );
+                    }
+
+                    //form.setRecordStatus(record.ready);
+                    //Avoid uploading of currently open form by setting edit status in STORE to false. To be re-considered if this is best approach.
+                    //store.setRecordStatus(formName, false);
+                    form.setRecordName( recordName );
+                    //console.log('displaying loaded form data succes?: '+success); // DEBUG
+                    $( '.side-slider .handle.close' ).click();
+                    $( 'button#delete-form' ).button( 'enable' );
+                    //if(!success){
+                    //gui.alert('Error loading form. Saved data may be corrupted');
+                    //}
+                    //else
+                    gui.feedback( '"' + recordName + '" has been loaded', 2 );
+                } else {
+                    gui.alert( 'Record could not be retrieved or contained no data.' );
+                }
+            }
+        }
+
+        function saveForm( recordName, confirmed, error ) {
+            var texts, choices, record, saveResult, overwrite,
+                draft = getDraftStatus();
+
+            console.log( 'saveForm called with', recordName, confirmed, error );
+
+            //triggering before save to update possible 'end' timestamp in form
+            $form.trigger( 'beforesave' );
+
+            confirmed = confirmed || false;
+            recordName = recordName || form.getRecordName() || form.getSurveyName() + ' - ' + store.getCounterValue();
+
+            if ( !recordName ) {
+                return console.error( 'No record name could be created.' );
+            }
+
+            if ( !draft && form.validate() ) {
+                gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
+                return;
+            }
+
+            if ( draft && !confirmed ) {
+                texts = {
+                    dialog: 'save',
+                    msg: '',
+                    heading: 'Save as a Draft'
+                };
+                choices = {
+                    posButton: 'Save & Close',
+                    negButton: 'Cancel',
+                    posAction: function( values ) {
+                        // if the record is new or
+                        // if the record was previously loaded from storage and saved under the same name
+                        if ( !form.getRecordName() || form.getRecordName() === values[ 'record-name' ] ) {
+                            return saveForm( values[ 'record-name' ], true );
+                        } else {
+                            gui.confirm(
+                                'Re'
+                            );
+                        }
+
+                    },
+                    negAction: function() {
+                        return false;
+                    },
+                    beforeAction: function() {
+                        /*if ( !form.isValid() ) {
+                            console.log( 'form invalid' );
+                            $saveConfirm.find( '[name="record-final"]' ).attr( 'disabled', 'disabled' );
+                            //add new records
+                            if ( recordList.length > 0 ) {
+                                $list.find( '.no-records' ).remove();
+                                $buttons.removeAttr( 'disabled' );
+                                for ( i = 0; i < recordList.length; i++ ) {
+                                    name = recordList[ i ].key;
+                                    if ( $list.find( '[name="' + name + '"]' ).length === 0 ) {
+                                        $li = $( '<li class="record"></li' );
+                                        $li.text( name ); // encodes string to html
+                                        $li.attr( 'name', name );
+                                        $list.append( $li );
+                                    }
+                                } else {
+                                    console.log( 'form valid' );
+                                    $saveConfirm.find( '[name="record-final"]' ).removeAttr( 'disabled' );
+                                } else {
+                                    $buttons.attr( 'disabled', 'disabled' );
+                                    if ( $list.find( '.no-records' ).length === 0 ) {
+                                        $list.append( '<li class="no-records">no records queued</li>' );
+                                    }
+                                }
+                            }
+                        }*/
+                    }
+                };
+                gui.confirm( texts, choices, {
+                    'record-name': recordName
+                } );
+            } else {
+                record = {
+                    'draft': draft,
+                    'data': form.getDataStr( true, true )
+                };
+                overwrite = form.getRecordName() === recordName;
+                saveResult = store.setRecord( recordName, record, false, overwrite );
+
+                console.log( 'saveResult', saveResult );
+                if ( saveResult === 'success' ) {
+                    resetForm( true );
+                    $form.trigger( 'save', JSON.stringify( store.getRecordList() ) );
+
+                    if ( draft ) {
+                        gui.feedback( 'Record stored as draft.', 3 );
+                    } else {
+                        //try to send the record immediately
+                        gui.feedback( 'Record queued for submission.', 3 );
+                        submitOneForced( recordName, record );
+                    }
+                } else {
+                    gui.alert( 'Error trying to save data locally (message: ' + saveResult + ')' );
+                }
             }
         }
 
@@ -122,54 +276,33 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
          * resetForm() does not function as expected.
          */
 
-        function submitForm() {
-            var record, name, saveResult,
-                draft = getDraftStatus();
+        /*function submitForm() {
+            var record, name, saveResult;
+
+            console.log( 'submitForm called' );
+            //triggering before save to update possible 'end' timestamp in form
             $form.trigger( 'beforesave' );
+
             if ( !form.isValid() ) {
                 gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
                 return;
             }
-            record = {
-                'draft': draft,
-                'data': form.getDataStr( true, true )
-            };
-            name = form.getRecordName() || form.getSurveyName() + ' - ' + store.getCounterValue();
-            saveResult = store.setRecord( name, record, false, false );
 
-            console.log( 'result of save: ' + saveResult );
-            if ( saveResult === 'success' ) {
-                resetForm( true );
-                $form.trigger( 'save', JSON.stringify( store.getRecordList() ) );
-                if ( !draft ) {
-                    //try to send the record immediately
-                    gui.feedback( 'Record queued for submission.', 3 );
+            saveResult = saveForm( undefined, true );
+
+            if ( typeof saveResult === 'object' ) {
+                record = saveResult;
+                //this function is only called for non-draft records, but let's make the code more robust by checking anyway
+                if ( !getDraftStatus() ) {
+
 
                     //attempt uploading the data (all data in localStorage)
-                    //TODO: THIS (force=true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
-                    //TODO: add second parameter getCurrentRecordName() to prevent currenty open record from being submitted
-                    //connection.uploadRecords(store.getSurveyDataArr(true), true);
-                    prepareFormDataArray(
-                        //store.getSurveyDataArr(true),
-                        {
-                            name: name,
-                            data: record.data
-                        }, {
-                            success: function( formDataArr ) {
-                                connection.uploadRecords( formDataArr, true );
-                            },
-                            error: function() {
-                                gui.alert( 'Something went wrong while trying to prepare the record(s) for uploading.', 'Record Error' );
-                            }
-                        }
-                    );
+
                 } else {
-                    gui.feedback( 'Record stored as draft.', 3 );
+                    console.error( 'submitForm() was called for a record marked as Draft. It shouldn\'t have been!' );
                 }
-            } else {
-                gui.alert( 'Error trying to save data locally before submitting (message: ' + saveResult + ')' );
             }
-        }
+        }*/
 
         /**
          * Used to submit a form with data that was loaded by POST. This function does not save the record in localStorage
@@ -227,6 +360,25 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     }
                 }
             );
+        }
+
+        function submitOneForced( recordName, record ) {
+            // TODO: THIS (force=true) NEEDS TO CHANGE AS IT WOULD BE ANNOYING WHEN ENTERING LOTS OF RECORDS WHILE OFFLINE
+            // as long as it is not possible to open 'final' records, the only thing we need to check is:
+            // whether it is marked as draft (an open record will never be offered for upload)
+            if ( !record.draft ) {
+                prepareFormDataArray( {
+                    name: recordName,
+                    data: record.data
+                }, {
+                    success: function( formDataArr ) {
+                        connection.uploadRecords( formDataArr, true );
+                    },
+                    error: function() {
+                        gui.alert( 'Something went wrong while trying to prepare the record(s) for uploading.', 'Record Error' );
+                    }
+                } );
+            }
         }
 
         function submitQueue() {
@@ -377,9 +529,9 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 .click( function() {
                     var $button = $( this );
                     $button.btnBusyState( true );
+                    // this timeout is to slow down the GUI a bit, UX
                     setTimeout( function() {
-                        form.validate();
-                        submitForm();
+                        saveForm();
                         $button.btnBusyState( false );
                         return false;
                     }, 100 );
@@ -448,6 +600,10 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 }
             } );
 
+            $( document ).on( 'click', '.record-list [data-draft="true"]', function() {
+                loadForm( $( this ).closest( '.record' ).attr( 'name' ), false );
+            } );
+
             //$( '#form-controls button' ).toLargestWidth();
 
             $( document ).on( 'save delete', 'form.or', function( e, formList ) {
@@ -500,14 +656,19 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 recordList.forEach( function( record, i ) {
                     name = recordList[ i ].key;
                     draft = recordList[ i ].draft;
-                    if ( $list.find( '[name="' + name + '"]' ).length === 0 ) {
+                    $li = $list.find( '[name="' + name + '"]' );
+                    // add a new item when necessary
+                    if ( $li.length === 0 ) {
                         $li = $( '<li class="record"></li' );
                         $li.text( name ); // encodes string to html
                         $li.attr( 'name', name );
-                        $li.attr( 'data-draft', draft );
-                        $li.prepend( '<button class="open btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span></button>' );
                         $list.append( $li );
                     }
+                    // update record status for new or existing records
+                    $li.attr( 'data-draft', draft );
+                    //if ( draft ) {
+                    //    $li.prepend( '<button class="open btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span></button>' );
+                    //}
                 } );
             } else {
                 $buttons.attr( 'disabled', 'disabled' );
@@ -518,7 +679,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
         }
 
         function setDraftStatus( status ) {
-            $( '.form-footer [name="draft"]' ).prop( 'checked', status );
+            $( '.form-footer [name="draft"]' ).prop( 'checked', status ).trigger( 'change' );
         }
 
         function getDraftStatus() {

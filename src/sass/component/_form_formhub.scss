@@ -6,6 +6,6 @@ $input-max-width: 80%;
 
 @import '../../../public/lib/enketo-core/src/sass/core/layout';
 @import '../../../public/lib/enketo-core/src/sass/core/main';
-@import 'widgets';
 @import '../../../public/lib/enketo-core/src/sass/core/responsive';
-@import '../../../public/lib/enketo-core/src/sass/formhub/_theme';
+@import 'widgets';
+@import '../../../public/lib/enketo-core/src/sass/formhub/theme';

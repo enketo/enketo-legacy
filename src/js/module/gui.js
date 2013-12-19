@@ -330,7 +330,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             confirm( {
                 msg: message,
                 heading: heading
-            }, choices, duration );
+            }, choices, null, duration );
         } else {
             alert( message, heading, 'info', duration );
         }
@@ -394,7 +394,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
      *   @param {Object=} choices - [type/description]
      *   @param {number=} duration duration in seconds after which dialog should self-destruct
      */
-    function confirm( texts, choices, duration ) {
+    function confirm( texts, choices, values, duration ) {
         var msg, heading, errorMsg, closeFn, dialogName, $dialog, timer;
 
         if ( typeof texts === 'string' ) {
@@ -403,11 +403,12 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             msg = texts.msg;
         }
 
-        msg = ( typeof msg !== 'undefined' ) ? msg : 'Please confirm action';
-        heading = ( typeof texts.heading !== 'undefined' ) ? texts.heading : 'Are you sure?';
-        errorMsg = ( typeof texts.errorMsg !== 'undefined' ) ? texts.errorMsg : '';
-        dialogName = ( typeof texts.dialog !== 'undefined' ) ? texts.dialog : 'confirm';
-        choices = ( typeof choices !== 'undefined' ) ? choices : {};
+        msg = msg || 'Please confirm action';
+        heading = texts.heading || 'Are you sure?';
+        errorMsg = texts.errorMsg || '';
+        dialogName = texts.dialog || 'confirm';
+        values = values || {};
+        choices = choices || {};
         choices.posButton = choices.posButton || 'Confirm';
         choices.negButton = choices.negButton || 'Cancel';
         choices.posAction = choices.posAction || function() {
@@ -427,6 +428,10 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         if ( !errorMsg ) {
             $dialog.find( '.modal-body .alert-danger' ).hide();
         }
+        $dialog.find( 'input, select, textarea' ).each( function() {
+            var name = $( this ).attr( 'name' );
+            $( this ).val( values[ name ] || '' );
+        } );
 
         //instantiate dialog
         $dialog.modal( {
@@ -440,7 +445,13 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         } );
 
         $dialog.find( 'button.positive' ).on( 'click', function() {
-            choices.posAction.call();
+            var values = {};
+            $( this ).closest( '.modal-dialog' ).find( 'input, select, textarea' ).each( function() {
+                if ( $( this ).attr( 'name' ) ) {
+                    values[ $( this ).attr( 'name' ) ] = $( this ).val();
+                }
+            } );
+            choices.posAction.call( undefined, values );
             $dialog.modal( 'hide' );
         } ).text( choices.posButton );
 
@@ -491,6 +502,8 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
 
 	 */
     }
+
+
 
     /**
      * Shows modal asking for confirmation to redirect to login screen

@@ -41,7 +41,7 @@
 	</div>
 </div>
 
-<div id="dialog-save" class="dialog" style="display: none;">
+<div id="dialog-save" class="modal fade">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -50,14 +50,17 @@
 			</div>
 			<div class="modal-body">
 				<form onsubmit="return false;">
-					<span class="alert alert-info"></span>
 					<span class="alert alert-danger"></span>
-					<label>name:<input name="record-name" type="text"/></label>
-					<label><input name="record-final" type="checkbox" value="true"/><span>final</span></label>
+					<label class="question">
+						<span class="question-label active">Record Name</span>
+						<span class="or-hint active">This name allows you to easily find your draft record to finish it later. The record name will not be submitted to the server.</span>
+						<input name="record-name" type="text" required="required"/>
+					</label>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+				<button class="negative btn">Close</button>
+				<button class="positive btn btn-primary">Save &amp; Close</button>
 			</div>
 		</div>
 	</div>

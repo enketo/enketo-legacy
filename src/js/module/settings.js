@@ -38,6 +38,9 @@ define( [], function() {
             q: 'server',
             s: 'serverURL'
         }, {
+            q: 'serverURL',
+            s: 'serverURL'
+        }, {
             q: 'form',
             s: 'formURL'
         }, {

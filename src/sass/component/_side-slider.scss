@@ -48,7 +48,7 @@
         &[data-draft=true]{
           border-style: dotted;
           color: #eeeeee;
-          &:hover {
+          &:hover, &.active {
             background: #666666;
             color: white;
           }
@@ -60,6 +60,11 @@
             color: #aaaaaa; }
           &:hover::before {
             color: white;
+          }
+          &.active::before {
+            content: "\e092";
+            color: white;
+            //color: #59DA85;
           }
         }
     }
@@ -84,6 +89,9 @@
     h3 {
         color: white;
     }
+    .button-bar {
+        margin: 20px 0 33px 0;
+    }
     .handle {
         font-family: arial, sans-serif;
         position: fixed;
@@ -98,10 +106,19 @@
         @include scale-xy(0.6, 2);
         &.open {
             color: #888888;
-            left: 12px;
+            left: 10px;
+            &:hover {
+                color: #000000;
+                font-weight: bold;
+            }
         }
         &.close {
+            color: #aaaaaa;
             left: -15px;
+            &:hover {
+                color: #ffffff;
+                font-weight: bold;
+            }
         }
     }
 }
@@ -116,7 +133,7 @@
             }
             &.close {
                 @include transition-fast;
-                left: 225px;
+                left: 227px;
             }
         }
     }

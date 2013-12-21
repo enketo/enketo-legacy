@@ -43,7 +43,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             form = new Form( formSelector, defaultModelStr, instanceStrToEdit );
 
             // DEBUG
-            window.form = form;
+            //window.form = form;
             //window.gui = gui;
 
             //initialize form and check for load errors
@@ -66,10 +66,11 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     '(even if you turn off your computer or go offline).</p>' +
                     '<progress class="upload-progress"></progress>' +
                     '<ul class="record-list"></ul>' +
-                    '<p><button class="btn export-records">Export</button>' +
-                    '<button class="btn btn-primary pull-right upload-records">Upload</button></p>' +
-                    '<p>Queued records are uploaded <em>automatically, in the background</em> every 5 minutes when this page is open ' +
-                    'and an internet connection is available. To force an upload in between automatic tries, click Upload.</p>' );
+                    '<div class="button-bar"><button class="btn export-records">Export</button>' +
+                    '<button class="btn btn-primary pull-right upload-records">Upload</button></div>' +
+                    '<p>Queued records, except those marked as <em>draft</em> ( <span class="glyphicon glyphicon-pencil"></span> ) ' +
+                    'are uploaded <strong>automatically</strong>, in the background every 5 minutes when this page is open ' +
+                    'and an Internet connection is available. To force an upload in between automatic tries, click Upload.</p>' );
                 //trigger fake save event to update formlist in slider
                 $form.trigger( 'save', JSON.stringify( store.getRecordList() ) );
             }
@@ -105,6 +106,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 gui.confirm( message, choices );
             } else {
                 setDraftStatus( false );
+                updateActiveRecord( null );
                 form.resetView();
                 form = new Form( 'form.or:eq(0)', defaultModelStr );
                 //DEBUG
@@ -121,10 +123,11 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             if ( !confirmed && form.getEditStatus() ) {
                 texts = {
-                    msg: 'Would you like to proceed <strong>without saving changes</strong> to the form you were working on?',
-                    heading: 'You have unsaved changes'
+                    msg: 'The current form has unsaved changes. Would you like to load a record <strong>without saving changes</strong> to the form you were working on?',
+                    heading: 'Unsaved edits'
                 };
                 choices = {
+                    posButton: 'Proceed without saving',
                     posAction: function() {
                         loadForm( recordName, true );
                     }
@@ -145,11 +148,12 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                         console.error( 'load errors:', loadErrors );
                         gui.showLoadErrors( loadErrors, 'It is recommended <strong>not to edit this record</strong> until this is resolved.' );
                     }
-
+                    updateActiveRecord( recordName );
                     //form.setRecordStatus(record.ready);
                     //Avoid uploading of currently open form by setting edit status in STORE to false. To be re-considered if this is best approach.
                     //store.setRecordStatus(formName, false);
                     form.setRecordName( recordName );
+
                     //console.log('displaying loaded form data succes?: '+success); // DEBUG
                     $( '.side-slider .handle.close' ).click();
                     $( 'button#delete-form' ).button( 'enable' );
@@ -168,12 +172,12 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             var texts, choices, record, saveResult, overwrite,
                 draft = getDraftStatus();
 
-            console.log( 'saveForm called with', recordName, confirmed, error );
+            console.log( 'saveForm called with recordname:', recordName, 'confirmed:', confirmed, "error:", error, 'draft:', draft );
 
             //triggering before save to update possible 'end' timestamp in form
             $form.trigger( 'beforesave' );
 
-            confirmed = confirmed || false;
+            confirmed = ( typeof confirmed !== 'undefined' ) ? confirmed : false;
             recordName = recordName || form.getRecordName() || form.getSurveyName() + ' - ' + store.getCounterValue();
 
             if ( !recordName ) {
@@ -189,7 +193,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 texts = {
                     dialog: 'save',
                     msg: '',
-                    heading: 'Save as a Draft'
+                    heading: 'Save as a Draft',
+                    errorMsg: error
                 };
                 choices = {
                     posButton: 'Save & Close',
@@ -198,44 +203,20 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                         // if the record is new or
                         // if the record was previously loaded from storage and saved under the same name
                         if ( !form.getRecordName() || form.getRecordName() === values[ 'record-name' ] ) {
-                            return saveForm( values[ 'record-name' ], true );
+                            saveForm( values[ 'record-name' ], true );
                         } else {
-                            gui.confirm(
-                                'Re'
-                            );
+                            gui.confirm( {
+                                msg: 'Are you sure you want to rename "' + form.getRecordName() +
+                                    '"" to "' + values[ 'record-name' ] + '"?'
+                            }, {
+                                posAction: function() {
+                                    saveForm( values[ 'record-name' ], true );
+                                }
+                            } );
                         }
-
                     },
                     negAction: function() {
                         return false;
-                    },
-                    beforeAction: function() {
-                        /*if ( !form.isValid() ) {
-                            console.log( 'form invalid' );
-                            $saveConfirm.find( '[name="record-final"]' ).attr( 'disabled', 'disabled' );
-                            //add new records
-                            if ( recordList.length > 0 ) {
-                                $list.find( '.no-records' ).remove();
-                                $buttons.removeAttr( 'disabled' );
-                                for ( i = 0; i < recordList.length; i++ ) {
-                                    name = recordList[ i ].key;
-                                    if ( $list.find( '[name="' + name + '"]' ).length === 0 ) {
-                                        $li = $( '<li class="record"></li' );
-                                        $li.text( name ); // encodes string to html
-                                        $li.attr( 'name', name );
-                                        $list.append( $li );
-                                    }
-                                } else {
-                                    console.log( 'form valid' );
-                                    $saveConfirm.find( '[name="record-final"]' ).removeAttr( 'disabled' );
-                                } else {
-                                    $buttons.attr( 'disabled', 'disabled' );
-                                    if ( $list.find( '.no-records' ).length === 0 ) {
-                                        $list.append( '<li class="no-records">no records queued</li>' );
-                                    }
-                                }
-                            }
-                        }*/
                     }
                 };
                 gui.confirm( texts, choices, {
@@ -247,7 +228,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     'data': form.getDataStr( true, true )
                 };
                 overwrite = form.getRecordName() === recordName;
-                saveResult = store.setRecord( recordName, record, false, overwrite );
+                saveResult = store.setRecord( recordName, record, true, overwrite, form.getRecordName() );
 
                 console.log( 'saveResult', saveResult );
                 if ( saveResult === 'success' ) {
@@ -261,48 +242,13 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                         gui.feedback( 'Record queued for submission.', 3 );
                         submitOneForced( recordName, record );
                     }
+                } else if ( saveResult === 'require' || saveResult === 'existing' || saveResult === 'forbidden' ) {
+                    saveForm( undefined, false, 'Record name "' + recordName + '" already exists (or is not allowed). The record was not saved.' );
                 } else {
                     gui.alert( 'Error trying to save data locally (message: ' + saveResult + ')' );
                 }
             }
         }
-
-        /**
-         * Currently, this is a simplified version of 'saveForm' for situations where localStorage is only used as a queue, without saved data loading
-         * functionality. It only allows validated forms to be submitted. 'Submitted' in this case actually still means it is saved to localStorage first
-         * and then forced to upload. If uploading fails the user can continue working on a blank form. Uploading will be attempted at intervals until it
-         * succeeds.
-         * TODO: it may be better to set the form name with counterValue in the traditional fashion with form.setRecordName() to prevent duplicate records in case
-         * resetForm() does not function as expected.
-         */
-
-        /*function submitForm() {
-            var record, name, saveResult;
-
-            console.log( 'submitForm called' );
-            //triggering before save to update possible 'end' timestamp in form
-            $form.trigger( 'beforesave' );
-
-            if ( !form.isValid() ) {
-                gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
-                return;
-            }
-
-            saveResult = saveForm( undefined, true );
-
-            if ( typeof saveResult === 'object' ) {
-                record = saveResult;
-                //this function is only called for non-draft records, but let's make the code more robust by checking anyway
-                if ( !getDraftStatus() ) {
-
-
-                    //attempt uploading the data (all data in localStorage)
-
-                } else {
-                    console.error( 'submitForm() was called for a record marked as Draft. It shouldn\'t have been!' );
-                }
-            }
-        }*/
 
         /**
          * Used to submit a form with data that was loaded by POST. This function does not save the record in localStorage
@@ -324,7 +270,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             //name = (Math.floor(Math.random()*100001)).toString();
             //console.debug('temporary record name: '+name);
             record = {
-                'name': 'iframe_record',
+                'key': 'iframe_record',
                 'data': form.getDataStr( true, true )
             };
 
@@ -368,7 +314,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             // whether it is marked as draft (an open record will never be offered for upload)
             if ( !record.draft ) {
                 prepareFormDataArray( {
-                    name: recordName,
+                    key: recordName,
                     data: record.data
                 }, {
                     success: function( formDataArr ) {
@@ -410,7 +356,12 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
         /**
          * Asynchronous function that builds up a form data array including media files
-         * @param  {{name: string, data: string}} record [description]
+ * @param {        {
+            name: string,
+            data: string
+        }
+    }
+    record[ description ]
          * @param {{success: Function, error: Function}} callbacks
          */
 
@@ -431,7 +382,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 formData = new FormData();
                 formData.append( 'xml_submission_data', xmlData );
                 return {
-                    name: record.name,
+                    name: record.key,
                     instanceID: instanceID,
                     formData: formData,
                     batches: batchesLength,
@@ -572,16 +523,17 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             } );
 
             $( document ).on( 'click', '.export-records', function() {
-                var dataArr, dataStr, server,
-                    finalOnly = true,
+                var server, exported, dataStr,
                     fileName = form.getSurveyName() + '_data_backup.xml';
-                dataArr = store.getSurveyDataOnlyArr( false ); //store.getSurveyDataXMLStr(finalOnly));
-                if ( !dataArr || dataArr.length === 0 ) {
+
+                dataStr = store.getExportStr();
+
+                if ( !dataStr ) {
                     gui.alert( 'No records in queue. The records may have been successfully submitted already.' );
                 } else {
-                    server = settings[ 'serverURL' ] || '';
-                    dataStr = vkbeautify.xml( '<exported server="' + server + '">' + dataArr.join( '' ) + '</exported>' );
-                    exportToTextFile( fileName, dataStr );
+                    server = settings.serverURL || '';
+                    exported = vkbeautify.xml( '<export date="' + new Date() + '" server="' + server + '">' + dataStr + '</export>' );
+                    exportToTextFile( fileName, exported );
                 }
             } );
 
@@ -607,7 +559,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             //$( '#form-controls button' ).toLargestWidth();
 
             $( document ).on( 'save delete', 'form.or', function( e, formList ) {
-                console.debug( 'save or delete event detected with new formlist: ', formList );
+                //console.debug( 'save or delete event detected with new formlist: ', formList );
                 updateRecordList( JSON.parse( formList ) );
             } );
 
@@ -631,6 +583,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 $buttons = $( '.side-slider .upload-records, .side-slider .export-records' ),
                 $list = $( '.side-slider .record-list' );
 
+            console.log( 'updating record list' );
+
             // get form list object (keys + upload) ordered by time last saved
             recordList = recordList || [];
             $( '.queue-length' ).text( recordList.length );
@@ -649,37 +603,52 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 }
             } );
 
-            //add new records
+            // disable buttons
+            $buttons.attr( 'disabled', 'disabled' );
+
+            // add new records
             if ( recordList.length > 0 ) {
                 $list.find( '.no-records' ).remove();
-                $buttons.removeAttr( 'disabled' );
+
+                $( '.side-slider .export-records' ).removeAttr( 'disabled' );
+
                 recordList.forEach( function( record, i ) {
                     name = recordList[ i ].key;
                     draft = recordList[ i ].draft;
-                    $li = $list.find( '[name="' + name + '"]' );
+
+                    // if there is at least one record not marked as draft
+                    if ( !draft ) {
+                        $buttons.removeAttr( 'disabled' );
+                    }
+
                     // add a new item when necessary
+                    $li = $list.find( '[name="' + name + '"]' );
                     if ( $li.length === 0 ) {
                         $li = $( '<li class="record"></li' );
                         $li.text( name ); // encodes string to html
                         $li.attr( 'name', name );
                         $list.append( $li );
                     }
+
                     // update record status for new or existing records
                     $li.attr( 'data-draft', draft );
-                    //if ( draft ) {
-                    //    $li.prepend( '<button class="open btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span></button>' );
-                    //}
                 } );
-            } else {
-                $buttons.attr( 'disabled', 'disabled' );
-                if ( $list.find( '.no-records' ).length === 0 ) {
-                    $list.append( '<li class="no-records">no records queued</li>' );
-                }
+            } else if ( $list.find( '.no-records' ).length === 0 ) {
+                $list.append( '<li class="no-records">no records queued</li>' );
+            }
+        }
+
+        function updateActiveRecord( recordName ) {
+            var $list = $( '.side-slider .record-list' );
+
+            $list.find( 'li' ).removeClass( 'active' );
+            if ( recordName ) {
+                $list.find( 'li[name="' + recordName + '"]' ).addClass( 'active' );
             }
         }
 
         function setDraftStatus( status ) {
-            $( '.form-footer [name="draft"]' ).prop( 'checked', status ).trigger( 'change' );
+            $( '.form-footer [name="draft"]' ).prop( 'checked', status ); //.trigger( 'change' );
         }
 
         function getDraftStatus() {

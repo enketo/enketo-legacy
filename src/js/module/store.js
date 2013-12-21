@@ -181,9 +181,9 @@ define( [ 'jquery', 'enketo-js/extend' ], function( $ ) {
         var i, key,
             records = [],
             record = {};
-        finalOnly = finalOnly || false;
+        finalOnly = ( typeof finalOnly !== 'undefined' ) ? finalOnly : false;
         excludeName = excludeName || null;
-        console.log( 'finalOnly:', finalOnly );
+
         for ( i = 0; i < localStorage.length; i++ ) {
             key = localStorage.key( i );
             //console.debug('found record with with key:'+key);
@@ -192,10 +192,7 @@ define( [ 'jquery', 'enketo-js/extend' ], function( $ ) {
             if ( !isReservedKey( key ) ) {
                 //console.debug('record with key: '+key+' is survey data');
                 try {
-                    /* although the key is also available as one of the record properties
-                        this should not be relied upon and the actual storage key should be used */
                     record.key = key;
-                    console.log( 'record:', record, key, excludeName, !finalOnly, !record.draft );
                     //=== true comparison breaks in Google Closure compiler.
                     if ( key !== excludeName && ( !finalOnly || !record.draft ) ) {
                         records.push( record );
@@ -219,34 +216,23 @@ define( [ 'jquery', 'enketo-js/extend' ], function( $ ) {
     function getSurveyDataArr( finalOnly, excludeName ) {
         var i, records,
             dataArr = [];
-        console.log( 'finalOnly:', finalOnly );
-        finalOnly = finalOnly || true;
+
+        finalOnly = ( typeof finalOnly !== 'undefined' ) ? finalOnly : true;
         excludeName = excludeName || null;
-        records = getSurveyRecords( finalOnly, excludeName );
-        //console.debug('getSurveyDataArr will build array from these records: '+JSON.stringify(records));
-        for ( i = 0; i < records.length; i++ ) {
-            dataArr.push( {
-                name: records[ i ].key,
-                data: records[ i ].data
-            } ); //[records[i].key, records[i].data]
-        }
-        //console.debug('returning data array: '+JSON.stringify(dataArr));
-        return dataArr;
+        return getSurveyRecords( finalOnly, excludeName );
     }
 
-    /**
-     * [getSurveyDataOnlyArr description]
-     * @param  {boolean=} finalOnly [description]
-     * @return {?Array.<string>}           [description]
-     */
-    function getSurveyDataOnlyArr( finalOnly ) {
-        var i,
-            dataObjArr = getSurveyDataArr( finalOnly ),
-            dataOnlyArr = [];
-        for ( i = 0; i < dataObjArr.length; i++ ) {
-            dataOnlyArr.push( dataObjArr[ i ].data );
-        }
-        return ( dataOnlyArr.length > 0 ) ? dataOnlyArr : null;
+
+    function getExportStr() {
+        var dataStr = '';
+
+        getSurveyDataArr( false ).forEach( function( record ) {
+            dataStr += '<record name="' + record.key + '" lastSaved="' + record.lastSaved + '"' +
+                ( record.draft ? ' draft="true()"' : '' ) +
+                '>' + record.data + '</record>';
+        } );
+
+        return dataStr;
     }
 
     /**
@@ -306,9 +292,9 @@ define( [ 'jquery', 'enketo-js/extend' ], function( $ ) {
         removeRecord: removeRecord,
         getFormList: getFormList,
         getRecordList: getRecordList,
+        getExportStr: getExportStr,
         getSurveyRecords: getSurveyRecords,
         getSurveyDataArr: getSurveyDataArr,
-        getSurveyDataOnlyArr: getSurveyDataOnlyArr,
         getCounterValue: getCounterValue
     };
 } );

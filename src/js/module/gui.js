@@ -85,8 +85,10 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         } );
 
         $( '.side-slider-toggle' ).on( 'click', function() {
+            var $body = $( 'body' ),
+                $sidebar = $( '.side-slider' );
             //this can be done with flexboxes in near future;
-            $( '.side-slider' ).css( 'height', $( 'body' ).height() );
+            $( '.side-slider' ).css( 'height', ( $body.height() > $sidebar.height() ? $body.height() : 'auto' ) );
             window.scrollTo( 0, 0 );
             $( 'body' ).toggleClass( 'show-side-slider' );
             //recordsDialog( );
@@ -137,7 +139,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             updateStatus.support( supported );
         } );
 
-        $( '#page, #feedback-bar' ).on( 'change', function() {
+        $( '#page, #feedback-bar' ).on( 'changepagebar', function() {
             positionPageAndBar();
         } );
 
@@ -237,13 +239,13 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
                 this.close();
             }
 
-            $( '#page .content' ).prepend( $page.show() ).trigger( 'change' );
+            $( '#page .content' ).prepend( $page.show() ).trigger( 'changepagebar' );
             $( '#page' ).show();
             //$('.overlay').show();
             $( '.main' ).css( 'opacity', '0.3' );
 
             $( window ).on( 'resize.pageEvents', function() {
-                $( '#page' ).trigger( 'change' );
+                $( '#page' ).trigger( 'changepagebar' );
             } );
             setTimeout( function() {
                 $( window ).on( 'click.pageEvents', function( event ) {
@@ -262,7 +264,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             var $page = $( '#page .page' );
             if ( $page.length > 0 ) {
                 this.$pages.append( $page.detach() );
-                $( '#page' ).trigger( 'change' );
+                $( '#page' ).trigger( 'changepagebar' );
                 $( '.navbar-right li' ).removeClass( 'active' );
                 //$('#overlay').hide();
                 $( window ).off( '.pageEvents' );
@@ -295,19 +297,19 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
                 $msg.append( message );
                 $( '#feedback-bar' ).prepend( $msg );
             }
-            $( '#feedback-bar' ).show().trigger( 'change' );
+            $( '#feedback-bar' ).show().trigger( 'changepagebar' );
 
             // automatically remove feedback after a period
             setTimeout( function() {
                 if ( typeof $msg !== 'undefined' ) {
                     $msg.remove();
                 }
-                $( '#feedback-bar' ).trigger( 'change' );
+                $( '#feedback-bar' ).trigger( 'changepagebar' );
             }, duration );
         },
         hide: function() {
             $( '#feedback-bar p' ).remove();
-            $( '#feedback-bar' ).trigger( 'change' );
+            $( '#feedback-bar' ).trigger( 'changepagebar' );
         }
     };
 
@@ -361,7 +363,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             show: true
         } );
 
-        $alert.on( 'hidden', function() {
+        $alert.on( 'hidden.bs.modal', function() {
             $alert.find( '.modal-header h3, .modal-body p' ).html( '' );
             clearInterval( timer );
         } );
@@ -411,12 +413,8 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         choices = choices || {};
         choices.posButton = choices.posButton || 'Confirm';
         choices.negButton = choices.negButton || 'Cancel';
-        choices.posAction = choices.posAction || function() {
-            return false;
-        };
-        choices.negAction = choices.negAction || function() {
-            return false;
-        };
+        choices.posAction = choices.posAction || function() {};
+        choices.negAction = choices.negAction || function() {};
         choices.beforeAction = choices.beforeAction || function() {};
 
         $dialog = $( '#dialog-' + dialogName );
@@ -434,13 +432,10 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         } );
 
         //instantiate dialog
-        $dialog.modal( {
-            keyboard: true,
-            show: true
-        } );
+        $dialog.modal( 'show' );
 
         //set eventhanders
-        $dialog.on( 'shown', function() {
+        $dialog.on( 'shown.bs.modal', function() {
             choices.beforeAction.call();
         } );
 
@@ -448,28 +443,30 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             var values = {};
             $( this ).closest( '.modal-dialog' ).find( 'input, select, textarea' ).each( function() {
                 if ( $( this ).attr( 'name' ) ) {
-                    values[ $( this ).attr( 'name' ) ] = $( this ).val();
+                    values[ $( this ).attr( 'name' ) ] = $( this ).val().trim();
                 }
             } );
-            choices.posAction.call( undefined, values );
             $dialog.modal( 'hide' );
+            reset();
+            choices.posAction.call( undefined, values );
         } ).text( choices.posButton );
 
         $dialog.find( 'button.negative' ).on( 'click', function() {
-            choices.negAction.call();
             $dialog.modal( 'hide' );
+            reset();
+            choices.negAction.call();
         } ).text( choices.negButton );
 
-        $dialog.on( 'hide', function() {
+        function reset() {
+            console.log( 'confirm dialog reset called' );
             //remove eventhandlers
             $dialog.off( 'shown hidden hide' );
-            $dialog.find( 'button.positive, button.negative' ).off( 'click' );
-        } );
+            // temp workaround or fix for multiple modals when repeatedly attempting to save a record under and existing name)
+            $( 'body>.modal-backdrop' ).remove();
 
-        $dialog.on( 'hidden', function() {
+            $dialog.find( 'button.positive, button.negative' ).off( 'click' );
             $dialog.find( '.modal-body .msg, .modal-body .alert-danger, button' ).text( '' );
-            //console.debug('dialog destroyed');
-        } );
+        }
 
         if ( typeof duration === 'number' ) {
             var left = duration.toString();

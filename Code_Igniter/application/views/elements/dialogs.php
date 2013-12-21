@@ -3,7 +3,7 @@
 	<button href="#" class="close">&times;</button>
 </div>
 
-<div id="dialog-alert" class="modal fade ">
+<div id="dialog-alert" class="modal fade" role="dialog" aria-labelledby="alert dialog" aria-hidden="true"  data-keyboard="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -21,7 +21,7 @@
 	</div>
 </div>
 
-<div id="dialog-confirm" class="modal fade">
+<div id="dialog-confirm" class="modal fade" role="dialog" aria-labelledby="confirmation dialog" aria-hidden="true"  data-keyboard="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -41,7 +41,7 @@
 	</div>
 </div>
 
-<div id="dialog-save" class="modal fade">
+<div id="dialog-save" class="modal fade" role="dialog" aria-labelledby="save dialog" aria-hidden="true" data-keyboard="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -50,7 +50,7 @@
 			</div>
 			<div class="modal-body">
 				<form onsubmit="return false;">
-					<span class="alert alert-danger"></span>
+					<div class="alert alert-danger"></div>
 					<label class="question">
 						<span class="question-label active">Record Name</span>
 						<span class="or-hint active">This name allows you to easily find your draft record to finish it later. The record name will not be submitted to the server.</span>

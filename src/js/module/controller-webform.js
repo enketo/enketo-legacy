@@ -118,7 +118,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
         }
 
 
-        function loadForm( recordName, confirmed ) {
+        function loadRecord( recordName, confirmed ) {
             var record, texts, choices, loadErrors;
 
             if ( !confirmed && form.getEditStatus() ) {
@@ -129,7 +129,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 choices = {
                     posButton: 'Proceed without saving',
                     posAction: function() {
-                        loadForm( recordName, true );
+                        loadRecord( recordName, true );
                     }
                 };
                 gui.confirm( texts, choices );
@@ -168,11 +168,11 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             }
         }
 
-        function saveForm( recordName, confirmed, error ) {
+        function saveRecord( recordName, confirmed, error ) {
             var texts, choices, record, saveResult, overwrite,
                 draft = getDraftStatus();
 
-            console.log( 'saveForm called with recordname:', recordName, 'confirmed:', confirmed, "error:", error, 'draft:', draft );
+            console.log( 'saveRecord called with recordname:', recordName, 'confirmed:', confirmed, "error:", error, 'draft:', draft );
 
             //triggering before save to update possible 'end' timestamp in form
             $form.trigger( 'beforesave' );
@@ -184,7 +184,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 return console.error( 'No record name could be created.' );
             }
 
-            if ( !draft && form.validate() ) {
+            if ( !draft && !form.validate() ) {
                 gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
                 return;
             }
@@ -203,14 +203,14 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                         // if the record is new or
                         // if the record was previously loaded from storage and saved under the same name
                         if ( !form.getRecordName() || form.getRecordName() === values[ 'record-name' ] ) {
-                            saveForm( values[ 'record-name' ], true );
+                            saveRecord( values[ 'record-name' ], true );
                         } else {
                             gui.confirm( {
                                 msg: 'Are you sure you want to rename "' + form.getRecordName() +
                                     '"" to "' + values[ 'record-name' ] + '"?'
                             }, {
                                 posAction: function() {
-                                    saveForm( values[ 'record-name' ], true );
+                                    saveRecord( values[ 'record-name' ], true );
                                 }
                             } );
                         }
@@ -243,10 +243,11 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                         submitOneForced( recordName, record );
                     }
                 } else if ( saveResult === 'require' || saveResult === 'existing' || saveResult === 'forbidden' ) {
-                    saveForm( undefined, false, 'Record name "' + recordName + '" already exists (or is not allowed). The record was not saved.' );
+                    saveRecord( undefined, false, 'Record name "' + recordName + '" already exists (or is not allowed). The record was not saved.' );
                 } else {
                     gui.alert( 'Error trying to save data locally (message: ' + saveResult + ')' );
                 }
+                return saveResult;
             }
         }
 
@@ -255,7 +256,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
          * and is not used in offline-capable views.
          */
 
-        function submitEditedForm() {
+        function submitEditedRecord() {
             var name, record, saveResult, redirect, beforeMsg, callbacks;
             $form.trigger( 'beforesave' );
             if ( !form.isValid() ) {
@@ -482,7 +483,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     $button.btnBusyState( true );
                     // this timeout is to slow down the GUI a bit, UX
                     setTimeout( function() {
-                        saveForm();
+                        saveRecord();
                         $button.btnBusyState( false );
                         return false;
                     }, 100 );
@@ -494,7 +495,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     $button.btnBusyState( true );
                     setTimeout( function() {
                         form.validate();
-                        submitEditedForm();
+                        submitEditedRecord();
                         $button.btnBusyState( false );
                         return false;
                     }, 100 );
@@ -553,7 +554,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             } );
 
             $( document ).on( 'click', '.record-list [data-draft="true"]', function() {
-                loadForm( $( this ).closest( '.record' ).attr( 'name' ), false );
+                loadRecord( $( this ).closest( '.record' ).attr( 'name' ), false );
             } );
 
             //$( '#form-controls button' ).toLargestWidth();
@@ -654,14 +655,6 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
         function getDraftStatus() {
             return $( '.form-footer [name="draft"]' ).prop( 'checked' );
         }
-
-        /*function setFormName( name ) {
-            $( 'form.or' ).attr( 'name', name );
-        }
-
-        function getFormName( name ) {
-            $( 'form.or' ).attr( 'name' );
-        }*/
 
         /**
          * splits an array of file sizes into batches (for submission) based on a limit

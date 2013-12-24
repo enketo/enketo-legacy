@@ -1,10 +1,4 @@
-$groupline: #bbbbbb;
-$line: 3px solid $groupline;
-$input-height: 34px;
-$input-min-width: 0.2 * 720px;
-$input-max-width: 80%;
 
-@import '../../../public/lib/enketo-core/src/sass/core/layout';
 @import '../../../public/lib/enketo-core/src/sass/core/main';
 @import 'widgets';
 @import '../../../public/lib/enketo-core/src/sass/core/responsive';

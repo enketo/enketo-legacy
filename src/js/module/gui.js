@@ -85,13 +85,8 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         } );
 
         $( '.side-slider-toggle' ).on( 'click', function() {
-            var $body = $( 'body' ),
-                $sidebar = $( '.side-slider' );
-            //this can be done with flexboxes in near future;
-            $( '.side-slider' ).css( 'height', ( $body.height() > $sidebar.height() ? $body.height() : 'auto' ) );
             window.scrollTo( 0, 0 );
             $( 'body' ).toggleClass( 'show-side-slider' );
-            //recordsDialog( );
         } );
 
         $( '.offline-enabled-icon' ).on( 'click', function() {

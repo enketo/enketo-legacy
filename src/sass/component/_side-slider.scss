@@ -7,7 +7,7 @@ $slider-width: 240px;
     color: white;
     font-size: 13px;
     top: 0;
-    margin-left: - $slider-width;
+    margin-left: -$slider-width;
     background-color: rgb(50, 50, 50);
     width: $slider-width;
     min-height: 100%;
@@ -47,27 +47,30 @@ $slider-width: 240px;
             border-width: 2px;
             border-color: red;
         }
-        &[data-draft=true]{
-          border-style: dotted;
-          color: #eeeeee;
-          &:hover, &.active {
-            background: #666666;
-            color: white;
-          }
-          &::before {
-            font-family: "Glyphicons Halflings";
-            content: "\270f";
-            float: right;
-            display: inline-block;
-            color: #aaaaaa; }
-          &:hover::before {
-            color: white;
-          }
-          &.active::before {
-            content: "\e092";
-            color: white;
-            //color: #59DA85;
-          }
+        &[data-draft=true] {
+            border-color: #999999;
+            border-style: dotted;
+            color: #eeeeee;
+            &:hover, &.active {
+                background: #666666;
+                color: white;
+            }
+            &::before {
+                font-family: "Glyphicons Halflings";
+                content: "\270f";
+                float: right;
+                display: inline-block;
+                color: #aaaaaa;
+            }
+            &:hover::before {
+                color: white;
+            }
+            &.active::before {
+                content: "\e092";
+                color: white;
+                //color: #59DA85;
+           
+            }
         }
     }
     li.no-records {
@@ -126,9 +129,7 @@ $slider-width: 240px;
 }
 
 .show-side-slider {
-    
     width: calc(100% + #{$slider-width});
-    
     .side-slider {
         @include transition-fast;
         margin-left: 0;
@@ -138,7 +139,9 @@ $slider-width: 240px;
             }
             &.close {
                 @include transition-fast;
-                left: $slider-width - 13px; //227px;
+                left: $slider-width - 13px;
+                //227px;
+           
             }
         }
     }
@@ -146,9 +149,12 @@ $slider-width: 240px;
         @include transition-fast;
         //left: 240px;
         //margin-right: - $slider-width;
+   
     }
     .offline-enabled {
         @include transition-fast;
-        left: $slider-width + 1px; //the 1px correction is mysterious
+        left: $slider-width + 1px;
+        //the 1px correction is mysterious
+   
     }
 }

@@ -1,5 +1,5 @@
 <div id="feedback-bar" class="alert alert-warning">			
-	<i class="icon-info-sign"></i>
+	<span class="glyphicon glyphicon-info-sign"></span>
 	<button href="#" class="close">&times;</button>
 </div>
 

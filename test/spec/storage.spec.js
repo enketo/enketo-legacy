@@ -4,7 +4,7 @@ if ( typeof define !== 'function' ) {
 
 define( [ "store" ], function( store ) {
 
-    describe( "LocalStorage", function() {
+    describe( "Local record storage", function() {
         var record;
 
         beforeEach( function() {
@@ -121,6 +121,57 @@ define( [ "store" ], function( store ) {
                 expect( store.getRecord( recordName ) ).toEqual( null );
             } );
             //how to make this fail?
+        } );
+
+        describe( 'obtaining lists of records', function() {
+
+            beforeEach( function() {
+                for ( var i = 0; i < 10; i++ ) {
+                    var result = store.setRecord( i.toString(), {
+                        data: '<data></data>',
+                        draft: !( i % 2 )
+                    } );
+
+                    console.log( 'setting record with draft', !( i % 2 ), result );
+                }
+            } );
+
+            afterEach( function() {
+                for ( var i = 0; i < 10; i++ ) {
+                    store.removeRecord( i );
+                }
+            } );
+
+            it( 'as an array of record names with draft and lastSaved properties return correct list size', function() {
+                expect( store.getRecordList().length ).toEqual( 10 );
+            } );
+
+            it( 'as an array of complete records returns the expect number', function() {
+                // all records
+                expect( store.getSurveyRecords( false ).length ).toEqual( 10 );
+                // only records not marked as draft
+                expect( store.getSurveyRecords( true ).length ).toEqual( 5 );
+                // all records excluding record '5'
+                expect( store.getSurveyRecords( false, '5' ).length ).toEqual( 9 );
+                // all final records excluding record '5'
+                expect( store.getSurveyRecords( true, '5' ).length ).toEqual( 4 );
+            } );
+
+            it( 'exports all records to a valid XML string that includes all records', function() {
+                var exportedXML = $.parseXML( '<root>' + store.getExportStr() + '</root>' );
+                expect( exportedXML ).toBeTruthy();
+                expect( $( exportedXML ).find( 'record' ).length ).toEqual( 10 );
+            } );
+
+            it( 'includes the draft="true()" property in exported records when applicable', function() {
+                var exportedXML = $.parseXML( '<root>' + store.getExportStr() + '</root>' );
+                expect( $( exportedXML ).find( 'record[draft="true()"]' ).length ).toEqual( 5 );
+            } );
+
+            it( 'includes a populated lastSaved property in all exported records', function() {
+                var exportedXML = $.parseXML( '<root>' + store.getExportStr() + '</root>' );
+                expect( $( exportedXML ).find( 'record[lastSaved!=""]' ).length ).toEqual( 10 );
+            } );
         } );
     } );
 } );

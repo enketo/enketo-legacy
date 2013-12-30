@@ -85,13 +85,8 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         } );
 
         $( '.side-slider-toggle' ).on( 'click', function() {
-            var $body = $( 'body' ),
-                $sidebar = $( '.side-slider' );
-            //this can be done with flexboxes in near future;
-            $( '.side-slider' ).css( 'height', ( $body.height() > $sidebar.height() ? $body.height() : 'auto' ) );
             window.scrollTo( 0, 0 );
             $( 'body' ).toggleClass( 'show-side-slider' );
-            //recordsDialog( );
         } );
 
         $( '.offline-enabled-icon' ).on( 'click', function() {
@@ -634,12 +629,12 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
             fHeight = $feedback.outerHeight(),
             $page = $( '#page' ),
             pShowing = pages.isShowing(),
-            pHeight = $page.outerHeight();
+            pHeight = $page.outerHeight() || 0;
 
         //to go with the responsive flow, copy the css position type of the header
         $page.css( {
             'position': $header.css( 'position' )
-        } ); //, 'margin': $header.css('margin'), 'width': $header.css('width')});
+        } );
 
         if ( $header.length > 0 && $header.css( 'position' ) !== 'fixed' ) {
             if ( !fShowing ) {
@@ -652,10 +647,15 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         }
 
         fTop = ( !fShowing ) ? 0 - fHeight : hHeight;
-        pTop = ( !pShowing ) ? 0 - pHeight : ( fShowing ) ? fTop + fHeight : hHeight;
+        pTop = ( !pShowing ) ? 0 - pHeight : ( ( fShowing ) ? fTop + fHeight : hHeight );
 
-        $feedback.css( 'top', fTop );
-        $page.css( 'top', pTop );
+        // the timeout works around an issue in Chrome where setting the css top property has no impact. 
+        // https://github.com/MartijnR/enketo/issues/245
+        // It is nice from a UX perspective as well to have a slight delay
+        setTimeout( function() {
+            $feedback.css( 'top', fTop + 'px' );
+            $page.css( 'top', pTop + 'px' );
+        }, 100 );
     }
 
     /**

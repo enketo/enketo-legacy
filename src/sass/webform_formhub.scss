@@ -1,9 +1,20 @@
-$baseFontSize: 15px;
-$baseLineHeight: 20px;
+// variables, in the right order
+@import "../../public/lib/enketo-core/src/sass/core/variables";
+@import "component/variables";
+@import "../../public/lib/enketo-core/src/sass/formhub/variables";
 
+// mixins, in the right order
+@import "../../public/lib/enketo-core/src/sass/core/mixins";
+@import "component/mixins";
+@import "../../public/lib/enketo-core/src/sass/formhub/mixins";
+
+// layout
+@import "../../public/lib/enketo-core/src/sass/core/layout";
+@import "component/layout_webform";
+
+// components
 @import "component/common";
 @import "component/side-slider";
 @import "component/form_formhub";
-@import "component/form_header_formhub";
+@import "component/form_header";
 @import "component/form_footer";
-@import "component/responsive";

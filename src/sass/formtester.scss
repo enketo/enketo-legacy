@@ -1,6 +1,12 @@
-$baseFontSize: 16px;
-$baseLineHeight: 20px;
+@import "../../public/lib/enketo-core/src/sass/core/variables";
+@import "../../public/lib/enketo-core/src/sass/formhub/variables";
+@import "component/variables";
 
+@import "../../public/lib/enketo-core/src/sass/core/mixins";
+@import "../../public/lib/enketo-core/src/sass/formhub/mixins";
+@import "component/mixins";
+
+@import "component/layout";
 @import "component/common";
 @import "component/menu";
 @import "component/form_formhub";

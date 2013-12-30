@@ -18,7 +18,7 @@
  * Performance monitoring tools
  */
 
-define( [], function() {
+define( [ 'settings' ], function( settings ) {
     var profilerRecords = [];
     var xpathEvalNum = 0,
         xpathEvalTime = 0,

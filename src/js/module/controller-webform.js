@@ -70,7 +70,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     '<button class="btn btn-primary pull-right upload-records">Upload</button></div>' +
                     '<p>Queued records, except those marked as <em>draft</em> ( <span class="glyphicon glyphicon-pencil"></span> ) ' +
                     'are uploaded <strong>automatically</strong>, in the background every 5 minutes when this page is open ' +
-                    'and an Internet connection is available. To force an upload in between automatic tries, click Upload.</p>' );
+                    'and an Internet connection is available. To force an upload in between automatic attempts, click Upload.</p>' );
                 //trigger fake save event to update formlist in slider
                 $form.trigger( 'save', JSON.stringify( store.getRecordList() ) );
             }

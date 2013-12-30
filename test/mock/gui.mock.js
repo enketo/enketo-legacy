@@ -6,6 +6,7 @@ define( [], function() {
     return {
         alert: function() {},
         feedback: function() {},
+        confirm: function() {},
         confirmLogin: function() {}
     };
 } );

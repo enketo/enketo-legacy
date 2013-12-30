@@ -67,4 +67,32 @@ define( [ "controller-webform" ], function( controller ) {
             testBatchDivision( t[ i ][ 0 ], t[ i ][ 1 ] );
         }
     } );
+
+    //this logic has proved to be impossible to isolate properly
+    xdescribe( "record saving logic", function() {
+        var sampleRecord = {
+            data: "<data>mydata</data>"
+        };
+        controller.init( '<form class="or"></form>', '<model><instance><data id="data"></data></instance></model>', null, {
+            recordStore: {
+                setRecord: function() {}
+            }
+        } );
+
+        beforeEach( function() {
+            localStorage.clear();
+            spyOn( gui, 'confirm' );
+            spyOn( gui, 'alert' );
+            spyOn( gui, 'feedback' );
+            spyOn( store, 'setRecord' );
+            spyOn( controller.submitOneForced );
+        } );
+
+        it( 'attempts to save right away if the confirmed parameter is provided', function() {
+            controller.saveRecord( 'a name', true );
+            expect( store.setRecord ).toHaveBeenCalled();
+        } );
+
+    } );
+
 } );

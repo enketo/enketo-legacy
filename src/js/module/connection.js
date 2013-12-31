@@ -298,7 +298,7 @@ define( [ 'gui', 'settings', 'store', 'jquery' ], function( gui, settings, store
             level = 'error',
             contactSupport = 'Contact ' + settings[ 'supportEmail' ] + ' please.',
             contactAdmin = 'Contact the survey administrator please.',
-            serverDown = 'Sorry, the enketo or formhub server is down. Please try again later or contact ' + settings[ 'supportEmail' ] + ' please.',
+            serverDown = 'Sorry, the data server for your form or the Enketo server is down. Please try again later or contact ' + settings[ 'supportEmail' ] + ' please.',
             statusMap = {
                 0: {
                     success: false,

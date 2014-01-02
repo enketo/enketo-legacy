@@ -364,7 +364,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         } );
 
         if ( typeof duration === 'number' ) {
-            var left = duration.toString();
+            var left = duration;
             $alert.find( '.self-destruct-timer' ).text( left );
             timer = setInterval( function() {
                 left--;

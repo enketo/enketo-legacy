@@ -145,11 +145,18 @@ $offline-color: rgb(231, 67, 41);
             margin-right: 10px;
             float: left;
             display: block;
-            background-color: rgb(245, 245, 245);
         }
     }
     .or .form-logo {
         margin-top: 45px;
+    }
+}
+
+@media screen and (max-width: $main-breakpoint) {
+    .offline-enabled {
+        .queue-length {
+            background-color: rgb(245, 245, 245);
+        }
     }
 }
 

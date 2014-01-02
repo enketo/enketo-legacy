@@ -149,7 +149,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                         gui.showLoadErrors( loadErrors, 'It is recommended <strong>not to edit this record</strong> until this is resolved.' );
                     }
                     updateActiveRecord( recordName );
-                    //form.setRecordStatus(record.ready);
+                    setDraftStatus( record.draft );
                     //Avoid uploading of currently open form by setting edit status in STORE to false. To be re-considered if this is best approach.
                     //store.setRecordStatus(formName, false);
                     form.setRecordName( recordName );
@@ -649,7 +649,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
         }
 
         function setDraftStatus( status ) {
-            $( '.form-footer [name="draft"]' ).prop( 'checked', status ); //.trigger( 'change' );
+            status = status || false;
+            $( '.form-footer [name="draft"]' ).prop( 'checked', status ).trigger( 'change' );
         }
 
         function getDraftStatus() {

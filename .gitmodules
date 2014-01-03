@@ -19,9 +19,6 @@
 [submodule "public/lib/file-saver"]
 	path = public/lib/file-saver
 	url = https://github.com/eligrey/FileSaver.js.git
-[submodule "public/lib/enketo-core"]
-	path = public/lib/enketo-core
-	url = https://github.com/MartijnR/enketo-core.git
 [submodule "public/lib/vkbeautify"]
 	path = public/lib/vkbeautify
 	url = https://github.com/vkiryukhin/vkBeautify.git

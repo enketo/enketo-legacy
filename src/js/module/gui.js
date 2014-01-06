@@ -85,8 +85,12 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Mod
         } );
 
         $( '.side-slider-toggle' ).on( 'click', function() {
+            var $body = $( 'body' ),
+                $slider = $( '.side-slider' );
             window.scrollTo( 0, 0 );
-            $( 'body' ).toggleClass( 'show-side-slider' );
+            $body.toggleClass( 'show-side-slider' );
+            // make slider extend until the bottom of the body if necessary
+            $slider.css( 'height', ( $body.height() > $slider.height() ) ? $body.height() + 'px' : 'auto' );
         } );
 
         $( '.offline-enabled-icon' ).on( 'click', function() {

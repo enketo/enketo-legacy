@@ -1,18 +1,1 @@
-body {
-	@include display-flex;
-	@include flex-direction(row);
-	@include flex-wrap(no-wrap);
-}
 
-.side-slider, .main {
-	position: static;
-}
-
-.main {
-	@include display-flex;
-	@include flex-direction(column);
-	@include flex(1);
-	.paper {
-		@include flex(1);
-	}
-}

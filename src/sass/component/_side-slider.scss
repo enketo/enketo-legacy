@@ -1,9 +1,10 @@
 $slider-width: 240px;
 
 .side-slider {
+    position: absolute;
+    z-index: 1000;
     @include border-box;
     @include transition-fast;
-    //position: relative;
     color: white;
     font-size: 13px;
     top: 0;
@@ -68,8 +69,6 @@ $slider-width: 240px;
             &.active::before {
                 content: "\e092";
                 color: white;
-                //color: #59DA85;
-           
             }
         }
     }
@@ -129,7 +128,6 @@ $slider-width: 240px;
 }
 
 .show-side-slider {
-    width: calc(100% + #{$slider-width});
     .side-slider {
         @include transition-fast;
         margin-left: 0;
@@ -140,21 +138,25 @@ $slider-width: 240px;
             &.close {
                 @include transition-fast;
                 left: $slider-width - 13px;
-                //227px;
-           
             }
         }
+        &::before {
+            display: block;
+            top: 0;
+            width: 100%;
+            background: black;
+            opacity: 0.5;
+            z-index: 999;
+        }
+    }
+    .slider-overlay {
+        @extend .modal-backdrop;
+        @extend .modal-backdrop;
+        @extend .modal-backdrop.fade;
+        @extend .modal-backdrop.in;
+        z-index: 999;
     }
     .main {
-        @include transition-fast;
-        //left: 240px;
-        //margin-right: - $slider-width;
-   
-    }
-    .offline-enabled {
-        @include transition-fast;
-        left: $slider-width + 1px;
-        //the 1px correction is mysterious
-   
+        //@include transition-fast;
     }
 }

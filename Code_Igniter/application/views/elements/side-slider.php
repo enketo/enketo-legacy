@@ -6,3 +6,4 @@
     <button class="handle side-slider-toggle open">)</button>
     <button class="handle side-slider-toggle close">(</button>
 </aside>
+<div class="side-slider-toggle slider-overlay"></div>

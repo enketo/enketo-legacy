@@ -629,6 +629,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                         $li.text( name ); // encodes string to html
                         $li.attr( 'name', name );
                         $list.append( $li );
+                        // very ugly hack to make a li clickable in iOS...
+                        $li[ 0 ].addEventListener( 'click', function() {}, false );
                     }
 
                     // update record status for new or existing records

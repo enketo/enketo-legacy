@@ -66,7 +66,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     '(even if you turn off your computer or go offline).</p>' +
                     '<progress class="upload-progress"></progress>' +
                     '<ul class="record-list"></ul>' +
-                    '<div class="button-bar"><button class="btn export-records">Export</button>' +
+                    '<div class="button-bar"><button class="btn btn-default export-records">Export</button>' +
                     '<button class="btn btn-primary pull-right upload-records">Upload</button></div>' +
                     '<p>Queued records, except those marked as <em>draft</em> ( <span class="glyphicon glyphicon-pencil"></span> ), ' +
                     'are uploaded <strong>automatically</strong>, in the background, every 5 minutes when the web page is open ' +
@@ -553,7 +553,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 }
             } );
 
-            $( document ).on( 'click', '.record-list [data-draft="true"]', function() {
+            $( '.record-list' ).on( 'click', '[data-draft="true"]', function() {
                 loadRecord( $( this ).closest( '.record' ).attr( 'name' ), false );
             } );
 

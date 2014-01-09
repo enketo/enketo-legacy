@@ -553,7 +553,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 }
             } );
 
-            $( '.record-list' ).on( 'click', '[data-draft="true"]', function() {
+            $( document ).on( 'click', '.record-list [data-draft="true"]', function() {
                 loadRecord( $( this ).closest( '.record' ).attr( 'name' ), false );
             } );
 

@@ -32,13 +32,6 @@
 		<link href="<?= $css['href']; ?>" media="<?= $css['media'] ?>" rel="stylesheet" type="text/css" />
 <? endforeach; ?>
 
-<? if(isset($scripts)): ?>
-<? foreach ($scripts as $script): ?>
-<? $data_main = (!empty($script['data-main'])) ? $script['data-main'] : ''; ?>
-		<script type="text/javascript" data-main="<?= $data_main; ?>" src="<?= $script['src']; ?>"></script>
-<? endforeach; ?>
-<? endif; ?>
-
 <? $maps_dynamic_key = $this->config->item('google_maps_api_v3_key'); ?>
 <? $maps_static_key = $this->config->item('google_maps_static_api_key'); ?>
 <? $support_email = $this->config->item("support_email") ; ?>
@@ -60,8 +53,23 @@
 <? if (!empty($form_id)): ?>
 			settings['formId'] = '<?= $form_id ?>';
 <? endif; ?>
-			//settings['autoUpload'] = true;
 			settings['modernBrowsersURL'] = 'modern_browsers';
+<? if (!empty($return_url)): ?>
+			settings['returnURL'] = '<?= $return_url ?>';
+<? endif; ?>
+<? if (!empty($form_data)): ?>				
+			var modelStr = <?= $form_data ?>;
+<? endif; ?>
+<? if (!empty($form_data_to_edit)): ?>
+			var instanceStrToEdit = <?= $form_data_to_edit ?>;
+<? endif; ?>
 		</script>
+
+<? if(isset($scripts)): ?>
+<? foreach ($scripts as $script): ?>
+<? $data_main = (!empty($script['data-main'])) ? $script['data-main'] : ''; ?>
+		<script type="text/javascript" data-main="<?= $data_main; ?>" src="<?= $script['src']; ?>"></script>
+<? endforeach; ?>
+<? endif; ?>
 
 <? if (ENVIRONMENT === 'production' && $_SERVER['REMOTE_ADDR'] !== '127.0.0.1' ){include_once 'tracking.php';} ?>

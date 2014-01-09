@@ -20,11 +20,14 @@
 
 define( [ 'jquery' ], function( $ ) {
     "use strict";
-    var dpi,
-        styleSheet = getStyleSheet(),
-        $styleSheetLink = $( 'link[media="print"]:eq(0)' );
+    var dpi, styleSheet, $styleSheetLink;
 
-    setDpi();
+    // make sure setDpi is not called until DOM is ready
+    $( document ).ready( function() {
+        setDpi();
+        styleSheet = getStyleSheet();
+        $styleSheetLink = $( 'link[media="print"]:eq(0)' );
+    } );
 
     /**
      * Calculates the dots per inch and sets the dpi property

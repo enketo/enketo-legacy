@@ -1,10 +1,6 @@
 <? 	
 	require 'elements/html_start.php'; 
 ?>
-		<script type="text/javascript">
-			settings['returnURL'] = '<?= $return_url ?>';
-			//settings['showBranch'] = true;
-		</script>
 		
 	</head>
 	<body>

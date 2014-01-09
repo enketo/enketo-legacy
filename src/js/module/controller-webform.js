@@ -155,7 +155,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     form.setRecordName( recordName );
 
                     //console.log('displaying loaded form data succes?: '+success); // DEBUG
-                    $( '.side-slider .handle.close' ).click();
+                    $( '.side-slider-toggle.handle.close' ).click();
                     $( 'button#delete-form' ).button( 'enable' );
                     //if(!success){
                     //gui.alert('Error loading form. Saved data may be corrupted');

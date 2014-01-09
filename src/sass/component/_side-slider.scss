@@ -8,14 +8,15 @@ $slider-width: 240px;
     color: white;
     font-size: 13px;
     top: 0;
-    margin-left: -$slider-width;
+    margin: 0;
+    left: -$slider-width;
     background-color: rgb(50, 50, 50);
     width: $slider-width;
     min-height: 100%;
     padding: 20px;
     .close {
         color: white;
-        text-shadow-color: #bbb;
+        text-shadow: none;
         opacity: 0.9;
     }
     .upload-records, .export-records {
@@ -97,57 +98,57 @@ $slider-width: 240px;
     .button-bar {
         margin: 20px 0 33px 0;
     }
-    .handle {
-        font-family: arial, sans-serif;
-        position: fixed;
-        top: 50%;
-        margin: 0;
-        padding: 0;
+}
+
+.side-slider-toggle.handle {
+    font-family: arial, sans-serif;
+    position: fixed;
+    top: 50%;
+    margin: 0;
+    padding: 0;
+    height: 50px;
+    width: 6px;
+    background: none;
+    border-top: 2px solid;
+    border-bottom: 2px solid;
+    font-size: 20px;
+    line-height: 30px;
+    //@include scale-xy(1, 3);
+    &.open {
+        //color: #888888;
+        border-left: none;
+        border-right: 3px solid;
+        border-color: #888888;
+        left: 6px;
         z-index: 10;
-        background: none;
-        border: none;
-        font-size: 20px;
-        line-height: 30px;
-        @include scale-xy(0.6, 2);
-        &.open {
-            color: #888888;
-            left: 10px;
-            &:hover {
-                color: #000000;
-                font-weight: bold;
-            }
+        &:hover {
+            border-color: #000000;
         }
-        &.close {
-            color: #aaaaaa;
-            left: -15px;
-            &:hover {
-                color: #ffffff;
-                font-weight: bold;
-            }
+    }
+    &.close {
+        @include transition-fast;
+        //color: #aaaaaa;
+        //text-shadow: none;
+        opacity: 1;
+        left: -10px;
+        border-right: none;
+        border-left: 3px solid;
+        border-color: #999999;
+        z-index: 1001;
+        &:hover {
+            border-color: #ffffff;
         }
     }
 }
 
 .show-side-slider {
     .side-slider {
+        @include translate($slider-width, 0);
         @include transition-fast;
-        margin-left: 0;
-        .handle {
-            &.open {
-                display: none;
-            }
-            &.close {
-                @include transition-fast;
-                left: $slider-width - 13px;
-            }
-        }
-        &::before {
-            display: block;
-            top: 0;
-            width: 100%;
-            background: black;
-            opacity: 0.5;
-            z-index: 999;
+    }
+    .side-slider-toggle.handle {
+        &.close {
+            @include translate($slider-width, 0);
         }
     }
     .slider-overlay {
@@ -156,8 +157,5 @@ $slider-width: 240px;
         @extend .modal-backdrop.fade;
         @extend .modal-backdrop.in;
         z-index: 999;
-    }
-    .main {
-        //@include transition-fast;
     }
 }

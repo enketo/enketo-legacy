@@ -3,7 +3,7 @@
 	<nav>
 	</nav>
 	<div class="content"></div>
-    <button class="handle side-slider-toggle open">)</button>
-    <button class="handle side-slider-toggle close">(</button>
 </aside>
+<button class="handle side-slider-toggle open"></button>
+<button class="handle side-slider-toggle close"></button>
 <div class="side-slider-toggle slider-overlay"></div>

@@ -2,6 +2,8 @@
 <head>
 <link rel="icon" type="image/png" href="images/enketo.ico">
 <title>404 Page Not Found</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
 <style type="text/css">
 
 body {

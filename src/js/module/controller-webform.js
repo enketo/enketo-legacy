@@ -31,11 +31,11 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             options = options || {};
             instanceStrToEdit = instanceStrToEdit || null;
             store = options.recordStore || null;
-            fileManager = options.fileStore || null;
+            fileManager = ( options.fileStore && options.fileStore.isSupported() ) ? options.fileStore : null;
 
             connection.init( true );
 
-            if ( fileManager && fileManager.isSupported() && ( !store || store.getRecordList().length === 0 ) ) {
+            if ( fileManager && ( !store || store.getRecordList().length === 0 ) ) {
                 //clean up filesystem storage
                 fileManager.deleteAll();
             }
@@ -357,12 +357,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
         /**
          * Asynchronous function that builds up a form data array including media files
- * @param {        {
-            name: string,
-            data: string
-        }
-    }
-    record[ description ]
+         * @param { { name: string, data: string } } record[ description ]
          * @param {{success: Function, error: Function}} callbacks
          */
 
@@ -375,9 +370,10 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 batches = [];
 
             model = new FormModel( record.data );
-            xmlData = model.getStr( true, true );
             instanceID = model.getInstanceID();
-            $fileNodes = model.$.find( '[type="file"]' ).removeAttr( 'type' );
+            // ignore files if there is no fileManager (possible when editing a record that has files)
+            $fileNodes = ( fileManager ) ? model.$.find( '[type="file"]' ).removeAttr( 'type' ) : [];
+            xmlData = model.getStr( true, true );
 
             function basicRecordPrepped( batchesLength, batchIndex ) {
                 formData = new FormData();

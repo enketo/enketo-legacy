@@ -246,7 +246,7 @@ class Webform extends CI_Controller {
     {
         $this->load->view('thanks_view', array(
             'scripts' => array(),
-            'stylesheets' => $this->default_stylesheets
+            'stylesheets' => $this->_get_stylesheets()
         ));
     }
 

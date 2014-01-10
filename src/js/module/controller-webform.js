@@ -267,7 +267,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             beforeMsg = ( redirect ) ? 'You will be automatically redirected after submission. ' : '';
 
             gui.alert( beforeMsg + '<br />' +
-                '<progress style="text-align: center;"/>', 'Submitting...' );
+                '<progress style="text-align: center;"/>', 'Submitting...', 'info' );
             //name = (Math.floor(Math.random()*100001)).toString();
             //console.debug('temporary record name: '+name);
             record = {

@@ -1,21 +1,29 @@
 .form-footer {
-    margin-top: 30px;
-    .draft {
-        @include font-normal;
-        font-style: italic;
-        text-align: center;
-        display: block;
-        border: none;
-        flex: none;
-        padding: 0;
-        margin: 0 auto;
-        max-width: 150px;
+    @include flex(1);
+    min-height: 100px;
+    .option-wrapper {
+        position: absolute;
+        bottom: 90px;
+        left: 0;
+        width: 100%;
+        .draft {
+            @include font-normal;
+            font-style: italic;
+            text-align: center;
+            display: block;
+            border: none;
+            flex: none;
+            padding: 0;
+            margin: 0 auto;
+            max-width: 150px;
+        }
     }
     #submit-form, #submit-form-single, #validate-form, #launch-form {
         display: block;
         width: 150px;
-        position: static;
-        margin: 15px auto;
+        position: absolute;
+        bottom: 40px;
+        //margin: 15px auto;
     }
     .logout {
         display: block;

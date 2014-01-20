@@ -1,10 +1,18 @@
 .form-footer {
     @include flex(1);
-    min-height: 100px;
-    .option-wrapper {
+    min-height: 210px;
+    position: relative;
+    width: 100%;
+    // the form footer flexes to stretch down on small forms or form pages
+    // the content should be positioned at bottom of stretched element
+    .content {
         position: absolute;
-        bottom: 90px;
+        bottom: 0;
         left: 0;
+        width: 100%;
+    }
+    
+    .option-wrapper {
         width: 100%;
         .draft {
             @include font-normal;
@@ -21,13 +29,19 @@
     #submit-form, #submit-form-single, #validate-form, #launch-form {
         display: block;
         width: 150px;
-        position: absolute;
-        bottom: 40px;
-        //margin: 15px auto;
+        position: static;
+        margin: 30px auto 40px auto;
     }
     .logout {
+        width: 100%;
         display: block;
-        margin-top: 10px;
+        margin-top: -20px;
+        margin-bottom: 20px;
         text-align: center;
+    }
+    .enketo-power {
+        left: auto;
+        margin: 0;
+        width: 100%;
     }
 }

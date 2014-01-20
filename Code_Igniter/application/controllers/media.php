@@ -78,11 +78,18 @@ class Media extends CI_Controller {
 
 	private function _correct_mime($mimetype)
 	{
+		// temporary workaround for formhub bug: https://github.com/SEL-Columbia/formhub/issues/1292
 		if ($mimetype === 'application/image/png') {
 			return 'image/png';
 		}
 		if ($mimetype === 'application/image/jpeg') {
 			return 'image/jpeg';
+		}
+		if ($mimetype === 'application/audio/mp3') {
+			return 'audio/mpeg';
+		}
+		if ($mimetype === 'application/audio/wav') {
+			return 'audio/vnd.wave';
 		}
 		return $mimetype;
 	}

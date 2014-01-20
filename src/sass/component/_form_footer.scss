@@ -1,6 +1,6 @@
 .form-footer {
     @include flex(1);
-    min-height: 210px;
+    min-height: 190px;
     position: relative;
     width: 100%;
     // the form footer flexes to stretch down on small forms or form pages
@@ -11,7 +11,6 @@
         left: 0;
         width: 100%;
     }
-    
     .option-wrapper {
         width: 100%;
         .draft {
@@ -43,5 +42,12 @@
         left: auto;
         margin: 0;
         width: 100%;
+    }
+    // still flex the footer but hide all the content
+    &.hide {
+        min-height: 20px;
+        .content {
+            display: none;
+        }
     }
 }

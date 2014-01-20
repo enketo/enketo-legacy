@@ -33,12 +33,16 @@ class Media extends CI_Controller {
 	public function get()
 	{
 		$url = $this->_extract_url(func_get_args());
+		// add query string (used in Aggregate)
+		$url = ( !empty( $_SERVER['QUERY_STRING'] ) ) ? $url.'?'.$_SERVER['QUERY_STRING'] : $url;
+		
 		$headers = $this->openrosa->get_headers($url);
-		//log_message('debug', json_encode($headers));
+		// log_message('debug', json_encode($headers));
 		$content_type = $this->_correct_mime($headers['Content-Type']);
-		$content_disposition = $headers['Content-Disposition'];
 		header('Content-Type:'.$content_type);
-		header('Content-Disposition:'.$content_disposition);
+		if (!empty( $headers['Content-Disposition'] ) ) {
+			header('Content-Disposition:'.$headers['Content-Disposition']);
+		}
 		echo $this->_get_media($url);
 	}
 
@@ -47,12 +51,10 @@ class Media extends CI_Controller {
 	{
 		$url = $this->_extract_url(func_get_args());
 		$headers = $this->openrosa->get_headers($url);
-		if (isset($headers['Content-Length']))
-		{
+		if (isset($headers['Content-Length'])) {
 			$this->output->set_output($headers['Content-Length']);
 		}
-		else
-		{
+		else {
 			show_404();
 		}
 	}
@@ -76,8 +78,12 @@ class Media extends CI_Controller {
 
 	private function _correct_mime($mimetype)
 	{
-		if ($mimetype === 'application/image/png') return 'image/png';
-		if ($mimetype === 'application/image/jpeg') return 'image/jpeg';
+		if ($mimetype === 'application/image/png') {
+			return 'image/png';
+		}
+		if ($mimetype === 'application/image/jpeg') {
+			return 'image/jpeg';
+		}
 		return $mimetype;
 	}
 }

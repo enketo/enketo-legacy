@@ -18,6 +18,7 @@ require.config( {
         "Modernizr": "../../../public/lib/enketo-core/lib/Modernizr",
         "bootstrap": "../../../public/lib/enketo-core/lib/bootstrap",
         "jquery": "../../../public/lib/enketo-core/lib/jquery",
+        "jquery.touchswipe": "../../../public/lib/enketo-core/lib/jquery-touchswipe/jquery.touchSwipe",
         "file-saver": "../../../public/lib/file-saver/FileSaver",
         "Blob": "../../../public/lib/blob/Blob",
         "vkbeautify": "../../../public/lib/vkbeautify/vkbeautify"

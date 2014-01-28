@@ -70,7 +70,7 @@ define( [ 'settings' ], function( settings ) {
         },
         timeEnd: function( item ) {
             var deepestPendingItem = this.getDeepestPending();
-            //console.log( 'timEnd deepest pending item:', deepestPendingItem ); // if this is commented out weird errors occur
+            console.log( 'timEnd deepest pending item:', deepestPendingItem ); // if this is commented out weird errors occur
             if ( deepestPendingItem.name == item ) {
                 deepestPendingItem.time = new Date().getTime() - deepestPendingItem.start;
                 delete deepestPendingItem.start;

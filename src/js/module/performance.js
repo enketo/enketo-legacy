@@ -41,6 +41,51 @@ define( [ 'settings' ], function( settings ) {
     //        profilerRecords.push( message );
     //    };
     //}
+    //
+    window.profiler = {
+        data: {},
+        time: function( item ) {
+            console.log( 'time', item );
+            var deepestPendingItem = this.getDeepestPending();
+            if ( !deepestPendingItem ) {
+                this.addItem( this.data, item );
+            } else {
+                this.addItem( deepestPendingItem, item );
+            }
+        },
+        addItem: function( obj, item ) {
+            obj[ item ] = {
+                start: new Date().getTime()
+            };
+        },
+        getDeepestPending: function( obj ) {
+            obj = obj || this.data;
+            for ( var i in obj ) {
+                if ( obj.hasOwnProperty( i ) && typeof obj[ i ] === 'object' && !obj[ i ].time ) {
+                    obj[ i ].name = i;
+                    return this.getDeepestPending( obj[ i ] ) || obj[ i ];
+                }
+            }
+            return null;
+        },
+        timeEnd: function( item ) {
+            var deepestPendingItem = this.getDeepestPending();
+            //console.log( 'timEnd deepest pending item:', deepestPendingItem ); // if this is commented out weird errors occur
+            if ( deepestPendingItem.name == item ) {
+                deepestPendingItem.time = new Date().getTime() - deepestPendingItem.start;
+                delete deepestPendingItem.start;
+                delete deepestPendingItem.name;
+            } else {
+                console.error( 'no profiler item for', item, 'found, instead found: ', deepestPendingItem.name,
+                    deepestPendingItem.name == item );
+            }
+        },
+        report: function() {
+            // TODO sort this
+            console.log( "%cProfiler Report: %O", "color:orange; font-weight: bold;", this.data );
+        },
+
+    };
 
     window.onload = function() {
         setTimeout( function() {

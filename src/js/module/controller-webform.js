@@ -47,7 +47,9 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             //window.gui = gui;
 
             //initialize form and check for load errors
+            profiler.time( 'form object init' );
             loadErrors = form.init();
+            profiler.timeEnd( 'form object init' );
 
             if ( loadErrors.length > 0 ) {
                 console.error( 'load errors:', loadErrors );

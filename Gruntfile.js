@@ -36,6 +36,13 @@ module.exports = function( grunt ) {
                 options: {
                     spawn: false
                 }
+            },
+            js: {
+                files: [ '*.js', 'src/js/*/**.js', 'public/enketo-core/**/*.js' ],
+                tasks: [ 'compile' ],
+                options: {
+                    spawn: false
+                }
             }
         },
         sass: {

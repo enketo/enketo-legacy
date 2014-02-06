@@ -42,7 +42,7 @@ define( [ 'settings' ], function( settings ) {
     //    };
     //}
     //
-    window.profiler = {
+    window[ 'profiler' ] = {
         data: {},
         time: function( item ) {
             console.log( 'time', item );
@@ -80,7 +80,7 @@ define( [ 'settings' ], function( settings ) {
                     deepestPendingItem.name == item );
             }
         },
-        report: function() {
+        'report': function() {
             // TODO sort this
             console.log( "%cProfiler Report: %O", "color:orange; font-weight: bold;", this.data );
         },

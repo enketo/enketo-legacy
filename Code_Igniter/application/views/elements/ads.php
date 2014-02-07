@@ -1,11 +1,13 @@
 <aside class="ad">
-	<p>You can use Enketo to collect data!</p>
-	<p>Try <a href="https://enketo.org">enketo.org</a> <strong>30 days</strong> for free (credit card required).</p>
+	<p>Use Enketo with ODK Aggregate</p>
+	<p>Simply open a free <a href="https://accounts.enketo.org">enketo.org</a> account and 
+		<a href="https://accounts.enketo.org/support/aggregate/" target="_blank">link it</a> with Aggregate. No credit card required.</p>
 	<p>Enketo is:</p>
 	<ul>
+		<li>device-agnostic</li>
 		<li>offline-capable</li>
 		<li>print-friendly</li>
-		<li>beautiful</li>
+		<li>gorgeous</li>
 	</ul>
 	<button class="close" aria-hidden="true">&times;</button>
 </aside>

@@ -21,7 +21,7 @@ Related Projects
 
 API Documentation
 --------------
-Instead of installing and maintaining Enketo yourself you should consider using [enketo.org](https://enketo.org)'s API after opening an enketo.org [account](https://accounts.enketo.org). The [API documentation](http://apidocs.enketo.org) describes how you can easily achieve the same level of integration that currently exists on [formhub.org](https://formhub.org) and in ODK Aggregate to any other OpenRosa-compliant server.
+Instead of installing and maintaining Enketo yourself you should consider using [enketo.org](https://enketo.org)'s API after opening an enketo.org [account](https://accounts.enketo.org). The [API documentation](http://apidocs.enketo.org) describes how you can easily achieve the same level of integration that currently exists on [formhub.org](https://formhub.org) and in [ODK Aggregate 1.4.1+](http://opendatakit.org/use/aggregate/) to any other OpenRosa-compliant server.
 
 Browser support
 ---------------

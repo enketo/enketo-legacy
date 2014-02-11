@@ -34,5 +34,12 @@
   display: none;
 }
 
+.modal-dialog {
+  input {
+    @extend .form-control;
+  }
+}
+
+
 .load-error {
   margin: 100px 0 60px 0; } //move this??

@@ -51,8 +51,8 @@
 			<div class="modal-body">
 				<form onsubmit="return false;">
 					<div class="alert alert-danger"></div>
-					<label class="question">
-						<span class="question-label active">Record Name</span>
+					<label>
+						<span>Record Name</span>
 						<span class="or-hint active">This name allows you to easily find your draft record to finish it later. The record name will not be submitted to the server.</span>
 						<input name="record-name" type="text" required="required"/>
 					</label>

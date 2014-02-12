@@ -144,9 +144,10 @@ class Unit_test extends CI_Controller {
             'calcs.xml',
             'readonly.xml',
             'calcs_in_repeats.xml',
-            'multiple_repeats_relevant.xml'
+            'multiple_repeats_relevant.xml',
+            'relative.xml'
         );
-        $xml_forms_path = '../temp/';
+        $xml_forms_path = '../test/forms/';
         $save_result_path = '../temp/transforms.mock.js';
 
         $this->load->model('Form_model', '', TRUE);
@@ -163,7 +164,6 @@ class Unit_test extends CI_Controller {
                 "\t\t'xml_model': '".preg_replace(array('/\>\s+\</',"/\'/"),array('><','&quot;'),$result->model->asXML())."'\n\t},\n";
         }
         $mocks_js = substr($mocks_js, 0, -2)."\n};";
-        
         $save_result = file_put_contents($save_result_path, $mocks_js);
         
         if ($save_result !== FALSE) { echo 'Form Strings Generated!'; }

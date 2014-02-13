@@ -49,6 +49,15 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             //initialize form and check for load errors
             loadErrors = form.init();
 
+            if ( form.getEncryptionKey() ) {
+                console.error( 'This form requires encryption of local records but this is not supported yet in Enketo.', loadErrors );
+                loadErrors.unshift( '<strong>This form requires local encryption of records. ' +
+                    'Unfortunately this is currently not supported. ' +
+                    'You should use ODK Collect ' +
+                    'for data collection with this form.</strong>'
+                )
+            }
+
             if ( loadErrors.length > 0 ) {
                 console.error( 'load errors:', loadErrors );
                 purpose = ( instanceStrToEdit ) ? 'to edit data' : 'for data entry';

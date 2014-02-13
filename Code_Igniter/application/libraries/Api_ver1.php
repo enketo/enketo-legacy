@@ -157,7 +157,8 @@ class Api_ver1 {
     private function _valid_xml($xml_str)
     {
         libxml_use_internal_errors(true);
-        $valid = simplexml_load_string($xml_str);
+        $sxe = simplexml_load_string($xml_str);
+        $valid = count( libxml_get_errors() ) === 0;
         libxml_clear_errors();
         return $valid;
     }

@@ -37,6 +37,17 @@ class Instance_model extends CI_Model {
             $result = $row;
             break;
         }
+        // strip all the bloody namespace prefixes and the namespace declaration
+        if (!empty($result)) {
+            $orig = $result->instance_xml;
+            // prefixes
+            $result->instance_xml = preg_replace( '/<(\/)?[a-zA-Z][a-zA-Z0-9_]+:/', '<$1', $result->instance_xml );
+            // namespace declaration
+            $result->instance_xml = preg_replace( '/\sxmlns:[^\s>]+/', '', $result->instance_xml );
+            if ($orig != $result->instance_xml) {
+                log_message('debug', 'stripped namespaces from instance to be edited');
+            }
+        }
         return $result;
     }
 

@@ -1,6 +1,6 @@
 <div id="feedback-bar" class="alert alert-warning">			
 	<span class="glyphicon glyphicon-info-sign"></span>
-	<button href="#" class="close">&times;</button>
+	<button class="close">&times;</button>
 </div>
 
 <div id="dialog-alert" class="modal fade" role="dialog" aria-labelledby="alert dialog" aria-hidden="true"  data-keyboard="true">

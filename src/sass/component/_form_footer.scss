@@ -11,9 +11,9 @@
         left: 0;
         width: 100%;
     }
-    .option-wrapper {
+    .draft {
         width: 100%;
-        .draft {
+         
             @include font-normal;
             font-style: italic;
             text-align: center;
@@ -23,7 +23,7 @@
             padding: 0;
             margin: 0 auto;
             max-width: 150px;
-        }
+        
     }
     #submit-form, #submit-form-single, #validate-form, #launch-form {
         display: block;

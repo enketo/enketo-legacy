@@ -25,7 +25,6 @@ define( [ 'jquery' ], function( $ ) {
     // make sure setDpi is not called until DOM is ready
     $( document ).ready( function() {
         setDpi();
-        styleSheet = getStyleSheet();
         $styleSheetLink = $( 'link[media="print"]:eq(0)' );
     } );
 

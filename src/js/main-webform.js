@@ -4,8 +4,8 @@
 
 require( [ 'require-config' ], function( rc ) {
 
-    require( [ 'performance', 'cache', 'store', 'file-manager', 'controller-webform', 'jquery' ],
-        function( monitor, cache, recordStore, fileStore, controller, $ ) {
+    require( [ 'performance', 'gui', 'cache', 'store', 'file-manager', 'controller-webform', 'jquery' ],
+        function( monitor, gui, cache, recordStore, fileStore, controller, $ ) {
 
             if ( !recordStore.isSupported() || !recordStore.isWritable() ) {
                 window.location = settings[ 'modernBrowsersURL' ];

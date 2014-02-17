@@ -13,3 +13,6 @@ _site/*
 .fuse*
 .grunt/*
 _SpecRunner.html
+Vagrantfile
+vagrant
+setup

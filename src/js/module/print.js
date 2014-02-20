@@ -20,12 +20,11 @@
 
 define( [ 'jquery' ], function( $ ) {
     "use strict";
-    var dpi, styleSheet, $styleSheetLink;
+    var dpi, printStyleSheet, $printStyleSheetLink;
 
     // make sure setDpi is not called until DOM is ready
     $( document ).ready( function() {
         setDpi();
-        $styleSheetLink = $( 'link[media="print"]:eq(0)' );
     } );
 
     /**
@@ -45,13 +44,21 @@ define( [ 'jquery' ], function( $ ) {
      * Gets print stylesheets
      * @return {Element} [description]
      */
-    function getStyleSheet() {
-        for ( var i = 0; i < document.styleSheets.length; i++ ) {
-            if ( document.styleSheets[ i ].media.mediaText === 'print' ) {
-                return document.styleSheets[ i ];
+    function getPrintStyleSheet() {
+        var sheet, media;
+        // document.styleSheets is an Object not an Array!
+        for ( var i in document.styleSheets ) {
+            sheet = document.styleSheets[ i ];
+            console.log( 'checking prop', i, sheet );
+            if ( sheet.media.mediaText === 'print' ) {
+                return sheet;
             }
         }
         return null;
+    }
+
+    function getPrintStyleSheetLink() {
+        return $( 'link[media="print"]:eq(0)' );
     }
 
     /**
@@ -59,21 +66,23 @@ define( [ 'jquery' ], function( $ ) {
      */
     function styleToAll() {
         //sometimes, setStylesheet fails upon loading
-        if ( !styleSheet ) {
-            styleSheet = getStyleSheet();
-        }
+
+        printStyleSheet = printStyleSheet || getPrintStyleSheet();
+        $printStyleSheetLink = $printStyleSheetLink || getPrintStyleSheetLink();
+        console.log( 'print stylesheet', printStyleSheet );
+        console.log( ' print stylesheet link', $printStyleSheetLink );
         //Chrome:
-        styleSheet.media.mediaText = 'all';
+        printStyleSheet.media.mediaText = 'all';
         //Firefox:
-        $styleSheetLink.attr( 'media', 'all' );
+        $printStyleSheetLink.attr( 'media', 'all' );
     }
 
     /**
      * Resets the print stylesheet to only apply to media 'print'
      */
     function styleReset() {
-        styleSheet.media.mediaText = 'print';
-        $styleSheetLink.attr( 'media', 'print' );
+        printStyleSheet.media.mediaText = 'print';
+        $printStyleSheetLink.attr( 'media', 'print' );
     }
 
     /**
@@ -164,7 +173,7 @@ define( [ 'jquery' ], function( $ ) {
                     if ( this.h < 0 ) {
                         console.debug( 'begin (top: ' + this.begin_top + ')', begin );
                         console.debug( 'end (top: ' + this.end_top + ')', end );
-                        throw new Error( "A question group has an invalid height." );
+                        console.error( "A question group has an invalid height." );
                     }
                 }
 

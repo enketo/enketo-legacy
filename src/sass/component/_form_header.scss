@@ -109,6 +109,7 @@ $offline-color: rgb(231, 67, 41);
     margin-right: 0;
     float: right;
     @include enketo-icon;
+    outline: 0;
     &::before {
         content: '\e60e';
         font-size: 30px;

@@ -89,11 +89,11 @@ define( [ 'jquery' ], function( $ ) {
      * Prints the form after first setting page breaks (every time it is called)
      */
     function printForm() {
-        removePageBreaks();
-        removePossiblePageBreaks();
-        styleToAll();
-        addPageBreaks();
-        styleReset();
+        //removePageBreaks();
+        //removePossiblePageBreaks();
+        //styleToAll();
+        //addPageBreaks();
+        //styleReset();
         window.print();
     }
 

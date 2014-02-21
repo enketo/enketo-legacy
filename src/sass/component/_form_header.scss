@@ -94,6 +94,10 @@ $offline-color: rgb(231, 67, 41);
     }
 }
 
+//before they have been moved to the form-header
+#form-languages {
+    display: none;
+}
 .form-language-selector {
     padding-right: 20px;
     #form-languages {
@@ -105,7 +109,7 @@ $offline-color: rgb(231, 67, 41);
     background: none;
     border-radius: 0;
     border: none;
-    padding: 7px 0 7px 20px;
+    padding: 7px 0 0 20px;
     margin-right: 0;
     float: right;
     @include enketo-icon;

@@ -59,6 +59,9 @@ class Webform extends CI_Controller {
         if ($this->_launched_check_route()) {
             return;
         }
+        if ($this->_active_check_route()) {
+            return;
+        }
         if ($this->_paywall_check_route()) {
             return;
         }
@@ -104,6 +107,9 @@ class Webform extends CI_Controller {
             return;
         }
         if ($this->_launched_check_route()) {
+            return;
+        }
+        if ($this->_active_check_route()) {
             return;
         }
         if ($this->_paywall_check_route()) {
@@ -175,6 +181,9 @@ class Webform extends CI_Controller {
         if ($this->_launched_check_route()) {
             return;
         }
+        if ($this->_active_check_route()) {
+            return;
+        }
         if ($this->_paywall_check_route()) {
             return;
         }
@@ -221,6 +230,9 @@ class Webform extends CI_Controller {
         }
         if (isset($this->subdomain)) {
             show_error('Preview cannot be launched from subdomain', 404);
+            return;
+        }
+        if ($params['server'] && $this->_paywall_check_route_for_preview($params['server'])) {
             return;
         }
         $data = array
@@ -332,7 +344,16 @@ class Webform extends CI_Controller {
     private function _launched_check_route()
     {
         if (!$this->Survey_model->is_launched_survey()) {
-            show_error('This survey has not been launched in enketo or is no longer active.', 404);
+            show_error('This survey has not been launched in enketo.', 404);
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    private function _active_check_route()
+    {
+        if (!$this->Survey_model->is_active_survey()) {
+            show_error('This survey is no longer active.', 404);
             return TRUE;
         }
         return FALSE;
@@ -364,6 +385,15 @@ class Webform extends CI_Controller {
     private function _paywall_check_route()
     {
         if (!$this->account->serve_allowed($this->server_url)) {
+            $this->load->view('unpaid_view');
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    private function _paywall_check_route_for_preview($server_url)
+    {
+        if (!$this->account->serve_allowed($server_url)) {
             $this->load->view('unpaid_view');
             return TRUE;
         }

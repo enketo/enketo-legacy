@@ -40,12 +40,18 @@ class Survey_model extends CI_Model {
         return TRUE;      
     }
     
-    //returns true if a requested survey or template exists and is active
+    // returns true if a requested survey or template exists in db
     public function is_launched_survey()
     {     
-        return ($this->subdomain) ? ( ($this->_get_item('subdomain', TRUE)) ? TRUE : FALSE ) : NULL;
+        return ($this->subdomain) ? ( ($this->_get_item('subdomain', FALSE)) ? TRUE : FALSE ) : NULL;
     }
     
+    // returns true if a requested survey or template exists and is active
+    public function is_active_survey()
+    {     
+        return ($this->subdomain) ? (($this->_is_active()) ? TRUE : FALSE ) : NULL;
+    }
+
     public function get_form_props()
     {
         return ($this->subdomain) ? $this->_get_items(array('server_url', 'form_id', 'hash', 'media_hash', 'xsl_version'), TRUE) : NULL;

@@ -142,6 +142,11 @@ class Api_v1 extends CI_Controller {
             //echo("Please enter a valid API Token (username) for your server.");
             echo (json_format(json_encode($response)));
             exit();
+        } else if ($response['code'] == '204'){
+             $this->output
+                ->set_status_header($response['code'])
+                ->set_content_type('application/json')
+                ->set_output('');
         } else {
             $this->output
                 ->set_status_header($response['code'])

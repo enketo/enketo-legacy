@@ -183,29 +183,11 @@ class Api_ver1 {
 
     private function _surveys_list()
     {
-        if ($this->CI->config->item('auth_support')) {
-            $this->CI->load->add_package_path(APPPATH.'third_party/form_auth');
-        }
-        $this->CI->load->library('form_auth');
-        $this->CI->load->model('Form_model', '');
-        $credentials = $this->CI->form_auth->get_credentials();
-        $this->CI->Form_model->setup($this->params['server_url'], NULL, $credentials);
+        $forms_launched = $this->CI->Survey_model->get_webform_list($this->params['server_url']);
 
-        if($this->CI->Form_model->requires_auth()) {
-            $response['code']    = '403';
-            $response['message'] = 'Form Server requires authorization. Please login <a href="'.
-                base_url().'authenticate/login">here</a> first.';
-        } else {
-            $forms_launched = $this->CI->Survey_model->get_webform_list($this->params['server_url']);
-            $forms_listed   = $this->CI->Form_model->get_formlist_JSON(FALSE);
-            
-            foreach ($forms_launched as $i => $form_launched) {
-                $forms_launched[$i]['delete_allowed'] = !$this->_in_list($forms_listed, 'form_id', $form_launched['form_id']);
-            }
+        $response['forms']  = $forms_launched;
+        $response['code']   = '200'; //also for empty responses
 
-            $response['forms']  = $forms_launched;
-            $response['code']   = '200'; //also for empty responses
-        }
         return $response;
     }
 
@@ -235,8 +217,8 @@ class Api_ver1 {
                 $response['code']    = '405';
                 $response['message'] = 'somebody else is editing this instance';
             } else {
-                //adjust the response code, 201 is successful INSTANCE db entry
-                //200 is never returned as protection agains simultanous editing of same record
+                // adjust the response code, 201 is successful INSTANCE db entry
+                // 200 is never returned as protection agains simultanous editing of same record
                 $response['code']   = '201';
             } 
             unset($response['subdomain']);
@@ -269,29 +251,14 @@ class Api_ver1 {
     {
         $response = array();
 
-        if ($this->CI->config->item('auth_support')) {
-            $this->CI->load->add_package_path(APPPATH.'third_party/form_auth');
-        }
-        $this->CI->load->library('form_auth');
-        $this->CI->load->model('Form_model', '');
-        $credentials = $this->CI->form_auth->get_credentials();
-        $this->CI->Form_model->setup($this->params['server_url'], $this->params['form_id'], $credentials);
-        if($this->CI->Form_model->requires_auth()) {
-            $response['code']    = '403';
-            $response['message'] = 'Form Server requires authorization. Please login <a href="'.
-                base_url().'authenticate/login">here</a> first.';
-        } else if ($this->CI->Form_model->is_listed($this->params['server_url'], $this->params['form_id'])){
-            $response['code']    = '405';
-            $response['message'] = 'form still hosted on form server, see '.$this->params['server_url'].'/formList';
+        $result = $this->CI->Survey_model->deactivate_webform_url($this->params['server_url'], $this->params['form_id']);
+        if ($result) {
+            $response['code'] = 204;
         } else {
-            $result = $this->CI->Survey_model->deactivate_webform_url($this->params['server_url'], $this->params['form_id']);
-            if ($result) {
-                $response['code'] = 204;
-            } else {
-                $response['code'] = 404;
-                $response['message'] = 'form not found or already deactivated';
-            }
+            $response['code'] = 404;
+            $response['message'] = 'form not found or already deactivated';
         }
+
         return $response;
     }
 

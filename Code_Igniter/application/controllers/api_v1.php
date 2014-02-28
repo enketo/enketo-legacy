@@ -135,7 +135,7 @@ class Api_v1 extends CI_Controller {
 
     private function _print_output($response)
     {
-        log_message('debug', 'printing outoup'.json_encode($response));
+        // log_message('debug', 'printing output'.json_encode($response));
         if ($response['code'] == '401'){
             header('WWW-Authenticate: Basic realm="Valid Enketo API Token Required"');
             header('HTTP/1.0 401 Unauthorized');

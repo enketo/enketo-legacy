@@ -54,6 +54,12 @@ class Account {
         return ($account_status['quota'] && $account_status['quota'] > 0);
     }
 
+    public function preview_allowed($server_url)
+    {
+        $account_status = $this->get_status($server_url);
+        return ($account_status['quota'] && $account_status['quota'] > 0);
+    }
+
     /* 
      * serverURLs can be restricted
      */

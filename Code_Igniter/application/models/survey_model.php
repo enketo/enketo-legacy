@@ -581,7 +581,7 @@ class Survey_model extends CI_Model {
         if ($this->db->affected_rows() > 0) {
             return TRUE;
         }
-        log_message('debug', 'failed datebase item update (maybe nothing to update) '.$this->db->last_query());
+        log_message('debug', 'failed database item update (maybe nothing to update) '.$this->db->last_query());
         return FALSE;   
     }
 

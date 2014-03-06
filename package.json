@@ -22,6 +22,7 @@
         "grunt-jsbeautifier": "~0.2.3",
         "grunt-contrib-watch": "~0.5.3",
         "grunt-template-jasmine-requirejs": "~0.1.8",
-        "rjs-build-analysis": "0.0.3"
+        "rjs-build-analysis": "0.0.3",
+        "grunt-contrib-symlink": "^0.3.0"
     }
 }

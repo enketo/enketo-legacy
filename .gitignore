@@ -8,6 +8,8 @@ Code_Igniter/application/cache/*
 Code_Igniter/application/logs/log-*.php
 node_modules/*
 public/build/*
+src/js/module/print-grid.js
+public/cron.log
 _site/*
 ._*
 .fuse*

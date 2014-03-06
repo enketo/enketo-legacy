@@ -49,7 +49,7 @@ module.exports = function( grunt ) {
             dist: {
                 options: {
                     //sourcemap: true,
-                    style: "compressed",
+                    style: "expanded",
                     noCache: true
                 },
                 files: [ {
@@ -138,6 +138,17 @@ module.exports = function( grunt ) {
                     out: "public/build/js/formlist-combined.min.js"
                 }
             }
+        },
+        symlink: {
+            expanded: {
+                files: [ {
+                    expand: true,
+                    overwrite: false,
+                    cwd: 'src/sass/grid/js',
+                    src: [ '*.js' ],
+                    dest: 'src/js/module'
+                } ]
+            }
         }
     } );
 
@@ -164,6 +175,7 @@ module.exports = function( grunt ) {
     grunt.loadNpmTasks( "grunt-contrib-jshint" );
     grunt.loadNpmTasks( "grunt-contrib-sass" );
     grunt.loadNpmTasks( "grunt-contrib-requirejs" );
+    grunt.loadNpmTasks( "grunt-contrib-symlink" );
 
     //maybe this can be turned into a npm module?
     grunt.registerTask( "prepWidgetSass", "Preparing _widgets.scss dynamically", function() {
@@ -196,6 +208,6 @@ module.exports = function( grunt ) {
     } );
     grunt.registerTask( "test", [ "jsbeautifier:test", "jshint", "jasmine" ] );
     grunt.registerTask( "style", [ "prepWidgetSass", "sass:dist" ] );
-    grunt.registerTask( "compile", [ "requirejs" ] );
-    grunt.registerTask( "default", [ "test", "style", "compile" ] );
+    grunt.registerTask( "compile", [ "symlink", "requirejs" ] );
+    grunt.registerTask( "default", [ "symlink", "test", "style", "compile" ] );
 };

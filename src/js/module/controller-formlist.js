@@ -84,7 +84,7 @@ define( [ 'gui', 'store', 'connection', 'jquery', 'bootstrap' ], function( gui, 
                     .attr( 'data-content', hText.ex )
                     .popover( 'destroy' ).popover( popoverOptions );
 
-                if ( $settings.find( 'input#server' ).val() !== value ) {
+                if ( value && $settings.find( 'input#server' ).val() !== value ) {
                     $settings.find( 'input#server' ).val( value ).trigger( 'change' );
                 }
             } ).end().find( 'a.active' ).click();
@@ -97,36 +97,36 @@ define( [ 'gui', 'store', 'connection', 'jquery', 'bootstrap' ], function( gui, 
             var props, reset,
                 frag = $settings.find( 'input#server' ).val(),
                 type = $settings.find( '.url-helper li.active > a' ).attr( 'data-value' );
-            if ( $( 'progress' ).css( 'display' ) === 'none' ) {
-                props = {
-                    server: connection.oRosaHelper.fragToServerURL( type, frag ),
-                    helper: $settings.find( '.url-helper li.active > a' ).attr( 'data-value' ),
-                    inputValue: $settings.find( 'input#server' ).val()
-                };
-                if ( props.server ) {
-                    $( 'progress' ).show();
-                    connection.getFormlist( props.server, {
-                        success: function( resp, msg ) {
-                            processFormlistResponse( resp, msg, props );
-                        },
-                        error: function( jqXHR, status, errorThrown ) {
-                            processFormlistResponse( [], '', props, true );
-                            if ( jqXHR.status === 401 ) {
-                                gui.confirmLogin( '<p>This server requires you to login to view forms.</p><p>Would you like to login now?</p>', props.server );
-                                store.setRecord( '__current_server', {
-                                    'url': props.server,
-                                    'helper': props.helper,
-                                    'inputValue': props.inputValue,
-                                    'refresh': true
-                                }, false, true );
-                            }
+            //if ( $( 'progress' ).css( 'display' ) === 'none' ) {
+            props = {
+                server: connection.oRosaHelper.fragToServerURL( type, frag ),
+                helper: $settings.find( '.url-helper li.active > a' ).attr( 'data-value' ),
+                inputValue: $settings.find( 'input#server' ).val()
+            };
+            if ( props.server ) {
+                $( 'progress' ).show();
+                connection.getFormlist( props.server, {
+                    success: function( resp, msg ) {
+                        processFormlistResponse( resp, msg, props );
+                    },
+                    error: function( jqXHR, status, errorThrown ) {
+                        processFormlistResponse( [], '', props, true );
+                        if ( jqXHR.status === 401 ) {
+                            gui.confirmLogin( '<p>This server requires you to login to view forms.</p><p>Would you like to login now?</p>', props.server );
+                            store.setRecord( '__current_server', {
+                                'url': props.server,
+                                'helper': props.helper,
+                                'inputValue': props.inputValue,
+                                'refresh': true
+                            }, false, true );
                         }
-                    } );
-                } else {
-                    reset = true;
-                    processFormlistResponse( [], null, props, reset );
-                }
+                    }
+                } );
+            } else {
+                reset = true;
+                processFormlistResponse( [], null, props, reset );
             }
+            // }
             $( '#page .close, header a:not(.collapsed)[data-toggle="collapse"]' ).click();
         } );
 

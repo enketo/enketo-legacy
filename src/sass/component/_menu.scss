@@ -3,6 +3,13 @@
     font-size: 14px;
     -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.125);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.125);
+    .navbar-toggle {
+        margin-right: 30px;
+    }
+    .navbar-nav {
+        margin-left: 0;
+        margin-right: 0;
+    }
 }
 
 .navbar .navbar-brand {
@@ -21,7 +28,7 @@
 
 //bootstrap override
 .navbar-nav.navbar-right:last-child {
-    margin-right: 0;
+    margin-right: 35px;
 }
 
 .navbar a.highlight {

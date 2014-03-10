@@ -1,4 +1,4 @@
-$offline-color: rgb(231, 67, 41);
+$offline-color: rgb(211, 83, 0);
 
 .preview-header {
     position: absolute;
@@ -44,14 +44,29 @@ $offline-color: rgb(231, 67, 41);
     }
 }
 
+.form-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: block;
+    max-width: 100% !important;
+    // to make sure animation works the very first time
+    width: 34px;
+    // to make sure that it can't be set lower inline
+    min-width: 34px !important;
+    margin: 0;
+    height: 3px;
+    background-color: $offline-color;
+    z-index: 1000;
+    @include transition-slow;
+}
+
 .offline-enabled {
     @include transition-fast;
     display: block;
     position: fixed;
-    top: -1px;
-    //not sure why
-    left: 1px;
-    //not sure why
+    top: 3px;
+    left: 0;
     .offline-enabled-icon {
         width: 34px;
         height: 34px;
@@ -71,8 +86,9 @@ $offline-color: rgb(231, 67, 41);
     }
     .queue-length {
         cursor: pointer;
-        margin-top: 2px;
+        margin-top: 1px;
         width: 34px;
+        min-height: 34px;
         color: $offline-color;
         background-color: #ffffff;
         text-align: center;
@@ -98,6 +114,7 @@ $offline-color: rgb(231, 67, 41);
 #form-languages {
     display: none;
 }
+
 .form-language-selector {
     padding-right: 20px;
     #form-languages {

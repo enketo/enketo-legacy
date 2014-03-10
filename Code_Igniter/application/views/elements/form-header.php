@@ -9,6 +9,7 @@
 	<div class='offline-enabled'>
 		<? if(!empty($manifest)): ?><div class='offline-enabled-icon not-enabled' title="This form is able to launch offline"></div><? endif; ?><? if (!isset($offline_storage) || $offline_storage ): ?><div class='queue-length side-slider-toggle' title="Records Queued"></div><? endif; ?>
 	</div>
+	<div class="form-progress" ></div>
 	<a class="branding" href="<?= $link ?>" title="Go Back">
 	<? if (!empty($logo_url)): ?>
 	<div class="logo-wrapper">

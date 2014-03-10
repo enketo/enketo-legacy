@@ -21,7 +21,7 @@
 define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormModel', 'file-saver', 'Blob', 'vkbeautify', 'jquery', 'bootstrap' ],
     function( gui, connection, settings, Form, FormModel, saveAs, Blob, vkbeautify, $ ) {
         "use strict";
-        var form, $form, formSelector, defaultModelStr, store, fileManager;
+        var form, $form, $formprogress, formSelector, defaultModelStr, store, fileManager;
 
         function init( selector, modelStr, instanceStrToEdit, options ) {
             var loadErrors, purpose;
@@ -65,6 +65,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             }
 
             $form = form.getView().$;
+            $formprogress = $( '.form-progress' );
 
             setEventHandlers();
 
@@ -122,6 +123,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 window.form = form;
                 form.init();
                 $form = form.getView().$;
+                $formprogress = $( '.form-progress' );
                 $( 'button#delete-form' ).button( 'disable' );
             }
         }
@@ -580,6 +582,12 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     store.removeRecord( recordName );
                 }
                 console.log( 'After submission success, attempted to remove record with key:', recordName, 'and files in folder:', instanceID );
+            } );
+
+            $( document ).on( 'progressupdate', 'form.or', function( event, status ) {
+                if ( $formprogress.length > 0 ) {
+                    $formprogress.css( 'width', status + '%' );
+                }
             } );
         }
 

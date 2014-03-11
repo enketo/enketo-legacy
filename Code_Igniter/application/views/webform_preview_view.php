@@ -12,9 +12,13 @@
 				<? include_once 'elements/form-header.php'; ?>
 				<progress></progress>
 				<?= $form ?>
-				<button id="validate-form" class="btn btn-primary btn-large" disabled="disabled"><i class="icon-ok icon-white"></i> Validate</button>
-				<? include_once 'elements/enketo-power.php'; ?>
-				<? include 'elements/logout.php'; ?>
+				<section class="form-footer">
+					<div class="main-controls">
+						<button id="validate-form" class="btn btn-primary btn-large" disabled="disabled"><i class="glyphicon glyphicon-ok"></i> Validate</button>
+					</div>
+					<? include_once 'elements/enketo-power.php'; ?>
+					<? include 'elements/logout.php'; ?>
+				</section>
 			</article>
 		</div>
 	<? if (!$integrated) { require 'elements/ads.php'; } ?>

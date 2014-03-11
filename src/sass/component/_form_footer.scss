@@ -1,8 +1,8 @@
 .form-footer {
     @include flex(1);
-    min-height: 190px;
+    min-height: 210px;
     position: relative;
-    width: 100%;
+    //width: 100%;
     // the form footer flexes to stretch down on small forms or form pages
     // the content should be positioned at bottom of stretched element
     .content {
@@ -26,30 +26,92 @@
             width: 100%;
         }
     }
-    #submit-form, #submit-form-single, #validate-form, #launch-form {
-        display: block;
-        width: 150px;
-        position: static;
-        margin: 30px auto 40px auto;
+    .main-controls {
+        margin: 30px auto 60px auto;
+        width: 100%;
+        text-align: center;
+        .btn {
+            display: inline-block;
+            width: 150px;
+            position: static;
+        }
+        .previous-page, .next-page {
+            display: none;
+        }
+        .previous-page {
+            position: absolute;
+            left: 20px;
+            bottom: 45px;
+            //color: #357ebd;
+            //border: none;
+            //@include box-shadow-none;
+       
+        }
+    }
+    .first-page, .last-page {
+        width: 50%;
+        opacity: 0.7;
+        @include border-radius(0);
+        display: none;
+        float: left;
     }
     .logout {
         width: 100%;
         display: block;
-        margin-top: -20px;
-        margin-bottom: 20px;
+        margin-top: -40px;
+        margin-bottom: 40px;
         text-align: center;
     }
     .enketo-power {
         left: auto;
-        margin: 0;
+        margin: -20px 0 40px 0;
         width: 100%;
     }
-    // still flex the footer but hide all the content
-    &.hide {
-        min-height: 20px;
-        .content {
+}
+
+.pages ~ .form-footer {
+    &.end {
+        .main-controls {
+            .btn {
+                display: inline-block;
+            }
+            .previous-page {}
+            .next-page {
+                display: none;
+            }
+        }
+        .logout, .draft {
+            display: block;
+        }
+        .logout {
+            margin-bottom: 50px;
+        }
+    }
+    .main-controls {
+        .btn {
             display: none;
         }
+        .previous-page, .next-page {
+            display: inline-block;
+            &.disabled {
+                display: none;
+            }
+        }
+    }
+    .first-page, .last-page {
+        display: inline-block;
+    }
+    .logout, .draft {
+        display: none;
+    }
+}
+
+@media screen and (min-width: $main-breakpoint) {
+    .form-footer .enketo-power {
+        position: absolute;
+        bottom: -90px;
+        right: 5px;
+        width: auto;
     }
 }
 

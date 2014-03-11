@@ -9,7 +9,7 @@ require( [ 'require-config' ], function( rc ) {
             var response, bgColor,
                 i = 0,
                 $ads = $( '.ad' ),
-                $validateButton = $( '#validate-form' ),
+                $formFooter = $( '.form-footer' ),
                 $loading = $( 'progress' );
 
             if ( ( !settings.serverURL || !settings.formId ) && !settings.formURL ) {
@@ -25,13 +25,13 @@ require( [ 'require-config' ], function( rc ) {
                     if ( $response.find( ':first>form' ).length > 0 && $response.find( ':first>model' ).length > 0 ) {
                         formStr = new XMLSerializer().serializeToString( $response.find( ':first>form' )[ 0 ] );
                         modelStr = new XMLSerializer().serializeToString( $response.find( ':first>model' )[ 0 ] );
-                        $validateButton.before( formStr );
+                        $formFooter.before( formStr );
 
                         controller.init( 'form.or:eq(0)', modelStr, null, {
                             fileStore: fileStore
                         } );
 
-                        $validateButton.removeAttr( 'disabled' );
+                        $formFooter.find( '#validate-form' ).removeAttr( 'disabled' );
                     } else {
                         showError( 'An error occurred trying to obtain or transform the form.' );
                     }

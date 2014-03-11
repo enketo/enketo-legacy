@@ -12,6 +12,7 @@
 @import "component/common";
 @import "component/menu";
 @import "component/form_formhub";
+@import "component/form_footer";
 
 textarea.source {
     @include border-box;
@@ -91,6 +92,9 @@ label#data-template-show {
     margin-right: -25px;
 }
 
+.form-footer {
+    min-height: 70px;
+}
 /*#launch form{
   margin-top: 20px; 
   input{

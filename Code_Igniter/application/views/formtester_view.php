@@ -50,9 +50,13 @@
 			<article id="survey-form" class="tab-pane paper">
 					<div class="clearfix"><span class="form-language-selector"></span></div>
 					<form>no form loaded yet</form>
-					<button id="validate-form" class="btn btn-primary btn-large disabled">
-						<i class="icon-ok icon-white"></i> Validate
-					</button>
+					<section class="form-footer">
+						<div class="main-controls">
+							<button id="validate-form" class="btn btn-primary btn-large disabled">
+								<i class="glyphicon glyphicon-ok"></i> Validate
+							</button>
+						</div>
+					</section>
 			</article>
 
 			<article id="data" class="tab-pane paper">

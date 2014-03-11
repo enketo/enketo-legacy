@@ -55,6 +55,18 @@
         display: none;
         float: left;
     }
+    .first-page::before {
+        @include enketo-icon;
+        content: '\e611' !important;
+        float:left;
+        color: #757474;
+    }
+    .last-page::before {
+        @include enketo-icon;
+        content: '\e610' !important;
+        float: right;
+        color: #757474;
+    }
     .logout {
         width: 100%;
         display: block;

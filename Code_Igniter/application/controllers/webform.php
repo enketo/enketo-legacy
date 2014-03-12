@@ -25,7 +25,7 @@ class Webform extends CI_Controller {
         parent::__construct();
         $this->load->helper(array('subdomain','url', 'form'));
         $this->load->model('Survey_model','',TRUE);
-        $this->load->library('encrypt');
+        $this->load->library(array('encrypt', 'meta'));
         $sub = get_subdomain();
         $suf = $this->Survey_model->ONLINE_SUBDOMAIN_SUFFIX;
         $this->subdomain = ($this->Survey_model->has_offline_launch_enabled()) 
@@ -39,7 +39,7 @@ class Webform extends CI_Controller {
             $this->xsl_version_prev = (isset($form_props['xsl_version'])) ? $form_props['xsl_version'] : NULL; 
         }
         $this->iframe = ( $this->input->get('iframe', TRUE) == 'true' );
-
+       
         if ($this->config->item('auth_support')) {
             $this->load->add_package_path(APPPATH.'third_party/form_auth');
         }
@@ -48,6 +48,7 @@ class Webform extends CI_Controller {
             $this->load->add_package_path(APPPATH.'third_party/account');
         }
         $this->load->library('account');
+
         log_message('debug', 'Webform Controller Initialized');
     }
 
@@ -295,6 +296,9 @@ class Webform extends CI_Controller {
         $this->credentials = $this->form_auth->get_credentials($s);
         $this->Form_model->setup($this->server_url, $this->form_id, $this->credentials, $this->form_hash_prev, $this->xsl_version_prev, $this->media_hash_prev);
         
+        $uid = ($this->credentials) ? $this->credentials['username'] : NULL;
+        $this->meta->setMeta($uid);
+
         if($this->Form_model->requires_auth()) {
             log_message('debug', "AUTHENTICATION REQUIRED");
             $form = new stdClass();

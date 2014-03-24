@@ -232,7 +232,7 @@ class Webform extends CI_Controller {
             show_error('Preview cannot be launched from subdomain', 404);
             return;
         }
-        if ($params['server'] && $this->_paywall_check_route_for_preview($params['server'])) {
+        if (!empty($params['server']) && $this->_paywall_check_route_for_preview($params['server'])) {
             return;
         }
         $data = array

@@ -18,7 +18,8 @@ require.config( {
         "jquery.touchswipe": "../../lib/enketo-core/lib/jquery-touchswipe/jquery.touchSwipe",
         "file-saver": "../../lib/file-saver/FileSaver",
         "Blob": "../../lib/blob/Blob",
-        "vkbeautify": "../../lib/vkbeautify/vkbeautify"
+        "vkbeautify": "../../lib/vkbeautify/vkbeautify",
+        "leaflet": "../../lib/enketo-core/lib/leaflet/leaflet"
     },
     shim: {
         "xpath": {
@@ -47,6 +48,9 @@ require.config( {
         },
         "vkbeautify": {
             exports: "vkbeautify"
+        },
+        "leaflet": {
+            exports: "L"
         }
     }
 } );

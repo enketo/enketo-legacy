@@ -34,6 +34,12 @@
             display: inline-block;
             width: 150px;
             position: static;
+            min-height: 32px;
+            progress {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
         }
         .previous-page, .next-page {
             display: none;

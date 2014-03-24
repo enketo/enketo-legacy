@@ -1,7 +1,7 @@
 <aside class="ad">
-	<p>Use Enketo with ODK Aggregate</p>
+	<p>Use Enketo with ODK Aggregate and SurveyCTO</p>
 	<p>Simply open a free <a href="https://accounts.enketo.org">enketo.org</a> account and 
-		<a href="https://accounts.enketo.org/support/aggregate/" target="_blank">link it</a> with Aggregate. No credit card required.</p>
+		<a href="https://accounts.enketo.org/support/" target="_blank">link it</a>. No credit card required.</p>
 	<p>Enketo is:</p>
 	<ul>
 		<li>device-agnostic</li>

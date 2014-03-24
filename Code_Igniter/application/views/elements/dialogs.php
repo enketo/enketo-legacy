@@ -87,7 +87,7 @@
 							<legend>Paper Size</legend>
 							<label>
 								<input name="format" type="radio" value="A4" required checked/>
-								<span>A4<span>
+								<span>A4</span>
 							</label>
 							<label>
 								<input name="format" type="radio" value="letter" required/>

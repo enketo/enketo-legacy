@@ -23,21 +23,17 @@ class Meta {
 
     public function setMeta($username = NULL) {
         
-        //TODO: find more reliable way of passing username without issues 
-        //for users that use multiple OpenRosa servers (and credentials).
-        //log_message('debug', 'setting meta with username:'.$username);
-        //if ($username) {
-        //    // always re-set this value
-        //    $this->setCookie( 'uid', $this->domain.':'.$username);
-        //} else {
-        //    // but remove it if no username is stored in current session
-        //    $this->removeCookie ('uid');
-        //}
+        if ($username) {
+            // always re-set this value
+            $this->setCookie( 'uid', $this->domain.':'.$username);
+        } else {
+            // but remove it if no username is passed
+            $this->removeCookie ('uid');
+        }
 
         if (!$this->getCookie('deviceid')) {
             $this->setCookie('deviceid', $this->domain.':'.$this->generate_deviceid(), TRUE);
         }
-
     }
 
     private function setCookie($name, $value, $expire_as_late_as_possible = FALSE )
@@ -61,6 +57,7 @@ class Meta {
     {
         return $this->CI->input->cookie($this->cookie_prefix . $name, TRUE);
     }
+    
     private function removeCookie($name)
     {
         return $this->CI->input->set_cookie(

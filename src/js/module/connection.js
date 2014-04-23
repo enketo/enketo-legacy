@@ -146,6 +146,7 @@ define( [ 'gui', 'settings', 'store', 'jquery' ], function( gui, settings, store
 
         callbacks = ( typeof callbacks === 'undefined' || !callbacks ) ? {
             complete: function( jqXHR, response ) {
+                // this event doesn't appear to be use anywhere
                 $( document ).trigger( 'submissioncomplete' );
                 _processOpenRosaResponse( jqXHR.status,
                     props = {
@@ -494,7 +495,7 @@ define( [ 'gui', 'settings', 'store', 'jquery' ], function( gui, settings, store
     }
 
     function isValidURL( url ) {
-        return ( /^(https?:\/\/)(([\da-z\.\-]+)\.([a-z\.]{2,6})|(([0-9]{1,3}\.){3}[0-9]{1,3}))([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/ ).test( url );
+        return ( /^(https?:\/\/)(([\da-z\.\-]+)\.([a-z\.]{2,6})(:[0-9]{2,4})?|(([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]{2,4})?)([\/\w \.\-]*)*\/?[\/\w \.\-\=\&\?]*$/ ).test( url );
     }
 
     function getFormlist( serverURL, callbacks ) {

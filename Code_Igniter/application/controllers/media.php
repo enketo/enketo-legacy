@@ -22,6 +22,11 @@ class Media extends CI_Controller {
 		parent::__construct();
 		$this->load->library(array('curl', 'openrosa'));
 		//$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
+		if ($this->config->item('auth_support')) {
+            $this->load->add_package_path(APPPATH.'third_party/form_auth');
+        }
+        $this->load->library('form_auth');
+        $this->credentials = $this->form_auth->get_credentials();
 	}
 
 	public function index()
@@ -36,7 +41,7 @@ class Media extends CI_Controller {
 		// add query string (used in Aggregate)
 		$url = ( !empty( $_SERVER['QUERY_STRING'] ) ) ? $url.'?'.$_SERVER['QUERY_STRING'] : $url;
 		
-		$headers = $this->openrosa->get_headers($url);
+		$headers = $this->openrosa->get_headers($url, $this->credentials);
 		// log_message('debug', json_encode($headers));
 		$content_type = $this->_correct_mime($headers['Content-Type']);
 		header('Content-Type:'.$content_type);
@@ -50,7 +55,7 @@ class Media extends CI_Controller {
 	public function check()
 	{
 		$url = $this->_extract_url(func_get_args());
-		$headers = $this->openrosa->get_headers($url);
+		$headers = $this->openrosa->get_headers($url, $this->credentials);
 		if (isset($headers['Content-Length'])) {
 			$this->output->set_output($headers['Content-Length']);
 		}
@@ -62,7 +67,8 @@ class Media extends CI_Controller {
 	private function _extract_url($segments)
 	{
 		$segments_joined = implode('/', $segments);
-		return preg_replace('/\//', '://', $segments_joined, 1);
+		$encoded_url = preg_replace('/\//', '://', $segments_joined, 1);
+		return urldecode($encoded_url);
 	}
 
 	private function _get_media($url)
@@ -71,8 +77,16 @@ class Media extends CI_Controller {
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
 		curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
 		//the account_manager SSL verification fails for some reason
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+
+		if (!empty($this->credentials)) {
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST | CURLAUTH_BASIC);
+        	curl_setopt($ch, CURLOPT_USERPWD, $this->credentials['username'].':'.$this->credentials['password']);
+        }
+
 		curl_exec($ch);
 	}
 

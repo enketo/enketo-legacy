@@ -255,7 +255,9 @@ class Form_model extends CI_Model {
         else { //if  (url_exists($resource))
             $type = 'url';
             $resource = (!empty($resource)) ? $resource : $this->info['xml'];
-        } if (isset($type)) {
+        } 
+
+        if (isset($type)) {
             //restore error handler to PHP to 'catch' libxml 'errors'
             restore_error_handler();
             libxml_use_internal_errors(true);
@@ -488,7 +490,8 @@ class Form_model extends CI_Model {
 
     private function _to_local_media_url($url)
     {
-        $local_url = '/media/get/'.preg_replace('/:\/\//', '/', $url);
+        $local_url = '/media/get/'.preg_replace(array('/(https?):\/\//', '/:/'), array('$1/', '%3A'), $url);
+
         //log_message('debug', 'turned '.$url.' into '.$local_url);
         return $local_url;
     }

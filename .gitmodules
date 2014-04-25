@@ -22,9 +22,6 @@
 [submodule "public/lib/vkbeautify"]
 	path = public/lib/vkbeautify
 	url = https://github.com/vkiryukhin/vkBeautify.git
-[submodule "public/lib/file-manager"]
-	path = public/lib/file-manager
-	url = https://github.com/MartijnR/file-manager.git
 [submodule "public/lib/enketo-core"]
 	path = public/lib/enketo-core
 	url = https://github.com/MartijnR/enketo-core.git

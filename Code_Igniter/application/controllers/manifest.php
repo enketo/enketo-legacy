@@ -51,7 +51,7 @@ class Manifest extends CI_Controller {
     | force cache update 
     |--------------------------------------------------------------------------
     */
-        private $hash_manual_override = '0038'; //time();
+        private $hash_manual_override = '0039'; //time();
     /*
     |-------------------------------------------------------------------------- 
     | pages to be cached (urls relative to sub.example.com/)

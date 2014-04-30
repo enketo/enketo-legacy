@@ -626,9 +626,9 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
                 $( '.side-slider .export-records' ).removeAttr( 'disabled' );
 
-                recordList.forEach( function( record, i ) {
-                    name = recordList[ i ].key;
-                    draft = recordList[ i ].draft;
+                recordList.forEach( function( record ) {
+                    name = record.key;
+                    draft = record.draft;
 
                     // if there is at least one record not marked as draft
                     if ( !draft ) {

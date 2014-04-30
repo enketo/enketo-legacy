@@ -5,8 +5,8 @@ define( [ 'jquery' ], function( $ ) {
             numWords = 1;
         }
         var node = this.contents().filter( function() {
-            return this.nodeType == 3;
-        } ).first(),
+                return this.nodeType == 3;
+            } ).first(),
             text = node.text(),
             first = text.split( " ", numWords ).join( " " );
 

@@ -230,11 +230,11 @@ define( [ 'gui', 'enketo-js/Form', 'settings', 'connection', 'vkbeautify', 'cont
 
         State.prototype.setUrl = function() {
             var stateProps = {
-                server: this.server,
-                id: this.id,
-                source: this.source,
-                debug: this.debug
-            },
+                    server: this.server,
+                    id: this.id,
+                    source: this.source,
+                    debug: this.debug
+                },
                 urlAppend = '',
                 url = 'formtester';
             urlAppend = ( this.server !== null && connection.isValidURL( this.server ) ) ? urlAppend + 'server=' + encodeURIComponent( this.server ) : urlAppend;

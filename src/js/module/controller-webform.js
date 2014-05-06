@@ -128,7 +128,6 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             }
         }
 
-
         function loadRecord( recordName, confirmed ) {
             var record, texts, choices, loadErrors;
 
@@ -152,7 +151,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     //var success = form.setData(data);
                     form.resetView();
                     //gui.closePage();
-                    form = new Form( formSelector, defaultModelStr, record.data );
+                    form = new Form( formSelector, defaultModelStr, record.data, true );
                     loadErrors = form.init();
 
                     if ( loadErrors.length > 0 ) {

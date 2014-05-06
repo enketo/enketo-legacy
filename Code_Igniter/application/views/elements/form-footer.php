@@ -6,7 +6,35 @@
 
 			<div class="main-controls">
 				<a class="previous-page disabled" href="#">Back</a>
-				<button id="<?= ($title_component === 'webform single-submit' || $title_component === 'webform edit') ? 'submit-form-single' : 'submit-form' ; ?>" class="btn btn-primary btn-large" ><i class="glyphicon glyphicon-ok"></i> Submit</button>
+				<?
+					$buttons = array(
+						'default' => array(
+							'id' => 'submit-form',
+							'text' => 'Submit'
+						),
+						'single' => array(
+							'id' => 'submit-form-single',
+							'text' => 'Submit'
+						),
+						'validate' => array(
+							'id' => 'validate-form',
+							'text' => 'Validate'
+						) 
+					);
+					$button = ($title_component === 'webform single-submit' || $title_component === 'webform edit') ? 'submit-form-single' : 'submit-form' ;
+					switch ($title_component) {
+    					case 'webform single-submit':
+    					case 'webform edit':
+        					$button = $buttons['single'];
+        					break;
+					    case 'webform preview':
+					        $button = $buttons['validate'];
+					        break;
+					    default :
+					     	$button = $buttons['default'];
+					}
+				?>
+				<button id="<?= $button['id'] ?>" class="btn btn-primary btn-large" ><i class="glyphicon glyphicon-ok"></i> <?= $button['text'] ?></button>
 				<a class="btn btn-primary large next-page" href="#">Next</span></a>
 			</div>
 			

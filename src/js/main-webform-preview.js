@@ -10,7 +10,8 @@ require( [ 'require-config' ], function( rc ) {
                 i = 0,
                 $ads = $( '.ad' ),
                 $formFooter = $( '.form-footer' ),
-                $loading = $( 'progress' );
+                $loading = $( 'progress' ),
+                $validateButton = $formFooter.find( '#validate-form' ).attr( 'disabled', 'disabled' );
 
             if ( ( !settings.serverURL || !settings.formId ) && !settings.formURL ) {
                 showError( 'No server url and/or id provided or no form url provided.' );
@@ -31,7 +32,7 @@ require( [ 'require-config' ], function( rc ) {
                             fileStore: fileStore
                         } );
 
-                        $formFooter.find( '#validate-form' ).removeAttr( 'disabled' );
+                        $validateButton.removeAttr( 'disabled' );
                     } else {
                         showError( 'An error occurred trying to obtain or transform the form.' );
                     }

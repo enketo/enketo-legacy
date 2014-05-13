@@ -93,6 +93,8 @@ class Openrosa {
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
+        // surveyCTO needs this (doesn't support auto determination):
+        curl_setopt($ch, CURLOPT_SSLVERSION, '3');
 
         if (!empty($credentials)) {
             //log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
@@ -121,12 +123,15 @@ class Openrosa {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
+        // surveyCTO needs this (doesn't support auto determination):
+        curl_setopt($ch, CURLOPT_SSLVERSION, '3');
 
         if (!empty($data)) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         }
+        
         if (!empty($credentials)) {
-            ///log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
+            // log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST | CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $credentials['username'].':'.$credentials['password']);
         } 
@@ -137,8 +142,8 @@ class Openrosa {
         $info = curl_getinfo($ch);
         $http_code = $info['http_code'];
         log_message('debug', 'request to '.$url.' responded with status code: '.$http_code);
-        //log_message('debug', json_encode($info));
-        //log_message('debug', 'result: '.$result);
+        // log_message('debug', json_encode($info));
+        // log_message('debug', 'result: '.$result);
         $http_code = (!empty($info['http_code'])) ? $info['http_code'] : '0';
 
         curl_close($ch);

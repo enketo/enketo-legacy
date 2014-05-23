@@ -35,7 +35,7 @@
 					}
 				?>
 				<button id="<?= $button['id'] ?>" class="btn btn-primary btn-large" ><i class="glyphicon glyphicon-ok"></i> <?= $button['text'] ?></button>
-				<a class="btn btn-primary large next-page" href="#">Next</span></a>
+				<a class="btn btn-primary next-page" href="#">Next</a>
 			</div>
 			
 			<? include 'logout.php'; ?>

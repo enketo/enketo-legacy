@@ -1,14 +1,18 @@
 .ad {
-  position: absolute;
-  left: 30px;
-  top: 100px;
-  width: 250px;
-  padding: 7px;
-  @include border-radius(7px);
-  color: black;
-  font-size: 14px;
-  border: 7px solid rgb(231, 66, 37);
-  background-color: white; }
-@media screen and (max-width: 1366px){
-  .ad {
-    display: none; } }
+    position: absolute;
+    left: 30px;
+    top: 100px;
+    width: 220px;
+    padding: 7px;
+    @include border-radius(7px);
+    color: black;
+    font-size: 14px;
+    border: 7px solid rgb(231, 66, 37);
+    background-color: white;
+}
+
+@media screen and (max-width: 1279px) {
+    .ad {
+        display: none;
+    }
+}

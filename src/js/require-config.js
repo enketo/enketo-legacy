@@ -14,6 +14,7 @@ require.config( {
         "jquery.xpath": "../../lib/enketo-core/lib/jquery-xpath/jquery.xpath",
         "Modernizr": "../../lib/enketo-core/lib/Modernizr",
         "bootstrap": "../../lib/enketo-core/lib/bootstrap",
+        "bootstrap-slider": "../../lib/enketo-core/lib/bootstrap-slider/js/bootstrap-slider",
         "jquery": "../../lib/enketo-core/lib/jquery",
         "jquery.touchswipe": "../../lib/enketo-core/lib/jquery-touchswipe/jquery.touchSwipe",
         "file-saver": "../../lib/file-saver/FileSaver",

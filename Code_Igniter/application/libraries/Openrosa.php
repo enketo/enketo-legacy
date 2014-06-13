@@ -95,6 +95,9 @@ class Openrosa {
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
         // surveyCTO needs this (doesn't support auto determination):
         curl_setopt($ch, CURLOPT_SSLVERSION, '3');
+        
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
 
         if (!empty($credentials)) {
             //log_message('debug', 'adding credentials to curl with username:'.$credentials['username']);
@@ -125,6 +128,8 @@ class Openrosa {
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
         // surveyCTO needs this (doesn't support auto determination):
         curl_setopt($ch, CURLOPT_SSLVERSION, '3');
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         if (!empty($data)) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);

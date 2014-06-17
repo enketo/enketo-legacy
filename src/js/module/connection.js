@@ -1,5 +1,5 @@
 /**
- * @preserve Copyright 2013 Martijn van de Rijdt
+ * @preserve Copyright 2014 Martijn van de Rijdt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -456,7 +456,7 @@ define( [ 'gui', 'settings', 'store', 'jquery' ], function( gui, settings, store
      */
     function _setMaxSubmissionSize() {
         var maxSize,
-            storedMaxSize = store.getRecord( '__maxSize' ),
+            storedMaxSize = ( store ) ? store.getRecord( '__maxSize' ) : undefined,
             defaultMaxSize = 5000000,
             absoluteMaxSize = 100 * 1024 * 1024;
         if ( typeof maxSubmissionSize == 'undefined' ) {
@@ -473,7 +473,9 @@ define( [ 'gui', 'settings', 'store', 'jquery' ], function( gui, settings, store
                             "maxSubmissionSize": maxSubmissionSize
                         } );
                         // store the value persistently for offline use
-                        store.setRecord( '__maxSize', maxSubmissionSize );
+                        if ( store ) {
+                            store.setRecord( '__maxSize', maxSubmissionSize );
+                        }
                     } else {
                         console.error( '/data/max_size return a value that is not a number' );
                     }

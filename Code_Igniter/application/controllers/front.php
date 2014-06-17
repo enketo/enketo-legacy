@@ -45,6 +45,7 @@ class Front extends CI_Controller {
 		$data = array(
 			'offline'			=> FALSE, 
 			'title_component'	=> 'home', 
+			'linked_with'		=> $this->config->item('integration_with_url'),
 			'robots'     		=> TRUE//,
 			//'number_launched'	=> $this->_get_db_number_launched()
 		);
@@ -56,7 +57,7 @@ class Front extends CI_Controller {
 		
 		if (strlen($this->config->item('integrated')) > 0) {
 			$data['stylesheets'] = array(
-				array( 'href' => '/build/css/empty-front.css', 'media' => 'screen')
+				array( 'href' => '/build/css/empty-front.css', 'media' => 'screen'),
 			);
 			$this->load->view('front_view_bare', $data);
 		} else {

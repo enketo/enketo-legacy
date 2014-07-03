@@ -252,15 +252,21 @@ class Survey_model extends CI_Model {
         if ($server_url && url_valid($server_url) && !empty($form_id)) {
             //TODO: CHECK URLS FOR LIVENESS?
             $existing_subdomain = $this->_get_subdomain($server_url, $form_id, NULL);
+            $submission_url = !empty($submission_url) ? $submission_url : $this->_get_submission_url($server_url); 
             if ( $existing_subdomain ) {
                 $this->db_subdomain = $existing_subdomain;
                 if (!$this->_is_active()) {
                     $this->_update_item('active' , TRUE);
                 }
+                // always update server_url in case protocol has changed
+                // ending once-and-for-all the need to manually correct this in the db
+                $this->_update_items(array(
+                    'server_url' => $server_url,
+                    'submission_url' => $submission_url
+                ));
                 return $existing_subdomain;
             }
             $subdomain = $this->_generate_subdomain();
-            $submission_url = !empty($submission_url) ? $submission_url : $this->_get_submission_url($server_url);   
             $data = array(
                 'subdomain'         => $subdomain,
                 'server_url'        => $server_url,

@@ -24,4 +24,4 @@
 	url = https://github.com/vkiryukhin/vkBeautify.git
 [submodule "public/lib/enketo-core"]
 	path = public/lib/enketo-core
-	url = https://github.com/MartijnR/enketo-core.git
+url=https://github.com/enketo/enketo-core.git

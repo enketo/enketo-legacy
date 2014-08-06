@@ -124,36 +124,38 @@ class Survey_model extends CI_Model {
             'error'   => 'full',
             'message' => 'the quota for this account has been used up, consider upgrading'
         );
-        
+
+        $existing_active_subdomain = $this->_get_subdomain($server_url, $form_id, TRUE);
+
         if ( $quota_used == $quota ){
-            //log_message('debug', 'quota used and quota available are both: '.$quota);
-            $url_obj = $this->get_webform_url_if_launched($server_url, $form_id, $options);
-            return (empty($url_obj['error'])) ? $url_obj : $quota_exceeded_response;
+            if (empty($existing_active_subdomain)) {
+                return $quota_exceeded_response;
+            }
+            $subdomain = $existing_active_subdomain;
         } else if ($quota_used > $quota) {
             return $quota_exceeded_response;
-        }
-        $existing_active_subdomain = $this->_get_subdomain($server_url, $form_id, TRUE); //duplicates check in _launch;
-        $subdomain = $this->_launch($server_url, $form_id, $submission_url);
+        } else {
+             //duplicates check in _launch;
+            $subdomain = (!empty($existing_active_subdomain)) ? $existing_active_subdomain : $this->_launch($server_url, $form_id, $submission_url);
 
-        if (!$subdomain) {
-            return array(
-                'error'     => 'subdomain',
-                'message'   => 'error while trying to create subdomain'
-            );
+            if (!$subdomain) {
+                return array(
+                    'error'     => 'subdomain',
+                    'message'   => 'error while trying to create subdomain'
+                );
+            }
         }
 
         $result = $this->_get_webform_urls($subdomain, $server_url, $form_id, $options);
-
-        //if (!$result) {} 
-
-        if ($options['type'] == 'edit' || $options['type'] == 'all') {
-            $result['subdomain'] = $subdomain;
-        }
 
         if ($result && $existing_active_subdomain) {
             $result['existing'] = TRUE;
         } 
 
+        if ($options['type'] == 'edit' || $options['type'] == 'all') {
+            $result['subdomain'] = $subdomain;
+        }
+        
         return $result;
     }
 

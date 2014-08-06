@@ -37,7 +37,7 @@ class Form_model extends CI_Model {
         parent::__construct();
         $this->load->helper(array('http'));
         $this->load->library('openrosa'); 
-        $this->file_path_to_jr2HTML5_XSL = APPPATH.'libraries/xslt/openrosa2html5form_php5.xsl'; 
+        $this->file_path_to_jr2HTML5_XSL = APPPATH.'libraries/xslt/openrosa2html5form.xsl'; 
         $this->file_path_to_jr2Data_XSL = APPPATH.'libraries/xslt/openrosa2xmlmodel.xsl';
         log_message('debug', 'Form Model Initialized');
     }

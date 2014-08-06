@@ -130,7 +130,7 @@ class Webform extends CI_Controller {
         }
 
         $form = $this->_get_form();
-        if ($this->_authentication_route($form, '/edit?instance_id'.$instance_id )) {
+        if ($this->_authentication_route($form, '/edit?instance_id='.$instance_id )) {
             return;
         }
         if ($this->_form_null_check_route($form)) {

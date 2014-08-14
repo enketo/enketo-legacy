@@ -9,13 +9,14 @@ Enketo is currently deployed as a paid service on [enketo.org](http://enketo.org
 
 Related Projects
 -----------
-* [Enketo Core](https://github.com/MartijnR/enketo-core) - used inside this repo
-* [XPathJS OpenRosa](https://github.com/MartijnR/xpathjs_javarosa) - XPath Evaluator used inside enketo-core
+* [Enketo Core](https://github.com/enketo/enketo-core) - used inside this repo
+* [Enketo Express](https://github.com/enketo/enketo-express) - a new Node.js version of the Enketo Web Application
+* [Enketo XPathJS](https://github.com/enketo/enketo-xpathjs) - XPath Evaluator used inside enketo-core
 * [Wicked Good XPath OpenRosa](https://github.com/kirang20/wgxp-java-rosa) - a much faster replacement XPath Evaluator under development
-* [Enketo XSLT](https://github.com/MartijnR/enketo-xslt) - used inside this repo
+* [Enketo XSLT](https://github.com/enketo/enketo-xslt) - used inside this repo
 * [Enketo Dristhi](https://github.com/MartijnR/enketo-dristhi) used in [Dristhi](https://play.google.com/store/apps/details?id=org.ei.drishti)
 * [Manifest Builder](https://github.com/MartijnR/Manifest-Builder) - used inside this repo
-* [File Manager](https://github.com/MartijnR/file-manager) - used inside this repo
+* [File Manager](https://github.com/enketo/file-manager) - used inside this repo
 * [enketo-xslt-transformer-php](https://github.com/MartijnR/enketo-xslt-transformer-php) - sample app that transforms Xforms in HTML
 * [enketo-xslt-transformer-node] - To follow
 

@@ -12,17 +12,18 @@ require.config( {
         "enketo-config": "../config.json", //should move elsewhere
         "text": "../../../public/lib/enketo-core/lib/text/text",
         "xpath": "../../../public/lib/enketo-core/lib/xpath/build/xpathjs_javarosa",
-        "file-manager": "../../../public/lib/enketo-core/lib/file-manager/src/file-manager",
+        "file-manager": "../../../public/lib/enketo-core/src/js/file-manager",
         "jquery.xpath": "../../../public/lib/enketo-core/lib/jquery-xpath/jquery.xpath",
         "Modernizr": "../../../public/lib/enketo-core/lib/Modernizr",
         "bootstrap": "../../../public/lib/enketo-core/lib/bootstrap",
         "bootstrap-slider": "../../../public/lib/enketo-core/lib/bootstrap-slider/js/bootstrap-slider",
-        "jquery": "../../../public/lib/enketo-core/lib/jquery",
+        "jquery": "../../../public/lib/bower-components/jquery/dist/jquery",
         "jquery.touchswipe": "../../../public/lib/enketo-core/lib/jquery-touchswipe/jquery.touchSwipe",
-        "file-saver": "../../../public/lib/file-saver/FileSaver",
-        "Blob": "../../../public/lib/blob/Blob",
+        "file-saver": "../../../public/lib/bower-components/file-saver/FileSaver",
+        "Blob": "../../../public/lib/bower-components/blob/Blob",
         "vkbeautify": "../../../public/lib/vkbeautify/vkbeautify",
-        "leaflet": "../../../public/lib/enketo-core/lib/leaflet/leaflet"
+        "leaflet": "../../../public/lib/enketo-core/lib/leaflet/leaflet",
+        "q": "../../../public/lib/bower-components/q/q"
     },
     shim: {
         "xpath": {

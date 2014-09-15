@@ -90,7 +90,7 @@ class Webform extends CI_Controller {
 
         $data['scripts'] = (ENVIRONMENT === 'production') 
             ? array(array('src' => '/build/js/webform-combined.min.js'))
-            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform.js'));
+            : array(array('src' => '/lib/bower-components/requirejs/require.js', 'data-main' => '/src-js/main-webform.js'));
 
         $this->load->view('webform_view', $data);
     }
@@ -154,7 +154,7 @@ class Webform extends CI_Controller {
 
         $data['scripts'] = (ENVIRONMENT === 'production') 
             ? array(array('src' => '/build/js/webform-edit-combined.min.js'))
-            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform-edit.js'));
+            : array(array('src' => '/lib/bower-components/requirejs/require.js', 'data-main' => '/src-js/main-webform-edit.js'));
 
         $this->load->view('webform_view', $data);
     }
@@ -216,7 +216,7 @@ class Webform extends CI_Controller {
 
         $data['scripts'] = (ENVIRONMENT === 'production') 
             ? array(array('src' => '/build/js/webform-single-combined.min.js'))
-            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform-single.js'));
+            : array(array('src' => '/lib/bower-components/requirejs/require.js', 'data-main' => '/src-js/main-webform-single.js'));
 
         $this->load->view('webform_view',$data);
     }
@@ -250,7 +250,7 @@ class Webform extends CI_Controller {
 
         $data['scripts'] = (ENVIRONMENT === 'production') 
             ? array(array('src' => '/build/js/webform-preview-combined.min.js'))
-            : array(array('src' => '/lib/enketo-core/lib/require.js', 'data-main' => '/src-js/main-webform-preview.js'));
+            : array(array('src' => '/lib/bower-components/requirejs/require.js', 'data-main' => '/src-js/main-webform-preview.js'));
         
         $this->load->view('webform_preview_view', $data);
     }

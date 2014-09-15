@@ -10,17 +10,19 @@ require.config( {
         "enketo-config": "../../src-js/config.json", //should move elsewhere
         "text": "../../lib/enketo-core/lib/text/text",
         "xpath": "../../lib/enketo-core/lib/xpath/build/xpathjs_javarosa",
-        "file-manager": "../../lib/enketo-core/lib/file-manager/src/file-manager",
+        "file-manager": "../../src-js/module/file-manager",
+        "file-system": "../../lib/file-system/src/file-system",
         "jquery.xpath": "../../lib/enketo-core/lib/jquery-xpath/jquery.xpath",
         "Modernizr": "../../lib/enketo-core/lib/Modernizr",
         "bootstrap": "../../lib/enketo-core/lib/bootstrap",
         "bootstrap-slider": "../../lib/enketo-core/lib/bootstrap-slider/js/bootstrap-slider",
-        "jquery": "../../lib/enketo-core/lib/jquery",
+        "jquery": "../../lib/bower-components/jquery/dist/jquery",
         "jquery.touchswipe": "../../lib/enketo-core/lib/jquery-touchswipe/jquery.touchSwipe",
-        "file-saver": "../../lib/file-saver/FileSaver",
-        "Blob": "../../lib/blob/Blob",
+        "file-saver": "../../lib/bower-components/file-saver/FileSaver",
+        "Blob": "../../lib/bower-components/blob/Blob",
         "vkbeautify": "../../lib/vkbeautify/vkbeautify",
-        "leaflet": "../../lib/enketo-core/lib/leaflet/leaflet"
+        "leaflet": "../../lib/enketo-core/lib/leaflet/leaflet",
+        "q": "../../lib/bower-components/q/q"
     },
     shim: {
         "xpath": {

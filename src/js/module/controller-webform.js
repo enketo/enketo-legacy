@@ -37,7 +37,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             if ( fileManager && ( !store || store.getRecordList().length === 0 ) ) {
                 //clean up filesystem storage
-                fileManager.deleteAll();
+                fileManager.flush();
             }
 
             form = new Form( formSelector, defaultModelStr, instanceStrToEdit );
@@ -146,7 +146,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             } else {
                 record = store.getRecord( recordName );
                 //enters that data in the form on the screen
-                // *OLD*checkForOpenForm(true);
+                // checkForOpenForm(true);
+                // TODO add check for draft status here!
                 if ( record && record.data ) {
                     //var success = form.setData(data);
                     form.resetView();
@@ -242,16 +243,19 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
                 console.log( 'saveResult', saveResult );
                 if ( saveResult === 'success' ) {
-                    resetForm( true );
-                    $form.trigger( 'save', JSON.stringify( store.getRecordList() ) );
+                    // save any media files to the media storage but let fail quietly
+                    fileManager.saveCurrentFiles().fin( function() {
+                        resetForm( true );
+                        $form.trigger( 'save', JSON.stringify( store.getRecordList() ) );
 
-                    if ( draft ) {
-                        gui.feedback( 'Record stored as draft.', 3 );
-                    } else {
-                        //try to send the record immediately
-                        gui.feedback( 'Record queued for submission.', 3 );
-                        submitOneForced( recordName, record );
-                    }
+                        if ( draft ) {
+                            gui.feedback( 'Record stored as draft.', 3 );
+                        } else {
+                            //try to send the record immediately
+                            gui.feedback( 'Record queued for submission.', 3 );
+                            submitOneForced( recordName, record );
+                        }
+                    } );
                 } else if ( saveResult === 'require' || saveResult === 'existing' || saveResult === 'forbidden' ) {
                     saveRecord( undefined, false, 'Record name "' + recordName + '" already exists (or is not allowed). The record was not saved.' );
                 } else {
@@ -342,7 +346,6 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             //TODO: add second parameter to getSurveyDataArr() to
             //getCurrentRecordName() to prevent currenty open record from being submitted
             //connection.uploadRecords(store.getSurveyDataArr(true));
-
             var i,
                 records = store.getSurveyDataArr( true ),
                 successHandler = function( recordPrepped ) {
@@ -403,7 +406,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                         newName: $( this ).nodeName,
                         fileName: $( this ).text()
                     };
-                    fileManager.retrieveFile( instanceID, fileO, {
+                    fileManager.getFile( instanceID, fileO, {
                         success: function( fileObj ) {
                             count++;
                             files.push( fileObj );
@@ -575,7 +578,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             //remove filesystem folder after successful submission
             $( document ).on( 'submissionsuccess', function( ev, recordName, instanceID ) {
                 if ( fileManager && fileManager.isSupported() ) {
-                    fileManager.deleteDir( instanceID );
+                    fileManager.flush( instanceID );
                 }
                 if ( store ) {
                     store.removeRecord( recordName );

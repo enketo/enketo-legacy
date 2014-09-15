@@ -39,7 +39,7 @@ define( [ 'gui', 'enketo-js/Form', 'settings', 'connection', 'vkbeautify', 'cont
 
             if ( fileManager && fileManager.isSupported() ) {
                 //clean up filesystem storage for this (sub).domain (should not clear storage of other subdomains)
-                fileManager.deleteAll();
+                fileManager.flush();
             }
 
             if ( !state.source ) {

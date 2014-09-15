@@ -88,7 +88,7 @@ module.exports = function( grunt ) {
                                 "jquery.xpath": "../../../test/mock/empty.mock",
                                 "Modernizr": "../../../test/mock/empty.mock",
                                 "bootstrap": "../../../public/lib/enketo-core/lib/bootstrap",
-                                "jquery": "../../../public/lib/enketo-core/lib/jquery",
+                                "jquery": "../../../public/lib/bower-components/jquery/dist/jquery",
                                 "file-saver": "../../../test/mock/file-saver.mock",
                                 "Blob": "../../../test/mock/Blob.mock",
                                 "vkbeautify": "../../../test/mock/vkbeautify.mock"
@@ -106,7 +106,7 @@ module.exports = function( grunt ) {
                 baseUrl: "src/js/module",
                 mainConfigFile: "src/js/require-build-config.js",
                 findNestedDependencies: true,
-                include: [ 'core-lib/require' ],
+                //include: [ 'public/lib/bower-components/requirejs/require' ],
                 optimize: "uglify2",
                 done: function( done, output ) {
                     var duplicates = require( 'rjs-build-analysis' ).duplicates( output );
@@ -164,7 +164,7 @@ module.exports = function( grunt ) {
             options: {
                 name: "../main-webform" + type,
                 out: "public/build/js/webform" + type + "-combined.min.js",
-                include: [ 'core-lib/require' ].concat( widgets )
+                include: [ '../../../public/lib/bower-components/requirejs/require' ].concat( widgets )
             }
         };
     }

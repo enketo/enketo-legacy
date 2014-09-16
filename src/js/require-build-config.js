@@ -12,7 +12,8 @@ require.config( {
         "enketo-config": "../config.json", //should move elsewhere
         "text": "../../../public/lib/enketo-core/lib/text/text",
         "xpath": "../../../public/lib/enketo-core/lib/xpath/build/xpathjs_javarosa",
-        "file-manager": "../../../public/lib/enketo-core/src/js/file-manager",
+        "file-manager": "file-manager",
+        "file-system": "../../../public/lib/file-system/src/file-system",
         "jquery.xpath": "../../../public/lib/enketo-core/lib/jquery-xpath/jquery.xpath",
         "Modernizr": "../../../public/lib/enketo-core/lib/Modernizr",
         "bootstrap": "../../../public/lib/enketo-core/lib/bootstrap",

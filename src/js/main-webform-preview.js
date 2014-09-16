@@ -13,10 +13,7 @@ require( [ 'require-config' ], function( rc ) {
                 $loading = $( 'progress' ),
                 $validateButton = $formFooter.find( '#validate-form' ).attr( 'disabled', 'disabled' );
 
-            if ( ( !settings.serverURL || !settings.formId ) && !settings.formURL ) {
-                showError( 'No server url and/or id provided or no form url provided.' );
-                return;
-            }
+
 
             connection.getTransForm( settings.serverURL, settings.formId, null, settings.formURL, {
                 success: function( response ) {

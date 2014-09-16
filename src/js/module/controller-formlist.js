@@ -17,7 +17,7 @@
 define( [ 'gui', 'store', 'connection', 'jquery', 'bootstrap' ], function( gui, store, connection, $ ) {
     "use strict";
 
-    window.gui = gui;
+    //window.gui = gui;
 
     window.addEventListener( "load", function() {
         // Set a timeout...

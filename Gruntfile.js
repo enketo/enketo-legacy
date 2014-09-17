@@ -106,7 +106,7 @@ module.exports = function( grunt ) {
                 baseUrl: "src/js/module",
                 mainConfigFile: "src/js/require-build-config.js",
                 findNestedDependencies: true,
-                //include: [ 'public/lib/bower-components/requirejs/require' ],
+                include: [ '../../../public/lib/bower-components/requirejs/require' ],
                 optimize: "uglify2",
                 done: function( done, output ) {
                     var duplicates = require( 'rjs-build-analysis' ).duplicates( output );

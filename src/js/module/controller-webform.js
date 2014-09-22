@@ -403,7 +403,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             function gatherFiles() {
                 $fileNodes.each( function() {
                     fileO = {
-                        newName: $( this ).nodeName,
+                        newName: $( this ).prop( 'nodeName' ),
                         fileName: $( this ).text()
                     };
                     fileManager.getFile( instanceID, fileO, {

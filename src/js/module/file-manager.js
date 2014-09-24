@@ -121,7 +121,7 @@ define( [ "q", "file-system", "jquery" ], function( Q, fileSystem, $ ) {
 
         if ( files.length === 0 ) {
             deferred.resolve( true );
-        } else {
+        } else if ( isSupported() ) {
             // asynchronously save each file
             _createDirectory( _getCurrentInstanceID() )
                 .then( function() {
@@ -144,6 +144,8 @@ define( [ "q", "file-system", "jquery" ], function( Q, fileSystem, $ ) {
                         } );
                     } );
                 } );
+        } else {
+            deferred.reject( new Error( 'Not supported.' ) );
         }
 
         return deferred.promise;

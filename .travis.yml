@@ -9,5 +9,5 @@ before_script:
 branches:
   except:
     - /^.*\.org.*$/
-    - grid
     - production
+    - production-auth

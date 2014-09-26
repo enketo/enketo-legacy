@@ -75,7 +75,7 @@ class Webform extends CI_Controller {
         }
         
         $data = array(
-            'manifest'=> ($this->Survey_model->has_offline_launch_enabled()) ? '/manifest/html/webform' : NULL, 
+            'manifest'=> ($this->Survey_model->has_offline_launch_enabled()) ? '/manifest/html/webform/enketo.appcache' : NULL, 
             'title_component' => 'webform', 
             'html_title' => $form->title,
             'form'=> $form->html,

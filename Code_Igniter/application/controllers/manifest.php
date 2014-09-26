@@ -94,6 +94,8 @@ class Manifest extends CI_Controller {
         //!important the first argument is assumed to be the master entry which is implicitly cached
         //and removed from the manifest as a test to solve issue with manifest updates
         if(!empty($pages)) {
+            //remove the last page (enketo.appcache)
+            unset($pages[count($pages) - 1]);
             if (!$data = $this->cache->get($this->manifest_url)) {
                 log_message('debug', 'creating manifest');
                 $this->master_page = $pages[0];

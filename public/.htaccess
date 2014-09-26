@@ -10,13 +10,10 @@ RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
 RewriteCond $1 !^(index\.php|info\.php|sitemap\.xml|css|images|fonts|private_media|src-js|build|lib|robots\.txt|favicon\.ico|checkforconnection\.txt|checkforconnection\.php)
 RewriteRule ^(.*)$ /index.php/$1 [L]
 
-#attempt to allow .appcache extension for manifest files (not working yet)
-#RewriteRule ^(.*)manifest\.appcache /$1 [NC,L]
-
 #make sure certain files are served with the right Content-type
 AddType font/ttf .ttf
 AddType application/font-woff .woff
-#AddType text/cache-manifest .appcache
+AddType text/cache-manifest .appcache
 
 #Avoid caching of manifest files
 ExpiresByType text/cache-manifest "access plus 0 seconds"

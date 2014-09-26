@@ -41,6 +41,8 @@
 $route['default_controller'] = "front";
 $route['404_override'] = '';
 
+$route['/manifest/html/webform/enketo.appcache'] = '/manifest/html/webform';
+
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

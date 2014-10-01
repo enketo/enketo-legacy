@@ -136,7 +136,7 @@ class Survey_model extends CI_Model {
             return $quota_exceeded_response;
         } else {
              //duplicates check in _launch;
-            $subdomain = (!empty($existing_active_subdomain)) ? $existing_active_subdomain : $this->_launch($server_url, $form_id, $submission_url);
+            $subdomain = $this->_launch($server_url, $form_id, $submission_url);
 
             if (!$subdomain) {
                 return array(

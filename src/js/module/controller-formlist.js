@@ -189,42 +189,42 @@ define( [ 'gui', 'store', 'connection', 'jquery', 'bootstrap' ], function( gui, 
     }
 
     function showVirginHint() {
-        var left, offset, $popover,
-            $collapsedMenuIcon = $( 'header [data-toggle="collapse"]' ),
-            $menuItem = $( 'nav [href="#settings"]' ),
-            $target = ( $collapsedMenuIcon.is( ':visible' ) ) ? $collapsedMenuIcon : $menuItem;
+            var left, offset, $popover,
+                $collapsedMenuIcon = $( 'header [data-toggle="collapse"]' ),
+                $menuItem = $( 'nav [href="#settings"]' ),
+                $target = ( $collapsedMenuIcon.is( ':visible' ) ) ? $collapsedMenuIcon : $menuItem;
 
-        $collapsedMenuIcon.add( $menuItem ).popover( 'destroy' );
+            $collapsedMenuIcon.add( $menuItem ).popover( 'destroy' );
 
-        $target
-            .popover( {
-                placement: 'bottom',
-                trigger: 'manual',
-                title: 'load forms',
-                content: 'Go to settings to load a list of your forms.'
-            } )
-            .popover( 'show' );
+            $target
+                .popover( {
+                    placement: 'bottom',
+                    trigger: 'manual',
+                    title: 'load forms',
+                    content: 'Go to settings to load a list of your forms.'
+                } )
+                .popover( 'show' );
 
-        $popover = $target.next( '.popover' );
-        //left = $popover.offset().left;
-        /*$popover.css( {
-            'left': 'auto',
-            'right': '17px'
-        } );
-        offset = left - $popover.offset().left;
-        $popover.find( '.arrow' ).css( 'left', $popover.outerWidth() / 2 + offset + 'px' );
-        //console.debug('offset: '+offset);*/
-        $popover.add( $target ).add( 'nav ul li a' ).click( function() {
-            $target.popover( 'destroy' );
-        } );
-    }
-    /**
-     * [processFormlistResponse description]
-     * @param  {?Array.<{name: string, server: string, title: string, url: string}>} resp  [description]
-     * @param  {?string} msg   [description]
-     * @param  {Object} props [description]
-     * @param  {boolean=} reset [description]
-     */
+            $popover = $target.next( '.popover' );
+            //left = $popover.offset().left;
+            /*$popover.css( {
+                'left': 'auto',
+                'right': '17px'
+            } );
+            offset = left - $popover.offset().left;
+            $popover.find( '.arrow' ).css( 'left', $popover.outerWidth() / 2 + offset + 'px' );
+            //console.debug('offset: '+offset);*/
+            $popover.add( $target ).add( 'nav ul li a' ).click( function() {
+                $target.popover( 'destroy' );
+            } );
+        }
+        /**
+         * [processFormlistResponse description]
+         * @param  {?Array.<{name: string, server: string, title: string, url: string}>} resp  [description]
+         * @param  {?string} msg   [description]
+         * @param  {Object} props [description]
+         * @param  {boolean=} reset [description]
+         */
 
     function processFormlistResponse( resp, msg, props, reset ) {
         var helper, inputValue;

@@ -57,11 +57,11 @@ vkbeautify.json = function( str ) {};
 
 
 function history() {}
-/**
- * @param  {Object.<string, (boolean|string)>} obj   [description]
- * @param  {string} title [description]
- * @param  {string} path  [description]
- */
+    /**
+     * @param  {Object.<string, (boolean|string)>} obj   [description]
+     * @param  {string} title [description]
+     * @param  {string} path  [description]
+     */
 history.pushState = function( obj, title, path ) {};
 
 

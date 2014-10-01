@@ -29,12 +29,12 @@ define( [ 'gui', 'jquery', 'connection' ], function( gui, $, connection ) {
     }
 
     function activated() {
-        return active;
-    }
-    /**
-     * Initializes Cache object
-     * @return {boolean} returns false if applicationCache is not supported
-     */
+            return active;
+        }
+        /**
+         * Initializes Cache object
+         * @return {boolean} returns false if applicationCache is not supported
+         */
     function init() {
         var appCache;
 

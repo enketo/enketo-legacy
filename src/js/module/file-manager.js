@@ -11,7 +11,8 @@ define( [ "q", "file-system", "jquery" ], function( Q, fileSystem, $ ) {
 
     var maxSize,
         fsReady = fileSystem.init(),
-        supported = fileSystem.isSupported();
+        supported = fileSystem.isSupported(),
+        notSupportedAdvisoryMsg = 'Please use Chrome (all OS except iOS) or Puffin (iOS only).';
 
     /**
      * Initialize the file manager .
@@ -27,7 +28,7 @@ define( [ "q", "file-system", "jquery" ], function( Q, fileSystem, $ ) {
             // Error not caught. Need to use Q in file-system library as jQuery's
             // deferred are not completely compatible.
         } else {
-            deferred.reject( new Error( 'File inputs are not supported in this browser.' ) );
+            deferred.reject( new Error( 'Filesystem API is not supported on this browser.' ) );
         }
 
         return deferred.promise;
@@ -205,6 +206,7 @@ define( [ "q", "file-system", "jquery" ], function( Q, fileSystem, $ ) {
 
     return {
         isSupported: isSupported,
+        notSupportedAdvisoryMsg: notSupportedAdvisoryMsg,
         isWaitingForPermissions: isWaitingForPermissions,
         init: init,
         getFileUrl: getFileUrl,

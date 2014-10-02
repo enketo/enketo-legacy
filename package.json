@@ -14,15 +14,15 @@
         "test": "grunt test"
     },
     "devDependencies": {
-        "grunt": "~0.4.1",
-        "grunt-contrib-jshint": "~0.6.3",
-        "grunt-contrib-sass": "~0.5.0",
         "grunt-contrib-jasmine": "~0.5.2",
-        "grunt-contrib-requirejs": "~0.4.1",
-        "grunt-jsbeautifier": "~0.2.3",
-        "grunt-contrib-watch": "~0.5.3",
         "grunt-template-jasmine-requirejs": "~0.1.8",
-        "rjs-build-analysis": "0.0.3",
-        "grunt-contrib-symlink": "^0.3.0"
+        "grunt": "0.4.x",
+        "grunt-contrib-jshint": "0.10.x",
+        "grunt-contrib-sass": "0.8.x",
+        "grunt-contrib-requirejs": "0.4.x",
+        "grunt-jsbeautifier": "0.2.x",
+        "grunt-contrib-watch": "0.6.x",
+        "rjs-build-analysis": "0.0.x",
+        "grunt-contrib-symlink": "0.3.x"
     }
 }

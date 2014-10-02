@@ -610,8 +610,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 name = $( this ).attr( 'name' );
                 //if the record in the DOM no longer exists in storage
                 if ( $.grep( recordList, function( record ) {
-                    return record.key == name;
-                } ).length === 0 ) {
+                        return record.key == name;
+                    } ).length === 0 ) {
                     //remove the DOM element and its same-name-siblings (split submissions)
                     $( this ).siblings( '[name="' + name + '"]' ).addBack().hide( 2000, function() {
                         $( this ).remove();

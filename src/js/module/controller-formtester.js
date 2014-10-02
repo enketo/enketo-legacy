@@ -382,8 +382,8 @@ define( [ 'gui', 'enketo-js/Form', 'settings', 'connection', 'vkbeautify', 'cont
 
                 //avoid duplicate messages
                 if ( messageList.find( 'li' ).filter( function() {
-                    return $( this ).text() == message;
-                } ).length === 0 ) {
+                        return $( this ).text() == message;
+                    } ).length === 0 ) {
                     messageList.append( liStr );
                 }
             } );

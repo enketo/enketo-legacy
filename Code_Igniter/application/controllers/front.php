@@ -53,7 +53,7 @@ class Front extends CI_Controller {
 
 		 $data['scripts'] = (ENVIRONMENT === 'production') 
             ? array(array('src' => '/build/js/front-combined.min.js'))
-            : array(array('src' => '/lib/bower-components/requirejs/require.js', 'data-main' => '/src-js/main-front.js'));
+            : array(array('src' => '/lib/bower-components/requirejs/require.js', 'data-main' => '/src/js/main-front.js'));
 		
 		if (strlen($this->config->item('integrated')) > 0) {
 			$data['stylesheets'] = array(

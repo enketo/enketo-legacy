@@ -2,6 +2,12 @@
 "use strict";
 
 module.exports = function( grunt ) {
+
+    // show elapsed time at the end
+    require( 'time-grunt' )( grunt );
+    // load all grunt tasks
+    require( 'load-grunt-tasks' )( grunt );
+
     grunt.initConfig( {
         pkg: grunt.file.readJSON( "package.json" ),
         jsbeautifier: {
@@ -26,12 +32,12 @@ module.exports = function( grunt ) {
             all: [ "*.js", "src/js/**/*.js", "!src/js/extern.js" ]
         },
         prepWidgetSass: {
-            writePath: "src/sass/component/_widgets.scss",
-            widgetConfigPath: "src/js/config.json"
+            writePath: "public/src/sass/component/_widgets.scss",
+            widgetConfigPath: "public/src/js/config.json"
         },
         watch: {
             sass: {
-                files: [ 'src/js/config.json', 'src/sass/**/*.scss', 'public/lib/enketo-core/src/**/*.scss' ],
+                files: [ 'public/src/js/config.json', 'public/src/sass/**/*.scss', 'public/lib/enketo-core/src/**/*.scss' ],
                 tasks: [ 'style' ],
                 options: {
                     spawn: false
@@ -46,15 +52,26 @@ module.exports = function( grunt ) {
             }
         },
         sass: {
-            dist: {
-                options: {
-                    //sourcemap: true,
-                    style: "expanded",
-                    noCache: true
-                },
+            options: {
+                //sourcemap: true,
+                style: "expanded",
+                noCache: true
+            },
+            pub: {
+
                 files: [ {
                     expand: true,
-                    cwd: "src/sass",
+                    cwd: "public/src/sass",
+                    src: [ "**/*.scss", "!**/_*.scss" ],
+                    dest: "public/build/css",
+                    flatten: true,
+                    ext: ".css"
+                } ]
+            },
+            pri: {
+                files: [ {
+                    expand: true,
+                    cwd: "src-private/sass",
                     src: [ "**/*.scss", "!**/_*.scss" ],
                     dest: "public/build/css",
                     flatten: true,
@@ -64,7 +81,7 @@ module.exports = function( grunt ) {
         },
         jasmine: {
             test: {
-                src: [ "src/js/module/connection.js", "src/js/module/store.js" ],
+                src: [ "public/src/js/module/connection.js", "public/src/js/module/store.js" ],
                 options: {
                     keepRunner: true,
                     specs: "test/spec/*.spec.js",
@@ -73,25 +90,25 @@ module.exports = function( grunt ) {
                     templateOptions: {
                         //requireConfigFile: "src/js/require-config.js",
                         requireConfig: {
-                            baseUrl: "src/js/module",
+                            baseUrl: "public/src/js/module",
                             paths: {
-                                "gui": "../../../test/mock/gui.mock",
-                                "lib": "../../../public/lib",
-                                "enketo-js": "../../../public/lib/enketo-core/src/js",
-                                "enketo-js/Form": "../../../test/mock/Form.mock",
-                                "enketo-js/FormModel": "../../../test/mock/FormModel.mock",
-                                "enketo-widget": "../../../test/mock/empty.mock",
-                                "enketo-config": "config.json", //should move elsewhere
-                                "text": "../../../public/lib/enketo-core/lib/text/text",
-                                "xpath": "../../../test/mock/empty.mock",
-                                "file-manager": "../../../test/mock/empty.mock",
-                                "jquery.xpath": "../../../test/mock/empty.mock",
-                                "Modernizr": "../../../test/mock/empty.mock",
-                                "bootstrap": "../../../public/lib/enketo-core/lib/bootstrap",
-                                "jquery": "../../../public/lib/bower-components/jquery/dist/jquery",
-                                "file-saver": "../../../test/mock/file-saver.mock",
-                                "Blob": "../../../test/mock/Blob.mock",
-                                "vkbeautify": "../../../test/mock/vkbeautify.mock"
+                                "gui": "../../../../test/mock/gui.mock",
+                                "lib": "../../../lib",
+                                "enketo-js": "../../../lib/enketo-core/src/js",
+                                "enketo-js/Form": "../../../../test/mock/Form.mock",
+                                "enketo-js/FormModel": "../../../../test/mock/FormModel.mock",
+                                "enketo-widget": "../../../../test/mock/empty.mock",
+                                "enketo-config": "../config.json", //should move elsewhere
+                                "text": "../../../lib/enketo-core/lib/text/text",
+                                "xpath": "../../../../test/mock/empty.mock",
+                                "file-manager": "../../../../test/mock/empty.mock",
+                                "jquery.xpath": "../../../../test/mock/empty.mock",
+                                "Modernizr": "../../../../test/mock/empty.mock",
+                                "bootstrap": "../../../lib/enketo-core/lib/bootstrap",
+                                "jquery": "../../../lib/bower-components/jquery/dist/jquery",
+                                "file-saver": "../../../../test/mock/file-saver.mock",
+                                "Blob": "../../../../test/mock/Blob.mock",
+                                "vkbeautify": "../../../../test/mock/vkbeautify.mock"
                             },
                         }
                     }
@@ -103,10 +120,10 @@ module.exports = function( grunt ) {
             options: {
                 //generateSourceMaps: true,
                 preserveLicenseComments: false,
-                baseUrl: "src/js/module",
-                mainConfigFile: "src/js/require-build-config.js",
+                baseUrl: "public/src/js/module",
                 findNestedDependencies: true,
-                include: [ '../../../public/lib/bower-components/requirejs/require' ],
+                include: [ '../../../lib/bower-components/requirejs/require' ],
+                mainConfigFile: "public/src/js/require-config.js",
                 optimize: "uglify2",
                 done: function( done, output ) {
                     var duplicates = require( 'rjs-build-analysis' ).duplicates( output );
@@ -123,7 +140,7 @@ module.exports = function( grunt ) {
             },
             "webform": getWebformCompileOptions(),
             "webform-edit": getWebformCompileOptions( 'edit' ),
-            "webform-preview": getWebformCompileOptions( 'preview' ),
+            "webform-preview": getWebformCompileOptions( 'preview', false ),
             "webform-single": getWebformCompileOptions( 'single' ),
             "webform-tester": getWebformCompileOptions( 'tester' ),
             "front": {
@@ -144,18 +161,18 @@ module.exports = function( grunt ) {
                 files: [ {
                     expand: true,
                     overwrite: false,
-                    cwd: 'src/sass/grid/js',
+                    cwd: 'src-private/sass/grid/js',
                     src: [ '*.js' ],
-                    dest: 'src/js/module'
+                    dest: 'public/src/js/module'
                 } ]
             }
         }
     } );
 
-
-    function getWebformCompileOptions( type ) {
+    function getWebformCompileOptions( type, offline ) {
         //add widgets js and widget config.json files
-        var widgets = grunt.file.readJSON( 'src/js/config.json' ).widgets;
+        var widgets = grunt.file.readJSON( 'public/src/js/config.json' ).widgets;
+        offline = ( typeof offline === 'undefined' ) ? true : offline;
         widgets.forEach( function( widget, index, arr ) {
             arr.push( 'text!' + widget.substr( 0, widget.lastIndexOf( '/' ) + 1 ) + 'config.json' );
         } );
@@ -163,19 +180,12 @@ module.exports = function( grunt ) {
         return {
             options: {
                 name: "../main-webform" + type,
+                mainConfigFile: ( offline ) ? "public/src/js/require-config.js" : [ "public/src/js/require-config.js", "public/src/js/require-online-config.js" ],
                 out: "public/build/js/webform" + type + "-combined.min.js",
-                include: [ '../../../public/lib/bower-components/requirejs/require' ].concat( widgets )
+                include: [ '../../../lib/bower-components/requirejs/require' ].concat( widgets )
             }
         };
     }
-
-    grunt.loadNpmTasks( "grunt-jsbeautifier" );
-    grunt.loadNpmTasks( "grunt-contrib-jasmine" );
-    grunt.loadNpmTasks( "grunt-contrib-watch" );
-    grunt.loadNpmTasks( "grunt-contrib-jshint" );
-    grunt.loadNpmTasks( "grunt-contrib-sass" );
-    grunt.loadNpmTasks( "grunt-contrib-requirejs" );
-    grunt.loadNpmTasks( "grunt-contrib-symlink" );
 
     //maybe this can be turned into a npm module?
     grunt.registerTask( "prepWidgetSass", "Preparing _widgets.scss dynamically", function() {
@@ -207,7 +217,7 @@ module.exports = function( grunt ) {
 
     } );
     grunt.registerTask( "test", [ "jsbeautifier:test", "jshint", "jasmine" ] );
-    grunt.registerTask( "style", [ "prepWidgetSass", "sass:dist" ] );
+    grunt.registerTask( "style", [ "prepWidgetSass", "sass" ] );
     grunt.registerTask( "compile", [ "symlink", "requirejs" ] );
     grunt.registerTask( "default", [ "symlink", "test", "style", "compile" ] );
 };

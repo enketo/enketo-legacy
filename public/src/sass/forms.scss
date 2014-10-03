@@ -1,9 +1,9 @@
 @import "component/font";
 
-@import "../../public/lib/enketo-core/src/sass/core/variables";
+@import "../../lib/enketo-core/src/sass/core/variables";
 @import "component/variables";
 
-@import "../../public/lib/enketo-core/src/sass/core/mixins";
+@import "../../lib/enketo-core/src/sass/core/mixins";
 @import "component/mixins";
 
 @import "component/common";
@@ -20,9 +20,10 @@
     margin-top: -10px;
 }
 
-.navbar-nav.navbar-right:last-child .popover, .navbar-toggle  ~ .popover {
+.navbar-nav.navbar-right:last-child .popover, .navbar-toggle ~ .popover {
     margin-right: 8px;
     &.bottom > .arrow {
-    	//margin-left: -3px;
+        //margin-left: -3px;
+   
     }
 }

@@ -2,17 +2,17 @@
 @import "component/font";
 
 // variables, in the right order
-@import "../../public/lib/enketo-core/src/sass/core/variables";
-@import "../../public/lib/enketo-core/src/sass/formhub/variables";
+@import "../../lib/enketo-core/src/sass/core/variables";
+@import "../../lib/enketo-core/src/sass/formhub/variables";
 @import "component/variables";
 
 // mixins, in the right order
-@import "../../public/lib/enketo-core/src/sass/core/mixins";
-@import "../../public/lib/enketo-core/src/sass/formhub/mixins";
+@import "../../lib/enketo-core/src/sass/core/mixins";
+@import "../../lib/enketo-core/src/sass/formhub/mixins";
 @import "component/mixins";
 
 // layout
-@import "../../public/lib/enketo-core/src/sass/core/layout";
+@import "../../lib/enketo-core/src/sass/core/layout";
 @import "component/layout_webform";
 
 // components

@@ -1,8 +1,8 @@
 {
-    "name": "enketo-php-wrapper",
+    "name": "enketo-legacy-app",
     "description": "A full-fledged PHP app that uses the Enketo Smart Paper libraries",
     "homepage": "https://enketo.org",
-    "version": "2.2.1",
+    "version": "2.3.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/martijnr/enketo"
@@ -14,15 +14,17 @@
         "test": "grunt test"
     },
     "devDependencies": {
-        "grunt-contrib-jasmine": "0.8.x",
-        "grunt-template-jasmine-requirejs": "0.2.x",
         "grunt": "0.4.x",
+        "grunt-contrib-jasmine": "0.8.x",
         "grunt-contrib-jshint": "0.10.x",
-        "grunt-contrib-sass": "0.8.x",
         "grunt-contrib-requirejs": "0.4.x",
-        "grunt-jsbeautifier": "0.2.x",
+        "grunt-contrib-sass": "0.8.x",
+        "grunt-contrib-symlink": "0.3.x",
         "grunt-contrib-watch": "0.6.x",
+        "grunt-jsbeautifier": "0.2.x",
+        "grunt-template-jasmine-requirejs": "0.2.x",
+        "load-grunt-tasks": "0.6.x",
         "rjs-build-analysis": "0.0.x",
-        "grunt-contrib-symlink": "0.3.x"
+        "time-grunt": "1.0.x"
     }
 }

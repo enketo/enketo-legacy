@@ -44,7 +44,7 @@ class Forms extends CI_Controller {
 
         $data['scripts'] = (ENVIRONMENT === 'production') 
                 ? array(array('src' => '/build/js/formlist-combined.min.js'))
-                : array(array('src' => '/lib/bower-components/requirejs/require.js', 'data-main' => '/src-js/main-formlist.js'));
+                : array(array('src' => '/lib/bower-components/requirejs/require.js', 'data-main' => '/src/js/main-formlist.js'));
 
         //$this->output->cache(10);
         $this->load->view('formlist_view', $data);

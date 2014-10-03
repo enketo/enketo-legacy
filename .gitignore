@@ -2,7 +2,6 @@
 *.sublime-workspace
 */libraries/xpathjs_javarosa.min.js
 .sass-cache
-public/src-js
 Code_Igniter/application/config/database.php
 Code_Igniter/application/cache
 Code_Igniter/application/logs/log-*.php

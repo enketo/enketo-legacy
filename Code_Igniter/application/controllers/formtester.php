@@ -44,7 +44,7 @@ class Formtester extends CI_Controller {
 
 			$data['scripts'] = (ENVIRONMENT === 'production') 
             	? array(array('src' => '/build/js/webform-tester-combined.min.js'))
-            	: array(array('src' => '/lib/bower-components/requirejs/require.js', 'data-main' => '/src-js/main-webform-tester.js'));
+            	: array(array('src' => '/lib/bower-components/requirejs/require.js', 'data-main' => '/src/js/main-webform-tester.js'));
 
 			$data['stylesheets'] = $default_stylesheets;
 			//$this->output->cache(10);

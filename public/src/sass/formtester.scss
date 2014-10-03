@@ -1,11 +1,11 @@
 @import "component/font";
 
-@import "../../public/lib/enketo-core/src/sass/core/variables";
-@import "../../public/lib/enketo-core/src/sass/formhub/variables";
+@import "../../lib/enketo-core/src/sass/core/variables";
+@import "../../lib/enketo-core/src/sass/formhub/variables";
 @import "component/variables";
 
-@import "../../public/lib/enketo-core/src/sass/core/mixins";
-@import "../../public/lib/enketo-core/src/sass/formhub/mixins";
+@import "../../lib/enketo-core/src/sass/core/mixins";
+@import "../../lib/enketo-core/src/sass/formhub/mixins";
 @import "component/mixins";
 
 @import "component/layout";
@@ -95,6 +95,7 @@ label#data-template-show {
 .form-footer {
     min-height: 70px;
 }
+
 /*#launch form{
   margin-top: 20px; 
   input{

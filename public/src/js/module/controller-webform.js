@@ -35,7 +35,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             connection.init( true );
 
-            if ( fileManager && fileManager.isSupported() && ( !store || store.getRecordList().length === 0 ) ) {
+            if ( fileManager && fileManager.isSupported() && fileManager.flush && ( !store || store.getRecordList().length === 0 ) ) {
                 //clean up filesystem storage
                 fileManager.flush();
             }
@@ -610,8 +610,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 name = $( this ).attr( 'name' );
                 //if the record in the DOM no longer exists in storage
                 if ( $.grep( recordList, function( record ) {
-                        return record.key == name;
-                    } ).length === 0 ) {
+                    return record.key == name;
+                } ).length === 0 ) {
                     //remove the DOM element and its same-name-siblings (split submissions)
                     $( this ).siblings( '[name="' + name + '"]' ).addBack().hide( 2000, function() {
                         $( this ).remove();

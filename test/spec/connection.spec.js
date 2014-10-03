@@ -13,8 +13,7 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
         beforeEach( function() {
             callbacks = {
                 success: jasmine.createSpy(),
-                error: jasmine.createSpy(),
-                complete: jasmine.createSpy()
+                error: jasmine.createSpy()
             };
         } );
 
@@ -24,19 +23,19 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
 
         describe( "validates urls", function() {
             var i, t = [
-                    [ 'htt://example.org', false ],
-                    [ ' http://example.org', false ],
-                    [ 'example.org', false ],
-                    [ 'www.example.org', false ],
-                    [ 'http://example.o', false ],
-                    [ 'http://example.o/ d', false ],
-                    [ 'http://example.org', true ],
-                    [ 'https://example.org', true ],
-                    [ 'http://example.org/_-?', true ],
-                    [ 'http://www.example.org', true ],
-                    [ 'http://sub.example.org', true ],
-                    [ 'http://23.21.114.69/xlsform/tmp/tmp20lcND/or_other.xml', true ]
-                ];
+                [ 'htt://example.org', false ],
+                [ ' http://example.org', false ],
+                [ 'example.org', false ],
+                [ 'www.example.org', false ],
+                [ 'http://example.o', false ],
+                [ 'http://example.o/ d', false ],
+                [ 'http://example.org', true ],
+                [ 'https://example.org', true ],
+                [ 'http://example.org/_-?', true ],
+                [ 'http://www.example.org', true ],
+                [ 'http://sub.example.org', true ],
+                [ 'http://23.21.114.69/xlsform/tmp/tmp20lcND/or_other.xml', true ]
+            ];
 
             function test( url, result ) {
                 it( "evaluates url: " + url + " to " + result, function() {
@@ -52,7 +51,7 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
 
         describe( "tries to obtains survey URLs", function() {
             it( 'and calls the success handler if the server returns the url (mocked)', function() {
-                spyOn( $, "ajax" ).andCallFake( function( options ) {
+                spyOn( $, "ajax" ).and.callFake( function( options ) {
                     options.success( {
                         url: "http://success.org"
                     }, 'success' );
@@ -66,18 +65,17 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
                 }, 'success' );
             } );
 
-            it( 'returns a validation error if the URL is not well-formed', function() {
+            it( 'returns a validation error if the URL is not well-formed', function( done ) {
 
-                connection.getSurveyURL( 'an/invalid/url', 'name', callbacks );
-
-                waitsFor( function() {
-                    return callbacks.error.callCount > 0;
-                }, 'ajax request never finished', 1000 );
-
-                runs( function() {
-                    expect( callbacks.error ).toHaveBeenCalled();
-                    //ajax is never sent if validation fails
-                    expect( callbacks.complete ).not.toHaveBeenCalled();
+                connection.getSurveyURL( 'an/invalid/url', 'name', {
+                    error: function() {
+                        expect( true ).toBe( true );
+                        done();
+                    },
+                    complete: function() {
+                        // this should not be called
+                        expect( false ).toBe( true );
+                    }
                 } );
             } );
         } );
@@ -153,9 +151,9 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
                     } );
                     if ( alert ) {
                         expect( gui.alert ).toHaveBeenCalled();
-                        expect( gui.alert.mostRecentCall.args[ 1 ] ).toEqual( errorHeading );
+                        expect( gui.alert.calls.mostRecent().args[ 1 ] ).toEqual( errorHeading );
                     } else {
-                        expect( gui.alert.callCount ).toEqual( 0 );
+                        expect( gui.alert.calls.count() ).toEqual( 0 );
                     }
                 } );
             }

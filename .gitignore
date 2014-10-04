@@ -8,7 +8,7 @@ Code_Igniter/application/logs/log-*.php
 node_modules
 public/build
 public/lib/bower-components
-src/js/module/print-grid.js
+public/src/js/module/print-grid.js
 public/cron.log
 ._*
 .fuse*

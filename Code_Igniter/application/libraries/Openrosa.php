@@ -127,7 +127,7 @@ class Openrosa {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-OpenRosa-Version: 1.0'));
         // surveyCTO needs this (doesn't support auto determination):
-        curl_setopt($ch, CURLOPT_SSLVERSION, '3');
+        //curl_setopt($ch, CURLOPT_SSLVERSION, '3');
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 

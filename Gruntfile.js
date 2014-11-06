@@ -37,7 +37,7 @@ module.exports = function( grunt ) {
         },
         watch: {
             sass: {
-                files: [ 'public/src/js/config.json', 'public/src/sass/**/*.scss', 'public/lib/enketo-core/src/**/*.scss' ],
+                files: [ 'public/src/js/config.json', 'public/src/sass/**/*.scss', 'public/lib/enketo-core/src/**/*.scss', 'src-private/sass/**/*.scss' ],
                 tasks: [ 'style' ],
                 options: {
                     spawn: false
@@ -52,31 +52,22 @@ module.exports = function( grunt ) {
             }
         },
         sass: {
-            options: {
-                //sourcemap: true,
-                style: "expanded",
-                noCache: true
-            },
             pub: {
-
-                files: [ {
-                    expand: true,
-                    cwd: "public/src/sass",
-                    src: [ "**/*.scss", "!**/_*.scss" ],
-                    dest: "public/build/css",
-                    flatten: true,
-                    ext: ".css"
-                } ]
+                files: {
+                    'public/build/css/webform_formhub.css': 'public/src/sass/webform_formhub.scss',
+                    'public/build/css/webform_print_formhub.css': 'public/src/sass/webform_print_formhub.scss',
+                    'public/build/css/empty-front.css': 'public/src/sass/empty-front.scss',
+                    'public/build/css/forms.css': 'public/src/sass/forms.scss',
+                    'public/build/css/formtester.css': 'public/src/sass/formtester.scss'
+                }
             },
             pri: {
-                files: [ {
-                    expand: true,
-                    cwd: "src-private/sass",
-                    src: [ "**/*.scss", "!**/_*.scss" ],
-                    dest: "public/build/css",
-                    flatten: true,
-                    ext: ".css"
-                } ]
+                files: {
+                    'public/build/css/webform_grid.css': 'src-private/sass/grid/webform_grid.scss',
+                    'public/build/css/webform_print_grid.css': 'src-private/sass/grid/webform_print_grid.scss',
+                    'public/build/css/openrosa.css': 'src-private/sass/private/openrosa.scss',
+                    'public/build/css/front.css': 'src-private/sass/private/front.scss'
+                }
             }
         },
         jasmine: {

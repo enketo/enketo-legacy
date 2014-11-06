@@ -19,6 +19,7 @@
         "jquery": "~2.1.1",
         "requirejs": "~2.1.15",
         "file-saver": "*",
-        "blob": "*"
+        "blob": "*",
+        "bootstrap-sass-official": "~3.3.0"
     }
 }

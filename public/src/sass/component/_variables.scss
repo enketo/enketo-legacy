@@ -1,15 +1,5 @@
-$baseFontSize: 16px;
-$baseLineHeight: 20px;
-
-$bg: #ddd;
 $body-bg: #f0f0f0;
-$shadow: #cccccc;
-//$title: #CE4F07;
-$accent-color-1: #CE4F07;
-$content_border: #E7E7E7;
+$content-border: #e7e7e7;
 
-$max-content-width: 720px;
-$main-breakpoint: $max-content-width;
-
-$images-path: '../../images/';
-$icon-font-path: '/lib/enketo-core/lib/bootstrap-sass/fonts/';
+$images-path: "../../images/";
+$icon-font-path: "/lib/bower-components/bootstrap-sass-official/assets/fonts/bootstrap/";

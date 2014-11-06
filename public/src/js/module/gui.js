@@ -18,7 +18,7 @@
  * Deals with the main GUI elements (but not the survey form)
  */
 
-define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', ], function( Modernizr, settings, printForm, $ ) {
+define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', 'bootstrap' ], function( Modernizr, settings, printForm, $ ) {
     "use strict";
 
     var nav, pages, updateStatus, feedbackBar,

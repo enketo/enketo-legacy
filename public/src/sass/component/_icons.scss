@@ -1,0 +1,55 @@
+.icon {
+    @extend .glyphicon;
+}
+
+.icon-refresh {
+    @extend .glyphicon-refresh;
+}
+
+.icon-crosshairs {
+    @extend .glyphicon-screenshot;
+}
+
+.icon-search {
+    @extend .glyphicon-search;
+}
+
+.icon-trash {
+    @extend .glyphicon-trash;
+}
+
+.icon-globe {
+    @extend .glyphicon-globe;
+}
+
+.icon-arrow-left {
+    @extend .glyphicon-arrow-left;
+}
+
+.icon-marker {
+    @extend .glyphicon-map-marker;
+}
+
+.icon-plus {
+    @extend .glyphicon-plus;
+}
+
+.icon-minus {
+    @extend .glyphicon-minus;
+}
+
+.icon-chevron-right {
+    @extend .glyphicon-chrevron-right;
+}
+
+.icon-chevron-left {
+    @extend .glyphicon-chevron-left;
+}
+
+.icon-chevron-down {
+    @extend .glyphicon-chevron-down;
+}
+
+.icon-chevron-up {
+    @extend .glyphicon-chevron-up;
+}

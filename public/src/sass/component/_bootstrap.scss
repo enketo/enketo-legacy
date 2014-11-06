@@ -1,55 +1,55 @@
 //Bootstrap-sass from: https://github.com/thomas-mcdonald/bootstrap-sass
 
 // Core variables and mixins
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/variables";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/mixins";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/variables";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/mixins";
 
 // Reset
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/normalize";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/print";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/normalize";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/print";
 
 // Core CSS
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/scaffolding";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/type";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/scaffolding";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/type";
 
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/code";
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/grid";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/tables";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/forms";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/buttons";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/code";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/grid";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/tables";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/forms";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/buttons";
 
 // Components
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/component-animations";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/glyphicons";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/dropdowns";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/button-groups";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/input-groups";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/navs";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/navbar";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/component-animations";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/glyphicons";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/dropdowns";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/button-groups";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/input-groups";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/navs";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/navbar";
 
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/breadcrumbs";
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/pagination";
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/pager";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/labels";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/badges";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/breadcrumbs";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/pagination";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/pager";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/labels";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/badges";
 
-///@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/jumbotron";
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/thumbnails";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/alerts";
+///@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/jumbotron";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/thumbnails";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/alerts";
 
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/progress-bars";
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/media";
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/list-group";
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/panels";
-//@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/wells";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/close";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/progress-bars";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/media";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/list-group";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/panels";
+//@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/wells";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/close";
 
 // Components w/ JavaScript
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/modals";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/tooltip";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/popovers";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/carousel";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/modals";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/tooltip";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/popovers";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/carousel";
 
 // Utility classes
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/utilities";
-@import "../../../lib/enketo-core/lib/bootstrap-sass/bootstrap/responsive-utilities";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/utilities";
+@import "../../../lib/bower-components/bootstrap-sass-official/assets/stylesheets/bootstrap/responsive-utilities";

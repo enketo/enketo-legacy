@@ -18,7 +18,7 @@
  * Deals with the main high level survey controls: saving, submitting etc.
  */
 
-define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormModel', 'file-saver', 'Blob', 'vkbeautify', 'jquery', 'bootstrap' ],
+define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormModel', 'file-saver', 'Blob', 'vkbeautify', 'jquery' ],
     function( gui, connection, settings, Form, FormModel, saveAs, Blob, vkbeautify, $ ) {
         "use strict";
         var form, $form, $formprogress, formSelector, defaultModelStr, store, fileManager;

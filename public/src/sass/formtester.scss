@@ -1,15 +1,32 @@
 @import "component/font";
 
-@import "../../lib/enketo-core/src/sass/core/variables";
-@import "../../lib/enketo-core/src/sass/formhub/variables";
 @import "component/variables";
+@import "../../lib/enketo-core/src/sass/formhub/variables";
+@import "../../lib/enketo-core/src/sass/core/variables";
 
 @import "../../lib/enketo-core/src/sass/core/mixins";
 @import "../../lib/enketo-core/src/sass/formhub/mixins";
 @import "component/mixins";
 
-@import "component/layout";
+// common styles, including UI library used in app
 @import "component/common";
+
+// reset (a better name would be 'base')
+@import "../../lib/enketo-core/src/sass/core/reset";
+
+// form icons
+@import "component/icons";
+
+// form buttons
+@import "component/buttons";
+
+// utilities
+@import "../../lib/enketo-core/src/sass/core/utilities";
+
+// layout
+@import "component/layout";
+
+// components
 @import "component/menu";
 @import "component/form_formhub";
 @import "component/form_footer";
@@ -95,8 +112,3 @@ label#data-template-show {
 .form-footer {
     min-height: 70px;
 }
-
-/*#launch form{
-  margin-top: 20px; 
-  input{
-    width: 300px; } }*/

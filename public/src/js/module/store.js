@@ -162,7 +162,6 @@ define( [ 'jquery', 'enketo-js/extend' ], function( $ ) {
                 'lastSaved': record.lastSaved
             } );
         } );
-        console.debug( 'formList returning:', formList );
 
         //order formList by lastSaved timestamp
         formList.sort( function( a, b ) {

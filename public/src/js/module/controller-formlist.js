@@ -167,7 +167,7 @@ define( [ 'gui', 'store', 'connection', 'jquery', 'bootstrap' ], function( gui, 
     }
 
     /**
-     * Loads the previous state of the formlist and server settings
+ * Loads the previous state of the formlist and server settings
      */
 
     function loadPreviousState() {
@@ -228,7 +228,6 @@ define( [ 'gui', 'store', 'connection', 'jquery', 'bootstrap' ], function( gui, 
 
     function processFormlistResponse( resp, msg, props, reset ) {
         var helper, inputValue;
-        console.log( 'processing formlist response' );
         if ( typeof resp === 'object' && !$.isEmptyObject( resp ) ) {
             store.setRecord( '__server_' + props.server, resp, false, true );
             store.setRecord( '__current_server', {

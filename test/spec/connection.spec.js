@@ -95,7 +95,6 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
                 ];
 
             beforeEach( function() {
-                console.log( 'running before function' );
                 spyOn( gui, 'alert' );
                 spyOn( gui, 'feedback' );
                 spyOn( gui, 'confirmLogin' );
@@ -107,13 +106,11 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
 
             function testFail( statusCode ) {
                 it( 'and correctly identifies statusCode ' + statusCode + ' as a failed submission.', function() {
-                    console.log( 'starting testFail with', statusCode );
                     connection._processOpenRosaResponse( statusCode, {
                         name: 'aname'
                     } );
                     expect( connection._getUploadResult().win.length ).toBe( 0 );
                     expect( connection._getUploadResult().fail.length ).toBe( 1 );
-                    console.log( 'finished testFail', statusCode, connection._uploadResult );
                 } );
             }
 
@@ -123,11 +120,9 @@ define( [ "connection", "gui", "jquery" ], function( connection, gui, $ ) {
 
             function testWin( statusCode ) {
                 it( 'and correctly identifies statusCode ' + statusCode + ' as a succesful submission.', function() {
-                    console.log( 'starting testWin with', statusCode, connection._uploadResult );
                     connection._processOpenRosaResponse( statusCode, {
                         name: 'aname'
                     } );
-                    console.log( 'ending testWin with', statusCode, connection._uploadResult );
                     expect( connection._getUploadResult().win.length ).toBe( 1 );
                     expect( connection._getUploadResult().fail.length ).toBe( 0 );
 

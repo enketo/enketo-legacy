@@ -131,8 +131,6 @@ define( [ "store" ], function( store ) {
                         data: '<data></data>',
                         draft: !( i % 2 )
                     } );
-
-                    console.log( 'setting record with draft', !( i % 2 ), result );
                 }
             } );
 

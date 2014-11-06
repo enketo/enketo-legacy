@@ -3,12 +3,12 @@
 	<button class="close">&times;</button>
 </div>
 
-<div id="dialog-alert" class="modal fade" role="dialog" aria-labelledby="alert dialog" aria-hidden="true"  data-keyboard="true">
+<div id="dialog-alert" class="modal fade" role="dialog" aria-labelledby="dialog-alert-title" aria-hidden="true"  data-keyboard="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3></h3>
+				<h3 id="dialog-alert-title"></h3>
 			</div>
 			<div class="modal-body">
 				<p class=""></p>
@@ -21,12 +21,12 @@
 	</div>
 </div>
 
-<div id="dialog-confirm" class="modal fade" role="dialog" aria-labelledby="confirmation dialog" aria-hidden="true"  data-keyboard="true">
+<div id="dialog-confirm" class="modal fade" role="dialog" aria-labelledby="dialog-confirm-title" aria-hidden="true"  data-keyboard="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3></h3>
+				<h3 id="dialog-confirm-title"></h3>
 			</div>
 			<div class="modal-body">
 				<p class="alert alert-danger"></p>
@@ -41,12 +41,12 @@
 	</div>
 </div>
 
-<div id="dialog-save" class="modal fade" role="dialog" aria-labelledby="save dialog" aria-hidden="true" data-keyboard="true">
+<div id="dialog-save" class="modal fade" role="dialog" aria-labelledby="dialog-save-title" aria-hidden="true" data-keyboard="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3></h3>
+				<h3 id="dialog-save-title"></h3>
 			</div>
 			<div class="modal-body">
 				<form onsubmit="return false;">
@@ -67,12 +67,12 @@
 </div>
 
 <!-- used for Grid theme only -->
-<div id="dialog-print" class="modal fade" role="dialog" aria-labelledby="print dialog" aria-hidden="true"  data-keyboard="true">
+<div id="dialog-print" class="modal fade" role="dialog" aria-labelledby="dialog-print-title" aria-hidden="true"  data-keyboard="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 class="select-format">Select Print Settings</h3>
+				<h3 id="dialog-print-title" class="select-format">Select Print Settings</h3>
 				<h3 class="progress">Preparing...</h3>
 			</div>
 			<div class="modal-body">

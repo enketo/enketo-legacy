@@ -1,4 +1,4 @@
-[Enketo Smart Paper](http://enketo.org) [![Build Status](https://travis-ci.org/enketo/enketo-legacy.svg)](https://travis-ci.org/enketo/enketo) [![devDependency Status](https://david-dm.org/enketo/enketo-legacy/dev-status.svg)](https://david-dm.org/enketo/enketo#info=devDependencies)
+[Enketo Smart Paper](http://enketo.org) [![Build Status](https://travis-ci.org/enketo/enketo-legacy.svg)](https://travis-ci.org/enketo/enketo-legacy) [![devDependency Status](https://david-dm.org/enketo/enketo-legacy/dev-status.svg)](https://david-dm.org/enketo/enketo#info=devDependencies)
 ======
 
 **This App is no longer being actively developed. It will be replaced by [Enketo-Express](https://github.com/enketo/enketo-express) in the near future.**

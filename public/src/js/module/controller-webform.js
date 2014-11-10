@@ -309,18 +309,24 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 complete: function() {}
             };
 
-            //connection.uploadRecords(record, true, callbacks);
-            //only upload the last one
-            prepareFormDataArray(
-                record, {
-                    success: function( formDataArr ) {
-                        connection.uploadRecords( formDataArr, true, callbacks );
-                    },
-                    error: function() {
-                        gui.alert( 'Something went wrong while trying to prepare the record(s) for uploading.', 'Record Error' );
+            // It doesn't make a whole lot of sense to use the filesystem API here since this function is only used
+            // in online-only views. However, since enketo-legacy is on its way out, I chose this quick fix for an issue
+            // with uploading files from the edit-view (#329).
+            // For a proper solution, see Enketo-express.
+            // 
+            // Save any media files to the media storage but let fail quietly
+            fileManager.saveCurrentFiles().fin( function() {
+                prepareFormDataArray(
+                    record, {
+                        success: function( formDataArr ) {
+                            connection.uploadRecords( formDataArr, true, callbacks );
+                        },
+                        error: function() {
+                            gui.alert( 'Something went wrong while trying to prepare the record(s) for uploading.', 'Record Error' );
+                        }
                     }
-                }
-            );
+                );
+            } );
         }
 
         function submitOneForced( recordName, record ) {

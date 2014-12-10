@@ -1,30 +1,29 @@
-[Enketo Smart Paper](http://enketo.org) [![Build Status](https://travis-ci.org/enketo/enketo-legacy.svg)](https://travis-ci.org/enketo/enketo-legacy) [![devDependency Status](https://david-dm.org/enketo/enketo-legacy/dev-status.svg)](https://david-dm.org/enketo/enketo#info=devDependencies)
+[Enketo Smart Paper](http://enketo.org) [![Build Status](https://travis-ci.org/enketo/enketo-legacy.svg)](https://travis-ci.org/enketo/enketo-legacy) [![devDependency Status](https://david-dm.org/enketo/enketo-legacy/dev-status.svg)](https://david-dm.org/enketo/enketo-legacy#info=devDependencies)
 ======
 
 **This App is no longer being actively developed. It will be replaced by [Enketo-Express](https://github.com/enketo/enketo-express) in the near future.**
 
 Enketo Smart Paper runs next generation web forms that were built according to the open-source OpenRosa XForm format. This is the advanced and popular form format used by [ODK](http://opendatakit.org), [Formhub](https://formhub.org) and [CommCare](http://www.commcarehq.org/home/). 
 
-This repository is a PHP-wrapper around [Enketo Core](https://github.com/MartijnR/enketo-core) that adds the ability to launch offline and persistently store data offline in the browser. It also provides the communication with OpenRosa compliant servers such as [ODK Aggregate](http://opendatakit.org/use/aggregate/) and [Formhub](https://formhub.org). The OpenRosa APIs are described [here](https://bitbucket.org/javarosa/javarosa/wiki/OpenRosaAPI).
+This repository is a PHP-wrapper around [Enketo Core](https://github.com/MartijnR/enketo-core) that adds the ability to launch offline and persistently store data offline in the browser. It also provides the communication with OpenRosa compliant servers such as [ODK Aggregate](http://opendatakit.org/use/aggregate/), KoBoToolbox(http://kobotoolbox.org), [Ona](https://ona.io), and [Formhub](https://formhub.org). The OpenRosa APIs are described [here](https://bitbucket.org/javarosa/javarosa/wiki/OpenRosaAPI).
 
 Enketo is currently deployed as a paid service on [enketo.org](http://enketo.org) and as a free service on [formhub.org](http://formhub.org). Follow the latest news about enketo on our [blog](http://blog.enketo.org) and on twitter [@enketo](https://twitter.com/enketo).
 
 Related Projects
 -----------
-* [Enketo Core](https://github.com/enketo/enketo-core) - used inside this repo
-* [Enketo Express](https://github.com/enketo/enketo-express) - a new Node.js version of the Enketo Web Application
+* [Enketo Core](https://github.com/enketo/enketo-core) - Enketo form engine used inside this repo and many other apps
+* [Enketo Express](https://github.com/enketo/enketo-express) - A new Node.js version of the Enketo Web Application (will replace enketo-legacy)
 * [Enketo XPathJS](https://github.com/enketo/enketo-xpathjs) - XPath Evaluator used inside enketo-core
-* [Wicked Good XPath OpenRosa](https://github.com/kirang20/wgxp-java-rosa) - a much faster replacement XPath Evaluator under development
 * [Enketo XSLT](https://github.com/enketo/enketo-xslt) - used inside this repo
-* [Enketo Dristhi](https://github.com/MartijnR/enketo-dristhi) used in [Dristhi](https://play.google.com/store/apps/details?id=org.ei.drishti)
+* [Enketo Dristhi](https://github.com/enketo/enketo-dristhi) used in [Dristhi](https://play.google.com/store/apps/details?id=org.ei.drishti)
 * [Manifest Builder](https://github.com/MartijnR/Manifest-Builder) - used inside this repo
 * [File Manager](https://github.com/enketo/file-manager) - used inside this repo
-* [enketo-xslt-transformer-php](https://github.com/MartijnR/enketo-xslt-transformer-php) - sample app that transforms Xforms in HTML
+* [enketo-xslt-transformer-php](https://github.com/enketo/enketo-xslt-transformer-php) - sample app that transforms Xforms in HTML
 * [enketo-xslt-transformer-node] - To follow
 
 API Documentation
 --------------
-Instead of installing and maintaining Enketo yourself you should consider using [enketo.org](https://enketo.org)'s API after opening an enketo.org [account](https://accounts.enketo.org). The [API documentation](http://apidocs.enketo.org) describes how you can easily achieve the same level of integration that currently exists on [formhub.org](https://formhub.org) and in [ODK Aggregate 1.4.1+](http://opendatakit.org/use/aggregate/) to any other OpenRosa-compliant server.
+Instead of installing and maintaining Enketo yourself you should consider using [enketo.org](https://enketo.org)'s API after opening an enketo.org [account](https://accounts.enketo.org). The [API documentation](http://apidocs.enketo.org) describes how you can easily achieve the same level of integration that currently exists on [formhub.org](https://formhub.org), [ona](https://ona.io), [KoBoToolbox](http://kobotoolbox.org), and in [ODK Aggregate 1.4.1+](http://opendatakit.org/use/aggregate/) to any other OpenRosa-compliant server.
 
 Browser support
 ---------------
@@ -49,21 +48,16 @@ This is a separate module that is currently not open-source.
 
 Development
 -----------
-* Code contributions for [Enketo Core](https://github.com/MartijnR/enketo-core) and its dependencies (see above under Related Projects) are very welcome. See those repos for more information.
-* [Issue Tracker](https://github.com/MartijnR/enketo/issues)
+* Code contributions for [all Enketo libraries](https://github.com/enketo) except enketo-legacy are very welcome. 
+* [Issue Tracker](https://github.com/enketo/enketo-legacy/issues)
 
-Acknowledgements
+Sponsors
 ----------------
 
-Enketo development is sponsored by:
+The development of this app and [enketo-core](https://github.com/enketo/enketo-core) is sponsored by:
 
 * [Sustainable Engineering Lab at Columbia University](http://modi.mech.columbia.edu/)
 * [WHO - HRP project](http://www.who.int/reproductivehealth/topics/mhealth/en/index.html)
 * [Santa Fe Insitute & Slum/Shack Dwellers International](http://www.santafe.edu/)
 * [Enketo LLC](http://www.linkedin.com/company/enketo-llc)
 
-I would like to also acknowledge and thank the indirect contribution by the creators of the following excellent works that were used in the project:
-
-* [Code Igniter](http://codeigniter.com) by EllisLab
-* [vkbeautify](https://github.com/vkiryukhin/vkBeautify) by Vadim Kiryukhin
-* many more (see the various enketo libraries used in this repo)

@@ -198,6 +198,6 @@ module.exports = function( grunt ) {
     } );
     grunt.registerTask( "test", [ "jsbeautifier:test", "jshint", "jasmine" ] );
     grunt.registerTask( "style", [ "prepWidgetSass", "sass" ] );
-    grunt.registerTask( "compile", [ "symlink", "requirejs" ] );
-    grunt.registerTask( "default", [ "symlink", "style", "compile" ] );
+    grunt.registerTask( "compile", [ "requirejs" ] );
+    grunt.registerTask( "default", [ "style", "compile" ] );
 };

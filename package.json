@@ -2,7 +2,7 @@
     "name": "enketo-legacy-app",
     "description": "A full-fledged PHP app that uses the Enketo Smart Paper libraries",
     "homepage": "https://enketo.org",
-    "version": "2.6.1",
+    "version": "2.7.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/martijnr/enketo"
@@ -23,7 +23,7 @@
         "grunt-jsbeautifier": "0.2.x",
         "grunt-sass": "0.17.x",
         "grunt-template-jasmine-requirejs": "0.2.x",
-        "load-grunt-tasks": "1.x.x",
+        "load-grunt-tasks": "2.x.x",
         "rjs-build-analysis": "0.0.x",
         "time-grunt": "1.0.x"
     }

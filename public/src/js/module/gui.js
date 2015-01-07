@@ -81,7 +81,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', 'bootstrap' ], f
         } );
 
         $( 'button.print' ).on( 'click', function() {
-            printForm();
+            printForm( confirm );
         } );
 
         $( '.side-slider-toggle' ).on( 'click', function() {
@@ -412,6 +412,7 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', 'bootstrap' ], f
         choices.posAction = choices.posAction || function() {};
         choices.negAction = choices.negAction || function() {};
         choices.beforeAction = choices.beforeAction || function() {};
+        choices.afterAction = choices.afterAction || function() {};
 
         $dialog = $( '#dialog-' + dialogName );
 
@@ -424,39 +425,52 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', 'bootstrap' ], f
         }
         $dialog.find( 'input, select, textarea' ).each( function() {
             var name = $( this ).attr( 'name' );
-            $( this ).val( values[ name ] || '' );
+            if ( typeof values[ name ] !== 'undefined' ) {
+                $( this ).val( values[ name ] );
+            }
         } );
 
-        //instantiate dialog
+        // instantiate dialog
         $dialog.modal( 'show' );
 
-        //set eventhanders
-        $dialog.on( 'shown.bs.modal', function() {
+        // set eventhanders
+        $dialog.one( 'shown.bs.modal', function() {
             choices.beforeAction.call();
         } );
 
-        $dialog.find( 'button.positive' ).on( 'click', function() {
-            var values = {};
-            $( this ).closest( '.modal-dialog' ).find( 'input, select, textarea' ).each( function() {
-                if ( $( this ).attr( 'name' ) ) {
-                    values[ $( this ).attr( 'name' ) ] = $( this ).val().trim();
+        // clean up
+        $dialog.one( 'hidden.bs.modal', function() {
+            console.log( 'after action' );
+            choices.afterAction.call();
+            reset();
+        } );
+
+        $dialog.find( 'button.positive' ).one( 'click', function() {
+            var values = {},
+                $frm = $dialog.find( '.modal-body form' );
+
+            $.each( $frm.serializeArray(), function( _, kv ) {
+                if ( values.hasOwnProperty( kv.name ) ) {
+                    values[ kv.name ] = $.makeArray( values[ kv.name ] );
+                    values[ kv.name ].push( kv.value );
+                } else {
+                    values[ kv.name ] = kv.value;
                 }
             } );
+
             $dialog.modal( 'hide' );
-            reset();
             choices.posAction.call( undefined, values );
         } ).text( choices.posButton );
 
-        $dialog.find( 'button.negative' ).on( 'click', function() {
+        $dialog.find( 'button.negative' ).one( 'click', function() {
             $dialog.modal( 'hide' );
-            reset();
             choices.negAction.call();
         } ).text( choices.negButton );
 
         function reset() {
             console.log( 'confirm dialog reset called' );
             //remove eventhandlers
-            $dialog.off( 'shown hidden hide' );
+            //$dialog.off( 'shown hidden hide' );
             // temp workaround or fix for multiple modals when repeatedly attempting to save a record under and existing name)
             $( 'body>.modal-backdrop' ).remove();
 

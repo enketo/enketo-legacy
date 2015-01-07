@@ -73,13 +73,13 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h3 id="dialog-print-title" class="select-format">Select Print Settings</h3>
-				<h3 class="progress">Preparing...</h3>
+				<!--<h3 class="progress">Preparing...</h3>-->
 			</div>
 			<div class="modal-body">
-				<section class="progress">
+				<!--<section class="progress">
 					<p>Working hard to prepare your optimized print view. Hold on!</p>
 					<progress></progress>
-				</section>
+				</section>-->
 				<section class="select-format">
 					<p>To prepare an optimized print, please select the print settings below</p>
 					<form onsubmit="return false;">

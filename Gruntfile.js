@@ -146,17 +146,6 @@ module.exports = function( grunt ) {
                     out: "public/build/js/formlist-combined.min.js"
                 }
             }
-        },
-        symlink: {
-            expanded: {
-                files: [ {
-                    expand: true,
-                    overwrite: false,
-                    cwd: 'src-private/sass/grid/js',
-                    src: [ '*.js' ],
-                    dest: 'public/src/js/module'
-                } ]
-            }
         }
     } );
 

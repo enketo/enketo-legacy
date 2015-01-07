@@ -22,3 +22,15 @@ url=https://github.com/enketo/enketo-core.git
 [submodule "public/lib/file-system"]
 	path = public/lib/file-system
 	url = https://github.com/enketo/file-system.git
+[submodule "public/private_media"]
+	path = public/private_media
+	url = https://github.com/MartijnR/enketo_org_media.git
+[submodule "Code_Igniter/application/third_party/account"]
+	path = Code_Igniter/application/third_party/account
+	url = https://github.com/MartijnR/enketo_account.git
+[submodule "Code_Igniter/application/views/private_views"]
+	path = Code_Igniter/application/views/private_views
+	url = https://github.com/MartijnR/enketo_org_views.git
+[submodule "src-private/sass/private"]
+	path = src-private/sass/private
+	url = https://github.com/MartijnR/enketo_org_scss.git

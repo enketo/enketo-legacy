@@ -1,7 +1,7 @@
 [Enketo Smart Paper](http://enketo.org) [![Build Status](https://travis-ci.org/enketo/enketo-legacy.svg)](https://travis-ci.org/enketo/enketo-legacy) [![devDependency Status](https://david-dm.org/enketo/enketo-legacy/dev-status.svg)](https://david-dm.org/enketo/enketo-legacy#info=devDependencies)
 ======
 
-<p style="padding: 5px; font-weight: bold; background:#d9edf7; color: #31708f">This App is no longer being actively developed. It will soon be replaced by <a href="https://github.com/enketo/enketo-express">Enketo-Express</a>.</p>
+###This App is no longer being actively developed. It will soon be replaced by [Enketo Express](https://github.com/enketo/enketo-express).
 
 Enketo Smart Paper runs next generation web forms that were built according to the open-source OpenRosa XForm format. This is the advanced and popular form format used by [ODK](http://opendatakit.org), [Formhub](https://formhub.org) and [CommCare](http://www.commcarehq.org/home/). 
 
@@ -35,9 +35,6 @@ Don't. Install [Enketo-express](https://github.com/enketo/enketo-express) instea
 
 ##### Why are file-upload inputs greyed out and not usable?
 File uploads are only experimentially supported on Chrome (except on iOS) and Opera desktop. It uses the still experimental FileSytem API to ensure that Enketo forms work offline. If file uploads (images/sound/video) are important, [Enketo Express](https://github.com/enketo/enketo-express) or ODK Collect may be a better option. 
-
-##### Why is form authentication and the Grid Theme not working on my own installation?
-They were proprietary until recently. They will be added soon (in Jan 2015). 
 
 Development
 -----------

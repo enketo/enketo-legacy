@@ -1,15 +1,15 @@
 // fonts
-@import "sass/fonts";
+@import "component/font-icon";
 
 // variables, in the right order
-@import "sass/variables";
+@import "../../lib/enketo-core/src/sass/grid/variables";
 @import "component/variables";
 @import "../../lib/enketo-core/src/sass/core/variables";
 
 // mixins, in the right order
 @import "../../lib/enketo-core/src/sass/core/mixins";
 @import "component/mixins";
-@import "sass/mixins";
+@import "../../lib/enketo-core/src/sass/grid/mixins";
 
 // common styles, including UI library used in app
 @import "component/common";

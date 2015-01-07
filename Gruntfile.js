@@ -58,13 +58,14 @@ module.exports = function( grunt ) {
                     'public/build/css/webform_print_formhub.css': 'public/src/sass/webform_print_formhub.scss',
                     'public/build/css/empty-front.css': 'public/src/sass/empty-front.scss',
                     'public/build/css/forms.css': 'public/src/sass/forms.scss',
-                    'public/build/css/formtester.css': 'public/src/sass/formtester.scss'
+                    'public/build/css/formtester.css': 'public/src/sass/formtester.scss',
+                    'public/build/css/webform_grid.css': 'public/src/sass/webform_grid.scss',
+                    'public/build/css/webform_print_grid.css': 'public/src/sass/webform_print_grid.scss'
                 }
             },
             pri: {
                 files: {
-                    'public/build/css/webform_grid.css': 'src-private/sass/grid/webform_grid.scss',
-                    'public/build/css/webform_print_grid.css': 'src-private/sass/grid/webform_print_grid.scss',
+
                     'public/build/css/openrosa.css': 'src-private/sass/private/openrosa.scss',
                     'public/build/css/front.css': 'src-private/sass/private/front.scss'
                 }

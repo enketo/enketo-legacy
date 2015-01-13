@@ -7,7 +7,7 @@ Enketo Smart Paper runs next generation web forms that were built according to t
 
 This repository is a PHP-wrapper around [Enketo Core](https://github.com/MartijnR/enketo-core) that adds the ability to launch offline and persistently store data offline in the browser. It also provides the communication with OpenRosa compliant servers such as [ODK Aggregate](http://opendatakit.org/use/aggregate/), KoBoToolbox(http://kobotoolbox.org), [Ona](https://ona.io), and [Formhub](https://formhub.org). The OpenRosa APIs are described [here](https://bitbucket.org/javarosa/javarosa/wiki/OpenRosaAPI).
 
-Enketo is built into [many tools]. Read more at [enketo.org](https://enketo.org) and follow the latest news about enketo on our [blog](http://blog.enketo.org) and on twitter [@enketo](https://twitter.com/enketo).
+Enketo webforms are built into [many tools](https://enketo.org/#tools). Read more at [enketo.org](https://enketo.org) and follow the latest news about enketo on our [blog](http://blog.enketo.org) and on twitter [@enketo](https://twitter.com/enketo).
 
 Related Projects
 -----------

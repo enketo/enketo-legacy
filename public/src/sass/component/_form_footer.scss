@@ -31,7 +31,7 @@
         width: 100%;
         text-align: center;
         .btn {
-            display: inline-block;
+            //display: inline-block;
             width: 150px;
             position: static;
             min-height: 32px;
@@ -41,18 +41,14 @@
                 width: 100%;
             }
         }
-        .previous-page, .next-page {
-            display: none;
-        }
-        .previous-page {
-            position: absolute;
-            left: 20px;
-            bottom: 45px;
-            //color: #357ebd;
-            //border: none;
-            //@include box-shadow-none;
-       
-        }
+    }
+    .previous-page, .next-page {
+        display: none;
+    }
+    .previous-page {
+        position: absolute;
+        left: 20px;
+        bottom: 45px;
     }
     .first-page, .last-page {
         width: 50%;

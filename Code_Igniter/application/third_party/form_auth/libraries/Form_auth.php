@@ -54,7 +54,8 @@ class Form_auth {
     		'form_id' => $form_id,
     		'return' => $return_url,
     		'server_url' => $server_url,
-    		'stylesheets' => $this->default_stylesheets
+    		'stylesheets' => $this->default_stylesheets,
+            'form_server_name' => $this->CI->config->item('brand')
     	));
     }
 

@@ -1,6 +1,6 @@
 {
     "name": "enketo-legacy-app",
-    "version": "2.7.1",
+    "version": "2.7.2",
     "homepage": "https://github.com/enketo/enketo-core",
     "authors": [
         "Martijn van de Rijdt <martijn@enketo.org>"

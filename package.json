@@ -16,14 +16,14 @@
     "devDependencies": {
         "grunt": "0.4.x",
         "grunt-contrib-jasmine": "0.8.x",
-        "grunt-contrib-jshint": "0.10.x",
+        "grunt-contrib-jshint": "0.11.x",
         "grunt-contrib-requirejs": "0.4.x",
         "grunt-contrib-symlink": "0.3.x",
         "grunt-contrib-watch": "0.6.x",
         "grunt-jsbeautifier": "0.2.x",
         "grunt-sass": "0.17.x",
         "grunt-template-jasmine-requirejs": "0.2.x",
-        "load-grunt-tasks": "2.x.x",
+        "load-grunt-tasks": "3.x.x",
         "rjs-build-analysis": "0.0.x",
         "time-grunt": "1.0.x"
     }

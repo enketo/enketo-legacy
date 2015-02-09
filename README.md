@@ -5,7 +5,7 @@
 
 Enketo Smart Paper runs next generation web forms that were built according to the open-source OpenRosa XForm format. This is the advanced and popular form format used by [ODK](http://opendatakit.org), [Ona](https://ona.io), [KoBo Toolbox](http://kobotoolbox.org), [Formhub](https://formhub.org) and [CommCare](http://www.commcarehq.org/home/). 
 
-This repository is a PHP app around [Enketo Core](https://github.com/MartijnR/enketo-core) that has the ability to launch forms offline and persistently store data offline in the browser. It also provides the communication with OpenRosa compliant servers such as [ODK Aggregate](http://opendatakit.org/use/aggregate/), KoBoToolbox(http://kobotoolbox.org), [Ona](https://ona.io), and [Formhub](https://formhub.org). The OpenRosa APIs are described [here](https://bitbucket.org/javarosa/javarosa/wiki/OpenRosaAPI).
+This repository is a PHP app around [Enketo Core](https://github.com/MartijnR/enketo-core) that has the ability to launch forms offline and persistently store data offline in the browser. It also provides the communication with OpenRosa compliant servers such as [ODK Aggregate](http://opendatakit.org/use/aggregate/), [KoBoToolbox](http://kobotoolbox.org), [Ona](https://ona.io), and [Formhub](https://formhub.org). The OpenRosa APIs are described [here](https://bitbucket.org/javarosa/javarosa/wiki/OpenRosaAPI).
 
 Enketo is built into [many tools](https://enketo.org/#tools). Read more at [enketo.org](https://enketo.org) and follow the latest news about enketo on our [blog](http://blog.enketo.org) and on twitter [@enketo](https://twitter.com/enketo).
 

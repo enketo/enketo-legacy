@@ -6,7 +6,7 @@
 				<?= form_open('authenticate'); ?>
 					<h3>Log In <? if(!empty($form_id)): ?>for form "<?= $form_id ?>"<? elseif(!empty($server_url)): ?> for "<?= $server_url ?>"<? endif;?></h3>
 					<p>Use the credentials provided to you by the Survey Administrator to obtain access.<p>
-					<p class="or-hint" style="font-style:italic; font-size: 12px;">Note that these are the credentials set on the Form Server (i.e. Aggregate, Formhub, or SurveyCTO).</p>
+					<p class="or-hint" style="font-style:italic; font-size: 12px;">Note that these are the credentials set on the <?= $form_server_name ?> server.</p>
 					<? $errors = validation_errors(); ?>
 					<? if(!empty($errors)): ?>
 					<div class="alert alert-danger">

@@ -1,7 +1,7 @@
 [Enketo Smart Paper](http://enketo.org) [![Build Status](https://travis-ci.org/enketo/enketo-legacy.svg)](https://travis-ci.org/enketo/enketo-legacy) [![devDependency Status](https://david-dm.org/enketo/enketo-legacy/dev-status.svg)](https://david-dm.org/enketo/enketo-legacy#info=devDependencies)
 ======
 
-###This App is no longer being actively developed. It will soon be replaced by [Enketo Express](https://github.com/enketo/enketo-express).
+###This App is no longer being actively developed. It is being replaced by [Enketo Express](https://github.com/enketo/enketo-express) which offers [several advantages](https://github.com/kobotoolbox/enketo-express#differences-with-enketoenketo-legacy-and-enketoorg).
 
 Enketo Smart Paper runs next generation web forms that were built according to the open-source OpenRosa XForm format. This is the advanced and popular form format used by [ODK](http://opendatakit.org), [Ona](https://ona.io), [KoBo Toolbox](http://kobotoolbox.org), [Formhub](https://formhub.org) and [CommCare](http://www.commcarehq.org/home/). 
 

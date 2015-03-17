@@ -57,7 +57,7 @@ define( [ 'settings' ], function( settings ) {
                     }
                     window.localStorage.setItem( '__loadLog', JSON.stringify( loadLog ) );
                 }
-                profilerRecords.push( 'total loading time: ' + loadingTime + ' milliseconds' );
+                profilerRecords.push( 'total loading time according to window.performance: ' + loadingTime + ' milliseconds' );
                 //$('.enketo-power').append('<p style="font-size: 0.7em;">(total load: '+loadingTime+' msec, XPath: '+xpathEvalTime+' msec)</p>');
                 //FF doesn't allow stringifying native window objects so we create a copy first
                 for ( var prop in window.performance.timing ) {

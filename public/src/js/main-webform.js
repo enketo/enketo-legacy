@@ -3,7 +3,7 @@
  */
 
 require( [ 'require-config' ], function( rc ) {
-
+    if ( console.time ) console.time( 'client loading time' );
     require( [ 'performance', 'gui', 'cache', 'store', 'file-manager', 'controller-webform', 'jquery' ],
         function( monitor, gui, cache, recordStore, fileStore, controller, $ ) {
 
@@ -21,6 +21,7 @@ require( [ 'require-config' ], function( rc ) {
                     fileStore: fileStore,
                     submitInterval: 300 * 1000
                 } );
+                if ( console.timeEnd ) console.timeEnd( 'client loading time' );
             } );
         } );
 } );

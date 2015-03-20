@@ -294,7 +294,9 @@ define( [ 'gui', 'enketo-js/Form', 'settings', 'connection', 'vkbeautify', 'cont
                 //important to use append with string and not $object for some reason => JQuery bug?
                 $( '#survey-form form' ).replaceWith( formStr );
 
-                form = new Form( 'form.or:eq(0)', jrDataStr );
+                form = new Form( 'form.or:eq(0)', {
+                    modelStr: jrDataStr
+                } );
                 loadErrors = form.init();
 
                 if ( loadErrors.length > 0 ) {

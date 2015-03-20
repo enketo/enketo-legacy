@@ -40,7 +40,10 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 fileManager.flush();
             }
 
-            form = new Form( formSelector, defaultModelStr, instanceStrToEdit );
+            form = new Form( formSelector, {
+                modelStr: defaultModelStr,
+                instanceStr: instanceStrToEdit
+            } );
 
             // DEBUG
             //window.form = form;
@@ -118,7 +121,9 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 setDraftStatus( false );
                 updateActiveRecord( null );
                 form.resetView();
-                form = new Form( 'form.or:eq(0)', defaultModelStr );
+                form = new Form( 'form.or:eq(0)', {
+                    modelStr: defaultModelStr
+                } );
                 //DEBUG
                 window.form = form;
                 form.init();
@@ -152,7 +157,11 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     //var success = form.setData(data);
                     form.resetView();
                     //gui.closePage();
-                    form = new Form( formSelector, defaultModelStr, record.data, true );
+                    form = new Form( formSelector, {
+                        modelStr: defaultModelStr,
+                        instanceStr: record.data,
+                        unsubmitted: true
+                    } );
                     loadErrors = form.init();
 
                     if ( loadErrors.length > 0 ) {
@@ -616,8 +625,8 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 name = $( this ).attr( 'name' );
                 //if the record in the DOM no longer exists in storage
                 if ( $.grep( recordList, function( record ) {
-                    return record.key == name;
-                } ).length === 0 ) {
+                        return record.key == name;
+                    } ).length === 0 ) {
                     //remove the DOM element and its same-name-siblings (split submissions)
                     $( this ).siblings( '[name="' + name + '"]' ).addBack().hide( 2000, function() {
                         $( this ).remove();

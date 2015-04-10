@@ -44,7 +44,7 @@ class Front extends CI_Controller {
 		);
 		$data = array(
 			'offline'			=> FALSE, 
-			'title_component'	=> 'home', 
+			'title_component'	=> '', 
 			'linked_with'		=> $this->config->item('integration_with_url'),
 			'robots'     		=> TRUE//,
 			//'number_launched'	=> $this->_get_db_number_launched()

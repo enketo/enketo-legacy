@@ -193,7 +193,7 @@ class Manifest extends CI_Controller {
     private function _get_resources_from_html($full_url, $base=NULL)
     {
         //SMALL PROBLEM: ALSO COPIES RESOURCES THAT ARE COMMENTED OUT
-        $pattern = '/(<script|<link|<img) [^>]*(src|href)="([^"]+)"/';
+        $pattern = '/(<script|<link|<img|<audio|<video) [^>]*(src|href)="([^"]+)"/';
         $index = 3; //match of 3rd set of parentheses is what we want
         $resources = $this->_get_resources($full_url, $pattern, $index, $base); 
         if (!$resources) {

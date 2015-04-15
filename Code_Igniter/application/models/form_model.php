@@ -37,8 +37,8 @@ class Form_model extends CI_Model {
         parent::__construct();
         $this->load->helper(array('http'));
         $this->load->library('openrosa'); 
-        $this->file_path_to_jr2HTML5_XSL = APPPATH.'libraries/xslt/openrosa2html5form.xsl'; 
-        $this->file_path_to_jr2Data_XSL = APPPATH.'libraries/xslt/openrosa2xmlmodel.xsl';
+        $this->file_path_to_jr2HTML5_XSL = APPPATH.'libraries/xslt/xsl/openrosa2html5form.xsl'; 
+        $this->file_path_to_jr2Data_XSL = APPPATH.'libraries/xslt/xsl/openrosa2xmlmodel.xsl';
         log_message('debug', 'Form Model Initialized');
     }
 
@@ -457,7 +457,8 @@ class Form_model extends CI_Model {
                 $src = (string) $el['src'];
                 $el['src'] = '';
                 foreach ( $manifest->mediaFile as $m ) {
-                    if ($src == $m->filename) {
+                    $pattern = '/jr:\/\/(images|video|audio|file|file-csv)\/' . $m->filename . '/';
+                    if (preg_match( $pattern, $src ) ) {
                         //log_message('debug', 'adding media url to html: '.$m->downloadUrl);
                         $el['src'] = $this->_to_local_media_url($m->downloadUrl);
                         break;

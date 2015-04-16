@@ -13,6 +13,7 @@ public/cron.log
 ._*
 .fuse*
 .grunt
+.scratchpad
 _SpecRunner.html
 Vagrantfile
 vagrant

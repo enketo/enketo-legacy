@@ -15,3 +15,5 @@
 		</div>
 
 	<? require 'elements/footer++.php' ?>
+	
+	<script>window.onbeforeunload = function(){ return "Warning: Any unsubmitted data will be erased."; }</script>

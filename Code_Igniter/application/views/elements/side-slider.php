@@ -4,6 +4,6 @@
 	</nav>
 	<div class="content"></div>
 </aside>
-<button class="handle side-slider-toggle open"></button>
-<button class="handle side-slider-toggle close"></button>
+<button type="button" class="handle side-slider-toggle open"></button>
+<button type="button" class="handle side-slider-toggle close"></button>
 <div class="side-slider-toggle slider-overlay"></div>

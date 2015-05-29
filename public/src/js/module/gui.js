@@ -18,7 +18,7 @@
  * Deals with the main GUI elements (but not the survey form)
  */
 
-define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', 'bootstrap' ], function( Modernizr, settings, printForm, $ ) {
+define( [ 'enketo-js/support', 'settings', 'print', 'jquery', 'plugin', 'bootstrap' ], function( support, settings, printForm, $ ) {
     "use strict";
 
     var nav, pages, updateStatus, feedbackBar,
@@ -47,12 +47,12 @@ define( [ 'Modernizr', 'settings', 'print', 'jquery', 'plugin', 'bootstrap' ], f
             window.console.log = function() {};
             window.console.debug = function() {};
         }
-        //override Modernizr's detection (for development purposes)
+        //override feature detection (for development purposes)
         if ( settings.touch ) {
-            Modernizr.touch = true;
+            support.touch = true;
             $( 'html' ).addClass( 'touch' );
         } else if ( settings.touch === false ) {
-            Modernizr.touch = false;
+            support.touch = false;
             $( 'html' ).removeClass( 'touch' );
         }
     }

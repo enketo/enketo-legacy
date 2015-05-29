@@ -1,6 +1,6 @@
 {
     "name": "enketo-legacy-app",
-    "version": "2.7.5",
+    "version": "2.7.6",
     "homepage": "https://github.com/enketo/enketo-core",
     "authors": [
         "Martijn van de Rijdt <martijn@enketo.org>"
@@ -20,6 +20,7 @@
         "requirejs": "~2.1.15",
         "file-saver": "*",
         "blob": "*",
-        "bootstrap-sass-official": "~3.3.0"
+        "bootstrap-sass-official": "~3.3.0",
+        "leaflet": "~0.7.3"
     }
 }

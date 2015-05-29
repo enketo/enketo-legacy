@@ -15,7 +15,6 @@ require.config( {
         "file-manager": "file-manager",
         "file-system": "../../../lib/file-system/src/file-system",
         "jquery.xpath": "../../../lib/enketo-core/lib/jquery-xpath/jquery.xpath",
-        "Modernizr": "../../../lib/enketo-core/lib/Modernizr",
         "bootstrap": "../../../lib/bower-components/bootstrap-sass-official/assets/javascripts/bootstrap",
         "bootstrap-slider": "../../../lib/enketo-core/lib/bootstrap-slider/js/bootstrap-slider",
         "jquery": "../../../lib/bower-components/jquery/dist/jquery",
@@ -23,7 +22,7 @@ require.config( {
         "file-saver": "../../../lib/bower-components/file-saver/FileSaver",
         "Blob": "../../../lib/bower-components/blob/Blob",
         "vkbeautify": "../../../lib/vkbeautify/vkbeautify",
-        "leaflet": "../../../lib/enketo-core/lib/leaflet/leaflet",
+        "leaflet": "../../../lib/bower-components/leaflet/dist/leaflet",
         "q": "../../../lib/bower-components/q/q",
         "print": "../../../lib/enketo-core/src/js/print"
     },

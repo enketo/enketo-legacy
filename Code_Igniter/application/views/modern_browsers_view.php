@@ -7,23 +7,6 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="robots" content="">
-    
-    <script type="text/javascript" src="/libraries/enketo-core/lib/jquery.min.js"></script>
-	<script type="text/javascript" src="/libraries/enketo-core/lib/modernizr.min.js"></script>
-	<script type="text/javascript">
-		var notSupported = [], and='';
-		if (!Modernizr.localstorage) notSupported.push('local data storage');
-		if (!Modernizr.applicationcache) notSupported.push('offline launch');
-		if (notSupported.length === 2) and = ' and ';
-		$(function(){
-			if (notSupported.length > 0){
-				notSupported.push('');
-				$('#not-supported').text(
-					' (we detected that your browser does not support '+notSupported[0]+and+notSupported[1]+')'
-				);
-			}	
-		});	
-	</script>
     <? if (ENVIRONMENT === 'production'){include 'elements/tracking.php';}?>
 </head>
 

@@ -320,7 +320,7 @@ define( [ 'enketo-js/support', 'settings', 'print', 'jquery', 'plugin', 'bootstr
     function feedback( message, duration, heading, choices ) {
         heading = heading || 'Information';
         //if ($('header').css('position') === 'fixed'){
-        if ( !Modernizr.touch ) {
+        if ( !support.touch ) {
             feedbackBar.show( message, duration );
         }
         //a more obtrusive message is shown

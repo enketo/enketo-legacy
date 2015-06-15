@@ -42,9 +42,6 @@ require.config( {
             deps: [ "jquery" ],
             exports: "jQuery.fn.timepicker"
         },
-        "Modernizr": {
-            exports: "Modernizr"
-        },
         "file-saver": {
             exports: "saveAs"
         },

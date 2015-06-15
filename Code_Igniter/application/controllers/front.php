@@ -31,17 +31,6 @@ class Front extends CI_Controller {
 
 	public function index()
 	{
-		$default_library_scripts = array(
-			'/libraries/enketo-core/lib/jquery.min.js',
-			'/libraries/enketo-core/lib/bootstrap.min.js',
-			'/libraries/enketo-core/lib/modernizr.min.js'
-		);
-		$default_main_scripts = array(
-			'/libraries/enketo-core/src/js/utils.js',
-			'/js-source/gui.js',
-			'/js-source/connection.js',
-			'/js-source/front.js'
-		);
 		$data = array(
 			'offline'			=> FALSE, 
 			'title_component'	=> '', 

@@ -95,7 +95,7 @@ module.exports = function( grunt ) {
                                 "xpath": "../../../../test/mock/empty.mock",
                                 "file-manager": "../../../../test/mock/empty.mock",
                                 "jquery.xpath": "../../../../test/mock/empty.mock",
-                                "Modernizr": "../../../../test/mock/empty.mock",
+                                "support": "../../../../test/mock/empty.mock",
                                 "bootstrap": "../../../lib/enketo-core/lib/bootstrap",
                                 "jquery": "../../../lib/bower-components/jquery/dist/jquery",
                                 "file-saver": "../../../../test/mock/file-saver.mock",

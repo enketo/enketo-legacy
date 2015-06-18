@@ -24,7 +24,8 @@ require.config( {
         "vkbeautify": "../../../lib/vkbeautify/vkbeautify",
         "leaflet": "../../../lib/bower-components/leaflet/dist/leaflet",
         "q": "../../../lib/bower-components/q/q",
-        "print": "../../../lib/enketo-core/src/js/print"
+        "print": "../../../lib/enketo-core/src/js/print",
+        "merge-xml": "../../../lib/bower-components/mergexml/mergexml",
     },
     shim: {
         "xpath": {

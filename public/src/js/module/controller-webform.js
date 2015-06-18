@@ -42,12 +42,9 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             form = new Form( formSelector, {
                 modelStr: defaultModelStr,
-                instanceStr: instanceStrToEdit
+                instanceStr: instanceStrToEdit,
+                submitted: options.submitted
             } );
-
-            // DEBUG
-            //window.form = form;
-            //window.gui = gui;
 
             //initialize form and check for load errors
             loadErrors = form.init();
@@ -160,7 +157,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     form = new Form( formSelector, {
                         modelStr: defaultModelStr,
                         instanceStr: record.data,
-                        unsubmitted: true
+                        submitted: false
                     } );
                     loadErrors = form.init();
 
@@ -281,6 +278,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
         function submitEditedRecord() {
             var name, record, saveResult, redirect, beforeMsg, callbacks;
+
             $form.trigger( 'beforesave' );
             if ( !form.isValid() ) {
                 gui.alert( 'Form contains errors <br/>(please see fields marked in red)' );
@@ -291,11 +289,10 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
 
             gui.alert( beforeMsg + '<br />' +
                 '<progress style="text-align: center;"/>', 'Submitting...', 'info' );
-            //name = (Math.floor(Math.random()*100001)).toString();
-            //console.debug('temporary record name: '+name);
+
             record = {
                 'key': 'iframe_record',
-                'data': form.getDataStr( true, true )
+                'data': form.getDataStr()
             };
 
             callbacks = {
@@ -324,7 +321,7 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
             // For a proper solution, see Enketo-express.
             // 
             // Save any media files to the media storage but let fail quietly
-            fileManager.saveCurrentFiles().fin( function() {
+            fileManager.saveCurrentFiles().done( function() {
                 prepareFormDataArray(
                     record, {
                         success: function( formDataArr ) {
@@ -397,7 +394,9 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                 files = [],
                 batches = [];
 
-            model = new FormModel( record.data );
+            // this is just a quick ugly hack, because Enketo Legacy is dead and I don't care about this code any more
+            model = new FormModel( '<model><instance>' + record.data + '</instance></model>' );
+            model.init();
             instanceID = model.getInstanceID();
             // ignore files if there is no fileManager (possible when editing a record that has files)
             $fileNodes = ( fileManager ) ? model.$.find( '[type="file"]' ).removeAttr( 'type' ) : [];

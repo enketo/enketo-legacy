@@ -7,7 +7,8 @@ require( [ 'require-config' ], function( rc ) {
         function( controller, fileStore, $ ) {
             $( document ).ready( function() {
                 controller.init( 'form.or:eq(0)', modelStr, null, {
-                    fileStore: fileStore
+                    fileStore: fileStore,
+                    submitted: false
                 } );
             } );
         } );

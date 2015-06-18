@@ -102,6 +102,16 @@ label#data-template-show {
     }
 }
 
+// overriding stuff that was messed up due to changes in enketo-core
+.tab-content > .tab-pane.paper {
+    display: none;
+    visibility: hidden;
+    &.active {
+        display: block;
+        visibility: visible;
+    }
+}
+
 .tab-pane .form-language-selector {
     padding-right: 0;
     border-right: 0;

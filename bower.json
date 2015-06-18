@@ -21,6 +21,7 @@
         "file-saver": "*",
         "blob": "*",
         "bootstrap-sass-official": "~3.3.0",
-        "leaflet": "~0.7.3"
+        "leaflet": "~0.7.3",
+        "mergexml": "~1.1.0"
     }
 }

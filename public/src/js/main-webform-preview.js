@@ -15,8 +15,6 @@ require( [ 'require-config' ], function() {
                     $loading = $( 'progress' ),
                     $validateButton = $formFooter.find( '#validate-form' ).attr( 'disabled', 'disabled' );
 
-
-
                 connection.getTransForm( settings.serverURL, settings.formId, null, settings.formURL, {
                     success: function( response ) {
                         var loadErrors, formStr, modelStr,
@@ -28,7 +26,8 @@ require( [ 'require-config' ], function() {
                             $formFooter.before( formStr );
 
                             controller.init( 'form.or:eq(0)', modelStr, null, {
-                                fileStore: fileStore
+                                fileStore: fileStore,
+                                submitted: false
                             } );
 
                             $validateButton.removeAttr( 'disabled' );

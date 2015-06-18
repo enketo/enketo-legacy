@@ -19,7 +19,8 @@ require( [ 'require-config' ], function( rc ) {
                 controller.init( 'form.or:eq(0)', modelStr, null, {
                     recordStore: recordStore,
                     fileStore: fileStore,
-                    submitInterval: 300 * 1000
+                    submitInterval: 300 * 1000,
+                    submitted: false
                 } );
                 if ( console.timeEnd ) console.timeEnd( 'client loading time' );
             } );

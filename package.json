@@ -2,7 +2,7 @@
     "name": "enketo-legacy",
     "description": "The old Enketo Smart Paper app",
     "homepage": "https://enketo.org",
-    "version": "2.7.9",
+    "version": "2.7.10",
     "repository": {
         "type": "git",
         "url": "https://github.com/enketo/enketo-legacy"

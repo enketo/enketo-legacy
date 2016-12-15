@@ -92,6 +92,9 @@ define( [ 'gui', 'connection', 'settings', 'enketo-js/Form', 'enketo-js/FormMode
                     submitQueue();
                 }, 5 * 1000 );
             }
+
+            $( 'form.or' ).prepend( '<div style="padding: 3px; margin: 30px 0 15px 0; text-align: center; width: 100%;" class="alert-warning">This webform will stop working on the 1<sup>st</sup> of January, 2017. <a href="/deprecated">Read more</a>.</div>' );
+
             console.log( 'controls initialized for form', form );
         }
 
